@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-04-01 15:29 UTC*
+> *Last updated: 2026-04-06 10:13 UTC*
 
 
 
@@ -19,34 +19,6 @@
 - [feat: GroundingTarget + GroundingCandidate data model for cascade architecture](https://github.com/OpenAdaptAI/openadapt-evals/pull/256) (#256) — merged 
 
 - [fix: configurable max_grad_norm, lower default lr, remove premature deprecation](https://github.com/OpenAdaptAI/openadapt-evals/pull/255) (#255) — merged 
-
-- [fix: also patch model.generate() to inject cached pixel_values](https://github.com/OpenAdaptAI/openadapt-evals/pull/254) (#254) — merged 
-
-- [fix: patch model.forward() directly — survives TRL unwrapping](https://github.com/OpenAdaptAI/openadapt-evals/pull/253) (#253) — merged 
-
-- [fix: VLMModelWrapper PEFT isinstance compatibility for TRL validation](https://github.com/OpenAdaptAI/openadapt-evals/pull/252) (#252) — merged 
-
-- [feat: VLMModelWrapper — multimodal compatibility layer for TRL](https://github.com/OpenAdaptAI/openadapt-evals/pull/251) (#251) — merged 
-
-- [fix: patch chat_template to remove think tags at the source](https://github.com/OpenAdaptAI/openadapt-evals/pull/250) (#250) — merged 
-
-- [fix: disable Qwen3.5 thinking mode in TRL generation](https://github.com/OpenAdaptAI/openadapt-evals/pull/249) (#249) — merged 
-
-- [fix: comprehensive prompt diagnostics for debugging garbage output](https://github.com/OpenAdaptAI/openadapt-evals/pull/248) (#248) — merged 
-
-- [fix: use build_agent_messages for TRL prompt + fix 4x over-generation](https://github.com/OpenAdaptAI/openadapt-evals/pull/247) (#247) — merged 
-
-- [fix: use training-appropriate evaluate timeouts instead of reordering eval](https://github.com/OpenAdaptAI/openadapt-evals/pull/246) (#246) — merged 
-
-- [fix: try local eval before slow /evaluate endpoint in evaluate_dense](https://github.com/OpenAdaptAI/openadapt-evals/pull/245) (#245) — merged 
-
-- [fix: batch_size must be multiple of num_generations, pad dataset](https://github.com/OpenAdaptAI/openadapt-evals/pull/244) (#244) — merged 
-
-- [fix: wire on_before_collect and on_rollout_complete callbacks through rollout_func](https://github.com/OpenAdaptAI/openadapt-evals/pull/243) (#243) — merged 
-
-- [fix: add truncation warning to TRL generate paths](https://github.com/OpenAdaptAI/openadapt-evals/pull/242) (#242) — merged 
-
-- [test: add 10 TRL parity tests for deprecation readiness](https://github.com/OpenAdaptAI/openadapt-evals/pull/241) (#241) — merged 
 
 
 
