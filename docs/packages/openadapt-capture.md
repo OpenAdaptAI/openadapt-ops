@@ -2,7 +2,7 @@
 
 [![GitHub](https://img.shields.io/github/stars/OpenAdaptAI/openadapt-capture?style=social)](https://github.com/OpenAdaptAI/openadapt-capture)
 
-> *Auto-generated from [OpenAdaptAI/openadapt-capture](https://github.com/OpenAdaptAI/openadapt-capture). Last synced: 2026-04-13 10:49 UTC*
+> *Auto-generated from [OpenAdaptAI/openadapt-capture](https://github.com/OpenAdaptAI/openadapt-capture). Last synced: 2026-04-20 10:52 UTC*
 
 ---
 
