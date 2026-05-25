@@ -2,7 +2,7 @@
 
 [![GitHub](https://img.shields.io/github/stars/OpenAdaptAI/openadapt-consilium?style=social)](https://github.com/OpenAdaptAI/openadapt-consilium)
 
-> *Auto-generated from [OpenAdaptAI/openadapt-consilium](https://github.com/OpenAdaptAI/openadapt-consilium). Last synced: 2026-05-18 12:36 UTC*
+> *Auto-generated from [OpenAdaptAI/openadapt-consilium](https://github.com/OpenAdaptAI/openadapt-consilium). Last synced: 2026-05-25 12:35 UTC*
 
 ---
 
