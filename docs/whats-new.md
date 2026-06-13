@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-06-13 00:19 UTC*
+> *Last updated: 2026-06-13 00:36 UTC*
 
 
 
@@ -27,6 +27,13 @@
 
 
 - [fix: implement missing cmd_tasks; add import-integrity guards and release alerting](https://github.com/OpenAdaptAI/openadapt-evals/pull/262) (#262) — merged 
+
+
+
+## openadapt-capture
+
+
+- [test: import-integrity guards and release-failure alerting](https://github.com/OpenAdaptAI/openadapt-capture/pull/22) (#22) — merged 
 
 
 
