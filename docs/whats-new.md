@@ -1,7 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-10 19:35 UTC*
+> *Last updated: 2026-07-12 16:46 UTC*
+
+
+
+## OpenAdapt
+
+
+- [feat: expose openadapt-flow as the [flow] extra (demonstration compiler under the core brand)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1006) (#1006) — merged 
 
 
 
