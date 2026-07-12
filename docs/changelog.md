@@ -44,6 +44,8 @@
 
 ## openadapt-capture
 
+- **[v0.5.4](https://github.com/OpenAdaptAI/openadapt-capture/releases/tag/v0.5.4)** (2026-07-12)
+  ## v0.5.4 (2026-07-12)
 - **[v0.5.3](https://github.com/OpenAdaptAI/openadapt-capture/releases/tag/v0.5.3)** (2026-06-13)
   ## v0.5.3 (2026-06-13)
 - **[v0.5.2](https://github.com/OpenAdaptAI/openadapt-capture/releases/tag/v0.5.2)** (2026-03-17)
@@ -52,8 +54,6 @@
   ## v0.5.1 (2026-03-17)
 - **[v0.5.0](https://github.com/OpenAdaptAI/openadapt-capture/releases/tag/v0.5.0)** (2026-03-04)
   ## v0.5.0 (2026-03-04)
-- **[v0.4.0](https://github.com/OpenAdaptAI/openadapt-capture/releases/tag/v0.4.0)** (2026-03-03)
-  ## v0.4.0 (2026-03-03)
 
 ## openadapt-desktop
 
