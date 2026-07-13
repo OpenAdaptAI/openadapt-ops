@@ -1,0 +1,128 @@
+/* OpenAdapt docs — ink-on-paper brand, aligned with openadapt.ai
+   Palette source: openadapt-web tailwind.config.js
+   ground #F2F1EC · panel #FDFCF9 · hairline #DDDCD2 · ink #23281F
+   accent #3E6B4F · dark inset #14171A */
+
+:root {
+  --oa-ground: #f2f1ec;
+  --oa-panel: #fdfcf9;
+  --oa-hairline: #dddcd2;
+  --oa-ink: #23281f;
+  --oa-ink-2: #4c523f;
+  --oa-ink-3: #5a6050;
+  --oa-accent: #3e6b4f;
+  --oa-accent-bright: #4f8a66;
+}
+
+/* ---- Light scheme ---------------------------------------------------- */
+[data-md-color-scheme="default"] {
+  --md-primary-fg-color: var(--oa-accent);
+  --md-primary-fg-color--light: var(--oa-accent-bright);
+  --md-primary-fg-color--dark: #2f513c;
+  --md-accent-fg-color: var(--oa-accent);
+
+  --md-default-bg-color: var(--oa-ground);
+  --md-default-fg-color: var(--oa-ink);
+  --md-default-fg-color--light: var(--oa-ink-2);
+  --md-default-fg-color--lighter: var(--oa-ink-3);
+  --md-typeset-a-color: var(--oa-accent);
+  --md-footer-bg-color: var(--oa-ink);
+  --md-footer-bg-color--dark: #1a1e17;
+}
+
+/* Cards / code / tables sit on the lighter "panel" tone for depth. */
+[data-md-color-scheme="default"] .md-typeset code,
+[data-md-color-scheme="default"] .md-typeset pre > code,
+[data-md-color-scheme="default"] .md-typeset table:not([class]) th {
+  background-color: var(--oa-panel);
+}
+[data-md-color-scheme="default"] .md-main,
+[data-md-color-scheme="default"] .md-content {
+  background-color: var(--oa-ground);
+}
+[data-md-color-scheme="default"] .md-typeset .md-typeset__table,
+[data-md-color-scheme="default"] .md-typeset table:not([class]) {
+  border-color: var(--oa-hairline);
+}
+
+/* ---- Dark scheme (slate, warm-neutral ink) --------------------------- */
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color: #14171a;
+  --md-primary-fg-color--light: #262b30;
+  --md-primary-fg-color--dark: #0f1113;
+  --md-accent-fg-color: #86d9a8;
+  --md-typeset-a-color: #86d9a8;
+  --md-default-bg-color: #14171a;
+  --md-footer-bg-color: #0f1113;
+}
+
+/* ---- Shared type + chrome ------------------------------------------- */
+.md-header {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+.md-header__title {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.md-typeset h1,
+.md-typeset h2,
+.md-typeset h3 {
+  font-weight: 650;
+  letter-spacing: -0.015em;
+}
+.md-typeset h1 {
+  color: var(--oa-ink);
+}
+[data-md-color-scheme="slate"] .md-typeset h1 {
+  color: #eef0ea;
+}
+
+/* Tighten the tab bar so it reads as one brand strip with the header. */
+.md-tabs {
+  font-weight: 500;
+}
+
+/* Hero lede on the home page. */
+.md-typeset .oa-lede {
+  font-size: 1.28rem;
+  line-height: 1.5;
+  font-weight: 500;
+  color: var(--oa-ink-2);
+  max-width: 40rem;
+}
+[data-md-color-scheme="slate"] .md-typeset .oa-lede {
+  color: #c9cdc2;
+}
+
+/* Differentiator / feature grid (Material .grid.cards, lightly tuned). */
+.md-typeset .grid.cards > ul > li,
+.md-typeset .grid > .card {
+  border: 1px solid var(--oa-hairline);
+  border-radius: 10px;
+  background: var(--oa-panel);
+}
+[data-md-color-scheme="slate"] .md-typeset .grid.cards > ul > li {
+  border-color: #262b30;
+  background: #1a1e22;
+}
+.md-typeset .grid.cards > ul > li:hover {
+  border-color: var(--oa-accent);
+  box-shadow: 0 2px 10px rgba(35, 40, 31, 0.06);
+}
+
+/* Key-number callouts used on Home / benchmark. */
+.md-typeset .oa-stat {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--oa-accent);
+  line-height: 1.1;
+}
+[data-md-color-scheme="slate"] .md-typeset .oa-stat {
+  color: #86d9a8;
+}
+
+/* Mermaid diagrams centered with a little breathing room. */
+.md-typeset .mermaid {
+  margin: 1.4em auto;
+  text-align: center;
+}

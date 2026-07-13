@@ -1,0 +1,69 @@
+# Get started
+
+OpenAdapt turns a single demonstration into a deterministic, locally-run
+workflow. This section takes you from an empty terminal to a compiled workflow
+and an illustrated run report in about five minutes.
+
+## Install
+
+```bash
+pip install openadapt
+```
+
+The reference backend is a headless browser. The first time you record or
+replay against a web app, the browser provisions automatically. To provision it
+ahead of time:
+
+```bash
+playwright install chromium
+```
+
+!!! note "Package names during the transition"
+    The product is moving to a single `openadapt` dispatcher, so the primary
+    command is `openadapt flow <verb>`. The engine also ships today as its own
+    package, `openadapt-flow`, whose command is `openadapt-flow <verb>`. Every
+    example in these docs uses the unified `openadapt flow` form; drop the space
+    (`openadapt-flow`) if you installed the standalone package.
+
+## The one-minute tour
+
+```bash
+# 1. Record the canonical demo (serves a local sample app, records a triage task)
+openadapt flow demo-record --out rec
+
+# 2. Compile the recording into a workflow bundle
+openadapt flow compile rec --out bundle --name my-task
+
+# 3. Check it for coverage gaps
+openadapt flow lint bundle
+
+# 4. Replay it: local, deterministic, $0
+openadapt flow replay bundle
+
+# 5. Drift the UI and watch it heal
+openadapt flow replay bundle --drift theme
+```
+
+Steps 4 and 5 serve the bundled sample app and write an illustrated
+`REPORT.md` for each run. Step 5 injects a theme the workflow has never seen;
+each step re-resolves through OCR or geometry and each fix is written back to
+the bundle as a reviewable diff, with **zero model calls** on either run.
+
+## Where to go next
+
+<div class="grid cards" markdown>
+
+-   [__Your first workflow__](first-workflow.md)
+
+    Record, compile, and replay on your own app step by step, and read the
+    run report.
+
+-   [__What you get__](what-you-get.md)
+
+    The bundle, the run report, and what each artifact is for.
+
+-   [__Core concepts__](../concepts/index.md)
+
+    Understand the compiler model before you deploy it for real work.
+
+</div>

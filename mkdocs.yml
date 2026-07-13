@@ -1,25 +1,53 @@
-site_name: OpenAdapt Documentation
+site_name: OpenAdapt Docs
+site_description: >-
+  OpenAdapt is a demonstration compiler. Record a GUI workflow once and compile
+  it into deterministic, self-healing, locally-run replay that verifies real
+  effects and halts rather than guessing.
 site_url: https://docs.openadapt.ai
-repo_url: https://github.com/OpenAdaptAI/openadapt-maintenance
+repo_url: https://github.com/OpenAdaptAI/openadapt-flow
+repo_name: OpenAdaptAI/openadapt-flow
+copyright: Copyright &copy; OpenAdapt AI
 
 theme:
   name: material
+  logo: assets/logo.svg
+  favicon: assets/favicon.ico
+  font:
+    text: Inter
+    code: JetBrains Mono
+  icon:
+    repo: fontawesome/brands/github
   palette:
-    - scheme: slate
-      primary: deep purple
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom
+      accent: custom
       toggle:
-        icon: material/brightness-4
-        name: Switch to light mode
-    - scheme: default
-      primary: deep purple
-      toggle:
-        icon: material/brightness-7
+        icon: material/weather-sunny
         name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-night
+        name: Switch to light mode
   features:
+    - navigation.tabs
     - navigation.sections
-    - navigation.expand
-    - search.suggest
+    - navigation.top
+    - navigation.instant
+    - navigation.tracking
+    - navigation.indexes
+    - toc.integrate
     - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+    - search.suggest
+    - search.highlight
+
+extra_css:
+  - stylesheets/brand.css
 
 plugins:
   - search
@@ -28,25 +56,73 @@ markdown_extensions:
   - toc:
       permalink: true
   - admonition
-  - pymdownx.highlight
-  - pymdownx.superfences
+  - attr_list
+  - md_in_html
+  - def_list
+  - tables
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.keys
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
 
 extra:
-  analytics:
-    provider: google
-    property: G-CJ01Y19XJN
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/OpenAdaptAI
+    - icon: fontawesome/brands/discord
+      link: https://discord.gg/yF527cQbDG
+    - icon: fontawesome/solid/globe
+      link: https://openadapt.ai
 
 nav:
   - Home: index.md
-  - What's New: whats-new.md
-  - Packages:
-    - OpenAdapt: packages/openadapt.md
+  - Get started:
+    - get-started/index.md
+    - Your first workflow: get-started/first-workflow.md
+    - What you get: get-started/what-you-get.md
+  - Concepts:
+    - concepts/index.md
+    - The demonstration compiler: concepts/demonstration-compiler.md
+    - The capability ladder: concepts/capability-ladder.md
+    - Effect verification: concepts/effect-verification.md
+    - The identity gate: concepts/identity-gate.md
+    - Governed self-healing: concepts/self-healing.md
+    - The workflow-program IR: concepts/workflow-ir.md
+    - Multi-trace induction: concepts/multi-trace-induction.md
+    - Policy and certify: concepts/policy-and-certify.md
+    - The on-prem VLM appliance: concepts/vlm-appliance.md
+  - Guides:
+    - guides/index.md
+    - Record your own app: guides/record-your-app.md
+    - Parameters and secrets: guides/parameters-and-secrets.md
+    - Write and enforce a policy: guides/policy-and-certification.md
+    - Deploy on-prem: guides/deploy-on-prem.md
+    - The hosted option: guides/hosted.md
+    - Read and audit run reports: guides/run-reports.md
+  - Reference:
+    - reference/index.md
+    - openadapt flow CLI: reference/cli.md
+    - The bundle format: reference/bundle-format.md
+    - Configuration and env vars: reference/configuration.md
+  - Ecosystem:
+    - ecosystem/index.md
+    - openadapt-capture: packages/openadapt-capture.md
     - openadapt-ml: packages/openadapt-ml.md
     - openadapt-evals: packages/openadapt-evals.md
-    - openadapt-capture: packages/openadapt-capture.md
     - openadapt-desktop: packages/openadapt-desktop.md
+    - openadapt (meta): packages/openadapt.md
     - openadapt-consilium: packages/openadapt-consilium.md
     - openadapt-wright: packages/openadapt-wright.md
     - openadapt-herald: packages/openadapt-herald.md
     - openadapt-crier: packages/openadapt-crier.md
+  - What's New: whats-new.md
   - Changelog: changelog.md
