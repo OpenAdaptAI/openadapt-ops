@@ -5,6 +5,8 @@
 
 ## OpenAdapt
 
+- **[v1.4.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.4.0)** (2026-07-13)
+  ## v1.4.0 (2026-07-13)
 - **[v1.3.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.3.0)** (2026-07-12)
   ## v1.3.0 (2026-07-12)
 - **[v1.2.5](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.2.5)** (2026-06-13)
@@ -13,8 +15,6 @@
   ## v1.2.4 (2026-06-12)
 - **[v1.2.3](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.2.3)** (2026-06-12)
   ## v1.2.3 (2026-06-12)
-- **[v1.2.2](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.2.2)** (2026-03-04)
-  ## v1.2.2 (2026-03-04)
 
 ## openadapt-ml
 
