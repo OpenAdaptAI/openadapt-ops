@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-13 12:09 UTC*
+> *Last updated: 2026-07-13 16:41 UTC*
 
 
 
@@ -16,6 +16,8 @@
 
 ## openadapt-evals
 
+
+- [refactor: source Benchmark* types from openadapt-types; break ml<->evals cycle](https://github.com/OpenAdaptAI/openadapt-evals/pull/264) (#264) — merged 
 
 - [fix: decouple oa-vm from the ML training stack via lazy package imports](https://github.com/OpenAdaptAI/openadapt-evals/pull/263) (#263) — merged 
 
