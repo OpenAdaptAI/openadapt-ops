@@ -88,7 +88,9 @@ flowchart LR
     D -->|healthy path| E([Deterministic<br/>$0 run])
     D -->|UI drifted| F[[self-heal]]
     F -->|repair as diff| E
-    D -->|cannot verify| G([Halt with<br/>a report])
+    D -->|cannot verify| G([Halt safely<br/>+ report])
+    G -->|demonstrate the fix| H[[learn]]
+    H -->|governed & gated| C
 ```
 
 Each compiled step carries a template crop, an OCR label, geometry landmarks,
@@ -96,7 +98,16 @@ and postconditions derived from what the demonstration actually changed on
 screen. At replay a resolution ladder tries them in order. Healthy scripts
 never leave the first rung. When the UI drifts, a lower rung still finds the
 target and the fix is written back to the bundle as a reviewable diff. When
-nothing matches, the run halts.
+nothing matches, the run halts safely rather than guess.
+
+A halt is not a dead end. Demonstrate the fix once and `openadapt flow teach`
+compiles that correction back into the workflow (through the same identity,
+effect, and policy checks that gate everything else), so it does not halt on
+that situation again. The correction is induced as a guarded branch, a
+regression gate proves it weakens nothing, and only a verified revision is
+promoted (an underdetermined or unsafe fix is refused, not guessed at). It is
+deterministic and runs at $0 with the reference inducer. See
+[The halt-learn loop](concepts/halt-learn-loop.md).
 
 ---
 

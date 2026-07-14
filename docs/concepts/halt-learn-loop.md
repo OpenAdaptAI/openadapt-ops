@@ -65,18 +65,55 @@ Promoted revisions live in a versioned skill library that keeps every revision's
 provenance and status, and never silently adopts an unverified one. A quarantined
 candidate is retained with its rejection reason; the active version is unchanged.
 
-!!! note "Honest status: a governed library capability, not a one-command flow"
-    The halt-learn loop ships as a **tested library capability** —
-    `openadapt_flow.learning` (the clustering, the interpreter that replays a
-    program for `$0` coverage, the regression gate, the skill library, and the
-    halt→demonstration bridge). It is deterministic and makes no model calls.
-    What it is **not** yet: a single polished CLI verb that runs the whole
-    demonstrate-and-promote flow for you. The multi-trace **inducer** it depends
-    on is injected behind a `Protocol` (a deterministic reference inducer
-    exercises the loop in tests), so the loop's *governance* is proven
-    independently of any particular induction implementation. Treat this page as
-    the shipping mechanism and the near-term roadmap for how a halt becomes a
-    permanent, governed improvement — not as a finished end-user command.
+## Driving it: `openadapt flow teach`
+
+The whole demonstrate-and-promote flow runs from one command. Point `teach` at
+the halted run directory (the one holding `report.json` with a `halt`), give it
+the fix demonstration and the base bundle that halted, and name where a promoted
+bundle should be written:
+
+```bash
+openadapt flow teach runs/replay-20260712-140233 \
+    --fix recordings/dismiss-the-dialog \
+    --bundle bundles/patient-intake \
+    --out bundles/patient-intake-v2
+```
+
+| Flag | Description |
+|---|---|
+| `run_dir` (positional) | The HALTED run directory (holds `report.json` with a `halt`) |
+| `--fix` (required) | The fix demonstration: a **recording directory** of just the corrective actions (e.g. dismiss the dialog), or a `.json` correction spec (scripted / CI: `resolution_steps`, optional `tail_intents` / `facts` / `params`) |
+| `--bundle` (required) | The base bundle that halted (seeds the skill's active version) |
+| `--out` (required) | Output directory for the UPDATED bundle, **written only when the correction is promoted** |
+| `--skill-id` | Skill id in the versioned library (default: the run's workflow name) |
+| `--library` | Directory for the versioned skill library that keeps the promotion lineage (default: `<out>.skills`) |
+
+`teach` wires the existing governed loop end to end: it loads the halt, turns
+the fix into the operator-correction trace, runs induction, the regression gate,
+and the held-out canary, and writes `--out` **only** if the revision is promoted.
+On the shipped path it is deterministic and makes **no model calls** ($0): the
+resolution is induced by the model-free reference inducer (the structural-diff
+inducer that handles the "an unexpected optional dialog intercepted the
+workflow" class the loop was built for). A model-backed inducer wires in behind
+the same `Inducer` seam without touching this flow.
+
+**The refusal path is a normal outcome, not an error.** If the single correction
+underdetermines the generalization, or the induced revision would weaken a
+safety invariant, the loop **refuses to promote**: nothing is written to `--out`,
+the base bundle stays halting exactly as before, and the command exits nonzero
+(`1`) with the reason. Unusable inputs (no halt in the report, no base bundle, a
+malformed fix) are a distinct failure and exit `2`. A successful promotion exits
+`0` and prints the re-run command.
+
+!!! note "What is proven, and what depends on the inducer"
+    The loop's **governance** (the regression gate, the held-out canary, the
+    versioned skill library, the halt→demonstration bridge) is proven
+    independently of any particular induction implementation, because the
+    inducer is injected behind an `Inducer` seam and a deterministic reference
+    inducer exercises the loop in tests. The reference inducer covers the
+    optional-dialog resolution class; generalizing to arbitrary corrections is
+    the job of a richer inducer behind that same seam, and it inherits the same
+    gate.
 
 ## Why this shape
 
