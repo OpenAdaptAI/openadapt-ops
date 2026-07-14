@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-14 02:25 UTC*
+> *Last updated: 2026-07-14 02:38 UTC*
 
 
 
@@ -15,6 +15,51 @@
 - [docs: refresh README (accurate positioning + demonstration compiler prominence)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1007) (#1007) — merged 
 
 - [feat: expose openadapt-flow as the [flow] extra (demonstration compiler under the core brand)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1006) (#1006) — merged 
+
+
+
+## openadapt-flow
+
+
+- [fix: remove plaintext PHI from compiled bundles + scrub/governance/egress guards](https://github.com/OpenAdaptAI/openadapt-flow/pull/88) (#88) — merged 
+
+- [chore: engineering hygiene — version-sync, lint/type gate, reformat, supply-chain (final, on settled main)](https://github.com/OpenAdaptAI/openadapt-flow/pull/86) (#86) — merged 
+
+- [feat: opt-in session-video capture + how-it-works media generator](https://github.com/OpenAdaptAI/openadapt-flow/pull/85) (#85) — merged 
+
+- [feat: auto-provision Chromium on first browser launch (pip install just works)](https://github.com/OpenAdaptAI/openadapt-flow/pull/84) (#84) — merged 
+
+- [feat: continuous skill learning — versioned skill library + governed learn/promote loop (reuses #70 promotion gate)](https://github.com/OpenAdaptAI/openadapt-flow/pull/83) (#83) — merged 
+
+- [feat: robotic process mining — routine discovery from unsegmented multi-source UI logs](https://github.com/OpenAdaptAI/openadapt-flow/pull/82) (#82) — merged 
+
+- [feat: multi-trace induction — infer a parameterized program (params/loops/branches) from multiple demos, reject-if-underdetermined](https://github.com/OpenAdaptAI/openadapt-flow/pull/81) (#81) — merged 
+
+- [feat: durable tiered runtime — checkpoint + pause/approve/resume from last verified state](https://github.com/OpenAdaptAI/openadapt-flow/pull/80) (#80) — merged 
+
+- [feat: workflow-program IR Phase 2 — loops, branches, subflows, exception paths (the state machine)](https://github.com/OpenAdaptAI/openadapt-flow/pull/79) (#79) — merged 
+
+- [feat: opt-in compile-time model annotation (label/risk/param; runtime stays $0)](https://github.com/OpenAdaptAI/openadapt-flow/pull/78) (#78) — merged 
+
+- [ci: fast required gate (e2e post-merge) to unclog the merge queue](https://github.com/OpenAdaptAI/openadapt-flow/pull/76) (#76) — merged 
+
+- [feat: compiler effect-mining — auto-derive record_written/field_equals from a demo (honest placeholders where customer-specific)](https://github.com/OpenAdaptAI/openadapt-flow/pull/75) (#75) — merged 
+
+- [feat: interactive disambiguation — Socrates-style compile-time questions → guards/params (ask, don't guess)](https://github.com/OpenAdaptAI/openadapt-flow/pull/74) (#74) — merged 
+
+- [feat: competitor-drift instrument harness (pluggable external-agent silent-wrong-action-rate runner, cost-capped)](https://github.com/OpenAdaptAI/openadapt-flow/pull/73) (#73) — merged 
+
+- [feat: API/tool actuator tier — perform writes via API when available, GUI fallback](https://github.com/OpenAdaptAI/openadapt-flow/pull/72) (#72) — merged 
+
+- [feat: workflow-program IR Phase 1 — typed params, guards, wait_until (additive, back-compatible)](https://github.com/OpenAdaptAI/openadapt-flow/pull/71) (#71) — merged 
+
+- [feat: governed healing — reviewable patches, regression/perturbation gate, identity-never-weakened invariant (fixes heal context-drop)](https://github.com/OpenAdaptAI/openadapt-flow/pull/70) (#70) — merged 
+
+- [feat: structural (DOM/UIA) action rung — vision-first, not vision-only](https://github.com/OpenAdaptAI/openadapt-flow/pull/69) (#69) — merged 
+
+- [test: live OpenEMR end-to-end for the FHIR EffectVerifier (real GUI/API write → FHIR read-back)](https://github.com/OpenAdaptAI/openadapt-flow/pull/68) (#68) — merged 
+
+- [feat: silent-wrong-action-rate benchmark (screen-verify vs effect-verify on MockMed faults)](https://github.com/OpenAdaptAI/openadapt-flow/pull/67) (#67) — merged 
 
 
 
@@ -38,6 +83,13 @@
 
 
 - [fix: importable headless (no screenshot at import) + persist pixel_ratio on the recording model](https://github.com/OpenAdaptAI/openadapt-capture/pull/24) (#24) — merged 
+
+
+
+## openadapt-types
+
+
+- [feat: add canonical Benchmark* types (Task/Observation/Action/Agent)](https://github.com/OpenAdaptAI/openadapt-types/pull/5) (#5) — merged 
 
 
 
