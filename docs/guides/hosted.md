@@ -3,7 +3,17 @@
 OpenAdapt is open source and designed to run [on your own
 infrastructure](deploy-on-prem.md). That is the default and, for regulated data,
 usually the right choice. A hosted, managed deployment is an option for teams
-that would rather not operate the stack themselves.
+that would rather not operate the stack themselves. This page is the **our-cloud**
+lane; for the full menu — on-prem, BYOC-in-your-VPC, and our cloud — start at
+[Choose a deployment](deployment-models.md).
+
+!!! note "Our-cloud status (target state)"
+    The our-cloud **web** runner exists (control-plane `enqueue`/callback flow),
+    but billing and self-serve are still **waitlist / preview** — treat the hosted
+    tier as "join the waitlist", not "buy today". The our-cloud **Windows/desktop**
+    runner (Windows-in-QEMU + streaming) is **unbuilt**. For a managed experience
+    on regulated data *now*, use [BYOC](deploy-byoc.md), which keeps PHI in your
+    account.
 
 ## When self-hosting is the right call
 
@@ -34,7 +44,9 @@ infrastructure with zero cloud calls and no retention. The compiled bundle and
 the audit-trail `report.json` — the two artifacts that carry literal identifiers
 on purpose — stay inside your environment. This is the same deterministic,
 local-by-default engine described in [Deploy on-prem](deploy-on-prem.md); what a
-managed engagement changes is who operates it, not where the data lives.
+managed engagement changes is who operates it, not where the data lives. The
+productized form of this posture is [BYOC](deploy-byoc.md): our control plane
+manages orchestration while the data plane stays in your cloud account.
 
 !!! note "Compliance status, stated honestly"
     Formal attestations are **in progress**, not complete: SOC 2 and a signed

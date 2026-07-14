@@ -60,6 +60,19 @@ variables supply its endpoint and credentials so they need not sit in the YAML.
 |---|---|
 | `OAFLOW_AGENT_TOKEN` | Optional bearer token for the [desktop in-session agent server](../concepts/backends.md#the-in-session-agent-the-session-0-problem). Its `/execute_windows` channel is remote code execution by contract; the server binds to loopback by default, and setting a token requires every request to authenticate. Set it in any PHI deployment that exposes the agent beyond loopback. |
 
+## Connector and runner (target state)
+
+!!! warning "Not yet built"
+    These variables belong to the managed runner and the
+    [BYOC Connector](../guides/deploy-byoc.md), which are **in progress**. They
+    are documented here as the intended surface, not as configuration you can set
+    today. See [Connector and runner configuration](connector-config.md).
+
+| Variable | Purpose |
+|---|---|
+| `OPENADAPT_ENROLL_TOKEN` | One-time enrollment token that binds a BYOC Connector to the control plane (intended). |
+| `x-runner-secret` (header, not env) | Shared secret authenticating `enqueue` and `run-callback` between the control plane and a runner (exists for the web runner). |
+
 ## Benchmark (agent arm only)
 
 | Variable | Purpose |

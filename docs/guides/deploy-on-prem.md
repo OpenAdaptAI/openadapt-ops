@@ -79,4 +79,7 @@ appliance locally (or not at all, keeping the deterministic path only), set
 The system was designed so that the deterministic path never needs the network,
 and the only model that can see a record is one you host.
 
-For a managed alternative, see [the hosted option](hosted.md).
+This is the strictest, air-gapped end of the [deployment
+spectrum](deployment-models.md). For a managed alternative that still keeps PHI
+in your own account, see [BYOC](deploy-byoc.md); for a fully managed our-cloud
+deployment of non-regulated work, see [the hosted option](hosted.md).

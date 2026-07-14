@@ -93,6 +93,7 @@ nav:
   - Get started:
     - get-started/index.md
     - Your first workflow: get-started/first-workflow.md
+    - Desktop quickstart (Windows): get-started/desktop-quickstart.md
     - What you get: get-started/what-you-get.md
   - Concepts:
     - concepts/index.md
@@ -115,13 +116,20 @@ nav:
     - Induce a program from multiple traces: guides/induce-a-program.md
     - Write and enforce a policy: guides/policy-and-certification.md
     - Run a deployment: guides/run-a-deployment.md
+    - Run fail-closed for regulated work: guides/regulated-run.md
+    - The halt-teach loop: guides/halt-and-teach.md
+    - Desktop and Citrix: guides/desktop-and-citrix.md
+    - Choose a deployment: guides/deployment-models.md
     - Deploy on-prem: guides/deploy-on-prem.md
+    - Deploy BYOC (in your VPC): guides/deploy-byoc.md
     - The hosted option: guides/hosted.md
     - Read and audit run reports: guides/run-reports.md
   - Reference:
     - reference/index.md
     - openadapt flow CLI: reference/cli.md
     - Deployment configuration: reference/deployment-config.md
+    - Backends: reference/backends.md
+    - Connector and runner configuration: reference/connector-config.md
     - The bundle format: reference/bundle-format.md
     - Configuration and env vars: reference/configuration.md
   - Ecosystem: ecosystem/index.md

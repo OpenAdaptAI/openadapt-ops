@@ -146,6 +146,15 @@ fully local and makes zero outbound calls; the on-prem VLM appliance is engaged
 only when `--allow-model-grounding` is passed **and**
 [`OPENADAPT_FLOW_VLM_URL`](configuration.md) is set.
 
+!!! warning "Backend selection is web-only today (target state)"
+    `replay` and `run` construct the **web (Playwright) backend
+    unconditionally**. The [Windows and RDP/Citrix backends](backends.md) exist
+    and implement the same protocol, but there is **no `--backend` flag or
+    `backend.kind` config** to select them from the CLI yet — they are reachable
+    only through the library API. The intended
+    `--backend web|windows|rdp` (with `--agent-url` / `--rdp-host`) is on the
+    roadmap; see [Backends → what is not yet wired](backends.md#what-is-not-yet-wired).
+
 ## run
 
 The same executor as [`replay`](#replay), framed for a **real deployment**:

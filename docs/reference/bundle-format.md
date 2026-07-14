@@ -32,6 +32,14 @@ needs to re-find each target:
   verification](../concepts/effect-verification.md) checks against an API or
   database.
 
+!!! note "`target_kind` and cross-substrate bundles (target state)"
+    A bundle is designed to be **substrate-agnostic**: the same compiled workflow
+    is meant to replay on the [web, Windows, or RDP/Citrix backend](backends.md).
+    In the target state the control plane routes a run on the workflow's
+    `target_kind` (`web` → web runner, `desktop` → Windows runner). Today the CLI
+    resolves and replays every bundle on the **web backend only**; the desktop
+    routing is [not yet wired](backends.md#what-is-not-yet-wired).
+
 ## The step model
 
 Each step is a single primitive (`CLICK`, `DOUBLE_CLICK`, `TYPE`, `KEY`, `WAIT`,

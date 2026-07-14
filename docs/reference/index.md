@@ -15,6 +15,16 @@ configuration.
     The `deployment.yaml` schema that wires backend, effects, actuation,
     durability, and policy in one file.
 
+-   [__Backends__](backends.md)
+
+    The web, Windows, and remote-display (RDP/Citrix) backends, and the one
+    protocol they share.
+
+-   [__Connector and runner configuration__](connector-config.md)
+
+    The runner contract, the PHI-free control/data boundary, and the BYOC
+    Connector config (target state).
+
 -   [__The bundle format__](bundle-format.md)
 
     What a compiled workflow bundle contains, and schema v2's manifest,

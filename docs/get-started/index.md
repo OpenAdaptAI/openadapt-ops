@@ -76,6 +76,11 @@ Once the basic loop makes sense, the same $0 runtime carries more:
     Record, compile, and replay on your own app step by step, and read the
     run report.
 
+-   [__Desktop quickstart (Windows)__](desktop-quickstart.md)
+
+    The same compiler against a native Windows or Citrix desktop (target
+    state).
+
 -   [__What you get__](what-you-get.md)
 
     The bundle, the run report, and what each artifact is for.

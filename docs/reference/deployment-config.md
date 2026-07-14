@@ -83,6 +83,14 @@ policy:
 | `url` | `null` | The GUI URL under automation. `null` lets the command choose its default (`replay`/`run` serve the bundled MockMed demo). |
 | `headed` | `false` | Run the browser visible (demo / debugging). |
 
+!!! warning "Backend selection is target state"
+    Today `backend` selects **only the web (Playwright) backend** — `url` and
+    `headed` configure it. The intended `backend.kind` (`web | windows | rdp`),
+    plus `agent_url` (Windows in-session agent) and `rdp_host` (remote display),
+    are **not yet a real config surface**; the [Windows and RDP
+    backends](backends.md) are reachable only through the library API. See
+    [Backends](backends.md#choosing-a-backend-target-state-ux).
+
 ### `actuation`
 
 The API/tool tier, the top of the [capability ladder](../concepts/capability-ladder.md).
@@ -141,3 +149,11 @@ The relevant overrides: `--url` / `--headed` (backend), `--effects-kind` /
 `--api-base-url` (actuation), `--durable` and `--allow-model-grounding`
 (runtime). See the [CLI reference](cli.md#run) and the
 [Run a deployment](../guides/run-a-deployment.md) guide.
+
+## Running under a control plane
+
+This file wires a single **local** run. To run under our cloud or
+[BYOC in your VPC](../guides/deploy-byoc.md), a separate layer describes how jobs
+reach the engine and where results land — the runner contract and the Connector.
+That surface, and the PHI-free control/data boundary it enforces, is documented
+(as target state) in [Connector and runner configuration](connector-config.md).
