@@ -66,11 +66,15 @@ model is trusted to do:
 1. a **deterministic fast path** (the resolution ladder, $0),
 2. a **bounded model recovery** of exactly one local transition when the fast
    path cannot resolve it,
-3. a **durable pause, approve, resume** from the last verified checkpoint.
+3. a **[durable pause, approve, resume](durable-runtime.md)** from the last
+   verified checkpoint.
 
 Explicitly **not** "hand the rest of the workflow to a free-form agent after a
 halt." Recovery is scoped to a single transition, and the checkpoint is where a
-human takes over if it cannot be.
+human takes over if it cannot be. When a human *does* demonstrate the fix at a
+halt, the [halt-learn loop](halt-learn-loop.md) folds it back into the program
+through the same governed induction and regression gate, so that state need not
+halt again.
 
 The IR is how OpenAdapt gets from "replay this one demonstration safely" to
 "run this program safely across the variation the real world throws at it." How

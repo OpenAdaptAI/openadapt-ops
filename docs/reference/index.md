@@ -10,9 +10,15 @@ configuration.
     Every verb and its key flags: record, compile, replay, lint, certify, and
     the rest.
 
+-   [__Deployment configuration__](deployment-config.md)
+
+    The `deployment.yaml` schema that wires backend, effects, actuation,
+    durability, and policy in one file.
+
 -   [__The bundle format__](bundle-format.md)
 
-    What a compiled workflow bundle contains and what each part is for.
+    What a compiled workflow bundle contains, and schema v2's manifest,
+    digest, and load-time validation.
 
 -   [__Configuration and env vars__](configuration.md)
 

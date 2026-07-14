@@ -11,6 +11,24 @@ A compiled bundle replays deterministically with no model calls and no cloud
 dependency. The reference backend is a local headless browser. For most of a
 workflow, "on-prem" is simply the default: nothing leaves the machine.
 
+## One config wires the deployment
+
+A production run is wired by a single
+[`deployment.yaml`](../reference/deployment-config.md) — the backend URL, the
+system of record to verify writes against, an optional API actuation tier, the
+durable runtime, and the safety policy — read by `certify`, `run`, and `resume`:
+
+```yaml
+backend:  { url: https://emr.internal.example.org }
+effects:  { kind: fhir, base_url: https://emr.internal.example.org/apis/default/fhir }
+runtime:  { durable: true, allow_model_grounding: false }   # zero outbound calls
+policy:   { policy: clinical-write }
+```
+
+`runtime.allow_model_grounding` defaults to **false**, so the deterministic path
+makes zero outbound calls unless you deliberately opt in and point the runtime at
+an on-prem appliance. See [Run a deployment](run-a-deployment.md).
+
 ## PHI scrubbing on the persist and log paths
 
 For regulated deployments, PHI scrubbing on the persist and log paths is

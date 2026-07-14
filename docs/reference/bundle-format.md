@@ -53,6 +53,45 @@ low-confidence refusal for those steps. The classifier reads labels and intent
 only, so it can miss a write behind a non-write label; a `risk_overrides` map
 corrects it in either direction. See [Policy and certify](../concepts/policy-and-certify.md).
 
+## Schema v2: manifest, digest, provenance, validation
+
+The bundle is the **trust boundary** between the compiler and the deterministic
+replayer: everything the replayer will do to a real system of record is frozen in
+`workflow.json` and its template PNGs. Schema v2 hardens that boundary
+additively — it never rewrites an existing bundle's semantics.
+
+- **Manifest / provenance** (`manifest.json`, also embedded in `workflow.json`):
+  a per-asset **SHA-256** hash of every template/image, a whole-bundle
+  `content_digest`, the **compiler version** that produced the bundle, and — for
+  a certified bundle — the policy it was certified against, its certification
+  status, and an optional expiry.
+- **Integrity check on load**: the digest is recomputed on read, so a bundle
+  whose `workflow.json` or assets were tampered with after the manifest was
+  sealed is refused, not silently run.
+- **Load-time structural validation**: a malformed or uncertifiable graph is
+  rejected with clear, per-issue errors **before** the replayer touches it.
+  Rules span graph well-formedness (entry exists, every transition target
+  resolves, state kinds match their payloads, referenced subflows exist, ids are
+  unique, terminals reachable, no unsafe unconditional cycle) and the one safety
+  rule that motivates the rest: **every path that reaches a consequential /
+  irreversible action also reaches its effect verification.**
+- **Clean migration**: a v1 bundle (or one with no `schema_version`) migrates to
+  v2 in memory on read. v2 is a strict superset of v1, so an existing bundle
+  keeps replaying byte-for-byte — migration only stamps the version and
+  back-fills a manifest if one is absent.
+
+The manifest is sealed on `save` and written both inside `workflow.json` and as a
+standalone `manifest.json` sidecar for external tooling. This layer is
+import-light (no OCR / cv2 / model dependencies), so it is safe to run on every
+load.
+
+```
+<bundle>/
+  workflow.json      # ir.Workflow (+ embedded manifest)
+  manifest.json      # sealed integrity + provenance sidecar (schema v2)
+  templates/*.png    # anchor crops (hashed in the manifest)
+```
+
 ## Auditing a bundle without running it
 
 Because the workflow and its coverage metadata are in the bundle, you can audit a
