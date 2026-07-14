@@ -4,8 +4,13 @@ site_description: >-
   it into deterministic, self-healing, locally-run replay that verifies real
   effects and halts rather than guessing.
 site_url: https://docs.openadapt.ai
-repo_url: https://github.com/OpenAdaptAI/openadapt-flow
-repo_name: OpenAdaptAI/openadapt-flow
+# The header star/fork counter reads from repo_url. Point it at the flagship
+# repo so it reflects the project's real GitHub traction, not this docs repo.
+repo_url: https://github.com/OpenAdaptAI/OpenAdapt
+repo_name: OpenAdaptAI/OpenAdapt
+# Docs live in this (openadapt-maintenance) repo, not the code repo above, so
+# the per-page "edit" link would 404. Disable it rather than point it wrong.
+edit_uri: ''
 copyright: Copyright &copy; OpenAdapt AI
 
 theme:
