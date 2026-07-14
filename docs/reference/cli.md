@@ -21,6 +21,7 @@ replay it locally, and heal it on drift. Every command below is a subcommand of
 | [`run`](#run) | Execute a bundle under a deployment config (production) | 0 on success, 1 on failure |
 | [`resume`](#resume) | Resume a durably-paused run from its last checkpoint | 0 on success, 1/3 otherwise |
 | [`approve`](#approve) | Mark a durably-paused run's escalation approved | 0 on success, 1 if none |
+| [`teach`](#teach) | Resolve a halted run from a fix demonstration, governed | 0 if promoted, 1 if refused, 2 on bad inputs |
 | [`lint`](#lint) | Report a bundle's coverage gaps | nonzero by severity |
 | [`certify`](#certify) | Enforce a safety policy, refuse the bundle if it fails | 2 on failure |
 | [`disambiguate`](#disambiguate) | Surface and resolve compile-time ambiguities | 2 if a consequential ambiguity is unresolved |
@@ -213,6 +214,37 @@ escalation.
     `resume --require-approval` gates on it. A full approval store (who, when,
     signature) is on the durable roadmap. See
     [Durable runtime](../concepts/durable-runtime.md).
+
+## teach
+
+Resolve a halted run: demonstrate the fix once, and `teach` compiles it back
+into the workflow through the governed induction path so that state never halts
+again. It induces the correction as a guarded exception branch, gates it against
+a regression check and a held-out canary, and writes an updated bundle **only**
+if it passes. See [The halt-learn loop](../concepts/halt-learn-loop.md).
+
+```bash
+openadapt flow teach runs/replay-20260712-140233 \
+    --fix recordings/dismiss-the-dialog \
+    --bundle bundles/patient-intake \
+    --out bundles/patient-intake-v2
+```
+
+| Flag | Description |
+|---|---|
+| `run_dir` (positional) | The HALTED run directory (holds `report.json` with a `halt`) |
+| `--fix` (required) | The fix demonstration: a **recording directory** of just the corrective actions (e.g. dismiss the dialog), or a `.json` correction spec (`resolution_steps`, optional `tail_intents` / `facts` / `params`) |
+| `--bundle` (required) | The base bundle that halted (seeds the skill's active version) |
+| `--out` (required) | Output directory for the UPDATED bundle, written **only** when the correction is promoted |
+| `--skill-id` | Skill id in the versioned library (default: the run's workflow name) |
+| `--library` | Directory for the versioned skill library that keeps the promotion lineage (default: `<out>.skills`) |
+
+Deterministic and `$0` on the shipped path: the resolution is induced by the
+model-free reference inducer. Exits `0` when a verified revision is promoted (the
+updated bundle is at `--out`), `1` on a **governed refusal** (the correction was
+underdetermined or would weaken a safety invariant, so nothing is written and the
+base bundle stays halting), and `2` when the inputs are unusable (no halt in the
+report, no base bundle, or a malformed fix).
 
 ## lint
 
