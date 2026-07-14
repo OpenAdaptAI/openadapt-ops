@@ -33,7 +33,10 @@ def aggregate(repos=None, docs_dir=None):
     repos = repos or load_repos()
     docs_dir = pathlib.Path(docs_dir or DOCS_DIR)
 
-    lines = ["# Changelog\n", "> Aggregated from all OpenAdapt repositories.\n"]
+    lines = [
+        "# Changelog\n",
+        "> Release history across the OpenAdapt product repositories.\n",
+    ]
     for repo in repos:
         releases = fetch_releases(repo["github"])
         if not releases:

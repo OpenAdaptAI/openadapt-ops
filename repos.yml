@@ -16,6 +16,16 @@ repos:
     category: core
     changelog: true
 
+  - name: openadapt-flow
+    github: OpenAdaptAI/openadapt-flow
+    category: core
+    changelog: true
+
+  - name: openadapt-agent
+    github: OpenAdaptAI/openadapt-agent
+    category: core
+    changelog: true
+
   - name: openadapt-ml
     github: OpenAdaptAI/openadapt-ml
     category: core
@@ -29,4 +39,29 @@ repos:
   - name: openadapt-capture
     github: OpenAdaptAI/openadapt-capture
     category: core
+    changelog: true
+
+  - name: openadapt-privacy
+    github: OpenAdaptAI/openadapt-privacy
+    category: library
+    changelog: true
+
+  - name: openadapt-types
+    github: OpenAdaptAI/openadapt-types
+    category: library
+    changelog: true
+
+  - name: openadapt-grounding
+    github: OpenAdaptAI/openadapt-grounding
+    category: library
+    changelog: true
+
+  - name: openadapt-retrieval
+    github: OpenAdaptAI/openadapt-retrieval
+    category: library
+    changelog: true
+
+  - name: openadapt-viewer
+    github: OpenAdaptAI/openadapt-viewer
+    category: library
     changelog: true
