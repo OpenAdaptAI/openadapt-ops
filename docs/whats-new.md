@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-14 03:11 UTC*
+> *Last updated: 2026-07-14 04:24 UTC*
 
 
 
@@ -22,6 +22,12 @@
 
 ## openadapt-flow
 
+
+- [fix: policy/lint traverse program graphs + require system-of-record effects (P0)](https://github.com/OpenAdaptAI/openadapt-flow/pull/92) (#92) — merged 
+
+- [docs: rewrite README to the current architecture + add a claims-consistency CI gate](https://github.com/OpenAdaptAI/openadapt-flow/pull/90) (#90) — merged 
+
+- [feat: close the halt→learn→resolve loop (governed, one scenario) — modal-once](https://github.com/OpenAdaptAI/openadapt-flow/pull/89) (#89) — merged 
 
 - [fix: remove plaintext PHI from compiled bundles + scrub/governance/egress guards](https://github.com/OpenAdaptAI/openadapt-flow/pull/88) (#88) — merged 
 
@@ -57,12 +63,6 @@
 
 - [feat: governed healing — reviewable patches, regression/perturbation gate, identity-never-weakened invariant (fixes heal context-drop)](https://github.com/OpenAdaptAI/openadapt-flow/pull/70) (#70) — merged 
 
-- [feat: structural (DOM/UIA) action rung — vision-first, not vision-only](https://github.com/OpenAdaptAI/openadapt-flow/pull/69) (#69) — merged 
-
-- [test: live OpenEMR end-to-end for the FHIR EffectVerifier (real GUI/API write → FHIR read-back)](https://github.com/OpenAdaptAI/openadapt-flow/pull/68) (#68) — merged 
-
-- [feat: silent-wrong-action-rate benchmark (screen-verify vs effect-verify on MockMed faults)](https://github.com/OpenAdaptAI/openadapt-flow/pull/67) (#67) — merged 
-
 
 
 ## openadapt-ml
@@ -74,6 +74,8 @@
 
 ## openadapt-evals
 
+
+- [feat: evaluate openadapt-flow on WAA (demonstrate-then-replay + hybrid-as-agent) with cost-guarded dry-run](https://github.com/OpenAdaptAI/openadapt-evals/pull/265) (#265) — merged 
 
 - [refactor: source Benchmark* types from openadapt-types; break ml<->evals cycle](https://github.com/OpenAdaptAI/openadapt-evals/pull/264) (#264) — merged 
 
