@@ -4,6 +4,24 @@ hide:
   - toc
 ---
 
+<!--
+================================================================================
+TARGET-STATE SPEC — HELD. DO NOT PUBLISH UNTIL TRUE.
+This home page and the concept pages it links describe the product AS IT WILL BE
+when in-flight work lands (the substrate-agnostic desktop runner, the BYOC
+Connector, and the fail-closed `run` gate). It is not a description of what ships
+today. Lanes are labelled honestly; nothing here authorizes claiming an unbuilt
+capability. Publish only when the described capabilities are real.
+================================================================================
+-->
+
+!!! warning "Target-state spec — held until it ships"
+    This page describes OpenAdapt **as it will be** once in-flight work lands:
+    the substrate-agnostic desktop/Citrix runner, the BYOC deployment, and the
+    fail-closed [`run`](concepts/regulated-execution.md) gate. Cells and claims
+    are labelled honestly with what is real today. It is a **held specification**,
+    not a description of the current release.
+
 # Record a workflow once. Replay it forever, for free.
 
 <p class="oa-lede">
@@ -35,8 +53,11 @@ to drive it.
 
 It runs where that work lives: a web app (the reference Playwright backend), a
 native Windows desktop via UI Automation, or a pixel-only Citrix/RDP session —
-all behind [one backend protocol](concepts/backends.md), with desktop and Citrix
-the differentiated wedge.
+all behind [one substrate-agnostic runner](concepts/substrate-model.md), with
+desktop and Citrix the differentiated wedge. And it runs where your compliance
+posture requires — our cloud, your VPC (BYOC), or fully air-gapped — under a
+single [deployment matrix](concepts/deployment-matrix.md) where you choose where
+the data lives.
 
 ---
 
@@ -108,6 +129,33 @@ regression gate proves it weakens nothing, and only a verified revision is
 promoted (an underdetermined or unsafe fix is refused, not guessed at). It is
 deterministic and runs at $0 with the reference inducer. See
 [The halt-learn loop](concepts/halt-learn-loop.md).
+
+---
+
+## One runner, any surface, any deployment
+
+The same compiled bundle runs on any surface and in any deployment, because the
+runtime sits behind one [substrate-agnostic runner](concepts/substrate-model.md)
+that routes on a single field and never sees pixels or resolved values. Two
+orthogonal axes, one contract:
+
+| Deployment ↓ / Substrate → | **Web (browser)** | **Windows-desktop / Citrix** |
+|---|---|---|
+| **Our cloud — non-PHI** | Managed runner *(preview · waitlist)* | Hosted Windows-in-QEMU runner *(target-state)* |
+| **BYOC — regulated (your VPC)** | Connector + your storage; **PHI never enters our infra** *(target-state)* | Engine beside your Citrix Workspace; **pixels never leave** *(target-state · highest-value lane)* |
+| **Self-hosted / on-prem** | Local run-queue, no egress *(partial today)* | Same + Windows/RDP; Citrix-pixel proof live at small N *(partial today · the pilot lane)* |
+
+You choose where the data lives — there is no company-wide "never leaves your
+network" claim; the guarantee is scoped to the tier you pick. For regulated data
+the [`run`](concepts/regulated-execution.md) verb is **fail-closed**: it refuses
+to execute unless the bundle is certified, identity coverage meets policy,
+declared effects have a verifier, the bundle is signed, and config is pinned.
+
+!!! note "What is real today"
+    The self-hosted row is the region that ships today, at pilot maturity.
+    Everything marked *target-state* is designed and demand-gated — the
+    substrate-agnostic desktop runner, the BYOC Connector, and the `run` gate are
+    in flight, not released. See [the deployment matrix](concepts/deployment-matrix.md).
 
 ---
 

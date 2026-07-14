@@ -11,6 +11,21 @@ enforced. Read them in order for the full picture, or jump to what you need.
     Why compile a demonstration instead of re-reasoning through it. The
     record, compile, replay loop.
 
+-   [__The substrate model__](substrate-model.md)
+
+    One substrate-agnostic runner drives web, native Windows, and pixel-only
+    Citrix/RDP. Route on one field; everything above it is identical.
+
+-   [__The deployment matrix__](deployment-matrix.md)
+
+    Our cloud, BYOC (your VPC), or air-gapped self-hosted. You choose where the
+    data lives; the PHI-free control/data boundary is architectural.
+
+-   [__Fail-closed regulated execution__](regulated-execution.md)
+
+    `replay` is the local $0 dev path; `run` refuses to execute unless
+    certified, identity-covered, effect-verified, signed, and config-pinned.
+
 -   [__The capability ladder__](capability-ladder.md)
 
     One semantic step, many implementations: structural (DOM/UIA), API, and

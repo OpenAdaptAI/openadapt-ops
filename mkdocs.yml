@@ -97,6 +97,9 @@ nav:
   - Concepts:
     - concepts/index.md
     - The demonstration compiler: concepts/demonstration-compiler.md
+    - The substrate model: concepts/substrate-model.md
+    - The deployment matrix: concepts/deployment-matrix.md
+    - Fail-closed regulated execution: concepts/regulated-execution.md
     - The capability ladder: concepts/capability-ladder.md
     - Effect verification: concepts/effect-verification.md
     - The identity gate: concepts/identity-gate.md
