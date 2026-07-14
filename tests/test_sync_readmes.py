@@ -59,25 +59,22 @@ def test_fetch_readme_handles_failure(mocker):
     assert "not available" in result
 
 
-def test_sync_all_repos_artifact(tmp_path, mocker):
-    """Generate artifacts for all configured repos (mocked)."""
-    sample_readme = (FIXTURES / "sample_readme.md").read_text()
-    mocker.patch("sync_readmes.fetch_readme", return_value=sample_readme)
+def test_sync_skips_repos_without_doc_page(tmp_path, mocker):
+    """Repos without a doc_page feed changelog/what's-new but are not mirrored
+    as published pages, so sync renders nothing for them."""
+    mocker.patch("sync_readmes.fetch_readme", return_value="# Test")
+    repos = [
+        {"name": "no-page", "github": "OpenAdaptAI/no-page", "category": "core"},
+    ]
+    results = sync(repos=repos, docs_dir=tmp_path, templates_dir=ROOT / "templates")
+    assert results == []
+    assert not (tmp_path / "packages").exists()
 
+
+def test_sync_configured_repos_are_page_free(tmp_path, mocker):
+    """The configured repos.yml intentionally sets no doc_page: the docs site
+    presents a single curated Ecosystem page instead of README mirrors."""
+    mocker.patch("sync_readmes.fetch_readme", return_value="# Test")
     repos = load_repos()
     results = sync(repos=repos, docs_dir=tmp_path, templates_dir=ROOT / "templates")
-
-    # Write artifact list
-    artifacts_dir = ROOT / "tests" / "artifacts" / "generated_docs"
-    artifacts_dir.mkdir(parents=True, exist_ok=True)
-    manifest = []
-    for r in results:
-        rel_path = pathlib.Path(r["path"]).relative_to(tmp_path)
-        # Copy to artifacts
-        dest = artifacts_dir / rel_path
-        dest.parent.mkdir(parents=True, exist_ok=True)
-        dest.write_text((tmp_path / rel_path).read_text())
-        manifest.append(str(rel_path))
-
-    (artifacts_dir / "MANIFEST.txt").write_text("\n".join(manifest))
-    assert len(results) == len(repos)
+    assert results == []
