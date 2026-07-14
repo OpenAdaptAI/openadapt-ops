@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-14 14:11 UTC*
+> *Last updated: 2026-07-14 14:39 UTC*
 
 
 
@@ -22,6 +22,8 @@
 
 ## openadapt-flow
 
+
+- [feat: durable checkpoint/resume for ProgramGraph + authenticated approval on resume (P0)](https://github.com/OpenAdaptAI/openadapt-flow/pull/99) (#99) — merged 
 
 - [feat: bundle schema v2 (manifest, digest, provenance) + load-time structural validation](https://github.com/OpenAdaptAI/openadapt-flow/pull/98) (#98) — merged 
 
@@ -60,8 +62,6 @@
 - [feat: durable tiered runtime — checkpoint + pause/approve/resume from last verified state](https://github.com/OpenAdaptAI/openadapt-flow/pull/80) (#80) — merged 
 
 - [feat: workflow-program IR Phase 2 — loops, branches, subflows, exception paths (the state machine)](https://github.com/OpenAdaptAI/openadapt-flow/pull/79) (#79) — merged 
-
-- [feat: opt-in compile-time model annotation (label/risk/param; runtime stays $0)](https://github.com/OpenAdaptAI/openadapt-flow/pull/78) (#78) — merged 
 
 
 
