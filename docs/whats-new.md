@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-14 02:38 UTC*
+> *Last updated: 2026-07-14 03:10 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [fix: Discord badge 'invalid server' (switch to static badge)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1011) (#1011) — merged 
 
 - [feat: mount `openadapt flow demo-record`](https://github.com/OpenAdaptAI/OpenAdapt/pull/1010) (#1010) — merged 
 
