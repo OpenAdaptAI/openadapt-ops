@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-14 14:39 UTC*
+> *Last updated: 2026-07-14 17:23 UTC*
 
 
 
@@ -22,6 +22,16 @@
 
 ## openadapt-flow
 
+
+- [feat: integrated OpenEMR end-to-end harness (compiled arm, cost-capped agent arm gated off)](https://github.com/OpenAdaptAI/openadapt-flow/pull/104) (#104) — merged 
+
+- [feat: opt-in encryption-at-rest for bundles + checkpoints (AEAD)](https://github.com/OpenAdaptAI/openadapt-flow/pull/103) (#103) — merged 
+
+- [fix: desktop e2e targets a reliable app (repeatable structural-rung proof, not flaky Calculator)](https://github.com/OpenAdaptAI/openadapt-flow/pull/102) (#102) — merged 
+
+- [feat: self-serve halt->learn via 'openadapt flow teach' (governed, refuses bad fixes)](https://github.com/OpenAdaptAI/openadapt-flow/pull/101) (#101) — merged 
+
+- [chore: type-check the safety-critical modules (compile, identity, replayer) under mypy](https://github.com/OpenAdaptAI/openadapt-flow/pull/100) (#100) — merged 
 
 - [feat: durable checkpoint/resume for ProgramGraph + authenticated approval on resume (P0)](https://github.com/OpenAdaptAI/openadapt-flow/pull/99) (#99) — merged 
 
@@ -52,16 +62,6 @@
 - [feat: opt-in session-video capture + how-it-works media generator](https://github.com/OpenAdaptAI/openadapt-flow/pull/85) (#85) — merged 
 
 - [feat: auto-provision Chromium on first browser launch (pip install just works)](https://github.com/OpenAdaptAI/openadapt-flow/pull/84) (#84) — merged 
-
-- [feat: continuous skill learning — versioned skill library + governed learn/promote loop (reuses #70 promotion gate)](https://github.com/OpenAdaptAI/openadapt-flow/pull/83) (#83) — merged 
-
-- [feat: robotic process mining — routine discovery from unsegmented multi-source UI logs](https://github.com/OpenAdaptAI/openadapt-flow/pull/82) (#82) — merged 
-
-- [feat: multi-trace induction — infer a parameterized program (params/loops/branches) from multiple demos, reject-if-underdetermined](https://github.com/OpenAdaptAI/openadapt-flow/pull/81) (#81) — merged 
-
-- [feat: durable tiered runtime — checkpoint + pause/approve/resume from last verified state](https://github.com/OpenAdaptAI/openadapt-flow/pull/80) (#80) — merged 
-
-- [feat: workflow-program IR Phase 2 — loops, branches, subflows, exception paths (the state machine)](https://github.com/OpenAdaptAI/openadapt-flow/pull/79) (#79) — merged 
 
 
 
