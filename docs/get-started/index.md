@@ -37,17 +37,35 @@ openadapt flow compile rec --out bundle --name my-task
 # 3. Check it for coverage gaps
 openadapt flow lint bundle
 
-# 4. Replay it: local, deterministic, $0
+# 4. Refuse it if it violates a safety policy
+openadapt flow certify bundle --policy clinical-write
+
+# 5. Replay it: local, deterministic, $0
 openadapt flow replay bundle
 
-# 5. Drift the UI and watch it heal
+# 6. Drift the UI and watch it heal
 openadapt flow replay bundle --drift theme
 ```
 
-Steps 4 and 5 serve the bundled sample app and write an illustrated
-`REPORT.md` for each run. Step 5 injects a theme the workflow has never seen;
+Steps 5 and 6 serve the bundled sample app and write an illustrated
+`REPORT.md` for each run. Step 6 injects a theme the workflow has never seen;
 each step re-resolves through OCR or geometry and each fix is written back to
 the bundle as a reviewable diff, with **zero model calls** on either run.
+`lint` and `certify` are the pre-deploy gate that makes a bundle "runnable"
+distinct from "certified safe".
+
+## Beyond one demonstration
+
+Once the basic loop makes sense, the same $0 runtime carries more:
+
+- **[Induce a program](../guides/induce-a-program.md)** from several recordings
+  (`induce`), and loop it over a data source with `replay --worklist`.
+- **[Run a real deployment](../guides/run-a-deployment.md)** (`run`) wired by one
+  [`deployment.yaml`](../reference/deployment-config.md): a real backend, effect
+  verification against the system of record, an API actuation tier, and a policy.
+- **[Durable runs](../concepts/durable-runtime.md)** (`--durable`) turn a halt
+  into a pause an operator can `approve` and `resume` from the last verified
+  checkpoint.
 
 ## Where to go next
 

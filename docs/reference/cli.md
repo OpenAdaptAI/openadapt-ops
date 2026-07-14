@@ -16,7 +16,11 @@ replay it locally, and heal it on drift. Every command below is a subcommand of
 | [`record`](#record) | Record your own app (`--url`) in a headed browser | 0 |
 | [`demo-record`](#demo-record) | Serve the sample app and record the canonical demo | 0 |
 | [`compile`](#compile) | Compile a recording into a workflow bundle | 0 |
+| [`induce`](#induce) | Induce a parameterized program from **multiple** recordings | 0 if certified, 2 if underdetermined |
 | [`replay`](#replay) | Replay a bundle, locally and deterministically | 0 on success, 1 on failure |
+| [`run`](#run) | Execute a bundle under a deployment config (production) | 0 on success, 1 on failure |
+| [`resume`](#resume) | Resume a durably-paused run from its last checkpoint | 0 on success, 1/3 otherwise |
+| [`approve`](#approve) | Mark a durably-paused run's escalation approved | 0 on success, 1 if none |
 | [`lint`](#lint) | Report a bundle's coverage gaps | nonzero by severity |
 | [`certify`](#certify) | Enforce a safety policy, refuse the bundle if it fails | 2 on failure |
 | [`disambiguate`](#disambiguate) | Surface and resolve compile-time ambiguities | 2 if a consequential ambiguity is unresolved |
@@ -24,6 +28,13 @@ replay it locally, and heal it on drift. Every command below is a subcommand of
 | [`benchmark`](#benchmark) | Compare compiled replay vs a computer-use agent | 0 |
 | [`emit-skill`](#emit) | Emit an Agent Skills folder for a bundle | 0 |
 | [`emit-mcp`](#emit) | Emit a standalone MCP `server.py` for a bundle | 0 |
+
+!!! tip "One config wires a real deployment"
+    `record`, `compile`, `certify`, `replay`, `run`, and `resume` all accept
+    `--config deployment.yaml`, which wires the backend, effect verification, API
+    actuation, durable runtime, and policy in one place. See the
+    [deployment configuration](deployment-config.md) reference. Direct flags
+    below override individual fields.
 
 ## record
 
@@ -73,6 +84,28 @@ openadapt flow compile rec --out bundle --name my-task
 | `--out` (required) | Output bundle directory |
 | `--name` (required) | Workflow name |
 
+## induce
+
+Induce a parameterized **program** bundle from **two or more** recordings (or
+already-compiled bundles) of the same task: infer the shared parameters, loops,
+and branches. It **refuses** — writes no bundle, exits nonzero — when intent is
+underdetermined, rather than guessing a branch. See
+[Induce a program from multiple traces](../guides/induce-a-program.md).
+
+```bash
+openadapt flow induce rec-1 rec-2 rec-3 --out program --name my-program --held-out
+```
+
+| Argument / flag | Description |
+|---|---|
+| `recording ...` (positional, 2+) | Recording or bundle directories of the same task |
+| `--out` (required) | Output program-bundle directory (written **only** when certified) |
+| `--name` | Name for the induced workflow (default `induced-program`) |
+| `--held-out` | Also run leave-one-out held-out validation and print per-fold reproduction scores (needs 2+ traces) |
+
+Exits `0` when the program is **certified** (bundle written) and `2` when it is
+**not certified** (no bundle written; the uncertainties are printed).
+
 ## replay
 
 Replay a bundle. With no `--url`, it serves the bundled sample app.
@@ -91,9 +124,95 @@ openadapt flow replay bundle --url https://your.app --param note="Follow-up"
 | `--save-healed-to DIR` | Write the healed bundle to this directory |
 | `--headed` | Run the browser headed |
 | `--record-video DIR` | Opt-in: capture a WebM of the replay session (default off) |
+| `--worklist [RELATION=]FILE` | CSV/JSON worklist of parameter rows driving a **program** bundle's loop over a relation (repeatable). `RELATION=FILE` binds a named relation; a bare `FILE` binds the program's sole loop relation. Refused on a linear bundle. |
 
-Exits 0 on success and 1 on a halt. The on-prem VLM appliance is engaged only
-when [`OPENADAPT_FLOW_VLM_URL`](configuration.md) is set.
+**Deployment-wiring flags** (shared with [`run`](#run) / [`resume`](#resume);
+default off, so an unconfigured replay behaves exactly as before):
+
+| Flag | Description |
+|---|---|
+| `--config YAML` | [Deployment config](deployment-config.md) wiring backend / actuation / effects / runtime / policy. Flags below override individual fields. |
+| `--effects-kind` | System-of-record verifier: `none`, `rest`, `fhir`, `document-hash`. Verifies consequential writes against the real record, not the screen. |
+| `--effects-base-url` | Base URL for the `rest` / `fhir` verifier |
+| `--effects-root` | Document-store root for the `document-hash` verifier |
+| `--api-actuator` | Perform a step carrying an `ApiBinding` via the API ($0, no GUI), confirmed by the effect verifier |
+| `--api-base-url` | Base URL for the API actuator (implies `--api-actuator`) |
+| `--durable` | Enable the Tier-3 [durable runtime](../concepts/durable-runtime.md): checkpoint each verified step, durably pause on halt, resumable via `resume` |
+| `--allow-model-grounding` | **Egress opt-in** (PHI audit REM-3): permit wiring an off-box model grounder / identity-VLM / state-verifier; screenshots may leave the box. Off by default: replay is fully local with zero outbound calls. |
+
+Exits 0 on success and 1 on a halt. With no model component wired, replay is
+fully local and makes zero outbound calls; the on-prem VLM appliance is engaged
+only when `--allow-model-grounding` is passed **and**
+[`OPENADAPT_FLOW_VLM_URL`](configuration.md) is set.
+
+## run
+
+The same executor as [`replay`](#replay), framed for a **real deployment**:
+backend, effect verification, API actuation, durable runtime, and policy, all
+wired from `--config`. The demo-only `--drift` teaching aid is not offered. See
+[Run a deployment](../guides/run-a-deployment.md).
+
+```bash
+openadapt flow run bundle --config deployment.yaml
+```
+
+| Flag | Description |
+|---|---|
+| `bundle` (positional) | Workflow bundle directory |
+| `--url` | Target app URL (default: `backend.url` from `--config`) |
+| `--run-dir` | Run output directory (default `runs/replay-<UTC timestamp>`) |
+| `--param K=V` | Parameter substitution. Repeatable. |
+| `--save-healed-to DIR` | Write the healed bundle to this directory |
+| `--headed` | Run the browser headed |
+
+Accepts every [deployment-wiring flag](#replay) above (`--config`,
+`--effects-*`, `--api-*`, `--durable`, `--worklist`, `--allow-model-grounding`).
+Exits 0 on success and 1 on a halt.
+
+## resume
+
+Resume a durably-paused run from its last verified checkpoint, never re-running
+an already-confirmed write. Rebuilds a live backend, re-binds the run's
+parameters, and continues from the checkpoint. See
+[Durable runtime](../concepts/durable-runtime.md).
+
+```bash
+openadapt flow resume runs/replay-20260712-140233 --require-approval
+```
+
+| Flag | Description |
+|---|---|
+| `run_dir` (positional) | The paused run directory (holds the checkpoints) |
+| `--url` | Target app URL to rebuild a live backend (default: `backend.url` from `--config`) |
+| `--headed` | Run the browser headed |
+| `--require-approval` | Refuse to resume unless the pending escalation is `approved` (see [`approve`](#approve)) |
+
+Also accepts the deployment-wiring flags (`--config`, `--effects-*`, `--api-*`,
+`--durable`). Exits `1` when there is no pending escalation to resume, `3` when
+`--require-approval` is set and the escalation is not approved, and `0`/`1` on
+the resumed run's success/halt.
+
+## approve
+
+Mark a durably-paused run's pending escalation `approved`, so
+[`resume --require-approval`](#resume) will continue it.
+
+```bash
+openadapt flow approve runs/replay-20260712-140233
+```
+
+| Flag | Description |
+|---|---|
+| `run_dir` (positional) | The paused run directory (holds the escalation) |
+
+Exits `0` on success (or if already approved) and `1` when there is no pending
+escalation.
+
+!!! note "Approval scope today"
+    Approval is recorded as auditable metadata on the escalation, and
+    `resume --require-approval` gates on it. A full approval store (who, when,
+    signature) is on the durable roadmap. See
+    [Durable runtime](../concepts/durable-runtime.md).
 
 ## lint
 
@@ -119,14 +238,18 @@ what makes "runnable" distinct from "certified safe."
 
 ```bash
 openadapt flow certify bundle --policy clinical-write
+# or read the policy from a deployment config:
+openadapt flow certify bundle --config deployment.yaml
 ```
 
 | Flag | Description |
 |---|---|
 | `bundle` (positional) | Workflow bundle directory |
-| `--policy` (required) | Policy YAML path, or a built-in name (`permissive`, `clinical-write`) |
+| `--policy` | Policy YAML path, or a built-in name (`permissive`, `clinical-write`). Defaults to `policy.policy` from `--config`. |
+| `--config YAML` | [Deployment config](deployment-config.md) to read the policy from when `--policy` is omitted, so one file both certifies and runs the bundle |
 
-Exits 2 when the bundle fails certification.
+Provide `--policy` or a `--config` that sets `policy.policy`; certify errors if
+neither supplies a policy. Exits 2 when the bundle fails certification.
 
 ## disambiguate
 

@@ -49,9 +49,16 @@ The appliance makes zero cloud calls. See
 | `OPENEMR_FHIR_TOKEN` | Bearer token for that FHIR API. |
 
 These enable [effect verification](../concepts/effect-verification.md) against a
-real FHIR server. A verifier is configured in code
-(`Replayer(effect_verifier=...)`); these variables supply its endpoint and
-credentials.
+real FHIR server. The verifier itself is selected in a
+[deployment config](deployment-config.md) (`effects.kind: fhir`) or with the
+`--effects-kind` / `--effects-base-url` flags on `replay` / `run`; these
+variables supply its endpoint and credentials so they need not sit in the YAML.
+
+## The desktop in-session agent
+
+| Variable | Purpose |
+|---|---|
+| `OAFLOW_AGENT_TOKEN` | Optional bearer token for the [desktop in-session agent server](../concepts/backends.md#the-in-session-agent-the-session-0-problem). Its `/execute_windows` channel is remote code execution by contract; the server binds to loopback by default, and setting a token requires every request to authenticate. Set it in any PHI deployment that exposes the agent beyond loopback. |
 
 ## Benchmark (agent arm only)
 

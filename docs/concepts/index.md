@@ -41,10 +41,25 @@ enforced. Read them in order for the full picture, or jump to what you need.
     One demo is evidence, not a specification. How more traces recover the
     intended program.
 
+-   [__The halt-learn loop__](halt-learn-loop.md)
+
+    Halt, demonstrate the fix, induce it through a regression gate, and never
+    halt there again. Governed, $0, no free-form agent.
+
+-   [__Durable runtime__](durable-runtime.md)
+
+    Checkpoint verified progress; a halt becomes a durable pause an operator
+    approves and resumes, never re-running a confirmed write.
+
 -   [__Policy and certify__](policy-and-certify.md)
 
     Fail-closed safety: `lint` reports gaps, `certify` refuses an unsafe
     bundle before it deploys.
+
+-   [__Backends: where it runs__](backends.md)
+
+    Web (Playwright), desktop Windows (UIA), and pixel-only RDP behind one
+    backend protocol. The ladder is backend-agnostic.
 
 -   [__The on-prem VLM appliance__](vlm-appliance.md)
 

@@ -14,9 +14,19 @@ Task-focused, how-to guides for real deployments. Each one assumes you have
 
     Vary values per run, and inject secrets that are never persisted.
 
+-   [__Induce a program from multiple traces__](induce-a-program.md)
+
+    Recover a parameterized program from several demonstrations, and run it
+    over a worklist.
+
 -   [__Write and enforce a policy__](policy-and-certification.md)
 
     Use `lint` and `certify` to make "runnable" distinct from "safe."
+
+-   [__Run a deployment__](run-a-deployment.md)
+
+    Wire a real backend, effect verification, actuation, and durability from
+    one `deployment.yaml`, then run and resume it.
 
 -   [__Deploy on-prem__](deploy-on-prem.md)
 

@@ -103,19 +103,25 @@ nav:
     - Governed self-healing: concepts/self-healing.md
     - The workflow-program IR: concepts/workflow-ir.md
     - Multi-trace induction: concepts/multi-trace-induction.md
+    - The halt-learn loop: concepts/halt-learn-loop.md
+    - Durable runtime: concepts/durable-runtime.md
     - Policy and certify: concepts/policy-and-certify.md
+    - Backends, where it runs: concepts/backends.md
     - The on-prem VLM appliance: concepts/vlm-appliance.md
   - Guides:
     - guides/index.md
     - Record your own app: guides/record-your-app.md
     - Parameters and secrets: guides/parameters-and-secrets.md
+    - Induce a program from multiple traces: guides/induce-a-program.md
     - Write and enforce a policy: guides/policy-and-certification.md
+    - Run a deployment: guides/run-a-deployment.md
     - Deploy on-prem: guides/deploy-on-prem.md
     - The hosted option: guides/hosted.md
     - Read and audit run reports: guides/run-reports.md
   - Reference:
     - reference/index.md
     - openadapt flow CLI: reference/cli.md
+    - Deployment configuration: reference/deployment-config.md
     - The bundle format: reference/bundle-format.md
     - Configuration and env vars: reference/configuration.md
   - Ecosystem: ecosystem/index.md

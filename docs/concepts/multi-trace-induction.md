@@ -6,10 +6,13 @@ OpenAdapt recovers the intended program from more than one demonstration, and,
 crucially, how it refuses to emit a workflow while intent stays ambiguous.
 
 !!! note "Status"
-    This is the induction design that accompanies the
-    [workflow-program IR](workflow-ir.md). It builds on the shipping compiler,
-    which already treats a demonstration as evidence when it decides which
-    values are parameters and which screen text is incidental.
+    Induction ships today as the [`induce`](../reference/cli.md#induce) verb: it
+    takes two or more recordings of the same task and emits a parameterized
+    program bundle — or refuses (nonzero exit, no bundle) when intent is
+    underdetermined. It builds on the shipping compiler, which already treats a
+    demonstration as evidence when it decides which values are parameters and
+    which screen text is incidental. The full workflow-program IR it targets
+    lands in phases (see [the workflow-program IR](workflow-ir.md)).
 
 ## Why one trace under-determines intent
 
@@ -52,6 +55,22 @@ flowchart TD
 5. **Validate** on held-out traces and synthetic perturbations.
 6. **Quarantine** when intent stays underdetermined: refuse to emit rather than
    ship a workflow that might do the wrong thing.
+
+## Induce a program
+
+Point `induce` at several recordings of the same task. It aligns them, recovers
+the shared parameters, loops, and branches, and either **certifies** a program
+bundle or **refuses** and lists what stayed underdetermined:
+
+```bash
+openadapt flow induce rec-1 rec-2 rec-3 --out program --name my-program --held-out
+```
+
+`--held-out` also runs leave-one-out validation and prints per-fold reproduction
+scores. A certified program can then loop over a data source with
+[`replay --worklist`](../guides/induce-a-program.md#run-a-program-over-a-worklist).
+The worked walkthrough is in
+[Induce a program from multiple traces](../guides/induce-a-program.md).
 
 ## Ask, don't guess
 

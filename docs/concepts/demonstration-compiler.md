@@ -57,14 +57,16 @@ openadapt flow replay  bundle --url https://your.app      # replay, local, $0
 `compile` turns the recording into a bundle. `replay` runs the bundle
 deterministically and writes an illustrated report.
 
-## Vision-only behind a small backend
+## Vision-first behind a small backend
 
-The runtime is vision-only: PNG in, clicks and keys out, behind a small
-`Backend` protocol. The reference backend is a headless browser, which is why
-the whole loop runs in CI with no OS permissions. Desktop and RDP backends are
-adapters to the same protocol, not rewrites. Where a backend can expose more
-than pixels (the DOM, an accessibility tree, an API) OpenAdapt uses it: see
-[The capability ladder](capability-ladder.md).
+The runtime is **vision-first, not vision-only**: it can always operate a pure
+pixel surface (PNG in, clicks and keys out) behind a small `Backend` protocol,
+which is why the whole loop runs in CI with no OS permissions. But where a
+backend exposes more than pixels — a browser DOM, a native accessibility tree,
+an API — OpenAdapt uses that higher-fidelity signal via
+[the capability ladder](capability-ladder.md). The reference backend is a
+headless browser; the [desktop (Windows/UIA) and RDP backends](backends.md) are
+adapters to the same protocol, not rewrites.
 
 ## An API compiler for the API-less long tail
 

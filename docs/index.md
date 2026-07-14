@@ -33,6 +33,11 @@ the wrong one for a workflow you run a thousand times. OpenAdapt compiles the
 demonstration instead, so the model is only consulted to repair the script, not
 to drive it.
 
+It runs where that work lives: a web app (the reference Playwright backend), a
+native Windows desktop via UI Automation, or a pixel-only Citrix/RDP session —
+all behind [one backend protocol](concepts/backends.md), with desktop and Citrix
+the differentiated wedge.
+
 ---
 
 ## Three things that make it different
