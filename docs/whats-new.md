@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-14 04:25 UTC*
+> *Last updated: 2026-07-14 14:10 UTC*
 
 
 
@@ -23,7 +23,21 @@
 ## openadapt-flow
 
 
+- [feat: bundle schema v2 (manifest, digest, provenance) + load-time structural validation](https://github.com/OpenAdaptAI/openadapt-flow/pull/98) (#98) — merged 
+
+- [fix: learning gate compares program semantics, not step IDs (no silent safety regression)](https://github.com/OpenAdaptAI/openadapt-flow/pull/97) (#97) — merged 
+
+- [fix: main green — reconcile induce --held-out test with #93's honest header](https://github.com/OpenAdaptAI/openadapt-flow/pull/96) (#96) — merged 
+
+- [feat: Windows desktop parity — interactive-session VM agent, backend hardening, snapshot-safe Parallels e2e](https://github.com/OpenAdaptAI/openadapt-flow/pull/95) (#95) — merged 
+
+- [fix: bind runtime params into effect contracts + idempotency keys (P0)](https://github.com/OpenAdaptAI/openadapt-flow/pull/94) (#94) — merged 
+
+- [fix: induction refuses to over-certify (uncertainty on flagged proposals, entity params, honest coverage naming)](https://github.com/OpenAdaptAI/openadapt-flow/pull/93) (#93) — merged 
+
 - [fix: policy/lint traverse program graphs + require system-of-record effects (P0)](https://github.com/OpenAdaptAI/openadapt-flow/pull/92) (#92) — merged 
+
+- [feat: expose induce / worklist / effects / resume / deployment-config via the CLI](https://github.com/OpenAdaptAI/openadapt-flow/pull/91) (#91) — merged 
 
 - [docs: rewrite README to the current architecture + add a claims-consistency CI gate](https://github.com/OpenAdaptAI/openadapt-flow/pull/90) (#90) — merged 
 
@@ -49,20 +63,6 @@
 
 - [feat: opt-in compile-time model annotation (label/risk/param; runtime stays $0)](https://github.com/OpenAdaptAI/openadapt-flow/pull/78) (#78) — merged 
 
-- [ci: fast required gate (e2e post-merge) to unclog the merge queue](https://github.com/OpenAdaptAI/openadapt-flow/pull/76) (#76) — merged 
-
-- [feat: compiler effect-mining — auto-derive record_written/field_equals from a demo (honest placeholders where customer-specific)](https://github.com/OpenAdaptAI/openadapt-flow/pull/75) (#75) — merged 
-
-- [feat: interactive disambiguation — Socrates-style compile-time questions → guards/params (ask, don't guess)](https://github.com/OpenAdaptAI/openadapt-flow/pull/74) (#74) — merged 
-
-- [feat: competitor-drift instrument harness (pluggable external-agent silent-wrong-action-rate runner, cost-capped)](https://github.com/OpenAdaptAI/openadapt-flow/pull/73) (#73) — merged 
-
-- [feat: API/tool actuator tier — perform writes via API when available, GUI fallback](https://github.com/OpenAdaptAI/openadapt-flow/pull/72) (#72) — merged 
-
-- [feat: workflow-program IR Phase 1 — typed params, guards, wait_until (additive, back-compatible)](https://github.com/OpenAdaptAI/openadapt-flow/pull/71) (#71) — merged 
-
-- [feat: governed healing — reviewable patches, regression/perturbation gate, identity-never-weakened invariant (fixes heal context-drop)](https://github.com/OpenAdaptAI/openadapt-flow/pull/70) (#70) — merged 
-
 
 
 ## openadapt-ml
@@ -74,6 +74,8 @@
 
 ## openadapt-evals
 
+
+- [feat: lightweight meta-benchmark harness (unify Environment/verify + metrics; OSWorld/BrowserGym stubs for phase 2)](https://github.com/OpenAdaptAI/openadapt-evals/pull/266) (#266) — merged 
 
 - [feat: evaluate openadapt-flow on WAA (demonstrate-then-replay + hybrid-as-agent) with cost-guarded dry-run](https://github.com/OpenAdaptAI/openadapt-evals/pull/265) (#265) — merged 
 
