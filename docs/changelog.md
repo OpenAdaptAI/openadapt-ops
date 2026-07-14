@@ -54,21 +54,3 @@
   ## v0.5.1 (2026-03-17)
 - **[v0.5.0](https://github.com/OpenAdaptAI/openadapt-capture/releases/tag/v0.5.0)** (2026-03-04)
   ## v0.5.0 (2026-03-04)
-
-## openadapt-desktop
-
-- **[v0.2.0](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/v0.2.0)** (2026-03-04)
-  ## v0.2.0 (2026-03-04)
-- **[v0.1.1](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/v0.1.1)** (2026-03-04)
-  ## v0.1.1 (2026-03-04)
-- **[v0.1.0](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/v0.1.0)** (2026-03-04)
-  ## First release
-
-## openadapt-consilium
-
-- **[v0.4.0](https://github.com/OpenAdaptAI/openadapt-consilium/releases/tag/v0.4.0)** (2026-03-03)
-  ## v0.4.0 (2026-03-03)
-- **[v0.3.2](https://github.com/OpenAdaptAI/openadapt-consilium/releases/tag/v0.3.2)** (2026-03-02)
-  ## v0.3.2 (2026-03-02)
-- **[v0.3.1](https://github.com/OpenAdaptAI/openadapt-consilium/releases/tag/v0.3.1)** (2026-03-02)
-  ## v0.3.1 (2026-03-02)
