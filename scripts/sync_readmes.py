@@ -44,7 +44,14 @@ def sync(repos=None, docs_dir=None, templates_dir=None):
     for repo in repos:
         name = repo["name"]
         github = repo["github"]
-        doc_page = repo["doc_page"]
+        doc_page = repo.get("doc_page")
+        if not doc_page:
+            # Repos without a doc_page still feed the changelog and What's New
+            # aggregation, but their README is not mirrored as a published
+            # page. The docs site presents a single curated Ecosystem page
+            # instead of drifting README mirrors.
+            print(f"Skipping {name} (no doc_page; changelog/what's-new only)")
+            continue
         print(f"Syncing {name}...")
 
         readme = fetch_readme(github)

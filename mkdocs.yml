@@ -113,16 +113,6 @@ nav:
     - openadapt flow CLI: reference/cli.md
     - The bundle format: reference/bundle-format.md
     - Configuration and env vars: reference/configuration.md
-  - Ecosystem:
-    - ecosystem/index.md
-    - openadapt-capture: packages/openadapt-capture.md
-    - openadapt-ml: packages/openadapt-ml.md
-    - openadapt-evals: packages/openadapt-evals.md
-    - openadapt-desktop: packages/openadapt-desktop.md
-    - openadapt (meta): packages/openadapt.md
-    - openadapt-consilium: packages/openadapt-consilium.md
-    - openadapt-wright: packages/openadapt-wright.md
-    - openadapt-herald: packages/openadapt-herald.md
-    - openadapt-crier: packages/openadapt-crier.md
+  - Ecosystem: ecosystem/index.md
   - What's New: whats-new.md
   - Changelog: changelog.md
