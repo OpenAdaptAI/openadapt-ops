@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-14 18:58 UTC*
+> *Last updated: 2026-07-15 21:16 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [feat: make OpenAdapt the canonical openadapt-flow launcher](https://github.com/OpenAdaptAI/OpenAdapt/pull/1014) (#1014) — merged 
 
 - [fix: version reads from metadata + doctor core/optional sets + pyproject description](https://github.com/OpenAdaptAI/OpenAdapt/pull/1013) (#1013) — merged 
 
@@ -27,6 +29,28 @@
 ## openadapt-flow
 
 
+- [feat: govern hosted artifact activation and runtime validation](https://github.com/OpenAdaptAI/openadapt-flow/pull/119) (#119) — merged 
+
+- [feat: desktop recording via record --backend windows|rdp (record->compile->replay on desktop)](https://github.com/OpenAdaptAI/openadapt-flow/pull/118) (#118) — merged 
+
+- [feat: auto-provision win_agent TLS cert on launch + fix pre-existing factory token test](https://github.com/OpenAdaptAI/openadapt-flow/pull/117) (#117) — merged 
+
+- [chore: wire sealed-templates+resume through the new seams; fix pre-existing OCR benchmark test](https://github.com/OpenAdaptAI/openadapt-flow/pull/116) (#116) — merged 
+
+- [feat: CLI backend selector (--backend web|windows|rdp) — unblock the desktop/Citrix path](https://github.com/OpenAdaptAI/openadapt-flow/pull/115) (#115) — merged 
+
+- [chore: pin ruff==0.15.21 (stop CI/local formatter drift)](https://github.com/OpenAdaptAI/openadapt-flow/pull/114) (#114) — merged 
+
+- [feat: seal template screenshot crops in the AEAD bundle (close at-rest image-PHI gap)](https://github.com/OpenAdaptAI/openadapt-flow/pull/113) (#113) — merged 
+
+- [feat: TLS + cert-pinning on the win_agent channel (PHI-in-transit encryption)](https://github.com/OpenAdaptAI/openadapt-flow/pull/112) (#112) — merged 
+
+- [ci: make E2E/wheel/CLI-smoke/docs/coverage merge-blocking + mypy-strict on safety path + CODEOWNERS](https://github.com/OpenAdaptAI/openadapt-flow/pull/111) (#111) — merged 
+
+- [feat: claim->evidence validation harness (maturity claims backed by tests + reproducible report)](https://github.com/OpenAdaptAI/openadapt-flow/pull/110) (#110) — merged 
+
+- [feat: fail-closed 'openadapt-flow run' for regulated execution (cert+identity+effect+crypto gates)](https://github.com/OpenAdaptAI/openadapt-flow/pull/109) (#109) — merged 
+
 - [docs: remove agent-partition build notes, honest backend status, claims-consistency with LIMITS](https://github.com/OpenAdaptAI/openadapt-flow/pull/108) (#108) — merged 
 
 - [docs(on-prem): reconcile at-rest note with shipped AEAD encryption](https://github.com/OpenAdaptAI/openadapt-flow/pull/107) (#107) — merged 
@@ -44,28 +68,6 @@
 - [feat: self-serve halt->learn via 'openadapt flow teach' (governed, refuses bad fixes)](https://github.com/OpenAdaptAI/openadapt-flow/pull/101) (#101) — merged 
 
 - [chore: type-check the safety-critical modules (compile, identity, replayer) under mypy](https://github.com/OpenAdaptAI/openadapt-flow/pull/100) (#100) — merged 
-
-- [feat: durable checkpoint/resume for ProgramGraph + authenticated approval on resume (P0)](https://github.com/OpenAdaptAI/openadapt-flow/pull/99) (#99) — merged 
-
-- [feat: bundle schema v2 (manifest, digest, provenance) + load-time structural validation](https://github.com/OpenAdaptAI/openadapt-flow/pull/98) (#98) — merged 
-
-- [fix: learning gate compares program semantics, not step IDs (no silent safety regression)](https://github.com/OpenAdaptAI/openadapt-flow/pull/97) (#97) — merged 
-
-- [fix: main green — reconcile induce --held-out test with #93's honest header](https://github.com/OpenAdaptAI/openadapt-flow/pull/96) (#96) — merged 
-
-- [feat: Windows desktop parity — interactive-session VM agent, backend hardening, snapshot-safe Parallels e2e](https://github.com/OpenAdaptAI/openadapt-flow/pull/95) (#95) — merged 
-
-- [fix: bind runtime params into effect contracts + idempotency keys (P0)](https://github.com/OpenAdaptAI/openadapt-flow/pull/94) (#94) — merged 
-
-- [fix: induction refuses to over-certify (uncertainty on flagged proposals, entity params, honest coverage naming)](https://github.com/OpenAdaptAI/openadapt-flow/pull/93) (#93) — merged 
-
-- [fix: policy/lint traverse program graphs + require system-of-record effects (P0)](https://github.com/OpenAdaptAI/openadapt-flow/pull/92) (#92) — merged 
-
-- [feat: expose induce / worklist / effects / resume / deployment-config via the CLI](https://github.com/OpenAdaptAI/openadapt-flow/pull/91) (#91) — merged 
-
-- [docs: rewrite README to the current architecture + add a claims-consistency CI gate](https://github.com/OpenAdaptAI/openadapt-flow/pull/90) (#90) — merged 
-
-- [feat: close the halt→learn→resolve loop (governed, one scenario) — modal-once](https://github.com/OpenAdaptAI/openadapt-flow/pull/89) (#89) — merged 
 
 
 
