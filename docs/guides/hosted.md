@@ -1,39 +1,47 @@
 # Hosted browser execution
 
-OpenAdapt Hosted is the managed launch path for browser workflows. The same
-compiler and governed runtime remain available under MIT for local and
-customer-controlled deployment; a hosted subscription adds account and
-organization management, managed execution of locally authored and attested
-browser bundles, artifact storage, structural run history, usage metering, and
-billing. Recording, compilation, and repair remain local in the launch scope.
+OpenAdapt Hosted is the Beta launch candidate for managed browser workflows.
+The same compiler and governed runtime remain available under MIT for local and
+customer-controlled deployment. Once the production acceptance gate passes, a
+hosted subscription adds account and organization management, managed execution
+of locally authored and attested browser bundles, artifact storage, structural
+run history, usage metering, and billing. Recording, compilation, and repair
+remain local in that scope.
 
-[Start hosted checkout](https://openadapt.ai/#pricing){ .md-button .md-button--primary }
+[Review the production acceptance gate](#operational-acceptance-gate){ .md-button .md-button--primary }
 [Review the data boundary](security-review.md){ .md-button }
 
-Stripe is the source of truth for the configured price and billing period. The
-website retrieves that offer server-side when configured, rather than
-hard-coding an amount; Checkout confirms the same price before payment.
+Stripe is the source of truth for a production deployment's configured price
+and billing period. The website retrieves that offer server-side when
+configured, rather than hard-coding an amount; Checkout must confirm the same
+price before payment. This describes the implementation contract, not current
+public availability.
 
 ## Scope of the launch
 
 | Surface | Launch status | Boundary |
 |---|---|---|
-| Local browser record -> compile -> managed execute | **Launching** | Authoring remains local; managed execution uses the browser substrate only. |
-| Account, organization, onboarding | **Launching** | Subscription is linked during onboarding. |
-| Structural run history and reports | **Launching** | Safety depends on the workflow's configured identity, effect, and policy checks. Repair and validation remain local. |
-| Checkout, portal, entitlements, metering | **Launching** | Stripe and the control plane must both report healthy. |
+| Local browser record -> compile -> managed execute | **Beta launch candidate** | Authoring remains local; managed execution uses the browser substrate only. Production provider qualification remains pending. |
+| Account, organization, onboarding | **Beta launch candidate** | The implemented lifecycle links a qualified subscription during onboarding. |
+| Structural run history and reports | **Beta launch candidate** | Safety depends on the workflow's configured identity, effect, and policy checks. Repair and validation remain local. |
+| Checkout, portal, entitlements, metering | **Beta launch candidate** | Stripe and the control plane must both pass production acceptance before public traffic is directed to checkout. |
 | Self-hosted browser execution | **Beta** | No hosted account required. |
 | Windows UIA | **Experimental** | Not included by implication in a browser subscription. |
 | RDP and Citrix | **Research** | No production support claim. |
 | Regulated runtime data | **Customer-controlled boundary** | Use a scoped BYOC/on-prem deployment when live screens necessarily contain PHI. |
 
-“Launching” is a delivery statement, not a security certification or an SLA.
-The [maturity matrix](../get-started/what-works-today.md) and the configured
-commercial terms define the exact scope.
+“Beta launch candidate” means the integrated implementation is being qualified
+for launch. It is not a current availability statement, security certification,
+or SLA. The [maturity matrix](../get-started/what-works-today.md), the operational
+acceptance gate below, and the configured commercial terms define the exact
+scope.
 
 ## The hosted lifecycle
 
-1. Complete Stripe Checkout from the [pricing page](https://openadapt.ai/#pricing).
+After the operational acceptance gate passes for a production deployment, the
+hosted lifecycle is:
+
+1. Complete its qualified Stripe Checkout.
 2. Sign in with the checkout email and create or join an organization.
 3. Record a browser workflow locally or prepare an existing local recording.
 4. Sanitize, review, approve, and push the recording derivative. This registers

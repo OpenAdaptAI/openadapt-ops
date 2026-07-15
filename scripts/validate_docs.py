@@ -4,12 +4,19 @@ import pathlib
 import subprocess
 import sys
 
+import yaml
+
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 DOCS_DIR = ROOT / "docs"
 MKDOCS_FILE = ROOT / "mkdocs.yml"
 
 REQUIRED_PUBLIC_PAGES = {
-    "get-started/what-works-today.md": ("Integrated product matrix", "Hosted execution"),
+    "get-started/what-works-today.md": (
+        "Integrated product matrix",
+        "Hosted execution",
+        "Beta launch candidate",
+        "Production provider qualification remains pending",
+    ),
     "guides/hosted.md": (
         "sanitized derivative",
         "local viewer",
@@ -23,6 +30,12 @@ REQUIRED_PUBLIC_PAGES = {
         "source of truth",
         "Noncanonical documentation trees",
     ),
+}
+
+PREQUALIFICATION_AVAILABILITY_MARKERS = {
+    "Hosted browser execution is launching now",
+    "Managed browser execution is launching with",
+    "Start hosted checkout",
 }
 
 
@@ -63,6 +76,32 @@ def check_product_docs_contract(docs_dir=None, mkdocs_file=None):
             issues.append(f"Required product page missing from navigation: {relative_path}")
     if "\n  - Packages:" in nav:
         issues.append("Package-first top-level navigation is forbidden; use Ecosystem/Reference")
+    # MkDocs permits Python-specific YAML tags in extension configuration.
+    # Parse only the final nav section with the safe loader.
+    nav_section = nav[nav.index("\nnav:") + 1 :] if "\nnav:" in nav else nav
+    nav_config = yaml.safe_load(nav_section) or {}
+    reference_entries = next(
+        (
+            entry["Reference"]
+            for entry in nav_config.get("nav", [])
+            if isinstance(entry, dict) and "Reference" in entry
+        ),
+        [],
+    )
+    catalog_is_under_reference = any(
+        item == "ecosystem/index.md"
+        or (isinstance(item, dict) and "ecosystem/index.md" in item.values())
+        for item in reference_entries
+    )
+    if not catalog_is_under_reference:
+        issues.append("Package and repository lifecycle catalog must remain under Reference")
+
+    public_text = "\n".join(
+        path.read_text() for path in docs_dir.rglob("*.md") if path.is_file()
+    )
+    for marker in PREQUALIFICATION_AVAILABILITY_MARKERS:
+        if marker in public_text:
+            issues.append(f"Unqualified hosted-availability claim: {marker}")
 
     return issues
 

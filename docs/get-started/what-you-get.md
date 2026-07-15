@@ -18,7 +18,8 @@ armed, and which postconditions each step asserts. See
 ## The run report
 
 Every replay writes a timestamped directory under `runs/` with an illustrated
-`REPORT.md` (shareable) and a `report.json` (machine-readable). The report is
+`REPORT.md` (human-readable) and a `report.json` (machine-readable). Review or
+sanitize either artifact before it crosses a boundary. The report is
 the audit trail. For each step it records:
 
 - **Resolution**: which rung of the ladder resolved the target (template, OCR,
@@ -46,8 +47,10 @@ openadapt flow emit-mcp   bundle --out server.py
 
 ## Privacy of the artifacts
 
-The shareable `REPORT.md` and console logs can be PHI-scrubbed on the
+The `REPORT.md` and console logs can be processed by the PHI sanitizer on the
 persist/log path (Presidio-backed, via the optional `privacy` extra). The
 compiled bundle and `report.json` keep literal identifiers on purpose: they are
 the identity check and the audit trail, and they are protected by a documented
-boundary rather than by redaction. See [Deploy on-prem](../guides/deploy-on-prem.md).
+boundary rather than by redaction. Detector misses remain possible, so review
+sanitized output before egress. See
+[Deploy on-prem](../guides/deploy-on-prem.md).

@@ -28,7 +28,7 @@ is a subcommand of `openadapt flow`.
 | [`login`](#login) | Validate a hosted ingest token and remember the host | 0/1 |
 | [`push`](#push) | Explicitly upload a recording or bundle to a control plane | 0/1 |
 | [`validate-hosted`](#validate-hosted) | Bind local validation evidence to a one-time hosted challenge | 0/1 |
-| [`report-break`](#report-break) | Send a scrubbed PHI-free halt descriptor | 0/1 |
+| [`report-break`](#report-break) | Send a scrubbed, schema-minimized halt descriptor | 0/1 |
 | [`bench`](#bench) | Replay a bundle N times against the sample app and aggregate | 0 if all pass |
 | [`benchmark`](#benchmark) | Compare compiled replay vs a computer-use agent | 0 |
 | [`emit-skill`](#emit) | Emit an Agent Skills folder for a bundle | 0 |
@@ -143,11 +143,12 @@ default off, so an unconfigured replay behaves exactly as before):
 | `--api-actuator` | Perform a step carrying an `ApiBinding` via the API ($0, no GUI), confirmed by the effect verifier |
 | `--api-base-url` | Base URL for the API actuator (implies `--api-actuator`) |
 | `--durable` | Enable the Tier-3 [durable runtime](../concepts/durable-runtime.md): checkpoint each verified step, durably pause on halt, resumable via `resume` |
-| `--allow-model-grounding` | **Egress opt-in** (PHI audit REM-3): permit wiring an off-box model grounder / identity-VLM / state-verifier; screenshots may leave the box. Off by default: replay is fully local with zero outbound calls. |
+| `--allow-model-grounding` | **Model-egress opt-in** (PHI audit REM-3): permit wiring an off-box model grounder / identity-VLM / state-verifier; screenshots may leave the box. Off by default: replay makes no model-service calls; target and effect-verifier traffic remains deployment-defined. |
 
-Exits 0 on success and 1 on a halt. With no model component wired, replay is
-fully local and makes zero outbound calls; the on-prem VLM appliance is engaged
-only when `--allow-model-grounding` is passed **and**
+Exits 0 on success and 1 on a halt. With no model component wired, replay makes
+no model-service calls; target and effect-verifier traffic still follows the
+deployment configuration. The on-prem VLM appliance is engaged only when
+`--allow-model-grounding` is passed **and**
 [`OPENADAPT_FLOW_VLM_URL`](configuration.md) is set.
 
 ## run
@@ -461,7 +462,7 @@ the original inside its trusted runtime boundary.
 
 ## report-break
 
-Read a halted run's `report.json` and emit a scrubbed, PHI-free halt descriptor.
+Read a halted run's `report.json` and emit a scrubbed, schema-minimized halt descriptor.
 The recording stays local. A PHI-boundary rejection retries with a harder scrub
 and can fall back to local-only.
 
@@ -478,7 +479,7 @@ openadapt flow report-break runs/<halted-run> \
 | `--org-id` | Optional organization id. |
 | `--host`, `--token` | Override the configured control plane and token. |
 
-See [Hosted browser execution](../guides/hosted.md) for the launched service,
+See [Hosted browser execution](../guides/hosted.md) for the launch candidate,
 sanitation protocol, and destination-aware boundary.
 
 ## bench

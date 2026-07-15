@@ -9,7 +9,8 @@ read one and what to check when auditing a run.
 Each replay writes a timestamped directory under `runs/` (override with
 `--run-dir`). It contains:
 
-- `REPORT.md`: the illustrated, shareable report.
+- `REPORT.md`: the illustrated, human-readable report; review or sanitize it
+  before sharing.
 - `report.json`: the machine-readable version, for programmatic auditing.
 
 The final console line names the report path and whether the run succeeded.
@@ -62,6 +63,8 @@ When auditing a consequential run, check:
 ## Scrubbing shared reports
 
 If you share `REPORT.md` outside the environment, scrub it. With the `privacy`
-extra and `OPENADAPT_FLOW_SCRUB=on`, the report and logs are PHI-scrubbed on the
+extra and `OPENADAPT_FLOW_SCRUB=on`, the sanitizer processes the report and logs on the
 persist path, while the bundle and `report.json` keep literal identifiers behind
-a documented boundary. See [Deploy on-prem](deploy-on-prem.md).
+a documented boundary. Sanitizer success is not proof that detectors found every
+identifier; review the result before egress. See
+[Deploy on-prem](deploy-on-prem.md).

@@ -7,15 +7,16 @@ explicitly configured model tier; it records any repair and halts when the
 configured identity, postcondition, effect, or policy checks cannot verify the
 run.
 
-That is the canonical product description. Hosted browser execution is
-launching now, but that does **not** mean every recorded workflow is safe or
-every backend is production-ready.
+That is the canonical product description. Hosted browser execution is a
+**Beta launch candidate** whose production provider qualification remains
+pending. That does **not** mean every recorded workflow is safe or every
+backend is production-ready.
 
 ## Maturity labels
 
 | Label | Meaning |
 |---|---|
-| **Beta** | Shipped and exercised end to end, but still requires workload-specific validation before consequential use. |
+| **Beta** | Implemented and exercised end to end in the stated environment, but still requires workload-specific validation. Public delivery may have a separate production-qualification gate. |
 | **Experimental** | Implemented and tested in a bounded environment; interfaces or operating assumptions may change. |
 | **Research spike** | Demonstrates an adapter or mechanism, usually with mocks or an analog environment; not a validated integration. |
 | **Prototype** | Code or a deployment scaffold exists, but required production controls are incomplete. |
@@ -42,14 +43,14 @@ No surface is labelled **Stable** yet.
 | RDP backend | **Research spike** | The adapter conforms to the backend protocol and is mock/offline tested. | No published live RDP validation establishes latency, coordinate, input, identity, or effect behavior. |
 | Citrix backend | **Research spike** | A pixel-only remote-display analog was exercised against a VM window. | It is **not** a validated Citrix/ICA/HDX integration. Real latency, compression, DPI, lock screens, input acceptance, and clinical identity behavior remain unmeasured. |
 | Desktop authoring GUI and tray | **Experimental** | The desktop and tray surfaces are aligned to the record -> compile -> replay -> teach loop. | Installer, updater, permissions, and full operator lifecycle still require platform validation. |
-| Hosted CLI connectivity | **Beta / launch path** | `login`, exact-hash artifact preparation/upload, one-time runtime validation, bound replacement activation, and `report-break` connect the local engine to control-plane endpoints. | Upload requires destination policy and an approved sanitized derivative; checkout never bypasses an egress refusal. Production provider qualification remains pending. |
+| Hosted CLI connectivity | **Beta / launch component** | `login`, exact-hash artifact preparation/upload, one-time runtime validation, bound replacement activation, and `report-break` connect the local engine to control-plane endpoints. | Upload requires destination policy and an approved sanitized derivative; checkout never bypasses an egress refusal. Production provider qualification remains pending. |
 | Artifact sanitation and local review | **Beta / launch gate** | The sanitized-derivative pipeline inventories, transforms, rescans, manifests, hashes, and supports local review/approval. | The raw original remains sensitive; unknown or unresolved content is refused; runtime observations can reintroduce PHI. |
 | Cross-engine hosted validation | **Beta / launch gate** | `validate-hosted` binds an approved recording and bundle, compiler provenance, strict lint, policy certification, derived risk class, and successful replay report to a one-time Cloud challenge. | It is operator self-attestation signed with the ingest token, not an independently observed certification. Exact deployment policy, risk-class, and deployed compiler-version allowlists still apply. |
-| Hosted dashboard/control plane | **Beta / browser launch** | Authentication, organizations, exact-hash bundle ingest, immutable run admission, browser runner orchestration, structural reports, replacement activation, billing, and metering form the launch lifecycle. | Authoring and repair validation remain local. Production must explicitly use live dependencies; mock mode remains visibly synthetic development behavior. |
-| Hosted execution | **Beta / browser launch** | Stripe Checkout routes subscriptions into onboarding for managed browser execution; the runner verifies exact admitted bundle bytes and callbacks. | The configured offer covers browser workflows, not Windows, RDP, or Citrix by implication. Checkout does not create an SLA or certification. Production provider qualification remains pending. |
+| Hosted dashboard/control plane | **Beta launch candidate** | Authentication, organizations, exact-hash bundle ingest, immutable run admission, browser runner orchestration, structural reports, replacement activation, billing, and metering form the candidate launch lifecycle. | Authoring and repair validation remain local. Production must explicitly use live dependencies; mock mode remains visibly synthetic development behavior. Production provider qualification remains pending. |
+| Hosted execution | **Beta launch candidate** | The implementation routes Stripe Checkout through onboarding to managed browser execution; the runner verifies exact admitted bundle bytes and callbacks. | This is not yet a public availability claim. The configured offer covers browser workflows, not Windows, RDP, or Citrix by implication. Checkout does not create an SLA or certification. Production provider qualification remains pending. |
 | Air-gapped on-prem package | **Experimental** | A local queue, systemd unit, minimized hash-chained audit log, and air-gap checks are provided. | Full-disk encryption and operational hardening remain operator/deployment responsibilities. |
 | BYOC / customer-controlled execution | **Experimental / scoped deployment** | A connector and customer-storage contract support keeping the data plane inside an approved customer boundary. | Qualify the actual substrate and destination; PHI-bearing runtime data must not cross into a shared boundary. |
-| Hosted desktop runner | **Experimental** | A Windows runner contract and implementation path exist. | Not included in the launched browser offer and not a validated broad desktop/Citrix service. |
+| Hosted desktop runner | **Experimental** | A Windows runner contract and implementation path exist. | Not included in the browser launch candidate and not a validated broad desktop/Citrix service. |
 
 ## Before using consequential data
 

@@ -8,11 +8,11 @@ used in each lane; substrate maturity and data handling differ.
 
 | Deployment / substrate | Browser | Windows desktop | Remote display / Citrix |
 |---|---|---|---|
-| **OpenAdapt Hosted** | **Launching.** Managed execution of locally authored and validated browser bundles, structural reports, replacement activation, billing, and metering. | Experimental runner work; not included in the browser offer. | Research only; no hosted Citrix claim. |
-| **Customer cloud / BYOC** | Available by scoped deployment where customer storage and runner satisfy the destination policy. | Experimental; qualify the actual app and runner. | Research; a protocol adapter or analog is not a validated Citrix deployment. |
+| **OpenAdapt Hosted** | **Beta launch candidate.** Managed execution of locally authored and validated browser bundles, structural reports, replacement activation, billing, and metering is implemented; production provider qualification remains pending. | Experimental runner work; not included in the browser candidate. | Research only; no hosted Citrix claim. |
+| **Customer cloud / BYOC** | **Experimental / scoped deployment.** Customer storage and runner must satisfy the destination policy and be qualified for the actual deployment. | Experimental; qualify the actual app and runner. | Research; a protocol adapter or analog is not a validated Citrix deployment. |
 | **Self-hosted / on-prem** | **Beta reference engine.** Local record, compile, replay, and reports. | Experimental local proof. | RDP and pixel-only analog are research spikes. |
 
-The browser launch does not promote every cell. Code presence, a shared runner
+The browser launch candidate does not promote every cell. Code presence, a shared runner
 protocol, or successful checkout is not evidence that Windows, RDP, or Citrix
 is production-ready.
 
@@ -70,9 +70,9 @@ The risk-based launch default is:
 
 See [Hosted browser execution](../guides/hosted.md) for the complete protocol.
 
-## Hosted browser launch
+## Hosted browser launch candidate
 
-The hosted path comprises:
+The implemented candidate path comprises:
 
 - Stripe Checkout using the configured product and price;
 - authentication, onboarding, and organization isolation;
@@ -85,6 +85,10 @@ The hosted path comprises:
 Production selects live mode explicitly. Development mock mode is visibly
 synthetic. A missing production dependency makes the affected operation
 unavailable rather than substituting a simulated success.
+
+Production provider qualification and the documented clean-account acceptance
+lifecycle remain pending. Do not infer public hosted availability from this
+architecture description.
 
 The configured Stripe offer is the commercial source of truth. This matrix does
 not create a price, quota, SLA, certification, or backend entitlement.
@@ -113,7 +117,7 @@ risk work required for the actual deployment.
 
 ## Backend evidence boundary
 
-- **Browser:** Beta local engine and the hosted launch substrate. It is the only
+- **Browser:** Beta local engine and the hosted launch-candidate substrate. It is the only
   backend exercised end to end against a real third-party application in the
   published engine evidence.
 - **Windows UIA:** Experimental local evidence, not a broad app/platform study.

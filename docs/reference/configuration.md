@@ -20,11 +20,13 @@ See [Parameters and secrets](../guides/parameters-and-secrets.md).
 
 | Variable | Purpose |
 |---|---|
-| `OPENADAPT_FLOW_SCRUB` | Set to `on` to PHI-scrub `REPORT.md` and console logs on the persist and log path, fail closed. Requires the `privacy` extra (`pip install 'openadapt[privacy]'`) and a spaCy model. |
+| `OPENADAPT_FLOW_SCRUB` | Set to `on` to run the PHI sanitizer over `REPORT.md` and console logs on the persist and log path. Missing dependencies, invalid configuration, and processing errors fail closed. Requires the `privacy` extra (`pip install 'openadapt[privacy]'`) and the allowlisted spaCy model. |
 
 The compiled bundle and `report.json` keep literal identifiers behind a
 documented boundary and are **not** scrubbed by this flag; they are the identity
-check and the audit trail. See [Deploy on-prem](../guides/deploy-on-prem.md).
+check and the audit trail. Sanitizer success is not proof that detectors found
+every identifier; review artifacts before egress. See
+[Deploy on-prem](../guides/deploy-on-prem.md).
 
 ## Encryption at rest
 
@@ -43,7 +45,8 @@ provides the AEAD mechanism, not key custody, rotation, or recovery. See the
 |---|---|
 | `OPENADAPT_FLOW_VLM_URL` | Points the runtime at an on-prem VLM appliance. Unset (the default), none of the model tiers exist and the ladder has no grounder rung. Set, the grounding rung, identity veto, and state verifier come online, all fail-safe to halt. |
 
-The appliance makes zero cloud calls. See
+The appliance is designed not to call external model services; enforce and test
+egress for the deployed image. See
 [The on-prem VLM appliance](../concepts/vlm-appliance.md).
 
 ## Browser provisioning
@@ -69,7 +72,7 @@ pipeline. `--attest-non-phi` is deprecated and refused; a declaration is not a
 privacy control. Customer-owned endpoints must be HTTPS and exact-origin
 allowlisted. Unknown destinations fail closed.
 
-These variables configure the client boundary for the launched hosted path. See
+These variables configure the client boundary for the hosted launch candidate. See
 [Hosted browser execution](../guides/hosted.md).
 
 The hosted control plane separately requires three server-side, comma-separated

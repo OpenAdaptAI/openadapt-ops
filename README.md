@@ -2,6 +2,9 @@
 
 Automated documentation generator for the OpenAdapt ecosystem. Syncs READMEs, aggregates changelogs, and generates digest pages using LLM.
 
+> **Lifecycle: Internal.** This repository is the publishing infrastructure and
+> source for the public OpenAdapt documentation; it is not an end-user package.
+
 > **Source of truth:** This repository's `docs/` tree and `mkdocs.yml` own
 > `docs.openadapt.ai`. `OpenAdapt/docs`, `OpenAdapt/mkdocs.yml`, and
 > `openadapt-gitbook` are noncanonical historical trees and must not deploy to

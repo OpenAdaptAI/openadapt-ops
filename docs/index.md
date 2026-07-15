@@ -34,8 +34,9 @@ the wrong one for a workflow you run a thousand times. OpenAdapt compiles the
 demonstration instead, so the model is only consulted to repair the script, not
 to drive it.
 
-The browser/Playwright backend is the reference path and hosted browser
-execution is launching now. Windows UIA is experimental; RDP and the Citrix
+The browser/Playwright backend is the reference path. Hosted browser execution
+is a Beta launch candidate with production provider qualification pending.
+Windows UIA is experimental; RDP and the Citrix
 analog are research spikes. Customer-controlled execution is scoped to the
 actual substrate and data boundary. The shared protocol is real, but backend
 presence is not a production-readiness claim. See
@@ -124,8 +125,8 @@ orthogonal axes, one contract:
 
 | Deployment ↓ / Substrate → | **Web (browser)** | **Windows-desktop / Citrix** |
 |---|---|---|
-| **Our cloud** | Managed execution of locally authored, attested browser bundles *(launching)* | Windows runner *(experimental; not in browser offer)* |
-| **Customer cloud / BYOC** | Connector + customer storage *(available by scope)* | Qualify the actual desktop substrate *(experimental/research)* |
+| **Our cloud** | Managed execution of locally authored, attested browser bundles *(Beta launch candidate; production qualification pending)* | Windows runner *(experimental; not in browser candidate)* |
+| **Customer cloud / BYOC** | Connector + customer storage *(experimental; qualify by deployment)* | Qualify the actual desktop substrate *(experimental/research)* |
 | **Self-hosted / on-prem** | Local browser engine *(Beta reference path)* | Windows limited proof; RDP/Citrix analog *(research spikes, not validated Citrix)* |
 
 You choose where the data lives — there is no company-wide "never leaves your
@@ -134,11 +135,12 @@ the [`run`](concepts/regulated-execution.md) verb is **fail-closed by default**:
 it gates certification, identity and effect coverage, approval fallback,
 encryption, and manifest integrity before execution.
 
-!!! note "Launch scope"
-    Hosted launch covers browser workflows. It does not promote Windows, RDP,
+!!! note "Launch-candidate scope"
+    The hosted launch candidate covers browser workflows. It does not promote Windows, RDP,
     or Citrix. Artifacts cross boundaries only as approved sanitized
     derivatives, while PHI-bearing runtime observations stay inside their
-    declared trusted execution boundary. See
+    declared trusted execution boundary. This is not a public availability
+    statement. See
     [the deployment matrix](concepts/deployment-matrix.md).
 
 ---

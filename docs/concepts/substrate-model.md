@@ -48,7 +48,7 @@ flowchart TD
     R -->|target_kind = desktop| D[Windows session<br/>WindowsBackend / FreeRDP]
     W --> L[Resolution ladder · identity gate · effect verification]
     D --> L
-    L --> C[[Signed report + PHI-free callback]]
+    L --> C[[Signed report + minimized callback]]
 ```
 
 ## The web substrate
@@ -119,8 +119,8 @@ guest through the in-session agent contract, not the stream.
   against mocked servers; the desktop path has a live end-to-end existence proof
   on a WinForms app in a Windows-11-ARM VM, at small N (see
   [Backends](backends.md#desktop-windows-uia)). It is not yet a big-N study.
-- The substrate-agnostic runner routes `web` to the launched browser path.
-  Desktop routing is experimental and remains outside the browser subscription
+- The substrate-agnostic runner routes `web` to the browser launch-candidate path.
+  Desktop routing is experimental and remains outside the candidate browser subscription
   evidence boundary.
 
 The point of the model is that backend expansion does not require a different

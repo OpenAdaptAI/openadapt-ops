@@ -26,6 +26,11 @@ classified under [Ecosystem](../ecosystem/index.md).
 
     Secrets, scrubbing, the VLM appliance, and auto-install controls.
 
+-   [__Package and repository lifecycle__](../ecosystem/index.md)
+
+    The retained package index, with current product, experimental, research,
+    and deprecated repository roles.
+
 -   [__Documentation source of truth__](documentation-governance.md)
 
     Which repository deploys this site and which historical docs trees must not.

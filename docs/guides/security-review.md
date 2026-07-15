@@ -70,7 +70,9 @@ enables model grounding and configures an appliance.
 Every run produces a human-readable `REPORT.md` and machine-readable
 `report.json`. Reports expose resolution rungs, model calls, identity coverage,
 postconditions, effects, heals, and the halt reason. The on-prem queue adds a
-PHI-free, append-only hash-chained audit log.
+schema-minimized, append-only hash-chained audit log. Minimization reduces
+exposure but does not prove that operator detail or future schema changes cannot
+contain PHI; review and test the emitted schema.
 
 A hash chain is tamper-evident only while its trusted head and access controls
 remain trustworthy. It is not an externally anchored signature service. The
@@ -97,17 +99,19 @@ documented **stub**: it prints the verification and atomic-swap procedure but
 does not apply an update. Define and test signing, verification, rollback, and
 recovery for the actual pilot before production use.
 
-## Hosted launch status
+## Hosted launch-candidate status
 
-Managed browser execution is launching with configured Stripe Checkout,
+Managed browser execution is a Beta launch candidate with implemented Stripe Checkout,
 onboarding, organization isolation, browser runner orchestration, artifacts,
 reports, teaching, billing, and usage metering. Production explicitly selects
 live dependencies; a missing runner, storage, or billing dependency returns an
 operational failure and never substitutes mock success. Mock mode remains for
-development and is visibly synthetic.
+development and is visibly synthetic. Production provider qualification and the
+clean-account acceptance lifecycle remain pending, so this is not a public
+availability statement.
 
 Desktop, RDP, and Citrix retain their separate Experimental/Research maturity;
-the browser subscription does not imply their availability. See [Hosted browser
+the candidate browser subscription does not imply their availability. See [Hosted browser
 execution](hosted.md) and [What works today](../get-started/what-works-today.md).
 
 ## Review checklist

@@ -22,6 +22,7 @@ concurrency:
 
 jobs:
   sync-and-deploy:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -34,7 +35,7 @@ jobs:
           enable-cache: true
 
       - name: Install dependencies
-        run: uv sync --locked --extra llm
+        run: uv sync --locked --extra llm --extra dev
 
       - name: Sync READMEs
         run: uv run python scripts/sync_readmes.py
@@ -53,11 +54,24 @@ jobs:
       # The curated Concepts and Ecosystem sections replace it. Re-enable only
       # if a maintained, product-accurate architecture page is reintroduced.
 
+      - name: Run tests against generated source
+        run: uv run pytest tests/ -q
+
       - name: Validate
         run: uv run python scripts/validate_docs.py
 
       - name: Build MkDocs site
         run: uv run mkdocs build --strict
+
+      # Persist exactly the generated source that passed the gates before
+      # publishing it. A protected-branch rejection therefore blocks deploy.
+      - name: Commit updated docs source
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/
+          git diff --staged --quiet || git commit -m "docs: auto-sync documentation [skip ci]"
+          git push
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
@@ -67,11 +81,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deploy
         uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
-
-      - name: Commit updated docs source
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/
-          git diff --staged --quiet || git commit -m "docs: auto-sync documentation [skip ci]"
-          git push

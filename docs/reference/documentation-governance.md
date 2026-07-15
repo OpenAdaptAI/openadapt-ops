@@ -32,7 +32,7 @@ Public docs must:
    unified command surface.
 2. Separate shipped behavior from experimental, prototype, and research-spike
    work.
-3. Keep launched hosted browser execution distinct from experimental desktop
+3. Keep the hosted browser launch candidate distinct from experimental desktop
    and remote-display execution.
 4. Put product journeys before package topology.
 5. Link claims to the engine's benchmarks and limits rather than silently

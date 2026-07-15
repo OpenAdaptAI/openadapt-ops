@@ -3,8 +3,6 @@
 import pathlib
 import sys
 
-import pytest
-
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "scripts"))
 
 from validate_docs import check_empty_pages, check_product_docs_contract
@@ -42,7 +40,8 @@ def test_check_empty_pages_nested(tmp_path):
 def _write_contract_docs(root):
     pages = {
         "get-started/what-works-today.md": (
-            "# Integrated product matrix\n\nHosted execution is limited."
+            "# Integrated product matrix\n\nHosted execution is a Beta launch candidate. "
+            "Production provider qualification remains pending."
         ),
         "guides/hosted.md": (
             "# Hosted browser execution\n\nA sanitized derivative is inspected in "
@@ -70,7 +69,11 @@ def test_product_docs_contract_passes_for_product_first_nav(tmp_path):
     docs_dir = tmp_path / "docs"
     pages = _write_contract_docs(docs_dir)
     mkdocs_file = tmp_path / "mkdocs.yml"
-    mkdocs_file.write_text("nav:\n" + "".join(f"  - {path}\n" for path in pages))
+    mkdocs_file.write_text(
+        "nav:\n  - Reference:\n"
+        + "".join(f"    - {path}\n" for path in pages)
+        + "    - Package and repository lifecycle: ecosystem/index.md\n"
+    )
 
     assert check_product_docs_contract(docs_dir, mkdocs_file) == []
 
@@ -82,9 +85,28 @@ def test_product_docs_contract_rejects_missing_page_and_package_first_nav(tmp_pa
     mkdocs_file = tmp_path / "mkdocs.yml"
     mkdocs_file.write_text(
         "nav:\n  - Packages:\n"
-        + "".join(f"  - {path}\n" for path in pages)
+        + "".join(f"    - {path}\n" for path in pages)
+        + "  - Reference:\n"
+        + "    - Package and repository lifecycle: ecosystem/index.md\n"
     )
 
     issues = check_product_docs_contract(docs_dir, mkdocs_file)
     assert any("Missing required product page" in issue for issue in issues)
     assert any("Package-first top-level navigation" in issue for issue in issues)
+
+
+def test_product_docs_contract_rejects_unqualified_hosted_availability(tmp_path):
+    docs_dir = tmp_path / "docs"
+    pages = _write_contract_docs(docs_dir)
+    hosted = docs_dir / "guides/hosted.md"
+    hosted.write_text(hosted.read_text() + "\nStart hosted checkout\n")
+    mkdocs_file = tmp_path / "mkdocs.yml"
+    mkdocs_file.write_text(
+        "nav:\n  - Reference:\n"
+        + "".join(f"    - {path}\n" for path in pages)
+        + "    - Package and repository lifecycle: ecosystem/index.md\n"
+    )
+
+    issues = check_product_docs_contract(docs_dir, mkdocs_file)
+
+    assert any("Unqualified hosted-availability claim" in issue for issue in issues)
