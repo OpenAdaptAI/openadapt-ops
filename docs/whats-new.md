@@ -1,12 +1,16 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-14 17:23 UTC*
+> *Last updated: 2026-07-14 18:58 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [fix: version reads from metadata + doctor core/optional sets + pyproject description](https://github.com/OpenAdaptAI/OpenAdapt/pull/1013) (#1013) — merged 
+
+- [docs: refocus OpenAdapt on the demonstration compiler (remove package-zoo / old platform framing)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1012) (#1012) — merged 
 
 - [fix: Discord badge 'invalid server' (switch to static badge)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1011) (#1011) — merged 
 
@@ -22,6 +26,14 @@
 
 ## openadapt-flow
 
+
+- [docs: remove agent-partition build notes, honest backend status, claims-consistency with LIMITS](https://github.com/OpenAdaptAI/openadapt-flow/pull/108) (#108) — merged 
+
+- [docs(on-prem): reconcile at-rest note with shipped AEAD encryption](https://github.com/OpenAdaptAI/openadapt-flow/pull/107) (#107) — merged 
+
+- [feat: Citrix/remote-display pixel-only e2e proof (UIA-off, on-screen verify, identity-gate + halt)](https://github.com/OpenAdaptAI/openadapt-flow/pull/106) (#106) — merged 
+
+- [feat: on-prem (air-gapped) clinic deployment package + docs](https://github.com/OpenAdaptAI/openadapt-flow/pull/105) (#105) — merged 
 
 - [feat: integrated OpenEMR end-to-end harness (compiled arm, cost-capped agent arm gated off)](https://github.com/OpenAdaptAI/openadapt-flow/pull/104) (#104) — merged 
 
@@ -54,14 +66,6 @@
 - [docs: rewrite README to the current architecture + add a claims-consistency CI gate](https://github.com/OpenAdaptAI/openadapt-flow/pull/90) (#90) — merged 
 
 - [feat: close the halt→learn→resolve loop (governed, one scenario) — modal-once](https://github.com/OpenAdaptAI/openadapt-flow/pull/89) (#89) — merged 
-
-- [fix: remove plaintext PHI from compiled bundles + scrub/governance/egress guards](https://github.com/OpenAdaptAI/openadapt-flow/pull/88) (#88) — merged 
-
-- [chore: engineering hygiene — version-sync, lint/type gate, reformat, supply-chain (final, on settled main)](https://github.com/OpenAdaptAI/openadapt-flow/pull/86) (#86) — merged 
-
-- [feat: opt-in session-video capture + how-it-works media generator](https://github.com/OpenAdaptAI/openadapt-flow/pull/85) (#85) — merged 
-
-- [feat: auto-provision Chromium on first browser launch (pip install just works)](https://github.com/OpenAdaptAI/openadapt-flow/pull/84) (#84) — merged 
 
 
 
