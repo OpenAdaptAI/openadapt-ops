@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-15 22:18 UTC*
+> *Last updated: 2026-07-15 22:22 UTC*
 
 
 
@@ -75,6 +75,8 @@
 
 ## openadapt-desktop
 
+
+- [fix: keep desktop releases version-consistent](https://github.com/OpenAdaptAI/openadapt-desktop/pull/14) (#14) — merged 
 
 - [feat: align desktop with the hosted workflow loop](https://github.com/OpenAdaptAI/openadapt-desktop/pull/13) (#13) — merged 
 
