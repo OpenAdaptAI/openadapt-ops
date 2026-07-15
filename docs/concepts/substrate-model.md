@@ -8,6 +8,12 @@ have a live caller. Do not publish until true.
 
 # The substrate model: one runner, many surfaces
 
+!!! warning "Target-state routing model"
+    The shared backend protocol and individual adapters exist, but the single
+    control-plane runner described here is not fully wired. Playwright is the
+    reference path, Windows is experimental, and RDP/Citrix are research
+    spikes. See [What works today](../get-started/what-works-today.md).
+
 Work lives on different surfaces. A referral moves through a browser app; a
 clinical chart lives in a native Windows EMR; a legacy line-of-business tool is
 reachable only as pixels over Citrix. OpenAdapt compiles and replays the same
@@ -69,8 +75,8 @@ Two backends cover it behind the same protocol:
   identity is viable on desktop, not just the browser.
 - **`FreeRDPBackend`** drives a legacy app over RDP as **pure pixels** — no
   accessibility tree, no DOM, no structured layer of any kind. This is the floor
-  the vision-first runtime was built for, and it is exactly what a Citrix/VDI
-  session exposes.
+  the vision-first runtime was built for, and it represents the lowest-fidelity
+  surface a Citrix/VDI deployment may expose.
 
 !!! warning "Citrix / RDP is pixel-only — and that has consequences"
     On a pure-pixel substrate the ladder runs on its visual floor and the
@@ -113,10 +119,10 @@ guest through the in-session agent contract, not the stream.
   against mocked servers; the desktop path has a live end-to-end existence proof
   on a WinForms app in a Windows-11-ARM VM, at small N (see
   [Backends](backends.md#desktop-windows-uia)). It is not yet a big-N study.
-- The **substrate-agnostic runner routing `web` → browser sandbox and `desktop`
-  → Windows runner is target-state.** Today the browser path runs; the desktop
-  runner is glue-in-progress around existing pieces, not yet wired to the control
-  plane.
+- The substrate-agnostic runner routes `web` to the launched browser path.
+  Desktop routing is experimental and remains outside the browser subscription
+  evidence boundary.
 
-The point of the model is that when the desktop runner lands, nothing above it
-changes: the same bundle, the same ladder, the same gates.
+The point of the model is that backend expansion does not require a different
+bundle or safety model: the same ladder and gates apply, while each substrate
+must earn its own maturity evidence.

@@ -1,7 +1,9 @@
 # Reference
 
 Precise reference for the command line, the deployable artifact, and
-configuration.
+configuration. Package topology is intentionally secondary: the canonical
+engine is `openadapt-flow`, while package and research repositories are
+classified under [Ecosystem](../ecosystem/index.md).
 
 <div class="grid cards" markdown>
 
@@ -23,5 +25,14 @@ configuration.
 -   [__Configuration and env vars__](configuration.md)
 
     Secrets, scrubbing, the VLM appliance, and auto-install controls.
+
+-   [__Documentation source of truth__](documentation-governance.md)
+
+    Which repository deploys this site and which historical docs trees must not.
+
+-   [__Technical paper source__](https://github.com/OpenAdaptAI/openadapt-flow/tree/main/paper)
+
+    arXiv draft, machine-checked benchmark constants, methodology, limitations,
+    and artifact checklist. No arXiv identifier exists until submission.
 
 </div>

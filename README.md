@@ -2,6 +2,12 @@
 
 Automated documentation generator for the OpenAdapt ecosystem. Syncs READMEs, aggregates changelogs, and generates digest pages using LLM.
 
+> **Source of truth:** This repository's `docs/` tree and `mkdocs.yml` own
+> `docs.openadapt.ai`. `OpenAdapt/docs`, `OpenAdapt/mkdocs.yml`, and
+> `openadapt-gitbook` are noncanonical historical trees and must not deploy to
+> the production docs domain. See
+> [`docs/reference/documentation-governance.md`](docs/reference/documentation-governance.md).
+
 ## Quick Start
 
 ```bash

@@ -13,13 +13,13 @@ enforced. Read them in order for the full picture, or jump to what you need.
 
 -   [__The substrate model__](substrate-model.md)
 
-    One substrate-agnostic runner drives web, native Windows, and pixel-only
-    Citrix/RDP. Route on one field; everything above it is identical.
+    Routing across web, native Windows, and pixel-only Citrix/RDP; the adapters
+    have different maturity today.
 
 -   [__The deployment matrix__](deployment-matrix.md)
 
-    Our cloud, BYOC (your VPC), or air-gapped self-hosted. You choose where the
-    data lives; the PHI-free control/data boundary is architectural.
+    Hosted browser launch, customer-controlled execution, self-hosting, and the
+    authoring-versus-runtime data boundary.
 
 -   [__Fail-closed regulated execution__](regulated-execution.md)
 
@@ -73,11 +73,13 @@ enforced. Read them in order for the full picture, or jump to what you need.
 
 -   [__Backends: where it runs__](backends.md)
 
-    Web (Playwright), desktop Windows (UIA), and pixel-only RDP behind one
-    backend protocol. The ladder is backend-agnostic.
+    Browser (Playwright) is the supported end-to-end path. Windows UIA is
+    experimental; pixel-only RDP and Citrix remain research. The ladder uses
+    one backend protocol without implying equal maturity.
 
 -   [__The on-prem VLM appliance__](vlm-appliance.md)
 
-    Optional local grounding and identity. Data stays in the building.
+    Optional local grounding and identity. When deployed on-prem, observations
+    remain inside that declared customer boundary.
 
 </div>

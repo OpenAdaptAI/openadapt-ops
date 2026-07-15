@@ -79,4 +79,12 @@ appliance locally (or not at all, keeping the deterministic path only), set
 The system was designed so that the deterministic path never needs the network,
 and the only model that can see a record is one you host.
 
+The repository includes a pilot deployment package with a local directory
+queue, systemd path unit, hash-chained PHI-free audit log, and air-gap checks.
+Its maturity is uneven: the container topology needs a prebuilt offline
+wheelhouse, full-disk encryption is operator-provisioned, and the signed
+`install.sh --update` apply path is a documented stub. Do not present update or
+rollback as automated until a site-specific procedure has been implemented and
+tested. See the [security and deployment review](security-review.md).
+
 For a managed alternative, see [the hosted option](hosted.md).

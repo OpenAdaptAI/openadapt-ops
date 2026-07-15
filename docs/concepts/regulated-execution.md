@@ -1,17 +1,10 @@
-<!--
-TARGET-STATE SPEC — HELD, NOT YET SHIPPED.
-`run` as a distinct fail-closed verb is designed, not shipped. Today the engine
-exposes `replay` (local, $0, dev/pilot). This page describes the `run` gate as it
-will work once it lands. Do not publish until true.
--->
-
 # Fail-closed regulated execution: `run` vs `replay`
 
 Not every execution should be held to the same bar. Iterating on a bundle at your
 desk and executing a consequential clinical write in production are different
 acts, and OpenAdapt draws a hard line between them: **`replay`** is the local,
 $0, developer-and-pilot path, and **`run`** is the fail-closed regulated path
-that refuses to execute unless every safety precondition is provably satisfied.
+that refuses to execute unless its admission-gate requirements are satisfied.
 
 ## Two verbs, two postures
 
@@ -26,16 +19,15 @@ that refuses to execute unless every safety precondition is provably satisfied.
 for free, and it is where drift-testing and pilots happen. `run` layers a
 **pre-flight gate** on top of the identical runtime: same ladder, same identity
 gate, same effect verification. Nothing about *how* a step executes changes —
-what changes is that `run` **refuses to begin** if the deployment is not provably
-safe.
+what changes is that `run` **refuses to begin** if the required coverage,
+encryption, and integrity evidence is missing.
 
-!!! note "Status: `run` is target-state"
-    Today the engine exposes `replay`. The fail-closed `run` gate described here
-    is designed and in flight, not yet a shipped verb. Everything it composes —
-    [`certify`](policy-and-certify.md), the [identity gate](identity-gate.md),
-    [effect verification](effect-verification.md), bundle signing, config
-    pinning — either exists or is in flight; `run` is the verb that composes them
-    into a single fail-closed entry point.
+!!! note "Status: shipped, still pre-production"
+    The fail-closed `run` verb and its admission-gate tests ship in the canonical
+    engine. That makes configured controls mandatory by default; it does not
+    make every backend or workflow production-ready. Use `run --dry-run` to
+    inspect the gate report before execution and review
+    [What works today](../get-started/what-works-today.md).
 
 ## What `run` checks before it executes a step
 
@@ -49,13 +41,11 @@ flowchart TD
     C -->|no| REFUSE([Refuse · exit nonzero])
     C -->|yes| I{Identity coverage<br/>meets policy floor?}
     I -->|no| REFUSE
-    I -->|yes| E{Declared effects have<br/>a configured verifier?}
+    I -->|yes| E{Effect contract + verifier<br/>or explicit approval?}
     E -->|no| REFUSE
-    E -->|yes| B{Bundle signature +<br/>integrity verified?}
+    E -->|yes| B{Encrypted bundle +<br/>manifest integrity?}
     B -->|no| REFUSE
-    B -->|yes| P{Config pinned<br/>to approved values?}
-    P -->|no| REFUSE
-    P -->|yes| GO([Execute · fail-closed at every step])
+    B -->|yes| GO([Execute · fail-closed at every step])
 ```
 
 1. **Certification.** The bundle must pass [`certify`](policy-and-certify.md)
@@ -68,17 +58,19 @@ flowchart TD
    falls below it. This directly confronts the honest limit that **identity
    verification covers only armed steps** — `run` will not execute a bundle whose
    consequential clicks are unarmed when the policy forbids it.
-3. **Verified effects.** Every step that declares an [effect](effect-verification.md)
-   must have a verifier configured. A step declaring effects with no verifier is
-   a configuration error and halts — `run` promotes that from a runtime halt to a
-   pre-flight refusal.
-4. **Encrypted, signed bundles.** The bundle's integrity and signature are
-   verified before execution, and its at-rest form is encrypted. `run` refuses an
-   unsigned or tampered bundle.
-5. **Pinned config.** Model tiers, verifier endpoints, egress allow-list, and
-   policy are pinned to approved values. `run` refuses to execute against
-   unpinned or drifted configuration, so a production run cannot silently pick up
-   a different verifier or a looser allow-list.
+3. **Verified effects or explicit approval.** Every consequential write must
+   declare a system-of-record effect. The deployment must configure a matching
+   verifier, unless an operator deliberately supplies the
+   `--approve-unverified-writes` fallback. Approval is an explicit availability
+   exception, not independent verification.
+4. **Encrypted, integrity-sealed bundles.** By default the workflow must be
+   AES-GCM encrypted and the manifest digest must re-verify. Optional
+   `--pin-digest` and `--pin-version` values are enforced when supplied.
+
+`--allow-unencrypted` disables the encryption gate, and unsealed template
+assets are warnings unless `--strict-templates` is set. Those escape hatches
+exist for development and migration; using them weakens the regulated posture
+and is visible in the gate report.
 
 **If any precondition fails, `run` refuses — it does not degrade to a
 best-effort execution.** Refusing is the cheap direction to be wrong.
@@ -116,8 +108,11 @@ still apply, and `run` is honest about them rather than papering over them:
   confirmation, not an independent system-of-record check. A REST/FHIR/document-hash
   verifier reads the *record*; a screen read-back reads the *pixels*. `run` does
   not pretend the latter is the former.
-- **Template crops are not yet AEAD-sealed.** Bundle signing covers integrity;
-  per-crop authenticated encryption of template assets is future work, disclosed.
+- **Encryption is opt-in at authoring time.** `Workflow.save(..., encrypt=True)`
+  seals workflow JSON and template crops, but normal compilation writes a
+  plaintext bundle. `run` refuses plaintext by default; keep full-disk
+  encryption as defense in depth and use `--strict-templates` to refuse any
+  unsealed image asset.
 - **A green certification is scoped to what the policy asserts.** `certify`
   enforces the policy you wrote; a gap the policy does not name is not caught by
   `run`.

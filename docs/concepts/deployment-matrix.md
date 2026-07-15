@@ -1,159 +1,128 @@
-<!--
-TARGET-STATE SPEC — HELD, NOT YET SHIPPED.
-This page describes the deployment matrix as it will exist once the BYOC
-Connector and the hosted runner land. Today the only lanes with a live caller
-are self-hosted/on-prem (PARTIAL) and a non-PHI web runner (PARTIAL, waitlist).
-Everything else is designed, demand-gated, and unbuilt. Do not publish until true.
--->
+# Deployment and data-boundary matrix
 
-# The deployment matrix
+OpenAdapt separates the surface a workflow drives from the boundary in which it
+runs. The same compiler, bundle format, safety gates, and report schema can be
+used in each lane; substrate maturity and data handling differ.
 
-OpenAdapt separates *what surface it drives* (the [substrate](substrate-model.md))
-from *where the run executes and who owns the data* (the deployment). This page
-is about the second axis. The same engine, bundle format, CLI, and PHI-free
-control/data boundary run in every deployment; what changes is who operates the
-data plane and where regulated data lives.
+## Current matrix
 
-The guiding principle is a **deployment-choice spectrum**, not one security
-promise: *you choose where the data lives.* We do not make a company-wide "never
-leaves your network" claim — the guarantee is scoped to the tier you pick.
+| Deployment / substrate | Browser | Windows desktop | Remote display / Citrix |
+|---|---|---|---|
+| **OpenAdapt Hosted** | **Launching.** Managed execution of locally authored and validated browser bundles, structural reports, replacement activation, billing, and metering. | Experimental runner work; not included in the browser offer. | Research only; no hosted Citrix claim. |
+| **Customer cloud / BYOC** | Available by scoped deployment where customer storage and runner satisfy the destination policy. | Experimental; qualify the actual app and runner. | Research; a protocol adapter or analog is not a validated Citrix deployment. |
+| **Self-hosted / on-prem** | **Beta reference engine.** Local record, compile, replay, and reports. | Experimental local proof. | RDP and pixel-only analog are research spikes. |
 
-## The three deployments
+The browser launch does not promote every cell. Code presence, a shared runner
+protocol, or successful checkout is not evidence that Windows, RDP, or Citrix
+is production-ready.
 
-<div class="grid cards" markdown>
+## Artifact boundary and runtime boundary
 
--   __Our cloud — non-PHI__
+Two boundaries must be reviewed independently:
 
-    ---
+1. **Authoring artifacts:** recordings, screenshots, input events, compiled
+   bundles, templates, reports, and teaching evidence.
+2. **Runtime observations:** live frames, OCR/accessibility text, injected
+   parameters, model inputs, logs, and effect-verifier values generated while a
+   workflow runs.
 
-    A managed, multi-tenant runner for **non-regulated** work. The data plane
-    runs in our infrastructure. Suitable for public or non-sensitive apps where
-    convenience beats data residency. **Not for PHI.**
+An authoring artifact may cross an approved boundary only as a sanitized,
+manifested derivative. A sanitized recording does not imply that runtime data
+will remain sanitized; a real EMR can display PHI as soon as replay begins.
 
--   __BYOC — regulated (customer VPC)__
+| Data movement | Hosted | Customer cloud / BYOC | Self-hosted |
+|---|---|---|---|
+| Raw authoring artifact | Refuse remote upload. | Keep within customer policy. | Local. |
+| Approved sanitized derivative | Allow when manifest, hash, review, and destination pass. | Allow to a verified customer endpoint when policy permits. | Local or explicitly exported. |
+| PHI-bearing runtime frame | Outside the shared hosted boundary unless a specific regulated service is configured. | Remains inside customer boundary. | Remains local. |
+| Minimized control metadata | Allow by schema and destination policy. | Allow by schema and destination policy. | Optional/no egress. |
+| Secret value | Never browser-visible or serialized into enqueue payloads. | Resolve inside customer runner. | Resolve locally. |
 
-    ---
+## Sanitized derivatives
 
-    The PHI-touching data plane runs **inside the customer's own VPC**; we
-    manage the control plane only. **PHI never enters our infrastructure** — we
-    see PHI-free run metadata. The highest-value regulated lane.
+“Scrubbed” means the source was inventoried, a separate copy was transformed,
+the result was rescanned, unresolved content was refused, and a manifest binds
+the policy and approval to the exact derivative hash. It does not mean the
+source was modified or that every future run is PHI-free.
 
--   __Self-hosted / on-prem (air-gapped)__
+It also does not mean a transformed recording remains runnable. Register the
+approved recording derivative, compile/lint/certify/replay locally, then
+sanitize/review/approve the bundle. Hosted admits that exact bundle only with a
+fresh `validate-hosted` operator attestation. If recording sanitation changed
+execution-bearing content, ingest returns `needs_parameterization`; parameterize
+before compilation rather than weakening the privacy or runtime gate.
 
-    ---
+Cloud checks the attestation's exact recording and bundle hashes, provenance,
+report and evidence hashes, policy, engine-derived `low`/`consequential` risk
+class, HMAC, freshness, and one-time organization/token challenge. Server-side
+policy, risk-class, and deployed compiler-version allowlists are additional
+restrictions. This is operator self-attestation, not independent certification
+or a general safety guarantee.
 
-    The entire stack runs in the customer's environment with **no egress**.
-    Deterministic replay is 100% local. The lane a fully air-gapped clinic or an
-    on-prem pilot runs on today.
+The risk-based launch default is:
 
-</div>
+- schema-minimized break descriptors may upload automatically;
+- recordings and bundles require local review unless an administrator adopts a
+  measured automatic policy with complete handler coverage;
+- unsupported, unknown, symlinked, or unresolved content is blocked;
+- modifications after approval invalidate the derivative hash;
+- the destination must be known and allowed independently of artifact status.
 
-## The matrix at a glance
+See [Hosted browser execution](../guides/hosted.md) for the complete protocol.
 
-Deployment × substrate. Each cell notes the honest status.
+## Hosted browser launch
 
-| Deployment ↓ / Substrate → | **Web (browser)** | **Windows-desktop / Citrix** |
-|---|---|---|
-| **Our cloud — non-PHI** | Managed multi-tenant runner. *Preview — join the waitlist.* | Hosted Windows-in-QEMU desktop runner. *Target-state, not yet wired.* |
-| **BYOC — regulated (customer VPC)** | Connector + pull queue + customer-owned storage. *Target-state.* | Connector + engine beside the customer's Citrix Workspace; **pixels never leave**. *Target-state — the highest-value lane.* |
-| **Self-hosted / on-prem** | On-prem run-queue package; web engine runs locally, no managed UX. *Partial today.* | Same package + Windows/RDP backend; Citrix-pixel mechanism proven live at small N. *Partial today — the lane a pilot runs on.* |
+The hosted path comprises:
 
-!!! warning "This table is a target, not a shipped product"
-    The bottom row (self-hosted) is the region that is real today, at pilot
-    maturity. Everything marked *target-state* is designed and demand-gated — do
-    not read it as committed-this-quarter. A managed lane stays a **waitlist**
-    until it actually runs; we do not take recurring money for a runner we can't
-    yet operate.
+- Stripe Checkout using the configured product and price;
+- authentication, onboarding, and organization isolation;
+- local recording, compilation, repair, and runtime validation before upload;
+- object-backed approved artifacts and signed access;
+- runner enqueue and authenticated callbacks;
+- structural reports, locally validated replacement activation, schedules, and recovery;
+- subscription entitlements and usage metering.
 
-## BYOC: how PHI stays home
+Production selects live mode explicitly. Development mock mode is visibly
+synthetic. A missing production dependency makes the affected operation
+unavailable rather than substituting a simulated success.
 
-BYOC is the smallest honest delta from where the product is and the highest-value
-regulated lane. It keeps the managed control plane but moves the PHI-touching
-data plane inside the customer perimeter, bridged by **one new component: an
-outbound-only Connector** that flips job delivery from push to pull.
+The configured Stripe offer is the commercial source of truth. This matrix does
+not create a price, quota, SLA, certification, or backend entitlement.
 
-```mermaid
-flowchart LR
-    subgraph OURS[Our cloud · control plane · PHI-free]
-      Q[(Job queue<br/>metadata only)]
-    end
-    subgraph CUST[Customer VPC · data plane · PHI]
-      CN[Connector<br/>outbound long-poll] --> RN[Runner + engine]
-      RN --> ST[(Customer-owned<br/>encrypted storage)]
-    end
-    CN -.->|opens ZERO inbound ports<br/>long-polls outbound| Q
-    RN -.->|PHI-free callback:<br/>status, counts, a storage path| Q
-```
+## Customer-controlled regulated execution
 
-The customer opens **zero inbound ports**; the Connector long-polls a held-open
-outbound socket, exactly like a Citrix Cloud Connector or a self-hosted CI
-runner. BYOC swaps only three things from the hosted lane:
+Use a customer-controlled boundary when a live workflow necessarily displays
+PHI or other regulated data. Sanitized authoring derivatives and minimized
+metadata may cross approved endpoints; PHI-bearing live frames and values stay
+inside the boundary.
 
-1. **Transport** — push enqueue becomes an outbound pull.
-2. **Storage owner** — our signed URLs become the customer's own S3/Blob/disk;
-   the control plane keeps only an opaque *path*.
-3. **The Connector** — the one genuinely new piece.
+A deployment scope must name:
 
-The engine, run-report schema, halt/teach contract, and callback body are
-**unchanged**.
+- the exact application and substrate;
+- who operates the control plane, runner, storage, and model endpoints;
+- allowed destinations and artifact classes;
+- credentials and secret resolution;
+- identity coverage and independent system-of-record effect verification;
+- policy, certification, review, approval, and exception handling;
+- encryption, retention, deletion, logs, incident response, updates, rollback,
+  support, and legal agreements.
 
-## The PHI-free control/data boundary
+Architecture documentation is not a HIPAA, PHIPA, SOC 2, or other compliance
+determination. The parties must complete the legal, contractual, security, and
+risk work required for the actual deployment.
 
-Across every deployment, the split between what the control plane may see and
-what it must never see is **architectural, not policy**:
+## Backend evidence boundary
 
-| Control plane MAY see | Control plane MUST NEVER see |
-|---|---|
-| Run status + timestamps | Screenshots / step frames |
-| Aggregate metrics (steps, halts, heals, model calls, duration, cost) | OCR text, resolved field values |
-| A halt descriptor authored **PHI-free** (`step_intent` / `reason`) | Patient identifiers, PHI-bearing params |
-| An opaque storage **path** | `report.json` **bodies** |
-| Connector health, engine/bundle version, billing counters | Injected secrets / EMR credentials |
+- **Browser:** Beta local engine and the hosted launch substrate. It is the only
+  backend exercised end to end against a real third-party application in the
+  published engine evidence.
+- **Windows UIA:** Experimental local evidence, not a broad app/platform study.
+- **macOS native:** Experimental building blocks without a validated native
+  end-to-end product path.
+- **RDP:** Research adapter with mock/offline evidence.
+- **Citrix:** Pixel-only remote-display analog; not validated against ICA/HDX,
+  real charts, lock screens, latency, DPI, or synthetic-input controls.
 
-The callback body is **PHI-free by construction** — a status enum, timings,
-counts, and a storage path. Egress is enforced by a fail-closed allow-list at the
-network boundary, not just in-guest. After a run that touched PHI, the VM is
-destroyed, never returned to a shared pool.
-
-## Honest claims per tier
-
-The wording matters, and it is scoped deliberately (see the July-13 honesty
-ethos):
-
-- **BYOC / self-hosted →** *"PHI never enters our infrastructure."* (We see
-  PHI-free metadata only.)
-- **We do not say** *"we're blind"* or *"we literally cannot see your PHI"* —
-  that would not survive a skeptical security review.
-- **There is no company-wide "never leaves your network" tagline.** The claim is
-  scoped to the tier, framed as a choice of where the data lives.
-- **A BAA and a current HIPAA risk analysis are required even for encrypted PHI
-  we cannot read.** The documented risk analysis is the single
-  highest-leverage compliance artifact.
-
-## What is real today, and the compliance gate
-
-- **Self-hosted / on-prem** is the region with a live caller today, at pilot
-  maturity: an on-prem run-queue package with a PHI-free hash-chained audit log,
-  and the Citrix-pixel mechanism proven live on a VM at small N.
-- **A non-PHI web runner** exists but is waitlist-only; billing and self-serve
-  are not shipped.
-- **BYOC and the hosted desktop runner are target-state** — designed, and
-  gated on validating one real deployment first.
-
-!!! danger "No lane carries real PHI until the compliance gate closes"
-    The 2026 HIPAA Security Rule makes encryption of ePHI **mandatory** at rest
-    and in transit (no longer merely "addressable"). This applies to the
-    self-hosted lane too — a local plaintext-PHI-at-rest exposure still violates
-    the rule even when replay is 100% local. Encryption at rest **and** in
-    transit for the PHI-bearing wires, plus a signed BAA and a current risk
-    analysis, must be in place before any lane carries real PHI. Remediation is
-    in flight; until it lands, these lanes are for non-PHI validation only.
-
-## A note on future tiers
-
-A single-tenant **confidential-compute hosted** lane (SEV-SNP/TDX CVM, headless
-framebuffer inside encrypted RAM, attestation-gated key release) is the correct
-architecture for "you run it" with regulated data — but it is **deferred**: built
-only when a named contract funds the SOC 2 / HITRUST + BAA lift, never
-speculatively. Multi-tenant HIPAA SaaS for PHI is **not planned**; multi-tenant
-stays for the non-PHI tier only.
+Review [What works today](../get-started/what-works-today.md) and the engine's
+[published limits](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/LIMITS.md)
+before selecting a workflow.

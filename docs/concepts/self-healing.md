@@ -2,8 +2,20 @@
 
 UIs drift. Themes change, buttons move, labels get renamed. Self-healing is how
 a compiled workflow survives that drift without a model in the loop, and
-**governed** self-healing means every repair is a reviewable diff, not an opaque
-adaptation.
+**governed** self-healing means every repair is evidence in a report or an
+explicitly saved, reviewable candidate bundle, not an opaque adaptation.
+
+## Four different outcomes
+
+"Self-healing" is not one unlimited mechanism. The current product distinguishes
+four outcomes:
+
+| Outcome | Trigger | Model use | Promotion behavior |
+|---|---|---|---|
+| **Deterministic re-resolution** | A template moved or changed but OCR, geometry, or structure still identifies it. | None. | The run records the rung and heal. Save a candidate with `--save-healed-to`; the base bundle is not silently promoted. |
+| **Model-assisted proposal** | Deterministic rungs fail and an operator explicitly enables a grounding appliance. | Yes, counted in the report. | The proposal still faces identity and postcondition gates. It may halt and never bypasses policy. |
+| **Human teaching** | A run halts and an operator demonstrates a correction. | None for the reference inducer. | `teach` promotes only after regression and canary gates; today it covers the optional-dialog correction class, not arbitrary drift. |
+| **Unsupported drift** | Evidence is insufficient, scale/reflow invalidates anchors, or verification fails. | None unless configured. | Halt with a report. No candidate is promoted. |
 
 ## The resolution ladder
 
@@ -52,11 +64,11 @@ irreversible will not act on a low-confidence match at all.
 
 ## Repairs are diffs you can review
 
-When a lower rung resolves a step under drift, the fix is written back into the
-bundle as a **reviewable diff**. A theme-drift run that heals eight anchors
-produces a healed bundle you can inspect and replay clean, not a black-box
-adaptation you have to trust. Healing is governed: you see what changed, you
-approve it, and the healed bundle becomes the new baseline.
+When a lower rung resolves a step under drift, the run can write a separate
+candidate bundle as a **reviewable diff**. A theme-drift run that heals eight
+anchors produces a candidate you can inspect and replay clean, not a black-box
+adaptation you have to trust. Without `--save-healed-to`, the base bundle is not
+mutated. Promotion remains an operator/deployment decision.
 
 ```bash
 openadapt flow replay bundle --drift theme --save-healed-to bundle-healed
@@ -70,6 +82,11 @@ resolve the target and a grounder is configured. Every model call that does
 happen is recorded and counted in the run report, so the $0-per-run property is
 observable, not assumed. See [The on-prem VLM appliance](vlm-appliance.md) for
 the optional grounding and state-verification tiers.
+
+The model tier can be wrong. A proposed target still faces the deterministic
+identity gate, and the optional state verifier can false-rescue an ambiguous
+in-progress screen. Model assistance trades availability against measured risk;
+it is not a general adaptation guarantee.
 
 ## Healing versus verification
 

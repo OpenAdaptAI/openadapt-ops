@@ -7,7 +7,7 @@ import pytest
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "scripts"))
 
-from validate_docs import check_empty_pages
+from validate_docs import check_empty_pages, check_product_docs_contract
 
 
 def test_check_empty_pages_finds_issues(tmp_path):
@@ -37,3 +37,54 @@ def test_check_empty_pages_nested(tmp_path):
     issues = check_empty_pages(docs_dir=tmp_path)
     assert len(issues) == 1
     assert "tiny.md" in issues[0]
+
+
+def _write_contract_docs(root):
+    pages = {
+        "get-started/what-works-today.md": (
+            "# Integrated product matrix\n\nHosted execution is limited."
+        ),
+        "guides/hosted.md": (
+            "# Hosted browser execution\n\nA sanitized derivative is inspected in "
+            "a local viewer and bound to a cryptographic derivative hash. "
+            "Unknown or unresolved content is refused. "
+            "## Destination-aware decisions\n\nProduction documentation explains why "
+            "production fails closed instead of silently using mock mode."
+        ),
+        "guides/security-review.md": (
+            "# Data-boundary answers\n\n## Updates and rollback\n"
+        ),
+        "reference/documentation-governance.md": (
+            "# Documentation source of truth\n\n"
+            "## Noncanonical documentation trees\n"
+        ),
+    }
+    for relative_path, content in pages.items():
+        path = root / relative_path
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(content)
+    return pages
+
+
+def test_product_docs_contract_passes_for_product_first_nav(tmp_path):
+    docs_dir = tmp_path / "docs"
+    pages = _write_contract_docs(docs_dir)
+    mkdocs_file = tmp_path / "mkdocs.yml"
+    mkdocs_file.write_text("nav:\n" + "".join(f"  - {path}\n" for path in pages))
+
+    assert check_product_docs_contract(docs_dir, mkdocs_file) == []
+
+
+def test_product_docs_contract_rejects_missing_page_and_package_first_nav(tmp_path):
+    docs_dir = tmp_path / "docs"
+    pages = _write_contract_docs(docs_dir)
+    (docs_dir / "guides/security-review.md").unlink()
+    mkdocs_file = tmp_path / "mkdocs.yml"
+    mkdocs_file.write_text(
+        "nav:\n  - Packages:\n"
+        + "".join(f"  - {path}\n" for path in pages)
+    )
+
+    issues = check_product_docs_contract(docs_dir, mkdocs_file)
+    assert any("Missing required product page" in issue for issue in issues)
+    assert any("Package-first top-level navigation" in issue for issue in issues)

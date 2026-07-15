@@ -34,7 +34,13 @@ Task-focused, how-to guides for real deployments. Each one assumes you have
 
 -   [__The hosted option__](hosted.md)
 
-    When a managed deployment makes sense, and how to think about it.
+    Subscribe, sanitize and review artifacts, run browser workflows, and
+    understand trusted execution boundaries.
+
+-   [__Security and deployment review__](security-review.md)
+
+    Data boundaries, secrets, audit integrity, encryption, updates, and the
+    enterprise review checklist.
 
 -   [__Read and audit run reports__](run-reports.md)
 

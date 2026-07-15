@@ -1,8 +1,8 @@
 site_name: OpenAdapt Docs
 site_description: >-
   OpenAdapt is a demonstration compiler. Record a GUI workflow once and compile
-  it into deterministic, self-healing, locally-run replay that verifies real
-  effects and halts rather than guessing.
+  it into deterministic replay, re-resolve or propose governed repairs under
+  drift, verify real effects, and halt rather than guess.
 site_url: https://docs.openadapt.ai
 # The header star/fork counter reads from repo_url. Point it at the flagship
 # repo so it reflects the project's real GitHub traction, not this docs repo.
@@ -92,6 +92,7 @@ nav:
   - Home: index.md
   - Get started:
     - get-started/index.md
+    - What works today: get-started/what-works-today.md
     - Your first workflow: get-started/first-workflow.md
     - What you get: get-started/what-you-get.md
   - Concepts:
@@ -120,6 +121,7 @@ nav:
     - Run a deployment: guides/run-a-deployment.md
     - Deploy on-prem: guides/deploy-on-prem.md
     - The hosted option: guides/hosted.md
+    - Security and deployment review: guides/security-review.md
     - Read and audit run reports: guides/run-reports.md
   - Reference:
     - reference/index.md
@@ -127,6 +129,7 @@ nav:
     - Deployment configuration: reference/deployment-config.md
     - The bundle format: reference/bundle-format.md
     - Configuration and env vars: reference/configuration.md
+    - Documentation source of truth: reference/documentation-governance.md
   - Ecosystem: ecosystem/index.md
   - What's New: whats-new.md
   - Changelog: changelog.md

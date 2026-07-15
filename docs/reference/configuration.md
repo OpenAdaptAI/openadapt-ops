@@ -26,6 +26,17 @@ The compiled bundle and `report.json` keep literal identifiers behind a
 documented boundary and are **not** scrubbed by this flag; they are the identity
 check and the audit trail. See [Deploy on-prem](../guides/deploy-on-prem.md).
 
+## Encryption at rest
+
+| Variable | Purpose |
+|---|---|
+| `OPENADAPT_BUNDLE_KEY` | Passphrase used by encrypted bundle saves/loads and durable checkpoints. `run` requires an encrypted bundle by default. |
+
+Encryption is opt-in when a bundle is written through
+`Workflow.save(..., encrypt=True)`; normal compile output is plaintext. OpenAdapt
+provides the AEAD mechanism, not key custody, rotation, or recovery. See the
+[security and deployment review](../guides/security-review.md).
+
 ## The on-prem VLM appliance
 
 | Variable | Purpose |
@@ -40,6 +51,35 @@ The appliance makes zero cloud calls. See
 | Variable | Purpose |
 |---|---|
 | `OPENADAPT_FLOW_NO_AUTO_INSTALL` | Disables automatic browser provisioning. Set it when you manage the browser yourself (for example, you ran `playwright install chromium` ahead of time in a controlled image). |
+
+## Hosted connectivity
+
+| Variable | Purpose |
+|---|---|
+| `OPENADAPT_INGEST_TOKEN` | Token used by `login`, `push`, `validate-hosted`, and `report-break` when no `--token` is passed. The OS keychain is the next preferred token source. |
+| `OPENADAPT_FLOW_DEPLOYMENT_KIND` | Default execution lane: `cloud`, `byoc`, or `regulated`. Independent of destination trust. |
+| `OPENADAPT_FLOW_DESTINATION_KIND` | Destination trust class: `openadapt-managed`, `customer-managed`, or `local`. |
+| `OPENADAPT_FLOW_TRUSTED_HOSTS` | Comma-separated exact HTTPS origins allowed for customer-managed upload. |
+| `OPENADAPT_FLOW_AUTO_APPROVE_SANITIZED` | Administrator policy switch for fully covered, stable derivatives. Human review remains the default. |
+| `OPENADAPT_FLOW_HOSTED_WORKFLOW_ID` | Opts a halting `replay`/`run` into the best-effort `report-break` hook for this workflow id. Off by default. |
+| `OPENADAPT_FLOW_ORG_ID` | Optional organization id carried by the break-report hook. |
+
+Every remote upload requires the approved immutable archive from the sanitation
+pipeline. `--attest-non-phi` is deprecated and refused; a declaration is not a
+privacy control. Customer-owned endpoints must be HTTPS and exact-origin
+allowlisted. Unknown destinations fail closed.
+
+These variables configure the client boundary for the launched hosted path. See
+[Hosted browser execution](../guides/hosted.md).
+
+The hosted control plane separately requires three server-side, comma-separated
+allowlists: `RUNTIME_VALIDATION_POLICIES`,
+`RUNTIME_VALIDATION_RISK_CLASSES`, and
+`RUNTIME_VALIDATION_COMPILER_VERSIONS`. The risk-class allowlist normally
+admits one or both engine-derived values, `low` and `consequential`; the
+compiler-version allowlist must name versions actually deployed by the runner.
+Exact membership is required. An operator attestation cannot introduce a new
+policy, risk class, or compiler version.
 
 ## Effect verification against a live system of record
 

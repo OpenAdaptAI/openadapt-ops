@@ -20,14 +20,15 @@ flowchart LR
     subgraph OpenAdapt["Demonstration compiler"]
         direction TB
         b1[Demonstrate once] --> b2[[compile]] --> b3[Deterministic bundle]
-        b3 --> b4[Replay N times, $0]
+        b3 --> b4[Replay N times deterministically]
     end
 ```
 
-The agent pays a model call, latency, and API cost on every step of every run,
-forever. The compiler pays the model only once, at authoring time, and only to
-help repair the script when the UI changes. The healthy replay path makes zero
-model calls.
+A computer-use agent typically pays model latency and API cost while selecting
+actions on each run. The compiler does not require a model to author or execute
+the healthy path. An explicitly configured model can propose a repair when
+deterministic evidence is insufficient; that proposal remains governed and is
+counted in the report.
 
 ## What a compiled step carries
 

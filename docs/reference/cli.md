@@ -1,8 +1,8 @@
 # The `openadapt flow` CLI
 
 Record a workflow once, compile it into a deterministic vision-anchored script,
-replay it locally, and heal it on drift. Every command below is a subcommand of
-`openadapt flow`.
+replay it locally, and resolve, repair, or halt under drift. Every command below
+is a subcommand of `openadapt flow`.
 
 !!! note "Command form"
     The primary form is `openadapt flow <verb>`. If you installed the standalone
@@ -18,13 +18,17 @@ replay it locally, and heal it on drift. Every command below is a subcommand of
 | [`compile`](#compile) | Compile a recording into a workflow bundle | 0 |
 | [`induce`](#induce) | Induce a parameterized program from **multiple** recordings | 0 if certified, 2 if underdetermined |
 | [`replay`](#replay) | Replay a bundle, locally and deterministically | 0 on success, 1 on failure |
-| [`run`](#run) | Execute a bundle under a deployment config (production) | 0 on success, 1 on failure |
+| [`run`](#run) | Execute a bundle through the fail-closed deployment gate | 0 success, 1 execution halt, 2 refusal |
 | [`resume`](#resume) | Resume a durably-paused run from its last checkpoint | 0 on success, 1/3 otherwise |
 | [`approve`](#approve) | Mark a durably-paused run's escalation approved | 0 on success, 1 if none |
 | [`teach`](#teach) | Resolve a halted run from a fix demonstration, governed | 0 if promoted, 1 if refused, 2 on bad inputs |
 | [`lint`](#lint) | Report a bundle's coverage gaps | nonzero by severity |
 | [`certify`](#certify) | Enforce a safety policy, refuse the bundle if it fails | 2 on failure |
 | [`disambiguate`](#disambiguate) | Surface and resolve compile-time ambiguities | 2 if a consequential ambiguity is unresolved |
+| [`login`](#login) | Validate a hosted ingest token and remember the host | 0/1 |
+| [`push`](#push) | Explicitly upload a recording or bundle to a control plane | 0/1 |
+| [`validate-hosted`](#validate-hosted) | Bind local validation evidence to a one-time hosted challenge | 0/1 |
+| [`report-break`](#report-break) | Send a scrubbed PHI-free halt descriptor | 0/1 |
 | [`bench`](#bench) | Replay a bundle N times against the sample app and aggregate | 0 if all pass |
 | [`benchmark`](#benchmark) | Compare compiled replay vs a computer-use agent | 0 |
 | [`emit-skill`](#emit) | Emit an Agent Skills folder for a bundle | 0 |
@@ -148,9 +152,11 @@ only when `--allow-model-grounding` is passed **and**
 
 ## run
 
-The same executor as [`replay`](#replay), framed for a **real deployment**:
-backend, effect verification, API actuation, durable runtime, and policy, all
-wired from `--config`. The demo-only `--drift` teaching aid is not offered. See
+The same executor as [`replay`](#replay), behind a fail-closed admission gate:
+the bundle must pass policy, identity coverage, effect coverage, approval,
+encryption, and manifest-integrity checks before any action executes. Backend,
+effect verification, API actuation, durable runtime, and policy are wired from
+`--config`. The demo-only `--drift` teaching aid is not offered. See
 [Run a deployment](../guides/run-a-deployment.md).
 
 ```bash
@@ -165,10 +171,18 @@ openadapt flow run bundle --config deployment.yaml
 | `--param K=V` | Parameter substitution. Repeatable. |
 | `--save-healed-to DIR` | Write the healed bundle to this directory |
 | `--headed` | Run the browser headed |
+| `--policy NAME-OR-PATH` | Certifying policy (default: config policy, then `clinical-write`). |
+| `--approve-unverified-writes` | Explicitly approve writes whose declared effects cannot be independently verified in this deployment. |
+| `--strict-templates` | Refuse rather than warn when template/screenshot assets are unsealed. |
+| `--allow-unencrypted` | Development escape hatch that disables the default encryption-at-rest refusal. |
+| `--pin-digest SHA256` | Refuse unless the sealed content digest matches. |
+| `--pin-version VERSION` | Refuse unless the compiler version matches. |
+| `--dry-run`, `--explain` | Print the gate report and exit without executing. |
 
 Accepts every [deployment-wiring flag](#replay) above (`--config`,
 `--effects-*`, `--api-*`, `--durable`, `--worklist`, `--allow-model-grounding`).
-Exits 0 on success and 1 on a halt.
+Exits `2` on admission refusal, `0` after successful execution, and `1` if an
+admitted execution later halts.
 
 ## resume
 
@@ -300,6 +314,172 @@ openadapt flow disambiguate bundle --interactive --write
 | `--write` | Save the resolved workflow back into the bundle |
 
 Exits 2 if a consequential (must-answer) ambiguity is left unresolved.
+
+## login
+
+Validate a hosted ingest token. The CLI stores the token in the OS keychain
+when available and stores only the non-secret host in its config. Plaintext
+token storage requires an explicit fallback flag. This is a connectivity
+command, not a hosted-runner entitlement.
+
+```bash
+openadapt flow login --token <ingest-token>
+```
+
+| Flag | Description |
+|---|---|
+| `--token` | Ingest token. Falls back to `OPENADAPT_INGEST_TOKEN`, the OS keychain, then an existing config migration token. |
+| `--host` | Control-plane base URL. Defaults to the configured host, then `https://app.openadapt.ai`. |
+| `--no-save` | Validate without writing the host/token to the config file. |
+
+## validate-hosted
+
+Acquire an expiring, one-time Cloud challenge and create a signed operator
+attestation over strict lint, policy certification, and a successful local
+replay. Both inputs must be reviewed and approved sanitized derivatives. The
+bundle must have been compiled from the exact approved recording, and bundle
+sanitation must preserve execution-bearing bytes.
+
+```bash
+openadapt flow validate-hosted \
+  --recording recording.sanitized \
+  --bundle bundle.sanitized \
+  --run-dir runs/triage-validation \
+  --policy clinical-write \
+  --risk-class consequential \
+  --environment validation/mock-emr-v1 \
+  --target-url https://validation.example/login \
+  --allowed-host cdn.validation.example \
+  --out triage.runtime-validation.json
+```
+
+| Flag | Description |
+|---|---|
+| `--recording` | Approved sanitized recording derivative used to compile the bundle. |
+| `--bundle` | Approved sanitized bundle derivative whose exact archive will upload. |
+| `--run-dir` | Successful, non-halted local replay directory containing `report.json`. |
+| `--policy` | Named or file-backed policy that must pass again during validation. |
+| `--risk-class` | `low` or `consequential`; must match the risk derived from the compiled steps and be allowed by Cloud. |
+| `--environment` | Non-PHI validation-environment identifier; only its SHA-256 is included. |
+| `--target-url` | Exact non-PHI HTTPS entry URL. The report must bind the same requested URL and its actual browser origin; credentials, query strings, and fragments are refused. |
+| `--allowed-host` | Additional exact hostname allowed during hosted execution. Repeatable; the target hostname is included automatically. |
+| `--compiler-config` | Optional JSON object; its digest must match compiler provenance already sealed into the bundle. |
+| `--out` | Attestation JSON path. |
+| `--destination-kind`, `--trusted-host` | Destination policy for managed or exact-allowlisted customer endpoints. |
+| `--host`, `--token` | Override the configured control plane and token used for the challenge and HMAC. |
+
+The attestation binds the exact recording and bundle archive hashes, compiler
+identity/configuration, parameter schema, target/host execution boundary,
+lint/certification evidence, replay report, validation environment, policy,
+risk class, and challenge. The client also verifies the run report's workflow,
+bundle digest, source-recording provenance, parameter schema, and actual browser
+origin. Cloud verifies its configured exact policy, risk-class, and deployed
+compiler-version allowlists and consumes the organization/token-bound challenge
+once when the bundle is accepted.
+
+This is operator self-attestation, not an independent test or certification.
+The ingest-token HMAC proves possession and detects mutation; it does not prove
+that Cloud or an auditor observed the local replay. `certify` only evaluates the
+selected policy. Use independent evidence custody and a separately controlled
+signer when independent certification is required.
+
+## push
+
+Create or verify a sanitized derivative, enforce its review/approval and
+destination policy, and upload its immutable approved archive to `/api/ingest`.
+Uploading does **not** itself run the workflow.
+
+Sanitation does not establish runnability. Recording push registers the exact
+approved source and returns the next validation state; it does not create a
+runnable workflow. Compile that derivative locally, run strict lint,
+certification, and successful replay, then sanitize/review/approve the bundle,
+run `validate-hosted`, and push the exact bundle with its one-time attestation.
+
+```bash
+openadapt flow sanitize recording --kind recording --out recording.sanitized
+openadapt flow review-sanitized recording.sanitized --original recording
+openadapt flow approve-sanitized recording.sanitized \
+  --original recording --reviewer alice@example.com
+openadapt flow push recording.sanitized --kind recording --name "Triage"
+```
+
+Calling `push` with a raw path performs the first sanitation step and normally
+returns `pending_review` plus the local viewer command. After approval, call
+`push` on the derivative directory.
+
+| Flag | Description |
+|---|---|
+| `path` | Recording or bundle directory. Defaults to the most recent recording in the current directory. |
+| `--kind` | `recording` (default) or `bundle`. |
+| `--name` | Workflow name. |
+| `--workflow-id` | Existing hosted workflow UUID to receive a validated replacement bundle. Valid only with `--kind bundle`. |
+| `--resolves-run-id` | Exact halted-run UUID repaired by this replacement. Requires `--kind bundle` and `--workflow-id`; the halt is resolved only after atomic activation. |
+| `--deployment-kind` | Execution lane: `cloud`, `byoc`, or `regulated`. This is independent of destination trust; every lane requires a verified derivative. |
+| `--destination-kind` | `openadapt-managed`, `customer-managed`, or `local`. The OpenAdapt origin is recognized automatically. |
+| `--trusted-host` | Exact HTTPS origin allowed for a customer-managed endpoint; repeatable. |
+| `--sanitized-out` | Destination for the derivative created from a raw path. |
+| `--auto-approve` | Administrator policy approval for a stable derivative with complete type coverage. Human review is the default. |
+| `--validation-attestation` | Required challenge-bound `validate-hosted` JSON when `--kind bundle`; it must match the exact approved bundle archive. |
+| `--attest-non-phi` | Deprecated and refused. A declaration cannot bypass sanitation, review, or exact-hash approval. |
+| `--host`, `--token` | Override the configured control plane and token. |
+
+Remote artifact upload requires an approved sanitized derivative. The pipeline
+inventories and transforms a copy, rescans it, records unresolved findings and
+tool versions in a manifest, and binds operator approval to the derivative
+hash. Unknown, symlinked, unsupported, or unresolved content aborts the upload
+instead of being copied unchanged. The destination is evaluated separately: a
+verified customer endpoint may accept data its policy permits, while an unknown
+endpoint is refused. Compilation alone is never a de-identification claim.
+
+## sanitize, review-sanitized, approve-sanitized
+
+`sanitize` creates a separate derivative and `openadapt.sanitization/v1`
+manifest without modifying the source. `review-sanitized` serves a loopback-only
+original-versus-derivative viewer with no remote assets. `approve-sanitized`
+records the reviewer and freezes an immutable archive; later modification makes
+the approval invalid.
+
+```bash
+openadapt flow sanitize PATH --kind recording --out DERIVATIVE
+openadapt flow review-sanitized DERIVATIVE --original PATH
+openadapt flow approve-sanitized DERIVATIVE --original PATH --reviewer IDENTITY
+```
+
+| Command/flag | Description |
+|---|---|
+| `sanitize --kind` | Required artifact type: `recording` or `bundle`. |
+| `sanitize --redactions FILE` | Additional local JSON text/image redactions. |
+| `sanitize --overwrite` | Replace an existing derivative; never modifies the source. |
+| `review-sanitized --original` | Sensitive source shown only by the loopback viewer. |
+| `review-sanitized --no-open` | Print the local URL rather than opening a browser. |
+| `approve-sanitized --original` | Required sensitive source used to verify derivative provenance. |
+| `approve-sanitized --reviewer` | Required identity written into the approval record. |
+
+A bundle whose sanitation changed load-bearing identity evidence is not accepted
+as executable. Parameterize the sensitive value before compilation or execute
+the original inside its trusted runtime boundary.
+
+## report-break
+
+Read a halted run's `report.json` and emit a scrubbed, PHI-free halt descriptor.
+The recording stays local. A PHI-boundary rejection retries with a harder scrub
+and can fall back to local-only.
+
+```bash
+openadapt flow report-break runs/<halted-run> \
+  --workflow-id <id> --deployment-kind byoc
+```
+
+| Flag | Description |
+|---|---|
+| `run_dir` | Halted run directory containing `report.json`. |
+| `--workflow-id` | Required hosted workflow id returned by `push` or the dashboard. |
+| `--deployment-kind` | `cloud` (default) or `byoc`; routes the teaching target. |
+| `--org-id` | Optional organization id. |
+| `--host`, `--token` | Override the configured control plane and token. |
+
+See [Hosted browser execution](../guides/hosted.md) for the launched service,
+sanitation protocol, and destination-aware boundary.
 
 ## bench
 
