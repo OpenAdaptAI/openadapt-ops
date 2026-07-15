@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-15 22:23 UTC*
+> *Last updated: 2026-07-15 22:42 UTC*
 
 
 
@@ -75,6 +75,8 @@
 
 ## openadapt-desktop
 
+
+- [fix: remove stale package version claim](https://github.com/OpenAdaptAI/openadapt-desktop/pull/15) (#15) — merged 
 
 - [fix: keep desktop releases version-consistent](https://github.com/OpenAdaptAI/openadapt-desktop/pull/14) (#14) — merged 
 
