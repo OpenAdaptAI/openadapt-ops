@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-15 22:02 UTC*
+> *Last updated: 2026-07-15 22:11 UTC*
 
 
 
@@ -102,6 +102,8 @@
 
 ## openadapt-privacy
 
+
+- [chore: declare privacy release line](https://github.com/OpenAdaptAI/openadapt-privacy/pull/6) (#6) — merged 
 
 - [fix(ci): release through protected main](https://github.com/OpenAdaptAI/openadapt-privacy/pull/5) (#5) — merged 
 
