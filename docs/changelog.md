@@ -70,6 +70,8 @@
 
 ## openadapt-privacy
 
+- **[v1.0.0](https://github.com/OpenAdaptAI/openadapt-privacy/releases/tag/v1.0.0)** (2026-07-15)
+  ## v1.0.0 (2026-07-15)
 - **[v0.1.1](https://github.com/OpenAdaptAI/openadapt-privacy/releases/tag/v0.1.1)** (2026-01-29)
   ## v0.1.1 (2026-01-29)
 

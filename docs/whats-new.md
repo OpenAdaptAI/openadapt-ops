@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-15 21:17 UTC*
+> *Last updated: 2026-07-15 22:02 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [chore: keep release lock version synchronized](https://github.com/OpenAdaptAI/OpenAdapt/pull/1015) (#1015) — merged 
 
 - [feat: make OpenAdapt the canonical openadapt-flow launcher](https://github.com/OpenAdaptAI/OpenAdapt/pull/1014) (#1014) — merged 
 
@@ -95,6 +97,15 @@
 
 
 - [fix: importable headless (no screenshot at import) + persist pixel_ratio on the recording model](https://github.com/OpenAdaptAI/openadapt-capture/pull/24) (#24) — merged 
+
+
+
+## openadapt-privacy
+
+
+- [fix(ci): release through protected main](https://github.com/OpenAdaptAI/openadapt-privacy/pull/5) (#5) — merged 
+
+- [fix: remove vulnerable transformer dependency from Presidio scrubber](https://github.com/OpenAdaptAI/openadapt-privacy/pull/4) (#4) — merged 
 
 
 
