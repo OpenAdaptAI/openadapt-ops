@@ -6,6 +6,12 @@ out), so the same bundle, the same resolution ladder, and the same identity gate
 run against a browser, a native Windows desktop, or a pixel-only remote session.
 Backends are **adapters, not rewrites**.
 
+!!! tip "Selecting a backend on the CLI"
+    `record`, `replay`, `run`, and `resume` take
+    [`--backend {web,windows,rdp}`](../reference/cli.md#backend) (with
+    `--agent-url` for Windows and `--rdp-host` for RDP). The default is `web`.
+    See [Choosing a backend](../reference/cli.md#backend).
+
 ## Vision-first, not vision-only
 
 The runtime can always operate a pure pixel surface: PNG bytes in, clicks and
