@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-15 22:12 UTC*
+> *Last updated: 2026-07-15 22:18 UTC*
 
 
 
@@ -70,6 +70,13 @@
 - [feat: self-serve halt->learn via 'openadapt flow teach' (governed, refuses bad fixes)](https://github.com/OpenAdaptAI/openadapt-flow/pull/101) (#101) — merged 
 
 - [chore: type-check the safety-critical modules (compile, identity, replayer) under mypy](https://github.com/OpenAdaptAI/openadapt-flow/pull/100) (#100) — merged 
+
+
+
+## openadapt-desktop
+
+
+- [feat: align desktop with the hosted workflow loop](https://github.com/OpenAdaptAI/openadapt-desktop/pull/13) (#13) — merged 
 
 
 

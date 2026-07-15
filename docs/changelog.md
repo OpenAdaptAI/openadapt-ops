@@ -29,6 +29,17 @@
 - **[v1.4.0](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.4.0)** (2026-07-14)
   ## v1.4.0 (2026-07-14)
 
+## openadapt-desktop
+
+- **[v0.3.0](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/v0.3.0)** (2026-07-15)
+  ## v0.3.0 (2026-07-15)
+- **[v0.2.0](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/v0.2.0)** (2026-03-04)
+  ## v0.2.0 (2026-03-04)
+- **[v0.1.1](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/v0.1.1)** (2026-03-04)
+  ## v0.1.1 (2026-03-04)
+- **[v0.1.0](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/v0.1.0)** (2026-03-04)
+  ## First release
+
 ## openadapt-ml
 
 - **[v0.16.1](https://github.com/OpenAdaptAI/openadapt-ml/releases/tag/v0.16.1)** (2026-06-12)
@@ -67,3 +78,35 @@
   ## v0.5.1 (2026-03-17)
 - **[v0.5.0](https://github.com/OpenAdaptAI/openadapt-capture/releases/tag/v0.5.0)** (2026-03-04)
   ## v0.5.0 (2026-03-04)
+
+## openadapt-privacy
+
+- **[v1.0.0](https://github.com/OpenAdaptAI/openadapt-privacy/releases/tag/v1.0.0)** (2026-07-15)
+  ## v1.0.0 (2026-07-15)
+- **[v0.1.1](https://github.com/OpenAdaptAI/openadapt-privacy/releases/tag/v0.1.1)** (2026-01-29)
+  ## v0.1.1 (2026-01-29)
+
+## openadapt-types
+
+- **[v0.3.0](https://github.com/OpenAdaptAI/openadapt-types/releases/tag/v0.3.0)** (2026-07-13)
+  ## v0.3.0 (2026-07-13)
+- **[v0.2.0](https://github.com/OpenAdaptAI/openadapt-types/releases/tag/v0.2.0)** (2026-03-29)
+  ## v0.2.0 (2026-03-29)
+
+## openadapt-grounding
+
+- **[v0.1.2](https://github.com/OpenAdaptAI/openadapt-grounding/releases/tag/v0.1.2)** (2026-01-29)
+  ## v0.1.2 (2026-01-29)
+- **[v0.1.1](https://github.com/OpenAdaptAI/openadapt-grounding/releases/tag/v0.1.1)** (2026-01-29)
+  ## v0.1.1 (2026-01-29)
+- **[v0.1.0](https://github.com/OpenAdaptAI/openadapt-grounding/releases/tag/v0.1.0)** (2026-01-17)
+  **Full Changelog**: https://github.com/OpenAdaptAI/openadapt-grounding/commits/v0.1.0
+
+## openadapt-retrieval
+
+- **[v0.1.2](https://github.com/OpenAdaptAI/openadapt-retrieval/releases/tag/v0.1.2)** (2026-01-29)
+  ## v0.1.2 (2026-01-29)
+- **[v0.1.1](https://github.com/OpenAdaptAI/openadapt-retrieval/releases/tag/v0.1.1)** (2026-01-29)
+  ## v0.1.1 (2026-01-29)
+- **[v0.1.0](https://github.com/OpenAdaptAI/openadapt-retrieval/releases/tag/v0.1.0)** (2026-01-17)
+  **Full Changelog**: https://github.com/OpenAdaptAI/openadapt-retrieval/commits/v0.1.0
