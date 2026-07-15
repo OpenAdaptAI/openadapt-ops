@@ -4,17 +4,18 @@ hide:
   - toc
 ---
 
-# Record a workflow once. Replay it forever, for free.
+# Record once. Replay deterministically without healthy-run model calls.
 
 <p class="oa-lede">
-OpenAdapt is a <strong>demonstration compiler</strong>. You perform a GUI
-workflow one time. It compiles that demonstration into a deterministic,
-self-healing script that runs locally, verifies real effects against the
-system of record, and halts rather than guessing. An API compiler for the
-API-less long tail.
+OpenAdapt compiles demonstrated GUI workflows into deterministic, locally
+executable programs. Healthy runs make no model calls. When interfaces drift,
+OpenAdapt re-resolves targets deterministically or uses an explicitly configured
+model tier, records the repair, and halts when the configured verification
+checks fail.
 </p>
 
 [Get started in 5 minutes](get-started/index.md){ .md-button .md-button--primary }
+[See what works today](get-started/what-works-today.md){ .md-button }
 [See how it works](concepts/demonstration-compiler.md){ .md-button }
 
 ---
@@ -33,10 +34,13 @@ the wrong one for a workflow you run a thousand times. OpenAdapt compiles the
 demonstration instead, so the model is only consulted to repair the script, not
 to drive it.
 
-It runs where that work lives: a web app (the reference Playwright backend), a
-native Windows desktop via UI Automation, or a pixel-only Citrix/RDP session —
-all behind [one backend protocol](concepts/backends.md), with desktop and Citrix
-the differentiated wedge.
+The browser/Playwright backend is the reference path. Hosted browser execution
+is a Beta launch candidate with production provider qualification pending.
+Windows UIA is experimental; RDP and the Citrix
+analog are research spikes. Customer-controlled execution is scoped to the
+actual substrate and data boundary. The shared protocol is real, but backend
+presence is not a production-readiness claim. See
+[What works today](get-started/what-works-today.md).
 
 ---
 
@@ -44,13 +48,14 @@ the differentiated wedge.
 
 <div class="grid cards" markdown>
 
--   __Deterministic $0 replay__
+-   __Deterministic, model-free replay__
 
     ---
 
     A compiled workflow replays with **zero model calls** on the healthy path.
-    Local template match, OCR, and geometry resolve each step in milliseconds.
-    No per-run API cost, no network round trip, no cloud dependency.
+    Local template match, OCR, and geometry resolve each step. Self-hosted
+    healthy replay has no model-API charge; hosted infrastructure and service
+    pricing are separate.
 
     [The demonstration compiler →](concepts/demonstration-compiler.md)
 
@@ -111,6 +116,35 @@ deterministic and runs at $0 with the reference inducer. See
 
 ---
 
+## One runner, any surface, any deployment
+
+The same compiled bundle runs on any surface and in any deployment, because the
+runtime sits behind one [substrate-agnostic runner](concepts/substrate-model.md)
+that routes on a single field and never sees pixels or resolved values. Two
+orthogonal axes, one contract:
+
+| Deployment ↓ / Substrate → | **Web (browser)** | **Windows-desktop / Citrix** |
+|---|---|---|
+| **Our cloud** | Managed execution of locally authored, attested browser bundles *(Beta launch candidate; production qualification pending)* | Windows runner *(experimental; not in browser candidate)* |
+| **Customer cloud / BYOC** | Connector + customer storage *(experimental; qualify by deployment)* | Qualify the actual desktop substrate *(experimental/research)* |
+| **Self-hosted / on-prem** | Local browser engine *(Beta reference path)* | Windows limited proof; RDP/Citrix analog *(research spikes, not validated Citrix)* |
+
+You choose where the data lives — there is no company-wide "never leaves your
+network" claim; the guarantee is scoped to the tier you pick. For regulated data
+the [`run`](concepts/regulated-execution.md) verb is **fail-closed by default**:
+it gates certification, identity and effect coverage, approval fallback,
+encryption, and manifest integrity before execution.
+
+!!! note "Launch-candidate scope"
+    The hosted launch candidate covers browser workflows. It does not promote Windows, RDP,
+    or Citrix. Artifacts cross boundaries only as approved sanitized
+    derivatives, while PHI-bearing runtime observations stay inside their
+    declared trusted execution boundary. This is not a public availability
+    statement. See
+    [the deployment matrix](concepts/deployment-matrix.md).
+
+---
+
 ## Measured, not claimed
 
 We publish the numbers and the failure modes. Two representative results,
@@ -121,8 +155,9 @@ same success check on both arms:
 | **OpenEMR** (real third-party EMR, add-patient-note, 18 steps) | 20/20, 39.2s p50, **$0/run**, 0 model calls | 10/10, 70.4s p50, ~$0.55/run |
 | **MockMed** (CI-reproducible triage task) | 100/100, 4.9s p50, **$0/run**, 0 model calls | 20/20, 37.5s p50, ~$0.27/run |
 
-The compiled arm costs $0 per run, every run, forever. Full methodology and
-caveats live in the [openadapt-flow benchmark
+The compiled arm made no model calls and recorded no model-API cost in these
+measured runs. This excludes authoring, review, infrastructure, exception, and
+service costs. Full methodology and caveats live in the [openadapt-flow benchmark
 docs](https://github.com/OpenAdaptAI/openadapt-flow/tree/main/benchmark).
 
 !!! note "Stated honestly"
@@ -141,7 +176,11 @@ docs](https://github.com/OpenAdaptAI/openadapt-flow/tree/main/benchmark).
 
 -   [__Get started__](get-started/index.md)
 
-    Install and compile your first workflow in about five minutes.
+    Install, compile, lint, certify, drift, inspect, teach, and deploy.
+
+-   [__What works today__](get-started/what-works-today.md)
+
+    Integrated maturity, hosted limits, and pre-deployment boundaries.
 
 -   [__Core concepts__](concepts/index.md)
 

@@ -1,56 +1,309 @@
-# The hosted option
+# Hosted browser execution
 
-OpenAdapt is open source and designed to run [on your own
-infrastructure](deploy-on-prem.md). That is the default and, for regulated data,
-usually the right choice. A hosted, managed deployment is an option for teams
-that would rather not operate the stack themselves.
+OpenAdapt Hosted is the Beta launch candidate for managed browser workflows.
+The same compiler and governed runtime remain available under MIT for local and
+customer-controlled deployment. Once the production acceptance gate passes, a
+hosted subscription adds account and organization management, managed execution
+of locally authored and attested browser bundles, artifact storage, structural
+run history, usage metering, and billing. Recording, compilation, and repair
+remain local in that scope.
 
-## When self-hosting is the right call
+[Review the production acceptance gate](#operational-acceptance-gate){ .md-button .md-button--primary }
+[Review the data boundary](security-review.md){ .md-button }
 
-- Your data cannot leave your environment (PHI, PII, contractual data
-  residency).
-- You already run the infrastructure and want full control of the model tiers.
-- You want the deterministic replay path with no external dependency at all.
+Stripe is the source of truth for a production deployment's configured price
+and billing period. The website retrieves that offer server-side when
+configured, rather than hard-coding an amount; Checkout must confirm the same
+price before payment. This describes the implementation contract, not current
+public availability.
 
-Everything OpenAdapt does on the healthy replay path runs locally with zero model
-calls, so self-hosting has no functional penalty. See
-[Deploy on-prem](deploy-on-prem.md).
+## Scope of the launch
 
-## When a managed deployment helps
+| Surface | Launch status | Boundary |
+|---|---|---|
+| Local browser record -> compile -> managed execute | **Beta launch candidate** | Authoring remains local; managed execution uses the browser substrate only. Production provider qualification remains pending. |
+| Account, organization, onboarding | **Beta launch candidate** | The implemented lifecycle links a qualified subscription during onboarding. |
+| Structural run history and reports | **Beta launch candidate** | Safety depends on the workflow's configured identity, effect, and policy checks. Repair and validation remain local. |
+| Checkout, portal, entitlements, metering | **Beta launch candidate** | Stripe and the control plane must both pass production acceptance before public traffic is directed to checkout. |
+| Self-hosted browser execution | **Beta** | No hosted account required. |
+| Windows UIA | **Experimental** | Not included by implication in a browser subscription. |
+| RDP and Citrix | **Research** | No production support claim. |
+| Regulated runtime data | **Customer-controlled boundary** | Use a scoped BYOC/on-prem deployment when live screens necessarily contain PHI. |
 
-A managed deployment can make sense when a team wants the outcome (compiled,
-governed workflows) without standing up and maintaining the recording,
-compilation, and appliance infrastructure themselves, and when the data policy
-permits a managed environment. The engine, bundle format, and CLI are identical;
-what changes is who operates them.
+“Beta launch candidate” means the integrated implementation is being qualified
+for launch. It is not a current availability statement, security certification,
+or SLA. The [maturity matrix](../get-started/what-works-today.md), the operational
+acceptance gate below, and the configured commercial terms define the exact
+scope.
 
-## Single-tenant, in your VPC or on-prem
+## The hosted lifecycle
 
-For regulated data the managed posture is **single-tenant**: OpenAdapt runs in
-the customer's own VPC or on-prem environment, not in a shared multi-tenant
-cloud. **PHI never enters a shared cloud.** The optional model tiers, when used,
-run as an [on-prem VLM appliance](../concepts/vlm-appliance.md) on your
-infrastructure with zero cloud calls and no retention. The compiled bundle and
-the audit-trail `report.json` — the two artifacts that carry literal identifiers
-on purpose — stay inside your environment. This is the same deterministic,
-local-by-default engine described in [Deploy on-prem](deploy-on-prem.md); what a
-managed engagement changes is who operates it, not where the data lives.
+After the operational acceptance gate passes for a production deployment, the
+hosted lifecycle is:
 
-!!! note "Compliance status, stated honestly"
-    Formal attestations are **in progress**, not complete: SOC 2 and a signed
-    BAA are on the roadmap for regulated engagements and are not yet available
-    to claim as finished. The architectural controls they attest to — PHI never
-    in a shared cloud, deterministic path with no network egress, on-prem-only
-    no-retention model tiers, a documented PHI boundary — are in place today.
-    Ask the team for the current status when scoping a pilot.
+1. Complete its qualified Stripe Checkout.
+2. Sign in with the checkout email and create or join an organization.
+3. Record a browser workflow locally or prepare an existing local recording.
+4. Sanitize, review, approve, and push the recording derivative. This registers
+   the exact approved recording; it does not create a runnable workflow.
+5. Compile that approved recording locally. Run strict lint, policy
+   certification, and a successful governed replay in a named non-PHI
+   validation environment.
+6. Sanitize, review, and approve the compiled bundle. Bundle sanitation must
+   preserve execution-bearing content.
+7. Run `validate-hosted`. It requests an expiring, one-time organization/token
+   challenge and creates an operator attestation bound to the exact approved
+   recording, bundle, compiler provenance, policy, risk class, and replay report.
+8. Immediately push the approved bundle with that attestation. Cloud consumes
+   the challenge and admits the bundle only if policy and risk-class allowlists
+   also pass.
+9. Configure the vault secret-set reference and optional schedule. The target
+   URL, allowed hosts, and parameter schema are immutable attested bundle
+   properties; supply non-secret parameter values for each run.
+10. Teach or repair a halted run locally, revalidate it, and activate the
+   attested replacement on the same workflow; promote only a revision that
+   passes its gates.
+11. Inspect usage and manage the subscription through the billing portal.
 
-## How to think about it
+Checkout does not relax a safety or egress refusal. A paid organization cannot
+upload an unapproved artifact or execute a workflow that fails its configured
+run gate.
 
-The unit of value is the same either way: a compiled workflow that replays
-deterministically, verifies effects, and halts rather than guesses. Pricing for
-managed deployments is engagement-based rather than per-run or per-seat, because
-the whole point of the compiler is that a run costs $0.
+## Exact local-to-hosted sequence
 
-To discuss a hosted or pilot deployment, reach the team via
-[openadapt.ai](https://openadapt.ai) or the
-[GitHub organization](https://github.com/OpenAdaptAI).
+The example below uses the consequential `clinical-write` lane. Choose the
+policy required by the deployment. `--risk-class` is not a free-form assertion:
+the client derives `low` or `consequential` from the compiled steps and refuses
+a mismatch. Cloud may further restrict both values with its exact deployment
+allowlists.
+
+```bash
+# 1. Approve and register the exact recording derivative.
+openadapt flow sanitize recording --kind recording --out recording.sanitized
+openadapt flow review-sanitized recording.sanitized --original recording
+openadapt flow approve-sanitized recording.sanitized \
+  --original recording --reviewer alice@example.com
+openadapt flow push recording.sanitized --kind recording --name "Triage"
+
+# 2. Compile and validate locally from that approved derivative.
+openadapt flow compile recording.sanitized --out bundle --name triage
+openadapt flow lint bundle --strict
+openadapt flow certify bundle --policy clinical-write
+openadapt flow replay bundle --url https://validation.example/login \
+  --run-dir runs/triage-validation --param patient_id=synthetic-001
+
+# 3. Approve the exact runnable bundle derivative.
+openadapt flow sanitize bundle --kind bundle --out bundle.sanitized
+openadapt flow review-sanitized bundle.sanitized --original bundle
+openadapt flow approve-sanitized bundle.sanitized \
+  --original bundle --reviewer alice@example.com
+
+# 4. Acquire the one-time challenge and bind the local evidence to it.
+openadapt flow validate-hosted \
+  --recording recording.sanitized \
+  --bundle bundle.sanitized \
+  --run-dir runs/triage-validation \
+  --policy clinical-write \
+  --risk-class consequential \
+  --environment validation/mock-emr-v1 \
+  --target-url https://validation.example/login \
+  --out triage.runtime-validation.json
+
+# 5. Consume the challenge by uploading the exact attested bundle once.
+openadapt flow push bundle.sanitized --kind bundle --name "Triage" \
+  --validation-attestation triage.runtime-validation.json
+```
+
+For a repair, generate a fresh attestation and activate the reviewed replacement
+on the same workflow while binding it to the halted run:
+
+```bash
+openadapt flow push bundle.repaired.sanitized --kind bundle \
+  --workflow-id <workflow-uuid> \
+  --resolves-run-id <halted-run-uuid> \
+  --validation-attestation triage.repaired.runtime-validation.json
+```
+
+The control plane refuses a run from another tenant or workflow, locks the
+unresolved halt, activates the validated version atomically, and only then marks
+that halt resolved. Reusing an already accepted archive cannot resolve a new
+halt.
+
+Do not edit either derivative after approval, rerun after generating the
+attestation, or reuse the attestation for another upload. Any changed archive
+hash, provenance link, parameter schema, report, policy, risk class, token, or
+challenge is refused. The attestation supplies the immutable target origin,
+host allowlist, and parameter schema. After bundle ingest succeeds, select the
+vault secret-set reference and optional schedule; provide non-secret parameter
+values only in the **Run now** dialog. Runtime values are forwarded to that run
+and are not persisted in bundle metadata. The hosted run is a separate execution
+and remains subject to its runtime, entitlement, and data-boundary gates.
+
+## What “scrubbed” means
+
+Compilation does **not** make a recording or bundle PHI-free. Scrubbing is a
+separate local derivation protocol:
+
+The sanitized derivative is admitted by its manifest-bound cryptographic derivative hash.
+
+1. **Inventory every input.** Enumerate files, metadata, and channels. A
+   symlink, archive, database, image, media file, or unknown type requires an
+   explicit handler.
+2. **Transform a copy.** Preserve the sensitive original locally. Redact or
+   parameterize supported text, structured records, screenshots, and metadata
+   into a separate derivative.
+3. **Rescan.** Run the detectors over the derivative, not only the source.
+4. **Write a manifest.** Record policy and tool versions, transformations,
+   unresolved findings, artifact inventory, and a cryptographic derivative
+   hash.
+5. **Review when required.** A local viewer lets an authorized operator inspect
+   the sanitized result, correct missed or excessive redactions, and approve
+   the exact hash.
+6. **Upload the approved bytes.** Any later modification changes the hash and
+   invalidates approval. Unknown or unresolved content is refused rather than
+   copied through.
+
+The original and derivative have different purposes. Keep the original inside
+its trusted boundary for authoring and replay evidence; share only the approved
+derivative.
+
+Sanitation and runnability are separate gates. Redacting a selector, literal,
+target label, identity field, or other execution-bearing value can make a
+recording safe to transfer but unable to compile or replay correctly. Hosted
+ingest labels that case `needs_parameterization`. Parameterize and compile the
+approved recording locally, validate the bindings and replay, then sanitize and
+approve a bundle whose execution-bearing content remains unchanged. Privacy
+approval alone never promotes a recording or bundle to runnable status.
+
+## What the runtime attestation proves
+
+`validate-hosted` recomputes strict lint and certification and reads a
+successful, non-halted `report.json`. It refuses unless the evidence forms one
+chain:
+
+- the bundle provenance names the exact approved recording archive SHA-256;
+- compiler name/version and compiler-configuration SHA-256 are sealed;
+- the run report matches the workflow name, bundle content digest, source
+  recording SHA-256, and parameter-schema SHA-256;
+- hashes bind the strict-lint result, certification result, report bytes, and
+  non-PHI validation-environment identifier;
+- the supplied `low` or `consequential` risk class matches the compiled steps;
+- the approved bundle archive SHA-256 is the archive uploaded with the
+  attestation.
+
+The client signs this envelope with the ingest token. Cloud verifies the HMAC,
+fresh timestamp, exact bundle hash, configured policy, risk-class, and deployed
+compiler-version allowlists, and the challenge's organization, token, nonce,
+expiry, and unused state. The challenge expires after 15 minutes and is consumed
+transactionally by the accepted bundle upload.
+
+This is **operator self-attestation**, not independent certification. It proves
+that the token holder produced a tamper-evident envelope over the named local
+evidence; Cloud did not observe the local replay and the HMAC is not an auditor
+signature. `certify` means only that the bundle passed the selected policy.
+Independent certification would require a separately controlled evaluator,
+test environment, evidence custody, and signing identity. Neither mechanism is
+a blanket safety, compliance, or correctness guarantee.
+
+## Review policy options
+
+| Policy | Appropriate use | Tradeoff |
+|---|---|---|
+| Automatic after scrub | Narrow, schema-minimized diagnostics with complete type coverage. | Lowest friction; detector false negatives remain possible. |
+| Human review required | Recordings, screenshots, free text, and consequential bundles. | Adds context but costs operator time; approval is not proof. |
+| Risk-based hybrid | Automatic diagnostics, reviewed artifacts, administrator exception for measured pipelines. | Recommended default; requires explicit policy and audit configuration. |
+
+Human review is local. The viewer must not send originals to a remote renderer,
+load remote resources, or cache the sensitive source outside the execution
+boundary. Approval records the reviewer, time, policy, manifest, and derivative
+hash.
+
+This approval is operator attestation, not an independently witnessed review.
+Cloud accounts for the archive structure and verifies exact manifest/hash
+bindings, but it does not rerun OCR/NER or observe the loopback viewer. A
+regulated deployment must control reviewer identity and separation of duties;
+human approval reduces detector risk but is not proof of de-identification.
+Managed Cloud requires human approval by default. Automatic approval is a
+deployment-level capability that an operator must explicitly enable after
+reviewing the sanitizer policy; an uploader cannot opt itself into that mode.
+When enabled, automatic approval must carry an HMAC from a key ID in the
+deployment-controlled sanitizer allowlist. The signature covers the exact
+derivative and approval contract, so the ingest token alone cannot assert that
+the automatic policy ran.
+
+## Sanitized authoring data is not sanitized runtime data
+
+A recording can replace a patient name with a parameter, while the live EMR
+screen still displays that patient's name during execution. Runtime frames,
+OCR, accessibility text, model inputs, reports, and effect evidence can
+therefore reintroduce PHI.
+
+Use these rules:
+
+- Sanitized authoring derivatives may cross a destination permitted by policy.
+- Runtime values are injected separately and are not written back into the
+  sanitized authoring derivative.
+- PHI-bearing runtime observations remain inside the declared trusted
+  execution boundary.
+- A remote model is a separate destination and must be approved explicitly;
+  healthy replay does not need one.
+- If sanitization changes target identity or replay semantics, expect
+  `needs_parameterization`: parameterize, compile, and validate locally, then
+  sanitize and approve the unchanged runnable bundle and complete
+  `validate-hosted`. Otherwise keep the workflow inside the trusted boundary.
+  Do not call a non-functional derivative runnable.
+
+## Destination-aware decisions
+
+| Transfer | Default decision |
+|---|---|
+| Local process -> local storage | Allow under local retention and encryption policy. |
+| Approved derivative -> OpenAdapt Hosted | Allow when the manifest, review policy, destination, and hash pass. |
+| Approved derivative -> verified customer endpoint | Allow under that customer's destination policy. |
+| Raw or unresolved artifact -> any remote endpoint | Refuse. |
+| PHI-bearing runtime observation -> shared managed boundary | Refuse unless that exact regulated service and legal boundary are configured. |
+| Minimized break descriptor -> control plane | Allow after schema validation and sanitation. |
+| Unknown destination | Refuse. |
+
+BYOC is not synonymous with “deny.” A verified customer-owned endpoint may be a
+valid destination for data that its policy permits. Conversely, an OpenAdapt-
+managed endpoint is not valid merely because the user has a subscription.
+
+## Production mode versus mock mode
+
+Mock mode is a development tool that returns synthetic users, workflows, and
+run results. Live mode uses the configured authentication, database, object
+storage, runner, callback secrets, and billing services.
+
+A production deployment must explicitly select live mode and pass dependency
+health checks. If a runner or billing dependency is missing, the affected
+operation reports unavailable; it must not return a simulated success. This is
+what “production fails closed instead of silently using mock mode” means. It
+protects customers from believing a fabricated development run actually
+executed; it does not disable production functionality.
+
+## Operational acceptance gate
+
+Before directing traffic to a production deployment, verify:
+
+- authentication and organization isolation;
+- database migrations and row-level access controls;
+- object storage and signed artifact access;
+- live runner enqueue, callback authentication, timeout, retry, and recovery;
+- secrets exchange without values in browser or enqueue payloads;
+- sanitation, local review, destination policy, and approval-hash enforcement;
+- one-time validation challenge consumption, exact attestation bindings, and
+  policy/risk-class allowlist enforcement;
+- exact runtime-boundary ID/hash agreement across local attestation, workflow
+  activation, control-plane configuration, job payload, and runner health;
+- request-bound idempotency, one active run per workflow, and a lost provider
+  acknowledgement that remains single-flight until callback or operator review;
+- Stripe Checkout, portal, signed idempotent webhooks, entitlements, and usage;
+- logs, alerts, deletion, retention, backup, restore, update, and rollback;
+- a clean-account sign-up -> subscribe -> record sanitize/review/approve ->
+  recording push -> local compile/lint/certify/replay -> bundle
+  sanitize/review/approve -> `validate-hosted` -> attested bundle push ->
+  configure -> run -> report -> teach -> rerun -> bill lifecycle.
+
+See the [security review](security-review.md) for the evidence an enterprise
+reviewer should request.

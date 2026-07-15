@@ -94,16 +94,37 @@ its visual floor and the identity gate falls back to its pixel/OCR tiers — whi
 is why a look-alike identifier can force a [halt rather than a verify](identity-gate.md)
 there.
 
+### Remote-display / Citrix analog (pixel-only)
+
+The macOS remote-display adapter can capture a named application window and
+inject input at screen coordinates. It has been exercised against a Windows VM
+window as a **Citrix analog** so the pixel-only mechanism and permission failure
+behavior can be tested.
+
+It is not a Citrix integration. The analog does not validate ICA/HDX
+compression and latency, client DPI mapping, credentials and lock screens,
+synthetic-input acceptance, independent effect verification, or wrong-record
+behavior on real charts. Those require a real Citrix deployment.
+
+### Native macOS
+
+A native macOS AX backend remains an adapter to build. The remote-display
+client's Quartz/AppKit capture and input primitives do not constitute a native
+application backend with structured AX identity.
+
 ## Status at a glance
 
 | Backend | Substrate | Structural rung | Identity signal | Maturity |
 |---|---|---|---|---|
-| Playwright (web) | Browser DOM | Yes (DOM) | Structured text (DOM) | Reference, heavily tested |
-| `WindowsBackend` | Native Windows | Via UIA | UI Automation `Name`/`Value` | Live proof recent and limited |
-| `FreeRDPBackend` | Pixel-only RDP | No | Pixel / OCR floor | Adapter, CI-tested against a mock transport |
+| Playwright (web) | Browser DOM | Yes (DOM) | Structured text (DOM) | **Beta / reference**: end-to-end CI and real third-party proof |
+| `WindowsBackend` | Native Windows | Via UIA | UI Automation `Name`/`Value` | **Experimental**: local ARM-VM proof, small N; mock adapter CI |
+| Native macOS | Native macOS | Planned AX | Planned AX text | **Target-state**: no integrated backend today |
+| `FreeRDPBackend` | Pixel-only RDP | No | Pixel / OCR floor | **Research spike**: mock/offline adapter tests; no published live validation |
+| Remote-display / Citrix analog | Pixel-only window | No | Pixel / OCR floor | **Research spike**: VM-window analog only; not validated on Citrix |
 
-The desktop and RDP backends are exercised in CI against mocked servers, so the
-adapter contract is verified without a live OS. What varies per substrate is how
-high up the [capability ladder](capability-ladder.md) a given app lets the
-runtime climb — and everything below the top rung remains the same fail-safe
-machinery.
+The desktop, RDP, and remote-display adapters have CI coverage that does not
+substitute for workload validation on a live OS or remote environment. What
+varies per substrate is how high up the
+[capability ladder](capability-ladder.md) a given app lets the runtime climb.
+Use [What works today](../get-started/what-works-today.md) as the public maturity
+contract.

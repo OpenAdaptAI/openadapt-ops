@@ -2,7 +2,10 @@
 
 OpenAdapt turns a single demonstration into a deterministic, locally-run
 workflow. This section takes you from an empty terminal to a compiled workflow
-and an illustrated run report in about five minutes.
+and an illustrated run report in about five minutes. Read
+[What works today](what-works-today.md) before evaluating a real deployment;
+the browser is the reference path, while desktop, RDP, Citrix, hosted execution,
+and on-prem operations have different maturity.
 
 ## Install
 
@@ -25,7 +28,7 @@ playwright install chromium
     example in these docs uses the unified `openadapt flow` form; drop the space
     (`openadapt-flow`) if you installed the standalone package.
 
-## The one-minute tour
+## The complete demo journey
 
 ```bash
 # 1. Record the canonical demo (serves a local sample app, records a triage task)
@@ -40,19 +43,68 @@ openadapt flow lint bundle
 # 4. Refuse it if it violates a safety policy
 openadapt flow certify bundle --policy clinical-write
 
-# 5. Replay it: local, deterministic, $0
-openadapt flow replay bundle
+# 5. Replay it: local, deterministic, zero model calls
+openadapt flow replay bundle --run-dir runs/baseline
 
-# 6. Drift the UI and watch it heal
-openadapt flow replay bundle --drift theme
+# 6. Induce known drift and save the proposed healed bundle separately
+openadapt flow replay bundle --drift theme \
+  --run-dir runs/theme-drift --save-healed-to bundle-healed
+
+# 7. Inspect the human and machine-readable evidence
+less runs/theme-drift/REPORT.md
+python -m json.tool runs/theme-drift/report.json | less
+
+# 8. Prove the saved bundle replays cleanly before promoting it
+openadapt flow replay bundle-healed --run-dir runs/healed-canary
 ```
 
-Steps 5 and 6 serve the bundled sample app and write an illustrated
-`REPORT.md` for each run. Step 6 injects a theme the workflow has never seen;
-each step re-resolves through OCR or geometry and each fix is written back to
-the bundle as a reviewable diff, with **zero model calls** on either run.
-`lint` and `certify` are the pre-deploy gate that makes a bundle "runnable"
-distinct from "certified safe".
+Steps 5, 6, and 8 serve the bundled sample app and write an illustrated
+`REPORT.md` plus `report.json` for each run. Step 6 injects a theme the workflow
+has never seen; deterministic lower rungs re-resolve the targets and write a
+candidate to `bundle-healed`. The original `bundle` is not silently promoted.
+Review the diff and canary result first. `lint` and `certify` are the pre-deploy
+gate that makes a bundle "runnable" distinct from "certified under this
+policy".
+
+## When a real run halts
+
+The bundled theme drift is a deterministic re-resolution demonstration, not a
+general teaching demo. When a real, durable run halts on an unhandled state,
+record only the corrective actions and feed the halted run to `teach`:
+
+```bash
+# 9. Compile a demonstrated correction through the regression/canary gate
+openadapt flow teach runs/<halted-run> \
+  --fix recordings/<correction> \
+  --bundle bundle \
+  --out bundle-v2
+```
+
+`teach` writes `bundle-v2` only if the correction is promoted. The shipped
+deterministic reference inducer covers the optional-dialog correction class; it
+does not generalize arbitrary UI changes. An underdetermined or safety-weakening
+correction is refused and the original bundle remains halting.
+
+## Move from demo to deployment
+
+A real deployment must replace demo drift flags with explicit backend, effect,
+durability, and policy configuration:
+
+```bash
+# 10. Prepare an encrypted candidate, then inspect and pass the run gate
+cp -R bundle-v2 bundle-prod
+export OPENADAPT_BUNDLE_KEY='<inject from your secret manager>'
+python -c 'from openadapt_flow.ir import Workflow; w=Workflow.load("bundle-prod"); w.save("bundle-prod", encrypt=True)'
+openadapt flow certify bundle-prod --config deployment.yaml
+openadapt flow run bundle-prod --config deployment.yaml --dry-run
+openadapt flow run bundle-prod --config deployment.yaml
+```
+
+Follow [Run a deployment](../guides/run-a-deployment.md), then complete the
+[security and deployment review](../guides/security-review.md). Do not promote a
+bundle merely because the sample-app tour passed. The base CLI does not yet have
+a dedicated `seal` verb, so the encryption step uses the shipped library API;
+key custody and rotation belong to the deployment.
 
 ## Beyond one demonstration
 
@@ -79,6 +131,10 @@ Once the basic loop makes sense, the same $0 runtime carries more:
 -   [__What you get__](what-you-get.md)
 
     The bundle, the run report, and what each artifact is for.
+
+-   [__What works today__](what-works-today.md)
+
+    The integrated maturity matrix and the boundaries behind each status.
 
 -   [__Core concepts__](../concepts/index.md)
 

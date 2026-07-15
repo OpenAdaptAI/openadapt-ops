@@ -16,7 +16,10 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 def test_load_repos():
     repos = load_repos()
     assert len(repos) > 0
-    assert all("name" in r and "github" in r for r in repos)
+    assert all("name" in r and "github" in r and "lifecycle" in r for r in repos)
+    assert {r["lifecycle"] for r in repos} <= {
+        "beta", "experimental", "research", "deprecated",
+    }
 
 
 def test_sync_renders_pages(tmp_path, mocker):

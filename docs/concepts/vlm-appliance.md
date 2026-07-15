@@ -58,8 +58,8 @@ system of record instead of the screen.
 ## Why on-prem matters
 
 Identity crops and full frames can carry PHI. The control for that is not
-redaction (the identity check needs the literal identifier), it is deployment:
-the appliance runs on your infrastructure, makes zero cloud calls, and retains
-nothing. For regulated deployments this is the difference between "a model looked
-at a patient record" being a controlled, on-prem, no-retention event and being a
-data-egress incident. See [Deploy on-prem](../guides/deploy-on-prem.md).
+redaction (the identity check needs the literal identifier), it is deployment.
+The appliance is designed to run on your infrastructure without external model
+calls or payload persistence. Enforce and test its network and retention policy
+for the actual deployment; architecture alone does not prove either property.
+See [Deploy on-prem](../guides/deploy-on-prem.md).

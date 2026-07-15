@@ -12,10 +12,10 @@ CLI flags override individual fields.
 
 !!! note "Every section is optional"
     An empty file is a valid deployment: fully local, GUI-only, no effect
-    verification, non-durable, zero outbound calls. Add only the sections your
-    deployment needs. The loader validates the YAML against the schema and fails
-    loudly on an unknown field or a missing required value, rather than wiring a
-    broken run.
+    verification, non-durable, and no model-service calls. Add only the sections
+    your deployment needs. The loader validates the YAML against the schema and
+    fails loudly on an unknown field or a missing required value, rather than
+    wiring a broken run.
 
 ## The full schema
 
@@ -66,7 +66,8 @@ runtime:
   durable: true                    # checkpoint each verified step; durably
                                    # PAUSE on halt; resume via `resume`
   allow_model_grounding: false     # EGRESS OPT-IN (PHI audit REM-3). Off =>
-                                   # fully local, zero outbound calls.
+                                   # no model-service egress. Target and effect-
+                                   # verifier traffic remains deployment-defined.
 
 # -- policy: the safety policy that certifies this bundle -------------------
 policy:
@@ -118,7 +119,7 @@ Shared: `timeout_s` (default `5.0`), `poll_interval_s` (default `0.2`).
 | Field | Default | Meaning |
 |---|---|---|
 | `durable` | `false` | The Tier-3 [durable runtime](../concepts/durable-runtime.md): checkpoint each verified step, durably pause on halt, resume via `resume`. |
-| `allow_model_grounding` | `false` | **Egress opt-in** (PHI audit REM-3). Off => fully local, zero outbound calls. On => permit wiring an off-box model grounder / identity-VLM / state-verifier; screenshots may leave the box. |
+| `allow_model_grounding` | `false` | **Model-egress opt-in** (PHI audit REM-3). Off => no model-service calls; target and effect-verifier traffic remains deployment-defined. On => permit wiring an off-box model grounder / identity-VLM / state-verifier; screenshots may leave the box. |
 
 ### `policy`
 

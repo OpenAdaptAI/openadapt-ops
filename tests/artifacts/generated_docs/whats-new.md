@@ -25,6 +25,3 @@
 
 - [feat: dual GRPO backend (standalone + verl)](https://github.com/OpenAdaptAI/openadapt-ml/pull/51) (#51) — merged 
 
-
-
-

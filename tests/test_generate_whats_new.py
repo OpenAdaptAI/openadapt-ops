@@ -65,7 +65,7 @@ def test_llm_summarize_no_anthropic_package(monkeypatch, mocker):
 
 
 def test_generate_writes_artifact(tmp_path, mocker, monkeypatch):
-    """Generate a sample What's New page as a test artifact."""
+    """Generate a sample What's New page without modifying tracked fixtures."""
     monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
 
     sample_prs = json.loads((FIXTURES / "sample_prs.json").read_text())
@@ -75,12 +75,7 @@ def test_generate_writes_artifact(tmp_path, mocker, monkeypatch):
         {"name": "openadapt-evals", "github": "OpenAdaptAI/openadapt-evals"},
         {"name": "openadapt-ml", "github": "OpenAdaptAI/openadapt-ml"},
     ]
-    generate(repos=repos, docs_dir=tmp_path, days=7)
+    artifact = pathlib.Path(generate(repos=repos, docs_dir=tmp_path, days=7))
 
-    # Copy to artifacts
-    root = pathlib.Path(__file__).resolve().parent.parent
-    artifacts_dir = root / "tests" / "artifacts" / "generated_docs"
-    artifacts_dir.mkdir(parents=True, exist_ok=True)
-    src = tmp_path / "whats-new.md"
-    dest = artifacts_dir / "whats-new.md"
-    dest.write_text(src.read_text())
+    assert artifact == tmp_path / "whats-new.md"
+    assert "openadapt-evals" in artifact.read_text()
