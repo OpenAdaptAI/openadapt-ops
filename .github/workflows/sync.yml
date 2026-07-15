@@ -27,14 +27,14 @@ jobs:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
-      - uses: astral-sh/setup-uv@v4
+      - uses: astral-sh/setup-uv@11f9893b081a58869d3b5fccaea48c9e9e46f990 # v8.3.2
         with:
-          version: "latest"
+          enable-cache: true
 
       - name: Install dependencies
-        run: uv sync --extra llm
+        run: uv sync --locked --extra llm
 
       - name: Sync READMEs
         run: uv run python scripts/sync_readmes.py
@@ -57,16 +57,16 @@ jobs:
         run: uv run python scripts/validate_docs.py
 
       - name: Build MkDocs site
-        run: uv run mkdocs build --strict 2>&1 || uv run mkdocs build
+        run: uv run mkdocs build --strict
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
         with:
           path: site/
 
       - name: Deploy to GitHub Pages
         id: deploy
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
 
       - name: Commit updated docs source
         run: |
