@@ -41,8 +41,9 @@ def _write_contract_docs(root):
     pages = {
         "get-started/what-works-today.md": (
             "# Integrated product matrix\n\nHosted execution is a Beta launch candidate. "
-            "Hosted browser recorder evidence is bounded. The full paid production "
-            "lifecycle remains pending."
+            "Hosted browser recorder evidence is bounded on `openadapt-flow` 1.8.0. "
+            "Authenticated live health proves service identity. The full paid "
+            "production lifecycle remains pending."
         ),
         "guides/hosted.md": (
             "# Hosted browser execution\n\nA sanitized derivative is inspected in "

@@ -23,7 +23,7 @@ public availability.
 | Surface | Launch status | Boundary |
 |---|---|---|
 | Local browser record -> compile -> managed execute | **Beta launch candidate** | Governed authoring and validation remain local; managed execution uses the browser substrate only. The full paid lifecycle remains pending. |
-| Hosted browser record -> compileable workflow | **Beta / bounded launch component** | Live-provider qualification passed on `openadapt-flow` 1.7.3 for a public, non-regulated target. This is a separate raw-observation boundary, not the reviewed-derivative upload lane. |
+| Hosted browser record -> compileable workflow | **Beta / bounded launch component** | Non-simulated live-provider qualification passed on `openadapt-flow` 1.8.0 for a public, non-regulated target. Authenticated live health also qualified the exact-version replay and compiler service identities. This is a separate raw-observation boundary, not the reviewed-derivative upload lane. |
 | Account, organization, onboarding | **Beta launch candidate** | The implemented lifecycle links a qualified subscription during onboarding. |
 | Structural run history and reports | **Beta launch candidate** | Safety depends on the workflow's configured identity, effect, and policy checks. Repair and validation remain local. |
 | Checkout, portal, entitlements, metering | **Beta launch candidate** | Stripe and the control plane must both pass production acceptance before public traffic is directed to checkout. |
@@ -44,8 +44,11 @@ The hosted recorder is a real, bounded authoring path rather than a simulated
 demo. A qualified Modal browser session produced PNG frames, accepted and
 retained input evidence, assembled a native recording, created one compileable
 workflow idempotently, enforced its resource limits, and removed the ephemeral
-qualification data. That qualification used an `openadapt-flow` 1.7.3 worker.
-It does not establish checkout, managed replay, or the complete paid lifecycle.
+qualification data. That qualification used an `openadapt-flow` 1.8.0 worker.
+Authenticated live health probes separately confirmed the deployed replay and
+compiler endpoints, their service identities, and their exact Flow version.
+Health is not a workflow execution result: this evidence does not establish
+checkout, a successful managed replay, or the complete paid lifecycle.
 
 The recorder accepts only public HTTPS DNS hosts and refuses credentials in the
 start URL, literal IP addresses, private or mixed DNS answers, and private

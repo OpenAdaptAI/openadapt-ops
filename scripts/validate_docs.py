@@ -16,6 +16,8 @@ REQUIRED_PUBLIC_PAGES = {
         "Hosted execution",
         "Beta launch candidate",
         "Hosted browser recorder",
+        "`openadapt-flow` 1.8.0",
+        "Authenticated live health",
         "full paid production lifecycle remains pending",
     ),
     "guides/hosted.md": (

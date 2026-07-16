@@ -89,10 +89,12 @@ Production selects live mode explicitly. Development mock mode is visibly
 synthetic. A missing production dependency makes the affected operation
 unavailable rather than substituting a simulated success.
 
-The hosted recorder has passed its bounded live-provider qualification on a
-Flow 1.7.3 worker. The documented clean-account purchase-to-run acceptance
-lifecycle remains pending. Do not infer public paid availability from this
-architecture description.
+The hosted recorder has passed its bounded, non-simulated live-provider
+qualification on a Flow 1.8.0 worker. Authenticated live health also qualified
+the exact-version replay and compiler service identities. Those health probes
+do not establish successful workflow execution. The documented clean-account
+purchase-to-run acceptance lifecycle remains pending. Do not infer public paid
+availability from this architecture description.
 
 The configured Stripe offer is the commercial source of truth. This matrix does
 not create a price, quota, SLA, certification, or backend entitlement.
