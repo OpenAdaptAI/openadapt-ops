@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-16 16:30 UTC*
+> *Last updated: 2026-07-16 17:20 UTC*
 
 
 
@@ -37,6 +37,8 @@
 ## openadapt-flow
 
 
+- [fix: expose governed run params file](https://github.com/OpenAdaptAI/openadapt-flow/pull/130) (#130) — merged 
+
 - [feat: bind governed run authorization](https://github.com/OpenAdaptAI/openadapt-flow/pull/129) (#129) — merged 
 
 - [docs: make LIMITS a durable buyer trust boundary](https://github.com/OpenAdaptAI/openadapt-flow/pull/128) (#128) — merged 
@@ -50,6 +52,8 @@
 - [fix: restore supported Python release matrix](https://github.com/OpenAdaptAI/openadapt-flow/pull/124) (#124) — merged 
 
 - [paper: add reproducible OpenAdapt technical report](https://github.com/OpenAdaptAI/openadapt-flow/pull/123) (#123) — merged 
+
+- [ci: bound and validate openadapt-types interop](https://github.com/OpenAdaptAI/openadapt-flow/pull/121) (#121) — merged 
 
 - [feat: govern hosted artifact activation and runtime validation](https://github.com/OpenAdaptAI/openadapt-flow/pull/119) (#119) — merged 
 
@@ -73,14 +77,12 @@
 
 - [feat: fail-closed 'openadapt-flow run' for regulated execution (cert+identity+effect+crypto gates)](https://github.com/OpenAdaptAI/openadapt-flow/pull/109) (#109) — merged 
 
-- [docs: remove agent-partition build notes, honest backend status, claims-consistency with LIMITS](https://github.com/OpenAdaptAI/openadapt-flow/pull/108) (#108) — merged 
-
-- [docs(on-prem): reconcile at-rest note with shipped AEAD encryption](https://github.com/OpenAdaptAI/openadapt-flow/pull/107) (#107) — merged 
-
 
 
 ## openadapt-desktop
 
+
+- [Use canonical engine version in runtime messaging](https://github.com/OpenAdaptAI/openadapt-desktop/pull/19) (#19) — merged 
 
 - [Bump native desktop to 0.1.1](https://github.com/OpenAdaptAI/openadapt-desktop/pull/18) (#18) — merged 
 
