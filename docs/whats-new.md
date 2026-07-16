@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-16 05:43 UTC*
+> *Last updated: 2026-07-16 15:46 UTC*
 
 
 
@@ -49,6 +49,8 @@
 
 - [fix: restore supported Python release matrix](https://github.com/OpenAdaptAI/openadapt-flow/pull/124) (#124) — merged 
 
+- [paper: add reproducible OpenAdapt technical report](https://github.com/OpenAdaptAI/openadapt-flow/pull/123) (#123) — merged 
+
 - [feat: govern hosted artifact activation and runtime validation](https://github.com/OpenAdaptAI/openadapt-flow/pull/119) (#119) — merged 
 
 - [feat: desktop recording via record --backend windows|rdp (record->compile->replay on desktop)](https://github.com/OpenAdaptAI/openadapt-flow/pull/118) (#118) — merged 
@@ -74,8 +76,6 @@
 - [docs: remove agent-partition build notes, honest backend status, claims-consistency with LIMITS](https://github.com/OpenAdaptAI/openadapt-flow/pull/108) (#108) — merged 
 
 - [docs(on-prem): reconcile at-rest note with shipped AEAD encryption](https://github.com/OpenAdaptAI/openadapt-flow/pull/107) (#107) — merged 
-
-- [feat: Citrix/remote-display pixel-only e2e proof (UIA-off, on-screen verify, identity-gate + halt)](https://github.com/OpenAdaptAI/openadapt-flow/pull/106) (#106) — merged 
 
 
 
