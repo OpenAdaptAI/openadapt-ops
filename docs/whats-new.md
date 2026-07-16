@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-16 02:51 UTC*
+> *Last updated: 2026-07-16 05:13 UTC*
 
 
 
@@ -37,6 +37,12 @@
 ## openadapt-flow
 
 
+- [feat: bind governed run authorization](https://github.com/OpenAdaptAI/openadapt-flow/pull/129) (#129) — merged 
+
+- [docs: make LIMITS a durable buyer trust boundary](https://github.com/OpenAdaptAI/openadapt-flow/pull/128) (#128) — merged 
+
+- [fix: preserve sanitized workflow integrity](https://github.com/OpenAdaptAI/openadapt-flow/pull/127) (#127) — merged 
+
 - [fix: build releases without unsupported lock resolution](https://github.com/OpenAdaptAI/openadapt-flow/pull/126) (#126) — merged 
 
 - [fix: patch optional MLX transformer dependencies](https://github.com/OpenAdaptAI/openadapt-flow/pull/125) (#125) — merged 
@@ -71,16 +77,12 @@
 
 - [feat: Citrix/remote-display pixel-only e2e proof (UIA-off, on-screen verify, identity-gate + halt)](https://github.com/OpenAdaptAI/openadapt-flow/pull/106) (#106) — merged 
 
-- [feat: on-prem (air-gapped) clinic deployment package + docs](https://github.com/OpenAdaptAI/openadapt-flow/pull/105) (#105) — merged 
-
-- [feat: integrated OpenEMR end-to-end harness (compiled arm, cost-capped agent arm gated off)](https://github.com/OpenAdaptAI/openadapt-flow/pull/104) (#104) — merged 
-
-- [feat: opt-in encryption-at-rest for bundles + checkpoints (AEAD)](https://github.com/OpenAdaptAI/openadapt-flow/pull/103) (#103) — merged 
-
 
 
 ## openadapt-desktop
 
+
+- [ci: ship Experimental native installer pipeline](https://github.com/OpenAdaptAI/openadapt-desktop/pull/16) (#16) — merged 
 
 - [fix: remove stale package version claim](https://github.com/OpenAdaptAI/openadapt-desktop/pull/15) (#15) — merged 
 
