@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-16 16:27 UTC*
+> *Last updated: 2026-07-16 16:30 UTC*
 
 
 
@@ -81,6 +81,8 @@
 
 ## openadapt-desktop
 
+
+- [Bump native desktop to 0.1.1](https://github.com/OpenAdaptAI/openadapt-desktop/pull/18) (#18) — merged 
 
 - [Fix native release publish runtime](https://github.com/OpenAdaptAI/openadapt-desktop/pull/17) (#17) — merged 
 
