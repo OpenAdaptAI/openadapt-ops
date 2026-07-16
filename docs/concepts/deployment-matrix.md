@@ -8,7 +8,7 @@ used in each lane; substrate maturity and data handling differ.
 
 | Deployment / substrate | Browser | Windows desktop | Remote display / Citrix |
 |---|---|---|---|
-| **OpenAdapt Hosted** | **Beta launch candidate.** Managed execution of locally authored and validated browser bundles, structural reports, replacement activation, billing, and metering is implemented; production provider qualification remains pending. | Experimental runner work; not included in the browser candidate. | Research only; no hosted Citrix claim. |
+| **OpenAdapt Hosted** | **Beta launch candidate.** Managed execution of validated browser bundles, structural reports, replacement activation, billing, and metering is implemented. The bounded non-regulated recorder is live-provider qualified; the complete paid account-to-run lifecycle remains pending. | Experimental runner work; not included in the browser candidate. | Research only; no hosted Citrix claim. |
 | **Customer cloud / BYOC** | **Experimental / scoped deployment.** Customer storage and runner must satisfy the destination policy and be qualified for the actual deployment. | Experimental; qualify the actual app and runner. | Research; a protocol adapter or analog is not a validated Citrix deployment. |
 | **Self-hosted / on-prem** | **Beta reference engine.** Local record, compile, replay, and reports. | Experimental local proof. | RDP and pixel-only analog are research spikes. |
 
@@ -32,7 +32,8 @@ will remain sanitized; a real EMR can display PHI as soon as replay begins.
 
 | Data movement | Hosted | Customer cloud / BYOC | Self-hosted |
 |---|---|---|---|
-| Raw authoring artifact | Refuse remote upload. | Keep within customer policy. | Local. |
+| Existing raw authoring artifact | Refuse generic remote upload. | Keep within customer policy. | Local. |
+| Explicit hosted-recorder observations | Allow only for a public-HTTPS, non-regulated session inside the declared hosted recording boundary. | Keep within customer policy. | Local. |
 | Approved sanitized derivative | Allow when manifest, hash, review, and destination pass. | Allow to a verified customer endpoint when policy permits. | Local or explicitly exported. |
 | PHI-bearing runtime frame | Outside the shared hosted boundary unless a specific regulated service is configured. | Remains inside customer boundary. | Remains local. |
 | Minimized control metadata | Allow by schema and destination policy. | Allow by schema and destination policy. | Optional/no egress. |
@@ -77,6 +78,8 @@ The implemented candidate path comprises:
 - Stripe Checkout using the configured product and price;
 - authentication, onboarding, and organization isolation;
 - local recording, compilation, repair, and runtime validation before upload;
+- bounded hosted recording for explicitly initiated, public-HTTPS,
+  non-regulated targets;
 - object-backed approved artifacts and signed access;
 - runner enqueue and authenticated callbacks;
 - structural reports, locally validated replacement activation, schedules, and recovery;
@@ -86,8 +89,9 @@ Production selects live mode explicitly. Development mock mode is visibly
 synthetic. A missing production dependency makes the affected operation
 unavailable rather than substituting a simulated success.
 
-Production provider qualification and the documented clean-account acceptance
-lifecycle remain pending. Do not infer public hosted availability from this
+The hosted recorder has passed its bounded live-provider qualification on a
+Flow 1.7.3 worker. The documented clean-account purchase-to-run acceptance
+lifecycle remains pending. Do not infer public paid availability from this
 architecture description.
 
 The configured Stripe offer is the commercial source of truth. This matrix does

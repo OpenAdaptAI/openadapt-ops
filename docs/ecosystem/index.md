@@ -27,8 +27,8 @@ module inside it:
 |---|---|---|
 | [OpenAdapt](https://github.com/OpenAdaptAI/OpenAdapt) | **Beta** | Installer/meta-package and unified `openadapt flow` dispatcher. |
 | [openadapt-flow](https://github.com/OpenAdaptAI/openadapt-flow) | **Beta** | Canonical compiler and governed runtime. Browser is the reference path; other backends have separate maturity labels. |
-| [openadapt-cloud](https://github.com/OpenAdaptAI/openadapt-cloud) | **Beta launch candidate** | Control plane for managed execution of locally authored, attested browser bundles, with account, billing, structural reports, and validated replacement activation. Production provider qualification remains pending. |
-| [openadapt-desktop](https://github.com/OpenAdaptAI/openadapt-desktop) | **Experimental** | Intended desktop authoring and teaching companion; the integrated installer lifecycle is not yet proven. |
+| [openadapt-cloud](https://github.com/OpenAdaptAI/openadapt-cloud) | **Beta launch candidate** | Control plane for managed browser workflows. Its bounded non-regulated recorder is live-provider qualified; the full paid purchase-to-run lifecycle remains pending. |
+| [openadapt-desktop](https://github.com/OpenAdaptAI/openadapt-desktop) | **Experimental** | Desktop authoring and teaching companion. Native artifacts and the release pipeline are qualified, but no complete native prerelease is published and the full operator lifecycle is not yet proven. |
 | [openadapt-capture](https://github.com/OpenAdaptAI/openadapt-capture) | **Experimental / pre-alpha** | Optional cross-platform recording library. Its standalone package still documents the earlier data-collection topology. |
 | [openadapt-privacy](https://github.com/OpenAdaptAI/openadapt-privacy) | **Experimental** | Optional PII/PHI scrubbing used on configured persist, log, and upload paths. |
 | [openadapt-types](https://github.com/OpenAdaptAI/openadapt-types) | **Experimental** | Shared interoperability schemas; contributor-facing, not an end-user product. |

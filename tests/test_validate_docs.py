@@ -41,7 +41,8 @@ def _write_contract_docs(root):
     pages = {
         "get-started/what-works-today.md": (
             "# Integrated product matrix\n\nHosted execution is a Beta launch candidate. "
-            "Production provider qualification remains pending."
+            "Hosted browser recorder evidence is bounded. The full paid production "
+            "lifecycle remains pending."
         ),
         "guides/hosted.md": (
             "# Hosted browser execution\n\nA sanitized derivative is inspected in "

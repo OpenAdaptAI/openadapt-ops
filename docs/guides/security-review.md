@@ -25,8 +25,8 @@ enables model grounding and configures an appliance.
 
 | Question | Current answer |
 |---|---|
-| Which components see screenshots? | The recorder and runner do. A configured model endpoint may receive a permitted crop or frame. Hosted infrastructure sees only artifacts admitted by the destination policy: an approved sanitized derivative for upload, plus runtime observations allowed for that execution lane. |
-| Which components can transmit screenshots? | Deterministic local replay does not transmit them. The optional model client can send permitted data to its configured endpoint. Hosted upload sends the manifest-bound derivative, never the source by assumption. PHI-bearing runtime screenshots stay inside the declared trusted execution boundary. |
+| Which components see screenshots? | The recorder and runner do. A configured model endpoint may receive a permitted crop or frame. Generic hosted upload admits only an approved sanitized derivative. The separate, explicitly initiated hosted recorder sees raw observations for public, non-regulated targets inside its declared hosted boundary. |
+| Which components can transmit screenshots? | Deterministic local replay does not transmit them. The optional model client can send permitted data to its configured endpoint. Generic hosted upload sends the manifest-bound derivative, never the source by assumption. The hosted recorder transmits its raw frames inside its declared non-regulated authoring boundary. PHI-bearing runtime screenshots stay inside the declared trusted execution boundary. |
 | What can the sanitizer upload? | Only the exact derivative whose inventory, transformations, rescan, unresolved findings, review state, destination, and hash satisfy policy. Unknown, symlinked, unsupported, or unresolved content aborts instead of passing through unchanged. |
 | What does local review establish? | It lets an authorized operator compare the sanitized derivative, correct redactions, and approve the exact hash. Review adds context but is not mathematical proof that no PHI remains. Any later modification invalidates approval. |
 | Does Cloud independently witness sanitation review? | No. Cloud accounts for every accepted ZIP byte and verifies the manifest/hash contract and submitting ingest token, but it does not observe the local viewer or rerun OCR/NER. Reviewer identity, separation of duties, and evidence custody remain deployment controls. |
@@ -106,9 +106,10 @@ onboarding, organization isolation, browser runner orchestration, artifacts,
 reports, teaching, billing, and usage metering. Production explicitly selects
 live dependencies; a missing runner, storage, or billing dependency returns an
 operational failure and never substitutes mock success. Mock mode remains for
-development and is visibly synthetic. Production provider qualification and the
-clean-account acceptance lifecycle remain pending, so this is not a public
-availability statement.
+development and is visibly synthetic. The bounded hosted recorder has passed a
+real-provider record-to-compile qualification; the clean-account paid
+acceptance lifecycle remains pending, so this is not a public availability
+statement.
 
 Desktop, RDP, and Citrix retain their separate Experimental/Research maturity;
 the candidate browser subscription does not imply their availability. See [Hosted browser

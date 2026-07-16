@@ -34,9 +34,10 @@ the wrong one for a workflow you run a thousand times. OpenAdapt compiles the
 demonstration instead, so the model is only consulted to repair the script, not
 to drive it.
 
-The browser/Playwright backend is the reference path. Hosted browser execution
-is a Beta launch candidate with production provider qualification pending.
-Windows UIA is experimental; RDP and the Citrix
+The browser/Playwright backend is the reference path. The bounded hosted
+recorder has live-provider evidence for public, non-regulated browser targets;
+the complete paid account-to-run lifecycle is still a Beta launch candidate
+pending production acceptance. Windows UIA is experimental; RDP and the Citrix
 analog are research spikes. Customer-controlled execution is scoped to the
 actual substrate and data boundary. The shared protocol is real, but backend
 presence is not a production-readiness claim. See

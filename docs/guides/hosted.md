@@ -5,8 +5,9 @@ The same compiler and governed runtime remain available under MIT for local and
 customer-controlled deployment. Once the production acceptance gate passes, a
 hosted subscription adds account and organization management, managed execution
 of locally authored and attested browser bundles, artifact storage, structural
-run history, usage metering, and billing. Recording, compilation, and repair
-remain local in that scope.
+run history, usage metering, and billing. Governed authoring, validation, and
+repair remain local. A separate hosted recorder can create a compileable
+workflow for an explicitly initiated public, non-regulated browser session.
 
 [Review the production acceptance gate](#operational-acceptance-gate){ .md-button .md-button--primary }
 [Review the data boundary](security-review.md){ .md-button }
@@ -21,7 +22,8 @@ public availability.
 
 | Surface | Launch status | Boundary |
 |---|---|---|
-| Local browser record -> compile -> managed execute | **Beta launch candidate** | Authoring remains local; managed execution uses the browser substrate only. Production provider qualification remains pending. |
+| Local browser record -> compile -> managed execute | **Beta launch candidate** | Governed authoring and validation remain local; managed execution uses the browser substrate only. The full paid lifecycle remains pending. |
+| Hosted browser record -> compileable workflow | **Beta / bounded launch component** | Live-provider qualification passed on `openadapt-flow` 1.7.3 for a public, non-regulated target. This is a separate raw-observation boundary, not the reviewed-derivative upload lane. |
 | Account, organization, onboarding | **Beta launch candidate** | The implemented lifecycle links a qualified subscription during onboarding. |
 | Structural run history and reports | **Beta launch candidate** | Safety depends on the workflow's configured identity, effect, and policy checks. Repair and validation remain local. |
 | Checkout, portal, entitlements, metering | **Beta launch candidate** | Stripe and the control plane must both pass production acceptance before public traffic is directed to checkout. |
@@ -35,6 +37,29 @@ for launch. It is not a current availability statement, security certification,
 or SLA. The [maturity matrix](../get-started/what-works-today.md), the operational
 acceptance gate below, and the configured commercial terms define the exact
 scope.
+
+## Hosted recorder boundary
+
+The hosted recorder is a real, bounded authoring path rather than a simulated
+demo. A qualified Modal browser session produced PNG frames, accepted and
+retained input evidence, assembled a native recording, created one compileable
+workflow idempotently, enforced its resource limits, and removed the ephemeral
+qualification data. That qualification used an `openadapt-flow` 1.7.3 worker.
+It does not establish checkout, managed replay, or the complete paid lifecycle.
+
+The recorder accepts only public HTTPS DNS hosts and refuses credentials in the
+start URL, literal IP addresses, private or mixed DNS answers, and private
+network targets. Input is bounded, idempotent, and encrypted in the provider
+queue; completed recordings use private object storage and audited, short-lived
+download links. One active recorder is admitted per organization, with time,
+event-count, and archive-size limits.
+
+Raw frames and events in this path are **not sanitized**. Use it only when those
+observations are allowed inside the declared OpenAdapt-hosted boundary. Do not
+enter PHI, PII, private-network credentials, or other regulated data. For data
+that cannot enter that boundary, record locally and use the reviewed-derivative
+protocol below, or keep execution inside a qualified customer-controlled
+boundary.
 
 ## The hosted lifecycle
 
@@ -261,6 +286,7 @@ Use these rules:
 | Approved derivative -> OpenAdapt Hosted | Allow when the manifest, review policy, destination, and hash pass. |
 | Approved derivative -> verified customer endpoint | Allow under that customer's destination policy. |
 | Raw or unresolved artifact -> any remote endpoint | Refuse. |
+| Explicit hosted-recorder observations -> hosted recording boundary | Allow only for an entitled, public-HTTPS, non-regulated session that the user starts deliberately. |
 | PHI-bearing runtime observation -> shared managed boundary | Refuse unless that exact regulated service and legal boundary are configured. |
 | Minimized break descriptor -> control plane | Allow after schema validation and sanitation. |
 | Unknown destination | Refuse. |
@@ -289,6 +315,8 @@ Before directing traffic to a production deployment, verify:
 - authentication and organization isolation;
 - database migrations and row-level access controls;
 - object storage and signed artifact access;
+- hosted recorder URL controls, input sealing/idempotency, resource limits,
+  private recording handoff, and finalization reconciliation;
 - live runner enqueue, callback authentication, timeout, retry, and recovery;
 - secrets exchange without values in browser or enqueue payloads;
 - sanitation, local review, destination policy, and approval-hash enforcement;
