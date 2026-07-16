@@ -106,9 +106,11 @@ onboarding, organization isolation, browser runner orchestration, artifacts,
 reports, teaching, billing, and usage metering. Production explicitly selects
 live dependencies; a missing runner, storage, or billing dependency returns an
 operational failure and never substitutes mock success. Mock mode remains for
-development and is visibly synthetic. The bounded hosted recorder has passed a
-real-provider record-to-compile qualification; the clean-account paid
-acceptance lifecycle remains pending, so this is not a public availability
+development and is visibly synthetic. On Flow 1.8.0, the bounded hosted recorder
+has passed a non-simulated provider record-to-compile qualification, and
+authenticated live health has qualified the exact-version replay and compiler
+service identities. Health is not a successful workflow run. The clean-account
+paid acceptance lifecycle remains pending, so this is not a public availability
 statement.
 
 Desktop, RDP, and Citrix retain their separate Experimental/Research maturity;
