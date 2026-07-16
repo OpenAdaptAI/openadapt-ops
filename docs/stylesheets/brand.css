@@ -12,6 +12,11 @@
   --oa-ink-3: #5a6050;
   --oa-accent: #3e6b4f;
   --oa-accent-bright: #4f8a66;
+  --oa-accent-hover: #2f513c;
+  --oa-link-visited: #76512f;
+  --oa-link-underline: rgba(62, 107, 79, 0.58);
+  --oa-link-visited-underline: rgba(118, 81, 47, 0.6);
+  --oa-focus-ring: #a74612;
 }
 
 /* ---- Light scheme ---------------------------------------------------- */
@@ -54,6 +59,11 @@
   --md-typeset-a-color: #86d9a8;
   --md-default-bg-color: #14171a;
   --md-footer-bg-color: #0f1113;
+  --oa-accent-hover: #a8e8bf;
+  --oa-link-visited: #e0b27f;
+  --oa-link-underline: rgba(134, 217, 168, 0.62);
+  --oa-link-visited-underline: rgba(224, 178, 127, 0.66);
+  --oa-focus-ring: #ffd166;
 }
 
 /* ---- Shared type + chrome ------------------------------------------- */
@@ -72,6 +82,47 @@
 }
 .md-typeset h1 {
   color: var(--oa-ink);
+}
+
+/* Material keeps chrome and card links visually quiet. Prose and data links
+   retain a persistent underline so color is never their only affordance. */
+.md-typeset :where(p, li, dd, blockquote, figcaption, td) a:not(.md-button):not(.headerlink) {
+  text-decoration-line: underline;
+  text-decoration-color: var(--oa-link-underline);
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.2em;
+  transition: color 0.16s ease, text-decoration-color 0.16s ease;
+}
+.md-typeset :where(p, li, dd, blockquote, figcaption, td) a:not(.md-button):not(.headerlink):visited {
+  color: var(--oa-link-visited);
+  text-decoration-color: var(--oa-link-visited-underline);
+}
+.md-typeset :where(p, li, dd, blockquote, figcaption, td) a:not(.md-button):not(.headerlink):hover {
+  color: var(--oa-accent-hover);
+  text-decoration-color: currentColor;
+  text-decoration-thickness: 0.12em;
+}
+.md-typeset :where(p, li, dd, blockquote, figcaption, td) a:not(.md-button):not(.headerlink):active {
+  color: var(--md-default-fg-color);
+  text-decoration-color: currentColor;
+}
+
+/* Card titles and actions remain a separate, quieter interaction tier. */
+.md-typeset .grid.cards a {
+  text-decoration-line: none;
+}
+.md-typeset .grid.cards a:hover {
+  text-decoration-line: underline;
+  text-underline-offset: 0.18em;
+}
+
+:where(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
+  outline: 3px solid var(--oa-focus-ring) !important;
+  outline-offset: 3px !important;
+}
+a:focus-visible {
+  text-decoration-color: currentColor !important;
+  text-decoration-thickness: 0.12em;
 }
 [data-md-color-scheme="slate"] .md-typeset h1 {
   color: #eef0ea;
@@ -125,4 +176,18 @@
 .md-typeset .mermaid {
   margin: 1.4em auto;
   text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
