@@ -15,7 +15,8 @@ REQUIRED_PUBLIC_PAGES = {
         "Integrated product matrix",
         "Hosted execution",
         "Beta launch candidate",
-        "Production provider qualification remains pending",
+        "Hosted browser recorder",
+        "full paid production lifecycle remains pending",
     ),
     "guides/hosted.md": (
         "sanitized derivative",
