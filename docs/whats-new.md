@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-15 22:43 UTC*
+> *Last updated: 2026-07-16 00:21 UTC*
 
 
 
@@ -30,6 +30,8 @@
 
 ## openadapt-flow
 
+
+- [fix: build releases without unsupported lock resolution](https://github.com/OpenAdaptAI/openadapt-flow/pull/126) (#126) — merged 
 
 - [fix: restore supported Python release matrix](https://github.com/OpenAdaptAI/openadapt-flow/pull/124) (#124) — merged 
 
@@ -69,8 +71,6 @@
 
 - [fix: desktop e2e targets a reliable app (repeatable structural-rung proof, not flaky Calculator)](https://github.com/OpenAdaptAI/openadapt-flow/pull/102) (#102) — merged 
 
-- [feat: self-serve halt->learn via 'openadapt flow teach' (governed, refuses bad fixes)](https://github.com/OpenAdaptAI/openadapt-flow/pull/101) (#101) — merged 
-
 
 
 ## openadapt-desktop
@@ -93,6 +93,8 @@
 
 ## openadapt-evals
 
+
+- [fix: keep release lock metadata consistent](https://github.com/OpenAdaptAI/openadapt-evals/pull/267) (#267) — merged 
 
 - [feat: lightweight meta-benchmark harness (unify Environment/verify + metrics; OSWorld/BrowserGym stubs for phase 2)](https://github.com/OpenAdaptAI/openadapt-evals/pull/266) (#266) — merged 
 
@@ -124,6 +126,8 @@
 
 ## openadapt-types
 
+
+- [fix: keep release lock metadata consistent](https://github.com/OpenAdaptAI/openadapt-types/pull/6) (#6) — merged 
 
 - [feat: add canonical Benchmark* types (Task/Observation/Action/Agent)](https://github.com/OpenAdaptAI/openadapt-types/pull/5) (#5) — merged 
 
