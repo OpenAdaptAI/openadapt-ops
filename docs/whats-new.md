@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-16 00:34 UTC*
+> *Last updated: 2026-07-16 01:02 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [fix: publish attested launcher release artifacts](https://github.com/OpenAdaptAI/OpenAdapt/pull/1017) (#1017) — merged 
 
 - [fix: align launcher lifecycle metadata with beta](https://github.com/OpenAdaptAI/OpenAdapt/pull/1016) (#1016) — merged 
 
@@ -34,6 +36,8 @@
 
 
 - [fix: build releases without unsupported lock resolution](https://github.com/OpenAdaptAI/openadapt-flow/pull/126) (#126) — merged 
+
+- [fix: patch optional MLX transformer dependencies](https://github.com/OpenAdaptAI/openadapt-flow/pull/125) (#125) — merged 
 
 - [fix: restore supported Python release matrix](https://github.com/OpenAdaptAI/openadapt-flow/pull/124) (#124) — merged 
 
@@ -70,8 +74,6 @@
 - [feat: integrated OpenEMR end-to-end harness (compiled arm, cost-capped agent arm gated off)](https://github.com/OpenAdaptAI/openadapt-flow/pull/104) (#104) — merged 
 
 - [feat: opt-in encryption-at-rest for bundles + checkpoints (AEAD)](https://github.com/OpenAdaptAI/openadapt-flow/pull/103) (#103) — merged 
-
-- [fix: desktop e2e targets a reliable app (repeatable structural-rung proof, not flaky Calculator)](https://github.com/OpenAdaptAI/openadapt-flow/pull/102) (#102) — merged 
 
 
 
