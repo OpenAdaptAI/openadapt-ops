@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-16 00:22 UTC*
+> *Last updated: 2026-07-16 00:32 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [fix: align launcher lifecycle metadata with beta](https://github.com/OpenAdaptAI/OpenAdapt/pull/1016) (#1016) — merged 
 
 - [chore: keep release lock version synchronized](https://github.com/OpenAdaptAI/OpenAdapt/pull/1015) (#1015) — merged 
 
