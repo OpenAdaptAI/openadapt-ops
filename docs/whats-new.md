@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-16 01:03 UTC*
+> *Last updated: 2026-07-16 01:12 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [fix: publish release assets from named branch](https://github.com/OpenAdaptAI/OpenAdapt/pull/1019) (#1019) — merged 
 
 - [fix: publish attested launcher release artifacts](https://github.com/OpenAdaptAI/OpenAdapt/pull/1017) (#1017) — merged 
 
