@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-17 20:48 UTC*
+> *Last updated: 2026-07-17 20:51 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [fix: remove dead config module with undeclared pydantic_settings import](https://github.com/OpenAdaptAI/OpenAdapt/pull/1021) (#1021) — merged 
 
 - [docs: remove design-partner claim; align backend labels with LIMITS.md](https://github.com/OpenAdaptAI/OpenAdapt/pull/1020) (#1020) — merged 
 
