@@ -11,9 +11,11 @@ have a live caller. Do not publish until true.
 !!! warning "Target-state routing model"
     The shared backend protocol and individual adapters exist, but the single
     control-plane runner described here is not fully wired. Playwright is the
-    reference path; Windows, native macOS, and RDP accept partner-qualification
-    applications while acceptance remains in progress; Citrix needs a design
-    partner and has no ICA/HDX evidence. See
+    reference path. Windows UIA has scoped acceptance for one 3/3 in-tree
+    WinForms matrix, native macOS has scoped one-host TextEdit action-effect and
+    ambiguity-refusal evidence, and both remain partner qualification. RDP
+    acceptance remains in progress. Citrix needs a design partner and an actual
+    ICA/HDX environment. See
     [What works today](../get-started/what-works-today.md).
 
 Work lives on different surfaces. A referral moves through a browser app; a
@@ -71,9 +73,9 @@ is expensive.
 Two backends cover it behind the same protocol:
 
 - **`WindowsBackend`** drives a native Windows desktop through an in-session
-  agent. A candidate typed RPC under qualification exposes bounded screenshot,
-  input, and UIA operations while the legacy arbitrary-execution route stays
-  disabled by default. It reads the **UI Automation** tree for identity — and crucially,
+  agent. Its shipped typed RPC exposes bounded screenshot, input, and UIA
+  operations while the legacy arbitrary-execution route stays disabled by
+  default. It reads the **UI Automation** tree for identity — and crucially,
   most native controls expose
   `Name` / `Value` text **even without a stable `AutomationId`**, so structured
   identity is viable on desktop, not just the browser.
@@ -119,10 +121,22 @@ guest through the in-session agent contract, not the stream.
 
 - The **web substrate** (Playwright) is the reference backend, heavily tested,
   and the one every guide uses.
-- The Windows UIA, native macOS, and RDP candidates have fail-closed
-  qualification harnesses. Accepted evidence must come from the
-  real target substrate and an independent effect oracle; a mock or analog is
-  not promoted as field support.
+- Windows UIA has scoped acceptance for the counted
+  `20260717-candidate-56759c8-v2` exact in-tree WinForms matrix:
+  3/3 completed trials, 3/3 independent SQLite effects, 3/3 stale-target
+  refusals, 3/3 ambiguity refusals, 0 silent incorrect successes, 0 over-halts,
+  and 0 model calls. Earlier rejected diagnostic matrices remain in the report
+  and are not counted acceptance trials. It is not an arbitrary-app or
+  hosted-desktop result.
+- Native macOS has scoped one-host TextEdit evidence: 3/3 exact-byte effects
+  and a two-window ambiguity refusal, with 0 silent incorrect successes and 0
+  over-halts. The original batch remains failed due to cleanup-warning
+  classification; a hash-bound adjudication verified actual cleanup and accepts
+  only those effects/refusal. It is not clean-machine, partner, production, or
+  general macOS evidence.
+- RDP has a fail-closed qualification harness, but live acceptance remains in
+  progress. Accepted evidence must come from the real target substrate and an
+  independent effect oracle; a mock or analog is not promoted as field support.
 - Citrix needs a design partner. A Citrix claim requires trials in the actual
   ICA/HDX environment; neither a VM window nor RDP substitutes for that evidence.
 - The substrate-agnostic runner routes `web` to the browser launch-candidate path.

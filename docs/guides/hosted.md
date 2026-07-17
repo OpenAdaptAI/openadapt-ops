@@ -28,8 +28,8 @@ public availability.
 | Structural run history and reports | **Beta launch candidate** | Safety depends on the workflow's configured identity, effect, and policy checks. Repair and validation remain local. |
 | Checkout, portal, entitlements, metering | **Beta launch candidate** | Stripe and the control plane must both pass production acceptance before public traffic is directed to checkout. |
 | Self-hosted browser execution | **Beta** | No hosted account required. |
-| Windows UIA | **Partner qualification; acceptance in progress** | Not in the hosted launch candidate; no browser subscription entitlement. |
-| Native macOS | **Partner qualification; acceptance in progress** | Not in the hosted launch candidate; no browser subscription entitlement. |
+| Windows UIA | **Partner qualification; scoped acceptance passed** | The exact in-tree WinForms matrix passed 3/3 with an independent SQLite oracle and 3/3 stale/ambiguity refusals. It is not in the hosted launch candidate and creates no browser subscription entitlement. |
+| Native macOS | **Partner qualification; scoped TextEdit evidence accepted** | One macOS 15.7.3 arm64 host produced 3/3 exact-byte TextEdit effects plus a two-window ambiguity refusal. The original batch remains failed; its hash-bound adjudication accepts only effect/refusal evidence. It is not in the hosted launch candidate and creates no browser subscription entitlement. |
 | RDP | **Partner qualification; acceptance in progress** | Network RDP acceptance is required; not in the hosted launch candidate. |
 | Citrix | **Design partner needed; no ICA/HDX evidence** | Must be qualified in the actual Citrix environment; RDP evidence does not transfer. |
 | Regulated runtime data | **Customer-controlled boundary** | Use a scoped BYOC/on-prem deployment when live screens necessarily contain PHI. |
