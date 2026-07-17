@@ -31,6 +31,8 @@
 
 ## openadapt-desktop
 
+- **[v0.4.0](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/v0.4.0)** (2026-07-17)
+  ## v0.4.0 (2026-07-17)
 - **[desktop-v0.1.1](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/desktop-v0.1.1)** (2026-07-16)
   # Experimental Native Installers
 - **[v0.3.2](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/v0.3.2)** (2026-07-15)
@@ -39,8 +41,6 @@
   ## v0.3.1 (2026-07-15)
 - **[v0.3.0](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/v0.3.0)** (2026-07-15)
   ## v0.3.0 (2026-07-15)
-- **[v0.2.0](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/v0.2.0)** (2026-03-04)
-  ## v0.2.0 (2026-03-04)
 
 ## openadapt-ml
 
