@@ -41,8 +41,7 @@ This is where the product is most mature and most heavily tested.
 
 ### Desktop — Windows (UIA)
 
-The public `WindowsBackend` has used the Windows Agent Arena (WAA) HTTP
-contract. A candidate replacement under qualification narrows that boundary to typed
+The public `WindowsBackend` now narrows the in-session boundary to typed
 `/input` and `/uia/*` operations, disables arbitrary legacy execution by
 default, screenshots the desktop, and reads the **UI Automation** tree for
 identity. Crucially, an
@@ -56,26 +55,20 @@ a wrong write is expensive. Structured desktop text distinguishes an `O` from a
 `0` that OCR collapses, which is exactly what makes wrong-record writes
 preventable there.
 
-!!! warning "Honest status: the live desktop proof is recent and limited"
-    The desktop path is real and runs end to end, but the published proof is an
-    **existence result**, not a big-N study. It was measured on a WinForms app
-    (a stand-in for a clinical EMR that is not no-touch installable) inside a
-    Windows 11 **ARM** VM under x64 emulation on Apple Silicon, at small N per
-    condition. Two honest findings from that run:
+!!! warning "Honest status: scoped Windows acceptance, not broad support"
+    The accepted `20260717-candidate-56759c8-v2` matrix covers one exact in-tree
+    WinForms Patient Notes workflow on a Windows 11 ARM VM snapshot. It completed 3/3 trials; an
+    independent SQLite oracle confirmed all 3/3 effects; stale-target and
+    ambiguous-target controls each refused 3/3; and the counted matrix recorded
+    0 silent incorrect successes, 0 over-halts, and 0 model calls. The native
+    receipts prove delivery to a re-resolved unique fingerprint; the SQLite
+    oracle, not the receipt, proves the business effect.
 
-    - The **mechanism transfers**: record → compile → replay of a real WinForms
-      workflow ran deterministically over the vision-only `WindowsBackend`,
-      judged by database ground truth, with identity bands extracted and
-      verified on desktop-rendered text — and it **never mis-wrote**.
-    - **Vision-only replay is defeated by render-scale and theme drift** on
-      desktop (it safe-halted, it did not mis-act), which is precisely the
-      argument for the structural (UIA) rung over pixels. On a controlled DOM
-      re-render the structural rung resolved **21/21** targets where visual
-      replay alone managed **6/21**.
-
-    A native-x86 confirmation run and larger N are future work. Absolute
-    per-app numbers (including identity-armed coverage) are per-app
-    measurements, not universal constants.
+    The report preserves earlier rejected diagnostic matrices; they are not
+    counted acceptance trials. The counted result is enough to accept the named matrix, not arbitrary Windows
+    applications, native-x86 clean-machine support, hosted desktop, or a
+    production SLA. Review [Flow PR #132](https://github.com/OpenAdaptAI/openadapt-flow/pull/132)
+    and the [immutable evidence report](https://github.com/OpenAdaptAI/openadapt-flow/blob/defafbae758a75c8e149d9693f2cffe1f2264b8c/benchmark/windows_uia/results.json).
 
 #### The in-session agent (the session-0 problem)
 
@@ -83,7 +76,7 @@ Driving a real desktop has a subtlety a browser does not: a Windows service runs
 as `SYSTEM` in **session 0**, isolated from the logged-on user's desktop, where
 a screenshot captures a blank screen and synthetic input goes nowhere. So the
 desktop path ships a small **in-session agent server** that must run in the
-interactive console session (session 1). The candidate agent under qualification uses
+interactive console session (session 1). The shipped typed agent uses
 authenticated TLS, bounded screenshot/input/UIA operations, unique-candidate
 selection, and stale-target rejection. The older `/execute_windows`
 compatibility route remains a migration surface and is disabled by default; it
@@ -115,20 +108,29 @@ behavior on real charts. Those require a real Citrix deployment.
 
 ### Native macOS
 
-A native exact-window candidate is in permissioned qualification. It captures
-only a uniquely selected application window, refuses ambiguous or non-frontmost
-targets, and fails before input when Screen Recording or Accessibility access is
-missing. The first qualification target is TextEdit with an independent
-exact-file oracle. This is not yet broad AX structural resolution or a general
-native application support claim.
+A native exact-window candidate in [Flow PR #135](https://github.com/OpenAdaptAI/openadapt-flow/pull/135)
+captures only a uniquely selected application window, refuses ambiguous or
+non-frontmost targets, and fails before input when Screen Recording or
+Accessibility access is missing. On one macOS 15.7.3 arm64 host, counted
+candidate `b1b61a5` completed 3/3 exact-byte TextEdit trials and refused a
+two-window ambiguity without changing either file, with 0 silent incorrect
+successes and 0 over-halts.
+
+The [immutable original report](https://github.com/OpenAdaptAI/openadapt-flow/blob/ca1b522cad215875f7471782283f8f8bb8e6c998/benchmark/macos_native/textedit_counted_3plus1_b1b61a5_20260717.json)
+still says `status: failed`: its graceful-close cleanup warnings were classified
+as a batch failure. A separate [SHA-256-bound adjudication](https://github.com/OpenAdaptAI/openadapt-flow/blob/ca1b522cad215875f7471782283f8f8bb8e6c998/benchmark/macos_native/textedit_counted_3plus1_b1b61a5_20260717.adjudication.json)
+verified all exact harness PIDs and the temporary root were absent, preserved
+the original result, and accepted only the action-effect and ambiguity-refusal
+evidence. This is one-host TextEdit evidence, not clean-machine, design-partner,
+production, broad-app, AX structural-resolution, or general macOS acceptance.
 
 ## Status at a glance
 
 | Backend | Substrate | Structural rung | Identity signal | Maturity |
 |---|---|---|---|---|
 | Playwright (web) | Browser DOM | Yes (DOM) | Structured text (DOM) | **Beta / reference**: end-to-end CI and real third-party proof |
-| `WindowsBackend` | Native Windows | Via UIA | UI Automation `Name`/`Value` | **Partner qualification; acceptance in progress**: typed fail-closed candidate under real Windows qualification |
-| Native macOS | Native macOS | Exact window candidate; AX candidate metadata | Window identity and pixel/OCR floor | **Partner qualification; acceptance in progress**: permissioned TextEdit qualification; broader apps unqualified |
+| `WindowsBackend` | Native Windows | Via UIA | UI Automation `Name`/`Value` | **Partner qualification; scoped acceptance passed**: exact in-tree WinForms 3/3 matrix; arbitrary apps remain unqualified |
+| Native macOS | Native macOS | Exact window candidate; AX candidate metadata | Window identity and pixel/OCR floor | **Partner qualification; scoped TextEdit evidence accepted**: one-host 3/3 exact-byte and ambiguity-refusal evidence; broad apps remain unqualified |
 | `FreeRDPBackend` | Pixel-only network RDP | No | Pixel / OCR floor | **Partner qualification; acceptance in progress**: framebuffer lease, viewport, and readiness safety under real Aardwolf qualification |
 | Citrix | ICA/HDX remote application | Deployment-dependent | Pixel / OCR floor unless the client exposes more | **Design partner needed; no ICA/HDX evidence**: RDP evidence does not transfer |
 

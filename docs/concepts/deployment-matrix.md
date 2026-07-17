@@ -6,11 +6,11 @@ used in each lane; substrate maturity and data handling differ.
 
 ## Current matrix
 
-| Deployment / substrate | Browser | Windows desktop | RDP | Citrix |
-|---|---|---|---|---|
-| **OpenAdapt Hosted** | **Beta launch candidate.** Managed execution of validated browser bundles, structural reports, replacement activation, billing, and metering is implemented. The bounded non-regulated recorder is live-provider qualified; the complete paid account-to-run lifecycle remains pending. | **Not in hosted candidate.** Partner-scoped qualification only; acceptance is in progress. | **Not in hosted candidate.** Partner-scoped network RDP qualification only; acceptance is in progress. | **No hosted Citrix claim.** A design partner and actual ICA/HDX environment are required. |
-| **Customer cloud / BYOC** | **Experimental / scoped deployment.** Customer storage and runner must satisfy the destination policy and be qualified for the actual deployment. | **Partner qualification.** Qualify the actual app, identity coverage, runner, and effect oracle; acceptance is in progress. | **Partner qualification.** Qualify the network RDP session, framebuffer, input, and effects; acceptance is in progress. | **Design partner needed; no ICA/HDX evidence.** A protocol adapter or RDP result is not a validated Citrix deployment. |
-| **Self-hosted / on-prem** | **Beta reference engine.** Local record, compile, replay, and reports. | **Partner qualification.** Workflow-specific acceptance required. | **Partner qualification.** Workflow-specific network RDP acceptance required. | **Design partner needed; no ICA/HDX evidence.** Qualification must run in the real Citrix environment. |
+| Deployment / substrate | Browser | Windows UIA | Native macOS | RDP | Citrix |
+|---|---|---|---|---|---|
+| **OpenAdapt Hosted** | **Beta launch candidate.** Managed execution of validated browser bundles, structural reports, replacement activation, billing, and metering is implemented. The bounded non-regulated recorder is live-provider qualified; the complete paid account-to-run lifecycle remains pending. | **Not in hosted candidate.** Availability remains partner qualification. The in-tree WinForms workflow has scoped 3/3 acceptance evidence, not a hosted-desktop entitlement. | **Not in hosted candidate.** Availability remains partner qualification. One-host TextEdit effect/refusal evidence is accepted only in its published scope. | **Not in hosted candidate.** Partner-scoped network RDP qualification only; acceptance is in progress. | **No hosted Citrix claim.** A design partner and actual ICA/HDX environment are required. |
+| **Customer cloud / BYOC** | **Deployment qualification required.** Customer storage and runner must satisfy the destination policy and be qualified for the actual deployment. | **Partner qualification.** The scoped WinForms acceptance result does not qualify the customer's app, runner, identity coverage, or effect oracle. | **Partner qualification.** The scoped TextEdit result does not qualify the customer's application, clean machine, or data boundary. | **Partner qualification.** Qualify the network RDP session, framebuffer, input, and effects; acceptance is in progress. | **Design partner needed; no ICA/HDX evidence.** A protocol adapter or RDP result is not a validated Citrix deployment. |
+| **Self-hosted / on-prem** | **Beta reference engine.** Local record, compile, replay, and reports. | **Partner qualification.** Workflow-specific acceptance is still required despite the scoped in-tree WinForms result. | **Partner qualification.** Workflow-specific acceptance is still required despite the scoped TextEdit evidence. | **Partner qualification.** Workflow-specific network RDP acceptance required. | **Design partner needed; no ICA/HDX evidence.** Qualification must run in the real Citrix environment. |
 
 The browser launch candidate does not promote every cell. Code presence, a shared runner
 protocol, or successful checkout is not evidence that Windows, RDP, or Citrix
@@ -126,11 +126,22 @@ risk work required for the actual deployment.
 - **Browser:** Beta local engine and the hosted launch-candidate substrate. It is the only
   backend exercised end to end against a real third-party application in the
   published engine evidence.
-- **Windows UIA:** Partner qualification is open for a typed, fail-closed
-  candidate; acceptance is in progress, not a broad app/platform study.
-- **macOS native:** Partner qualification is open while permissioned TextEdit
-  acceptance is in progress; broader applications and AX structural resolution
-  remain unqualified.
+- **Windows UIA:** Availability remains partner qualification. The counted
+  `20260717-candidate-56759c8-v2` in-tree WinForms matrix passed 3/3 trials with 3/3 independent SQLite effects,
+  3/3 stale-target refusals, 3/3 ambiguity refusals, 0 silent incorrect
+  successes, 0 over-halts, and 0 model calls. Earlier rejected diagnostic
+  matrices remain in the report and are not counted acceptance trials. This is scoped acceptance, not a
+  broad app/platform study. Review [Flow PR #132](https://github.com/OpenAdaptAI/openadapt-flow/pull/132)
+  and its [immutable report](https://github.com/OpenAdaptAI/openadapt-flow/blob/defafbae758a75c8e149d9693f2cffe1f2264b8c/benchmark/windows_uia/results.json).
+- **macOS native:** Availability remains partner qualification. On one macOS
+  15.7.3 arm64 host, candidate `b1b61a5` completed 3/3 exact-byte TextEdit
+  trials and refused a two-window ambiguity without changing either file, with
+  0 silent incorrect successes and 0 over-halts. The immutable batch report
+  remains failed because cleanup warnings were classified as batch failure; a
+  SHA-256-bound adjudication verified actual cleanup and accepts only the action
+  effect and ambiguity refusal. It is not clean-machine, partner, production,
+  or general macOS evidence. Review [Flow PR #135](https://github.com/OpenAdaptAI/openadapt-flow/pull/135)
+  and the [exact adjudication](https://github.com/OpenAdaptAI/openadapt-flow/blob/ca1b522cad215875f7471782283f8f8bb8e6c998/benchmark/macos_native/textedit_counted_3plus1_b1b61a5_20260717.adjudication.json).
 - **RDP:** Partner qualification is open for network RDP; acceptance is in
   progress with framebuffer-lease, viewport, readiness, and independent-oracle checks.
 - **Citrix:** A design partner is needed. It is not validated against ICA/HDX, real

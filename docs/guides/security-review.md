@@ -114,9 +114,15 @@ paid acceptance lifecycle remains pending, so this is not a public availability
 statement.
 
 Windows UIA, native macOS, and RDP accept partner-qualification applications,
-but their acceptance evidence is still in progress and they are not in the
-hosted launch candidate. Citrix needs a design partner and has no ICA/HDX
-evidence. The candidate browser subscription does not imply their availability.
+but none is in the hosted launch candidate. Windows UIA has scoped acceptance
+for one 3/3 in-tree WinForms matrix with an independent SQLite oracle. Native
+macOS has accepted one-host TextEdit action-effect and ambiguity-refusal
+evidence; its preserved original batch remains failed and the hash-bound
+adjudication is not clean-machine, partner, production, or general macOS
+evidence. RDP acceptance remains in progress. Citrix needs a design partner and
+has no ICA/HDX evidence. The candidate browser subscription does not imply
+their availability. See [What works today](../get-started/what-works-today.md)
+for the exact reports and limitations.
 See [Hosted browser
 execution](hosted.md) and [What works today](../get-started/what-works-today.md).
 

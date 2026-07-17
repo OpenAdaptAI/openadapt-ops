@@ -73,10 +73,12 @@ enforced. Read them in order for the full picture, or jump to what you need.
 
 -   [__Backends: where it runs__](backends.md)
 
-    Browser (Playwright) is the supported end-to-end path. Windows UIA, native
-    macOS, and RDP accept partner-qualification applications while acceptance
-    remains in progress; Citrix needs a design partner and has no ICA/HDX
-    evidence. One backend protocol does not imply equal evidence or availability.
+    Browser (Playwright) is the supported end-to-end path. Windows UIA has
+    scoped acceptance for one 3/3 in-tree WinForms matrix. Native macOS has
+    scoped one-host TextEdit action-effect and ambiguity-refusal evidence. Both
+    remain partner qualification, RDP acceptance remains in progress, and
+    Citrix needs a design partner with an actual ICA/HDX environment. One
+    backend protocol does not imply equal evidence or availability.
 
 -   [__The on-prem VLM appliance__](vlm-appliance.md)
 
