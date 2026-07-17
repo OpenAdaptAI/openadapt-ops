@@ -17,6 +17,15 @@
   --oa-link-underline: rgba(62, 107, 79, 0.58);
   --oa-link-visited-underline: rgba(118, 81, 47, 0.6);
   --oa-focus-ring: #a74612;
+  --oa-display-font: "Avenir Next", "Segoe UI", -apple-system,
+    BlinkMacSystemFont, sans-serif;
+  --oa-body-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica,
+    Arial, sans-serif;
+  --oa-mono-font: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+    monospace;
+  --oa-radius-card: 0.8rem;
+  --md-text-font: var(--oa-body-font);
+  --md-code-font: var(--oa-mono-font);
 }
 
 /* ---- Light scheme ---------------------------------------------------- */
@@ -33,6 +42,8 @@
   --md-typeset-a-color: var(--oa-accent);
   --md-footer-bg-color: var(--oa-ink);
   --md-footer-bg-color--dark: #1a1e17;
+  --md-primary-bg-color: var(--oa-ink);
+  --md-primary-bg-color--light: var(--oa-ink-2);
 }
 
 /* Cards / code / tables sit on the lighter "panel" tone for depth. */
@@ -67,21 +78,94 @@
 }
 
 /* ---- Shared type + chrome ------------------------------------------- */
+body {
+  font-family: var(--oa-body-font);
+}
+
+.md-grid {
+  max-width: 72rem;
+}
+
 .md-header {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  border-bottom: 1px solid var(--oa-hairline);
+  box-shadow: none;
+}
+.md-header__inner {
+  min-height: 3rem;
+}
+.md-header__button.md-logo img,
+.md-header__button.md-logo svg {
+  height: auto;
+  width: 4.85rem;
+}
+.md-header__button.md-logo {
+  margin-right: 0.25rem;
+  padding-left: 0;
+  padding-right: 0;
+}
+.md-header__topic:first-child .md-ellipsis {
+  font-size: 0;
+}
+.md-header__topic:first-child .md-ellipsis::after {
+  color: var(--oa-ink-2);
+  content: "Docs";
+  font-family: var(--oa-body-font);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+[data-md-color-scheme="default"] .md-header {
+  background: rgba(253, 252, 249, 0.97);
+  color: var(--oa-ink);
+}
+[data-md-color-scheme="default"] .md-header__button,
+[data-md-color-scheme="default"] .md-header__title {
+  color: var(--oa-ink);
+}
+[data-md-color-scheme="default"] .md-search__form {
+  background: rgba(35, 40, 31, 0.06);
+}
+[data-md-color-scheme="default"] .md-search__input,
+[data-md-color-scheme="default"] .md-search__input::placeholder {
+  color: var(--oa-ink-2);
+}
+[data-md-color-scheme="slate"] .md-header__button.md-logo img {
+  filter: brightness(0) invert(1);
+}
+[data-md-color-scheme="slate"]
+  .md-header__topic:first-child
+  .md-ellipsis::after {
+  color: #c9cdc2;
 }
 .md-header__title {
+  font-family: var(--oa-display-font);
   font-weight: 600;
   letter-spacing: -0.01em;
 }
 .md-typeset h1,
 .md-typeset h2,
 .md-typeset h3 {
+  font-family: var(--oa-display-font);
   font-weight: 650;
   letter-spacing: -0.015em;
 }
 .md-typeset h1 {
   color: var(--oa-ink);
+  font-size: clamp(2rem, 4vw, 2.55rem);
+  line-height: 1.12;
+  margin-bottom: 0.75em;
+}
+.md-typeset h2 {
+  line-height: 1.22;
+}
+.md-typeset {
+  line-height: 1.65;
+}
+.md-main__inner {
+  margin-top: 1.5rem;
+}
+.md-content__inner {
+  padding-bottom: 3rem;
 }
 
 /* Material keeps chrome and card links visually quiet. Prose and data links
@@ -128,9 +212,58 @@ a:focus-visible {
   color: #eef0ea;
 }
 
-/* Tighten the tab bar so it reads as one brand strip with the header. */
+/* Keep the tab bar in the same warm-paper chrome as the public-site nav. */
 .md-tabs {
+  border-bottom: 1px solid var(--oa-hairline);
   font-weight: 500;
+}
+[data-md-color-scheme="default"] .md-tabs {
+  background: var(--oa-panel);
+  color: var(--oa-ink-2);
+}
+[data-md-color-scheme="default"] .md-tabs__link--active,
+[data-md-color-scheme="default"] .md-tabs__link:hover {
+  color: var(--oa-accent);
+}
+
+.md-nav__link--active {
+  font-weight: 600;
+}
+
+/* Material actions use the same ink and outline pills as openadapt.ai. */
+.md-typeset .md-button {
+  border: 0.075rem solid var(--oa-ink);
+  border-radius: 9999px;
+  font-weight: 600;
+  padding: 0.55em 1.15em;
+  transition: background-color 0.16s ease, border-color 0.16s ease,
+    color 0.16s ease;
+}
+[data-md-color-scheme="default"] .md-typeset .md-button {
+  color: var(--oa-ink);
+}
+[data-md-color-scheme="default"] .md-typeset .md-button:hover {
+  background: rgba(35, 40, 31, 0.06);
+  border-color: var(--oa-ink);
+  color: var(--oa-ink);
+}
+[data-md-color-scheme="default"] .md-typeset .md-button--primary {
+  background: var(--oa-ink);
+  border-color: var(--oa-ink);
+  color: var(--oa-ground);
+}
+[data-md-color-scheme="default"] .md-typeset .md-button--primary:hover {
+  background: #3a4133;
+  border-color: #3a4133;
+  color: var(--oa-ground);
+}
+[data-md-color-scheme="slate"] .md-typeset .md-button {
+  border-color: #eef0ea;
+  color: #eef0ea;
+}
+[data-md-color-scheme="slate"] .md-typeset .md-button--primary {
+  background: #eef0ea;
+  color: #14171a;
 }
 
 /* Hero lede on the home page. */
@@ -149,7 +282,7 @@ a:focus-visible {
 .md-typeset .grid.cards > ul > li,
 .md-typeset .grid > .card {
   border: 1px solid var(--oa-hairline);
-  border-radius: 10px;
+  border-radius: var(--oa-radius-card);
   background: var(--oa-panel);
 }
 [data-md-color-scheme="slate"] .md-typeset .grid.cards > ul > li {
@@ -176,6 +309,59 @@ a:focus-visible {
 .md-typeset .mermaid {
   margin: 1.4em auto;
   text-align: center;
+}
+
+.md-typeset pre > code,
+.md-typeset table:not([class]),
+.md-typeset .admonition,
+.md-typeset details {
+  border-radius: 0.55rem;
+}
+
+/* The docs footer carries the same warm ground, hairline, and quiet links as
+   the public site instead of switching to unrelated dark chrome. */
+[data-md-color-scheme="default"] .md-footer {
+  background: var(--oa-ground);
+  border-top: 1px solid var(--oa-hairline);
+  color: var(--oa-ink-2);
+}
+[data-md-color-scheme="default"] .md-footer-meta {
+  background: var(--oa-panel);
+}
+[data-md-color-scheme="default"] .md-footer__link,
+[data-md-color-scheme="default"] .md-footer__title,
+[data-md-color-scheme="default"] .md-footer-meta__inner,
+[data-md-color-scheme="default"] .md-copyright,
+[data-md-color-scheme="default"] .md-social__link {
+  color: var(--oa-ink-2);
+}
+[data-md-color-scheme="default"] .md-footer__link:hover,
+[data-md-color-scheme="default"] .md-social__link:hover {
+  color: var(--oa-accent);
+}
+[data-md-color-scheme="default"] .md-copyright a {
+  color: var(--oa-accent);
+  text-decoration: underline;
+  text-decoration-color: var(--oa-link-underline);
+  text-underline-offset: 0.2em;
+}
+
+@media screen and (max-width: 76.25em) {
+  .md-grid {
+    padding-left: 0.8rem;
+    padding-right: 0.8rem;
+  }
+
+  /* Material hides the desktop logo at drawer widths. Keep the complete
+     product name in the compact title instead of reducing it to “Docs”. */
+  .md-header__topic:first-child .md-ellipsis {
+    font-family: var(--oa-display-font);
+    font-size: 0.78rem;
+    font-weight: 600;
+  }
+  .md-header__topic:first-child .md-ellipsis::after {
+    content: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

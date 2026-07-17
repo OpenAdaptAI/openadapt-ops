@@ -11,15 +11,18 @@ repo_name: OpenAdaptAI/OpenAdapt
 # Docs live in this (openadapt-maintenance) repo, not the code repo above, so
 # the per-page "edit" link would 404. Disable it rather than point it wrong.
 edit_uri: ''
-copyright: Copyright &copy; OpenAdapt AI
+copyright: >-
+  &copy; 2023&ndash;2026 OpenAdapt.AI and MLDSAI Inc. &middot;
+  <a href="https://openadapt.ai">OpenAdapt.ai</a> &middot;
+  <a href="https://openadapt.ai/security">Security</a>
 
 theme:
   name: material
   logo: assets/logo.svg
   favicon: assets/favicon.ico
-  font:
-    text: Inter
-    code: JetBrains Mono
+  # Match the public site's local system stacks and avoid a third-party font
+  # request on documentation pages. brand.css defines both Material font vars.
+  font: false
   icon:
     repo: fontawesome/brands/github
   palette:
@@ -80,6 +83,7 @@ markdown_extensions:
           format: !!python/name:pymdownx.superfences.fence_code_format
 
 extra:
+  generator: false
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/OpenAdaptAI
@@ -133,3 +137,4 @@ nav:
     - Documentation source of truth: reference/documentation-governance.md
   - What's New: whats-new.md
   - Changelog: changelog.md
+  - OpenAdapt.ai ↗: https://openadapt.ai
