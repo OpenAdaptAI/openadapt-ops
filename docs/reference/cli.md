@@ -41,6 +41,35 @@ is a subcommand of `openadapt flow`.
     [deployment configuration](deployment-config.md) reference. Direct flags
     below override individual fields.
 
+## Choosing a backend {#backend}
+
+`record`, `replay`, `run`, and `resume` all accept a **backend selector** that
+chooses what the workflow drives — a browser, a native Windows desktop, or a
+pixel-only remote session. It overrides the `backend` section of a
+[`--config`](deployment-config.md); with no flag the default is `web`, which
+reproduces the historical browser behavior. See
+[Backends, where it runs](../concepts/backends.md) for the substrate model.
+
+| Flag | Description |
+|---|---|
+| `--backend {web,windows,rdp}` | `web` (default; Playwright/Chromium), `windows` (native Windows via the WAA HTTP agent — needs `--agent-url`), or `rdp` (pixel-only remote desktop / Citrix — needs `--rdp-host`, or a configured `rdp_window` for a local Citrix/Parallels window) |
+| `--agent-url URL` | Base URL of the in-guest Windows (WAA) agent for `--backend windows` (e.g. `http://localhost:5001`). Overrides `backend.agent_url` |
+| `--rdp-host HOST` | RDP host/IP for `--backend rdp` (network RDP via FreeRDP). Overrides `backend.rdp_host`. For a **local** Citrix/Parallels window instead of a network host, set `backend.rdp_window` in `--config` |
+
+```bash
+# Drive a native Windows app through the in-session agent
+openadapt flow replay bundle --backend windows --agent-url http://localhost:5001
+
+# Drive a pixel-only Citrix / RDP session
+openadapt flow run bundle --backend rdp --rdp-host 10.0.0.5 --config deployment.yaml
+```
+
+!!! note "Which backends are proven"
+    `web` (browser) is the reference, most-tested surface. `windows` and `rdp`
+    are being validated with design partners; the desktop and RDP adapters are
+    exercised in CI against mocked servers, and the live desktop proof is recent
+    and limited. See the [backend status table](../concepts/backends.md#status-at-a-glance).
+
 ## record
 
 Open a headed browser on your own app and record what you do.
