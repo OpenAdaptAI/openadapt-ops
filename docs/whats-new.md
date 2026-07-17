@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-17 20:29 UTC*
+> *Last updated: 2026-07-17 20:46 UTC*
 
 
 
@@ -38,6 +38,8 @@
 
 ## openadapt-flow
 
+
+- [Qualify governed typed Windows UIA replay](https://github.com/OpenAdaptAI/openadapt-flow/pull/132) (#132) — merged 
 
 - [bench: add governed Frappe Lending and OpenEMR reference matrices](https://github.com/OpenAdaptAI/openadapt-flow/pull/131) (#131) — merged 
 
@@ -77,8 +79,6 @@
 
 - [feat: TLS + cert-pinning on the win_agent channel (PHI-in-transit encryption)](https://github.com/OpenAdaptAI/openadapt-flow/pull/112) (#112) — merged 
 
-- [ci: make E2E/wheel/CLI-smoke/docs/coverage merge-blocking + mypy-strict on safety path + CODEOWNERS](https://github.com/OpenAdaptAI/openadapt-flow/pull/111) (#111) — merged 
-
 
 
 ## openadapt-desktop
@@ -97,6 +97,10 @@
 - [fix: keep desktop releases version-consistent](https://github.com/OpenAdaptAI/openadapt-desktop/pull/14) (#14) — merged 
 
 - [feat: align desktop with the hosted workflow loop](https://github.com/OpenAdaptAI/openadapt-desktop/pull/13) (#13) — merged 
+
+- [feat: rewire engine for hosted loop (auth, ingest push, flow bridge)](https://github.com/OpenAdaptAI/openadapt-desktop/pull/11) (#11) — merged 
+
+- [feat: Tauri shell + Vite/React cockpit on the design system (W2)](https://github.com/OpenAdaptAI/openadapt-desktop/pull/10) (#10) — merged 
 
 
 
