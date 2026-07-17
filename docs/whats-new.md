@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-17 22:11 UTC*
+> *Last updated: 2026-07-17 22:34 UTC*
 
 
 
@@ -41,6 +41,10 @@
 ## openadapt-flow
 
 
+- [docs: vision-forward README opening (any repeated GUI task, once)](https://github.com/OpenAdaptAI/openadapt-flow/pull/138) (#138) — merged 
+
+- [docs: surface machine-checked claims + fix community funnel (--version, question routing)](https://github.com/OpenAdaptAI/openadapt-flow/pull/137) (#137) — merged 
+
 - [fix(ci): repair cross-platform launch gates](https://github.com/OpenAdaptAI/openadapt-flow/pull/136) (#136) — merged 
 
 - [feat(effects): effect-verifier kit — declarative verifiers, coverage gates, reconciliation tasks](https://github.com/OpenAdaptAI/openadapt-flow/pull/134) (#134) — merged 
@@ -76,10 +80,6 @@
 - [feat: auto-provision win_agent TLS cert on launch + fix pre-existing factory token test](https://github.com/OpenAdaptAI/openadapt-flow/pull/117) (#117) — merged 
 
 - [chore: wire sealed-templates+resume through the new seams; fix pre-existing OCR benchmark test](https://github.com/OpenAdaptAI/openadapt-flow/pull/116) (#116) — merged 
-
-- [feat: CLI backend selector (--backend web|windows|rdp) — unblock the desktop/Citrix path](https://github.com/OpenAdaptAI/openadapt-flow/pull/115) (#115) — merged 
-
-- [chore: pin ruff==0.15.21 (stop CI/local formatter drift)](https://github.com/OpenAdaptAI/openadapt-flow/pull/114) (#114) — merged 
 
 
 
@@ -145,6 +145,8 @@
 
 ## openadapt-capture
 
+
+- [chore: modernize Recorder framing, CI coverage, and dependency floors](https://github.com/OpenAdaptAI/openadapt-capture/pull/28) (#28) — merged 
 
 - [docs: note openadapt-flow desktop record on-ramp in status banner](https://github.com/OpenAdaptAI/openadapt-capture/pull/27) (#27) — merged 
 
