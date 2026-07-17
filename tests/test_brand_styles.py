@@ -7,6 +7,10 @@ from pathlib import Path
 CSS = (Path(__file__).parents[1] / "docs/stylesheets/brand.css").read_text(
     encoding="utf-8"
 )
+MKDOCS = (Path(__file__).parents[1] / "mkdocs.yml").read_text(encoding="utf-8")
+LOGO = (Path(__file__).parents[1] / "docs/assets/logo.svg").read_text(
+    encoding="utf-8"
+)
 
 
 def _luminance(hex_color: str) -> float:
@@ -57,3 +61,39 @@ def test_light_and_dark_link_states_meet_wcag_aa_contrast() -> None:
     )
     for foreground, background in combinations:
         assert _contrast(foreground, background) >= 4.5
+
+
+def test_docs_chrome_uses_the_public_site_system_fonts_and_paper_layout() -> None:
+    assert "font: false" in MKDOCS
+    assert "generator: false" in MKDOCS
+    assert "OpenAdapt.ai ↗: https://openadapt.ai" in MKDOCS
+    assert "OpenAdapt.AI and MLDSAI Inc." in MKDOCS
+    assert '--oa-display-font: "Avenir Next", "Segoe UI"' in CSS
+    assert "--oa-body-font: -apple-system, BlinkMacSystemFont" in CSS
+    assert ".md-grid" in CSS and "max-width: 72rem" in CSS
+    assert re.search(
+        r'\[data-md-color-scheme="default"\] \.md-header\s*\{'
+        r'[^}]*background: rgba\(253, 252, 249, 0\.97\)',
+        CSS,
+        re.DOTALL,
+    )
+    assert re.search(
+        r'\[data-md-color-scheme="default"\] \.md-footer\s*\{'
+        r'[^}]*background: var\(--oa-ground\)',
+        CSS,
+        re.DOTALL,
+    )
+
+
+def test_docs_actions_and_logo_match_the_ink_on_paper_chrome() -> None:
+    assert re.search(
+        r"\.md-typeset \.md-button\s*\{[^}]*border-radius: 9999px",
+        CSS,
+        re.DOTALL,
+    )
+    assert 'fill="#23281F"' in LOGO
+    assert ">Open</text>" in LOGO
+    assert ">Adapt</text>" in LOGO
+    assert 'content: "Docs"' in CSS
+    assert "instead of reducing it to “Docs”" in CSS
+    assert "filter: brightness(0) invert(1)" in CSS
