@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-17 22:34 UTC*
+> *Last updated: 2026-07-17 22:48 UTC*
 
 
 
@@ -41,11 +41,15 @@
 ## openadapt-flow
 
 
+- [chore: adopt openadapt-capture 0.5.4 and run the adapter tests in CI](https://github.com/OpenAdaptAI/openadapt-flow/pull/139) (#139) — merged 
+
 - [docs: vision-forward README opening (any repeated GUI task, once)](https://github.com/OpenAdaptAI/openadapt-flow/pull/138) (#138) — merged 
 
 - [docs: surface machine-checked claims + fix community funnel (--version, question routing)](https://github.com/OpenAdaptAI/openadapt-flow/pull/137) (#137) — merged 
 
 - [fix(ci): repair cross-platform launch gates](https://github.com/OpenAdaptAI/openadapt-flow/pull/136) (#136) — merged 
+
+- [Add fail-closed native macOS backend with scoped evidence](https://github.com/OpenAdaptAI/openadapt-flow/pull/135) (#135) — merged 
 
 - [feat(effects): effect-verifier kit — declarative verifiers, coverage gates, reconciliation tasks](https://github.com/OpenAdaptAI/openadapt-flow/pull/134) (#134) — merged 
 
@@ -77,14 +81,12 @@
 
 - [feat: desktop recording via record --backend windows|rdp (record->compile->replay on desktop)](https://github.com/OpenAdaptAI/openadapt-flow/pull/118) (#118) — merged 
 
-- [feat: auto-provision win_agent TLS cert on launch + fix pre-existing factory token test](https://github.com/OpenAdaptAI/openadapt-flow/pull/117) (#117) — merged 
-
-- [chore: wire sealed-templates+resume through the new seams; fix pre-existing OCR benchmark test](https://github.com/OpenAdaptAI/openadapt-flow/pull/116) (#116) — merged 
-
 
 
 ## openadapt-desktop
 
+
+- [feat: experimental runner loop for cloud-dispatched governed runs (P0)](https://github.com/OpenAdaptAI/openadapt-desktop/pull/21) (#21) — merged 
 
 - [docs: refresh Current Status and Known Gaps to post-wiring reality](https://github.com/OpenAdaptAI/openadapt-desktop/pull/20) (#20) — merged 
 
