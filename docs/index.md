@@ -4,14 +4,17 @@ hide:
   - toc
 ---
 
-# Record once. Replay deterministically without healthy-run model calls.
+# Show it any task, once. It replays exactly — governed and deterministic.
 
 <p class="oa-lede">
-OpenAdapt compiles demonstrated GUI workflows into deterministic, locally
-executable programs. Healthy runs make no model calls. When interfaces drift,
-OpenAdapt re-resolves targets deterministically or uses an explicitly configured
-model tier, records the repair, and halts when the configured verification
-checks fail.
+OpenAdapt is a demonstration compiler for any repeated GUI task — in the
+browser, on the native desktop, or inside Citrix and other virtual desktops.
+Demonstrate the task once and OpenAdapt compiles it into a deterministic,
+locally executable program that replays exactly, with zero model calls on a
+healthy run. When interfaces drift, OpenAdapt re-resolves targets
+deterministically or uses an explicitly configured model tier, records the
+repair, and halts instead of guessing when the configured verification checks
+fail.
 </p>
 
 [Get started in 5 minutes](get-started/index.md){ .md-button .md-button--primary }
@@ -22,7 +25,8 @@ checks fail.
 
 ## Who it is for
 
-OpenAdapt is built for **regulated, repetitive desktop and web work**: the
+OpenAdapt is built for **regulated, repetitive work in web, desktop, and
+virtual-desktop interfaces**: the
 500th patient referral this month, the daily claims batch, the mortgage file
 that moves through six screens the same way every time. Work that a person has
 already figured out, that runs many times, and where a wrong action has a real
@@ -34,18 +38,18 @@ the wrong one for a workflow you run a thousand times. OpenAdapt compiles the
 demonstration instead, so the model is only consulted to repair the script, not
 to drive it.
 
-The browser/Playwright backend is the reference path. The bounded hosted
-recorder has live-provider evidence for public, non-regulated browser targets;
-the complete paid account-to-run lifecycle is still a Beta launch candidate
-pending production acceptance. Windows UIA has scoped acceptance for one 3/3
-in-tree WinForms matrix. Native macOS has scoped one-host TextEdit action-effect
-and ambiguity-refusal evidence. Both remain partner qualification; RDP
-acceptance remains in progress, and Citrix needs a design partner with an actual
-ICA/HDX environment.
-Customer-controlled execution is scoped to the
-actual substrate and data boundary. The shared protocol is real, but backend
-presence is not a production-readiness claim. See
-[What works today](get-started/what-works-today.md).
+The goal is any repeated GUI task on any surface — browser, Windows, native
+macOS, RDP, Citrix — through one substrate-agnostic runner and one compiled
+bundle format. Maturity is uneven across those surfaces: browser/Playwright is
+the reference path; Windows UIA has scoped acceptance for one 3/3 in-tree
+WinForms matrix; and native macOS has scoped one-host TextEdit action-effect and
+ambiguity-refusal evidence. Both desktop paths remain partner qualification.
+RDP acceptance remains in progress, and Citrix still needs a design partner
+with an actual ICA/HDX environment. Customer-controlled execution is scoped to
+the actual substrate and data boundary; backend presence alone is not a
+production-readiness claim. See
+[What works today](get-started/what-works-today.md) and the deployment matrix
+below.
 
 ---
 

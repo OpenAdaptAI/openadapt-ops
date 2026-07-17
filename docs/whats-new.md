@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-17 20:52 UTC*
+> *Last updated: 2026-07-17 22:49 UTC*
 
 
 
@@ -41,6 +41,18 @@
 ## openadapt-flow
 
 
+- [chore: adopt openadapt-capture 0.5.4 and run the adapter tests in CI](https://github.com/OpenAdaptAI/openadapt-flow/pull/139) (#139) — merged 
+
+- [docs: vision-forward README opening (any repeated GUI task, once)](https://github.com/OpenAdaptAI/openadapt-flow/pull/138) (#138) — merged 
+
+- [docs: surface machine-checked claims + fix community funnel (--version, question routing)](https://github.com/OpenAdaptAI/openadapt-flow/pull/137) (#137) — merged 
+
+- [fix(ci): repair cross-platform launch gates](https://github.com/OpenAdaptAI/openadapt-flow/pull/136) (#136) — merged 
+
+- [Add fail-closed native macOS backend with scoped evidence](https://github.com/OpenAdaptAI/openadapt-flow/pull/135) (#135) — merged 
+
+- [feat(effects): effect-verifier kit — declarative verifiers, coverage gates, reconciliation tasks](https://github.com/OpenAdaptAI/openadapt-flow/pull/134) (#134) — merged 
+
 - [Qualify governed typed Windows UIA replay](https://github.com/OpenAdaptAI/openadapt-flow/pull/132) (#132) — merged 
 
 - [bench: add governed Frappe Lending and OpenEMR reference matrices](https://github.com/OpenAdaptAI/openadapt-flow/pull/131) (#131) — merged 
@@ -69,22 +81,14 @@
 
 - [feat: desktop recording via record --backend windows|rdp (record->compile->replay on desktop)](https://github.com/OpenAdaptAI/openadapt-flow/pull/118) (#118) — merged 
 
-- [feat: auto-provision win_agent TLS cert on launch + fix pre-existing factory token test](https://github.com/OpenAdaptAI/openadapt-flow/pull/117) (#117) — merged 
-
-- [chore: wire sealed-templates+resume through the new seams; fix pre-existing OCR benchmark test](https://github.com/OpenAdaptAI/openadapt-flow/pull/116) (#116) — merged 
-
-- [feat: CLI backend selector (--backend web|windows|rdp) — unblock the desktop/Citrix path](https://github.com/OpenAdaptAI/openadapt-flow/pull/115) (#115) — merged 
-
-- [chore: pin ruff==0.15.21 (stop CI/local formatter drift)](https://github.com/OpenAdaptAI/openadapt-flow/pull/114) (#114) — merged 
-
-- [feat: seal template screenshot crops in the AEAD bundle (close at-rest image-PHI gap)](https://github.com/OpenAdaptAI/openadapt-flow/pull/113) (#113) — merged 
-
-- [feat: TLS + cert-pinning on the win_agent channel (PHI-in-transit encryption)](https://github.com/OpenAdaptAI/openadapt-flow/pull/112) (#112) — merged 
-
 
 
 ## openadapt-desktop
 
+
+- [feat: experimental runner loop for cloud-dispatched governed runs (P0)](https://github.com/OpenAdaptAI/openadapt-desktop/pull/21) (#21) — merged 
+
+- [docs: refresh Current Status and Known Gaps to post-wiring reality](https://github.com/OpenAdaptAI/openadapt-desktop/pull/20) (#20) — merged 
 
 - [Use canonical engine version in runtime messaging](https://github.com/OpenAdaptAI/openadapt-desktop/pull/19) (#19) — merged 
 
@@ -109,6 +113,8 @@
 ## openadapt-agent
 
 
+- [feat!: repurpose openadapt-agent as the agent-facing MCP + Agent Skills bridge (v2.0.0.dev0, Experimental)](https://github.com/OpenAdaptAI/openadapt-agent/pull/2) (#2) — merged 
+
 - [docs: add Deprecated status banner (successor: openadapt-flow)](https://github.com/OpenAdaptAI/openadapt-agent/pull/1) (#1) — merged 
 
 
@@ -116,12 +122,16 @@
 ## openadapt-ml
 
 
+- [docs: add lifecycle status banner](https://github.com/OpenAdaptAI/openadapt-ml/pull/66) (#66) — merged 
+
 - [refactor: make openadapt-ml a leaf; break ml<->evals import cycle](https://github.com/OpenAdaptAI/openadapt-ml/pull/65) (#65) — merged 
 
 
 
 ## openadapt-evals
 
+
+- [docs: add lifecycle status banner](https://github.com/OpenAdaptAI/openadapt-evals/pull/268) (#268) — merged 
 
 - [fix: keep release lock metadata consistent](https://github.com/OpenAdaptAI/openadapt-evals/pull/267) (#267) — merged 
 
@@ -138,6 +148,12 @@
 ## openadapt-capture
 
 
+- [chore: modernize Recorder framing, CI coverage, and dependency floors](https://github.com/OpenAdaptAI/openadapt-capture/pull/28) (#28) — merged 
+
+- [docs: note openadapt-flow desktop record on-ramp in status banner](https://github.com/OpenAdaptAI/openadapt-capture/pull/27) (#27) — merged 
+
+- [chore: add MIT LICENSE file](https://github.com/OpenAdaptAI/openadapt-capture/pull/26) (#26) — merged 
+
 - [docs: add Experimental status banner; label old pipeline as historical](https://github.com/OpenAdaptAI/openadapt-capture/pull/25) (#25) — merged 
 
 - [fix: importable headless (no screenshot at import) + persist pixel_ratio on the recording model](https://github.com/OpenAdaptAI/openadapt-capture/pull/24) (#24) — merged 
@@ -146,6 +162,8 @@
 
 ## openadapt-privacy
 
+
+- [chore: add MIT LICENSE file](https://github.com/OpenAdaptAI/openadapt-privacy/pull/7) (#7) — merged 
 
 - [chore: declare privacy release line](https://github.com/OpenAdaptAI/openadapt-privacy/pull/6) (#6) — merged 
 
@@ -157,6 +175,8 @@
 
 ## openadapt-types
 
+
+- [docs: add lifecycle status banner](https://github.com/OpenAdaptAI/openadapt-types/pull/7) (#7) — merged 
 
 - [fix: keep release lock metadata consistent](https://github.com/OpenAdaptAI/openadapt-types/pull/6) (#6) — merged 
 

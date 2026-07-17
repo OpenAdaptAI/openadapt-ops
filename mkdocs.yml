@@ -14,6 +14,7 @@ edit_uri: ''
 copyright: >-
   &copy; 2023&ndash;2026 OpenAdapt.AI and MLDSAI Inc. &middot;
   <a href="https://openadapt.ai">OpenAdapt.ai</a> &middot;
+  <a href="https://blog.openadapt.ai">Blog</a> &middot;
   <a href="https://openadapt.ai/security">Security</a>
 
 theme:
@@ -91,6 +92,8 @@ extra:
       link: https://discord.gg/yF527cQbDG
     - icon: fontawesome/solid/globe
       link: https://openadapt.ai
+    - icon: fontawesome/solid/rss
+      link: https://blog.openadapt.ai
 
 nav:
   - Home: index.md
@@ -128,6 +131,7 @@ nav:
     - Run a deployment: guides/run-a-deployment.md
     - Deploy on-prem: guides/deploy-on-prem.md
     - The hosted option: guides/hosted.md
+    - Security and data handling: guides/security-and-data-handling.md
     - Security and deployment review: guides/security-review.md
     - Read and audit run reports: guides/run-reports.md
     - Troubleshooting: guides/troubleshooting.md
@@ -141,4 +145,5 @@ nav:
     - Documentation source of truth: reference/documentation-governance.md
   - What's New: whats-new.md
   - Changelog: changelog.md
+  - Blog ↗: https://blog.openadapt.ai
   - OpenAdapt.ai ↗: https://openadapt.ai
