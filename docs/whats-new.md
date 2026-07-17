@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-17 22:49 UTC*
+> *Last updated: 2026-07-17 23:55 UTC*
 
 
 
@@ -41,6 +41,8 @@
 ## openadapt-flow
 
 
+- [fix: bound README claims and preserve plaintext PHI warnings](https://github.com/OpenAdaptAI/openadapt-flow/pull/140) (#140) — merged 
+
 - [chore: adopt openadapt-capture 0.5.4 and run the adapter tests in CI](https://github.com/OpenAdaptAI/openadapt-flow/pull/139) (#139) — merged 
 
 - [docs: vision-forward README opening (any repeated GUI task, once)](https://github.com/OpenAdaptAI/openadapt-flow/pull/138) (#138) — merged 
@@ -78,8 +80,6 @@
 - [ci: bound and validate openadapt-types interop](https://github.com/OpenAdaptAI/openadapt-flow/pull/121) (#121) — merged 
 
 - [feat: govern hosted artifact activation and runtime validation](https://github.com/OpenAdaptAI/openadapt-flow/pull/119) (#119) — merged 
-
-- [feat: desktop recording via record --backend windows|rdp (record->compile->replay on desktop)](https://github.com/OpenAdaptAI/openadapt-flow/pull/118) (#118) — merged 
 
 
 
