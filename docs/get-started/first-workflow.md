@@ -4,6 +4,42 @@ This walks through compiling a workflow on **your own** web app: record what you
 do, compile it, replay it, and read the report. It takes about five minutes and
 makes zero model calls.
 
+## Prerequisites
+
+- **Python 3.10–3.12.** The engine declares `requires-python >=3.10,<3.13`.
+- **macOS, Linux, or Windows.** The reference backend is a Playwright-driven
+  Chromium browser, so this walkthrough has no OS-specific steps. The browser
+  provisions automatically the first time you record or replay; to provision it
+  ahead of time, run `playwright install chromium`.
+
+Install the CLI if you have not already:
+
+```bash
+pip install openadapt
+```
+
+Or use the installer script from the landing page, which installs
+[uv](https://docs.astral.sh/uv/) if needed and sets up a persistent
+`openadapt` command:
+
+```bash
+curl -fsSL https://openadapt.ai/install.sh | sh
+```
+
+!!! note "Package names during the transition"
+    Every example below uses the unified `openadapt flow <verb>` command. The
+    engine also ships standalone as `openadapt-flow`
+    (`pip install openadapt-flow`), whose command is `openadapt-flow <verb>`;
+    drop the space if you installed that package. See
+    [Get started](index.md) for details.
+
+No web app of your own to record against? You need zero target-app setup to try
+the loop: `openadapt flow demo-record --out rec` records the canonical triage
+task against the bundled MockMed sample app, and `replay` serves MockMed
+automatically when you omit `--url`. The
+[complete demo journey](index.md#the-complete-demo-journey) walks that path
+end to end.
+
 ## 1. Record
 
 `record --url` opens a headed browser pointed at your app and watches what you
