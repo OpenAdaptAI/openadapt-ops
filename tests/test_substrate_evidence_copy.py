@@ -29,6 +29,8 @@ def test_scoped_windows_and_macos_evidence_is_exact_and_bounded():
     assert "candidate `b1b61a5` completed 3/3 exact-byte TextEdit trials" in what_works
     assert "refused a two-window ambiguity without changing either file" in what_works
     assert "immutable original report remains `status: failed`" in what_works
+    assert "immutable evidence commit `ca1b522`" in what_works
+    assert "`ca1b522` preserves its reports and adjudication but is not the current PR head" in what_works
     assert "verifies the exact harness PIDs and temporary root were absent" in what_works
     assert "not clean-machine, design-partner, production, broad-app" in what_works
     assert "ca1b522cad215875f7471782283f8f8bb8e6c998" in what_works
