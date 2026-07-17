@@ -37,6 +37,11 @@ Task-focused, how-to guides for real deployments. Each one assumes you have
     Review the candidate subscription lifecycle, sanitize and review artifacts,
     run browser workflows, and understand trusted execution boundaries.
 
+-   [__Security and data handling__](security-and-data-handling.md)
+
+    The pilot-approval dossier: local-by-default data flow, PHI posture,
+    secrets, verification and audit, and the IT-review FAQ.
+
 -   [__Security and deployment review__](security-review.md)
 
     Data boundaries, secrets, audit integrity, encryption, updates, and the
