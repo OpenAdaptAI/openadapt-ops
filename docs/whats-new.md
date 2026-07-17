@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-16 17:20 UTC*
+> *Last updated: 2026-07-17 18:05 UTC*
 
 
 
@@ -37,6 +37,8 @@
 ## openadapt-flow
 
 
+- [bench: add governed Frappe Lending and OpenEMR reference matrices](https://github.com/OpenAdaptAI/openadapt-flow/pull/131) (#131) — merged 
+
 - [fix: expose governed run params file](https://github.com/OpenAdaptAI/openadapt-flow/pull/130) (#130) — merged 
 
 - [feat: bind governed run authorization](https://github.com/OpenAdaptAI/openadapt-flow/pull/129) (#129) — merged 
@@ -52,6 +54,8 @@
 - [fix: restore supported Python release matrix](https://github.com/OpenAdaptAI/openadapt-flow/pull/124) (#124) — merged 
 
 - [paper: add reproducible OpenAdapt technical report](https://github.com/OpenAdaptAI/openadapt-flow/pull/123) (#123) — merged 
+
+- [feat(on-prem): real atomic, rollback-able offline update path](https://github.com/OpenAdaptAI/openadapt-flow/pull/122) (#122) — merged 
 
 - [ci: bound and validate openadapt-types interop](https://github.com/OpenAdaptAI/openadapt-flow/pull/121) (#121) — merged 
 
@@ -72,10 +76,6 @@
 - [feat: TLS + cert-pinning on the win_agent channel (PHI-in-transit encryption)](https://github.com/OpenAdaptAI/openadapt-flow/pull/112) (#112) — merged 
 
 - [ci: make E2E/wheel/CLI-smoke/docs/coverage merge-blocking + mypy-strict on safety path + CODEOWNERS](https://github.com/OpenAdaptAI/openadapt-flow/pull/111) (#111) — merged 
-
-- [feat: claim->evidence validation harness (maturity claims backed by tests + reproducible report)](https://github.com/OpenAdaptAI/openadapt-flow/pull/110) (#110) — merged 
-
-- [feat: fail-closed 'openadapt-flow run' for regulated execution (cert+identity+effect+crypto gates)](https://github.com/OpenAdaptAI/openadapt-flow/pull/109) (#109) — merged 
 
 
 
