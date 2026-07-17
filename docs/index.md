@@ -37,8 +37,10 @@ to drive it.
 The browser/Playwright backend is the reference path. The bounded hosted
 recorder has live-provider evidence for public, non-regulated browser targets;
 the complete paid account-to-run lifecycle is still a Beta launch candidate
-pending production acceptance. Windows UIA is experimental; RDP and the Citrix
-analog are research spikes. Customer-controlled execution is scoped to the
+pending production acceptance. Windows UIA, native macOS, and RDP accept
+partner-qualification applications while acceptance remains in progress;
+Citrix needs a design partner and has no ICA/HDX evidence.
+Customer-controlled execution is scoped to the
 actual substrate and data boundary. The shared protocol is real, but backend
 presence is not a production-readiness claim. See
 [What works today](get-started/what-works-today.md).
@@ -124,11 +126,11 @@ runtime sits behind one [substrate-agnostic runner](concepts/substrate-model.md)
 that routes on a single field and never sees pixels or resolved values. Two
 orthogonal axes, one contract:
 
-| Deployment ↓ / Substrate → | **Web (browser)** | **Windows-desktop / Citrix** |
-|---|---|---|
-| **Our cloud** | Managed execution of locally authored, attested browser bundles *(Beta launch candidate; production qualification pending)* | Windows runner *(experimental; not in browser candidate)* |
-| **Customer cloud / BYOC** | Connector + customer storage *(experimental; qualify by deployment)* | Qualify the actual desktop substrate *(experimental/research)* |
-| **Self-hosted / on-prem** | Local browser engine *(Beta reference path)* | Windows limited proof; RDP/Citrix analog *(research spikes, not validated Citrix)* |
+| Deployment ↓ / Substrate → | **Web (browser)** | **Windows / native macOS / RDP** | **Citrix** |
+|---|---|---|---|
+| **Our cloud** | Managed execution of locally authored, attested browser bundles *(Beta launch candidate; production qualification pending)* | Not in hosted candidate; partner-scoped qualification only | No hosted Citrix claim; design partner needed |
+| **Customer cloud / BYOC** | Connector + customer storage *(experimental; qualify by deployment)* | Partner qualification; acceptance in progress for the exact app/session | Design partner needed; no ICA/HDX evidence |
+| **Self-hosted / on-prem** | Local browser engine *(Beta reference path)* | Partner qualification; workflow-specific acceptance required | Design partner needed; RDP evidence does not transfer |
 
 You choose where the data lives — there is no company-wide "never leaves your
 network" claim; the guarantee is scoped to the tier you pick. For regulated data

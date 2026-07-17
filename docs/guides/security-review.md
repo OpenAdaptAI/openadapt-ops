@@ -113,8 +113,11 @@ service identities. Health is not a successful workflow run. The clean-account
 paid acceptance lifecycle remains pending, so this is not a public availability
 statement.
 
-Desktop, RDP, and Citrix retain their separate Experimental/Research maturity;
-the candidate browser subscription does not imply their availability. See [Hosted browser
+Windows UIA, native macOS, and RDP accept partner-qualification applications,
+but their acceptance evidence is still in progress and they are not in the
+hosted launch candidate. Citrix needs a design partner and has no ICA/HDX
+evidence. The candidate browser subscription does not imply their availability.
+See [Hosted browser
 execution](hosted.md) and [What works today](../get-started/what-works-today.md).
 
 ## Review checklist

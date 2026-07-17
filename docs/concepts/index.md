@@ -73,9 +73,10 @@ enforced. Read them in order for the full picture, or jump to what you need.
 
 -   [__Backends: where it runs__](backends.md)
 
-    Browser (Playwright) is the supported end-to-end path. Windows UIA is
-    experimental; pixel-only RDP and Citrix remain research. The ladder uses
-    one backend protocol without implying equal maturity.
+    Browser (Playwright) is the supported end-to-end path. Windows UIA, native
+    macOS, and RDP accept partner-qualification applications while acceptance
+    remains in progress; Citrix needs a design partner and has no ICA/HDX
+    evidence. One backend protocol does not imply equal evidence or availability.
 
 -   [__The on-prem VLM appliance__](vlm-appliance.md)
 

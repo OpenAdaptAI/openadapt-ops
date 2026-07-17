@@ -26,6 +26,12 @@ recorded workflow is safe or every backend is production-ready.
 
 No surface is labelled **Stable** yet.
 
+Buyer-facing availability is narrower than these engineering lifecycle labels
+and is reported distinctly from evidence. **Partner qualification** means teams
+may apply to qualify one exact workflow, not that access or acceptance is
+already granted. **Design partner needed** means OpenAdapt needs the customer's
+real environment before any support claim can be made.
+
 ## Integrated product matrix
 
 | Surface | Status | What is actually demonstrated | Important boundary |
@@ -39,10 +45,10 @@ No surface is labelled **Stable** yet.
 | System-of-record effect verification | **Experimental** | REST, FHIR, and document-hash verifiers run in the live replay path and halt on refuted or indeterminate declared effects. | The compiler does not infer effects. A deployment must author effects and configure the matching verifier; otherwise screen checks remain the oracle. |
 | `teach` halt-to-correction loop | **Experimental** | The deterministic reference inducer covers the optional-dialog correction class behind regression and canary gates. | Arbitrary UI corrections are not generally learned. Unsafe or underdetermined revisions are refused. |
 | Workflow-program IR, branches, loops, and multi-trace induction | **Experimental** | Implemented against synthetic fixtures, including refusal for underdetermined programs. | No real recording exercises the full Phase-2 program path yet. |
-| Windows UIA backend | **Experimental** | A local Windows-on-ARM VM demonstrated record -> compile -> replay and database-ground-truth checking; adapter tests run against mocks. | Evidence is small-N and not a native-x86 or broad application study. |
-| Native macOS backend | **Target-state** | macOS capture/input primitives exist for the remote-display analog harness. | There is no validated native macOS AX backend integration today. |
-| RDP backend | **Research spike** | The adapter conforms to the backend protocol and is mock/offline tested. | No published live RDP validation establishes latency, coordinate, input, identity, or effect behavior. |
-| Citrix backend | **Research spike** | A pixel-only remote-display analog was exercised against a VM window. | It is **not** a validated Citrix/ICA/HDX integration. Real latency, compression, DPI, lock screens, input acceptance, and clinical identity behavior remain unmeasured. |
+| Windows UIA backend | **Partner qualification; acceptance in progress** | A typed, fail-closed candidate driver is being exercised on a real Windows VM with an independent database oracle. | It is not in the hosted browser launch candidate. This is not a completed acceptance matrix or broad third-party application claim. |
+| Native macOS backend | **Partner qualification; acceptance in progress** | A native exact-window candidate is being exercised against TextEdit with permission, ambiguity, foreground-window, and exact-file checks. | The current qualification may over-halt and does not establish broad native application support. |
+| RDP backend | **Partner qualification; acceptance in progress** | The network RDP candidate has a durable qualification harness requiring at least three trials, strict framebuffer leases, viewport-drift refusal, current-frame readiness, and an independent guest-file oracle. | Live acceptance is pending, it is not in the hosted browser launch candidate, and Citrix cannot borrow RDP evidence. |
+| Citrix backend | **Design partner needed; no ICA/HDX evidence** | The generic remote-window safety floor can begin qualification. | There is no validated Citrix integration. The actual client, latency, compression, DPI, lock-screen, input, identity, and effect behavior require a partner environment. |
 | Desktop authoring GUI and tray | **Experimental** | Native artifacts for the targeted platforms and their tag-gated release pipeline have been built and qualified; the surfaces follow the record -> compile -> replay -> teach loop. | No complete native prerelease is published yet. Signing, permissions, updater behavior, and the full operator lifecycle still require platform validation. |
 | Hosted CLI connectivity | **Beta / launch component** | `login`, exact-hash artifact preparation/upload, one-time runtime validation, bound replacement activation, and `report-break` connect the local engine to control-plane endpoints. | Upload requires destination policy and an approved sanitized derivative; checkout never bypasses an egress refusal. Public paid acceptance remains pending. |
 | Artifact sanitation and local review | **Beta / launch gate** | The sanitized-derivative pipeline inventories, transforms, rescans, manifests, hashes, and supports local review/approval. | The raw original remains sensitive; unknown or unresolved content is refused; runtime observations can reintroduce PHI. |
