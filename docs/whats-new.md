@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-17 19:41 UTC*
+> *Last updated: 2026-07-17 20:29 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [docs: remove design-partner claim; align backend labels with LIMITS.md](https://github.com/OpenAdaptAI/OpenAdapt/pull/1020) (#1020) — merged 
 
 - [fix: publish release assets from named branch](https://github.com/OpenAdaptAI/OpenAdapt/pull/1019) (#1019) — merged 
 
@@ -98,6 +100,13 @@
 
 
 
+## openadapt-agent
+
+
+- [docs: add Deprecated status banner (successor: openadapt-flow)](https://github.com/OpenAdaptAI/openadapt-agent/pull/1) (#1) — merged 
+
+
+
 ## openadapt-ml
 
 
@@ -123,6 +132,8 @@
 ## openadapt-capture
 
 
+- [docs: add Experimental status banner; label old pipeline as historical](https://github.com/OpenAdaptAI/openadapt-capture/pull/25) (#25) — merged 
+
 - [fix: importable headless (no screenshot at import) + persist pixel_ratio on the recording model](https://github.com/OpenAdaptAI/openadapt-capture/pull/24) (#24) — merged 
 
 
@@ -144,6 +155,20 @@
 - [fix: keep release lock metadata consistent](https://github.com/OpenAdaptAI/openadapt-types/pull/6) (#6) — merged 
 
 - [feat: add canonical Benchmark* types (Task/Observation/Action/Agent)](https://github.com/OpenAdaptAI/openadapt-types/pull/5) (#5) — merged 
+
+
+
+## openadapt-grounding
+
+
+- [docs: add Research status banner (not required by the product)](https://github.com/OpenAdaptAI/openadapt-grounding/pull/4) (#4) — merged 
+
+
+
+## openadapt-retrieval
+
+
+- [docs: add Research status banner (not required by the product)](https://github.com/OpenAdaptAI/openadapt-retrieval/pull/5) (#5) — merged 
 
 
 
