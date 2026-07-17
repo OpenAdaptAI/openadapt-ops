@@ -35,9 +35,11 @@ This is where the product is most mature and most heavily tested.
 
 ### Desktop — Windows (UIA)
 
-The `WindowsBackend` drives a native Windows desktop through the Windows Agent
-Arena (WAA) HTTP contract: it screenshots the desktop and sends pixel-coordinate
-input, and it reads the **UI Automation** tree for identity. Crucially, an
+The public `WindowsBackend` has used the Windows Agent Arena (WAA) HTTP
+contract. A candidate replacement under qualification narrows that boundary to typed
+`/input` and `/uia/*` operations, disables arbitrary legacy execution by
+default, screenshots the desktop, and reads the **UI Automation** tree for
+identity. Crucially, an
 element usually exposes `Name` / `Value` text **even when it has no stable
 `AutomationId`**, so UIA-based identity is viable on most native apps even where
 a durable selector is not.
@@ -75,12 +77,11 @@ Driving a real desktop has a subtlety a browser does not: a Windows service runs
 as `SYSTEM` in **session 0**, isolated from the logged-on user's desktop, where
 a screenshot captures a blank screen and synthetic input goes nowhere. So the
 desktop path ships a small **in-session agent server** that must run in the
-interactive console session (session 1). It exposes exactly the endpoints the
-backend calls (`/screenshot`, `/execute_windows`, `/health`). It is hardened
-relative to a bare shim: it binds to loopback by default (its execute channel is
-remote code execution by contract) and supports an **optional bearer token**
-(`OAFLOW_AGENT_TOKEN`) so the channel is not left unauthenticated in a PHI
-deployment.
+interactive console session (session 1). The candidate agent under qualification uses
+authenticated TLS, bounded screenshot/input/UIA operations, unique-candidate
+selection, and stale-target rejection. The older `/execute_windows`
+compatibility route remains a migration surface and is disabled by default; it
+is not the production RPC contract.
 
 ### Remote — RDP (pixel-only)
 
@@ -108,19 +109,22 @@ behavior on real charts. Those require a real Citrix deployment.
 
 ### Native macOS
 
-A native macOS AX backend remains an adapter to build. The remote-display
-client's Quartz/AppKit capture and input primitives do not constitute a native
-application backend with structured AX identity.
+A native exact-window candidate is in permissioned qualification. It captures
+only a uniquely selected application window, refuses ambiguous or non-frontmost
+targets, and fails before input when Screen Recording or Accessibility access is
+missing. The first qualification target is TextEdit with an independent
+exact-file oracle. This is not yet broad AX structural resolution or a general
+native application support claim.
 
 ## Status at a glance
 
 | Backend | Substrate | Structural rung | Identity signal | Maturity |
 |---|---|---|---|---|
 | Playwright (web) | Browser DOM | Yes (DOM) | Structured text (DOM) | **Beta / reference**: end-to-end CI and real third-party proof |
-| `WindowsBackend` | Native Windows | Via UIA | UI Automation `Name`/`Value` | **Experimental**: local ARM-VM proof, small N; mock adapter CI |
-| Native macOS | Native macOS | Planned AX | Planned AX text | **Target-state**: no integrated backend today |
-| `FreeRDPBackend` | Pixel-only RDP | No | Pixel / OCR floor | **Research spike**: mock/offline adapter tests; no published live validation |
-| Remote-display / Citrix analog | Pixel-only window | No | Pixel / OCR floor | **Research spike**: VM-window analog only; not validated on Citrix |
+| `WindowsBackend` | Native Windows | Via UIA | UI Automation `Name`/`Value` | **Partner qualification; acceptance in progress**: typed fail-closed candidate under real Windows qualification |
+| Native macOS | Native macOS | Exact window candidate; AX candidate metadata | Window identity and pixel/OCR floor | **Partner qualification; acceptance in progress**: permissioned TextEdit qualification; broader apps unqualified |
+| `FreeRDPBackend` | Pixel-only network RDP | No | Pixel / OCR floor | **Partner qualification; acceptance in progress**: framebuffer lease, viewport, and readiness safety under real Aardwolf qualification |
+| Citrix | ICA/HDX remote application | Deployment-dependent | Pixel / OCR floor unless the client exposes more | **Design partner needed; no ICA/HDX evidence**: RDP evidence does not transfer |
 
 The desktop, RDP, and remote-display adapters have CI coverage that does not
 substitute for workload validation on a live OS or remote environment. What

@@ -6,11 +6,11 @@ used in each lane; substrate maturity and data handling differ.
 
 ## Current matrix
 
-| Deployment / substrate | Browser | Windows desktop | Remote display / Citrix |
-|---|---|---|---|
-| **OpenAdapt Hosted** | **Beta launch candidate.** Managed execution of validated browser bundles, structural reports, replacement activation, billing, and metering is implemented. The bounded non-regulated recorder is live-provider qualified; the complete paid account-to-run lifecycle remains pending. | Experimental runner work; not included in the browser candidate. | Research only; no hosted Citrix claim. |
-| **Customer cloud / BYOC** | **Experimental / scoped deployment.** Customer storage and runner must satisfy the destination policy and be qualified for the actual deployment. | Experimental; qualify the actual app and runner. | Research; a protocol adapter or analog is not a validated Citrix deployment. |
-| **Self-hosted / on-prem** | **Beta reference engine.** Local record, compile, replay, and reports. | Experimental local proof. | RDP and pixel-only analog are research spikes. |
+| Deployment / substrate | Browser | Windows desktop | RDP | Citrix |
+|---|---|---|---|---|
+| **OpenAdapt Hosted** | **Beta launch candidate.** Managed execution of validated browser bundles, structural reports, replacement activation, billing, and metering is implemented. The bounded non-regulated recorder is live-provider qualified; the complete paid account-to-run lifecycle remains pending. | **Not in hosted candidate.** Partner-scoped qualification only; acceptance is in progress. | **Not in hosted candidate.** Partner-scoped network RDP qualification only; acceptance is in progress. | **No hosted Citrix claim.** A design partner and actual ICA/HDX environment are required. |
+| **Customer cloud / BYOC** | **Experimental / scoped deployment.** Customer storage and runner must satisfy the destination policy and be qualified for the actual deployment. | **Partner qualification.** Qualify the actual app, identity coverage, runner, and effect oracle; acceptance is in progress. | **Partner qualification.** Qualify the network RDP session, framebuffer, input, and effects; acceptance is in progress. | **Design partner needed; no ICA/HDX evidence.** A protocol adapter or RDP result is not a validated Citrix deployment. |
+| **Self-hosted / on-prem** | **Beta reference engine.** Local record, compile, replay, and reports. | **Partner qualification.** Workflow-specific acceptance required. | **Partner qualification.** Workflow-specific network RDP acceptance required. | **Design partner needed; no ICA/HDX evidence.** Qualification must run in the real Citrix environment. |
 
 The browser launch candidate does not promote every cell. Code presence, a shared runner
 protocol, or successful checkout is not evidence that Windows, RDP, or Citrix
@@ -126,12 +126,16 @@ risk work required for the actual deployment.
 - **Browser:** Beta local engine and the hosted launch-candidate substrate. It is the only
   backend exercised end to end against a real third-party application in the
   published engine evidence.
-- **Windows UIA:** Experimental local evidence, not a broad app/platform study.
-- **macOS native:** Experimental building blocks without a validated native
-  end-to-end product path.
-- **RDP:** Research adapter with mock/offline evidence.
-- **Citrix:** Pixel-only remote-display analog; not validated against ICA/HDX,
-  real charts, lock screens, latency, DPI, or synthetic-input controls.
+- **Windows UIA:** Partner qualification is open for a typed, fail-closed
+  candidate; acceptance is in progress, not a broad app/platform study.
+- **macOS native:** Partner qualification is open while permissioned TextEdit
+  acceptance is in progress; broader applications and AX structural resolution
+  remain unqualified.
+- **RDP:** Partner qualification is open for network RDP; acceptance is in
+  progress with framebuffer-lease, viewport, readiness, and independent-oracle checks.
+- **Citrix:** A design partner is needed. It is not validated against ICA/HDX, real
+  charts, lock screens, latency, DPI, or synthetic-input controls, and it does
+  not inherit RDP evidence.
 
 Review [What works today](../get-started/what-works-today.md) and the engine's
 [published limits](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/LIMITS.md)

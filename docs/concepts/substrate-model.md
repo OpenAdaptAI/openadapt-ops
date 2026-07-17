@@ -11,8 +11,10 @@ have a live caller. Do not publish until true.
 !!! warning "Target-state routing model"
     The shared backend protocol and individual adapters exist, but the single
     control-plane runner described here is not fully wired. Playwright is the
-    reference path, Windows is experimental, and RDP/Citrix are research
-    spikes. See [What works today](../get-started/what-works-today.md).
+    reference path; Windows, native macOS, and RDP accept partner-qualification
+    applications while acceptance remains in progress; Citrix needs a design
+    partner and has no ICA/HDX evidence. See
+    [What works today](../get-started/what-works-today.md).
 
 Work lives on different surfaces. A referral moves through a browser app; a
 clinical chart lives in a native Windows EMR; a legacy line-of-business tool is
@@ -69,8 +71,10 @@ is expensive.
 Two backends cover it behind the same protocol:
 
 - **`WindowsBackend`** drives a native Windows desktop through an in-session
-  agent (`/screenshot`, `/execute_windows`, `/health`). It reads the **UI
-  Automation** tree for identity — and crucially, most native controls expose
+  agent. A candidate typed RPC under qualification exposes bounded screenshot,
+  input, and UIA operations while the legacy arbitrary-execution route stays
+  disabled by default. It reads the **UI Automation** tree for identity — and crucially,
+  most native controls expose
   `Name` / `Value` text **even without a stable `AutomationId`**, so structured
   identity is viable on desktop, not just the browser.
 - **`FreeRDPBackend`** drives a legacy app over RDP as **pure pixels** — no
@@ -115,13 +119,16 @@ guest through the in-session agent contract, not the stream.
 
 - The **web substrate** (Playwright) is the reference backend, heavily tested,
   and the one every guide uses.
-- The **`WindowsBackend`** and **`FreeRDPBackend`** are real and exercised in CI
-  against mocked servers; the desktop path has a live end-to-end existence proof
-  on a WinForms app in a Windows-11-ARM VM, at small N (see
-  [Backends](backends.md#desktop-windows-uia)). It is not yet a big-N study.
+- The Windows UIA, native macOS, and RDP candidates have fail-closed
+  qualification harnesses. Accepted evidence must come from the
+  real target substrate and an independent effect oracle; a mock or analog is
+  not promoted as field support.
+- Citrix needs a design partner. A Citrix claim requires trials in the actual
+  ICA/HDX environment; neither a VM window nor RDP substitutes for that evidence.
 - The substrate-agnostic runner routes `web` to the browser launch-candidate path.
-  Desktop routing is experimental and remains outside the candidate browser subscription
-  evidence boundary.
+  Desktop routing remains outside the candidate browser subscription evidence
+  boundary and is admitted only through a workflow that completes partner
+  qualification.
 
 The point of the model is that backend expansion does not require a different
 bundle or safety model: the same ladder and gates apply, while each substrate
