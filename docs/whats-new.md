@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-18 02:02 UTC*
+> *Last updated: 2026-07-18 03:11 UTC*
 
 
 
@@ -41,6 +41,8 @@
 ## openadapt-flow
 
 
+- [fix: qualify real RDP input with physical scancode chords](https://github.com/OpenAdaptAI/openadapt-flow/pull/142) (#142) — merged 
+
 - [fix: bound README claims and preserve plaintext PHI warnings](https://github.com/OpenAdaptAI/openadapt-flow/pull/140) (#140) — merged 
 
 - [chore: adopt openadapt-capture 0.5.4 and run the adapter tests in CI](https://github.com/OpenAdaptAI/openadapt-flow/pull/139) (#139) — merged 
@@ -78,8 +80,6 @@
 - [feat(on-prem): real atomic, rollback-able offline update path](https://github.com/OpenAdaptAI/openadapt-flow/pull/122) (#122) — merged 
 
 - [ci: bound and validate openadapt-types interop](https://github.com/OpenAdaptAI/openadapt-flow/pull/121) (#121) — merged 
-
-- [feat: govern hosted artifact activation and runtime validation](https://github.com/OpenAdaptAI/openadapt-flow/pull/119) (#119) — merged 
 
 
 
