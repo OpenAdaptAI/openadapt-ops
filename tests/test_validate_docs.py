@@ -8,6 +8,16 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "scripts
 from validate_docs import check_empty_pages, check_product_docs_contract
 
 
+def test_openadapt_agent_catalog_describes_active_v2_bridge():
+    root = pathlib.Path(__file__).resolve().parent.parent
+    content = (root / "docs" / "ecosystem" / "index.md").read_text()
+
+    assert "openadapt-agent](https://github.com/OpenAdaptAI/openadapt-agent)" in content
+    assert "Active v2 bridge" in content
+    assert "repository itself is active" in content
+    assert "Superseded execution direction being folded into `openadapt-flow`" not in content
+
+
 def test_check_empty_pages_finds_issues(tmp_path):
     """Should flag pages with less than 20 chars."""
     (tmp_path / "short.md").write_text("# Hi")
