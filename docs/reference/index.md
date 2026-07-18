@@ -12,6 +12,11 @@ classified under [Ecosystem](../ecosystem/index.md).
     Every verb and its key flags: record, compile, replay, lint, certify, and
     the rest.
 
+-   [__Versions and compatibility__](compatibility.md)
+
+    The public install identity, tested component ranges, version policy, and
+    upgrade qualification workflow.
+
 -   [__Deployment configuration__](deployment-config.md)
 
     The `deployment.yaml` schema that wires backend, effects, actuation,

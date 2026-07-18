@@ -26,13 +26,6 @@ Or use the installer script from the landing page, which installs
 curl -fsSL https://openadapt.ai/install.sh | sh
 ```
 
-!!! note "Package names during the transition"
-    Every example below uses the unified `openadapt flow <verb>` command. The
-    engine also ships standalone as `openadapt-flow`
-    (`pip install openadapt-flow`), whose command is `openadapt-flow <verb>`;
-    drop the space if you installed that package. See
-    [Get started](index.md) for details.
-
 No web app of your own to record against? You need zero target-app setup to try
 the loop: `openadapt flow demo-record --out rec` records the canonical triage
 task against the bundled MockMed sample app, and `replay` serves MockMed

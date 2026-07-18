@@ -138,6 +138,7 @@ nav:
   - Reference:
     - reference/index.md
     - openadapt flow CLI: reference/cli.md
+    - Versions and compatibility: reference/compatibility.md
     - Deployment configuration: reference/deployment-config.md
     - The bundle format: reference/bundle-format.md
     - Configuration and env vars: reference/configuration.md

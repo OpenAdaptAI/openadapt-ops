@@ -39,6 +39,18 @@ def test_check_empty_pages_nested(tmp_path):
 
 def _write_contract_docs(root):
     pages = {
+        "index.md": (
+            "# OpenAdapt\n\nShow it a repeated workflow. OpenAdapt compiles it "
+            "into governed, deterministic replay."
+        ),
+        "get-started/index.md": (
+            "# Get started\n\nInstall with `pip install openadapt` and use "
+            "`openadapt flow`."
+        ),
+        "get-started/first-workflow.md": (
+            "# Your first workflow\n\nInstall with `pip install openadapt` and "
+            "record a bounded workflow."
+        ),
         "get-started/what-works-today.md": (
             "# Qualification evidence\n\n## Integrated product matrix\n\n"
             "Hosted execution is a Beta / public offer at $500/month. "
@@ -60,6 +72,16 @@ def _write_contract_docs(root):
         "reference/documentation-governance.md": (
             "# Documentation source of truth\n\n"
             "## Noncanonical documentation trees\n"
+        ),
+        "reference/compatibility.md": (
+            "# Versions and compatibility\n\n`pip install openadapt`\n\n"
+            "`openadapt-flow >=1.7,<2`\n\n`openadapt-capture >=0.6`\n\n"
+            "Production deployments should pin the exact versions."
+        ),
+        "packages/openadapt.md": (
+            "# OpenAdapt package documentation moved\n\n"
+            '<meta http-equiv="refresh" content="0; url=/ecosystem/">\n\n'
+            "`pip install openadapt`"
         ),
     }
     for relative_path, content in pages.items():
@@ -114,3 +136,23 @@ def test_product_docs_contract_rejects_stale_prelaunch_copy(tmp_path):
     issues = check_product_docs_contract(docs_dir, mkdocs_file)
 
     assert any("Stale prelaunch copy" in issue for issue in issues)
+
+
+def test_product_docs_contract_rejects_competing_install_identity(tmp_path):
+    docs_dir = tmp_path / "docs"
+    pages = _write_contract_docs(docs_dir)
+    first_workflow = docs_dir / "get-started/first-workflow.md"
+    first_workflow.write_text(
+        first_workflow.read_text()
+        + "\nPackage names during the transition: pip install openadapt-flow\n"
+    )
+    mkdocs_file = tmp_path / "mkdocs.yml"
+    mkdocs_file.write_text(
+        "nav:\n  - Reference:\n"
+        + "".join(f"    - {path}\n" for path in pages)
+        + "    - Package and repository lifecycle: ecosystem/index.md\n"
+    )
+
+    issues = check_product_docs_contract(docs_dir, mkdocs_file)
+
+    assert any("Competing end-user install identity" in issue for issue in issues)
