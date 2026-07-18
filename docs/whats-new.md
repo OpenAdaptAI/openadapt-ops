@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-17 23:55 UTC*
+> *Last updated: 2026-07-18 02:02 UTC*
 
 
 
@@ -131,6 +131,8 @@
 ## openadapt-evals
 
 
+- [docs(evals): publish bounded OpenAdapt performance evidence](https://github.com/OpenAdaptAI/openadapt-evals/pull/269) (#269) — merged 
+
 - [docs: add lifecycle status banner](https://github.com/OpenAdaptAI/openadapt-evals/pull/268) (#268) — merged 
 
 - [fix: keep release lock metadata consistent](https://github.com/OpenAdaptAI/openadapt-evals/pull/267) (#267) — merged 
@@ -140,8 +142,6 @@
 - [feat: evaluate openadapt-flow on WAA (demonstrate-then-replay + hybrid-as-agent) with cost-guarded dry-run](https://github.com/OpenAdaptAI/openadapt-evals/pull/265) (#265) — merged 
 
 - [refactor: source Benchmark* types from openadapt-types; break ml<->evals cycle](https://github.com/OpenAdaptAI/openadapt-evals/pull/264) (#264) — merged 
-
-- [fix: decouple oa-vm from the ML training stack via lazy package imports](https://github.com/OpenAdaptAI/openadapt-evals/pull/263) (#263) — merged 
 
 
 
