@@ -11,6 +11,11 @@ contributors and integrators who want to use those pieces directly.
     blocks behind OpenAdapt, not the way most users interact with it. Each links
     to its source repository, where its own README is the source of truth.
 
+The end-user identity is deliberately singular: install `openadapt` and run
+`openadapt flow …`. The `openadapt-flow` repository is where contributors
+inspect and change the engine. See [Versions and compatibility](../reference/compatibility.md)
+for the tested package ranges.
+
 ## Lifecycle labels
 
 These labels describe the public role of a repository, not the quality of every
@@ -28,7 +33,7 @@ module inside it:
 | [OpenAdapt](https://github.com/OpenAdaptAI/OpenAdapt) | **Beta** | Installer/meta-package and unified `openadapt flow` dispatcher. |
 | [openadapt-flow](https://github.com/OpenAdaptAI/openadapt-flow) | **Beta** | Canonical compiler and governed runtime. Browser is the reference path; other backends have separate maturity labels. |
 | [openadapt-cloud](https://github.com/OpenAdaptAI/openadapt-cloud) | **Beta** | Live control plane for the public managed-browser subscription: organizations, exact-hash admission, runner orchestration, reports, billing, and usage. |
-| [openadapt-desktop](https://github.com/OpenAdaptAI/openadapt-desktop) | **Experimental** | The published `desktop-v0.1.1` prerelease provides six install/uninstall-smoke-tested, unsigned/ad-hoc-signed installer artifacts. The Tauri shell remains unintegrated: its commands and desktop-to-Flow handoff are not implemented. |
+| [openadapt-desktop](https://github.com/OpenAdaptAI/openadapt-desktop) | **Experimental** | The current `desktop-v0.5.1` prerelease provides six install/uninstall-smoke-tested installers for Windows, macOS, and Linux, plus exact checksums, platform metadata, and build attestations. |
 | [openadapt-capture](https://github.com/OpenAdaptAI/openadapt-capture) | **Experimental** | Optional native mouse, keyboard, and screen recorder behind Flow's Windows and RDP recording path. Browser recording remains inside Flow's Playwright listener. |
 | [openadapt-privacy](https://github.com/OpenAdaptAI/openadapt-privacy) | **Experimental** | Optional PII/PHI scrubbing used on configured persist, log, and upload paths. |
 | [openadapt-types](https://github.com/OpenAdaptAI/openadapt-types) | **Experimental** | Shared interoperability schemas; contributor-facing, not an end-user product. |

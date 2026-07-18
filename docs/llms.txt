@@ -46,6 +46,7 @@
 ## Reference
 - [Reference overview](https://docs.openadapt.ai/reference/): CLI, configuration, and formats
 - [openadapt flow CLI](https://docs.openadapt.ai/reference/cli/): Every verb and flag
+- [Versions and compatibility](https://docs.openadapt.ai/reference/compatibility/): The public install identity, tested component ranges, version policy, and upgrade qualification
 - [Deployment configuration](https://docs.openadapt.ai/reference/deployment-config/): The deployment.yaml schema
 - [The bundle format](https://docs.openadapt.ai/reference/bundle-format/): What a compiled workflow bundle contains
 - [Configuration and env vars](https://docs.openadapt.ai/reference/configuration/): Runtime configuration surface
@@ -59,6 +60,7 @@
 ## Ecosystem
 - [OpenAdapt.ai](https://openadapt.ai): Product website, security boundary, and solutions
 - [Blog](https://blog.openadapt.ai): Technical posts and automation recipes
-- [Engine source](https://github.com/OpenAdaptAI/openadapt-flow): MIT-licensed compiler and runtime
-- [PyPI package](https://pypi.org/project/openadapt-flow/): Standalone governed compiler and runtime
+- [Open source](https://github.com/OpenAdaptAI/OpenAdapt): Flagship OpenAdapt project, installer, and unified CLI
+- [Compiler/runtime source](https://github.com/OpenAdaptAI/openadapt-flow): MIT-licensed engine for contributors and embedders
+- [Install from PyPI](https://pypi.org/project/openadapt/): The public `openadapt` package
 - [Discord](https://discord.gg/yF527cQbDG): Community support and discussion

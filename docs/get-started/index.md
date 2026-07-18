@@ -20,12 +20,10 @@ ahead of time:
 playwright install chromium
 ```
 
-!!! note "Package names during the transition"
-    The product is moving to a single `openadapt` dispatcher, so the primary
-    command is `openadapt flow <verb>`. The engine also ships today as its own
-    package, `openadapt-flow`, whose command is `openadapt-flow <verb>`. Every
-    example in these docs uses the unified `openadapt flow` form; drop the space
-    (`openadapt-flow`) if you installed the standalone package.
+The public install and command path is `pip install openadapt` followed by
+`openadapt flow <verb>`. Contributors who work on the engine directly can use
+the standalone [`openadapt-flow`](https://github.com/OpenAdaptAI/openadapt-flow)
+package; it is not a second end-user onboarding path.
 
 ## The complete demo journey
 

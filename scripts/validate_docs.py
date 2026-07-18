@@ -36,7 +36,19 @@ REQUIRED_PUBLIC_PAGES = {
         "source of truth",
         "Noncanonical documentation trees",
     ),
+    "reference/compatibility.md": (
+        "pip install openadapt",
+        "`openadapt-flow >=1.7,<2`",
+        "`openadapt-capture >=0.6`",
+        "Production deployments should pin the exact versions",
+    ),
+    "packages/openadapt.md": (
+        'content="0; url=/ecosystem/"',
+        "pip install openadapt",
+    ),
 }
+
+REQUIRED_NAV_PAGES = set(REQUIRED_PUBLIC_PAGES) - {"packages/openadapt.md"}
 
 STALE_PRELAUNCH_MARKERS = {
     "Beta launch candidate",
@@ -77,7 +89,7 @@ def check_product_docs_contract(docs_dir=None, mkdocs_file=None):
         return issues
 
     nav = mkdocs_file.read_text()
-    for relative_path in REQUIRED_PUBLIC_PAGES:
+    for relative_path in REQUIRED_NAV_PAGES:
         if relative_path not in nav:
             issues.append(f"Required product page missing from navigation: {relative_path}")
     if "\n  - Packages:" in nav:
@@ -105,6 +117,27 @@ def check_product_docs_contract(docs_dir=None, mkdocs_file=None):
     public_text = "\n".join(
         path.read_text() for path in docs_dir.rglob("*.md") if path.is_file()
     )
+    home_page = docs_dir / "index.md"
+    if home_page.exists():
+        home_text = home_page.read_text()
+        for marker in ("Show it any task", "replays exactly"):
+            if marker in home_text:
+                issues.append(f"Overbroad documentation homepage copy: {marker}")
+    else:
+        issues.append("Missing documentation homepage: index.md")
+    for marker in (
+        "Package names during the transition",
+        "pip install openadapt-flow",
+    ):
+        for relative_path in (
+            "get-started/index.md",
+            "get-started/first-workflow.md",
+        ):
+            page = docs_dir / relative_path
+            if page.exists() and marker in page.read_text():
+                issues.append(
+                    f"Competing end-user install identity in {relative_path}: {marker}"
+                )
     for marker in STALE_PRELAUNCH_MARKERS:
         if marker in public_text:
             issues.append(f"Stale prelaunch copy: {marker}")

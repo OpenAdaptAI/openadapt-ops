@@ -4,22 +4,22 @@ hide:
   - toc
 ---
 
-# Show it any task, once. It replays exactly — governed and deterministic.
+# Show it a repeated workflow. OpenAdapt compiles it into governed, deterministic replay.
 
 <p class="oa-lede">
-OpenAdapt is a demonstration compiler for any repeated GUI task — in the
+OpenAdapt is a demonstration compiler for repeated GUI work — in the
 browser, on the native desktop, or inside Citrix and other virtual desktops.
 Demonstrate the task once and OpenAdapt compiles it into a deterministic,
-locally executable program that replays exactly, with zero model calls on a
+locally executable program that replays without model calls on a
 healthy run. When interfaces drift, OpenAdapt re-resolves targets
 deterministically or uses an explicitly configured model tier, records the
 repair, and halts instead of guessing when the configured verification checks
 fail.
 </p>
 
-[Get started in 5 minutes](get-started/index.md){ .md-button .md-button--primary }
-[Review qualification evidence](get-started/what-works-today.md){ .md-button }
-[See how it works](concepts/demonstration-compiler.md){ .md-button }
+[Try it locally](get-started/index.md){ .md-button .md-button--primary }
+[Read the concepts](concepts/demonstration-compiler.md){ .md-button }
+[Evaluate a workflow](https://openadapt.ai/#book){ .md-button }
 
 ---
 
