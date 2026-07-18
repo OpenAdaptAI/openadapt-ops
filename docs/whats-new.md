@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-18 19:28 UTC*
+> *Last updated: 2026-07-18 22:16 UTC*
 
 
 
@@ -41,6 +41,10 @@
 ## openadapt-flow
 
 
+- [feat(console): add read-only attended exception queue](https://github.com/OpenAdaptAI/openadapt-flow/pull/149) (#149) — merged 
+
+- [feat(adapters): convert window-scoped capture sessions in their own pixel space](https://github.com/OpenAdaptAI/openadapt-flow/pull/146) (#146) — merged 
+
 - [fix: restore MIT-only releases and harden operator console](https://github.com/OpenAdaptAI/openadapt-flow/pull/144) (#144) — merged 
 
 - [docs: align product copy and report with scoped substrate evidence](https://github.com/OpenAdaptAI/openadapt-flow/pull/143) (#143) — merged 
@@ -76,10 +80,6 @@
 - [docs: make LIMITS a durable buyer trust boundary](https://github.com/OpenAdaptAI/openadapt-flow/pull/128) (#128) — merged 
 
 - [fix: preserve sanitized workflow integrity](https://github.com/OpenAdaptAI/openadapt-flow/pull/127) (#127) — merged 
-
-- [fix: build releases without unsupported lock resolution](https://github.com/OpenAdaptAI/openadapt-flow/pull/126) (#126) — merged 
-
-- [fix: patch optional MLX transformer dependencies](https://github.com/OpenAdaptAI/openadapt-flow/pull/125) (#125) — merged 
 
 
 
