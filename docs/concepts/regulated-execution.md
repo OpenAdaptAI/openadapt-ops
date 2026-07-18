@@ -22,12 +22,12 @@ gate, same effect verification. Nothing about *how* a step executes changes —
 what changes is that `run` **refuses to begin** if the required coverage,
 encryption, and integrity evidence is missing.
 
-!!! note "Status: shipped, still pre-production"
+!!! note "Governed admission is workflow-specific"
     The fail-closed `run` verb and its admission-gate tests ship in the canonical
     engine. That makes configured controls mandatory by default; it does not
     make every backend or workflow production-ready. Use `run --dry-run` to
     inspect the gate report before execution and review
-    [What works today](../get-started/what-works-today.md).
+    [Qualification evidence](../get-started/what-works-today.md).
 
 ## What `run` checks before it executes a step
 

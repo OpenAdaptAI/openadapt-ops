@@ -93,28 +93,28 @@ FileVault.
 
 ## Updates and rollback
 
-Air-gapped deployments are intended to use operator-pulled, signed releases and
-never auto-update. The current `deploy/on-prem/install.sh --update` path is a
-documented **stub**: it prints the verification and atomic-swap procedure but
-does not apply an update. Define and test signing, verification, rollback, and
-recovery for the actual pilot before production use.
+Air-gapped deployments use operator-pulled releases rather than an outbound
+auto-updater. The shipped update path verifies staged release metadata and
+signatures, installs through an atomic swap, retains the previous version, and
+supports rollback without network access. Each deployment still defines its
+release-signing authority, recovery drill, and maintenance window.
 
-## Hosted launch-candidate status
+## Hosted service and substrate qualification
 
-Managed browser execution is a Beta launch candidate with implemented Stripe Checkout,
+Managed browser execution is a public Beta service with live Stripe Checkout,
 onboarding, organization isolation, browser runner orchestration, artifacts,
 reports, teaching, billing, and usage metering. Production explicitly selects
 live dependencies; a missing runner, storage, or billing dependency returns an
 operational failure and never substitutes mock success. Mock mode remains for
 development and is visibly synthetic. On Flow 1.8.0, the bounded hosted recorder
-has passed a non-simulated provider record-to-compile qualification, and
-authenticated live health has qualified the exact-version replay and compiler
-service identities. Health is not a successful workflow run. The clean-account
-paid acceptance lifecycle remains pending, so this is not a public availability
-statement.
+passed a non-simulated provider record-to-compile qualification, authenticated
+live health qualified the exact-version services, and three clean-account
+pre-payment trials verified tenant-bound Checkout and refusal before entitlement.
+The first genuine paid subscription extends the evidence through signed-webhook
+activation, managed execution, usage, portal, and cancellation.
 
-Windows UIA, native macOS, and RDP accept partner-qualification applications,
-but none is in the hosted launch candidate. Windows UIA has scoped acceptance
+Windows UIA, native macOS, and RDP accept partner-qualification applications
+through separately scoped deployments. Windows UIA has scoped acceptance
 for one 3/3 in-tree WinForms matrix with an independent SQLite oracle. Native
 macOS has accepted one-host TextEdit action-effect and ambiguity-refusal
 evidence; its preserved original batch remains failed and the hash-bound
@@ -122,12 +122,12 @@ adjudication is not clean-machine, partner, production, or general macOS
 evidence. RDP has scoped 3/3 one-snapshot network-input and independent
 guest-file evidence, not arbitrary-app, record-identity, clean-machine,
 production, or hosted-RDP acceptance. Citrix needs a design partner and has no
-ICA/HDX evidence; it does not inherit RDP evidence. The candidate browser
+ICA/HDX evidence; it does not inherit RDP evidence. The public browser
 subscription does not imply their availability. See
-[What works today](../get-started/what-works-today.md)
+[Qualification evidence](../get-started/what-works-today.md)
 for the exact reports and limitations.
 See [Hosted browser
-execution](hosted.md) and [What works today](../get-started/what-works-today.md).
+execution](hosted.md) and [Qualification evidence](../get-started/what-works-today.md).
 
 ## Review checklist
 

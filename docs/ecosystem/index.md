@@ -27,9 +27,9 @@ module inside it:
 |---|---|---|
 | [OpenAdapt](https://github.com/OpenAdaptAI/OpenAdapt) | **Beta** | Installer/meta-package and unified `openadapt flow` dispatcher. |
 | [openadapt-flow](https://github.com/OpenAdaptAI/openadapt-flow) | **Beta** | Canonical compiler and governed runtime. Browser is the reference path; other backends have separate maturity labels. |
-| [openadapt-cloud](https://github.com/OpenAdaptAI/openadapt-cloud) | **Beta launch candidate** | Control plane for managed browser workflows. Its bounded non-regulated recorder is live-provider qualified; the full paid purchase-to-run lifecycle remains pending. |
-| [openadapt-desktop](https://github.com/OpenAdaptAI/openadapt-desktop) | **Experimental** | Desktop authoring and teaching companion. Native artifacts and the release pipeline are qualified, but no complete native prerelease is published and the full operator lifecycle is not yet proven. |
-| [openadapt-capture](https://github.com/OpenAdaptAI/openadapt-capture) | **Experimental / pre-alpha** | Optional cross-platform recording library. Its standalone package still documents the earlier data-collection topology. |
+| [openadapt-cloud](https://github.com/OpenAdaptAI/openadapt-cloud) | **Beta** | Live control plane for the public managed-browser subscription: organizations, exact-hash admission, runner orchestration, reports, billing, and usage. |
+| [openadapt-desktop](https://github.com/OpenAdaptAI/openadapt-desktop) | **Experimental** | The published `desktop-v0.1.1` prerelease provides six install/uninstall-smoke-tested, unsigned/ad-hoc-signed installer artifacts. The Tauri shell remains unintegrated: its commands and desktop-to-Flow handoff are not implemented. |
+| [openadapt-capture](https://github.com/OpenAdaptAI/openadapt-capture) | **Experimental** | Optional native mouse, keyboard, and screen recorder behind Flow's Windows and RDP recording path. Browser recording remains inside Flow's Playwright listener. |
 | [openadapt-privacy](https://github.com/OpenAdaptAI/openadapt-privacy) | **Experimental** | Optional PII/PHI scrubbing used on configured persist, log, and upload paths. |
 | [openadapt-types](https://github.com/OpenAdaptAI/openadapt-types) | **Experimental** | Shared interoperability schemas; contributor-facing, not an end-user product. |
 
@@ -61,5 +61,5 @@ flowchart LR
 The compiler is the product. Capture can feed it demonstrations, the ML layer
 can supply optional on-prem models, and evals measures adjacent research. This
 page intentionally does not expose internal developer tools as product
-components. See [What works today](../get-started/what-works-today.md) for
+components. See [Qualification evidence](../get-started/what-works-today.md) for
 integrated feature and backend maturity.

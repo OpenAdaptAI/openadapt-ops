@@ -40,10 +40,12 @@ def test_check_empty_pages_nested(tmp_path):
 def _write_contract_docs(root):
     pages = {
         "get-started/what-works-today.md": (
-            "# Integrated product matrix\n\nHosted execution is a Beta launch candidate. "
+            "# Qualification evidence\n\n## Integrated product matrix\n\n"
+            "Hosted execution is a Beta / public offer at $500/month. "
             "Hosted browser recorder evidence is bounded on `openadapt-flow` 1.8.0. "
-            "Authenticated live health proves service identity. The full paid "
-            "production lifecycle remains pending."
+            "Authenticated live health proves service identity. Three production "
+            "pre-payment trials passed; the first genuine customer transaction "
+            "extends the evidence."
         ),
         "guides/hosted.md": (
             "# Hosted browser execution\n\nA sanitized derivative is inspected in "
@@ -97,11 +99,11 @@ def test_product_docs_contract_rejects_missing_page_and_package_first_nav(tmp_pa
     assert any("Package-first top-level navigation" in issue for issue in issues)
 
 
-def test_product_docs_contract_rejects_unqualified_hosted_availability(tmp_path):
+def test_product_docs_contract_rejects_stale_prelaunch_copy(tmp_path):
     docs_dir = tmp_path / "docs"
     pages = _write_contract_docs(docs_dir)
     hosted = docs_dir / "guides/hosted.md"
-    hosted.write_text(hosted.read_text() + "\nStart hosted checkout\n")
+    hosted.write_text(hosted.read_text() + "\nBeta launch candidate\n")
     mkdocs_file = tmp_path / "mkdocs.yml"
     mkdocs_file.write_text(
         "nav:\n  - Reference:\n"
@@ -111,4 +113,4 @@ def test_product_docs_contract_rejects_unqualified_hosted_availability(tmp_path)
 
     issues = check_product_docs_contract(docs_dir, mkdocs_file)
 
-    assert any("Unqualified hosted-availability claim" in issue for issue in issues)
+    assert any("Stale prelaunch copy" in issue for issue in issues)

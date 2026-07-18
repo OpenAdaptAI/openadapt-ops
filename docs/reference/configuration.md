@@ -72,7 +72,7 @@ pipeline. `--attest-non-phi` is deprecated and refused; a declaration is not a
 privacy control. Customer-owned endpoints must be HTTPS and exact-origin
 allowlisted. Unknown destinations fail closed.
 
-These variables configure the client boundary for the hosted launch candidate. See
+These variables configure the client boundary for OpenAdapt Hosted. See
 [Hosted browser execution](../guides/hosted.md).
 
 The hosted control plane separately requires three server-side, comma-separated

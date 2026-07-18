@@ -2,10 +2,9 @@
 
 OpenAdapt turns a single demonstration into a deterministic, locally-run
 workflow. This section takes you from an empty terminal to a compiled workflow
-and an illustrated run report in about five minutes. Read
-[What works today](what-works-today.md) before evaluating a real deployment;
-the browser is the reference path, while desktop, RDP, Citrix, hosted execution,
-and on-prem operations have different maturity.
+and an illustrated run report in about five minutes. When you move to a real
+deployment, pair the workflow with an explicit substrate, identity policy,
+effect oracle, and data boundary.
 
 ## Install
 
@@ -132,9 +131,9 @@ Once the basic loop makes sense, the same $0 runtime carries more:
 
     The bundle, the run report, and what each artifact is for.
 
--   [__What works today__](what-works-today.md)
+-   [__Qualification evidence__](what-works-today.md)
 
-    The integrated maturity matrix and the boundaries behind each status.
+    Accepted substrate results, exact environments, and deployment boundaries.
 
 -   [__Core concepts__](../concepts/index.md)
 

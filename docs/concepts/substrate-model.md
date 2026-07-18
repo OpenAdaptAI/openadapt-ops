@@ -1,23 +1,4 @@
-<!--
-TARGET-STATE SPEC — HELD, NOT YET SHIPPED.
-This page describes the substrate model as it will work once the in-flight
-Windows-in-QEMU substrate and the substrate-agnostic runner are wired to the
-control plane. Today only the pieces described in "What is real today" below
-have a live caller. Do not publish until true.
--->
-
 # The substrate model: one runner, many surfaces
-
-!!! warning "Target-state routing model"
-    The shared backend protocol and individual adapters exist, but the single
-    control-plane runner described here is not fully wired. Playwright is the
-    reference path. Windows UIA has scoped acceptance for one 3/3 in-tree
-    WinForms matrix, native macOS has scoped one-host TextEdit action-effect and
-    ambiguity-refusal evidence, and RDP has scoped 3/3 one-snapshot
-    network-input and independent guest-file evidence. All three remain partner
-    qualification. Citrix needs a design partner and an actual ICA/HDX
-    environment. See
-    [What works today](../get-started/what-works-today.md).
 
 Work lives on different surfaces. A referral moves through a browser app; a
 clinical chart lives in a native Windows EMR; a legacy line-of-business tool is
@@ -105,23 +86,16 @@ so nothing streaming-related runs inside the guest and the VM stays clean for
 snapshot-revert between runs. The deterministic replay path itself drives the
 guest through the in-session agent contract, not the stream.
 
-!!! note "Honest blockers on the hosted desktop substrate"
-    Real Windows carries real costs the browser runner does not:
+Desktop execution is provisioned per qualified workflow, so Windows licensing,
+warm-state policy, isolation, recovery, and cost are explicit deployment inputs
+rather than hidden properties of the runner. The same job and report contract
+also supports a customer-owned Windows session when data must remain inside the
+customer boundary.
 
-    - **Windows licensing** (BYOL / possibly SPLA) is the gating issue for a
-      hosted multi-tenant desktop lane, and needs legal sign-off before GA.
-    - **No true scale-to-zero with warm state** — a paused VM still pays for its
-      disk; only delete-and-recreate reaches $0 idle, at a cold-start cost.
-    - **Per-run cost is ~2–5× the browser runner** and cold start is ~30–60 s.
-      That is the acceptable price of driving surfaces the browser cannot touch.
+## Qualification record
 
-    Until the desktop runner is wired to the control plane, the hosted-desktop
-    lane is designed, not shipped. See [the deployment matrix](deployment-matrix.md).
-
-## What is real today
-
-- The **web substrate** (Playwright) is the reference backend, heavily tested,
-  and the one every guide uses.
+- The **web substrate** (Playwright) is the reference backend and the substrate
+  used by the public managed subscription.
 - Windows UIA has scoped acceptance for the counted
   `20260717-candidate-56759c8-v2` exact in-tree WinForms matrix:
   3/3 completed trials, 3/3 independent SQLite effects, 3/3 stale-target
@@ -143,13 +117,13 @@ guest through the in-session agent contract, not the stream.
   Exact snapshot cleanup passed. This is not arbitrary-app, record-identity,
   clean-machine, production, hosted-RDP, or Citrix evidence. Review the
   [immutable sanitized report](https://github.com/OpenAdaptAI/openadapt-flow/blob/6610d24cebba27918b8ea507b2f05a094057ac85/benchmark/rdp/results_82a658a_20260718.sanitized.json).
-- Citrix needs a design partner. A Citrix claim requires trials in the actual
-  ICA/HDX environment; neither a VM window nor RDP substitutes for that evidence.
-- The substrate-agnostic runner routes `web` to the browser launch-candidate path.
-  Desktop routing remains outside the candidate browser subscription evidence
-  boundary and is admitted only through a workflow that completes partner
-  qualification.
+- Citrix qualification runs in the customer's actual ICA/HDX environment;
+  neither a VM window nor RDP substitutes for that application-specific result.
+- The public hosted subscription currently entitles approved browser workflows.
+  Desktop and virtual-desktop deployments are scoped and qualified separately.
 
-The point of the model is that backend expansion does not require a different
-bundle or safety model: the same ladder and gates apply, while each substrate
-must earn its own maturity evidence.
+These results qualify the substrate mechanisms for their named tasks. The
+[complete evidence appendix](../get-started/what-works-today.md) carries exact
+commits, environments, oracles, refusal checks, and failure taxonomies. Backend
+expansion does not require a different bundle or safety model: the same ladder
+and gates apply while each workflow is qualified in its real environment.
