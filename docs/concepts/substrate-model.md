@@ -13,9 +13,10 @@ have a live caller. Do not publish until true.
     control-plane runner described here is not fully wired. Playwright is the
     reference path. Windows UIA has scoped acceptance for one 3/3 in-tree
     WinForms matrix, native macOS has scoped one-host TextEdit action-effect and
-    ambiguity-refusal evidence, and both remain partner qualification. RDP
-    acceptance remains in progress. Citrix needs a design partner and an actual
-    ICA/HDX environment. See
+    ambiguity-refusal evidence, and RDP has scoped 3/3 one-snapshot
+    network-input and independent guest-file evidence. All three remain partner
+    qualification. Citrix needs a design partner and an actual ICA/HDX
+    environment. See
     [What works today](../get-started/what-works-today.md).
 
 Work lives on different surfaces. A referral moves through a browser app; a
@@ -134,9 +135,14 @@ guest through the in-session agent contract, not the stream.
   classification; a hash-bound adjudication verified actual cleanup and accepts
   only those effects/refusal. It is not clean-machine, partner, production, or
   general macOS evidence.
-- RDP has a fail-closed qualification harness, but live acceptance remains in
-  progress. Accepted evidence must come from the real target substrate and an
-  independent effect oracle; a mock or analog is not promoted as field support.
+- RDP has scoped acceptance for candidate `82a658a` on one Parallels Windows 11
+  VM at 1280x800 with Aardwolf 0.2.14: 3/3 Windows Run-dialog unique-file
+  trials, exact independent guest-tools readback, latencies of 51.845s, 10.467s,
+  and 7.477s, 0 failures, 0 silent incorrect successes, 0 over-halts, and 0 model
+  calls.
+  Exact snapshot cleanup passed. This is not arbitrary-app, record-identity,
+  clean-machine, production, hosted-RDP, or Citrix evidence. Review the
+  [immutable sanitized report](https://github.com/OpenAdaptAI/openadapt-flow/blob/6610d24cebba27918b8ea507b2f05a094057ac85/benchmark/rdp/results_82a658a_20260718.sanitized.json).
 - Citrix needs a design partner. A Citrix claim requires trials in the actual
   ICA/HDX environment; neither a VM window nor RDP substitutes for that evidence.
 - The substrate-agnostic runner routes `web` to the browser launch-candidate path.

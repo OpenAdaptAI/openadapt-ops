@@ -30,7 +30,7 @@ public availability.
 | Self-hosted browser execution | **Beta** | No hosted account required. |
 | Windows UIA | **Partner qualification; scoped acceptance passed** | The exact in-tree WinForms matrix passed 3/3 with an independent SQLite oracle and 3/3 stale/ambiguity refusals. It is not in the hosted launch candidate and creates no browser subscription entitlement. |
 | Native macOS | **Partner qualification; scoped TextEdit evidence accepted** | One macOS 15.7.3 arm64 host produced 3/3 exact-byte TextEdit effects plus a two-window ambiguity refusal. The original batch remains failed; its hash-bound adjudication accepts only effect/refusal evidence. It is not in the hosted launch candidate and creates no browser subscription entitlement. |
-| RDP | **Partner qualification; acceptance in progress** | Network RDP acceptance is required; not in the hosted launch candidate. |
+| RDP | **Partner qualification; scoped RDP evidence accepted** | One Parallels Windows 11 VM produced 3/3 exact guest-file effects through network RDP, with 0 silent incorrect successes, 0 over-halts, and 0 model calls. This qualifies only the published task, snapshot, transport, and oracle; it is not in the hosted launch candidate. |
 | Citrix | **Design partner needed; no ICA/HDX evidence** | Must be qualified in the actual Citrix environment; RDP evidence does not transfer. |
 | Regulated runtime data | **Customer-controlled boundary** | Use a scoped BYOC/on-prem deployment when live screens necessarily contain PHI. |
 
