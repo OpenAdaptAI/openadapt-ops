@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-18 03:11 UTC*
+> *Last updated: 2026-07-18 04:15 UTC*
 
 
 
@@ -147,6 +147,8 @@
 
 ## openadapt-capture
 
+
+- [docs: focus capture on its current product role](https://github.com/OpenAdaptAI/openadapt-capture/pull/29) (#29) — merged 
 
 - [chore: modernize Recorder framing, CI coverage, and dependency floors](https://github.com/OpenAdaptAI/openadapt-capture/pull/28) (#28) — merged 
 
