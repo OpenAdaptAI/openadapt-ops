@@ -70,11 +70,11 @@ python -m spacy download en_core_web_sm
 export OPENADAPT_FLOW_SCRUB=on          # scrub REPORT.md + logs, fail closed
 ```
 
-### The pilot deployment scaffold (systemd or containers)
+### The on-prem deployment package (systemd or containers)
 
-The engine repo's `deploy/on-prem/` scaffold wires the queue runner and the
-air-gap checks. Its maturity is uneven (see the honest REAL-vs-STUB table in
-`deploy/on-prem/README.md` and the caveats below):
+The engine repo's `deploy/on-prem/` package wires versioned release activation,
+the queue runner, air-gap checks, offline signed updates, and rollback. Full-
+disk encryption and the offline wheelhouse remain deployment inputs:
 
 ```bash
 cd deploy/on-prem
@@ -192,10 +192,11 @@ out-of-band and pulled in by the operator:
    test + `verify-airgap.sh`, flips the runner over, and records the applied
    version in the audit log.
 
-Signature verification and the blue/green swap are documented; the apply step is
-a **stub** in the scaffold (it needs your staged artifacts and vendor key). The
-offline, no-egress *policy* is real and enforced by the firewall +
-`verify-airgap.sh`.
+The shipped release manager performs pinned-key signature verification, bounded
+archive extraction, serialized atomic activation, smoke checks, audit events,
+and rollback to the retained version. The hermetic update test exercises success,
+refusal, migration, data preservation, rollback/recovery, locking, and audit-
+chain serialization without network access.
 
 ## Where the automation sits relative to Citrix
 
@@ -258,13 +259,12 @@ The deterministic path needs no OpenAdapt-hosted service. Restrict target,
 verifier, and optional local-model traffic to the destinations the deployment
 policy permits.
 
-The repository includes a pilot deployment package with a local directory
-queue, systemd path unit, schema-minimized hash-chained audit log, and air-gap checks.
-Its maturity is uneven: the container topology needs a prebuilt offline
-wheelhouse, full-disk encryption is operator-provisioned, and the signed
-`install.sh --update` apply path is a documented stub. Do not present update or
-rollback as automated until a site-specific procedure has been implemented and
-tested. See the [security and deployment review](security-review.md).
+The repository includes a deployment package with a local directory queue,
+systemd path unit, schema-minimized hash-chained audit log, air-gap checks, and
+atomic signed update/rollback. The container topology needs a prebuilt offline
+wheelhouse and full-disk encryption is operator-provisioned. Each site still
+tests its own signing authority, storage, service manager, backup, recovery, and
+maintenance procedure. See the [security and deployment review](security-review.md).
 
 The engine's own safety limits are unchanged by running on-prem: the
 wrong-patient identity ladder, the unarmed-step gaps, the transactional-write

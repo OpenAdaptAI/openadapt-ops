@@ -4,18 +4,18 @@
 
 ## Get started
 - [Get started](https://docs.openadapt.ai/get-started/): Install the CLI and run the complete demo journey in about five minutes
-- [What works today](https://docs.openadapt.ai/get-started/what-works-today/): The integrated maturity matrix and the boundaries behind each status
+- [Qualification evidence](https://docs.openadapt.ai/get-started/what-works-today/): Accepted substrate results, exact environments, and deployment boundaries
 - [Your first workflow](https://docs.openadapt.ai/get-started/first-workflow/): Prerequisites, install, then record, compile, lint, replay, and read the report on your own web app
 - [What you get](https://docs.openadapt.ai/get-started/what-you-get/): The workflow bundle, the run report, and what each artifact is for
 
 ## Desktop app
 - [Install and first run](https://docs.openadapt.ai/desktop/install/): Experimental-preview desktop shell; the openadapt flow CLI is the working path today
-- [Connect to a cloud workspace](https://docs.openadapt.ai/desktop/connect-to-cloud/): Optional link to a hosted workspace at app.openadapt.ai
+- [Connect to a cloud workspace](https://docs.openadapt.ai/desktop/connect-to-cloud/): Sign in, create an ingest token, and connect local authoring to the managed workspace
 
 ## Concepts
 - [Concepts overview](https://docs.openadapt.ai/concepts/): The compiler model behind the product
 - [The demonstration compiler](https://docs.openadapt.ai/concepts/demonstration-compiler/): Compiling a bounded demonstration into a deterministic workflow
-- [The substrate model](https://docs.openadapt.ai/concepts/substrate-model/): The substrate abstraction, including what is real today versus target-state
+- [The substrate model](https://docs.openadapt.ai/concepts/substrate-model/): One governed runner contract across browser, desktop, and virtual-desktop surfaces
 - [The deployment matrix](https://docs.openadapt.ai/concepts/deployment-matrix/): Substrate, hosting, and responsibility combinations
 - [Fail-closed regulated execution](https://docs.openadapt.ai/concepts/regulated-execution/): Halting instead of guessing in regulated environments
 - [The capability ladder](https://docs.openadapt.ai/concepts/capability-ladder/): One compiled step, several possible implementations; the highest-fidelity viable one is used
@@ -38,7 +38,7 @@
 - [Write and enforce a policy](https://docs.openadapt.ai/guides/policy-and-certification/): The certify gate that refuses unsafe bundles
 - [Run a deployment](https://docs.openadapt.ai/guides/run-a-deployment/): Wiring a real backend, verification, and policy via deployment.yaml
 - [Deploy on-prem](https://docs.openadapt.ai/guides/deploy-on-prem/): Customer-controlled deployment for regulated runtime data
-- [The hosted option](https://docs.openadapt.ai/guides/hosted/): Managed browser execution scope, status, and data boundary
+- [OpenAdapt Hosted](https://docs.openadapt.ai/guides/hosted/): Public managed-browser subscription, lifecycle, and data boundary
 - [Security and deployment review](https://docs.openadapt.ai/guides/security-review/): Data-boundary answers for a security review
 - [Read and audit run reports](https://docs.openadapt.ai/guides/run-reports/): The illustrated REPORT.md and machine-readable report.json
 - [Troubleshooting](https://docs.openadapt.ai/guides/troubleshooting/): Common failures and their causes

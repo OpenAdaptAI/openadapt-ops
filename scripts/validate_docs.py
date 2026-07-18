@@ -12,13 +12,16 @@ MKDOCS_FILE = ROOT / "mkdocs.yml"
 
 REQUIRED_PUBLIC_PAGES = {
     "get-started/what-works-today.md": (
+        "Qualification evidence",
         "Integrated product matrix",
         "Hosted execution",
-        "Beta launch candidate",
+        "$500/month",
+        "Beta / public offer",
         "Hosted browser recorder",
         "`openadapt-flow` 1.8.0",
         "Authenticated live health",
-        "full paid production lifecycle remains pending",
+        "production pre-payment trials",
+        "first genuine customer",
     ),
     "guides/hosted.md": (
         "sanitized derivative",
@@ -35,10 +38,10 @@ REQUIRED_PUBLIC_PAGES = {
     ),
 }
 
-PREQUALIFICATION_AVAILABILITY_MARKERS = {
-    "Hosted browser execution is launching now",
-    "Managed browser execution is launching with",
-    "Start hosted checkout",
+STALE_PRELAUNCH_MARKERS = {
+    "Beta launch candidate",
+    "full paid production lifecycle remains pending",
+    "not a public availability statement",
 }
 
 
@@ -102,9 +105,9 @@ def check_product_docs_contract(docs_dir=None, mkdocs_file=None):
     public_text = "\n".join(
         path.read_text() for path in docs_dir.rglob("*.md") if path.is_file()
     )
-    for marker in PREQUALIFICATION_AVAILABILITY_MARKERS:
+    for marker in STALE_PRELAUNCH_MARKERS:
         if marker in public_text:
-            issues.append(f"Unqualified hosted-availability claim: {marker}")
+            issues.append(f"Stale prelaunch copy: {marker}")
 
     return issues
 

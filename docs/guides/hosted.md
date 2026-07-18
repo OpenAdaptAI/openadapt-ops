@@ -1,44 +1,45 @@
-# Hosted browser execution
+# OpenAdapt Hosted
 
-OpenAdapt Hosted is the Beta launch candidate for managed browser workflows.
-The same compiler and governed runtime remain available under MIT for local and
-customer-controlled deployment. Once the production acceptance gate passes, a
-hosted subscription adds account and organization management, managed execution
-of locally authored and attested browser bundles, artifact storage, structural
-run history, usage metering, and billing. Governed authoring, validation, and
-repair remain local. A separate hosted recorder can create a compileable
-workflow for an explicitly initiated public, non-regulated browser session.
+OpenAdapt Hosted is the managed control plane for governed workflows. The
+public **$500/month** subscription covers approved browser workflows and adds
+account and organization management, managed execution of locally authored and
+attested bundles, artifact storage, structural run history, usage metering, and
+billing. The same compiler and governed runtime remain available under MIT for
+local and customer-controlled deployments.
 
-[Review the production acceptance gate](#operational-acceptance-gate){ .md-button .md-button--primary }
+Governed authoring, validation, and repair remain local. The hosted recorder is
+available for explicitly initiated public, non-regulated browser sessions; use
+local recording and a reviewed sanitized derivative when source observations
+cannot enter the OpenAdapt-hosted boundary.
+
+[Start with OpenAdapt](https://openadapt.ai/#pricing){ .md-button .md-button--primary }
 [Review the data boundary](security-review.md){ .md-button }
 
-Stripe is the source of truth for a production deployment's configured price
-and billing period. The website retrieves that offer server-side when
-configured, rather than hard-coding an amount; Checkout must confirm the same
-price before payment. This describes the implementation contract, not current
-public availability.
+Stripe is the commercial source of truth. The website retrieves the live offer
+server-side and Checkout confirms the same Product and Price before payment.
 
-## Scope of the launch
+## What the subscription includes
 
 | Surface | Launch status | Boundary |
 |---|---|---|
-| Local browser record -> compile -> managed execute | **Beta launch candidate** | Governed authoring and validation remain local; managed execution uses the browser substrate only. The full paid lifecycle remains pending. |
+| Local browser record -> compile -> managed execute | **Beta / public offer** | Governed authoring and validation remain local; managed execution uses the qualified browser substrate. |
 | Hosted browser record -> compileable workflow | **Beta / bounded launch component** | Non-simulated live-provider qualification passed on `openadapt-flow` 1.8.0 for a public, non-regulated target. Authenticated live health also qualified the exact-version replay and compiler service identities. This is a separate raw-observation boundary, not the reviewed-derivative upload lane. |
-| Account, organization, onboarding | **Beta launch candidate** | The implemented lifecycle links a qualified subscription during onboarding. |
-| Structural run history and reports | **Beta launch candidate** | Safety depends on the workflow's configured identity, effect, and policy checks. Repair and validation remain local. |
-| Checkout, portal, entitlements, metering | **Beta launch candidate** | Stripe and the control plane must both pass production acceptance before public traffic is directed to checkout. |
+| Account, organization, onboarding | **Beta / public offer** | Checkout and sign-in bind the subscription to an isolated organization. |
+| Structural run history and reports | **Beta / public offer** | Safety depends on the workflow's configured identity, effect, and policy checks. Repair and validation remain local. |
+| Checkout, portal, entitlements, metering | **Beta / public offer** | Live Stripe Checkout, signed webhooks, entitlements, usage, and the billing portal form one managed subscription contract. |
 | Self-hosted browser execution | **Beta** | No hosted account required. |
-| Windows UIA | **Partner qualification; scoped acceptance passed** | The exact in-tree WinForms matrix passed 3/3 with an independent SQLite oracle and 3/3 stale/ambiguity refusals. It is not in the hosted launch candidate and creates no browser subscription entitlement. |
-| Native macOS | **Partner qualification; scoped TextEdit evidence accepted** | One macOS 15.7.3 arm64 host produced 3/3 exact-byte TextEdit effects plus a two-window ambiguity refusal. The original batch remains failed; its hash-bound adjudication accepts only effect/refusal evidence. It is not in the hosted launch candidate and creates no browser subscription entitlement. |
-| RDP | **Partner qualification; scoped RDP evidence accepted** | One Parallels Windows 11 VM produced 3/3 exact guest-file effects through network RDP, with 0 silent incorrect successes, 0 over-halts, and 0 model calls. This qualifies only the published task, snapshot, transport, and oracle; it is not in the hosted launch candidate. |
+| Windows UIA | **Partner qualification; scoped acceptance passed** | The exact in-tree WinForms matrix passed 3/3 with an independent SQLite oracle and 3/3 stale/ambiguity refusals. Windows subscriptions and deployments are scoped separately from the public browser offer. |
+| Native macOS | **Partner qualification; scoped TextEdit evidence accepted** | One macOS 15.7.3 arm64 host produced 3/3 exact-byte TextEdit effects plus a two-window ambiguity refusal. Native macOS subscriptions and deployments are scoped separately from the public browser offer. |
+| RDP | **Partner qualification; scoped RDP evidence accepted** | One Parallels Windows 11 VM produced 3/3 exact guest-file effects through network RDP, with 0 silent incorrect successes, 0 over-halts, and 0 model calls. RDP subscriptions and deployments are scoped separately from the public browser offer. |
 | Citrix | **Design partner needed; no ICA/HDX evidence** | Must be qualified in the actual Citrix environment; RDP evidence does not transfer. |
 | Regulated runtime data | **Customer-controlled boundary** | Use a scoped BYOC/on-prem deployment when live screens necessarily contain PHI. |
 
-“Beta launch candidate” means the integrated implementation is being qualified
-for launch. It is not a current availability statement, security certification,
-or SLA. The [maturity matrix](../get-started/what-works-today.md), the operational
-acceptance gate below, and the configured commercial terms define the exact
-scope.
+The public subscription covers approved browser workflows. Windows, native
+macOS, RDP, Citrix, regulated customer-controlled execution, professional
+services, support commitments, and assurance terms are scoped separately. See
+[qualification evidence](../get-started/what-works-today.md) for the exact
+accepted substrate results; configured commercial terms define entitlement and
+support.
 
 ## Hosted recorder boundary
 
@@ -49,8 +50,10 @@ workflow idempotently, enforced its resource limits, and removed the ephemeral
 qualification data. That qualification used an `openadapt-flow` 1.8.0 worker.
 Authenticated live health probes separately confirmed the deployed replay and
 compiler endpoints, their service identities, and their exact Flow version.
-Health is not a workflow execution result: this evidence does not establish
-checkout, a successful managed replay, or the complete paid lifecycle.
+Health evidence is complemented by three independent production pre-payment
+trials that verified tenant-bound live Checkout and refusal before entitlement.
+The first genuine paid subscription will extend that evidence through signed-
+webhook activation, managed execution, usage, portal, and cancellation.
 
 The recorder accepts only public HTTPS DNS hosts and refuses credentials in the
 start URL, literal IP addresses, private or mixed DNS answers, and private
@@ -68,8 +71,7 @@ boundary.
 
 ## The hosted lifecycle
 
-After the operational acceptance gate passes for a production deployment, the
-hosted lifecycle is:
+The hosted lifecycle is:
 
 1. Complete its qualified Stripe Checkout.
 2. Sign in with the checkout email and create or join an organization.
@@ -313,7 +315,7 @@ what “production fails closed instead of silently using mock mode” means. It
 protects customers from believing a fabricated development run actually
 executed; it does not disable production functionality.
 
-## Operational acceptance gate
+## Production control checklist
 
 Before directing traffic to a production deployment, verify:
 

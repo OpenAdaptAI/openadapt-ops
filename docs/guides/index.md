@@ -34,7 +34,7 @@ Task-focused, how-to guides for real deployments. Each one assumes you have
 
 -   [__The hosted option__](hosted.md)
 
-    Review the candidate subscription lifecycle, sanitize and review artifacts,
+    Review the managed subscription lifecycle, sanitize and review artifacts,
     run browser workflows, and understand trusted execution boundaries.
 
 -   [__Security and data handling__](security-and-data-handling.md)

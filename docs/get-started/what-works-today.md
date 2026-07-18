@@ -1,4 +1,4 @@
-# What works today
+# Qualification evidence
 
 OpenAdapt compiles demonstrated GUI workflows into deterministic, locally
 executable programs. Healthy runs make no model calls. When an interface
@@ -7,11 +7,17 @@ explicitly configured model tier; it records any repair and halts when the
 configured identity, postcondition, effect, or policy checks cannot verify the
 run.
 
-That is the canonical product description. A bounded hosted recorder has passed
-a live-provider record-to-compile qualification for public, non-regulated
-browser targets. The complete paid account-to-run lifecycle remains a **Beta
-launch candidate** pending production acceptance. That does **not** mean every
-recorded workflow is safe or every backend is production-ready.
+This appendix records qualification evidence and exact deployment boundaries.
+It is intentionally more detailed than the product overview so operators and
+reviewers can inspect the task, environment, run count, oracle, failure
+taxonomy, and caveats behind each supported claim.
+
+OpenAdapt Hosted has a public **$500/month** browser-workflow subscription backed
+by the configured live Stripe Product and Price. Three independent reversible
+production pre-payment trials verified tenant-bound Checkout creation and
+confirmed that unpaid sessions grant no entitlement. The first genuine customer
+transaction will be observed through signed-webhook activation, managed
+execution, usage, portal, and cancellation as continuing production evidence.
 
 ## Maturity labels
 
@@ -49,16 +55,16 @@ real environment before any support claim can be made.
 | Native macOS backend | **Partner qualification; scoped TextEdit evidence accepted** | On one macOS 15.7.3 arm64 host, candidate `b1b61a5` completed 3/3 exact-byte TextEdit trials and refused a two-window ambiguity without changing either file; there were 0 silent incorrect successes and 0 over-halts. [Review the hash-bound adjudication at immutable evidence commit `ca1b522`](https://github.com/OpenAdaptAI/openadapt-flow/blob/ca1b522cad215875f7471782283f8f8bb8e6c998/benchmark/macos_native/textedit_counted_3plus1_b1b61a5_20260717.adjudication.json) and [Flow PR #135](https://github.com/OpenAdaptAI/openadapt-flow/pull/135). | The counted candidate is `b1b61a5`; `ca1b522` preserves its reports and adjudication but is not the current PR head. The immutable original report remains `status: failed` because graceful-close cleanup warnings were classified as batch failure. The separate adjudication preserves that result, verifies the exact harness PIDs and temporary root were absent, and accepts only the action-effect and ambiguity-refusal evidence. This is not clean-machine, design-partner, production, broad-app, or general macOS acceptance evidence. |
 | RDP backend | **Partner qualification; scoped RDP evidence accepted** | On one Parallels Windows 11 VM at 1280x800 with Aardwolf 0.2.14, candidate `82a658a` completed 3/3 trials that created a unique file through the Windows Run dialog over network RDP. Independent guest-tools readback confirmed the exact file contents. Trial latencies were 51.845s, 10.467s, and 7.477s; there were 0 failures, 0 silent incorrect successes, 0 over-halts, and 0 model calls. [Review the immutable sanitized report at evidence commit `6610d24`](https://github.com/OpenAdaptAI/openadapt-flow/blob/6610d24cebba27918b8ea507b2f05a094057ac85/benchmark/rdp/results_82a658a_20260718.sanitized.json) and [Flow PR #142](https://github.com/OpenAdaptAI/openadapt-flow/pull/142). | Cleanup deleted only the batch-owned snapshot, restored the exact eight-snapshot inventory, left the VM suspended, and returned the current pointer without resume to the unchanged original base. This qualifies only the named task, VM snapshot, transport, and oracle—not arbitrary RDP applications, record-level identity, clean-machine or production support, hosted RDP, or Citrix ICA/HDX. Earlier rejected batches remain evidence and are not counted as acceptance trials. |
 | Citrix backend | **Design partner needed; no ICA/HDX evidence** | The generic remote-window safety floor can begin qualification. | There is no validated Citrix integration. The actual client, latency, compression, DPI, lock-screen, input, identity, and effect behavior require a partner environment. |
-| Desktop authoring GUI and tray | **Experimental** | Native artifacts for the targeted platforms and their tag-gated release pipeline have been built and qualified; the surfaces follow the record -> compile -> replay -> teach loop. | No complete native prerelease is published yet. Signing, permissions, updater behavior, and the full operator lifecycle still require platform validation. |
-| Hosted CLI connectivity | **Beta / launch component** | `login`, exact-hash artifact preparation/upload, one-time runtime validation, bound replacement activation, and `report-break` connect the local engine to control-plane endpoints. | Upload requires destination policy and an approved sanitized derivative; checkout never bypasses an egress refusal. Public paid acceptance remains pending. |
+| Desktop authoring GUI and tray | **Experimental** | The published 0.1.1 prerelease provides install/uninstall-qualified native packages across the six targeted platform/architecture variants. | The current prerelease qualifies packaging and removal; the complete record -> compile -> replay -> teach cockpit remains an integration track. |
+| Hosted CLI connectivity | **Beta / public offer** | `login`, exact-hash artifact preparation/upload, one-time runtime validation, bound replacement activation, and `report-break` connect the local engine to the live control plane. | Upload requires destination policy and an approved sanitized derivative; checkout never bypasses an egress refusal. |
 | Artifact sanitation and local review | **Beta / launch gate** | The sanitized-derivative pipeline inventories, transforms, rescans, manifests, hashes, and supports local review/approval. | The raw original remains sensitive; unknown or unresolved content is refused; runtime observations can reintroduce PHI. |
 | Cross-engine hosted validation | **Beta / launch gate** | `validate-hosted` binds an approved recording and bundle, compiler provenance, strict lint, policy certification, derived risk class, and successful replay report to a one-time Cloud challenge. | It is operator self-attestation signed with the ingest token, not an independently observed certification. Exact deployment policy, risk-class, and deployed compiler-version allowlists still apply. |
 | Hosted browser recorder and runtime health | **Beta / bounded launch component** | A non-simulated Modal session on `openadapt-flow` 1.8.0 produced PNG frames and retained input evidence, assembled a compileable recording, finalized one workflow idempotently, enforced resource limits, and cleaned up ephemeral qualification data. Authenticated live health probes also qualified the exact-version replay and compiler service identities. | Explicitly initiated, public-HTTPS, non-regulated authoring only. Raw observations remain private inside the declared hosted boundary. Health proves deployed service identity and reachability, not a paid checkout-to-run lifecycle or successful managed replay. |
-| Hosted dashboard/control plane | **Beta launch candidate** | Authentication, organizations, exact-hash bundle ingest, immutable run admission, browser runner orchestration, structural reports, replacement activation, billing, and metering form the candidate launch lifecycle. | Local governed authoring and repair remain available. Production must explicitly use live dependencies; mock mode remains visibly synthetic development behavior. The current paid lifecycle has not passed clean-account acceptance. |
-| Hosted execution | **Beta launch candidate** | The implementation routes Stripe Checkout through onboarding to managed browser execution; the runner verifies exact admitted bundle bytes and callbacks. | This is not yet a public availability claim. The configured offer covers browser workflows, not Windows, RDP, or Citrix by implication. Checkout does not create an SLA or certification. The full paid production lifecycle remains pending. |
+| Hosted dashboard/control plane | **Beta / public offer** | Authentication, organizations, exact-hash bundle ingest, immutable run admission, browser runner orchestration, structural reports, replacement activation, billing, and metering form the managed lifecycle. | Production uses live dependencies and fails unavailable rather than substituting mock behavior. |
+| Hosted execution | **Beta / public offer** | Live Stripe Checkout connects onboarding and subscription entitlements to managed browser execution; the runner verifies exact admitted bundle bytes and authenticated callbacks. | The public subscription covers approved browser workflows. Other substrates use separately scoped deployments and commercial terms. Checkout does not create an SLA or certification. |
 | Air-gapped on-prem package | **Experimental** | A local queue, systemd unit, minimized hash-chained audit log, and air-gap checks are provided. | Full-disk encryption and operational hardening remain operator/deployment responsibilities. |
 | BYOC / customer-controlled execution | **Experimental / scoped deployment** | A connector and customer-storage contract support keeping the data plane inside an approved customer boundary. | Qualify the actual substrate and destination; PHI-bearing runtime data must not cross into a shared boundary. |
-| Hosted desktop runner | **Experimental** | A Windows runner contract and implementation path exist. | Not included in the browser launch candidate and not a validated broad desktop/Citrix service. |
+| Hosted desktop runner | **Experimental** | A Windows runner contract and implementation path exist. | Desktop subscriptions and deployments are scoped separately from the public browser offer and qualified per workflow. |
 
 ## Before using consequential data
 

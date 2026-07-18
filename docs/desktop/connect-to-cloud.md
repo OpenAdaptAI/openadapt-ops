@@ -14,11 +14,11 @@ connect the desktop app → push your first recording → see it in the dashboar
     and teaching never leave your network. See
     [the hosted option](../guides/hosted.md).
 
-!!! info "Early access"
-    The self-serve cloud runner is being rolled out with early-access users and
-    is not yet a public paid tier. Request access from
-    [openadapt.ai](https://openadapt.ai). The steps below are the mechanism the
-    desktop app and CLI use once your workspace is enabled.
+!!! info "Hosted subscription"
+    OpenAdapt Hosted is available as a public $500/month subscription for
+    approved browser workflows. Start at
+    [openadapt.ai](https://openadapt.ai/#pricing), then use the same workspace
+    and ingest-token mechanism described below.
 
 ## 1. Create or sign in to your workspace
 

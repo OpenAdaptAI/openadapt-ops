@@ -4,17 +4,21 @@ OpenAdapt separates the surface a workflow drives from the boundary in which it
 runs. The same compiler, bundle format, safety gates, and report schema can be
 used in each lane; substrate maturity and data handling differ.
 
-## Current matrix
+## Deployment architecture
 
 | Deployment / substrate | Browser | Windows UIA | Native macOS | RDP | Citrix |
 |---|---|---|---|---|---|
-| **OpenAdapt Hosted** | **Beta launch candidate.** Managed execution of validated browser bundles, structural reports, replacement activation, billing, and metering is implemented. The bounded non-regulated recorder is live-provider qualified; the complete paid account-to-run lifecycle remains pending. | **Not in hosted candidate.** Availability remains partner qualification. The in-tree WinForms workflow has scoped 3/3 acceptance evidence, not a hosted-desktop entitlement. | **Not in hosted candidate.** Availability remains partner qualification. One-host TextEdit effect/refusal evidence is accepted only in its published scope. | **Not in hosted candidate.** Availability remains partner qualification. One-snapshot network RDP input/effect evidence is accepted only in its published scope. | **No hosted Citrix claim.** A design partner and actual ICA/HDX environment are required. |
-| **Customer cloud / BYOC** | **Deployment qualification required.** Customer storage and runner must satisfy the destination policy and be qualified for the actual deployment. | **Partner qualification.** The scoped WinForms acceptance result does not qualify the customer's app, runner, identity coverage, or effect oracle. | **Partner qualification.** The scoped TextEdit result does not qualify the customer's application, clean machine, or data boundary. | **Partner qualification.** The scoped RDP result does not qualify the customer's server, app, identity coverage, effect oracle, or data boundary. | **Design partner needed; no ICA/HDX evidence.** A protocol adapter or RDP result is not a validated Citrix deployment. |
-| **Self-hosted / on-prem** | **Beta reference engine.** Local record, compile, replay, and reports. | **Partner qualification.** Workflow-specific acceptance is still required despite the scoped in-tree WinForms result. | **Partner qualification.** Workflow-specific acceptance is still required despite the scoped TextEdit evidence. | **Partner qualification.** Workflow-specific network RDP acceptance required. | **Design partner needed; no ICA/HDX evidence.** Qualification must run in the real Citrix environment. |
+| **OpenAdapt Hosted** | Managed execution, schedules, reports, usage, and billing | Separately ordered, workflow-qualified deployment | Separately ordered, workflow-qualified deployment | Separately ordered, workflow-qualified deployment | Separately ordered design-partner deployment |
+| **Customer cloud / BYOC** | Customer runner and storage with managed governance | Customer runner and storage | Customer runner and storage | Customer runner and storage | Customer runner and storage |
+| **Self-hosted / on-prem** | Local runner and audit trail | Local runner and audit trail | Local runner and audit trail | Local runner and audit trail | Local runner and audit trail |
 
-The browser launch candidate does not promote every cell. Code presence, a shared runner
-protocol, or successful checkout is not evidence that Windows, RDP, or Citrix
-is production-ready.
+The current public $500/month subscription covers approved browser workflows.
+Windows, native macOS, RDP, Citrix, regulated customer-controlled execution,
+and support or assurance commitments require a separate order and qualification.
+They are not entitlements of the browser subscription. The
+matrix describes the product architecture; the
+[qualification appendix](../get-started/what-works-today.md) and commercial
+terms define the accepted workload and entitlement.
 
 ## Artifact boundary and runtime boundary
 
@@ -71,9 +75,9 @@ The risk-based launch default is:
 
 See [Hosted browser execution](../guides/hosted.md) for the complete protocol.
 
-## Hosted browser launch candidate
+## OpenAdapt Hosted
 
-The implemented candidate path comprises:
+The managed browser path comprises:
 
 - Stripe Checkout using the configured product and price;
 - authentication, onboarding, and organization isolation;
@@ -89,12 +93,13 @@ Production selects live mode explicitly. Development mock mode is visibly
 synthetic. A missing production dependency makes the affected operation
 unavailable rather than substituting a simulated success.
 
-The hosted recorder has passed its bounded, non-simulated live-provider
-qualification on a Flow 1.8.0 worker. Authenticated live health also qualified
-the exact-version replay and compiler service identities. Those health probes
-do not establish successful workflow execution. The documented clean-account
-purchase-to-run acceptance lifecycle remains pending. Do not infer public paid
-availability from this architecture description.
+The hosted recorder passed its bounded, non-simulated live-provider
+qualification on a Flow 1.8.0 worker. Authenticated live health qualified the
+exact-version replay and compiler service identities, and three independent
+pre-payment trials verified tenant-bound live Checkout and refusal before
+entitlement. The first genuine paid subscription extends that operational
+evidence through webhook activation, managed execution, usage, portal, and
+cancellation.
 
 The configured Stripe offer is the commercial source of truth. This matrix does
 not create a price, quota, SLA, certification, or backend entitlement.
@@ -123,7 +128,7 @@ risk work required for the actual deployment.
 
 ## Backend evidence boundary
 
-- **Browser:** Beta local engine and the hosted launch-candidate substrate. It is the only
+- **Browser:** Beta local engine and public managed substrate. It is the only
   backend exercised end to end against a real third-party application in the
   published engine evidence.
 - **Windows UIA:** Availability remains partner qualification. The counted
@@ -155,6 +160,6 @@ risk work required for the actual deployment.
   charts, lock screens, latency, DPI, or synthetic-input controls, and it does
   not inherit RDP evidence.
 
-Review [What works today](../get-started/what-works-today.md) and the engine's
+Review [Qualification evidence](../get-started/what-works-today.md) and the engine's
 [published limits](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/LIMITS.md)
 before selecting a workflow.

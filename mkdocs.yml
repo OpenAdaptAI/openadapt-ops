@@ -99,7 +99,7 @@ nav:
   - Home: index.md
   - Get started:
     - get-started/index.md
-    - What works today: get-started/what-works-today.md
+    - Qualification evidence: get-started/what-works-today.md
     - Your first workflow: get-started/first-workflow.md
     - What you get: get-started/what-you-get.md
   - Desktop app:

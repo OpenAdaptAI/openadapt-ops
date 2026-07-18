@@ -55,7 +55,7 @@ a wrong write is expensive. Structured desktop text distinguishes an `O` from a
 `0` that OCR collapses, which is exactly what makes wrong-record writes
 preventable there.
 
-!!! warning "Honest status: scoped Windows acceptance, not broad support"
+!!! info "Windows qualification evidence"
     The accepted `20260717-candidate-56759c8-v2` matrix covers one exact in-tree
     WinForms Patient Notes workflow on a Windows 11 ARM VM snapshot. It completed 3/3 trials; an
     independent SQLite oracle confirmed all 3/3 effects; stale-target and
@@ -94,7 +94,7 @@ its visual floor and the identity gate falls back to its pixel/OCR tiers — whi
 is why a look-alike identifier can force a [halt rather than a verify](identity-gate.md)
 there.
 
-!!! warning "Honest status: scoped RDP acceptance, not broad support"
+!!! info "RDP qualification evidence"
     On one Parallels Windows 11 VM at 1280x800 with Aardwolf 0.2.14, candidate
     `82a658a` completed 3/3 trials that created a unique file through the Windows
     Run dialog over network RDP. Independent guest-tools readback confirmed the
@@ -154,5 +154,5 @@ The desktop, RDP, and remote-display adapters have CI coverage that does not
 substitute for workload validation on a live OS or remote environment. What
 varies per substrate is how high up the
 [capability ladder](capability-ladder.md) a given app lets the runtime climb.
-Use [What works today](../get-started/what-works-today.md) as the public maturity
-contract.
+Use [Qualification evidence](../get-started/what-works-today.md) for the exact
+task, environment, oracle, and accepted scope behind each result.

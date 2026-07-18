@@ -52,7 +52,7 @@ def test_scoped_windows_macos_and_rdp_evidence_is_exact_and_bounded():
     assert "https://github.com/OpenAdaptAI/openadapt-flow/pull/142" in what_works
 
 
-def test_availability_does_not_borrow_scoped_evidence_or_other_substrates():
+def test_public_offer_and_scoped_substrate_evidence_remain_distinct():
     pages = [
         _read("get-started/what-works-today.md"),
         _read("concepts/deployment-matrix.md"),
@@ -69,6 +69,7 @@ def test_availability_does_not_borrow_scoped_evidence_or_other_substrates():
     assert "RDP backend | **Partner qualification; scoped RDP evidence accepted**" in combined
     assert "Design partner needed; no ICA/HDX evidence" in combined
     assert "RDP evidence does not transfer" in combined
-    assert "not in the hosted launch candidate" in combined
-    assert "No hosted Citrix claim" in combined
+    assert "The public subscription covers approved browser workflows" in combined
+    assert "scoped separately from the public browser offer" in combined
+    assert "hosted launch candidate" not in combined
     assert "does not inherit RDP evidence" in combined

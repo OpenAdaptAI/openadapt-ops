@@ -18,7 +18,7 @@ fail.
 </p>
 
 [Get started in 5 minutes](get-started/index.md){ .md-button .md-button--primary }
-[See what works today](get-started/what-works-today.md){ .md-button }
+[Review qualification evidence](get-started/what-works-today.md){ .md-button }
 [See how it works](concepts/demonstration-compiler.md){ .md-button }
 
 ---
@@ -38,19 +38,12 @@ the wrong one for a workflow you run a thousand times. OpenAdapt compiles the
 demonstration instead, so the model is only consulted to repair the script, not
 to drive it.
 
-The goal is any repeated GUI task on any surface — browser, Windows, native
-macOS, RDP, Citrix — through one substrate-agnostic runner and one compiled
-bundle format. Maturity is uneven across those surfaces: browser/Playwright is
-the reference path; Windows UIA has scoped acceptance for one 3/3 in-tree
-WinForms matrix; native macOS has scoped one-host TextEdit action-effect and
-ambiguity-refusal evidence; and RDP has scoped 3/3 one-snapshot network-input
-and independent guest-file evidence. All three remain partner qualification.
-Citrix still needs a design partner with an actual ICA/HDX environment and does
-not inherit RDP evidence. Customer-controlled execution is scoped to
-the actual substrate and data boundary; backend presence alone is not a
-production-readiness claim. See
-[What works today](get-started/what-works-today.md) and the deployment matrix
-below.
+OpenAdapt carries one compiled workflow and one governance model across
+browser, Windows, native macOS, RDP, Citrix, and other VDI surfaces. The
+substrate supplies the strongest observations and actions available; the
+compiler, identity checks, effect verification, policy, repair, and audit trail
+remain consistent. Teams qualify each workflow against its real application
+and success oracle before production use.
 
 ---
 
@@ -128,30 +121,31 @@ deterministic and runs at $0 with the reference inducer. See
 
 ## One runner, any surface, any deployment
 
-The same compiled bundle runs on any surface and in any deployment, because the
-runtime sits behind one [substrate-agnostic runner](concepts/substrate-model.md)
-that routes on a single field and never sees pixels or resolved values. Two
-orthogonal axes, one contract:
+The execution contract is designed to carry the same compiled bundle across
+surfaces and deployment boundaries. A
+[substrate-agnostic runner](concepts/substrate-model.md) routes each job to the
+right driver while governance stays above that boundary. Two orthogonal axes,
+one contract:
 
 | Deployment ↓ / Substrate → | **Web (browser)** | **Windows UIA** | **Native macOS** | **RDP** | **Citrix** |
 |---|---|---|---|---|---|
-| **Our cloud** | Managed execution of locally authored, attested browser bundles *(Beta launch candidate; production qualification pending)* | Not in hosted candidate; partner qualification with one scoped 3/3 WinForms acceptance result | Not in hosted candidate; partner qualification with scoped one-host TextEdit evidence | Not in hosted candidate; partner qualification with scoped 3/3 one-snapshot RDP evidence | No hosted Citrix claim; design partner needed |
-| **Customer cloud / BYOC** | Connector + customer storage *(deployment qualification required)* | Partner qualification; scoped evidence does not qualify the customer's app or effect oracle | Partner qualification; scoped evidence is not clean-machine or partner acceptance | Partner qualification; scoped evidence does not qualify the customer's RDP server, app, identity, or effect oracle | Design partner needed; no ICA/HDX evidence |
-| **Self-hosted / on-prem** | Local browser engine *(Beta reference path)* | Partner qualification; workflow-specific acceptance required | Partner qualification; workflow-specific acceptance required | Partner qualification; workflow-specific network RDP acceptance is still required despite the scoped result | Design partner needed; RDP evidence does not transfer |
+| **OpenAdapt Cloud** | Managed runner, schedules, reports, usage, and billing | Separately ordered, workflow-qualified deployment | Separately ordered, workflow-qualified deployment | Separately ordered, workflow-qualified deployment | Separately ordered design-partner deployment |
+| **Customer cloud / BYOC** | Customer runner and storage with managed governance | Customer runner and storage | Customer runner and storage | Customer runner and storage | Customer runner and storage |
+| **Self-hosted / on-prem** | Local runner and audit trail | Local runner and audit trail | Local runner and audit trail | Local runner and audit trail | Local runner and audit trail |
 
-You choose where the data lives — there is no company-wide "never leaves your
-network" claim; the guarantee is scoped to the tier you pick. For regulated data
-the [`run`](concepts/regulated-execution.md) verb is **fail-closed by default**:
+You choose where execution and data live. For regulated data the
+[`run`](concepts/regulated-execution.md) verb is **fail-closed by default**:
 it gates certification, identity and effect coverage, approval fallback,
 encryption, and manifest integrity before execution.
 
-!!! note "Launch-candidate scope"
-    The hosted launch candidate covers browser workflows. It does not promote Windows, RDP,
-    or Citrix. Artifacts cross boundaries only as approved sanitized
-    derivatives, while PHI-bearing runtime observations stay inside their
-    declared trusted execution boundary. This is not a public availability
-    statement. See
-    [the deployment matrix](concepts/deployment-matrix.md).
+The public subscription covers approved browser workflows. Desktop and
+virtual-desktop lanes in this architecture require a separate order and
+workflow-specific qualification; they are not entitlements of the browser
+subscription. The [hosted guide](guides/hosted.md),
+[qualification evidence](get-started/what-works-today.md), and commercial terms
+define the accepted scope. Artifacts cross boundaries
+only as approved sanitized derivatives, while PHI-bearing runtime observations
+stay inside their declared trusted execution boundary.
 
 ---
 
@@ -170,13 +164,9 @@ measured runs. This excludes authoring, review, infrastructure, exception, and
 service costs. Full methodology and caveats live in the [openadapt-flow benchmark
 docs](https://github.com/OpenAdaptAI/openadapt-flow/tree/main/benchmark).
 
-!!! note "Stated honestly"
-    Compiled replay has real limits, and we test for them by attacking our own
-    system before anyone else does. A 125% browser zoom currently zeroes
-    replayability. Instance-specific screen state means per-tenant
-    re-recording. On pure-pixel substrates a look-alike identifier can force a
-    halt rather than a verify. The full list is in
-    [what it does not do yet](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/LIMITS.md).
+Detailed task definitions, environments, run counts, oracles, and failure
+taxonomies live in the [qualification evidence](get-started/what-works-today.md)
+and [engine benchmarks](https://github.com/OpenAdaptAI/openadapt-flow/tree/main/benchmark).
 
 ---
 
@@ -188,9 +178,9 @@ docs](https://github.com/OpenAdaptAI/openadapt-flow/tree/main/benchmark).
 
     Install, compile, lint, certify, drift, inspect, teach, and deploy.
 
--   [__What works today__](get-started/what-works-today.md)
+-   [__Qualification evidence__](get-started/what-works-today.md)
 
-    Integrated maturity, hosted limits, and pre-deployment boundaries.
+    Accepted substrate results, exact environments, and deployment boundaries.
 
 -   [__Core concepts__](concepts/index.md)
 
