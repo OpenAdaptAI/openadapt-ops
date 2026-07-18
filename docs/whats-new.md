@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-18 16:54 UTC*
+> *Last updated: 2026-07-18 18:00 UTC*
 
 
 
@@ -45,6 +45,8 @@
 
 - [fix: qualify real RDP input with physical scancode chords](https://github.com/OpenAdaptAI/openadapt-flow/pull/142) (#142) — merged 
 
+- [feat(benchmark): openIMIS claims-intake reference environment (insurance vertical)](https://github.com/OpenAdaptAI/openadapt-flow/pull/141) (#141) — merged 
+
 - [fix: bound README claims and preserve plaintext PHI warnings](https://github.com/OpenAdaptAI/openadapt-flow/pull/140) (#140) — merged 
 
 - [chore: adopt openadapt-capture 0.5.4 and run the adapter tests in CI](https://github.com/OpenAdaptAI/openadapt-flow/pull/139) (#139) — merged 
@@ -58,6 +60,8 @@
 - [Add fail-closed native macOS backend with scoped evidence](https://github.com/OpenAdaptAI/openadapt-flow/pull/135) (#135) — merged 
 
 - [feat(effects): effect-verifier kit — declarative verifiers, coverage gates, reconciliation tasks](https://github.com/OpenAdaptAI/openadapt-flow/pull/134) (#134) — merged 
+
+- [feat(console): localhost operator console over bundles, runs, and skill lineage](https://github.com/OpenAdaptAI/openadapt-flow/pull/133) (#133) — merged 
 
 - [Qualify governed typed Windows UIA replay](https://github.com/OpenAdaptAI/openadapt-flow/pull/132) (#132) — merged 
 
@@ -76,10 +80,6 @@
 - [fix: patch optional MLX transformer dependencies](https://github.com/OpenAdaptAI/openadapt-flow/pull/125) (#125) — merged 
 
 - [fix: restore supported Python release matrix](https://github.com/OpenAdaptAI/openadapt-flow/pull/124) (#124) — merged 
-
-- [paper: add reproducible OpenAdapt technical report](https://github.com/OpenAdaptAI/openadapt-flow/pull/123) (#123) — merged 
-
-- [feat(on-prem): real atomic, rollback-able offline update path](https://github.com/OpenAdaptAI/openadapt-flow/pull/122) (#122) — merged 
 
 
 
@@ -147,6 +147,8 @@
 
 ## openadapt-capture
 
+
+- [feat: window-scoped recording (capture one window in its own pixel space)](https://github.com/OpenAdaptAI/openadapt-capture/pull/30) (#30) — merged 
 
 - [docs: focus capture on its current product role](https://github.com/OpenAdaptAI/openadapt-capture/pull/29) (#29) — merged 
 

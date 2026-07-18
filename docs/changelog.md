@@ -18,16 +18,16 @@
 
 ## openadapt-flow
 
+- **[v1.14.0](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.14.0)** (2026-07-18)
+  ## v1.14.0 (2026-07-18)
+- **[v1.13.0](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.13.0)** (2026-07-18)
+  ## v1.13.0 (2026-07-18)
 - **[v1.12.2](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.12.2)** (2026-07-18)
   ## v1.12.2 (2026-07-18)
 - **[v1.12.1](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.12.1)** (2026-07-17)
   ## v1.12.1 (2026-07-17)
 - **[v1.12.0](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.12.0)** (2026-07-17)
   ## v1.12.0 (2026-07-17)
-- **[v1.11.0](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.11.0)** (2026-07-17)
-  ## v1.11.0 (2026-07-17)
-- **[v1.10.1](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.10.1)** (2026-07-17)
-  ## v1.10.1 (2026-07-17)
 
 ## openadapt-desktop
 
