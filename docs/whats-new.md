@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-18 22:16 UTC*
+> *Last updated: 2026-07-18 22:25 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [docs: recognize active openadapt-agent v2 bridge](https://github.com/OpenAdaptAI/OpenAdapt/pull/1022) (#1022) — merged 
 
 - [fix: remove dead config module with undeclared pydantic_settings import](https://github.com/OpenAdaptAI/OpenAdapt/pull/1021) (#1021) — merged 
 
