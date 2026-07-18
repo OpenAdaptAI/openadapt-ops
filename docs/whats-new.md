@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-18 04:15 UTC*
+> *Last updated: 2026-07-18 16:54 UTC*
 
 
 
@@ -41,6 +41,8 @@
 ## openadapt-flow
 
 
+- [docs: align product copy and report with scoped substrate evidence](https://github.com/OpenAdaptAI/openadapt-flow/pull/143) (#143) — merged 
+
 - [fix: qualify real RDP input with physical scancode chords](https://github.com/OpenAdaptAI/openadapt-flow/pull/142) (#142) — merged 
 
 - [fix: bound README claims and preserve plaintext PHI warnings](https://github.com/OpenAdaptAI/openadapt-flow/pull/140) (#140) — merged 
@@ -78,8 +80,6 @@
 - [paper: add reproducible OpenAdapt technical report](https://github.com/OpenAdaptAI/openadapt-flow/pull/123) (#123) — merged 
 
 - [feat(on-prem): real atomic, rollback-able offline update path](https://github.com/OpenAdaptAI/openadapt-flow/pull/122) (#122) — merged 
-
-- [ci: bound and validate openadapt-types interop](https://github.com/OpenAdaptAI/openadapt-flow/pull/121) (#121) — merged 
 
 
 
