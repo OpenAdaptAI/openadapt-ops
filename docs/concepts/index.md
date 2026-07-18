@@ -75,9 +75,10 @@ enforced. Read them in order for the full picture, or jump to what you need.
 
     Browser (Playwright) is the supported end-to-end path. Windows UIA has
     scoped acceptance for one 3/3 in-tree WinForms matrix. Native macOS has
-    scoped one-host TextEdit action-effect and ambiguity-refusal evidence. Both
-    remain partner qualification, RDP acceptance remains in progress, and
-    Citrix needs a design partner with an actual ICA/HDX environment. One
+    scoped one-host TextEdit action-effect and ambiguity-refusal evidence. RDP
+    has scoped 3/3 one-snapshot network-input and independent guest-file
+    evidence. All three remain partner qualification, and Citrix needs a design
+    partner with an actual ICA/HDX environment. One
     backend protocol does not imply equal evidence or availability.
 
 -   [__The on-prem VLM appliance__](vlm-appliance.md)

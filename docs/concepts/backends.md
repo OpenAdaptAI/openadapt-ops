@@ -94,6 +94,22 @@ its visual floor and the identity gate falls back to its pixel/OCR tiers — whi
 is why a look-alike identifier can force a [halt rather than a verify](identity-gate.md)
 there.
 
+!!! warning "Honest status: scoped RDP acceptance, not broad support"
+    On one Parallels Windows 11 VM at 1280x800 with Aardwolf 0.2.14, candidate
+    `82a658a` completed 3/3 trials that created a unique file through the Windows
+    Run dialog over network RDP. Independent guest-tools readback confirmed the
+    exact contents. Trial latencies were 51.845s, 10.467s, and 7.477s; the batch
+    recorded 0 failures, 0 silent incorrect successes, 0 over-halts, and 0 model
+    calls.
+    Cleanup removed only the batch-owned snapshot, restored the exact
+    eight-snapshot inventory, left the VM suspended, and returned the current
+    pointer without resume to the unchanged original base. This accepts only
+    that task, snapshot, transport, and oracle. It is not
+    arbitrary-app, record-identity, clean-machine, production, hosted-RDP, or
+    Citrix evidence. Review
+    [Flow PR #142](https://github.com/OpenAdaptAI/openadapt-flow/pull/142)
+    and the [immutable sanitized report](https://github.com/OpenAdaptAI/openadapt-flow/blob/6610d24cebba27918b8ea507b2f05a094057ac85/benchmark/rdp/results_82a658a_20260718.sanitized.json).
+
 ### Remote-display / Citrix analog (pixel-only)
 
 The macOS remote-display adapter can capture a named application window and
@@ -131,7 +147,7 @@ production, broad-app, AX structural-resolution, or general macOS acceptance.
 | Playwright (web) | Browser DOM | Yes (DOM) | Structured text (DOM) | **Beta / reference**: end-to-end CI and real third-party proof |
 | `WindowsBackend` | Native Windows | Via UIA | UI Automation `Name`/`Value` | **Partner qualification; scoped acceptance passed**: exact in-tree WinForms 3/3 matrix; arbitrary apps remain unqualified |
 | Native macOS | Native macOS | Exact window candidate; AX candidate metadata | Window identity and pixel/OCR floor | **Partner qualification; scoped TextEdit evidence accepted**: one-host 3/3 exact-byte and ambiguity-refusal evidence; broad apps remain unqualified |
-| `FreeRDPBackend` | Pixel-only network RDP | No | Pixel / OCR floor | **Partner qualification; acceptance in progress**: framebuffer lease, viewport, and readiness safety under real Aardwolf qualification |
+| `FreeRDPBackend` | Pixel-only network RDP | No | Pixel / OCR floor | **Partner qualification; scoped RDP evidence accepted**: one-snapshot 3/3 Windows Run-dialog task with exact guest-file readback; arbitrary apps remain unqualified |
 | Citrix | ICA/HDX remote application | Deployment-dependent | Pixel / OCR floor unless the client exposes more | **Design partner needed; no ICA/HDX evidence**: RDP evidence does not transfer |
 
 The desktop, RDP, and remote-display adapters have CI coverage that does not

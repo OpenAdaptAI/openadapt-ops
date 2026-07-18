@@ -42,10 +42,11 @@ The goal is any repeated GUI task on any surface — browser, Windows, native
 macOS, RDP, Citrix — through one substrate-agnostic runner and one compiled
 bundle format. Maturity is uneven across those surfaces: browser/Playwright is
 the reference path; Windows UIA has scoped acceptance for one 3/3 in-tree
-WinForms matrix; and native macOS has scoped one-host TextEdit action-effect and
-ambiguity-refusal evidence. Both desktop paths remain partner qualification.
-RDP acceptance remains in progress, and Citrix still needs a design partner
-with an actual ICA/HDX environment. Customer-controlled execution is scoped to
+WinForms matrix; native macOS has scoped one-host TextEdit action-effect and
+ambiguity-refusal evidence; and RDP has scoped 3/3 one-snapshot network-input
+and independent guest-file evidence. All three remain partner qualification.
+Citrix still needs a design partner with an actual ICA/HDX environment and does
+not inherit RDP evidence. Customer-controlled execution is scoped to
 the actual substrate and data boundary; backend presence alone is not a
 production-readiness claim. See
 [What works today](get-started/what-works-today.md) and the deployment matrix
@@ -134,9 +135,9 @@ orthogonal axes, one contract:
 
 | Deployment ↓ / Substrate → | **Web (browser)** | **Windows UIA** | **Native macOS** | **RDP** | **Citrix** |
 |---|---|---|---|---|---|
-| **Our cloud** | Managed execution of locally authored, attested browser bundles *(Beta launch candidate; production qualification pending)* | Not in hosted candidate; partner qualification with one scoped 3/3 WinForms acceptance result | Not in hosted candidate; partner qualification with scoped one-host TextEdit evidence | Not in hosted candidate; partner qualification with acceptance in progress | No hosted Citrix claim; design partner needed |
-| **Customer cloud / BYOC** | Connector + customer storage *(deployment qualification required)* | Partner qualification; scoped evidence does not qualify the customer's app or effect oracle | Partner qualification; scoped evidence is not clean-machine or partner acceptance | Partner qualification; acceptance in progress for the exact session | Design partner needed; no ICA/HDX evidence |
-| **Self-hosted / on-prem** | Local browser engine *(Beta reference path)* | Partner qualification; workflow-specific acceptance required | Partner qualification; workflow-specific acceptance required | Partner qualification; workflow-specific network acceptance required | Design partner needed; RDP evidence does not transfer |
+| **Our cloud** | Managed execution of locally authored, attested browser bundles *(Beta launch candidate; production qualification pending)* | Not in hosted candidate; partner qualification with one scoped 3/3 WinForms acceptance result | Not in hosted candidate; partner qualification with scoped one-host TextEdit evidence | Not in hosted candidate; partner qualification with scoped 3/3 one-snapshot RDP evidence | No hosted Citrix claim; design partner needed |
+| **Customer cloud / BYOC** | Connector + customer storage *(deployment qualification required)* | Partner qualification; scoped evidence does not qualify the customer's app or effect oracle | Partner qualification; scoped evidence is not clean-machine or partner acceptance | Partner qualification; scoped evidence does not qualify the customer's RDP server, app, identity, or effect oracle | Design partner needed; no ICA/HDX evidence |
+| **Self-hosted / on-prem** | Local browser engine *(Beta reference path)* | Partner qualification; workflow-specific acceptance required | Partner qualification; workflow-specific acceptance required | Partner qualification; workflow-specific network RDP acceptance is still required despite the scoped result | Design partner needed; RDP evidence does not transfer |
 
 You choose where the data lives — there is no company-wide "never leaves your
 network" claim; the guarantee is scoped to the tier you pick. For regulated data

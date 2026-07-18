@@ -119,9 +119,12 @@ for one 3/3 in-tree WinForms matrix with an independent SQLite oracle. Native
 macOS has accepted one-host TextEdit action-effect and ambiguity-refusal
 evidence; its preserved original batch remains failed and the hash-bound
 adjudication is not clean-machine, partner, production, or general macOS
-evidence. RDP acceptance remains in progress. Citrix needs a design partner and
-has no ICA/HDX evidence. The candidate browser subscription does not imply
-their availability. See [What works today](../get-started/what-works-today.md)
+evidence. RDP has scoped 3/3 one-snapshot network-input and independent
+guest-file evidence, not arbitrary-app, record-identity, clean-machine,
+production, or hosted-RDP acceptance. Citrix needs a design partner and has no
+ICA/HDX evidence; it does not inherit RDP evidence. The candidate browser
+subscription does not imply their availability. See
+[What works today](../get-started/what-works-today.md)
 for the exact reports and limitations.
 See [Hosted browser
 execution](hosted.md) and [What works today](../get-started/what-works-today.md).
