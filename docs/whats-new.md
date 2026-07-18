@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-18 18:01 UTC*
+> *Last updated: 2026-07-18 19:27 UTC*
 
 
 
@@ -41,6 +41,8 @@
 ## openadapt-flow
 
 
+- [fix: restore MIT-only releases and harden operator console](https://github.com/OpenAdaptAI/openadapt-flow/pull/144) (#144) — merged 
+
 - [docs: align product copy and report with scoped substrate evidence](https://github.com/OpenAdaptAI/openadapt-flow/pull/143) (#143) — merged 
 
 - [fix: qualify real RDP input with physical scancode chords](https://github.com/OpenAdaptAI/openadapt-flow/pull/142) (#142) — merged 
@@ -79,12 +81,12 @@
 
 - [fix: patch optional MLX transformer dependencies](https://github.com/OpenAdaptAI/openadapt-flow/pull/125) (#125) — merged 
 
-- [fix: restore supported Python release matrix](https://github.com/OpenAdaptAI/openadapt-flow/pull/124) (#124) — merged 
-
 
 
 ## openadapt-desktop
 
+
+- [ci: keep native installer prereleases fresh with engine releases](https://github.com/OpenAdaptAI/openadapt-desktop/pull/22) (#22) — merged 
 
 - [feat: experimental runner loop for cloud-dispatched governed runs (P0)](https://github.com/OpenAdaptAI/openadapt-desktop/pull/21) (#21) — merged 
 
