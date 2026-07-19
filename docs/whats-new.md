@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-19 07:28 UTC*
+> *Last updated: 2026-07-19 12:56 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [docs: refresh reference sandbox source inventory](https://github.com/OpenAdaptAI/OpenAdapt/pull/1029) (#1029) — merged 
 
 - [fix: forward all engine options through `openadapt flow record`](https://github.com/OpenAdaptAI/OpenAdapt/pull/1028) (#1028) — merged 
 
@@ -46,12 +48,18 @@
 
 - [feat: mount the demonstration compiler as `openadapt flow …` and lead the CLI with it](https://github.com/OpenAdaptAI/OpenAdapt/pull/1009) (#1009) — merged 
 
-- [docs: refresh README (accurate positioning + demonstration compiler prominence)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1007) (#1007) — merged 
-
 
 
 ## openadapt-flow
 
+
+- [feat(compiler): emit identifier_crop — arm identity-on-pixels for remote-display/pixel workflows](https://github.com/OpenAdaptAI/openadapt-flow/pull/158) (#158) — merged 
+
+- [feat(runner): governed-dispatch verification + lease-logic client library (Experimental, library-only)](https://github.com/OpenAdaptAI/openadapt-flow/pull/157) (#157) — merged 
+
+- [feat: report-run — PHI-free SUCCESS summary rail to /api/runs/ingest-report](https://github.com/OpenAdaptAI/openadapt-flow/pull/156) (#156) — merged 
+
+- [fix(console): own attended backends on one thread](https://github.com/OpenAdaptAI/openadapt-flow/pull/155) (#155) — merged 
 
 - [fix(capture): align malformed window marker error](https://github.com/OpenAdaptAI/openadapt-flow/pull/154) (#154) — merged 
 
@@ -84,14 +92,6 @@
 - [docs: vision-forward README opening (any repeated GUI task, once)](https://github.com/OpenAdaptAI/openadapt-flow/pull/138) (#138) — merged 
 
 - [docs: surface machine-checked claims + fix community funnel (--version, question routing)](https://github.com/OpenAdaptAI/openadapt-flow/pull/137) (#137) — merged 
-
-- [fix(ci): repair cross-platform launch gates](https://github.com/OpenAdaptAI/openadapt-flow/pull/136) (#136) — merged 
-
-- [Add fail-closed native macOS backend with scoped evidence](https://github.com/OpenAdaptAI/openadapt-flow/pull/135) (#135) — merged 
-
-- [feat(effects): effect-verifier kit — declarative verifiers, coverage gates, reconciliation tasks](https://github.com/OpenAdaptAI/openadapt-flow/pull/134) (#134) — merged 
-
-- [feat(console): localhost operator console over bundles, runs, and skill lineage](https://github.com/OpenAdaptAI/openadapt-flow/pull/133) (#133) — merged 
 
 
 
