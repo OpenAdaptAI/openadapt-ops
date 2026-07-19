@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-19 03:18 UTC*
+> *Last updated: 2026-07-19 03:21 UTC*
 
 
 
@@ -91,6 +91,8 @@
 
 ## openadapt-desktop
 
+
+- [feat: handle secure local pairing links](https://github.com/OpenAdaptAI/openadapt-desktop/pull/23) (#23) — merged 
 
 - [ci: keep native installer prereleases fresh with engine releases](https://github.com/OpenAdaptAI/openadapt-desktop/pull/22) (#22) — merged 
 
