@@ -57,7 +57,29 @@ In the desktop app, open **Login** and either:
 Either way the credential is stored in your OS secure store (macOS Keychain /
 Windows Credential Manager / Linux Secret Service), not in a plaintext file.
 
-Prefer the CLI? The same thing from a terminal:
+Prefer the CLI? There are two ways to connect from a terminal.
+
+**One-click pairing (recommended).** In the dashboard, click **Connect local
+OpenAdapt** on the ingest settings page. Cloud shows a one-time pairing code and
+the exact command:
+
+```bash
+openadapt connect --pairing oap_… --host https://app.openadapt.ai
+```
+
+The pairing code expires after five minutes and is single-use. The resulting
+workspace credential is stored in your OS secure store and can be revoked in
+Cloud settings.
+
+!!! warning "`openadapt connect` requires OpenAdapt 1.7+"
+    `connect` ships in the `openadapt` launcher from **1.7 onward**. On an older
+    build (commonly an Anaconda-installed 1.5.x) it fails with
+    `No such command 'connect'`. Run `pip install --upgrade openadapt` (≥1.7.1),
+    then retry with a **fresh** pairing code (the old one will have expired). See
+    [troubleshooting](../guides/troubleshooting.md#connect-no-such-command).
+
+**Reusable token login.** For a scripted install or a second machine, mint a
+token in step 2 and log in with it instead:
 
 ```bash
 openadapt flow login --token oai_ingest_…      # validates + remembers the host
