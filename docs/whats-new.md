@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-19 12:56 UTC*
+> *Last updated: 2026-07-19 14:02 UTC*
 
 
 
@@ -53,6 +53,8 @@
 ## openadapt-flow
 
 
+- [feat(backends): win32 WindowClient for remote-display window replay](https://github.com/OpenAdaptAI/openadapt-flow/pull/159) (#159) — merged 
+
 - [feat(compiler): emit identifier_crop — arm identity-on-pixels for remote-display/pixel workflows](https://github.com/OpenAdaptAI/openadapt-flow/pull/158) (#158) — merged 
 
 - [feat(runner): governed-dispatch verification + lease-logic client library (Experimental, library-only)](https://github.com/OpenAdaptAI/openadapt-flow/pull/157) (#157) — merged 
@@ -91,12 +93,12 @@
 
 - [docs: vision-forward README opening (any repeated GUI task, once)](https://github.com/OpenAdaptAI/openadapt-flow/pull/138) (#138) — merged 
 
-- [docs: surface machine-checked claims + fix community funnel (--version, question routing)](https://github.com/OpenAdaptAI/openadapt-flow/pull/137) (#137) — merged 
-
 
 
 ## openadapt-desktop
 
+
+- [fix: gate updater plugin on config presence so packaged apps launch](https://github.com/OpenAdaptAI/openadapt-desktop/pull/27) (#27) — merged 
 
 - [fix: align native package descriptions](https://github.com/OpenAdaptAI/openadapt-desktop/pull/25) (#25) — merged 
 
