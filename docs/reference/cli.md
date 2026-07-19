@@ -25,6 +25,7 @@ is a subcommand of `openadapt flow`.
 | [`lint`](#lint) | Report a bundle's coverage gaps | nonzero by severity |
 | [`certify`](#certify) | Enforce a safety policy, refuse the bundle if it fails | 2 on failure |
 | [`disambiguate`](#disambiguate) | Surface and resolve compile-time ambiguities | 2 if a consequential ambiguity is unresolved |
+| [`connect`](#connect) | Pair this computer to a Cloud workspace (launcher command, needs OpenAdapt 1.7+) | 0/1 |
 | [`login`](#login) | Validate a hosted ingest token and remember the host | 0/1 |
 | [`push`](#push) | Explicitly upload a recording or bundle to a control plane | 0/1 |
 | [`validate-hosted`](#validate-hosted) | Bind local validation evidence to a one-time hosted challenge | 0/1 |
@@ -344,6 +345,27 @@ openadapt flow disambiguate bundle --interactive --write
 | `--write` | Save the resolved workflow back into the bundle |
 
 Exits 2 if a consequential (must-answer) ambiguity is left unresolved.
+
+## connect
+
+Pair this computer to a Cloud workspace with a one-time code generated in the
+dashboard. This is a command of the **`openadapt` launcher** (invoked as
+`openadapt connect`, not `openadapt flow connect`) and ships from **OpenAdapt
+1.7 onward** — on an older build it fails with `No such command 'connect'` (see
+[troubleshooting](../guides/troubleshooting.md#connect-no-such-command)).
+
+```bash
+openadapt connect --pairing oap_… --host https://app.openadapt.ai
+```
+
+| Flag | Description |
+|---|---|
+| `--pairing` | One-time pairing code from **Connect local OpenAdapt** in Cloud settings. Expires after five minutes and is single-use. |
+| `--host` | Control-plane base URL. Defaults to `https://app.openadapt.ai`. |
+
+The resulting workspace credential is stored in the OS keychain and revocable in
+Cloud settings. For a scripted install or a second machine, use
+[`login`](#login) with a reusable ingest token instead.
 
 ## login
 

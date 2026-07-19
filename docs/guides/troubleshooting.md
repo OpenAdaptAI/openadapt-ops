@@ -109,6 +109,28 @@ token, `OAFLOW_AGENT_TOKEN`, so its execute channel is not left unauthenticated
 in a PHI deployment). For Citrix/RDP, ensure the agent runs inside the same
 interactive session that renders the application.
 
+## `openadapt connect` fails with `No such command 'connect'` {#connect-no-such-command}
+
+**Symptom.** Pairing a computer to a cloud workspace with
+`openadapt connect --pairing …` errors with `Error: No such command 'connect'`.
+
+**Cause.** You are on an old launcher build — most often an Anaconda-installed
+`openadapt` 1.5.x. The `connect` command ships in the `openadapt` launcher from
+**1.7 onward**.
+
+**Fix.** Upgrade and retry:
+
+```bash
+pip install --upgrade openadapt   # resolves openadapt >= 1.7.1
+openadapt --version               # confirm 1.7.1 or newer
+```
+
+Then generate a **fresh** pairing code in the dashboard (the previous one expires
+after five minutes) and re-run `openadapt connect --pairing …`. If `pip` keeps
+resolving the old version, you are likely in a stale Conda environment — install
+into a clean virtualenv instead. See
+[Connect the desktop app to a cloud workspace](../desktop/connect-to-cloud.md#3-connect-the-desktop-app).
+
 ## Still stuck?
 
 - Re-read the run's `REPORT.md` and `report.json` — the halt reason, the resolver
