@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-18 22:46 UTC*
+> *Last updated: 2026-07-19 01:00 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [docs: describe governed multi-surface target](https://github.com/OpenAdaptAI/OpenAdapt/pull/1024) (#1024) — merged 
 
 - [docs: recognize active openadapt-agent v2 bridge](https://github.com/OpenAdaptAI/OpenAdapt/pull/1022) (#1022) — merged 
 
@@ -45,6 +47,8 @@
 
 - [feat(console): add read-only attended exception queue](https://github.com/OpenAdaptAI/openadapt-flow/pull/149) (#149) — merged 
 
+- [feat(linux): add fail-closed native AT-SPI backend](https://github.com/OpenAdaptAI/openadapt-flow/pull/148) (#148) — merged 
+
 - [feat(adapters): convert window-scoped capture sessions in their own pixel space](https://github.com/OpenAdaptAI/openadapt-flow/pull/146) (#146) — merged 
 
 - [fix: restore MIT-only releases and harden operator console](https://github.com/OpenAdaptAI/openadapt-flow/pull/144) (#144) — merged 
@@ -80,8 +84,6 @@
 - [feat: bind governed run authorization](https://github.com/OpenAdaptAI/openadapt-flow/pull/129) (#129) — merged 
 
 - [docs: make LIMITS a durable buyer trust boundary](https://github.com/OpenAdaptAI/openadapt-flow/pull/128) (#128) — merged 
-
-- [fix: preserve sanitized workflow integrity](https://github.com/OpenAdaptAI/openadapt-flow/pull/127) (#127) — merged 
 
 
 
