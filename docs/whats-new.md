@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-19 04:41 UTC*
+> *Last updated: 2026-07-19 04:54 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [docs: bind sandbox notices to packaging fix](https://github.com/OpenAdaptAI/OpenAdapt/pull/1026) (#1026) — merged 
 
 - [docs: publish reference sandbox source notices](https://github.com/OpenAdaptAI/OpenAdapt/pull/1025) (#1025) — merged 
 
