@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-19 14:03 UTC*
+> *Last updated: 2026-07-19 14:16 UTC*
 
 
 
@@ -97,6 +97,8 @@
 
 ## openadapt-desktop
 
+
+- [chore: bump native version to 0.6.2 for the launch-panic fix release](https://github.com/OpenAdaptAI/openadapt-desktop/pull/28) (#28) — merged 
 
 - [fix: gate updater plugin on config presence so packaged apps launch](https://github.com/OpenAdaptAI/openadapt-desktop/pull/27) (#27) — merged 
 
