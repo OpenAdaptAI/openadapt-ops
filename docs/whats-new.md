@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-19 04:25 UTC*
+> *Last updated: 2026-07-19 04:38 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [docs: publish reference sandbox source notices](https://github.com/OpenAdaptAI/OpenAdapt/pull/1025) (#1025) — merged 
 
 - [docs: describe governed multi-surface target](https://github.com/OpenAdaptAI/OpenAdapt/pull/1024) (#1024) — merged 
 
@@ -47,6 +49,8 @@
 ## openadapt-flow
 
 
+- [fix(capture): align malformed window marker error](https://github.com/OpenAdaptAI/openadapt-flow/pull/154) (#154) — merged 
+
 - [fix: preserve region stability across theme drift](https://github.com/OpenAdaptAI/openadapt-flow/pull/153) (#153) — merged 
 
 - [Add secure local-to-Cloud pairing](https://github.com/OpenAdaptAI/openadapt-flow/pull/151) (#151) — merged 
@@ -84,8 +88,6 @@
 - [feat(console): localhost operator console over bundles, runs, and skill lineage](https://github.com/OpenAdaptAI/openadapt-flow/pull/133) (#133) — merged 
 
 - [Qualify governed typed Windows UIA replay](https://github.com/OpenAdaptAI/openadapt-flow/pull/132) (#132) — merged 
-
-- [bench: add governed Frappe Lending and OpenEMR reference matrices](https://github.com/OpenAdaptAI/openadapt-flow/pull/131) (#131) — merged 
 
 
 
