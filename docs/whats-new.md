@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-19 15:38 UTC*
+> *Last updated: 2026-07-19 16:07 UTC*
 
 
 
@@ -53,6 +53,8 @@
 ## openadapt-flow
 
 
+- [docs: add explicit Beta lifecycle label to README](https://github.com/OpenAdaptAI/openadapt-flow/pull/161) (#161) — merged 
+
 - [feat(backends): win32 WindowClient for remote-display window replay](https://github.com/OpenAdaptAI/openadapt-flow/pull/159) (#159) — merged 
 
 - [feat(compiler): emit identifier_crop — arm identity-on-pixels for remote-display/pixel workflows](https://github.com/OpenAdaptAI/openadapt-flow/pull/158) (#158) — merged 
@@ -91,12 +93,12 @@
 
 - [chore: adopt openadapt-capture 0.5.4 and run the adapter tests in CI](https://github.com/OpenAdaptAI/openadapt-flow/pull/139) (#139) — merged 
 
-- [docs: vision-forward README opening (any repeated GUI task, once)](https://github.com/OpenAdaptAI/openadapt-flow/pull/138) (#138) — merged 
-
 
 
 ## openadapt-desktop
 
+
+- [docs: README release-pointer + version hygiene](https://github.com/OpenAdaptAI/openadapt-desktop/pull/29) (#29) — merged 
 
 - [chore: bump native version to 0.6.2 for the launch-panic fix release](https://github.com/OpenAdaptAI/openadapt-desktop/pull/28) (#28) — merged 
 
