@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-19 01:00 UTC*
+> *Last updated: 2026-07-19 02:48 UTC*
 
 
 
@@ -45,6 +45,10 @@
 ## openadapt-flow
 
 
+- [Add secure local-to-Cloud pairing](https://github.com/OpenAdaptAI/openadapt-flow/pull/151) (#151) — merged 
+
+- [fix(healing): preserve identity evidence across locator repair](https://github.com/OpenAdaptAI/openadapt-flow/pull/150) (#150) — merged 
+
 - [feat(console): add read-only attended exception queue](https://github.com/OpenAdaptAI/openadapt-flow/pull/149) (#149) — merged 
 
 - [feat(linux): add fail-closed native AT-SPI backend](https://github.com/OpenAdaptAI/openadapt-flow/pull/148) (#148) — merged 
@@ -80,10 +84,6 @@
 - [bench: add governed Frappe Lending and OpenEMR reference matrices](https://github.com/OpenAdaptAI/openadapt-flow/pull/131) (#131) — merged 
 
 - [fix: expose governed run params file](https://github.com/OpenAdaptAI/openadapt-flow/pull/130) (#130) — merged 
-
-- [feat: bind governed run authorization](https://github.com/OpenAdaptAI/openadapt-flow/pull/129) (#129) — merged 
-
-- [docs: make LIMITS a durable buyer trust boundary](https://github.com/OpenAdaptAI/openadapt-flow/pull/128) (#128) — merged 
 
 
 
@@ -136,6 +136,8 @@
 
 ## openadapt-evals
 
+
+- [docs(evals): bind current Flow release performance](https://github.com/OpenAdaptAI/openadapt-evals/pull/270) (#270) — merged 
 
 - [docs(evals): publish bounded OpenAdapt performance evidence](https://github.com/OpenAdaptAI/openadapt-evals/pull/269) (#269) — merged 
 
