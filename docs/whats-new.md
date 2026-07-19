@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-19 04:38 UTC*
+> *Last updated: 2026-07-19 04:39 UTC*
 
 
 
@@ -93,6 +93,8 @@
 
 ## openadapt-desktop
 
+
+- [fix: align native package descriptions](https://github.com/OpenAdaptAI/openadapt-desktop/pull/25) (#25) — merged 
 
 - [fix: align native release copy and metadata](https://github.com/OpenAdaptAI/openadapt-desktop/pull/24) (#24) — merged 
 
