@@ -1,12 +1,16 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-19 04:54 UTC*
+> *Last updated: 2026-07-19 07:27 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [fix: forward all engine options through `openadapt flow record`](https://github.com/OpenAdaptAI/OpenAdapt/pull/1028) (#1028) — merged 
+
+- [docs: bind complete reference sandbox source inventory](https://github.com/OpenAdaptAI/OpenAdapt/pull/1027) (#1027) — merged 
 
 - [docs: bind sandbox notices to packaging fix](https://github.com/OpenAdaptAI/OpenAdapt/pull/1026) (#1026) — merged 
 
@@ -44,8 +48,6 @@
 
 - [docs: refresh README (accurate positioning + demonstration compiler prominence)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1007) (#1007) — merged 
 
-- [feat: expose openadapt-flow as the [flow] extra (demonstration compiler under the core brand)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1006) (#1006) — merged 
-
 
 
 ## openadapt-flow
@@ -54,6 +56,8 @@
 - [fix(capture): align malformed window marker error](https://github.com/OpenAdaptAI/openadapt-flow/pull/154) (#154) — merged 
 
 - [fix: preserve region stability across theme drift](https://github.com/OpenAdaptAI/openadapt-flow/pull/153) (#153) — merged 
+
+- [feat(attended): execute governed halt actions](https://github.com/OpenAdaptAI/openadapt-flow/pull/152) (#152) — merged 
 
 - [Add secure local-to-Cloud pairing](https://github.com/OpenAdaptAI/openadapt-flow/pull/151) (#151) — merged 
 
@@ -88,8 +92,6 @@
 - [feat(effects): effect-verifier kit — declarative verifiers, coverage gates, reconciliation tasks](https://github.com/OpenAdaptAI/openadapt-flow/pull/134) (#134) — merged 
 
 - [feat(console): localhost operator console over bundles, runs, and skill lineage](https://github.com/OpenAdaptAI/openadapt-flow/pull/133) (#133) — merged 
-
-- [Qualify governed typed Windows UIA replay](https://github.com/OpenAdaptAI/openadapt-flow/pull/132) (#132) — merged 
 
 
 

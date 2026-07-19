@@ -18,6 +18,8 @@
 
 ## openadapt-flow
 
+- **[v1.17.2](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.17.2)** (2026-07-19)
+  ## v1.17.2 (2026-07-19)
 - **[v1.17.1](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.17.1)** (2026-07-19)
   ## v1.17.1 (2026-07-19)
 - **[v1.17.0](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.17.0)** (2026-07-19)
@@ -26,8 +28,6 @@
   ## v1.16.1 (2026-07-19)
 - **[v1.16.0](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.16.0)** (2026-07-19)
   ## v1.16.0 (2026-07-19)
-- **[v1.15.0](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.15.0)** (2026-07-18)
-  ## v1.15.0 (2026-07-18)
 
 ## openadapt-desktop
 
@@ -35,12 +35,12 @@
   ## v0.6.1 (2026-07-19)
 - **[v0.6.0](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/v0.6.0)** (2026-07-19)
   ## v0.6.0 (2026-07-19)
-- **[desktop-v0.6.0](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/desktop-v0.6.0)** (2026-07-19)
+- **[desktop-v0.6.1](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/desktop-v0.6.1)** (2026-07-19)
   <!-- installer-release -->
+- **[desktop-v0.6.0](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/desktop-v0.6.0)** (2026-07-19)
+  <!-- openadapt-superseded-by: desktop-v0.6.1 -->
 - **[v0.5.1](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/v0.5.1)** (2026-07-18)
   ## v0.5.1 (2026-07-18)
-- **[desktop-v0.5.1](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/desktop-v0.5.1)** (2026-07-18)
-  <!-- openadapt-superseded-by: desktop-v0.6.0 -->
 
 ## openadapt-ml
 
