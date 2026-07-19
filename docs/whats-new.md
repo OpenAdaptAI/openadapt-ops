@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-19 02:48 UTC*
+> *Last updated: 2026-07-19 03:17 UTC*
 
 
 
@@ -9,6 +9,8 @@
 
 
 - [docs: describe governed multi-surface target](https://github.com/OpenAdaptAI/OpenAdapt/pull/1024) (#1024) — merged 
+
+- [Add one-command Cloud pairing](https://github.com/OpenAdaptAI/OpenAdapt/pull/1023) (#1023) — merged 
 
 - [docs: recognize active openadapt-agent v2 bridge](https://github.com/OpenAdaptAI/OpenAdapt/pull/1022) (#1022) — merged 
 
@@ -44,6 +46,8 @@
 
 ## openadapt-flow
 
+
+- [fix: preserve region stability across theme drift](https://github.com/OpenAdaptAI/openadapt-flow/pull/153) (#153) — merged 
 
 - [Add secure local-to-Cloud pairing](https://github.com/OpenAdaptAI/openadapt-flow/pull/151) (#151) — merged 
 
@@ -82,8 +86,6 @@
 - [Qualify governed typed Windows UIA replay](https://github.com/OpenAdaptAI/openadapt-flow/pull/132) (#132) — merged 
 
 - [bench: add governed Frappe Lending and OpenEMR reference matrices](https://github.com/OpenAdaptAI/openadapt-flow/pull/131) (#131) — merged 
-
-- [fix: expose governed run params file](https://github.com/OpenAdaptAI/openadapt-flow/pull/130) (#130) — merged 
 
 
 
