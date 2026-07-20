@@ -151,8 +151,10 @@ stay inside their declared trusted execution boundary.
 
 ## Measured, not claimed
 
-We publish the numbers and the failure modes. Two representative results,
-same success check on both arms:
+We publish the numbers and the failure modes. These two results run **both
+arms** — compiled replay against a computer-use agent — under the same
+arm-independent success check. **OpenEMR** is the flagship real-EMR
+head-to-head; **MockMed** is the CI-reproducible control anyone can rerun:
 
 | Task | Compiled replay | Computer-use agent |
 |---|---|---|
@@ -167,6 +169,44 @@ docs](https://github.com/OpenAdaptAI/openadapt-flow/tree/main/benchmark).
 Detailed task definitions, environments, run counts, oracles, and failure
 taxonomies live in the [qualification evidence](get-started/what-works-today.md)
 and [engine benchmarks](https://github.com/OpenAdaptAI/openadapt-flow/tree/main/benchmark).
+
+---
+
+## Governed replay across verticals
+
+The head-to-head above exists only where **both arms** were actually run. To
+show coverage across our three ICP verticals we also publish **compiled-replay
+evidence** from pinned, local, synthetic reference environments. This is not a
+head-to-head: the paid computer-use-agent arm was **not run** for the lending
+and insurance environments, and was intentionally omitted from the pinned-local
+healthcare subset. Read these as governed-replay evidence verified by an
+independent effect oracle, not as a win over an agent.
+
+All three run through the **Browser (Playwright)** substrate, whose reference
+path is **Beta**. Every figure below is copied from the [workflow reference
+catalog](https://openadapt.ai/workflows) and traces to the committed
+[openadapt-flow benchmark READMEs](https://github.com/OpenAdaptAI/openadapt-flow/tree/main/benchmark).
+
+| Vertical | Application (pinned) | Independent effect oracle | Result | Honest scope |
+|---|---|---|---|---|
+| **Healthcare** | OpenEMR v8.0.0.3 (local) | Separate read-only REST readback + direct SQL + per-row table-delta | 12/12 model-free rows correct (compiled 6/6 + direct-API 6/6; baseline + cosmetic drift, 3/cell); 0 silent wrong writes, 0 over-halts, 0 model calls, $0 | Matched local model-free engineering subset (2026-07-16). Agent arm omitted; `publication_ready: false`. |
+| **Lending** | Frappe Lending v16.2.0 (local) | Read-only REST + direct MariaDB + exact per-table row-count contract (`tabLoan Application: +1`, all others +0) | 12/12 model-free rows correct (compiled 6/6 + direct-API 6/6; baseline + cosmetic drift, 3/cell); 0 silent wrong writes, 0 over-halts, 0 model calls, $0 | Local model-free compiled-vs-API subset (2026-07-16). Paid agent arm **not run**; `publication_ready: false`. |
+| **Insurance** | openIMIS 25.10 (local) | Direct SQL: exactly one non-voided claim row in status "Entered" for the demonstrated insuree and facility | 3/3 compiled replays SQL-verified (1 recorded demonstration + 3 replays; wall times 25.6s / 26.6s / 30.3s); 0 duplicate claims, 0 wrong-policyholder writes, 0 model calls | **Reference demonstration, not a benchmark**: no agent arm, no trial matrix, no publication protocol. AGPL-3.0, repository-only. |
+
+Every vertical environment is a synthetic, pinned, loopback-only fixture on one
+local macOS arm64 host — no customer data and no customer deployment. The
+healthcare row here is the pinned-local model-free subset; it is a **different
+run** from the flagship OpenEMR *live-demo* head-to-head above (20/20 vs. 10/10,
+2026-07-08), which is a field result on a shared public instance rather than a
+CI-reproducible benchmark. Frappe Lending and openIMIS are both API-rich browser
+references; a real deployment of either would prefer the API arm, and neither is
+evidence for a legacy Windows/Citrix system.
+
+Because the agent arm was not run for lending or insurance, **do not read 12/12
+or 3/3 as beating an agent** — they are governed compiled-replay results. Task
+definitions, exact image digests, oracles, and failure taxonomies live in the
+[workflow reference catalog](https://openadapt.ai/workflows) and the
+[engine benchmarks](https://github.com/OpenAdaptAI/openadapt-flow/tree/main/benchmark).
 
 ---
 
