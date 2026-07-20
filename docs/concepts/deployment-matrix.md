@@ -131,14 +131,14 @@ risk work required for the actual deployment.
 - **Browser:** Beta local engine and public managed substrate. It is the only
   backend exercised end to end against a real third-party application in the
   published engine evidence.
-- **Windows UIA:** Availability remains partner qualification. The counted
+- **Windows UIA:** Scoped acceptance — design partners only. The counted
   `20260717-candidate-56759c8-v2` in-tree WinForms matrix passed 3/3 trials with 3/3 independent SQLite effects,
   3/3 stale-target refusals, 3/3 ambiguity refusals, 0 silent incorrect
   successes, 0 over-halts, and 0 model calls. Earlier rejected diagnostic
   matrices remain in the report and are not counted acceptance trials. This is scoped acceptance, not a
   broad app/platform study. Review [Flow PR #132](https://github.com/OpenAdaptAI/openadapt-flow/pull/132)
   and its [immutable report](https://github.com/OpenAdaptAI/openadapt-flow/blob/defafbae758a75c8e149d9693f2cffe1f2264b8c/benchmark/windows_uia/results.json).
-- **macOS native:** Availability remains partner qualification. On one macOS
+- **macOS native:** Scoped acceptance — design partners only. On one macOS
   15.7.3 arm64 host, candidate `b1b61a5` completed 3/3 exact-byte TextEdit
   trials and refused a two-window ambiguity without changing either file, with
   0 silent incorrect successes and 0 over-halts. The immutable batch report
@@ -147,7 +147,7 @@ risk work required for the actual deployment.
   effect and ambiguity refusal. It is not clean-machine, partner, production,
   or general macOS evidence. Review [Flow PR #135](https://github.com/OpenAdaptAI/openadapt-flow/pull/135)
   and the [exact adjudication](https://github.com/OpenAdaptAI/openadapt-flow/blob/ca1b522cad215875f7471782283f8f8bb8e6c998/benchmark/macos_native/textedit_counted_3plus1_b1b61a5_20260717.adjudication.json).
-- **RDP:** Availability remains partner qualification. Candidate `82a658a`
+- **RDP:** Scoped acceptance — design partners only. Candidate `82a658a`
   passed 3/3 unique-file trials on one Parallels Windows 11 VM over network RDP;
   exact guest-tools readback confirmed every effect. Trial latencies were
   51.845s, 10.467s, and 7.477s, with 0 failures, 0 silent incorrect successes,
@@ -156,7 +156,7 @@ risk work required for the actual deployment.
   clean-machine or production support, hosted RDP, or Citrix. Review
   [Flow PR #142](https://github.com/OpenAdaptAI/openadapt-flow/pull/142)
   and the [immutable sanitized report](https://github.com/OpenAdaptAI/openadapt-flow/blob/6610d24cebba27918b8ea507b2f05a094057ac85/benchmark/rdp/results_82a658a_20260718.sanitized.json).
-- **Citrix:** A design partner is needed. It is not validated against ICA/HDX, real
+- **Citrix:** Research / design-partner qualification. It is not validated against ICA/HDX, real
   charts, lock screens, latency, DPI, or synthetic-input controls, and it does
   not inherit RDP evidence.
 
