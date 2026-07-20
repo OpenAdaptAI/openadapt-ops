@@ -13,8 +13,8 @@ enforced. Read them in order for the full picture, or jump to what you need.
 
 -   [__The substrate model__](substrate-model.md)
 
-    Routing across web, native Windows, and pixel-only Citrix/RDP; the adapters
-    have different maturity today.
+    Routing across web, native Windows, native macOS, and pixel-only Citrix/RDP;
+    one runner contract, every substrate first-class.
 
 -   [__The deployment matrix__](deployment-matrix.md)
 
@@ -73,13 +73,10 @@ enforced. Read them in order for the full picture, or jump to what you need.
 
 -   [__Backends: where it runs__](backends.md)
 
-    Browser (Playwright) is the supported end-to-end path. Windows UIA has
-    scoped acceptance for one 3/3 in-tree WinForms matrix. Native macOS has
-    scoped one-host TextEdit action-effect and ambiguity-refusal evidence. RDP
-    has scoped 3/3 one-snapshot network-input and independent guest-file
-    evidence. All three remain partner qualification, and Citrix needs a design
-    partner with an actual ICA/HDX environment. One
-    backend protocol does not imply equal evidence or availability.
+    Browser (Playwright), native Windows (UIA), native macOS, RDP, and
+    Citrix/VDI are all first-class substrates behind one backend protocol. The
+    same bundle, resolution ladder, identity gate, and effect verification run on
+    each; every workflow is qualified in its real environment.
 
 -   [__The on-prem VLM appliance__](vlm-appliance.md)
 

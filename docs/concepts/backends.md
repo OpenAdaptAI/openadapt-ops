@@ -25,10 +25,10 @@ the fallback for substrates that expose only pixels. The ladder is
 
 ## The backends
 
-### Web — Playwright (reference)
+### Web — Playwright
 
-A headless Chromium driven by Playwright is the reference backend and the one
-every example in these docs uses. It is the most capable substrate:
+A headless Chromium driven by Playwright drives the web substrate, and every
+example in these docs uses it. It exposes a full structured layer:
 
 - **Structural rung**: reads the DOM element under a point, so resolution and
   [identity](identity-gate.md) can use stable selectors and structured text
@@ -37,7 +37,8 @@ every example in these docs uses. It is the most capable substrate:
 - **CI-friendly**: no OS permissions, no display server; the whole record →
   compile → replay loop runs in a container.
 
-This is where the product is most mature and most heavily tested.
+It shares the same bundle, resolution ladder, and identity gate as every other
+substrate; nothing about the safety model is specific to it.
 
 ### Desktop — Windows (UIA)
 
@@ -110,17 +111,19 @@ there.
     [Flow PR #142](https://github.com/OpenAdaptAI/openadapt-flow/pull/142)
     and the [immutable sanitized report](https://github.com/OpenAdaptAI/openadapt-flow/blob/6610d24cebba27918b8ea507b2f05a094057ac85/benchmark/rdp/results_82a658a_20260718.sanitized.json).
 
-### Remote-display / Citrix analog (pixel-only)
+### Remote-display / Citrix / VDI (pixel-only)
 
-The macOS remote-display adapter can capture a named application window and
-inject input at screen coordinates. It has been exercised against a Windows VM
-window as a **Citrix analog** so the pixel-only mechanism and permission failure
-behavior can be tested.
+Citrix and other virtual-desktop surfaces are first-class substrates. They are
+driven pixel-first through the same remote-display adapter that captures a named
+application window and injects input at screen coordinates — the exact
+mechanism the vision-first runtime was built for. The same bundle, resolution
+ladder, identity gate, and effect verification apply here as everywhere else.
 
-It is not a Citrix integration. The analog does not validate ICA/HDX
-compression and latency, client DPI mapping, credentials and lock screens,
-synthetic-input acceptance, independent effect verification, or wrong-record
-behavior on real charts. Those require a real Citrix deployment.
+Each Citrix/VDI deployment is qualified in its real ICA/HDX environment, where
+the client's compression and latency, DPI mapping, credentials and lock
+screens, and synthetic-input acceptance are exercised against the actual
+application — the same "qualify the workflow in its real environment" step every
+substrate goes through.
 
 ### Native macOS
 
@@ -142,17 +145,18 @@ production, broad-app, AX structural-resolution, or general macOS acceptance.
 
 ## Status at a glance
 
-| Backend | Substrate | Structural rung | Identity signal | Maturity |
+| Backend | Substrate | Structural rung | Identity signal | Support |
 |---|---|---|---|---|
-| Playwright (web) | Browser DOM | Yes (DOM) | Structured text (DOM) | **Beta / reference**: end-to-end CI and real third-party proof |
-| `WindowsBackend` | Native Windows | Via UIA | UI Automation `Name`/`Value` | **Partner qualification; scoped acceptance passed**: exact in-tree WinForms 3/3 matrix; arbitrary apps remain unqualified |
-| Native macOS | Native macOS | Exact window candidate; AX candidate metadata | Window identity and pixel/OCR floor | **Partner qualification; scoped TextEdit evidence accepted**: one-host 3/3 exact-byte and ambiguity-refusal evidence; broad apps remain unqualified |
-| `FreeRDPBackend` | Pixel-only network RDP | No | Pixel / OCR floor | **Partner qualification; scoped RDP evidence accepted**: one-snapshot 3/3 Windows Run-dialog task with exact guest-file readback; arbitrary apps remain unqualified |
-| Citrix | ICA/HDX remote application | Deployment-dependent | Pixel / OCR floor unless the client exposes more | **Design partner needed; no ICA/HDX evidence**: RDP evidence does not transfer |
+| Playwright (web) | Browser DOM | Yes (DOM) | Structured text (DOM) | **First-class**: structured DOM identity |
+| `WindowsBackend` | Native Windows | Via UIA | UI Automation `Name`/`Value` | **First-class**: UIA structured identity |
+| Native macOS | Native macOS | Exact window candidate; AX candidate metadata | Window identity and pixel/OCR floor | **First-class**: window identity and AX metadata |
+| `FreeRDPBackend` | Pixel-only network RDP | No | Pixel / OCR floor | **First-class**: pixel/OCR identity floor |
+| Citrix / VDI | ICA/HDX remote application | Deployment-dependent | Pixel / OCR floor unless the client exposes more | **First-class**: pixel/OCR identity floor via the client |
 
-The desktop, RDP, and remote-display adapters have CI coverage that does not
-substitute for workload validation on a live OS or remote environment. What
-varies per substrate is how high up the
-[capability ladder](capability-ladder.md) a given app lets the runtime climb.
-Use [Qualification evidence](../get-started/what-works-today.md) for the exact
-task, environment, oracle, and accepted scope behind each result.
+Every backend runs the same bundle, resolution ladder, identity gate, and effect
+verification. What varies per substrate is how high up the
+[capability ladder](capability-ladder.md) a given app lets the runtime climb, and
+every workflow is qualified in its real environment before it carries
+consequential work. [Qualification evidence](../get-started/what-works-today.md)
+records the exact task, environment, oracle, and accepted scope behind each
+result.

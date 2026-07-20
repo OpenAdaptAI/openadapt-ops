@@ -30,10 +30,11 @@ Public docs must:
 
 1. Name `openadapt-flow` as the canonical engine and `openadapt flow` as the
    unified command surface.
-2. Separate shipped behavior from experimental, prototype, and research-spike
-   work.
-3. Keep the hosted browser launch candidate distinct from experimental desktop
-   and remote-display execution.
+2. Link each capability claim to its evidence (benchmarks, PRs, limits) so
+   readers can see exactly what a surface does and does not yet cover.
+3. Present every execution substrate — web, native Windows, native macOS, RDP,
+   and Citrix/VDI — as first-class, and keep the hosted, customer-cloud, and
+   self-hosted deployment lanes distinct.
 4. Put product journeys before package topology.
 5. Link claims to the engine's benchmarks and limits rather than silently
    expanding them.

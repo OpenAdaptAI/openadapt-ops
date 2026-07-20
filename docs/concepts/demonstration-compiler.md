@@ -65,8 +65,8 @@ pixel surface (PNG in, clicks and keys out) behind a small `Backend` protocol,
 which is why the whole loop runs in CI with no OS permissions. But where a
 backend exposes more than pixels — a browser DOM, a native accessibility tree,
 an API — OpenAdapt uses that higher-fidelity signal via
-[the capability ladder](capability-ladder.md). The reference backend is a
-headless browser; the [desktop (Windows/UIA) and RDP backends](backends.md) are
+[the capability ladder](capability-ladder.md). The web (Playwright), desktop
+(Windows/UIA), native macOS, RDP, and Citrix/VDI [backends](backends.md) are all
 adapters to the same protocol, not rewrites.
 
 ## An API compiler for the API-less long tail

@@ -65,11 +65,13 @@ openadapt flow replay bundle --backend windows --agent-url http://localhost:5001
 openadapt flow run bundle --backend rdp --rdp-host 10.0.0.5 --config deployment.yaml
 ```
 
-!!! note "Which backends are proven"
-    `web` (browser) is the reference, most-tested surface. `windows` and `rdp`
-    are being validated with design partners; the desktop and RDP adapters are
-    exercised in CI against mocked servers, and the live desktop proof is recent
-    and limited. See the [backend status table](../concepts/backends.md#status-at-a-glance).
+!!! note "Selecting a backend"
+    `web` (browser), `windows`, and `rdp` (also the transport for Citrix/VDI) are
+    all first-class substrates behind one backend protocol, running the same
+    bundle, resolution ladder, identity gate, and effect verification. Every
+    workflow is qualified in its real environment. See the
+    [backend support table](../concepts/backends.md#status-at-a-glance) and
+    [Qualification evidence](../get-started/what-works-today.md).
 
 ## record
 

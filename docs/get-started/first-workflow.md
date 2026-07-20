@@ -7,8 +7,8 @@ makes zero model calls.
 ## Prerequisites
 
 - **Python 3.10–3.12.** The engine declares `requires-python >=3.10,<3.13`.
-- **macOS, Linux, or Windows.** The reference backend is a Playwright-driven
-  Chromium browser, so this walkthrough has no OS-specific steps. The browser
+- **macOS, Linux, or Windows.** This walkthrough uses the Playwright-driven
+  Chromium browser, the default backend, so it has no OS-specific steps. The browser
   provisions automatically the first time you record or replay; to provision it
   ahead of time, run `playwright install chromium`.
 

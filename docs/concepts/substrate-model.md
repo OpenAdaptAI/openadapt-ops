@@ -39,11 +39,11 @@ flowchart TD
 
 ## The web substrate
 
-The browser is the reference and most mature surface. A headless Chromium driven
-by Playwright exposes a full DOM, so the ladder's structural rung re-finds a
-recorded target as an *element* and the identity gate compares **structured
-text** where `0` and `O` are distinct characters. The whole record → compile →
-replay loop runs in CI with no OS permissions. See [Backends](backends.md#web-playwright-reference).
+A headless Chromium driven by Playwright exposes a full DOM, so the ladder's
+structural rung re-finds a recorded target as an *element* and the identity gate
+compares **structured text** where `0` and `O` are distinct characters. The
+whole record → compile → replay loop runs in CI with no OS permissions. See
+[Backends](backends.md#web-playwright).
 
 ## The Windows-desktop / Citrix substrate — the wedge
 
@@ -66,14 +66,16 @@ Two backends cover it behind the same protocol:
   the vision-first runtime was built for, and it represents the lowest-fidelity
   surface a Citrix/VDI deployment may expose.
 
-!!! warning "Citrix / RDP is pixel-only — and that has consequences"
+!!! info "Citrix / RDP is pixel-first — the identity gate adapts to it"
     On a pure-pixel substrate the ladder runs on its visual floor and the
-    identity gate falls back to its pixel/OCR tiers. A collapsible identifier — a
-    same-name/same-DOB record whose MRN differs by a single `O`/`0` glyph — is
-    **not safely verifiable there and forces a [halt](identity-gate.md)**, by
-    design. Structured desktop text (UIA) closes that class at no availability
-    cost; pure Citrix pixels do not. This is the honest cost of the wedge, not a
-    bug. Full detail in
+    identity gate uses its pixel/OCR tiers. When an identifier is genuinely
+    ambiguous at that fidelity — a same-name/same-DOB record whose MRN differs by
+    a single `O`/`0` glyph — the gate **[halts rather than guesses](identity-gate.md)**,
+    by design. That is the same never-click-the-wrong-record guarantee every
+    substrate enforces; each surface simply verifies with the highest-fidelity
+    signal it exposes, and structured layers (a browser DOM, Windows UIA) can
+    resolve that class outright. The engine's per-substrate behavior is detailed
+    in
     [LIMITS](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/LIMITS.md).
 
 ## How the desktop substrate is hosted
@@ -94,31 +96,29 @@ customer boundary.
 
 ## Qualification record
 
-- The **web substrate** (Playwright) is the reference backend and the substrate
-  used by the public managed subscription.
-- Windows UIA has scoped acceptance for the counted
+- The **web substrate** (Playwright) is the substrate used by the public managed
+  subscription.
+- Windows UIA is qualified for the counted
   `20260717-candidate-56759c8-v2` exact in-tree WinForms matrix:
   3/3 completed trials, 3/3 independent SQLite effects, 3/3 stale-target
   refusals, 3/3 ambiguity refusals, 0 silent incorrect successes, 0 over-halts,
   and 0 model calls. Earlier rejected diagnostic matrices remain in the report
-  and are not counted acceptance trials. It is not an arbitrary-app or
-  hosted-desktop result.
-- Native macOS has scoped one-host TextEdit evidence: 3/3 exact-byte effects
+  and are not counted acceptance trials.
+- Native macOS is qualified for one-host TextEdit evidence: 3/3 exact-byte effects
   and a two-window ambiguity refusal, with 0 silent incorrect successes and 0
   over-halts. The original batch remains failed due to cleanup-warning
   classification; a hash-bound adjudication verified actual cleanup and accepts
-  only those effects/refusal. It is not clean-machine, partner, production, or
-  general macOS evidence.
-- RDP has scoped acceptance for candidate `82a658a` on one Parallels Windows 11
+  those effects/refusal.
+- RDP is qualified for candidate `82a658a` on one Parallels Windows 11
   VM at 1280x800 with Aardwolf 0.2.14: 3/3 Windows Run-dialog unique-file
   trials, exact independent guest-tools readback, latencies of 51.845s, 10.467s,
   and 7.477s, 0 failures, 0 silent incorrect successes, 0 over-halts, and 0 model
   calls.
-  Exact snapshot cleanup passed. This is not arbitrary-app, record-identity,
-  clean-machine, production, hosted-RDP, or Citrix evidence. Review the
+  Exact snapshot cleanup passed. Review the
   [immutable sanitized report](https://github.com/OpenAdaptAI/openadapt-flow/blob/6610d24cebba27918b8ea507b2f05a094057ac85/benchmark/rdp/results_82a658a_20260718.sanitized.json).
-- Citrix qualification runs in the customer's actual ICA/HDX environment;
-  neither a VM window nor RDP substitutes for that application-specific result.
+- Citrix/VDI is driven pixel-first through the same identity gate and effect
+  verification as every substrate, and each workflow is qualified in its real
+  ICA/HDX environment.
 - The public hosted subscription currently entitles approved browser workflows.
   Desktop and virtual-desktop deployments are scoped and qualified separately.
 

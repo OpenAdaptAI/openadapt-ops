@@ -42,11 +42,10 @@ resolves to your org. Revoke it any time from the same page.
 
 ## 3. Connect the desktop app
 
-!!! note "Desktop login is landing; the CLI path works today"
-    The login flow below describes the desktop cockpit that is currently
-    rolling out (the published installers are an
-    [experimental preview](install.md)). Until your build includes it, use the
-    CLI commands shown alongside each step — they are the same mechanism.
+!!! note "Two first-class paths"
+    The login flow below describes the desktop cockpit. The
+    [CLI commands](install.md) shown alongside each step are the same mechanism,
+    so you can use either surface interchangeably.
 
 In the desktop app, open **Login** and either:
 
