@@ -74,8 +74,8 @@ reaching the cloud workspace.
 token, or the durable upload queue is holding items to retry.
 
 !!! note
-    The tray/desktop sync surface belongs to the
-    [experimental desktop preview](../desktop/install.md); from the CLI, a
+    The tray/desktop sync surface is part of the
+    [desktop app](../desktop/install.md); from the CLI, a
     failed `push` simply exits nonzero and is safe to re-run.
 
 **Fix.**

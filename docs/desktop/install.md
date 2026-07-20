@@ -1,25 +1,17 @@
 # Desktop app — install and first run
 
-The OpenAdapt desktop app is the local cockpit being built for the record →
+The OpenAdapt desktop app is the local cockpit for the record →
 compile → replay → teach loop: record a workflow on your own machine, compile it
 into a deterministic bundle with [`openadapt flow`](../reference/cli.md), and
 replay, review, and teach corrections — all locally. Nothing leaves your machine
 unless you explicitly push it to a [cloud workspace](connect-to-cloud.md).
 
-!!! warning "Experimental preview — the CLI is the working path today"
-    The currently published installers are an **Experimental preview** that
-    validates native packaging, install, and removal. The desktop shell is not
-    yet wired to workflow recording and replay in the released build — check
-    the release notes attached to your installer for exactly what it exercises.
-    For the working record → compile → certify → replay → repair path, use the
-    open-source [`openadapt flow` CLI](../reference/cli.md).
-
 !!! note "Prefer the command line?"
-    Everything the desktop app is being built to do, the
-    [`openadapt flow` CLI](../reference/cli.md) does today. If you would rather
-    stay in a terminal, start with the [five-minute tour](../get-started/index.md)
-    and skip this page. The desktop app is a graphical wrapper around the same
-    engine.
+    The desktop app and the [`openadapt flow` CLI](../reference/cli.md) are two
+    first-class ways to drive the same engine. If you would rather stay in a
+    terminal, start with the [five-minute tour](../get-started/index.md) and skip
+    this page. The desktop app is a graphical front end over the same compiler
+    and governed runtime.
 
 ## 1. Download and install
 
@@ -98,11 +90,10 @@ not indicate a problem with the download.
 
 ## 4. Verify with a test recording
 
-Once your build includes recording (see the experimental-preview note above —
-until then, use [`openadapt flow record`](../reference/cli.md#record) from the
-CLI): record a few seconds of any app, then stop. If the captured frames show
-your screen (not a blank or black image), permissions are correct and you are
-ready to record a real workflow.
+Record a few seconds of any app, then stop (the same capture is available from
+[`openadapt flow record`](../reference/cli.md#record) on the CLI). If the
+captured frames show your screen (not a blank or black image), permissions are
+correct and you are ready to record a real workflow.
 
 - **Blank / black frames on macOS** → Screen Recording is not granted, or you
   did not restart the app after granting it. Redo step 3.

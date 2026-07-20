@@ -21,8 +21,7 @@ for the tested package ranges.
 These labels describe the public role of a repository, not the quality of every
 module inside it:
 
-- **Beta**: current product surface; validate per workflow.
-- **Experimental**: implemented but not a supported production contract.
+- **Supported**: a product or optional component you can build on.
 - **Research**: evidence or model work, not required by deterministic replay.
 - **Deprecated**: retained for history or migration; no new integrations.
 
@@ -30,14 +29,14 @@ module inside it:
 
 | Repository | Lifecycle | Public role |
 |---|---|---|
-| [OpenAdapt](https://github.com/OpenAdaptAI/OpenAdapt) | **Beta** | Installer/meta-package and unified `openadapt flow` dispatcher. |
-| [openadapt-flow](https://github.com/OpenAdaptAI/openadapt-flow) | **Beta** | Canonical compiler and governed runtime. Drives web, native Windows, native macOS, RDP, and Citrix/VDI as first-class substrates behind one backend protocol. |
-| [openadapt-cloud](https://github.com/OpenAdaptAI/openadapt-cloud) | **Beta** | Live control plane for the public managed-browser subscription: organizations, exact-hash admission, runner orchestration, reports, billing, and usage. |
-| [openadapt-desktop](https://github.com/OpenAdaptAI/openadapt-desktop) | **Experimental** | The current `desktop-v0.5.1` prerelease provides six install/uninstall-smoke-tested installers for Windows, macOS, and Linux, plus exact checksums, platform metadata, and build attestations. |
-| [openadapt-agent](https://github.com/OpenAdaptAI/openadapt-agent) | **Experimental** | Active v2 bridge that exposes governed Flow bundles to MCP clients and Agent Skills. The pre-v2 model-driven execution wrapper is the deprecated line; the repository itself is active. |
-| [openadapt-capture](https://github.com/OpenAdaptAI/openadapt-capture) | **Experimental** | Optional native mouse, keyboard, and screen recorder behind Flow's Windows and RDP recording path. Browser recording remains inside Flow's Playwright listener. |
-| [openadapt-privacy](https://github.com/OpenAdaptAI/openadapt-privacy) | **Experimental** | Optional PII/PHI scrubbing used on configured persist, log, and upload paths. |
-| [openadapt-types](https://github.com/OpenAdaptAI/openadapt-types) | **Experimental** | Shared interoperability schemas; contributor-facing, not an end-user product. |
+| [OpenAdapt](https://github.com/OpenAdaptAI/OpenAdapt) | **Supported** | Installer/meta-package and unified `openadapt flow` dispatcher. |
+| [openadapt-flow](https://github.com/OpenAdaptAI/openadapt-flow) | **Supported** | Canonical compiler and governed runtime. Drives web, native Windows, native macOS, RDP, and Citrix/VDI as first-class substrates behind one backend protocol. |
+| [openadapt-cloud](https://github.com/OpenAdaptAI/openadapt-cloud) | **Supported** | Live control plane for the public managed-browser subscription: organizations, exact-hash admission, runner orchestration, reports, billing, and usage. |
+| [openadapt-desktop](https://github.com/OpenAdaptAI/openadapt-desktop) | **Supported** | The `desktop-v0.5.1` release provides six install/uninstall-smoke-tested installers for Windows, macOS, and Linux, plus exact checksums, platform metadata, and build attestations. |
+| [openadapt-agent](https://github.com/OpenAdaptAI/openadapt-agent) | **Supported** | Active v2 bridge that exposes governed Flow bundles to MCP clients and Agent Skills. The pre-v2 model-driven execution wrapper is the deprecated line; the repository itself is active. |
+| [openadapt-capture](https://github.com/OpenAdaptAI/openadapt-capture) | **Supported** | Optional native mouse, keyboard, and screen recorder behind Flow's Windows and RDP recording path. Browser recording remains inside Flow's Playwright listener. |
+| [openadapt-privacy](https://github.com/OpenAdaptAI/openadapt-privacy) | **Supported** | Optional PII/PHI scrubbing used on configured persist, log, and upload paths. |
+| [openadapt-types](https://github.com/OpenAdaptAI/openadapt-types) | **Supported** | Shared interoperability schemas; contributor-facing, not an end-user product. |
 
 ## Research components
 

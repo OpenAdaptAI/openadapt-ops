@@ -9,7 +9,7 @@
 - [What you get](https://docs.openadapt.ai/get-started/what-you-get/): The workflow bundle, the run report, and what each artifact is for
 
 ## Desktop app
-- [Install and first run](https://docs.openadapt.ai/desktop/install/): Experimental-preview desktop shell; the openadapt flow CLI is the working path today
+- [Install and first run](https://docs.openadapt.ai/desktop/install/): Desktop cockpit for record, compile, replay, and teach; a first-class front end over the same engine as the openadapt flow CLI
 - [Connect to a cloud workspace](https://docs.openadapt.ai/desktop/connect-to-cloud/): Sign in, create an ingest token, and connect local authoring to the managed workspace
 
 ## Concepts
