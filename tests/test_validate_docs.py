@@ -63,7 +63,7 @@ def _write_contract_docs(root):
         ),
         "get-started/what-works-today.md": (
             "# Qualification evidence\n\n## Integrated product matrix\n\n"
-            "Hosted execution is a Beta / public offer at $500/month. "
+            "Hosted execution is a Supported / public offer at $500/month. "
             "Hosted browser recorder evidence is bounded on `openadapt-flow` 1.8.0. "
             "Authenticated live health proves service identity. Three production "
             "pre-payment trials passed; the first genuine customer transaction "

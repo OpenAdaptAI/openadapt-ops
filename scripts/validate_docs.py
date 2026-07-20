@@ -16,7 +16,7 @@ REQUIRED_PUBLIC_PAGES = {
         "Integrated product matrix",
         "Hosted execution",
         "$500/month",
-        "Beta / public offer",
+        "Supported / public offer",
         "Hosted browser recorder",
         "`openadapt-flow` 1.8.0",
         "Authenticated live health",
