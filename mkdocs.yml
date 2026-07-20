@@ -114,6 +114,8 @@ nav:
     - Record your own app: guides/record-your-app.md
     - Induce a program from multiple traces: guides/induce-a-program.md
     - Multi-trace induction: concepts/multi-trace-induction.md
+    - Run a workflow for each record: guides/data-driven-loops.md
+    - Visualize a compiled program: concepts/program-visualizer.md
     - Parameters and secrets: guides/parameters-and-secrets.md
     - The capability ladder: concepts/capability-ladder.md
     - Write and enforce a policy: guides/policy-and-certification.md
@@ -123,6 +125,7 @@ nav:
   - Operate:
     - Run a deployment: guides/run-a-deployment.md
     - Read and audit run reports: guides/run-reports.md
+    - Workflow catalog and halt map: guides/workflow-catalog.md
     - The halt-learn loop: concepts/halt-learn-loop.md
     - Governed self-healing: concepts/self-healing.md
     - Durable runtime: concepts/durable-runtime.md
@@ -134,6 +137,7 @@ nav:
   - Security:
     - Qualification evidence: get-started/what-works-today.md
     - Fail-closed regulated execution: concepts/regulated-execution.md
+    - Settings and policy governance: concepts/settings-governance.md
     - Security and data handling: guides/security-and-data-handling.md
     - Security and deployment review: guides/security-review.md
   - Internals:
