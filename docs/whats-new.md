@@ -1,12 +1,24 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-20 15:44 UTC*
+> *Last updated: 2026-07-20 20:54 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [docs(readme): mention for-each loops and visualize in the launcher quickstart](https://github.com/OpenAdaptAI/OpenAdapt/pull/1038) (#1038) — merged 
+
+- [build(deps): bump actions/dependency-review-action from 4.9.0 to 5.0.0](https://github.com/OpenAdaptAI/OpenAdapt/pull/1037) (#1037) — merged 
+
+- [build(deps): bump actions/checkout from 6 to 7](https://github.com/OpenAdaptAI/OpenAdapt/pull/1036) (#1036) — merged 
+
+- [build(deps): bump actions/setup-python from 6 to 7](https://github.com/OpenAdaptAI/OpenAdapt/pull/1035) (#1035) — merged 
+
+- [build(deps): bump actions/attest from 4.1.1 to 4.2.0](https://github.com/OpenAdaptAI/OpenAdapt/pull/1034) (#1034) — merged 
+
+- [build(deps): bump pypa/gh-action-pypi-publish from 1.14.0 to 1.14.1](https://github.com/OpenAdaptAI/OpenAdapt/pull/1033) (#1033) — merged 
 
 - [chore: add Contributor Covenant Code of Conduct](https://github.com/OpenAdaptAI/OpenAdapt/pull/1032) (#1032) — merged 
 
@@ -36,62 +48,50 @@
 
 - [fix: publish release assets from named branch](https://github.com/OpenAdaptAI/OpenAdapt/pull/1019) (#1019) — merged 
 
-- [fix: publish attested launcher release artifacts](https://github.com/OpenAdaptAI/OpenAdapt/pull/1017) (#1017) — merged 
-
-- [fix: align launcher lifecycle metadata with beta](https://github.com/OpenAdaptAI/OpenAdapt/pull/1016) (#1016) — merged 
-
-- [chore: keep release lock version synchronized](https://github.com/OpenAdaptAI/OpenAdapt/pull/1015) (#1015) — merged 
-
-- [feat: make OpenAdapt the canonical openadapt-flow launcher](https://github.com/OpenAdaptAI/OpenAdapt/pull/1014) (#1014) — merged 
-
-- [fix: version reads from metadata + doctor core/optional sets + pyproject description](https://github.com/OpenAdaptAI/OpenAdapt/pull/1013) (#1013) — merged 
-
-- [docs: refocus OpenAdapt on the demonstration compiler (remove package-zoo / old platform framing)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1012) (#1012) — merged 
-
 
 
 ## openadapt-flow
 
 
-- [feat(record): expose window-scoped capture on `record --window`](https://github.com/OpenAdaptAI/openadapt-flow/pull/164) (#164) — merged 
+- [feat(effects): auto-derived, different-path on-screen read-back oracle (no-connector default)](https://github.com/OpenAdaptAI/openadapt-flow/pull/191) (#191) — merged 
 
-- [fix(hosted): wait for exclusive run id writer](https://github.com/OpenAdaptAI/openadapt-flow/pull/163) (#163) — merged 
+- [docs(readme): document the for-each data-driven loop and visualize commands](https://github.com/OpenAdaptAI/openadapt-flow/pull/190) (#190) — merged 
 
-- [docs: point lifecycle copy to qualification matrix](https://github.com/OpenAdaptAI/openadapt-flow/pull/162) (#162) — merged 
+- [fix(ci): unblock main — de-symlink workshop bib (sdist) + deterministic pixel font test](https://github.com/OpenAdaptAI/openadapt-flow/pull/189) (#189) — merged 
 
-- [docs: add explicit Beta lifecycle label to README](https://github.com/OpenAdaptAI/openadapt-flow/pull/161) (#161) — merged 
+- [feat(compiler): author data-driven LOOP from a single demonstration](https://github.com/OpenAdaptAI/openadapt-flow/pull/188) (#188) — merged 
 
-- [fix(hosted): harden versioned local run reporting](https://github.com/OpenAdaptAI/openadapt-flow/pull/160) (#160) — merged 
+- [feat(citrix_daas): staged, guarded PREP kit for DaaS-Standard-for-Azure 7-day trial (clock NOT started)](https://github.com/OpenAdaptAI/openadapt-flow/pull/187) (#187) — merged 
 
-- [feat(backends): win32 WindowClient for remote-display window replay](https://github.com/OpenAdaptAI/openadapt-flow/pull/159) (#159) — merged 
+- [feat(benchmark): EffectBench multi-baseline runner adapter — one arm interface, identical task+oracle](https://github.com/OpenAdaptAI/openadapt-flow/pull/186) (#186) — merged 
 
-- [feat(compiler): emit identifier_crop — arm identity-on-pixels for remote-display/pixel workflows](https://github.com/OpenAdaptAI/openadapt-flow/pull/158) (#158) — merged 
+- [feat(effectbench): author the first task pack (~40 tasks, all 7 divergence categories)](https://github.com/OpenAdaptAI/openadapt-flow/pull/185) (#185) — merged 
 
-- [feat(runner): governed-dispatch verification + lease-logic client library (Experimental, library-only)](https://github.com/OpenAdaptAI/openadapt-flow/pull/157) (#157) — merged 
+- [feat: compiled-program visualizer (shared graph spec + CLI render)](https://github.com/OpenAdaptAI/openadapt-flow/pull/184) (#184) — merged 
 
-- [feat: report-run — PHI-free SUCCESS summary rail to /api/runs/ingest-report](https://github.com/OpenAdaptAI/openadapt-flow/pull/156) (#156) — merged 
+- [feat(citrix): CVAD 30-day trial-mode Azure lab provisioning helpers](https://github.com/OpenAdaptAI/openadapt-flow/pull/182) (#182) — merged 
 
-- [fix(console): own attended backends on one thread](https://github.com/OpenAdaptAI/openadapt-flow/pull/155) (#155) — merged 
+- [bench(canvas): no-DOM HTML5-canvas vision-ladder qualification (accepted)](https://github.com/OpenAdaptAI/openadapt-flow/pull/181) (#181) — merged 
 
-- [fix(capture): align malformed window marker error](https://github.com/OpenAdaptAI/openadapt-flow/pull/154) (#154) — merged 
+- [docs(paper): set author line (Richard Abrich, OpenAdapt / MLDSAI Inc.)](https://github.com/OpenAdaptAI/openadapt-flow/pull/180) (#180) — merged 
 
-- [fix: preserve region stability across theme drift](https://github.com/OpenAdaptAI/openadapt-flow/pull/153) (#153) — merged 
+- [feat: resolve pixel-verify identity gate from deployment runtime config](https://github.com/OpenAdaptAI/openadapt-flow/pull/179) (#179) — merged 
 
-- [feat(attended): execute governed halt actions](https://github.com/OpenAdaptAI/openadapt-flow/pull/152) (#152) — merged 
+- [feat(benchmark): EffectBench foundation — episode schema + substrate-agnostic effect-oracle harness](https://github.com/OpenAdaptAI/openadapt-flow/pull/178) (#178) — merged 
 
-- [Add secure local-to-Cloud pairing](https://github.com/OpenAdaptAI/openadapt-flow/pull/151) (#151) — merged 
+- [feat(benchmark): index pinned system-of-record environments for the effect benchmark](https://github.com/OpenAdaptAI/openadapt-flow/pull/173) (#173) — merged 
 
-- [fix(healing): preserve identity evidence across locator repair](https://github.com/OpenAdaptAI/openadapt-flow/pull/150) (#150) — merged 
+- [feat(identity): jitter-robust pixel identity VERIFY (config-gated, default off)](https://github.com/OpenAdaptAI/openadapt-flow/pull/172) (#172) — merged 
 
-- [feat(console): add read-only attended exception queue](https://github.com/OpenAdaptAI/openadapt-flow/pull/149) (#149) — merged 
+- [feat: macOS AX IdentityBackend + StructuralActionBackend (identity parity)](https://github.com/OpenAdaptAI/openadapt-flow/pull/171) (#171) — merged 
 
-- [feat(linux): add fail-closed native AT-SPI backend](https://github.com/OpenAdaptAI/openadapt-flow/pull/148) (#148) — merged 
+- [docs(paper): sharpen thesis, add figures, foreground the safety instrument](https://github.com/OpenAdaptAI/openadapt-flow/pull/170) (#170) — merged 
 
-- [feat(adapters): convert window-scoped capture sessions in their own pixel space](https://github.com/OpenAdaptAI/openadapt-flow/pull/146) (#146) — merged 
+- [test: pin backend optional-capability matrix to the maturity map](https://github.com/OpenAdaptAI/openadapt-flow/pull/169) (#169) — merged 
 
-- [fix: restore MIT-only releases and harden operator console](https://github.com/OpenAdaptAI/openadapt-flow/pull/144) (#144) — merged 
+- [test: assert zero-model-call reference bar on Windows/RDP replays](https://github.com/OpenAdaptAI/openadapt-flow/pull/168) (#168) — merged 
 
-- [docs: align product copy and report with scoped substrate evidence](https://github.com/OpenAdaptAI/openadapt-flow/pull/143) (#143) — merged 
+- [fix: honor landmark contradiction for labeled anchors in template_global rung](https://github.com/OpenAdaptAI/openadapt-flow/pull/166) (#166) — merged 
 
 
 
@@ -140,6 +140,12 @@
 
 ## openadapt-agent
 
+
+- [chore(deps): Bump actions/checkout from 4 to 7](https://github.com/OpenAdaptAI/openadapt-agent/pull/6) (#6) — merged 
+
+- [chore(deps): Bump actions/dependency-review-action from 4.9.0 to 5.0.0](https://github.com/OpenAdaptAI/openadapt-agent/pull/5) (#5) — merged 
+
+- [chore(deps): Bump actions/setup-python from 5 to 7](https://github.com/OpenAdaptAI/openadapt-agent/pull/4) (#4) — merged 
 
 - [chore: add security CI (CodeQL, gitleaks, dependency-review, Dependabot)](https://github.com/OpenAdaptAI/openadapt-agent/pull/3) (#3) — merged 
 
