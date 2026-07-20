@@ -24,7 +24,7 @@ execution, usage, portal, and cancellation as continuing production evidence.
 Every surface below is **Supported**: a first-class product surface you can build
 on, backed by the evidence in the "What is actually demonstrated" column. The
 "Important boundary" column states, honestly and per surface, exactly what each
-result does and does not cover — read it before trusting a surface with
+result does and does not cover. Read it before trusting a surface with
 consequential work. Public delivery of a given surface may still carry a separate
 production-qualification or commercial gate.
 
@@ -32,7 +32,7 @@ Buyer-facing availability is reported distinctly from evidence, and reconciles
 to the machine-readable [status manifest](https://openadapt.ai/status.json) that
 the website, launcher, and packages also read. **Supported / scoped deployment**
 means the substrate is a first-class execution target ordered as a scoped
-deployment and qualified per workflow in its real environment — the same
+deployment and qualified per workflow in its real environment: the same
 real-environment qualification step every substrate, including the browser, goes
 through before it carries consequential work.
 

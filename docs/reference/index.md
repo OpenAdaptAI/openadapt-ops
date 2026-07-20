@@ -1,9 +1,9 @@
 # Reference
 
 Precise reference for the command line, the deployable artifact, and
-configuration. Package topology is intentionally secondary: the canonical
-engine is `openadapt-flow`, while package and research repositories are
-classified under [Ecosystem](../ecosystem/index.md).
+configuration. Package topology is secondary: the canonical engine is
+`openadapt-flow`, while package and research repositories are classified under
+[Ecosystem](../ecosystem/index.md).
 
 <div class="grid cards" markdown>
 

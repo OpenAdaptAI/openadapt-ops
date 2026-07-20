@@ -2,8 +2,8 @@
 
 OpenAdapt the product (the [demonstration compiler](../concepts/demonstration-compiler.md))
 is what most people need. Underneath it sits a set of open-source libraries and
-infrastructure that the compiler and its research build on. This section is for
-contributors and integrators who want to use those pieces directly.
+infrastructure the compiler and its research build on. This section is for
+contributors and integrators who use those pieces directly.
 
 !!! note "Product first"
     If you want to compile and run a workflow, start with

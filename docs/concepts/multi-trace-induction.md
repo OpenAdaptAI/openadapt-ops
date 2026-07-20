@@ -1,14 +1,14 @@
 # Multi-trace induction
 
-One demonstration is **evidence**, not a **specification**. It shows what did
-happen once, not what should happen every time. Multi-trace induction is how
-OpenAdapt recovers the intended program from more than one demonstration, and,
-crucially, how it refuses to emit a workflow while intent stays ambiguous.
+One demonstration is **evidence**, not a **specification**: it shows what
+happened once, not what should happen every time. Multi-trace induction recovers
+the intended program from more than one demonstration, and refuses to emit a
+workflow while intent stays ambiguous.
 
 !!! note "Status"
     Induction ships today as the [`induce`](../reference/cli.md#induce) verb: it
     takes two or more recordings of the same task and emits a parameterized
-    program bundle — or refuses (nonzero exit, no bundle) when intent is
+    program bundle, or refuses (nonzero exit, no bundle) when intent is
     underdetermined. It builds on the shipping compiler, which already treats a
     demonstration as evidence when it decides which values are parameters and
     which screen text is incidental. The full workflow-program IR it targets
@@ -31,7 +31,7 @@ is resolving that ambiguity:
 ## The induction loop
 
 Induction turns several demonstrations into a program by proposing, questioning,
-and validating, rather than guessing:
+and validating, not guessing:
 
 ```mermaid
 flowchart TD
@@ -60,7 +60,7 @@ flowchart TD
 
 Point `induce` at several recordings of the same task. It aligns them, recovers
 the shared parameters, loops, and branches, and either **certifies** a program
-bundle or **refuses** and lists what stayed underdetermined:
+bundle or **refuses** and lists what stayed underdetermined.
 
 ```bash
 openadapt flow induce rec-1 rec-2 rec-3 --out program --name my-program --held-out
@@ -74,24 +74,24 @@ The worked walkthrough is in
 
 ## Ask, don't guess
 
-The disambiguation step is available today as a CLI verb. It surfaces the
-compile-time questions an ambiguous demonstration raises and applies the answers
-as guards or parameters, so a consequential ambiguity must be answered before
-the bundle is certified:
+The disambiguation step ships as a CLI verb. It surfaces the compile-time
+questions an ambiguous demonstration raises and applies the answers as guards or
+parameters, so a consequential ambiguity must be answered before the bundle is
+certified.
 
 ```bash
 openadapt flow disambiguate bundle --interactive --write
 ```
 
-A consequential (must-answer) ambiguity exits nonzero until it is resolved. This
-is the same posture as the rest of the system: when the right action is not
-determined, stop and ask, rather than proceed and hope.
+A consequential (must-answer) ambiguity exits nonzero until it is resolved. Same
+posture as the rest of the system: when the right action is not determined, stop
+and ask, rather than proceed and hope.
 
 ## The through-line
 
 OpenAdapt spent enormous effort making a *single trace* safe: the
 [identity ladder](identity-gate.md), volatility mining, postconditions,
 [effect verification](effect-verification.md). That work is necessary but
-insufficient, because the trace itself under-specifies intent. Induction is how
-the intended program is recovered, and quarantine is how the system stays honest
-when it cannot be.
+insufficient, because the trace itself under-specifies intent. Induction
+recovers the intended program, and quarantine keeps the system honest when it
+cannot.

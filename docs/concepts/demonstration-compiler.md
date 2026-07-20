@@ -7,9 +7,9 @@ demonstration instead.
 
 ## Compile, don't re-reason
 
-The core idea is borrowed from programming languages. A demonstration is a
-source program. Compiling it once produces an artifact that runs many times
-without paying the cost of understanding it again.
+The idea comes from programming languages. A demonstration is a source program.
+Compiling it once produces an artifact that runs many times without paying the
+cost of understanding it again.
 
 ```mermaid
 flowchart LR
@@ -24,17 +24,16 @@ flowchart LR
     end
 ```
 
-A computer-use agent typically pays model latency and API cost while selecting
-actions on each run. The compiler does not require a model to author or execute
-the healthy path. An explicitly configured model can propose a repair when
-deterministic evidence is insufficient; that proposal remains governed and is
-counted in the report.
+An agent pays model latency and API cost selecting actions on each run. The
+compiler needs no model to author or execute the healthy path. An explicitly
+configured model can propose a repair when deterministic evidence is
+insufficient; that proposal stays governed and is counted in the report.
 
 ## What a compiled step carries
 
 Compilation does not record raw coordinates and replay them blindly. Each step
-carries redundant evidence about the moment it was recorded, so the target can
-be re-found even when the pixels move:
+carries redundant evidence, so the target can be re-found even when the pixels
+move:
 
 - a **template crop** of the target,
 - an **OCR label** read from it,
@@ -43,8 +42,8 @@ be re-found even when the pixels move:
   screen after the action.
 
 At replay, a [resolution ladder](self-healing.md) tries these in order. A
-healthy script resolves every step on the first rung (a local template match)
-in milliseconds.
+healthy script resolves every step on the first rung, a local template match, in
+milliseconds.
 
 ## The record, compile, replay loop
 
@@ -60,11 +59,11 @@ deterministically and writes an illustrated report.
 
 ## Vision-first behind a small backend
 
-The runtime is **vision-first, not vision-only**: it can always operate a pure
+The runtime is **vision-first, not vision-only**. It can always operate a pure
 pixel surface (PNG in, clicks and keys out) behind a small `Backend` protocol,
-which is why the whole loop runs in CI with no OS permissions. But where a
-backend exposes more than pixels — a browser DOM, a native accessibility tree,
-an API — OpenAdapt uses that higher-fidelity signal via
+which is why the whole loop runs in CI with no OS permissions. Where a backend
+exposes more than pixels (a browser DOM, a native accessibility tree, an API),
+OpenAdapt uses that higher-fidelity signal via
 [the capability ladder](capability-ladder.md). The web (Playwright), desktop
 (Windows/UIA), native macOS, RDP, and Citrix/VDI [backends](backends.md) are all
 adapters to the same protocol, not rewrites.
@@ -74,9 +73,9 @@ adapters to the same protocol, not rewrites.
 Most enterprise software has no usable API for the workflow you actually run.
 The demonstration is the only interface that always exists: if a person can do
 it, it can be demonstrated. OpenAdapt treats that demonstration as the spec and
-compiles a durable, auditable, $0 replay from it. That is the wedge: the long
-tail of API-less work that is too specific to buy an integration for and too
-repetitive to keep paying a person or an agent to redo.
+compiles a durable, auditable, $0 replay from it. That is the wedge: API-less
+work too specific to buy an integration for and too repetitive to keep paying a
+person or an agent to redo.
 
 ## Where it goes next
 

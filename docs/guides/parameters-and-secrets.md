@@ -1,9 +1,8 @@
 # Parameters and secrets
 
 A workflow that runs many times usually varies a value each run: a different
-note, a different reference number. Some of those values are secrets that must
-never touch disk. OpenAdapt handles both, and treats them differently on
-purpose.
+note, a different reference number. Some values are secrets that must never touch
+disk. OpenAdapt handles both, and treats them differently on purpose.
 
 ## Parameters
 
@@ -22,8 +21,8 @@ Repeat `--param` for multiple values.
 
 Parameterizing the *typed text* of a step is fully supported and verified: a
 distinct value each run, read back and confirmed by OCR of the resulting screen.
-Making a value a parameter also strips it from every compiled assertion, by
-design, because it varies per run.
+Making a value a parameter also strips it from every compiled assertion, because
+it varies per run.
 
 ### Parameterizing *which record* is stricter
 
@@ -38,17 +37,15 @@ band must match the resolved row. A wrong row halts, and a row that merely
     When the entity's own row text varies with the entity (a search result that
     carries the surname the recorded band baked in), the substituted band can
     fail to match even the correct row, and the run halts. Clicking by position
-    is what caused wrong-record writes, so OpenAdapt takes the halt. Re-anchoring
-    verifies cleanly only when the band's non-parameter text is stable across
-    entities.
+    caused wrong-record writes, so OpenAdapt takes the halt. Re-anchoring verifies
+    cleanly only when the band's non-parameter text is stable across entities.
 
 ## Secrets
 
 A secret is a parameter whose value is **never persisted**. A `password` input,
-or any field you mark `--secret`, is treated as secret: its value is never
-written to the recording, the events log, the compiled bundle, or the saved
-frames (its on-screen region is redacted). At replay it is injected from the
-environment, and a missing one fails fast.
+or any field you mark `--secret`, is never written to the recording, the events
+log, the compiled bundle, or the saved frames (its on-screen region is redacted).
+At replay it is injected from the environment, and a missing one fails fast.
 
 ```bash
 openadapt flow record --url https://your.app --out rec --secret password
@@ -72,11 +69,11 @@ not you pass `--secret`.
 
 ## Leakage is linted at compile time
 
-Recorded parameter values do not leak into geometry landmarks, and a
-compile-time check fails the build if a demonstrated parameter value appears in
-any text postcondition or landmark OCR text. The check reads text evidence only,
-so a later region-stable template can still embed a value's rendered pixels; that
-failure is in the safe direction (the region will not match under a different
-run value and the run halts safely), but it is not linted. See the
+Recorded parameter values do not leak into geometry landmarks: a compile-time
+check fails the build if a demonstrated parameter value appears in any text
+postcondition or landmark OCR text. The check reads text evidence only, so a
+later region-stable template can still embed a value's rendered pixels. That
+failure is in the safe direction (the region will not match under a different run
+value and the run halts safely), but it is not linted. See the
 [configuration reference](../reference/configuration.md) for the full list of
 secret and parameter environment variables.

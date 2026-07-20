@@ -7,7 +7,7 @@ is a subcommand of `openadapt flow`.
 !!! note "Command form"
     The primary form is `openadapt flow <verb>`. If you installed the standalone
     engine package, the same verbs are available as `openadapt-flow <verb>`
-    (drop the space). The flags are identical.
+    (drop the space), with identical flags.
 
 ## Verbs at a glance
 
@@ -47,15 +47,15 @@ is a subcommand of `openadapt flow`.
 ## Choosing a backend {#backend}
 
 `record`, `replay`, `run`, and `resume` all accept a **backend selector** that
-chooses what the workflow drives — a browser, a native Windows desktop, or a
+chooses what the workflow drives: a browser, a native Windows desktop, or a
 pixel-only remote session. It overrides the `backend` section of a
-[`--config`](deployment-config.md); with no flag the default is `web`, which
+[`--config`](deployment-config.md). With no flag the default is `web`, which
 reproduces the historical browser behavior. See
 [Backends, where it runs](../concepts/backends.md) for the substrate model.
 
 | Flag | Description |
 |---|---|
-| `--backend {web,windows,rdp}` | `web` (default; Playwright/Chromium), `windows` (native Windows via the WAA HTTP agent — needs `--agent-url`), or `rdp` (pixel-only remote desktop / Citrix — needs `--rdp-host`, or a configured `rdp_window` for a local Citrix/Parallels window) |
+| `--backend {web,windows,rdp}` | `web` (default; Playwright/Chromium), `windows` (native Windows via the WAA HTTP agent, needs `--agent-url`), or `rdp` (pixel-only remote desktop / Citrix, needs `--rdp-host`, or a configured `rdp_window` for a local Citrix/Parallels window) |
 | `--agent-url URL` | Base URL of the in-guest Windows (WAA) agent for `--backend windows` (e.g. `http://localhost:5001`). Overrides `backend.agent_url` |
 | `--rdp-host HOST` | RDP host/IP for `--backend rdp` (network RDP via FreeRDP). Overrides `backend.rdp_host`. For a **local** Citrix/Parallels window instead of a network host, set `backend.rdp_window` in `--config` |
 
@@ -87,7 +87,7 @@ openadapt flow record --url https://your.app --out rec
 |---|---|
 | `--url` (required) | URL of the app to record against |
 | `--out` (required) | Recording output directory |
-| `--secret FIELD` | Mark a typed field (by name or id) as a **secret**: its value is never persisted and is injected at replay from `OPENADAPT_FLOW_SECRET_<FIELD>`. `input[type=password]` is always secret. Repeatable. |
+| `--secret FIELD` | Mark a typed field (by name or id) as a **secret**: never persisted, injected at replay from `OPENADAPT_FLOW_SECRET_<FIELD>`. `input[type=password]` is always secret. Repeatable. |
 | `--param FIELD` | Record a typed field as a **parameter**: its demonstrated value becomes the default, overridable at replay with `--param`. Repeatable. |
 | `--headless` | Run the browser headless (scripted or CI recording) |
 
@@ -127,7 +127,7 @@ openadapt flow compile rec --out bundle --name my-task
 
 Induce a parameterized **program** bundle from **two or more** recordings (or
 already-compiled bundles) of the same task: infer the shared parameters, loops,
-and branches. It **refuses** — writes no bundle, exits nonzero — when intent is
+and branches. It **refuses** (writes no bundle, exits nonzero) when intent is
 underdetermined, rather than guessing a branch. See
 [Induce a program from multiple traces](../guides/induce-a-program.md).
 
@@ -149,11 +149,11 @@ Exits `0` when the program is **certified** (bundle written) and `2` when it is
 
 Author a data-driven **loop** from a single demonstration. `for-each` takes one
 compiled linear bundle and a worklist (CSV or JSON) and emits a `program: true`
-bundle whose one loop runs the demonstrated body once per record, binding each
-record's columns to the workflow's parameters. Every iteration keeps the same
-gates the linear bundle had: identity checks and effect verification run per
-record, the loop is bounded by a hard `--max-iterations` cap, and a refuted or
-ambiguous write halts the run instead of skipping the record. See
+bundle whose loop runs the demonstrated body once per record, binding each
+record's columns to the workflow's parameters. Every iteration keeps the linear
+bundle's gates: identity checks and effect verification run per record, the loop
+is bounded by a hard `--max-iterations` cap, and a refuted or ambiguous write
+halts the run instead of skipping the record. See
 [Run a workflow for each record](../guides/data-driven-loops.md).
 
 ```bash
@@ -175,8 +175,8 @@ openadapt flow for-each bundle --records worklist.csv --out queue-bundle \
 The column-to-parameter mapping is explicit and validated. An unmapped column, a
 mapping onto an unknown or secret parameter, a bound parameter with no column and
 no demonstrated default, a ragged worklist, or a worklist longer than the bound
-all **fail loudly** and write no bundle. Once authored, drive the loop at run
-time with [`replay --worklist`](#replay) or [`run --worklist`](#run).
+all **fail loudly** and write no bundle. Once authored, drive the loop with
+[`replay --worklist`](#replay) or [`run --worklist`](#run).
 
 ## replay
 
@@ -196,7 +196,7 @@ openadapt flow replay bundle --url https://your.app --param note="Follow-up"
 | `--save-healed-to DIR` | Write the healed bundle to this directory |
 | `--headed` | Run the browser headed |
 | `--record-video DIR` | Opt-in: capture a WebM of the replay session (default off) |
-| `--worklist [RELATION=]FILE` | CSV/JSON worklist of parameter rows driving a **program** bundle's loop over a relation (repeatable). `RELATION=FILE` binds a named relation; a bare `FILE` binds the program's sole loop relation. Refused on a linear bundle. |
+| `--worklist [RELATION=]FILE` | CSV/JSON worklist of parameter rows driving a **program** bundle's loop over a relation (repeatable). `RELATION=FILE` binds a named relation; a bare `FILE` binds the sole loop relation. Refused on a linear bundle. |
 
 **Deployment-wiring flags** (shared with [`run`](#run) / [`resume`](#resume);
 default off, so an unconfigured replay behaves exactly as before):
@@ -210,21 +210,20 @@ default off, so an unconfigured replay behaves exactly as before):
 | `--api-actuator` | Perform a step carrying an `ApiBinding` via the API ($0, no GUI), confirmed by the effect verifier |
 | `--api-base-url` | Base URL for the API actuator (implies `--api-actuator`) |
 | `--durable` | Enable the Tier-3 [durable runtime](../concepts/durable-runtime.md): checkpoint each verified step, durably pause on halt, resumable via `resume` |
-| `--allow-model-grounding` | **Model-egress opt-in** (PHI audit REM-3): permit wiring an off-box model grounder / identity-VLM / state-verifier; screenshots may leave the box. Off by default: replay makes no model-service calls; target and effect-verifier traffic remains deployment-defined. |
+| `--allow-model-grounding` | **Model-egress opt-in** (PHI audit REM-3): permit wiring an off-box model grounder / identity-VLM / state-verifier; screenshots may leave the box. Off by default: replay makes no model-service calls; target and effect-verifier traffic stays deployment-defined. |
 
-Exits 0 on success and 1 on a halt. With no model component wired, replay makes
-no model-service calls; target and effect-verifier traffic still follows the
-deployment configuration. The on-prem VLM appliance is engaged only when
-`--allow-model-grounding` is passed **and**
-[`OPENADAPT_FLOW_VLM_URL`](configuration.md) is set.
+Exits 0 on success, 1 on a halt. With no model component wired, replay makes no
+model-service calls; target and effect-verifier traffic follows the deployment
+config. The on-prem VLM appliance engages only when `--allow-model-grounding` is
+passed **and** [`OPENADAPT_FLOW_VLM_URL`](configuration.md) is set.
 
 ## run
 
 The same executor as [`replay`](#replay), behind a fail-closed admission gate:
 the bundle must pass policy, identity coverage, effect coverage, approval,
 encryption, and manifest-integrity checks before any action executes. Backend,
-effect verification, API actuation, durable runtime, and policy are wired from
-`--config`. The demo-only `--drift` teaching aid is not offered. See
+effect verification, API actuation, durable runtime, and policy come from
+`--config`. The demo-only `--drift` teaching aid is not offered here. See
 [Run a deployment](../guides/run-a-deployment.md).
 
 ```bash
@@ -240,9 +239,9 @@ openadapt flow run bundle --config deployment.yaml
 | `--save-healed-to DIR` | Write the healed bundle to this directory |
 | `--headed` | Run the browser headed |
 | `--policy NAME-OR-PATH` | Certifying policy (default: config policy, then `clinical-write`). |
-| `--approve-unverified-writes` | Explicitly approve writes whose declared effects cannot be independently verified in this deployment. |
+| `--approve-unverified-writes` | Approve writes whose declared effects cannot be independently verified in this deployment. |
 | `--strict-templates` | Refuse rather than warn when template/screenshot assets are unsealed. |
-| `--allow-unencrypted` | Development escape hatch that disables the default encryption-at-rest refusal. |
+| `--allow-unencrypted` | Dev escape hatch: disables the default encryption-at-rest refusal. |
 | `--pin-digest SHA256` | Refuse unless the sealed content digest matches. |
 | `--pin-version VERSION` | Refuse unless the compiler version matches. |
 | `--dry-run`, `--explain` | Print the gate report and exit without executing. |
@@ -256,7 +255,7 @@ admitted execution later halts.
 
 Resume a durably-paused run from its last verified checkpoint, never re-running
 an already-confirmed write. Rebuilds a live backend, re-binds the run's
-parameters, and continues from the checkpoint. See
+parameters, and continues. See
 [Durable runtime](../concepts/durable-runtime.md).
 
 ```bash
@@ -303,7 +302,7 @@ Resolve a halted run: demonstrate the fix once, and `teach` compiles it back
 into the workflow through the governed induction path so that state never halts
 again. It induces the correction as a guarded exception branch, gates it against
 a regression check and a held-out canary, and writes an updated bundle **only**
-if it passes. See [The halt-learn loop](../concepts/halt-learn-loop.md).
+on pass. See [The halt-learn loop](../concepts/halt-learn-loop.md).
 
 ```bash
 openadapt flow teach runs/replay-20260712-140233 \
@@ -319,14 +318,14 @@ openadapt flow teach runs/replay-20260712-140233 \
 | `--bundle` (required) | The base bundle that halted (seeds the skill's active version) |
 | `--out` (required) | Output directory for the UPDATED bundle, written **only** when the correction is promoted |
 | `--skill-id` | Skill id in the versioned library (default: the run's workflow name) |
-| `--library` | Directory for the versioned skill library that keeps the promotion lineage (default: `<out>.skills`) |
+| `--library` | Directory for the versioned skill library holding the promotion lineage (default: `<out>.skills`) |
 
 Deterministic and `$0` on the shipped path: the resolution is induced by the
 model-free reference inducer. Exits `0` when a verified revision is promoted (the
 updated bundle is at `--out`), `1` on a **governed refusal** (the correction was
-underdetermined or would weaken a safety invariant, so nothing is written and the
-base bundle stays halting), and `2` when the inputs are unusable (no halt in the
-report, no base bundle, or a malformed fix).
+underdetermined or would weaken a safety invariant; nothing is written and the
+base bundle stays halting), `2` when inputs are unusable (no halt in the report,
+no base bundle, or a malformed fix).
 
 ## lint
 
@@ -347,8 +346,8 @@ Exits nonzero once a finding reaches `error` (an unarmed or vacuous
 
 ## certify
 
-Enforce a policy on a bundle and refuse it (nonzero exit) if it fails. This is
-what makes "runnable" distinct from "certified safe."
+Enforce a policy on a bundle and refuse it (nonzero exit) if it fails. This makes
+"runnable" distinct from "certified safe."
 
 ```bash
 openadapt flow certify bundle --policy clinical-write
@@ -368,7 +367,7 @@ neither supplies a policy. Exits 2 when the bundle fails certification.
 ## disambiguate
 
 Surface the compile-time multiple-choice questions an ambiguous demonstration
-raises, and apply the answers as guards or parameters. Ask, do not guess.
+raises, and apply the answers as guards or parameters. Ask, don't guess.
 
 ```bash
 openadapt flow disambiguate bundle --interactive --write
@@ -388,7 +387,7 @@ Exits 2 if a consequential (must-answer) ambiguity is left unresolved.
 Pair this computer to a Cloud workspace with a one-time code generated in the
 dashboard. This is a command of the **`openadapt` launcher** (invoked as
 `openadapt connect`, not `openadapt flow connect`) and ships from **OpenAdapt
-1.7 onward** — on an older build it fails with `No such command 'connect'` (see
+1.7 onward**. On an older build it fails with `No such command 'connect'` (see
 [troubleshooting](../guides/troubleshooting.md#connect-no-such-command)).
 
 ```bash
@@ -406,10 +405,10 @@ Cloud settings. For a scripted install or a second machine, use
 
 ## login
 
-Validate a hosted ingest token. The CLI stores the token in the OS keychain
-when available and stores only the non-secret host in its config. Plaintext
-token storage requires an explicit fallback flag. This is a connectivity
-command, not a hosted-runner entitlement.
+Validate a hosted ingest token. The CLI stores the token in the OS keychain when
+available and stores only the non-secret host in its config. Plaintext token
+storage requires an explicit fallback flag. This is a connectivity command, not
+a hosted-runner entitlement.
 
 ```bash
 openadapt flow login --token <ingest-token>
@@ -425,9 +424,9 @@ openadapt flow login --token <ingest-token>
 
 Acquire an expiring, one-time Cloud challenge and create a signed operator
 attestation over strict lint, policy certification, and a successful local
-replay. Both inputs must be reviewed and approved sanitized derivatives. The
-bundle must have been compiled from the exact approved recording, and bundle
-sanitation must preserve execution-bearing bytes.
+replay. Both inputs must be reviewed, approved sanitized derivatives. The bundle
+must be compiled from the exact approved recording, and bundle sanitation must
+preserve execution-bearing bytes.
 
 ```bash
 openadapt flow validate-hosted \
@@ -452,7 +451,7 @@ openadapt flow validate-hosted \
 | `--environment` | Non-PHI validation-environment identifier; only its SHA-256 is included. |
 | `--target-url` | Exact non-PHI HTTPS entry URL. The report must bind the same requested URL and its actual browser origin; credentials, query strings, and fragments are refused. |
 | `--allowed-host` | Additional exact hostname allowed during hosted execution. Repeatable; the target hostname is included automatically. |
-| `--compiler-config` | Optional JSON object; its digest must match compiler provenance already sealed into the bundle. |
+| `--compiler-config` | Optional JSON object; its digest must match compiler provenance already sealed in the bundle. |
 | `--out` | Attestation JSON path. |
 | `--destination-kind`, `--trusted-host` | Destination policy for managed or exact-allowlisted customer endpoints. |
 | `--host`, `--token` | Override the configured control plane and token used for the challenge and HMAC. |
@@ -463,14 +462,14 @@ lint/certification evidence, replay report, validation environment, policy,
 risk class, and challenge. The client also verifies the run report's workflow,
 bundle digest, source-recording provenance, parameter schema, and actual browser
 origin. Cloud verifies its configured exact policy, risk-class, and deployed
-compiler-version allowlists and consumes the organization/token-bound challenge
+compiler-version allowlists, and consumes the organization/token-bound challenge
 once when the bundle is accepted.
 
-This is operator self-attestation, not an independent test or certification.
-The ingest-token HMAC proves possession and detects mutation; it does not prove
-that Cloud or an auditor observed the local replay. `certify` only evaluates the
-selected policy. Use independent evidence custody and a separately controlled
-signer when independent certification is required.
+This is operator self-attestation, not an independent test or certification. The
+ingest-token HMAC proves possession and detects mutation; it does not prove that
+Cloud or an auditor observed the local replay. `certify` only evaluates the
+selected policy. For independent certification, use independent evidence custody
+and a separately controlled signer.
 
 ## push
 
@@ -481,8 +480,9 @@ Uploading does **not** itself run the workflow.
 Sanitation does not establish runnability. Recording push registers the exact
 approved source and returns the next validation state; it does not create a
 runnable workflow. Compile that derivative locally, run strict lint,
-certification, and successful replay, then sanitize/review/approve the bundle,
-run `validate-hosted`, and push the exact bundle with its one-time attestation.
+certification, and successful replay, then sanitize, review, and approve the
+bundle, run `validate-hosted`, and push the exact bundle with its one-time
+attestation.
 
 ```bash
 openadapt flow sanitize recording --kind recording --out recording.sanitized
@@ -493,7 +493,7 @@ openadapt flow push recording.sanitized --kind recording --name "Triage"
 ```
 
 Calling `push` with a raw path performs the first sanitation step and normally
-returns `pending_review` plus the local viewer command. After approval, call
+returns `pending_review` plus the local viewer command. After approval, run
 `push` on the derivative directory.
 
 | Flag | Description |
@@ -502,8 +502,8 @@ returns `pending_review` plus the local viewer command. After approval, call
 | `--kind` | `recording` (default) or `bundle`. |
 | `--name` | Workflow name. |
 | `--workflow-id` | Existing hosted workflow UUID to receive a validated replacement bundle. Valid only with `--kind bundle`. |
-| `--resolves-run-id` | Exact halted-run UUID repaired by this replacement. Requires `--kind bundle` and `--workflow-id`; the halt is resolved only after atomic activation. |
-| `--deployment-kind` | Execution lane: `cloud`, `byoc`, or `regulated`. This is independent of destination trust; every lane requires a verified derivative. |
+| `--resolves-run-id` | Exact halted-run UUID repaired by this replacement. Requires `--kind bundle` and `--workflow-id`; the halt resolves only after atomic activation. |
+| `--deployment-kind` | Execution lane: `cloud`, `byoc`, or `regulated`. Independent of destination trust; every lane requires a verified derivative. |
 | `--destination-kind` | `openadapt-managed`, `customer-managed`, or `local`. The OpenAdapt origin is recognized automatically. |
 | `--trusted-host` | Exact HTTPS origin allowed for a customer-managed endpoint; repeatable. |
 | `--sanitized-out` | Destination for the derivative created from a raw path. |
@@ -514,19 +514,19 @@ returns `pending_review` plus the local viewer command. After approval, call
 
 Remote artifact upload requires an approved sanitized derivative. The pipeline
 inventories and transforms a copy, rescans it, records unresolved findings and
-tool versions in a manifest, and binds operator approval to the derivative
-hash. Unknown, symlinked, unsupported, or unresolved content aborts the upload
-instead of being copied unchanged. The destination is evaluated separately: a
-verified customer endpoint may accept data its policy permits, while an unknown
-endpoint is refused. Compilation alone is never a de-identification claim.
+tool versions in a manifest, and binds operator approval to the derivative hash.
+Unknown, symlinked, unsupported, or unresolved content aborts the upload instead
+of being copied unchanged. The destination is evaluated separately: a verified
+customer endpoint may accept data its policy permits; an unknown endpoint is
+refused. Compilation alone is never a de-identification claim.
 
 ## sanitize, review-sanitized, approve-sanitized
 
 `sanitize` creates a separate derivative and `openadapt.sanitization/v1`
 manifest without modifying the source. `review-sanitized` serves a loopback-only
 original-versus-derivative viewer with no remote assets. `approve-sanitized`
-records the reviewer and freezes an immutable archive; later modification makes
-the approval invalid.
+records the reviewer and freezes an immutable archive; later modification
+invalidates the approval.
 
 ```bash
 openadapt flow sanitize PATH --kind recording --out DERIVATIVE
@@ -545,14 +545,14 @@ openadapt flow approve-sanitized DERIVATIVE --original PATH --reviewer IDENTITY
 | `approve-sanitized --reviewer` | Required identity written into the approval record. |
 
 A bundle whose sanitation changed load-bearing identity evidence is not accepted
-as executable. Parameterize the sensitive value before compilation or execute
+as executable. Parameterize the sensitive value before compilation, or execute
 the original inside its trusted runtime boundary.
 
 ## report-break
 
-Read a halted run's `report.json` and emit a scrubbed, schema-minimized halt descriptor.
-The recording stays local. A PHI-boundary rejection retries with a harder scrub
-and can fall back to local-only.
+Read a halted run's `report.json` and emit a scrubbed, schema-minimized halt
+descriptor. The recording stays local. A PHI-boundary rejection retries with a
+harder scrub and can fall back to local-only.
 
 ```bash
 openadapt flow report-break runs/<halted-run> \
@@ -576,8 +576,8 @@ See what a demonstration compiled **into**, before it runs. `visualize` reads a
 bundle and renders its program graph: the ordered steps, the resolution ladder
 each step will try, where an identity gate is armed, which writes carry an effect
 check, and every point the run can halt. It writes one of three formats from the
-same underlying graph spec, so the CLI, Cloud, and desktop surfaces all show the
-same thing. See [Visualize a compiled program](../concepts/program-visualizer.md).
+same graph spec, so the CLI, Cloud, and desktop surfaces all show the same thing.
+See [Visualize a compiled program](../concepts/program-visualizer.md).
 
 ```bash
 openadapt flow visualize bundle -o graph.html     # self-contained page
@@ -633,8 +633,8 @@ openadapt flow benchmark --n-compiled 100 --n-agent 20 --out benchmark/
 
 ## emit-skill / emit-mcp {#emit}
 
-Emit a compiled bundle as an Agent Skills folder, or as a standalone MCP server,
-so other agents can invoke the workflow as a tool.
+Emit a compiled bundle as an Agent Skills folder or a standalone MCP server, so
+other agents can invoke the workflow as a tool.
 
 ```bash
 openadapt flow emit-skill bundle --out skills/

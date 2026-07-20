@@ -1,10 +1,9 @@
 # Durable runtime: checkpoint, resume, approve
 
 A halt is the safety design working: the run stopped rather than guessing. But a
-halt in the middle of a long workflow should not mean starting over, and it
-must never mean re-performing a write that already landed. The durable runtime
-turns a halt into a **durable pause** the operator can approve and resume from
-the last verified checkpoint.
+halt mid-workflow should not mean starting over, and must never re-perform a
+write that already landed. The durable runtime turns a halt into a **durable
+pause** the operator can approve and resume from the last verified checkpoint.
 
 !!! note "Off by default"
     The durable runtime is Tier-3 and opt-in. Enable it with `runtime.durable`
@@ -14,14 +13,14 @@ the last verified checkpoint.
 
 ## What "durable" adds
 
-With durability on, the replayer **checkpoints each verified step**. A step is
-checkpointed only after its postconditions passed and, where declared, its
-[effect was CONFIRMED](effect-verification.md) against the system of record. So
-the checkpoint marks real, verified progress, not merely "the click fired."
+With durability on, the replayer **checkpoints each verified step**, only after
+its postconditions passed and, where declared, its
+[effect was CONFIRMED](effect-verification.md) against the system of record. The
+checkpoint marks verified progress, not merely "the click fired."
 
 When the run halts (an unhandled screen, a refuted write, an escalation), it
-writes a **pending escalation** into the run directory and stops. The work
-already done is durably recorded; nothing after the checkpoint was performed.
+writes a **pending escalation** into the run directory and stops. Work already
+done is durably recorded; nothing after the checkpoint was performed.
 
 ```mermaid
 flowchart LR
@@ -37,11 +36,11 @@ flowchart LR
 
 ## Resume never re-runs a confirmed write
 
-A GUI automation cannot be resumed from a serialized state alone: it needs a
-live backend and live vision. So `resume` rebuilds a fresh live backend (from
-the deployment config's `backend.url` or `--url`), re-binds the run's parameters
-from the run manifest, and **continues from the last verified checkpoint**. The
-steps before the checkpoint are not re-performed — which is the whole point on an
+A GUI automation cannot resume from serialized state alone: it needs a live
+backend and live vision. So `resume` rebuilds a fresh live backend (from the
+deployment config's `backend.url` or `--url`), re-binds the run's parameters
+from the run manifest, and **continues from the last verified checkpoint**.
+Steps before the checkpoint are not re-performed, which is the whole point on an
 irreversible write.
 
 ```bash
@@ -63,9 +62,8 @@ openadapt flow resume  runs/replay-20260712-140233 --require-approval
     Approval is recorded as **auditable metadata** on the pending escalation,
     and `resume --require-approval` gates on it. A full approval store (who,
     when, a signature) is on the durable roadmap and is deliberately not
-    synthesized ad hoc. The safety property that holds today: a run that
-    requires approval will not resume until an explicit `approve` step marks it
-    so.
+    synthesized ad hoc. The safety property today: a run that requires approval
+    will not resume until an explicit `approve` step marks it so.
 
 ## The bounded-recovery posture
 
@@ -77,10 +75,10 @@ Durable resume is the third tier of a deliberately bounded runtime:
 3. a **durable pause, approve, resume** from the last verified checkpoint.
 
 It is explicitly **not** "hand the rest of the workflow to a free-form agent
-after a halt." Recovery is scoped, and the checkpoint is where a human takes
-over when it cannot be. This is the runtime face of the same posture the
-[identity gate](identity-gate.md) and [effect verification](effect-verification.md)
-take: when the right action is not determined, stop — and here, stop *resumably*.
+after a halt." Recovery is scoped; the checkpoint is where a human takes over
+when it cannot be. Same posture as the
+[identity gate](identity-gate.md) and [effect verification](effect-verification.md):
+when the right action is not determined, stop, and here, stop *resumably*.
 
 See the [Run a deployment](../guides/run-a-deployment.md) guide for a worked
 durable run, and the [CLI reference](../reference/cli.md#resume) for `resume` /

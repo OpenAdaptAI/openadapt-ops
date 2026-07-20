@@ -1,16 +1,16 @@
 # Induce a program from multiple traces
 
 A single demonstration is evidence, not a specification: it cannot show which
-values are parameters, where a branch or a loop belongs, or what the failure
-path is. `induce` recovers a parameterized **program** from several
-demonstrations of the same task — and refuses, rather than guesses, when the
-traces leave intent underdetermined. For the model behind this, see
+values are parameters, where a branch or loop belongs, or what the failure path
+is. `induce` recovers a parameterized **program** from several demonstrations of
+the same task, and refuses rather than guesses when the traces leave intent
+underdetermined. For the model behind this, see
 [Multi-trace induction](../concepts/multi-trace-induction.md).
 
 ## Record the same task more than once
 
 Record the task a few times, varying the values you intend to be parameters (a
-different note, a different patient), keeping the intended path the same:
+different note, a different patient) and keeping the intended path the same:
 
 ```bash
 openadapt flow record --url https://your.app --out rec-1
@@ -26,15 +26,15 @@ Feed the recordings (or already-compiled bundles) to `induce`:
 openadapt flow induce rec-1 rec-2 rec-3 --out program --name my-program
 ```
 
-`induce` aligns the traces to recover the shared parameters, loops, and
-branches. It is deterministic and model-free at its core. The outcome is one of
-two things, and both are explicit:
+`induce` aligns the traces to recover the shared parameters, loops, and branches.
+It is deterministic and model-free at its core. The outcome is one of two explicit
+results:
 
-- **CERTIFIED** — it writes a parameterized program bundle to `--out` and prints
+- **CERTIFIED**: it writes a parameterized program bundle to `--out` and prints
   the parameters and column decisions it inferred.
-- **NOT CERTIFIED** — it writes **no bundle** and exits nonzero, listing exactly
-  what stayed underdetermined. This is the refuse-rather-than-guess posture: a
-  CI or deploy gate will refuse an ambiguous program.
+- **NOT CERTIFIED**: it writes **no bundle** and exits nonzero, listing exactly
+  what stayed underdetermined. Refuse-rather-than-guess: a CI or deploy gate will
+  refuse an ambiguous program.
 
 Resolve an underdetermined program by supplying more or more-consistent traces,
 or by answering the questions [`disambiguate`](../concepts/multi-trace-induction.md)
@@ -43,8 +43,8 @@ surfaces.
 ### Validate on held-out traces
 
 With three or more traces, add `--held-out` to run leave-one-out validation and
-print the per-fold reproduction scores, so you can see how well the induced
-program reproduces a trace it was not fit on:
+print per-fold reproduction scores, showing how well the induced program
+reproduces a trace it was not fit on:
 
 ```bash
 openadapt flow induce rec-1 rec-2 rec-3 --out program --name my-program --held-out
@@ -74,14 +74,14 @@ openadapt flow replay program --worklist referrals=todays_referrals.json
 
 Every iteration runs the same governed machinery: the [identity gate](../concepts/identity-gate.md)
 fires per row, and (when configured) [effect verification](../concepts/effect-verification.md)
-confirms each write against the system of record. A worklist run in production is
+confirms each write against the system of record. A production worklist run is
 usually a [deployment run](run-a-deployment.md) with `--config`, so effects,
 actuation, and durability are wired.
 
 ## When one trace is enough
 
-If your task has no real conditionals or loops and only varies typed values,
-you do not need `induce` — record once and make the varying values
-[parameters](parameters-and-secrets.md). Reach for `induce` when the intent
-spans more than one path, or when you want held-out validation of the recovered
+If your task has no real conditionals or loops and only varies typed values, you
+do not need `induce`: record once and make the varying values
+[parameters](parameters-and-secrets.md). Reach for `induce` when the intent spans
+more than one path, or when you want held-out validation of the recovered
 program.
