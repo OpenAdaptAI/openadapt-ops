@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-19 16:07 UTC*
+> *Last updated: 2026-07-20 04:42 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [docs: reconcile README substrate maturity to the canonical status manifest](https://github.com/OpenAdaptAI/OpenAdapt/pull/1030) (#1030) — merged 
 
 - [docs: refresh reference sandbox source inventory](https://github.com/OpenAdaptAI/OpenAdapt/pull/1029) (#1029) — merged 
 
@@ -46,14 +48,20 @@
 
 - [feat: mount `openadapt flow demo-record`](https://github.com/OpenAdaptAI/OpenAdapt/pull/1010) (#1010) — merged 
 
-- [feat: mount the demonstration compiler as `openadapt flow …` and lead the CLI with it](https://github.com/OpenAdaptAI/OpenAdapt/pull/1009) (#1009) — merged 
-
 
 
 ## openadapt-flow
 
 
+- [feat(record): expose window-scoped capture on `record --window`](https://github.com/OpenAdaptAI/openadapt-flow/pull/164) (#164) — merged 
+
+- [fix(hosted): wait for exclusive run id writer](https://github.com/OpenAdaptAI/openadapt-flow/pull/163) (#163) — merged 
+
+- [docs: point lifecycle copy to qualification matrix](https://github.com/OpenAdaptAI/openadapt-flow/pull/162) (#162) — merged 
+
 - [docs: add explicit Beta lifecycle label to README](https://github.com/OpenAdaptAI/openadapt-flow/pull/161) (#161) — merged 
+
+- [fix(hosted): harden versioned local run reporting](https://github.com/OpenAdaptAI/openadapt-flow/pull/160) (#160) — merged 
 
 - [feat(backends): win32 WindowClient for remote-display window replay](https://github.com/OpenAdaptAI/openadapt-flow/pull/159) (#159) — merged 
 
@@ -85,18 +93,12 @@
 
 - [docs: align product copy and report with scoped substrate evidence](https://github.com/OpenAdaptAI/openadapt-flow/pull/143) (#143) — merged 
 
-- [fix: qualify real RDP input with physical scancode chords](https://github.com/OpenAdaptAI/openadapt-flow/pull/142) (#142) — merged 
-
-- [feat(benchmark): openIMIS claims-intake reference environment (insurance vertical)](https://github.com/OpenAdaptAI/openadapt-flow/pull/141) (#141) — merged 
-
-- [fix: bound README claims and preserve plaintext PHI warnings](https://github.com/OpenAdaptAI/openadapt-flow/pull/140) (#140) — merged 
-
-- [chore: adopt openadapt-capture 0.5.4 and run the adapter tests in CI](https://github.com/OpenAdaptAI/openadapt-flow/pull/139) (#139) — merged 
-
 
 
 ## openadapt-desktop
 
+
+- [feat: signing-ready native pipeline (Azure Trusted Signing + founder runbook)](https://github.com/OpenAdaptAI/openadapt-desktop/pull/30) (#30) — merged 
 
 - [docs: README release-pointer + version hygiene](https://github.com/OpenAdaptAI/openadapt-desktop/pull/29) (#29) — merged 
 
@@ -187,8 +189,6 @@
 - [chore: add MIT LICENSE file](https://github.com/OpenAdaptAI/openadapt-capture/pull/26) (#26) — merged 
 
 - [docs: add Experimental status banner; label old pipeline as historical](https://github.com/OpenAdaptAI/openadapt-capture/pull/25) (#25) — merged 
-
-- [fix: importable headless (no screenshot at import) + persist pixel_ratio on the recording model](https://github.com/OpenAdaptAI/openadapt-capture/pull/24) (#24) — merged 
 
 
 
