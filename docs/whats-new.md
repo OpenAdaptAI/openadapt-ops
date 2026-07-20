@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-20 15:16 UTC*
+> *Last updated: 2026-07-20 15:22 UTC*
 
 
 
@@ -9,6 +9,8 @@
 
 
 - [chore: add Contributor Covenant Code of Conduct](https://github.com/OpenAdaptAI/OpenAdapt/pull/1032) (#1032) — merged 
+
+- [chore: add security CI (CodeQL, gitleaks, dependency-review, Dependabot)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1031) (#1031) — merged 
 
 - [docs: reconcile README substrate maturity to the canonical status manifest](https://github.com/OpenAdaptAI/OpenAdapt/pull/1030) (#1030) — merged 
 
@@ -45,8 +47,6 @@
 - [fix: version reads from metadata + doctor core/optional sets + pyproject description](https://github.com/OpenAdaptAI/OpenAdapt/pull/1013) (#1013) — merged 
 
 - [docs: refocus OpenAdapt on the demonstration compiler (remove package-zoo / old platform framing)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1012) (#1012) — merged 
-
-- [fix: Discord badge 'invalid server' (switch to static badge)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1011) (#1011) — merged 
 
 
 
