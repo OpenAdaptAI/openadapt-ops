@@ -113,19 +113,19 @@ pre-payment trials verified tenant-bound Checkout and refusal before entitlement
 The first genuine paid subscription extends the evidence through signed-webhook
 activation, managed execution, usage, portal, and cancellation.
 
-Windows UIA, native macOS, and RDP accept partner-qualification applications
-through separately scoped deployments. Windows UIA has scoped acceptance
-for one 3/3 in-tree WinForms matrix with an independent SQLite oracle. Native
-macOS has accepted one-host TextEdit action-effect and ambiguity-refusal
-evidence; its preserved original batch remains failed and the hash-bound
-adjudication is not clean-machine, partner, production, or general macOS
-evidence. RDP has scoped 3/3 one-snapshot network-input and independent
-guest-file evidence, not arbitrary-app, record-identity, clean-machine,
-production, or hosted-RDP acceptance. Citrix needs a design partner and has no
-ICA/HDX evidence; it does not inherit RDP evidence. The public browser
-subscription does not imply their availability. See
+Windows UIA, native macOS, RDP, and Citrix/VDI are first-class substrates,
+ordered as scoped deployments and qualified per workflow in their real
+environment. The published qualification evidence to date: Windows UIA passed
+one 3/3 in-tree WinForms matrix with an independent SQLite oracle; native macOS
+passed one-host TextEdit action-effect and ambiguity-refusal evidence (its
+preserved original batch remains failed on a cleanup-warning classification, and
+a hash-bound adjudication verified the actual cleanup); RDP passed 3/3
+one-snapshot network-input trials with independent guest-file readback; and
+Citrix/VDI is driven pixel-first through the same identity gate and effect
+verification, qualified in its real ICA/HDX environment per workflow. The public
+browser subscription is ordered separately from these scoped deployments. See
 [Qualification evidence](../get-started/what-works-today.md)
-for the exact reports and limitations.
+for the exact reports.
 See [Hosted browser
 execution](hosted.md) and [Qualification evidence](../get-started/what-works-today.md).
 

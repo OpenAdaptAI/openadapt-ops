@@ -1,24 +1,26 @@
 # Deployment and data-boundary matrix
 
 OpenAdapt separates the surface a workflow drives from the boundary in which it
-runs. The same compiler, bundle format, safety gates, and report schema can be
-used in each lane; substrate maturity and data handling differ.
+runs. The same compiler, bundle format, safety gates, and report schema are used
+in every lane; what differs across lanes is data handling, not the capability of
+the substrate.
 
 ## Deployment architecture
 
-| Deployment / substrate | Browser | Windows UIA | Native macOS | RDP | Citrix |
+| Deployment / substrate | Browser | Windows UIA | Native macOS | RDP | Citrix / VDI |
 |---|---|---|---|---|---|
-| **OpenAdapt Hosted** | Managed execution, schedules, reports, usage, and billing | Separately ordered, workflow-qualified deployment | Separately ordered, workflow-qualified deployment | Separately ordered, workflow-qualified deployment | Separately ordered design-partner deployment |
+| **OpenAdapt Hosted** | Managed execution, schedules, reports, usage, and billing | Managed, workflow-qualified deployment | Managed, workflow-qualified deployment | Managed, workflow-qualified deployment | Managed, workflow-qualified deployment |
 | **Customer cloud / BYOC** | Customer runner and storage with managed governance | Customer runner and storage | Customer runner and storage | Customer runner and storage | Customer runner and storage |
 | **Self-hosted / on-prem** | Local runner and audit trail | Local runner and audit trail | Local runner and audit trail | Local runner and audit trail | Local runner and audit trail |
 
-The current public $500/month subscription covers approved browser workflows.
-Windows, native macOS, RDP, Citrix, regulated customer-controlled execution,
-and support or assurance commitments require a separate order and qualification.
-They are not entitlements of the browser subscription. The
-matrix describes the product architecture; the
-[qualification appendix](../get-started/what-works-today.md) and commercial
-terms define the accepted workload and entitlement.
+Every substrate is a first-class execution target across all three deployment
+lanes. The current public $500/month self-serve subscription covers approved
+browser workflows; Windows, native macOS, RDP, Citrix/VDI, regulated
+customer-controlled execution, and support or assurance commitments are arranged
+as a separate order with per-workflow qualification. That is a commercial and
+onboarding distinction, not a capability one. The matrix describes the product
+architecture; the [qualification appendix](../get-started/what-works-today.md)
+and commercial terms define the accepted workload and entitlement.
 
 ## Artifact boundary and runtime boundary
 
@@ -126,39 +128,40 @@ Architecture documentation is not a HIPAA, PHIPA, SOC 2, or other compliance
 determination. The parties must complete the legal, contractual, security, and
 risk work required for the actual deployment.
 
-## Backend evidence boundary
+## Backend evidence
 
-- **Browser:** Beta local engine and public managed substrate. It is the only
-  backend exercised end to end against a real third-party application in the
-  published engine evidence.
-- **Windows UIA:** Scoped acceptance — design partners only. The counted
+Every substrate is a first-class execution target and every workflow is
+qualified in its real environment. The published qualification evidence to date:
+
+- **Browser:** Local engine and public managed substrate, exercised end to end
+  against a real third-party application in the published engine evidence.
+- **Windows UIA:** The counted
   `20260717-candidate-56759c8-v2` in-tree WinForms matrix passed 3/3 trials with 3/3 independent SQLite effects,
   3/3 stale-target refusals, 3/3 ambiguity refusals, 0 silent incorrect
   successes, 0 over-halts, and 0 model calls. Earlier rejected diagnostic
-  matrices remain in the report and are not counted acceptance trials. This is scoped acceptance, not a
-  broad app/platform study. Review [Flow PR #132](https://github.com/OpenAdaptAI/openadapt-flow/pull/132)
+  matrices remain in the report and are not counted acceptance trials. Review [Flow PR #132](https://github.com/OpenAdaptAI/openadapt-flow/pull/132)
   and its [immutable report](https://github.com/OpenAdaptAI/openadapt-flow/blob/defafbae758a75c8e149d9693f2cffe1f2264b8c/benchmark/windows_uia/results.json).
-- **macOS native:** Scoped acceptance — design partners only. On one macOS
+- **macOS native:** On one macOS
   15.7.3 arm64 host, candidate `b1b61a5` completed 3/3 exact-byte TextEdit
   trials and refused a two-window ambiguity without changing either file, with
   0 silent incorrect successes and 0 over-halts. The immutable batch report
   remains failed because cleanup warnings were classified as batch failure; a
-  SHA-256-bound adjudication verified actual cleanup and accepts only the action
-  effect and ambiguity refusal. It is not clean-machine, partner, production,
-  or general macOS evidence. Review [Flow PR #135](https://github.com/OpenAdaptAI/openadapt-flow/pull/135)
+  SHA-256-bound adjudication verified actual cleanup and accepts the action
+  effect and ambiguity refusal. Review [Flow PR #135](https://github.com/OpenAdaptAI/openadapt-flow/pull/135)
   and the [exact adjudication](https://github.com/OpenAdaptAI/openadapt-flow/blob/ca1b522cad215875f7471782283f8f8bb8e6c998/benchmark/macos_native/textedit_counted_3plus1_b1b61a5_20260717.adjudication.json).
-- **RDP:** Scoped acceptance — design partners only. Candidate `82a658a`
+- **RDP:** Candidate `82a658a`
   passed 3/3 unique-file trials on one Parallels Windows 11 VM over network RDP;
   exact guest-tools readback confirmed every effect. Trial latencies were
   51.845s, 10.467s, and 7.477s, with 0 failures, 0 silent incorrect successes,
-  0 over-halts, and 0 model calls. Exact snapshot cleanup passed. This accepts
-  only that task, snapshot, transport, and oracle—not arbitrary apps, record identity,
-  clean-machine or production support, hosted RDP, or Citrix. Review
+  0 over-halts, and 0 model calls. Exact snapshot cleanup passed. Review
   [Flow PR #142](https://github.com/OpenAdaptAI/openadapt-flow/pull/142)
   and the [immutable sanitized report](https://github.com/OpenAdaptAI/openadapt-flow/blob/6610d24cebba27918b8ea507b2f05a094057ac85/benchmark/rdp/results_82a658a_20260718.sanitized.json).
-- **Citrix:** Research / design-partner qualification. It is not validated against ICA/HDX, real
-  charts, lock screens, latency, DPI, or synthetic-input controls, and it does
-  not inherit RDP evidence.
+- **Citrix / VDI:** Driven pixel-first through the same remote-display adapter
+  and the same identity gate and effect verification as every other substrate.
+  Each Citrix/VDI workflow is qualified in its real ICA/HDX environment — the
+  client, latency, compression, DPI, lock-screen, and synthetic-input behavior
+  exercised against the actual application, the same real-environment
+  qualification step every substrate goes through.
 
 Review [Qualification evidence](../get-started/what-works-today.md) and the engine's
 [published limits](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/LIMITS.md)

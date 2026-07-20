@@ -16,7 +16,7 @@ controls for a regulated, on-prem deployment, and the pilot install runbook.
 ## The default is already local
 
 A compiled bundle replays deterministically with no model calls and no
-OpenAdapt cloud dependency. The reference backend is a local headless browser.
+OpenAdapt cloud dependency. The default backend is a local headless browser.
 Application and verifier traffic still follows the endpoints in the deployment
 configuration; enforce its boundary at the host and network layers.
 

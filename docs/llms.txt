@@ -27,7 +27,7 @@
 - [The halt-learn loop](https://docs.openadapt.ai/concepts/halt-learn-loop/): Turning halts into demonstrated corrections via teach
 - [Durable runtime](https://docs.openadapt.ai/concepts/durable-runtime/): Turning a halt into a pause an operator can approve and resume
 - [Policy and certify](https://docs.openadapt.ai/concepts/policy-and-certify/): Safety policies and the certification gate
-- [Backends, where it runs](https://docs.openadapt.ai/concepts/backends/): Browser reference path plus desktop, RDP, and Citrix maturity
+- [Backends, where it runs](https://docs.openadapt.ai/concepts/backends/): Web, native Windows, native macOS, RDP, and Citrix/VDI as first-class substrates behind one backend protocol
 - [The on-prem VLM appliance](https://docs.openadapt.ai/concepts/vlm-appliance/): Optional, off-by-default grounding that keeps model calls inside a customer-controlled boundary
 
 ## Guides

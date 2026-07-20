@@ -12,7 +12,7 @@ effect oracle, and data boundary.
 pip install openadapt
 ```
 
-The reference backend is a headless browser. The first time you record or
+The default backend is a headless browser. The first time you record or
 replay against a web app, the browser provisions automatically. To provision it
 ahead of time:
 

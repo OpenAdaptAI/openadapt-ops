@@ -5,8 +5,9 @@ sample app, and `--drift` demonstrates governed re-resolution on it. `run` is th
 execution path wired for a **real deployment** — a backend, effect verification,
 API actuation, a durable runtime, and a policy — all from one
 [`deployment.yaml`](../reference/deployment-config.md). This guide takes a
-certified bundle to a governed deployment run. Passing this guide does not make
-an experimental backend or workflow production-ready.
+certified bundle to a governed deployment run. Passing this guide does not by
+itself qualify a backend or workflow for production; qualify each workflow in
+its real environment.
 
 ## One config wires the whole run
 

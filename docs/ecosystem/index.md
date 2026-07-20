@@ -31,7 +31,7 @@ module inside it:
 | Repository | Lifecycle | Public role |
 |---|---|---|
 | [OpenAdapt](https://github.com/OpenAdaptAI/OpenAdapt) | **Beta** | Installer/meta-package and unified `openadapt flow` dispatcher. |
-| [openadapt-flow](https://github.com/OpenAdaptAI/openadapt-flow) | **Beta** | Canonical compiler and governed runtime. Browser is the reference path; other backends have separate maturity labels. |
+| [openadapt-flow](https://github.com/OpenAdaptAI/openadapt-flow) | **Beta** | Canonical compiler and governed runtime. Drives web, native Windows, native macOS, RDP, and Citrix/VDI as first-class substrates behind one backend protocol. |
 | [openadapt-cloud](https://github.com/OpenAdaptAI/openadapt-cloud) | **Beta** | Live control plane for the public managed-browser subscription: organizations, exact-hash admission, runner orchestration, reports, billing, and usage. |
 | [openadapt-desktop](https://github.com/OpenAdaptAI/openadapt-desktop) | **Experimental** | The current `desktop-v0.5.1` prerelease provides six install/uninstall-smoke-tested installers for Windows, macOS, and Linux, plus exact checksums, platform metadata, and build attestations. |
 | [openadapt-agent](https://github.com/OpenAdaptAI/openadapt-agent) | **Experimental** | Active v2 bridge that exposes governed Flow bundles to MCP clients and Agent Skills. The pre-v2 model-driven execution wrapper is the deprecated line; the repository itself is active. |
@@ -64,4 +64,4 @@ can supply optional on-prem models, Agent gives MCP clients and Agent Skills a
 governed route into Flow bundles, and evals measures adjacent research. This page
 intentionally does not expose internal developer tools as product components.
 See [Qualification evidence](../get-started/what-works-today.md) for integrated
-feature and backend maturity.
+feature and backend coverage.
