@@ -28,10 +28,10 @@ server-side and Checkout confirms the same Product and Price before payment.
 | Structural run history and reports | **Beta / public offer** | Safety depends on the workflow's configured identity, effect, and policy checks. Repair and validation remain local. |
 | Checkout, portal, entitlements, metering | **Beta / public offer** | Live Stripe Checkout, signed webhooks, entitlements, usage, and the billing portal form one managed subscription contract. |
 | Self-hosted browser execution | **Beta** | No hosted account required. |
-| Windows UIA | **Partner qualification; scoped acceptance passed** | The exact in-tree WinForms matrix passed 3/3 with an independent SQLite oracle and 3/3 stale/ambiguity refusals. Windows subscriptions and deployments are scoped separately from the public browser offer. |
-| Native macOS | **Partner qualification; scoped TextEdit evidence accepted** | One macOS 15.7.3 arm64 host produced 3/3 exact-byte TextEdit effects plus a two-window ambiguity refusal. Native macOS subscriptions and deployments are scoped separately from the public browser offer. |
-| RDP | **Partner qualification; scoped RDP evidence accepted** | One Parallels Windows 11 VM produced 3/3 exact guest-file effects through network RDP, with 0 silent incorrect successes, 0 over-halts, and 0 model calls. RDP subscriptions and deployments are scoped separately from the public browser offer. |
-| Citrix | **Design partner needed; no ICA/HDX evidence** | Must be qualified in the actual Citrix environment; RDP evidence does not transfer. |
+| Windows UIA | **Scoped acceptance — design partners only** | The exact in-tree WinForms matrix passed 3/3 with an independent SQLite oracle and 3/3 stale/ambiguity refusals. Windows subscriptions and deployments are scoped separately from the public browser offer. |
+| Native macOS | **Scoped acceptance — design partners only** | One macOS 15.7.3 arm64 host produced 3/3 exact-byte TextEdit effects plus a two-window ambiguity refusal. Native macOS subscriptions and deployments are scoped separately from the public browser offer. |
+| RDP | **Scoped acceptance — design partners only** | One Parallels Windows 11 VM produced 3/3 exact guest-file effects through network RDP, with 0 silent incorrect successes, 0 over-halts, and 0 model calls. RDP subscriptions and deployments are scoped separately from the public browser offer. |
+| Citrix | **Research / design-partner qualification** | Must be qualified in the actual Citrix environment; RDP evidence does not transfer. |
 | Regulated runtime data | **Customer-controlled boundary** | Use a scoped BYOC/on-prem deployment when live screens necessarily contain PHI. |
 
 The public subscription covers approved browser workflows. Windows, native
