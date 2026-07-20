@@ -2,8 +2,7 @@
 
 `lint` tells you where a bundle is thin. `certify` refuses a bundle that
 violates a policy. Together they make "runnable" distinct from "certified safe."
-This guide shows the workflow. For the model behind it, see
-[Policy and certify](../concepts/policy-and-certify.md).
+For the model behind it, see [Policy and certify](../concepts/policy-and-certify.md).
 
 ## Lint first
 
@@ -11,7 +10,7 @@ This guide shows the workflow. For the model behind it, see
 openadapt flow lint bundle
 ```
 
-`lint` reports coverage gaps with a severity each: clicks that act with no
+`lint` reports coverage gaps, each with a severity: clicks that act with no
 identity check, steps that assert nothing, writes left under-classified. It exits
 nonzero once a finding reaches `error` (an unarmed or vacuous *irreversible*
 step). Add `--strict` to also fail on warnings:
@@ -39,7 +38,7 @@ unsafe bundle never ships.
 
 - **`permissive`**: a lenient default for low-stakes, reversible workflows.
 - **`clinical-write`**: a strict policy for consequential writes. It requires,
-  for example: no unarmed clicks, identity on every write and entity-navigation
+  for example, no unarmed clicks, identity on every write and entity-navigation
   step, and effect verification on every write.
 
 Point `--policy` at your own YAML to encode your organization's requirements.
@@ -64,5 +63,5 @@ openadapt flow lint    bundle --strict
 openadapt flow certify bundle --policy clinical-write
 ```
 
-Both commands exit nonzero on failure, so a standard CI step fails the build. The
-gate turns the limits OpenAdapt discloses into requirements it enforces.
+Both exit nonzero on failure, so a standard CI step fails the build. The gate
+turns the limits OpenAdapt discloses into requirements it enforces.

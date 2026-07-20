@@ -2,8 +2,8 @@
 
 OpenAdapt is built for the places other automation vendors avoid: clinics,
 lenders, and back offices where the screen contains regulated data and a wrong
-write is a reportable event. The architecture starts from a simple commitment —
-**your data is workload data, not our telemetry** — and every control on this
+write is a reportable event. The architecture starts from a simple commitment,
+**your data is workload data, not our telemetry**, and every control on this
 page follows from it.
 
 This page is the dossier for an IT or security reviewer evaluating a pilot. It
@@ -15,7 +15,7 @@ question-by-question boundary table, continue to
 !!! note "What we claim, and what we don't"
     OpenAdapt is designed for regulated environments and this page describes
     the concrete controls that make that true. We do not claim SOC 2, HIPAA,
-    PHIPA, or any certification here — request current legal and compliance
+    PHIPA, or any certification here. Request current legal and compliance
     artifacts directly, and verify the controls below against your own
     deployment. The engine is open source, so your reviewers can read every
     control they are asked to trust.
@@ -33,7 +33,7 @@ model in the loop and no cloud dependency:
   path. ([ON_PREM.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/ON_PREM.md))
 - **Model assistance is an explicit opt-in, and it points where you say.** When
   an operator enables model grounding, inference goes to the endpoint the
-  deployment configures — designed as an
+  deployment configures, designed as an
   [on-prem, LAN-only VLM appliance](../concepts/vlm-appliance.md) with
   no retention: neither client nor server writes crops or screenshots to disk
   or logs. ([PRIVACY.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/PRIVACY.md))
@@ -54,19 +54,19 @@ flowchart LR
 ```
 
 When a deployment connects to the hosted control plane, the boundary holds.
-The control plane works with **metadata, digests, and attested hashes — not
+The control plane works with **metadata, digests, and attested hashes, not
 your screens or records**:
 
 - **Uploads go through the sanitized-artifact pipeline, never raw.** The only
   artifact-upload lane accepts an operator-reviewed, approved sanitized
   derivative whose file inventory, transformations, rescan, review state, and
   exact archive SHA-256 are verified before a byte is accepted. Content the
-  sanitizer cannot fully handle — databases, video, audio, nested archives,
-  symlinks, unknown binaries — refuses the entire derivative rather than
+  sanitizer cannot fully handle (databases, video, audio, nested archives,
+  symlinks, unknown binaries) refuses the entire derivative rather than
   passing through.
   ([SANITIZED_ARTIFACTS.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/SANITIZED_ARTIFACTS.md))
 - **Halt reports are schema-minimal.** The hosted break-report channel carries
-  a hashed, coarse halt descriptor — no intent, reason, error text,
+  a hashed, coarse halt descriptor: no intent, reason, error text,
   screenshots, DOM, field values, or report body. Free text is not
   auto-uploaded even when a scrubber is available.
   ([PRIVACY.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/PRIVACY.md))
@@ -82,14 +82,14 @@ your screens or records**:
 
 The one deliberate exception is the separate hosted browser recorder for
 public, non-regulated targets, which sees raw observations inside its own
-declared hosted boundary — it is a distinct, explicitly initiated lane, not
+declared hosted boundary. It is a distinct, explicitly initiated lane, not
 part of the local-execution path. The
 [data-boundary table](security-review.md#data-boundary-answers) states exactly
 which component can see and transmit what.
 
 ## PHI posture: scrubbed where shareable, fail-closed where regulated
 
-OpenAdapt treats PHI handling as an engineering surface with a published map —
+OpenAdapt treats PHI handling as an engineering surface with a published map.
 [PRIVACY.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/PRIVACY.md)
 enumerates every path where PHI is persisted, logged, or transmitted, and names
 the control on each. The posture in brief:
@@ -102,20 +102,20 @@ the control on each. The posture in brief:
   scrubbed before printing.
 - **A regulated deployment pins `OPENADAPT_FLOW_SCRUB=on` and fails closed.**
   Under `on`, a missing scrubbing capability aborts the run instead of writing
-  plaintext PHI, and image redaction of persisted frames is implied — a
+  plaintext PHI, and image redaction of persisted frames is implied: a
   compliance-pinned run cannot leave unredacted full-frame screenshots in the
   shareable report. The on-prem queue refuses to start unless scrub is `on`.
   ([PRIVACY.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/PRIVACY.md),
   [ON_PREM.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/ON_PREM.md))
 - **No silent plaintext, ever.** In the default `auto` mode without the privacy
   extra installed, writing a report with identity-like free text emits a
-  one-time `PlaintextPHIWarning` — an operator can never believe a run is
+  one-time `PlaintextPHIWarning`: an operator can never believe a run is
   de-identified when it is not.
   ([PRIVACY.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/PRIVACY.md))
 - **Encryption at rest, applied to the artifacts that matter.** Opt-in
   AES-256-GCM sealing (`Workflow.save(encrypt=True)` with
   `OPENADAPT_BUNDLE_KEY`) encrypts `workflow.json`, every template screenshot
-  crop, and durable run checkpoints into authenticated containers — no
+  crop, and durable run checkpoints into authenticated containers. No
   cleartext PHI-bearing screenshot remains on disk in an encrypted bundle, and
   keyed loads decrypt in memory only. A wrong key or a tampered ciphertext
   fails loudly, never partially. The identity band in a compiled bundle is a
@@ -130,7 +130,7 @@ the control on each. The posture in brief:
   ([phi_in_transit.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/phi_in_transit.md))
 - **Honest boundaries where scrubbing would break safety.** The recorded
   identity evidence and the run's identity audit trail intentionally retain
-  literal identifiers — scrubbing them would defeat the wrong-record check they
+  literal identifiers. Scrubbing them would defeat the wrong-record check they
   exist to power. Those artifacts are governed as PHI-at-rest inside your
   boundary (filesystem controls, retention, full-disk encryption), and the map
   says so explicitly rather than pretending otherwise.
@@ -149,7 +149,7 @@ the control on each. The posture in brief:
   verifier tokens and agent tokens are supplied from the operator's secret
   store or environment, never committed to deployment YAML. In the on-prem
   package, real secrets live in the OS keychain or a root-only file and are
-  referenced by environment-variable *name* — the config directory holds only
+  referenced by environment-variable *name*. The config directory holds only
   the vendor **public** key.
   ([ON_PREM.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/ON_PREM.md))
 - **Hosted credentials prefer the OS keychain.** The hosted ingest token
@@ -157,7 +157,7 @@ the control on each. The posture in brief:
   explicit flag before it will use plaintext config storage.
   ([security review](security-review.md))
 - **Even the audit surface is secret-free.** Effect contracts are recorded in
-  run reports as one-way SHA-256 digests — enough to prove that two runs wrote
+  run reports as one-way SHA-256 digests, enough to prove that two runs wrote
   different records (or duplicated one) without exposing the underlying value.
   ([openadapt_flow/runtime/effects](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/openadapt_flow/runtime/effects/effect.py))
 
@@ -175,7 +175,7 @@ you can hand to an auditor:
 - **Governed-run authorization binding.** A governed run is admitted once, and
   the approval is bound to the sealed bundle's content digest, the exact
   parameter digest, the admitting policy, the identity-required steps, and the
-  exact effect-contract hashes — single-use, halt-on-mismatch. An approval for
+  exact effect-contract hashes: single-use, halt-on-mismatch. An approval for
   one workflow can never become a reusable bypass for another.
   ([GOVERNED_RUN_AUTHORIZATION.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/design/GOVERNED_RUN_AUTHORIZATION.md))
 - **Every run produces an audit trail.** Human-readable `REPORT.md` (scrubbed)
@@ -191,13 +191,13 @@ you can hand to an auditor:
   ([ON_PREM.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/ON_PREM.md))
 - **You can prove the no-egress posture, repeatedly.** `verify-airgap.sh` scans
   configuration and environment for any off-LAN URL or cloud key, actively
-  probes that a public canary call *fails*, and walks the audit-log hash chain
-  — a repeatable pre-flight for your own attestation.
+  probes that a public canary call *fails*, and walks the audit-log hash chain,
+  a repeatable pre-flight for your own attestation.
   ([ON_PREM.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/ON_PREM.md))
 
 ## Deployment options
 
-All three shapes run the same engine and the same safety gates — the
+All three shapes run the same engine and the same safety gates. The
 [deployment matrix](../concepts/deployment-matrix.md) changes where data
 lives, not what is enforced.
 
@@ -205,10 +205,10 @@ lives, not what is enforced.
 |---|---|---|
 | **Fully local** | Your workstation or server. An empty deployment file means zero egress. | Nothing. No account, telemetry, or update ping in the run path. |
 | **On-prem appliance** | A host inside your network, with a local queue, hash-chained audit log, optional LAN-only VLM box, and operator-pulled signed updates verified against a pinned vendor public key. | Nothing at run time; updates enter on removable media, signature-verified, with blue/green install and rollback. ([Deploy on-prem](deploy-on-prem.md), [ON_PREM.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/ON_PREM.md)) |
-| **Hosted control plane + local execution** | Governed authoring, validation, and repair remain local; the control plane manages accounts, workflow versions, run history, and billing. | Operator-approved sanitized derivatives, minimized halt descriptors, and hash-bound attestations — verified against published schemas. ([The hosted option](hosted.md)) |
+| **Hosted control plane + local execution** | Governed authoring, validation, and repair remain local; the control plane manages accounts, workflow versions, run history, and billing. | Operator-approved sanitized derivatives, minimized halt descriptors, and hash-bound attestations, verified against published schemas. ([The hosted option](hosted.md)) |
 
 Hosted managed *browser* execution is a separate Beta launch-candidate lane
-with its own declared boundary for public, non-regulated targets — see
+with its own declared boundary for public, non-regulated targets. See
 [Hosted browser execution](hosted.md) for its current status and scope.
 
 ## Questions we expect from IT review
@@ -221,20 +221,20 @@ is the reviewed sanitized derivative, and halt telemetry is a schema-minimal
 hashed descriptor.
 
 **What does OpenAdapt's cloud see if we use it?**
-Metadata, digests, coverage and review state, and attested hashes — not raw
+Metadata, digests, coverage and review state, and attested hashes, not raw
 recordings, bundles, or screenshots. Cloud verifies the manifest/hash contract
 on every accepted byte; it does not receive the source artifact. See
 [the data-boundary table](security-review.md#data-boundary-answers).
 
 **Where do models run?**
-By default, nowhere — replay is deterministic. If you enable model grounding,
+By default, nowhere: replay is deterministic. If you enable model grounding,
 inference targets the endpoint you configure; the supported regulated shape is
 an on-prem, LAN-only appliance with no retention.
 ([The on-prem VLM appliance](../concepts/vlm-appliance.md))
 
 **How do you stop a wrong-record write?**
 Identity verification against recorded evidence before consequential clicks,
-typed postconditions, and effect verification against the system of record —
+typed postconditions, and effect verification against the system of record,
 with halt (not guess) on any non-confirmed verdict, and durable pause/resume
 for human review. ([Fail-closed regulated execution](../concepts/regulated-execution.md),
 [The identity gate](../concepts/identity-gate.md))
@@ -248,7 +248,7 @@ tokens live in your secret store or the OS keychain.
 In transit: the PHI-bearing desktop control channel is TLS with per-run
 certificate pinning, fail-closed. At rest: opt-in AES-256-GCM sealing for the
 bundle, its screenshot crops, and checkpoints, layered on operator full-disk
-encryption. Key management (KMS, rotation, escrow) remains yours — OpenAdapt
+encryption. Key management (KMS, rotation, escrow) remains yours. OpenAdapt
 supplies the AEAD substrate, not a KMS.
 ([phi_at_rest.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/phi_at_rest.md))
 
@@ -268,8 +268,8 @@ target within 5 business days) and supply-chain posture (Actions pinned by
 commit SHA, Dependabot).
 
 **How do we go deeper?**
-Work through [Security and deployment review](security-review.md) — the full
-reviewer checklist and boundary table — alongside the engine's
+Work through [Security and deployment review](security-review.md), the full
+reviewer checklist and boundary table, alongside the engine's
 [PRIVACY.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/PRIVACY.md),
 [phi_at_rest.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/phi_at_rest.md),
 [phi_in_transit.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/phi_in_transit.md),

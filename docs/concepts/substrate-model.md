@@ -6,19 +6,19 @@ reachable only as pixels over Citrix. OpenAdapt compiles and replays the same
 [workflow program](workflow-ir.md) on all three, because the runtime sits behind
 one small [backend protocol](backends.md) and one **substrate-agnostic runner**.
 
-The runner does not know or care which surface it is driving. It routes on a
-single field — `workflow.target_kind` — and everything above it (the resolution
-ladder, the [identity gate](identity-gate.md), [effect verification](effect-verification.md),
-the [halt-learn loop](halt-learn-loop.md)) is identical across surfaces.
+The runner does not know which surface it is driving. It routes on a single
+field, `workflow.target_kind`. Everything above it is identical across surfaces:
+the resolution ladder, the [identity gate](identity-gate.md),
+[effect verification](effect-verification.md), and the
+[halt-learn loop](halt-learn-loop.md).
 
 ## Two axes, one contract
 
-There are two orthogonal questions about any run, and the runner keeps them
-separate:
+Two orthogonal questions about any run, kept separate:
 
-- **Substrate** — *what surface is being driven?* Web (browser) or
+- **Substrate**: *what surface is being driven?* Web (browser) or
   Windows-desktop / Citrix-RDP.
-- **Deployment** — *where does the run execute and who owns the data?* See
+- **Deployment**: *where does the run execute and who owns the data?* See
   [the deployment matrix](deployment-matrix.md).
 
 A single runner contract spans both. It speaks the same `enqueue` /
@@ -45,7 +45,7 @@ compares **structured text** where `0` and `O` are distinct characters. The
 whole record → compile → replay loop runs in CI with no OS permissions. See
 [Backends](backends.md#web-playwright).
 
-## The Windows-desktop / Citrix substrate — the wedge
+## The Windows-desktop / Citrix substrate: the wedge
 
 The differentiated work has no web UI and no usable API: a native Windows EMR, a
 WinForms line-of-business app, a clinical tool published through Citrix. This is
@@ -57,25 +57,25 @@ Two backends cover it behind the same protocol:
 - **`WindowsBackend`** drives a native Windows desktop through an in-session
   agent. Its shipped typed RPC exposes bounded screenshot, input, and UIA
   operations while the legacy arbitrary-execution route stays disabled by
-  default. It reads the **UI Automation** tree for identity — and crucially,
-  most native controls expose
-  `Name` / `Value` text **even without a stable `AutomationId`**, so structured
-  identity is viable on desktop, not just the browser.
-- **`FreeRDPBackend`** drives a legacy app over RDP as **pure pixels** — no
-  accessibility tree, no DOM, no structured layer of any kind. This is the floor
-  the vision-first runtime was built for, and it represents the lowest-fidelity
-  surface a Citrix/VDI deployment may expose.
+  default. It reads the **UI Automation** tree for identity. Crucially, most
+  native controls expose `Name` / `Value` text **even without a stable
+  `AutomationId`**, so structured identity is viable on desktop, not just the
+  browser.
+- **`FreeRDPBackend`** drives a legacy app over RDP as **pure pixels**: no
+  accessibility tree, no DOM, no structured layer. This is the floor the
+  vision-first runtime was built for, the lowest-fidelity surface a Citrix/VDI
+  deployment may expose.
 
-!!! info "Citrix / RDP is pixel-first — the identity gate adapts to it"
+!!! info "Citrix / RDP is pixel-first: the identity gate adapts to it"
     On a pure-pixel substrate the ladder runs on its visual floor and the
     identity gate uses its pixel/OCR tiers. When an identifier is genuinely
-    ambiguous at that fidelity — a same-name/same-DOB record whose MRN differs by
-    a single `O`/`0` glyph — the gate **[halts rather than guesses](identity-gate.md)**,
-    by design. That is the same never-click-the-wrong-record guarantee every
-    substrate enforces; each surface simply verifies with the highest-fidelity
-    signal it exposes, and structured layers (a browser DOM, Windows UIA) can
-    resolve that class outright. The engine's per-substrate behavior is detailed
-    in
+    ambiguous at that fidelity (a same-name/same-DOB record whose MRN differs by
+    a single `O`/`0` glyph), the gate
+    **[halts rather than guesses](identity-gate.md)** by design. That is the same
+    never-click-the-wrong-record guarantee every substrate enforces. Each surface
+    verifies with the highest-fidelity signal it exposes, and structured layers
+    (a browser DOM, Windows UIA) resolve that class outright. Per-substrate
+    behavior is detailed in
     [LIMITS](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/LIMITS.md).
 
 ## How the desktop substrate is hosted

@@ -1,9 +1,8 @@
 # Deployment and data-boundary matrix
 
-OpenAdapt separates the surface a workflow drives from the boundary in which it
-runs. The same compiler, bundle format, safety gates, and report schema are used
-in every lane; what differs across lanes is data handling, not the capability of
-the substrate.
+OpenAdapt separates the surface a workflow drives from the boundary it runs in.
+Every lane uses the same compiler, bundle format, safety gates, and report
+schema. What differs across lanes is data handling, not substrate capability.
 
 ## Deployment architecture
 
@@ -13,14 +12,14 @@ the substrate.
 | **Customer cloud / BYOC** | Customer runner and storage with managed governance | Customer runner and storage | Customer runner and storage | Customer runner and storage | Customer runner and storage |
 | **Self-hosted / on-prem** | Local runner and audit trail | Local runner and audit trail | Local runner and audit trail | Local runner and audit trail | Local runner and audit trail |
 
-Every substrate is a first-class execution target across all three deployment
-lanes. The current public $500/month self-serve subscription covers approved
-browser workflows; Windows, native macOS, RDP, Citrix/VDI, regulated
-customer-controlled execution, and support or assurance commitments are arranged
-as a separate order with per-workflow qualification. That is a commercial and
-onboarding distinction, not a capability one. The matrix describes the product
-architecture; the [qualification appendix](../get-started/what-works-today.md)
-and commercial terms define the accepted workload and entitlement.
+Every substrate is a first-class execution target across all three lanes. The
+public $500/month self-serve subscription covers approved browser workflows.
+Windows, native macOS, RDP, Citrix/VDI, regulated customer-controlled execution,
+and support or assurance commitments are a separate order with per-workflow
+qualification: a commercial and onboarding distinction, not a capability one. The
+matrix describes the product architecture; the
+[qualification appendix](../get-started/what-works-today.md) and commercial terms
+define the accepted workload and entitlement.
 
 ## Artifact boundary and runtime boundary
 
@@ -158,9 +157,9 @@ qualified in its real environment. The published qualification evidence to date:
   and the [immutable sanitized report](https://github.com/OpenAdaptAI/openadapt-flow/blob/6610d24cebba27918b8ea507b2f05a094057ac85/benchmark/rdp/results_82a658a_20260718.sanitized.json).
 - **Citrix / VDI:** Driven pixel-first through the same remote-display adapter
   and the same identity gate and effect verification as every other substrate.
-  Each Citrix/VDI workflow is qualified in its real ICA/HDX environment — the
+  Each Citrix/VDI workflow is qualified in its real ICA/HDX environment: the
   client, latency, compression, DPI, lock-screen, and synthetic-input behavior
-  exercised against the actual application, the same real-environment
+  are exercised against the actual application, the same real-environment
   qualification step every substrate goes through.
 
 Review [Qualification evidence](../get-started/what-works-today.md) and the engine's

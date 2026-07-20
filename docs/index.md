@@ -7,14 +7,13 @@ hide:
 # Show it a repeated workflow. OpenAdapt compiles it into governed, deterministic replay.
 
 <p class="oa-lede">
-OpenAdapt is a demonstration compiler for repeated GUI work — in the
-browser, on the native desktop, or inside Citrix and other virtual desktops.
-Demonstrate the task once and OpenAdapt compiles it into a deterministic,
-locally executable program that replays without model calls on a
-healthy run. When interfaces drift, OpenAdapt re-resolves targets
-deterministically or uses an explicitly configured model tier, records the
-repair, and halts instead of guessing when the configured verification checks
-fail.
+OpenAdapt is a demonstration compiler for repeated GUI work in the browser,
+native desktop, Citrix, and other virtual desktops. Demonstrate a task once.
+OpenAdapt compiles it into a deterministic, locally executable program that
+replays with no model calls on a healthy run. When interfaces drift, it
+re-resolves targets deterministically or uses an explicitly configured model
+tier, records the repair, and halts instead of guessing when verification
+fails.
 </p>
 
 [Try it locally](get-started/index.md){ .md-button .md-button--primary }
@@ -26,24 +25,22 @@ fail.
 ## Who it is for
 
 OpenAdapt is built for **regulated, repetitive work in web, desktop, and
-virtual-desktop interfaces**: the
-500th patient referral this month, the daily claims batch, the mortgage file
-that moves through six screens the same way every time. Work that a person has
-already figured out, that runs many times, and where a wrong action has a real
-cost.
+virtual-desktop interfaces**: the 500th patient referral this month, the daily
+claims batch, the mortgage file that moves through six screens the same way
+every time. A person has already figured out the task, it runs many times, and
+a wrong action has real cost.
 
 A computer-use agent re-reasons through the whole task with a large model on
-every run. That is the right shape for a task nobody has automated before, and
-the wrong one for a workflow you run a thousand times. OpenAdapt compiles the
-demonstration instead, so the model is only consulted to repair the script, not
-to drive it.
+every run. That fits a task nobody has automated before, not a workflow you run
+a thousand times. OpenAdapt compiles the demonstration instead, so the model is
+consulted only to repair the script, not to drive it.
 
-OpenAdapt carries one compiled workflow and one governance model across
-browser, Windows, native macOS, RDP, Citrix, and other VDI surfaces. The
-substrate supplies the strongest observations and actions available; the
-compiler, identity checks, effect verification, policy, repair, and audit trail
-remain consistent. Teams qualify each workflow against its real application
-and success oracle before production use.
+One compiled workflow and one governance model run across browser, Windows,
+native macOS, RDP, Citrix, and other VDI surfaces. Each substrate supplies the
+strongest observations and actions available; the compiler, identity checks,
+effect verification, policy, repair, and audit trail stay consistent. Teams
+qualify each workflow against its real application and success oracle before
+production use.
 
 ---
 
@@ -102,30 +99,29 @@ flowchart LR
 ```
 
 Each compiled step carries a template crop, an OCR label, geometry landmarks,
-and postconditions derived from what the demonstration actually changed on
-screen. At replay a resolution ladder tries them in order. Healthy scripts
-never leave the first rung. When the UI drifts, a lower rung still finds the
-target and the fix is written back to the bundle as a reviewable diff. When
-nothing matches, the run halts safely rather than guess.
+and postconditions derived from what the demonstration changed on screen. At
+replay a resolution ladder tries them in order. Healthy scripts never leave the
+first rung. When the UI drifts, a lower rung still finds the target, and the fix
+is written back to the bundle as a reviewable diff. When nothing matches, the
+run halts safely instead of guessing.
 
 A halt is not a dead end. Demonstrate the fix once and `openadapt flow teach`
-compiles that correction back into the workflow (through the same identity,
-effect, and policy checks that gate everything else), so it does not halt on
-that situation again. The correction is induced as a guarded branch, a
-regression gate proves it weakens nothing, and only a verified revision is
-promoted (an underdetermined or unsafe fix is refused, not guessed at). It is
-deterministic and runs at $0 with the reference inducer. See
+compiles the correction back into the workflow, through the same identity,
+effect, and policy checks that gate everything else, so it will not halt on that
+situation again. The correction becomes a guarded branch, a regression gate
+proves it weakens nothing, and only a verified revision is promoted; an
+underdetermined or unsafe fix is refused, not guessed at. It is deterministic
+and runs at $0 with the reference inducer. See
 [The halt-learn loop](concepts/halt-learn-loop.md).
 
 ---
 
 ## One runner, any surface, any deployment
 
-The execution contract is designed to carry the same compiled bundle across
-surfaces and deployment boundaries. A
-[substrate-agnostic runner](concepts/substrate-model.md) routes each job to the
-right driver while governance stays above that boundary. Two orthogonal axes,
-one contract:
+The execution contract carries the same compiled bundle across surfaces and
+deployment boundaries. A [substrate-agnostic runner](concepts/substrate-model.md)
+routes each job to the right driver while governance stays above that boundary.
+Two orthogonal axes, one contract:
 
 | Deployment ↓ / Substrate → | **Web (browser)** | **Windows UIA** | **Native macOS** | **RDP** | **Citrix** |
 |---|---|---|---|---|---|
@@ -139,20 +135,20 @@ it gates certification, identity and effect coverage, approval fallback,
 encryption, and manifest integrity before execution.
 
 The public subscription covers approved browser workflows. Desktop and
-virtual-desktop lanes in this architecture require a separate order and
-workflow-specific qualification; they are not entitlements of the browser
-subscription. The [hosted guide](guides/hosted.md),
+virtual-desktop lanes require a separate order and workflow-specific
+qualification; they are not entitlements of the browser subscription. The
+[hosted guide](guides/hosted.md),
 [qualification evidence](get-started/what-works-today.md), and commercial terms
-define the accepted scope. Artifacts cross boundaries
-only as approved sanitized derivatives, while PHI-bearing runtime observations
-stay inside their declared trusted execution boundary.
+define the accepted scope. Artifacts cross boundaries only as approved sanitized
+derivatives; PHI-bearing runtime observations stay inside their declared trusted
+execution boundary.
 
 ---
 
 ## Measured, not claimed
 
 We publish the numbers and the failure modes. These two results run **both
-arms** — compiled replay against a computer-use agent — under the same
+arms**, compiled replay against a computer-use agent, under the same
 arm-independent success check. **OpenEMR** is the flagship real-EMR
 head-to-head; **MockMed** is the CI-reproducible control anyone can rerun:
 
@@ -194,7 +190,7 @@ catalog](https://openadapt.ai/workflows) and traces to the committed
 | **Insurance** | openIMIS 25.10 (local) | Direct SQL: exactly one non-voided claim row in status "Entered" for the demonstrated insuree and facility | 3/3 compiled replays SQL-verified (1 recorded demonstration + 3 replays; wall times 25.6s / 26.6s / 30.3s); 0 duplicate claims, 0 wrong-policyholder writes, 0 model calls | **Reference demonstration, not a benchmark**: no agent arm, no trial matrix, no publication protocol. AGPL-3.0, repository-only. |
 
 Every vertical environment is a synthetic, pinned, loopback-only fixture on one
-local macOS arm64 host — no customer data and no customer deployment. The
+local macOS arm64 host, with no customer data and no customer deployment. The
 healthcare row here is the pinned-local model-free subset; it is a **different
 run** from the flagship OpenEMR *live-demo* head-to-head above (20/20 vs. 10/10,
 2026-07-08), which is a field result on a shared public instance rather than a
@@ -203,7 +199,7 @@ references; a real deployment of either would prefer the API arm, and neither is
 evidence for a legacy Windows/Citrix system.
 
 Because the agent arm was not run for lending or insurance, **do not read 12/12
-or 3/3 as beating an agent** — they are governed compiled-replay results. Task
+or 3/3 as beating an agent**. They are governed compiled-replay results. Task
 definitions, exact image digests, oracles, and failure taxonomies live in the
 [workflow reference catalog](https://openadapt.ai/workflows) and the
 [engine benchmarks](https://github.com/OpenAdaptAI/openadapt-flow/tree/main/benchmark).

@@ -6,7 +6,7 @@ makes zero model calls.
 
 ## Prerequisites
 
-- **Python 3.10–3.12.** The engine declares `requires-python >=3.10,<3.13`.
+- **Python 3.10-3.12.** The engine declares `requires-python >=3.10,<3.13`.
 - **macOS, Linux, or Windows.** This walkthrough uses the Playwright-driven
   Chromium browser, the default backend, so it has no OS-specific steps. The browser
   provisions automatically the first time you record or replay; to provision it
@@ -26,10 +26,10 @@ Or use the installer script from the landing page, which installs
 curl -fsSL https://openadapt.ai/install.sh | sh
 ```
 
-No web app of your own to record against? You need zero target-app setup to try
-the loop: `openadapt flow demo-record --out rec` records the canonical triage
-task against the bundled MockMed sample app, and `replay` serves MockMed
-automatically when you omit `--url`. The
+No web app of your own to record against? No setup needed:
+`openadapt flow demo-record --out rec` records the canonical triage task against
+the bundled MockMed sample app, and `replay` serves MockMed automatically when
+you omit `--url`. The
 [complete demo journey](index.md#the-complete-demo-journey) walks that path
 end to end.
 

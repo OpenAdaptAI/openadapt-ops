@@ -1,21 +1,20 @@
-# Desktop app — install and first run
+# Desktop app: install and first run
 
 The OpenAdapt desktop app is the local cockpit for the record →
-compile → replay → teach loop: record a workflow on your own machine, compile it
-into a deterministic bundle with [`openadapt flow`](../reference/cli.md), and
-replay, review, and teach corrections — all locally. Nothing leaves your machine
-unless you explicitly push it to a [cloud workspace](connect-to-cloud.md).
+compile → replay → teach loop: record on your own machine, compile into a
+deterministic bundle with [`openadapt flow`](../reference/cli.md), then replay,
+review, and teach corrections, all locally. Nothing leaves your machine unless
+you explicitly push it to a [cloud workspace](connect-to-cloud.md).
 
 !!! note "Prefer the command line?"
-    The desktop app and the [`openadapt flow` CLI](../reference/cli.md) are two
-    first-class ways to drive the same engine. If you would rather stay in a
-    terminal, start with the [five-minute tour](../get-started/index.md) and skip
-    this page. The desktop app is a graphical front end over the same compiler
-    and governed runtime.
+    The desktop app and the [`openadapt flow` CLI](../reference/cli.md) drive the
+    same engine; the app is a graphical front end over the same compiler and
+    governed runtime. To stay in a terminal, start with the
+    [five-minute tour](../get-started/index.md) and skip this page.
 
 ## 1. Download and install
 
-Get the installer for your operating system from
+Get the installer from
 [openadapt.ai/download](https://openadapt.ai/download). The page detects your OS
 and architecture and offers the right build.
 
@@ -28,16 +27,15 @@ and architecture and offers the right build.
 ## 2. Get past the first-launch OS warning
 
 The current builds are **not code-signed yet**, so your OS shows a one-time
-warning before the first launch. This is expected for unsigned software and does
-not indicate a problem with the download.
+warning at first launch. Expected for unsigned software, not a download problem.
 
 === "macOS"
 
     macOS will say the app is from an unidentified developer. To open it the
     first time: **right-click (or Control-click) OpenAdapt in Applications →
-    Open → Open**. macOS remembers your choice, so you will not see this again.
-    Signed and notarized builds are planned; the release pipeline is
-    signing-ready and switches over when credentials are provisioned.
+    Open → Open**. macOS remembers your choice, so you won't see this again.
+    Signed, notarized builds are planned; the pipeline is signing-ready and
+    switches over once credentials are provisioned.
 
 === "Windows"
 
@@ -49,40 +47,39 @@ not indicate a problem with the download.
 
 !!! danger "This is the #1 silent-failure mode"
     Until you grant the permissions below, screen capture returns a **blank or
-    black frame** and input may go nowhere — the app looks like it is recording
-    but captures nothing. There is no error dialog from the OS; recordings just
-    come out empty. Grant these **before** your first recording.
+    black frame** and input may go nowhere: the app looks like it is recording
+    but captures nothing. The OS shows no error dialog; recordings just come out
+    empty. Grant these **before** your first recording.
 
 === "macOS"
 
     OpenAdapt needs two permissions to record: **Screen Recording** (to capture
-    what is on screen) and **Accessibility** (to observe and replay mouse and
-    keyboard input).
+    the screen) and **Accessibility** (to observe and replay mouse and keyboard
+    input).
 
     1. Open **System Settings** (on macOS 12 Monterey and earlier this is
        **System Preferences → Security & Privacy → Privacy**).
     2. Go to **Privacy & Security → Screen Recording**. Toggle **OpenAdapt on**.
     3. Go to **Privacy & Security → Accessibility**. Toggle **OpenAdapt on**.
-    4. **Quit and reopen OpenAdapt.** macOS only applies a newly granted
-       Screen Recording permission after the app restarts — this is a macOS
+    4. **Quit and reopen OpenAdapt.** macOS applies a newly granted Screen
+       Recording permission only after the app restarts. This is a macOS
        requirement, not an app bug.
 
-    If OpenAdapt is not in the list, click **+**, then add it from
-    `/Applications`. If a recording still comes out blank, confirm **both**
-    toggles are on and that you restarted the app after granting Screen
-    Recording.
+    If OpenAdapt is not listed, click **+**, then add it from `/Applications`.
+    If a recording still comes out blank, confirm **both** toggles are on and
+    that you restarted the app after granting Screen Recording.
 
 === "Windows"
 
     On Windows, capture and UI Automation work out of the box for ordinary
-    windows — no permission prompt is needed for a first recording.
+    windows; no permission prompt is needed for a first recording.
 
     The one exception is **elevated (administrator) windows**. Windows blocks a
-    normally-privileged app from seeing or driving a window that is running
-    **as administrator** (UAC elevation). If the app you want to automate runs
-    elevated, run **OpenAdapt as administrator too** (right-click → *Run as
-    administrator*), so both processes are at the same integrity level.
-    Otherwise capture of that window comes back blank and input is ignored.
+    normally-privileged app from seeing or driving a window running
+    **as administrator** (UAC elevation). If the target app runs elevated, run
+    **OpenAdapt as administrator too** (right-click → *Run as administrator*) so
+    both processes share an integrity level. Otherwise capture of that window
+    comes back blank and input is ignored.
 
     For remote-session substrates (Citrix / RDP), see the
     [troubleshooting guide](../guides/troubleshooting.md#session-0) for the
@@ -91,9 +88,9 @@ not indicate a problem with the download.
 ## 4. Verify with a test recording
 
 Record a few seconds of any app, then stop (the same capture is available from
-[`openadapt flow record`](../reference/cli.md#record) on the CLI). If the
-captured frames show your screen (not a blank or black image), permissions are
-correct and you are ready to record a real workflow.
+[`openadapt flow record`](../reference/cli.md#record) on the CLI). If the frames
+show your screen (not a blank or black image), permissions are correct and you
+are ready to record a real workflow.
 
 - **Blank / black frames on macOS** → Screen Recording is not granted, or you
   did not restart the app after granting it. Redo step 3.
@@ -102,7 +99,7 @@ correct and you are ready to record a real workflow.
   UAC note in step 3.
 
 The [troubleshooting guide](../guides/troubleshooting.md) covers these and other
-first-week failure modes.
+first-week failures.
 
 ## Where to go next
 

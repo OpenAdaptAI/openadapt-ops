@@ -2,9 +2,9 @@
 
 OpenAdapt turns a single demonstration into a deterministic, locally-run
 workflow. This section takes you from an empty terminal to a compiled workflow
-and an illustrated run report in about five minutes. When you move to a real
-deployment, pair the workflow with an explicit substrate, identity policy,
-effect oracle, and data boundary.
+and an illustrated run report in about five minutes. For a real deployment, pair
+the workflow with an explicit substrate, identity policy, effect oracle, and
+data boundary.
 
 ## Install
 
@@ -56,12 +56,11 @@ openadapt flow replay bundle-healed --run-dir runs/healed-canary
 ```
 
 Steps 5, 6, and 8 serve the bundled sample app and write an illustrated
-`REPORT.md` plus `report.json` for each run. Step 6 injects a theme the workflow
-has never seen; deterministic lower rungs re-resolve the targets and write a
-candidate to `bundle-healed`. The original `bundle` is not silently promoted.
-Review the diff and canary result first. `lint` and `certify` are the pre-deploy
-gate that makes a bundle "runnable" distinct from "certified under this
-policy".
+`REPORT.md` plus `report.json` per run. Step 6 injects a theme the workflow has
+never seen; deterministic lower rungs re-resolve the targets and write a
+candidate to `bundle-healed`. The original `bundle` is not silently promoted, so
+review the diff and canary result first. `lint` and `certify` are the pre-deploy
+gate that separates "runnable" from "certified under this policy".
 
 ## When a real run halts
 
@@ -99,9 +98,9 @@ openadapt flow run bundle-prod --config deployment.yaml
 
 Follow [Run a deployment](../guides/run-a-deployment.md), then complete the
 [security and deployment review](../guides/security-review.md). Do not promote a
-bundle merely because the sample-app tour passed. The base CLI does not yet have
-a dedicated `seal` verb, so the encryption step uses the shipped library API;
-key custody and rotation belong to the deployment.
+bundle just because the sample-app tour passed. The base CLI has no dedicated
+`seal` verb yet, so the encryption step uses the shipped library API; key
+custody and rotation belong to the deployment.
 
 ## Beyond one demonstration
 

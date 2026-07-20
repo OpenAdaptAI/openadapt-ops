@@ -1,8 +1,8 @@
 # Concepts
 
-These pages explain the model behind OpenAdapt: what a demonstration compiler
-is, how a compiled workflow resolves and verifies each step, and how safety is
-enforced. Read them in order for the full picture, or jump to what you need.
+How OpenAdapt works: what a demonstration compiler is, how a compiled workflow
+resolves and verifies each step, and how safety is enforced. Read in order, or
+jump to what you need.
 
 <div class="grid cards" markdown>
 

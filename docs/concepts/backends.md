@@ -15,17 +15,17 @@ Backends are **adapters, not rewrites**.
 ## Vision-first, not vision-only
 
 The runtime can always operate a pure pixel surface: PNG bytes in, clicks and
-keys at pixel coordinates out. That is the floor, and it is why the whole loop
-runs in CI with no OS permissions. But it is not a ceiling. Where a backend owns
-a structured layer (a browser DOM, a native accessibility tree), the
+keys at pixel coordinates out. That floor is why the whole loop runs in CI with
+no OS permissions. It is not a ceiling. Where a backend owns a structured layer
+(a browser DOM, a native accessibility tree), the
 [capability ladder](capability-ladder.md)'s top rung re-finds the recorded
-target as an *element* and acts on it deterministically. The visual rungs are
-the fallback for substrates that expose only pixels. The ladder is
-**backend-agnostic**: it uses the highest-fidelity signal each surface offers.
+target as an *element* and acts on it deterministically. Visual rungs are the
+fallback for pixel-only substrates. The ladder is **backend-agnostic**: it uses
+the highest-fidelity signal each surface offers.
 
 ## The backends
 
-### Web — Playwright
+### Web: Playwright
 
 A headless Chromium driven by Playwright drives the web substrate, and every
 example in these docs uses it. It exposes a full structured layer:
@@ -40,7 +40,7 @@ example in these docs uses it. It exposes a full structured layer:
 It shares the same bundle, resolution ladder, and identity gate as every other
 substrate; nothing about the safety model is specific to it.
 
-### Desktop — Windows (UIA)
+### Desktop: Windows (UIA)
 
 The public `WindowsBackend` now narrows the in-session boundary to typed
 `/input` and `/uia/*` operations, disables arbitrary legacy execution by
@@ -83,7 +83,7 @@ selection, and stale-target rejection. The older `/execute_windows`
 compatibility route remains a migration surface and is disabled by default; it
 is not the production RPC contract.
 
-### Remote — RDP (pixel-only)
+### Remote: RDP (pixel-only)
 
 The `FreeRDPBackend` drives a legacy application over **RDP**, read pixel-only:
 no accessibility tree, no DOM, no structured layer of any kind. That is exactly
@@ -91,7 +91,7 @@ the substrate the vision-first runtime was built for. It is split into a
 swappable `RDPTransport` protocol (so the adapter is CI-testable without a live
 server) and a real transport over the pure-Python async `aardwolf` client,
 behind the optional `rdp` extra. On a pure-pixel substrate the ladder runs on
-its visual floor and the identity gate falls back to its pixel/OCR tiers — which
+its visual floor and the identity gate falls back to its pixel/OCR tiers, which
 is why a look-alike identifier can force a [halt rather than a verify](identity-gate.md)
 there.
 
@@ -115,14 +115,14 @@ there.
 
 Citrix and other virtual-desktop surfaces are first-class substrates. They are
 driven pixel-first through the same remote-display adapter that captures a named
-application window and injects input at screen coordinates — the exact
-mechanism the vision-first runtime was built for. The same bundle, resolution
-ladder, identity gate, and effect verification apply here as everywhere else.
+application window and injects input at screen coordinates, the exact mechanism
+the vision-first runtime was built for. The same bundle, resolution ladder,
+identity gate, and effect verification apply here as everywhere else.
 
 Each Citrix/VDI deployment is qualified in its real ICA/HDX environment, where
 the client's compression and latency, DPI mapping, credentials and lock
 screens, and synthetic-input acceptance are exercised against the actual
-application — the same "qualify the workflow in its real environment" step every
+application: the same "qualify the workflow in its real environment" step every
 substrate goes through.
 
 ### Native macOS

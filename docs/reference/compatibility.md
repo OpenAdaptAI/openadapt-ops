@@ -20,7 +20,7 @@ not a separate product onboarding path.
 | `openadapt-flow` 1.x + native capture | `openadapt-capture >=0.6` | Optional Windows/RDP demonstration recording |
 | `openadapt-flow` 1.x + privacy extra | `openadapt-privacy[presidio] >=1.0` | Configured local scrub/redaction paths |
 | `openadapt-flow` interoperability extra | `openadapt-types >=0.2,<0.4` | Contributor-facing schema boundary |
-| Python | 3.10–3.12 | Supported runtime range for the current 1.x line |
+| Python | 3.10-3.12 | Supported runtime range for the current 1.x line |
 
 The package metadata is the executable source of truth for these ranges. CI
 installs the real optional packages at the bounded edges used by the engine,

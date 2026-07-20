@@ -1,6 +1,6 @@
 # Guides
 
-Task-focused, how-to guides for real deployments. Each one assumes you have
+How-to guides for real deployments. Each assumes you have
 [installed OpenAdapt](../get-started/index.md) and understand the
 [core concepts](../concepts/index.md).
 

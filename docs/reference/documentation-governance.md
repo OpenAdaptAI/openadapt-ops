@@ -32,8 +32,8 @@ Public docs must:
    unified command surface.
 2. Link each capability claim to its evidence (benchmarks, PRs, limits) so
    readers can see exactly what a surface does and does not yet cover.
-3. Present every execution substrate — web, native Windows, native macOS, RDP,
-   and Citrix/VDI — as first-class, and keep the hosted, customer-cloud, and
+3. Present every execution substrate (web, native Windows, native macOS, RDP,
+   and Citrix/VDI) as first-class, and keep the hosted, customer-cloud, and
    self-hosted deployment lanes distinct.
 4. Put product journeys before package topology.
 5. Link claims to the engine's benchmarks and limits rather than silently

@@ -1,21 +1,20 @@
 # Deployment configuration
 
 A compiled bundle is portable, but *running it in production* needs
-deployment-specific wiring the bundle deliberately does not carry: which GUI to
-drive, which system of record to verify writes against, whether an API actuation
-tier exists, whether the run is durable, and which policy certifies it. A single
+deployment-specific wiring the bundle deliberately omits: which GUI to drive,
+which system of record to verify writes against, whether an API actuation tier
+exists, whether the run is durable, and which policy certifies it.
 `deployment.yaml` is the documented schema for that wiring.
 
-One file is read by `record`, `compile`, `certify`, `replay`, `run`, and
-`resume` (via `--config`), so the same configuration drives every stage. Direct
-CLI flags override individual fields.
+`record`, `compile`, `certify`, `replay`, `run`, and `resume` all read it (via
+`--config`), so one file drives every stage. Direct CLI flags override individual
+fields.
 
 !!! note "Every section is optional"
     An empty file is a valid deployment: fully local, GUI-only, no effect
-    verification, non-durable, and no model-service calls. Add only the sections
-    your deployment needs. The loader validates the YAML against the schema and
-    fails loudly on an unknown field or a missing required value, rather than
-    wiring a broken run.
+    verification, non-durable, no model-service calls. Add only the sections you
+    need. The loader validates the YAML against the schema and fails loudly on an
+    unknown field or a missing required value, rather than wiring a broken run.
 
 ## The full schema
 
@@ -46,7 +45,7 @@ effects:
   records_path: /api/db
   records_key: records
 
-  # fhir (FHIR R4 search, e.g. OpenEMR) — used when kind: fhir
+  # fhir (FHIR R4 search, e.g. OpenEMR), used when kind: fhir
   # base_url: https://openemr.example.org/apis/default/fhir
   # resource_type: Observation
   # search_params: { patient: "Patient/123", category: vital-signs }
@@ -54,7 +53,7 @@ effects:
   # access_token: "${OPENEMR_FHIR_TOKEN}"     # supply via env in production
   # verify_tls: true
 
-  # document-hash (filesystem document store) — used when kind: document-hash
+  # document-hash (filesystem document store), used when kind: document-hash
   # root: /var/lib/exports
   # glob: "**/*.pdf"
 
@@ -88,8 +87,8 @@ policy:
 
 The API/tool tier, the top of the [capability ladder](../concepts/capability-ladder.md).
 When `api: true`, a step carrying an `ApiBinding` performs its write via the API
-(deterministic, `$0`, no GUI) and confirms it with the effect verifier; the GUI
-resolve/act is skipped for that step. Its safe fallback is always the GUI.
+(deterministic, `$0`, no GUI) and confirms it with the effect verifier, skipping
+the GUI resolve/act for that step. Its safe fallback is always the GUI.
 
 | Field | Default | Meaning |
 |---|---|---|
@@ -101,13 +100,13 @@ resolve/act is skipped for that step. Its safe fallback is always the GUI.
 
 Which [system of record](../concepts/effect-verification.md) consequential
 writes are verified against. `kind: none` (the default) wires no verifier: a
-bundle that declares no effects replays as before, but a step that **does**
-declare effects then **halts** — an unverifiable consequential write is never
-silently accepted.
+bundle declaring no effects replays as before, but a step that **does** declare
+effects then **halts**. An unverifiable consequential write is never silently
+accepted.
 
 | `kind` | System of record | Required fields |
 |---|---|---|
-| `none` | (no verifier) | — |
+| `none` | (no verifier) | none |
 | `rest` | a JSON REST endpoint | `base_url` (plus `records_path`, `records_key`) |
 | `fhir` | a FHIR R4 API | `base_url` (plus `resource_type`, `search_params`, optional `field_paths`, `access_token`, `verify_tls`) |
 | `document-hash` | a filesystem document store | `root` (plus `glob`) |
@@ -129,15 +128,15 @@ Shared: `timeout_s` (default `5.0`), `poll_interval_s` (default `0.2`).
 
 ## Flags override the file
 
-Direct CLI flags override individual fields, so a config sets the deployment
-baseline and a flag tweaks one run:
+Direct CLI flags override individual fields, so a config sets the baseline and a
+flag tweaks one run:
 
 ```bash
 # config supplies backend.url, effects, policy; flag forces a durable run
 openadapt flow run bundle --config deployment.yaml --durable
 ```
 
-The relevant overrides: `--url` / `--headed` (backend), `--effects-kind` /
+The overrides: `--url` / `--headed` (backend), `--effects-kind` /
 `--effects-base-url` / `--effects-root` (effects), `--api-actuator` /
 `--api-base-url` (actuation), `--durable` and `--allow-model-grounding`
 (runtime). See the [CLI reference](cli.md#run) and the

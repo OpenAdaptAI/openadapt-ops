@@ -10,27 +10,25 @@ records apart.
 
 When data shifts between runs (a row added above the target, the target's row
 deleted, a look-alike sibling, a re-sorted table), the resolver can still find a
-pixel-identical target at a plausible position. Resolving the target is not
-enough. Before an armed click, OpenAdapt re-reads the resolved row's own text
-and compares it to the recorded row. On a mismatch, it halts before clicking.
+pixel-identical target at a plausible position. Resolving is not enough. Before
+an armed click, OpenAdapt re-reads the resolved row's text and compares it to
+the recorded row; on a mismatch, it halts before clicking.
 
 ## An impossibility result, and an honest response
 
 Identity has a proven ceiling on pixels alone. Two **different** patients with
 the same name and same date of birth, whose only distinguishing field is an
 identifier differing by a single glyph (`MG4408` vs `MG44O8`, `100512` vs
-`1OO512`), render to a **byte-identical OCR band**. That band is literally the
-same input a legitimate re-read of the true row produces, so no function
-downstream of OCR can separate the two. This is not a tuning gap. It is the
-limit of OCR-based identity, and the honest response is to **refuse rather than
-guess**.
+`1OO512`), render to a **byte-identical OCR band**. That band is identical to
+what a re-read of the true row produces, so nothing downstream of OCR can
+separate them. This is not a tuning gap but the limit of OCR-based identity, and
+the honest response is to **refuse rather than guess**.
 
 ## The identity ladder
 
-Identity is an ordered ladder of verifier tiers, highest-fidelity first. The
-first tier that can judge the substrate wins, and its verdict is final. Every
-tier is fail-safe: unsure abstains to the next, and if nothing verifies, the run
-halts.
+Identity is an ordered ladder of verifier tiers, highest-fidelity first: the
+first that can judge the substrate wins, and its verdict is final. Every tier is
+fail-safe: unsure abstains to the next, and if nothing verifies, the run halts.
 
 ```mermaid
 flowchart TD
@@ -48,19 +46,19 @@ flowchart TD
 ```
 
 1. **Structured text (DOM / UIA / AX).** When the backend exposes the element
-   under the point, the recorded and live identity strings are compared by
-   exact match in which `0` and `O`, `1` and `l` are distinct characters. The
-   glyph-collapse cannot occur, because the two rows are different strings in
-   the tree. On a real dense sibling surface this **closes the glyph-collapse
-   class at zero false accept and near-zero added over-halt**, including the
-   exact attack that produces a high false-accept rate on the OCR path. Most
-   native apps expose `Name` / `Value` text even without a stable automation id,
-   so this tier is viable on desktop, not just the browser.
+   under the point, recorded and live identity strings are compared by exact
+   match: `0` and `O`, `1` and `l` are distinct characters, so glyph-collapse
+   cannot occur (the two rows are different strings in the tree). On a real
+   dense sibling surface this **closes the glyph-collapse class at zero false
+   accept and near-zero added over-halt**, including the exact attack that
+   produces a high false-accept rate on the OCR path. Most native apps expose
+   `Name` / `Value` text even without a stable automation id, so this tier is
+   viable on desktop, not just the browser.
 2. **Pixel-compare of the identifier crop.** For substrates with no structured
    text (Citrix, RDP, VDI), pixels distinguish `O` from `0` where OCR cannot.
-   The VERIFY path here is **hard-gated off** today: adversarial review showed
-   no threshold makes a pixel VERIFY safe against sub-pixel render jitter, so
-   the tier may only MISMATCH (a safe halt) or ABSTAIN, never grant a pass.
+   The VERIFY path is **hard-gated off** today: adversarial review showed no
+   threshold makes a pixel VERIFY safe against sub-pixel render jitter, so the
+   tier may only MISMATCH (a safe halt) or ABSTAIN, never grant a pass.
 3. **Local-VLM veto** (optional, off by default). A local open model can
    **reject** a wrong record with high reliability but is not trusted to
    **certify** a right one, so a "same" answer abstains rather than passes. It
@@ -75,10 +73,10 @@ flowchart TD
 
 Driven through the real replayer, the integrated ladder measures **zero
 false-accept across every substrate configuration**, including the
-same-name/same-DOB homonym. On browser and desktop substrates the structured
-tier closes the class at no availability cost. On a pure-pixel substrate a
-collapsible identifier is not safely verifiable and **halts** today, which is
-the honest cost of "OCR alone cannot verify a collapsible identifier."
+same-name/same-DOB homonym. On browser and desktop the structured tier closes
+the class at no availability cost. On pure pixels a collapsible identifier is
+not safely verifiable and **halts** today, the honest cost of "OCR alone cannot
+verify a collapsible identifier."
 
 !!! warning "Coverage is a first-class, auditable metric"
     Identity verification covers only **armed** steps, and real bundles arm a
@@ -89,13 +87,13 @@ the honest cost of "OCR alone cannot verify a collapsible identifier."
     `identity_armed` and `identity_unarmed_reason` (auditable before running),
     and every run report states "N of M click steps identity-armed" and lists
     the unarmed steps with the reason. Disclosure does not close the gap; a
-    wrong-entity click on an unarmed step is still silent. This is exactly what
+    wrong-entity click on an unarmed step is still silent. This is what
     [policy and certify](policy-and-certify.md) exists to gate.
 
 ## Why this posture
 
-The cost of the identity gate is availability: on noisy pure-pixel rows it will
-sometimes halt a correct run rather than gamble. That is the cheap direction to
-be wrong. Clicking by position is what caused wrong-patient writes, so OpenAdapt
-takes the halt. For deployments that cannot tolerate the halt, a hybrid
-escalates each one to a fallback rather than proceeding blindly.
+The identity gate costs availability: on noisy pure-pixel rows it sometimes
+halts a correct run rather than gamble. That is the cheap direction to be wrong.
+Clicking by position is what caused wrong-patient writes, so OpenAdapt takes the
+halt. Deployments that cannot tolerate it can escalate each halt to a fallback
+rather than proceed blindly.
