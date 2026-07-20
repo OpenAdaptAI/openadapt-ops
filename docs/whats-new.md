@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-20 14:53 UTC*
+> *Last updated: 2026-07-20 15:16 UTC*
 
 
 
@@ -141,6 +141,8 @@
 ## openadapt-agent
 
 
+- [chore: add security CI (CodeQL, gitleaks, dependency-review, Dependabot)](https://github.com/OpenAdaptAI/openadapt-agent/pull/3) (#3) — merged 
+
 - [feat!: repurpose openadapt-agent as the agent-facing MCP + Agent Skills bridge (v2.0.0.dev0, Experimental)](https://github.com/OpenAdaptAI/openadapt-agent/pull/2) (#2) — merged 
 
 - [docs: add Deprecated status banner (successor: openadapt-flow)](https://github.com/OpenAdaptAI/openadapt-agent/pull/1) (#1) — merged 
@@ -177,6 +179,8 @@
 
 ## openadapt-capture
 
+
+- [chore: add security CI (CodeQL, gitleaks, dependency-review, Dependabot)](https://github.com/OpenAdaptAI/openadapt-capture/pull/31) (#31) — merged 
 
 - [feat: window-scoped recording (capture one window in its own pixel space)](https://github.com/OpenAdaptAI/openadapt-capture/pull/30) (#30) — merged 
 
