@@ -95,47 +95,51 @@ extra:
     - icon: fontawesome/solid/rss
       link: https://blog.openadapt.ai
 
+# Top-level information architecture follows the five-section review:
+# Start, Build, Operate, Security, Internals. Pages keep their existing
+# on-disk paths (get-started/, concepts/, guides/, reference/, desktop/,
+# ecosystem/); only their grouping and cross-links change.
 nav:
   - Home: index.md
-  - Get started:
+  - Start:
     - get-started/index.md
-    - Qualification evidence: get-started/what-works-today.md
+    - Install and first run: desktop/install.md
     - Your first workflow: get-started/first-workflow.md
     - What you get: get-started/what-you-get.md
-  - Desktop app:
-    - Install and first run: desktop/install.md
-    - Connect to a cloud workspace: desktop/connect-to-cloud.md
-  - Concepts:
+  - Build:
     - concepts/index.md
+    - All how-to guides: guides/index.md
     - The demonstration compiler: concepts/demonstration-compiler.md
-    - The substrate model: concepts/substrate-model.md
-    - The deployment matrix: concepts/deployment-matrix.md
-    - Fail-closed regulated execution: concepts/regulated-execution.md
+    - The workflow-program IR: concepts/workflow-ir.md
+    - Record your own app: guides/record-your-app.md
+    - Induce a program from multiple traces: guides/induce-a-program.md
+    - Multi-trace induction: concepts/multi-trace-induction.md
+    - Parameters and secrets: guides/parameters-and-secrets.md
     - The capability ladder: concepts/capability-ladder.md
+    - Write and enforce a policy: guides/policy-and-certification.md
+    - Policy and certify: concepts/policy-and-certify.md
     - Effect verification: concepts/effect-verification.md
     - The identity gate: concepts/identity-gate.md
-    - Governed self-healing: concepts/self-healing.md
-    - The workflow-program IR: concepts/workflow-ir.md
-    - Multi-trace induction: concepts/multi-trace-induction.md
-    - The halt-learn loop: concepts/halt-learn-loop.md
-    - Durable runtime: concepts/durable-runtime.md
-    - Policy and certify: concepts/policy-and-certify.md
-    - Backends, where it runs: concepts/backends.md
-    - The on-prem VLM appliance: concepts/vlm-appliance.md
-  - Guides:
-    - guides/index.md
-    - Record your own app: guides/record-your-app.md
-    - Parameters and secrets: guides/parameters-and-secrets.md
-    - Induce a program from multiple traces: guides/induce-a-program.md
-    - Write and enforce a policy: guides/policy-and-certification.md
+  - Operate:
     - Run a deployment: guides/run-a-deployment.md
+    - Read and audit run reports: guides/run-reports.md
+    - The halt-learn loop: concepts/halt-learn-loop.md
+    - Governed self-healing: concepts/self-healing.md
+    - Durable runtime: concepts/durable-runtime.md
     - Deploy on-prem: guides/deploy-on-prem.md
+    - The on-prem VLM appliance: concepts/vlm-appliance.md
     - The hosted option: guides/hosted.md
+    - Connect to a cloud workspace: desktop/connect-to-cloud.md
+    - Troubleshooting: guides/troubleshooting.md
+  - Security:
+    - Qualification evidence: get-started/what-works-today.md
+    - Fail-closed regulated execution: concepts/regulated-execution.md
     - Security and data handling: guides/security-and-data-handling.md
     - Security and deployment review: guides/security-review.md
-    - Read and audit run reports: guides/run-reports.md
-    - Troubleshooting: guides/troubleshooting.md
-  - Reference:
+  - Internals:
+    - The substrate model: concepts/substrate-model.md
+    - The deployment matrix: concepts/deployment-matrix.md
+    - Backends, where it runs: concepts/backends.md
     - reference/index.md
     - openadapt flow CLI: reference/cli.md
     - Versions and compatibility: reference/compatibility.md
@@ -144,7 +148,7 @@ nav:
     - Configuration and env vars: reference/configuration.md
     - Package and repository lifecycle: ecosystem/index.md
     - Documentation source of truth: reference/documentation-governance.md
-  - What's New: whats-new.md
-  - Changelog: changelog.md
+    - What's New: whats-new.md
+    - Changelog: changelog.md
   - Blog ↗: https://blog.openadapt.ai
   - OpenAdapt.ai ↗: https://openadapt.ai

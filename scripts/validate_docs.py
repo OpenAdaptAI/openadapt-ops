@@ -98,21 +98,29 @@ def check_product_docs_contract(docs_dir=None, mkdocs_file=None):
     # Parse only the final nav section with the safe loader.
     nav_section = nav[nav.index("\nnav:") + 1 :] if "\nnav:" in nav else nav
     nav_config = yaml.safe_load(nav_section) or {}
-    reference_entries = next(
-        (
-            entry["Reference"]
-            for entry in nav_config.get("nav", [])
-            if isinstance(entry, dict) and "Reference" in entry
-        ),
-        [],
-    )
+    # The package/repository catalog must stay nested under the reference-style
+    # engineering section rather than promoted to a package-first top level. The
+    # five-section IA renamed that section "Internals"; accept either name so the
+    # guard tracks intent, not a specific label.
+    catalog_section_names = {"Reference", "Internals"}
+    reference_entries = [
+        item
+        for entry in nav_config.get("nav", [])
+        if isinstance(entry, dict)
+        for name, items in entry.items()
+        if name in catalog_section_names and isinstance(items, list)
+        for item in items
+    ]
     catalog_is_under_reference = any(
         item == "ecosystem/index.md"
         or (isinstance(item, dict) and "ecosystem/index.md" in item.values())
         for item in reference_entries
     )
     if not catalog_is_under_reference:
-        issues.append("Package and repository lifecycle catalog must remain under Reference")
+        issues.append(
+            "Package and repository lifecycle catalog must remain under the "
+            "Reference/Internals section"
+        )
 
     public_text = "\n".join(
         path.read_text() for path in docs_dir.rglob("*.md") if path.is_file()
