@@ -17,6 +17,7 @@ is a subcommand of `openadapt flow`.
 | [`demo-record`](#demo-record) | Serve the sample app and record the canonical demo | 0 |
 | [`compile`](#compile) | Compile a recording into a workflow bundle | 0 |
 | [`induce`](#induce) | Induce a parameterized program from **multiple** recordings | 0 if certified, 2 if underdetermined |
+| [`for-each`](#for-each) | Author a data-driven **loop** bundle: run one demonstration once per worklist record | 0 on success, nonzero on a mapping error |
 | [`replay`](#replay) | Replay a bundle, locally and deterministically | 0 on success, 1 on failure |
 | [`run`](#run) | Execute a bundle through the fail-closed deployment gate | 0 success, 1 execution halt, 2 refusal |
 | [`resume`](#resume) | Resume a durably-paused run from its last checkpoint | 0 on success, 1/3 otherwise |
@@ -30,6 +31,7 @@ is a subcommand of `openadapt flow`.
 | [`push`](#push) | Explicitly upload a recording or bundle to a control plane | 0/1 |
 | [`validate-hosted`](#validate-hosted) | Bind local validation evidence to a one-time hosted challenge | 0/1 |
 | [`report-break`](#report-break) | Send a scrubbed, schema-minimized halt descriptor | 0/1 |
+| [`visualize`](#visualize) | Render a bundle's program graph (steps, ladder, gates, halts) | 0 |
 | [`bench`](#bench) | Replay a bundle N times against the sample app and aggregate | 0 if all pass |
 | [`benchmark`](#benchmark) | Compare compiled replay vs a computer-use agent | 0 |
 | [`emit-skill`](#emit) | Emit an Agent Skills folder for a bundle | 0 |
@@ -142,6 +144,39 @@ openadapt flow induce rec-1 rec-2 rec-3 --out program --name my-program --held-o
 
 Exits `0` when the program is **certified** (bundle written) and `2` when it is
 **not certified** (no bundle written; the uncertainties are printed).
+
+## for-each
+
+Author a data-driven **loop** from a single demonstration. `for-each` takes one
+compiled linear bundle and a worklist (CSV or JSON) and emits a `program: true`
+bundle whose one loop runs the demonstrated body once per record, binding each
+record's columns to the workflow's parameters. Every iteration keeps the same
+gates the linear bundle had: identity checks and effect verification run per
+record, the loop is bounded by a hard `--max-iterations` cap, and a refuted or
+ambiguous write halts the run instead of skipping the record. See
+[Run a workflow for each record](../guides/data-driven-loops.md).
+
+```bash
+openadapt flow for-each bundle --records worklist.csv --out queue-bundle \
+  --map mrn=patient_id --map note=note_text
+```
+
+| Argument / flag | Description |
+|---|---|
+| `bundle` (positional) | The compiled linear bundle to wrap in a loop |
+| `--records` (required) | Worklist file: a `.csv` whose header names the columns, or a `.json` list of row objects. One record is one iteration. |
+| `--out` (required) | Output program-bundle directory |
+| `--map COLUMN=PARAM` | Map a worklist column to a workflow parameter (repeatable). Omit to map each column to the parameter of the same name. |
+| `--relation` | Name of the emitted loop relation (default `worklist`) |
+| `--max-iterations` | Hard fail-safe bound on iterations (default `1000`). A longer worklist is refused at authoring time and halts at run time. |
+| `--loop-var` | Optional human label for the loop variable (reports only) |
+| `--name` | Name for the looped workflow (default `<body>-for-each`) |
+
+The column-to-parameter mapping is explicit and validated. An unmapped column, a
+mapping onto an unknown or secret parameter, a bound parameter with no column and
+no demonstrated default, a ragged worklist, or a worklist longer than the bound
+all **fail loudly** and write no bundle. Once authored, drive the loop at run
+time with [`replay --worklist`](#replay) or [`run --worklist`](#run).
 
 ## replay
 
@@ -534,6 +569,30 @@ openadapt flow report-break runs/<halted-run> \
 
 See [Hosted browser execution](../guides/hosted.md) for the launch candidate,
 sanitation protocol, and destination-aware boundary.
+
+## visualize
+
+See what a demonstration compiled **into**, before it runs. `visualize` reads a
+bundle and renders its program graph: the ordered steps, the resolution ladder
+each step will try, where an identity gate is armed, which writes carry an effect
+check, and every point the run can halt. It writes one of three formats from the
+same underlying graph spec, so the CLI, Cloud, and desktop surfaces all show the
+same thing. See [Visualize a compiled program](../concepts/program-visualizer.md).
+
+```bash
+openadapt flow visualize bundle -o graph.html     # self-contained page
+openadapt flow visualize bundle --format mermaid  # flowchart source, to stdout
+openadapt flow visualize bundle --format json      # the shared graph spec
+```
+
+| Flag | Description |
+|---|---|
+| `bundle` (positional) | Workflow bundle directory |
+| `--format {html,mermaid,json}` | `html` (default): a self-contained, offline-openable page. `mermaid`: flowchart source for Markdown and docs. `json`: the shared program-graph spec every surface renders. |
+| `-o`, `--out FILE` | Write to a file instead of stdout (parent directories are created) |
+
+Reading is offline and side-effect-free: `visualize` never runs the workflow, so
+it is safe to point at any bundle, including one that would refuse to certify.
 
 ## bench
 
