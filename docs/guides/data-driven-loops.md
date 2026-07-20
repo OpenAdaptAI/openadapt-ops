@@ -38,6 +38,11 @@ The output `queue-bundle` is a `program: true` bundle with one bounded loop over
 the records. Nothing runs yet: authoring is a compile-time step that produces an
 inspectable artifact, not an execution.
 
+<figure markdown="span">
+  ![The program graph of a for-each bundle: a single Loop over worklist node branching to a Success terminal labelled all worklist records processed.](../assets/screenshots/for-each-program-graph.png){ width="760" }
+  <figcaption>The program graph of a <code>for-each</code> bundle. Authoring turns the linear demonstration into one bounded loop over the worklist that ends when every record is processed.</figcaption>
+</figure>
+
 ## It refuses a bad worklist at authoring time
 
 The mapping is explicit and validated, so a worklist that does not fit the

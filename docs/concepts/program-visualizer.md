@@ -6,6 +6,11 @@ target, where it will refuse, and where it can stop. The visualizer renders that
 program graph from the bundle itself, so what you review is the artifact that
 will actually run.
 
+<figure markdown="span">
+  ![The compiled program in the Cloud workspace: eighteen numbered steps, a summary line counting steps, armed identity gates, irreversible steps, and halt points, and a highlighted fail-safe halt on the final irreversible write.](../assets/screenshots/program-graph-cloud.png){ width="900" }
+  <figcaption>The same program graph in the Cloud workspace. The summary line counts the steps, armed identity gates, irreversible steps, and halt points, and the fail-safe panel calls out where the run will stop rather than guess.</figcaption>
+</figure>
+
 ## What the graph shows
 
 For each step the visualizer surfaces the parts that decide whether a run is safe:
@@ -46,6 +51,11 @@ openadapt flow visualize bundle --format json      # the shared graph spec
 - **JSON** is the shared program-graph spec. The Cloud and desktop surfaces
   render the same spec, so a reviewer in Cloud and an engineer at the CLI are
   looking at the same graph.
+
+<figure markdown="span">
+  ![The self-contained HTML render of a compiled bundle: each step shows its resolution ladder as an ordered row of rungs, whether an identity gate is armed, what it verifies, and a fail-safe halt on the final irreversible write.](../assets/screenshots/program-graph-cli.png){ width="720" }
+  <figcaption>The HTML rendering of the same bundle. Each step shows its resolution ladder in order, whether its identity gate is armed, what it verifies, and the fail-safe halt on the irreversible write at the end.</figcaption>
+</figure>
 
 The summary line reports the counts that matter at a glance: how many steps, how
 many identity gates are armed, how many steps are irreversible, and how many
