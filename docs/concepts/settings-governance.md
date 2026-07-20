@@ -7,6 +7,11 @@ who only meant to change a preference. The Cloud workspace separates
 configuration into three tiers, and governs each one according to what it can
 break.
 
+<figure markdown="span">
+  ![The Cloud settings page split into three panels: My preferences, Organization policy, and Safety and governance, followed by a Policy history panel. The safety panel notes that its settings can only be made stricter and every change is recorded.](../assets/screenshots/settings-governance.png){ width="760" }
+  <figcaption>The settings page in the Cloud workspace. My preferences, Organization policy, and Safety and governance are separate panels, and the safety panel notes that its controls can only be made stricter, with every change recorded in the policy history below.</figcaption>
+</figure>
+
 ## Three tiers
 
 - **User preferences.** Per-person settings that change one operator's own

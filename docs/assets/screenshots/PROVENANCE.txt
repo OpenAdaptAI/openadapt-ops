@@ -1,0 +1,39 @@
+Screenshot provenance
+=====================
+
+All screenshots below are rendered from OpenAdapt's own tooling in local /
+mock mode. None are mocked-up or hand-drawn. The Cloud captures carry the
+visible "LOCAL MOCK MODE" banner because they were taken against the app
+running with OPENADAPT_CLOUD_MODE=mock (seeded demo data, no real tenant).
+
+program-graph-cloud.png
+  The compiled-program visualizer in the OpenAdapt Cloud workspace
+  (openadapt-cloud), redesigned program-graph view, headless-Chrome capture in
+  local mock mode. Used on concepts/program-visualizer.md.
+
+program-graph-cli.png
+  HTML output of `openadapt flow visualize <bundle>` (openadapt-flow program
+  visualizer) for the OpenEMR showcase bundle, headless-Chrome capture of the
+  self-contained page. Used on concepts/program-visualizer.md.
+
+workflow-catalog.png
+  The workflow catalog and step-level halt map in the OpenAdapt Cloud
+  workspace, headless-Chrome capture in local mock mode. Used on
+  guides/workflow-catalog.md.
+
+for-each-program-graph.png
+  HTML output of `openadapt flow visualize` run on a real `program: true`
+  for-each loop bundle (openadapt-flow showcase-loop bundle), headless-Chrome
+  capture, cropped to the graph. Used on guides/data-driven-loops.md.
+
+settings-governance.png
+  The /dashboard/settings page of the OpenAdapt Cloud workspace, showing the
+  three configuration tiers plus the policy-history panel, headless-Chrome
+  capture in local mock mode, cropped to the governance panels. Used on
+  concepts/settings-governance.md.
+
+dashboard-overview.png
+  The /dashboard overview of the OpenAdapt Cloud workspace: workflow and run
+  counts, the "Runs stopped before guessing" review panel, recent runs, and the
+  workflow list, headless-Chrome capture in local mock mode. Used on
+  guides/hosted.md.

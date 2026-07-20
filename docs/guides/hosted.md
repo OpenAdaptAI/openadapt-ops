@@ -18,6 +18,11 @@ cannot enter the OpenAdapt-hosted boundary.
 Stripe is the commercial source of truth. The website retrieves the live offer
 server-side and Checkout confirms the same Product and Price before payment.
 
+<figure markdown="span">
+  ![The OpenAdapt Cloud workspace overview: counts for workflows, hosted runs used, and items needing attention, a Runs stopped before guessing panel listing a halt to review, a recent-runs table, and the workflow list.](../assets/screenshots/dashboard-overview.png){ width="900" }
+  <figcaption>The managed control plane. The overview counts workflows, hosted runs, and items needing attention, surfaces runs that stopped before guessing for review, and lists recent runs and workflows.</figcaption>
+</figure>
+
 ## What the subscription includes
 
 | Surface | Launch status | Boundary |
