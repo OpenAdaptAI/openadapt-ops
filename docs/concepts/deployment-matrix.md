@@ -8,16 +8,23 @@ schema. What differs across lanes is data handling, not substrate capability.
 
 | Deployment / substrate | Browser | Windows UIA | Native macOS | RDP | Citrix / VDI |
 |---|---|---|---|---|---|
-| **OpenAdapt Hosted** | Managed execution, schedules, reports, usage, and billing | Managed, workflow-qualified deployment | Managed, workflow-qualified deployment | Managed, workflow-qualified deployment | Managed, workflow-qualified deployment |
+| **OpenAdapt Hosted** | Managed execution, schedules, reports, usage, and billing | Not a public hosted offer; runs in the customer boundary | Not a public hosted offer; runs in the customer boundary | Not a public hosted offer; runs in the customer boundary | Not a public hosted offer; runs in the customer boundary |
 | **Customer cloud / BYOC** | Customer runner and storage with managed governance | Customer runner and storage | Customer runner and storage | Customer runner and storage | Customer runner and storage |
 | **Self-hosted / on-prem** | Local runner and audit trail | Local runner and audit trail | Local runner and audit trail | Local runner and audit trail | Local runner and audit trail |
 
-Every substrate is a first-class execution target across all three lanes. The
-public $500/month self-serve subscription covers approved browser workflows.
-Windows, native macOS, RDP, Citrix/VDI, regulated customer-controlled execution,
-and support or assurance commitments are a separate order with per-workflow
-qualification: a commercial and onboarding distinction, not a capability one. The
-matrix describes the product architecture; the
+Every substrate is a first-class target of the shared compiler, runner, and
+safety gates. Where each lane is available today differs, and the matrix states
+that plainly rather than implying uniform hosted availability. The public
+$500/month self-serve subscription runs the browser substrate in OpenAdapt's
+cloud. Windows, native macOS, RDP, and Citrix/VDI run in the customer boundary:
+self-hosted or on-prem today, and control-plane-managed in the customer's own
+cloud (BYOC) as that Experimental lane opens. An in-our-cloud desktop runner
+exists only as an internal, licensing-gated lane, and multi-tenant hosting of the
+desktop substrate in OpenAdapt's cloud is deferred; neither is part of any public
+offer. Between the customer-boundary lanes the difference is a per-workflow
+qualified commercial order rather than a capability gap, and none of these
+substrates is an entitlement of the browser subscription. The matrix describes
+the product architecture; the
 [qualification appendix](../get-started/what-works-today.md) and commercial terms
 define the accepted workload and entitlement.
 
