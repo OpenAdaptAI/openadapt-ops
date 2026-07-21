@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{#
+  Privacy-safe analytics for docs.openadapt.ai.
+
+  Google Analytics is wired through Material's native `extra.analytics` block
+  (see mkdocs.yml), which already handles pageviews and the built-in `search`
+  event, including under `navigation.instant`. This partial adds PostHog and a
+  small shared-taxonomy event layer on top.
+
+  The PostHog script is emitted only when NEXT_PUBLIC_POSTHOG_KEY is present at
+  BUILD time (mkdocs `!ENV` substitution). When the key is unset (local builds
+  and CI), the entire PostHog block is absent from the generated HTML: a hard
+  no-op, not a disabled runtime path.
+#}
+{% block extrahead %}
+  {{ super() }}
+
+  {% if config.extra.posthog_key %}
+  <!-- PostHog product analytics. Emitted only because NEXT_PUBLIC_POSTHOG_KEY
+       was set at build time. Reuses the shared OpenAdapt PostHog project so all
+       web properties report together. -->
+  <script>
+    (function () {
+      // Respect Do-Not-Track: never load or initialize PostHog when the visitor
+      // has asked not to be tracked. Skipping init leaves `posthog` undefined,
+      // so the event layer below simply no-ops.
+      var dnt = navigator.doNotTrack == '1'
+        || window.doNotTrack == '1'
+        || navigator.msDoNotTrack == '1';
+      if (dnt) { return; }
+
+      !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey getNextSurveyStep identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug getPageViewId captureTraceFeedback captureTraceMetric".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+
+      posthog.init('{{ config.extra.posthog_key }}', {
+        api_host: '{{ config.extra.posthog_host }}',
+        person_profiles: 'identified_only',
+        autocapture: true,
+        // Pageviews are driven manually below so they fire correctly under
+        // Material's instant navigation (SPA-style page loads).
+        capture_pageview: false,
+        capture_pageleave: true
+      });
+    })();
+  </script>
+  {% endif %}
+
+  <!-- Shared OpenAdapt event taxonomy. Every call is guarded, so this whole
+       block is a no-op when neither PostHog nor Google Analytics is active. No
+       raw search text and no URL query strings are ever sent (public docs
+       only; no PHI or PII is involved). -->
+  <script>
+    (function () {
+      function phCapture(name, props) {
+        if (typeof posthog !== 'undefined'
+            && posthog
+            && typeof posthog.capture === 'function') {
+          try { posthog.capture(name, props); } catch (e) {}
+        }
+      }
+      // Google Analytics via Material uses the `dataLayer` queue rather than a
+      // global `gtag`; support both, and never throw when neither exists.
+      function gaEvent(name, params) {
+        try {
+          if (window.dataLayer && typeof window.dataLayer.push === 'function') {
+            window.dataLayer.push(['event', name, params]);
+          } else if (typeof window.gtag === 'function') {
+            window.gtag('event', name, params);
+          }
+        } catch (e) {}
+      }
+
+      // Pageviews. Material enables `navigation.instant`, so hook its `location$`
+      // observable instead of relying on full page loads. GA pageviews are
+      // already handled natively by Material's own analytics integration.
+      function firePageview() { phCapture('$pageview'); }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        // `typeof` on an undeclared identifier is safe and never throws.
+        if (typeof location$ !== 'undefined'
+            && location$
+            && typeof location$.subscribe === 'function') {
+          location$.subscribe(function () { firePageview(); });
+        } else {
+          firePageview();
+        }
+      });
+
+      // docs_search: record only the query LENGTH, never the raw query text.
+      // Debounced so we do not emit an event per keystroke.
+      var searchTimer = null;
+      document.addEventListener('input', function (ev) {
+        var el = ev.target;
+        if (!el || !el.matches
+            || !el.matches('[data-md-component=search-query]')) { return; }
+        var len = (el.value || '').length;
+        if (searchTimer) { clearTimeout(searchTimer); }
+        searchTimer = setTimeout(function () {
+          if (len > 0) {
+            phCapture('docs_search', { query_length: len });
+            gaEvent('search', { query_length: len });
+          }
+        }, 800);
+      }, true);
+
+      // outbound_click: classify links to the app, downloads, or GitHub. Record
+      // only host + path, never the query string.
+      document.addEventListener('click', function (ev) {
+        var a = ev.target && ev.target.closest
+          ? ev.target.closest('a[href]') : null;
+        if (!a) { return; }
+        var url;
+        try { url = new URL(a.href, window.location.href); } catch (e) { return; }
+        var destination = null;
+        if (url.host === 'app.openadapt.ai') {
+          destination = 'app';
+        } else if (url.host === 'github.com'
+            || url.host.indexOf('github.com') !== -1) {
+          destination = 'github';
+        } else if (url.pathname.indexOf('/download') !== -1) {
+          destination = 'download';
+        }
+        if (!destination) { return; }
+        var href = url.host + url.pathname; // no query string
+        phCapture('outbound_click', { destination: destination, href: href });
+        gaEvent('outbound_click', { destination: destination, href: href });
+      }, true);
+    })();
+  </script>
+{% endblock %}

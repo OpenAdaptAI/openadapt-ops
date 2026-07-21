@@ -19,6 +19,9 @@ copyright: >-
 
 theme:
   name: material
+  # Register the local overrides directory so overrides/main.html can inject the
+  # PostHog snippet and shared analytics event layer via the extrahead block.
+  custom_dir: overrides
   logo: assets/logo.svg
   favicon: assets/favicon.ico
   # Match the public site's local system stacks and avoid a third-party font
@@ -85,6 +88,19 @@ markdown_extensions:
 
 extra:
   generator: false
+  # Analytics. See ANALYTICS.md (repo root) for the full data-handling notes.
+  # Google Analytics is env-driven; the fallback keeps the existing measurement
+  # ID working when GOOGLE_ANALYTICS_KEY is unset. GA measurement IDs are public
+  # (non-secret), so committing the fallback is fine.
+  analytics:
+    provider: google
+    property: !ENV [GOOGLE_ANALYTICS_KEY, "G-CJ01Y19XJN"]
+  # PostHog is read at BUILD time. When NEXT_PUBLIC_POSTHOG_KEY is unset (local
+  # builds and CI), posthog_key is "" and overrides/main.html emits no PostHog
+  # script at all. Reuses the same env var names and host as the marketing site
+  # so every property reports into one PostHog project.
+  posthog_key: !ENV [NEXT_PUBLIC_POSTHOG_KEY, ""]
+  posthog_host: !ENV [NEXT_PUBLIC_POSTHOG_HOST, "https://us.i.posthog.com"]
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/OpenAdaptAI
