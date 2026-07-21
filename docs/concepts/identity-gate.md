@@ -16,7 +16,7 @@ the recorded row; on a mismatch, it halts before clicking.
 
 ## An impossibility result, and an honest response
 
-Identity has a proven ceiling on pixels alone. Two **different** patients with
+Identity has a proven ceiling on pixels alone. Two **different** records with
 the same name and same date of birth, whose only distinguishing field is an
 identifier differing by a single glyph (`MG4408` vs `MG44O8`, `100512` vs
 `1OO512`), render to a **byte-identical OCR band**. That band is identical to
@@ -94,6 +94,6 @@ verify a collapsible identifier."
 
 The identity gate costs availability: on noisy pure-pixel rows it sometimes
 halts a correct run rather than gamble. That is the cheap direction to be wrong.
-Clicking by position is what caused wrong-patient writes, so OpenAdapt takes the
+Clicking by position is what caused wrong-record writes, so OpenAdapt takes the
 halt. Deployments that cannot tolerate it can escalate each halt to a fallback
 rather than proceed blindly.

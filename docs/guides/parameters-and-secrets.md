@@ -26,7 +26,7 @@ it varies per run.
 
 ### Parameterizing *which record* is stricter
 
-Parameterizing a value that changes **what appears on screen** (which patient to
+Parameterizing a value that changes **what appears on screen** (which record to
 open) is different. Anchors recorded on one entity cannot match another, so
 resolution degrades to geometry, and that click is [identity gated](../concepts/identity-gate.md):
 the run's value is substituted into the recorded band and the whole substituted

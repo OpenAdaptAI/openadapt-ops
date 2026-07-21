@@ -19,7 +19,7 @@ cloud dependency. The default backend is a local headless browser. Application a
 verifier traffic follows the endpoints in the deployment config; enforce its
 boundary at the host and network layers.
 
-## What runs on the clinic machine
+## What runs on the on-prem machine
 
 One host (a server, or a workstation next to the Citrix client) runs the whole
 stack locally:
@@ -169,7 +169,7 @@ exit code, the OS actor, an operator note, and `prev_sha`, a sha256 chain to the
 previous line, so any silent edit or deletion breaks every subsequent hash and is
 caught by `verify-airgap.sh --audit`. The per-step PHI detail stays beside each
 run in `runs/<id>/report.json` under the encrypted volume; the audit log records
-*that* a run happened and *how it ended*, never patient data.
+*that* a run happened and *how it ended*, never the underlying record data.
 
 Tamper-**evidence**, not tamper-**proof** (a local root can recompute the chain):
 for stronger assurance make the file append-only at the OS layer (`chattr +a` on
@@ -177,7 +177,7 @@ Linux) or export it to a LAN WORM store.
 
 ## Offline updates (operator-pulled, signed, never phoned)
 
-The clinic **never** auto-updates over the internet. Updates are prepared
+The on-prem host **never** auto-updates over the internet. Updates are prepared
 out-of-band and pulled in by the operator:
 
 1. An engineer builds a signed release on a connected host and produces a
@@ -196,13 +196,14 @@ without network access.
 
 ## Where the automation sits relative to Citrix
 
-Where the EMR is delivered over Citrix, the automation process runs **on the
-clinic host inside the clinic network**, reaching the application over the LAN via
-the RDP/pixel or Windows backend, the same path a clinician's session uses. The
-runner needs LAN reachability to the Citrix/RDP endpoint and to the local EMR's
-system-of-record API (for effect verification), and **nothing beyond the LAN**. On
-pure-pixel Citrix/RDP the identity ladder falls back from structured a11y/DOM text
-to the pixel/OCR tiers; read the wrong-patient guarantees and their availability
+Where the target application (for example an EMR) is delivered over Citrix, the
+automation process runs **on the on-prem host inside your network**, reaching the
+application over the LAN via the RDP/pixel or Windows backend, the same path a
+user's session uses. The runner needs LAN reachability to the Citrix/RDP endpoint
+and to the local system-of-record API (for effect verification), and **nothing
+beyond the LAN**. On pure-pixel Citrix/RDP the identity ladder falls back from
+structured a11y/DOM text to the pixel/OCR tiers; read the wrong-record guarantees
+and their availability
 cost on that substrate before relying on it.
 
 ## The on-prem VLM appliance
@@ -258,7 +259,7 @@ prebuilt offline wheelhouse. Each site still tests its own signing authority,
 storage, service manager, backup, recovery, and maintenance procedure. See the
 [security and deployment review](security-review.md).
 
-Running on-prem does not change the engine's own safety limits: the wrong-patient
+Running on-prem does not change the engine's own safety limits: the wrong-record
 identity ladder, the unarmed-step gaps, the transactional-write caveats, and the
 OCR ceilings all still apply. On-prem changes *where* the data lives, not *what
 the replay can and cannot guarantee*.

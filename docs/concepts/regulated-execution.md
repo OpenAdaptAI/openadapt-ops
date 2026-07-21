@@ -1,6 +1,6 @@
 # Fail-closed regulated execution: `run` vs `replay`
 
-Iterating on a bundle at your desk and executing a consequential clinical write
+Iterating on a bundle at your desk and executing a consequential write
 in production are different acts, and OpenAdapt draws a hard line: **`replay`**
 is the local, $0, developer-and-pilot path; **`run`** is the fail-closed
 regulated path that refuses to execute unless its admission-gate requirements
