@@ -76,7 +76,7 @@ Every iteration runs the same governed machinery: the [identity gate](../concept
 fires per row, and (when configured) [effect verification](../concepts/effect-verification.md)
 confirms each write against the system of record. A production worklist run is
 usually a [deployment run](run-a-deployment.md) with `--config`, so effects,
-actuation, and durability are wired.
+actuation, and durability are all configured.
 
 ## When one trace is enough
 

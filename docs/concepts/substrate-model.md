@@ -82,7 +82,7 @@ Two backends cover it behind the same protocol:
 
 When the desktop runner executes in our infrastructure (rather than inside a
 customer's perimeter), the Windows surface is a **QEMU/KVM guest on a Linux
-host**, provisioned by the existing `oa-vm` tooling and streamed for
+host**, streamed for
 monitoring/recording over **RDP through Apache Guacamole**. RDP is Windows-native,
 so nothing streaming-related runs inside the guest and the VM stays clean for
 snapshot-revert between runs. The deterministic replay path itself drives the
