@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-21 06:10 UTC*
+> *Last updated: 2026-07-21 06:27 UTC*
 
 
 
@@ -53,6 +53,10 @@
 ## openadapt-flow
 
 
+- [docs(paper): second adversarial review (independent-harness / stats / second-domain / benchmark lens)](https://github.com/OpenAdaptAI/openadapt-flow/pull/209) (#209) — merged 
+
+- [feat(visualize): expand loop bodies in the program graph + compact loop showcase](https://github.com/OpenAdaptAI/openadapt-flow/pull/207) (#207) — merged 
+
 - [feat(benchmark): independent end-to-end silent-wrong-effect harness (real SWER)](https://github.com/OpenAdaptAI/openadapt-flow/pull/206) (#206) — merged 
 
 - [fix(ci): restore green main — derive protocol members via get_protocol_members (py3.10/3.11)](https://github.com/OpenAdaptAI/openadapt-flow/pull/204) (#204) — merged 
@@ -89,10 +93,6 @@
 
 - [feat(benchmark): EffectBench multi-baseline runner adapter — one arm interface, identical task+oracle](https://github.com/OpenAdaptAI/openadapt-flow/pull/186) (#186) — merged 
 
-- [feat(effectbench): author the first task pack (~40 tasks, all 7 divergence categories)](https://github.com/OpenAdaptAI/openadapt-flow/pull/185) (#185) — merged 
-
-- [feat: compiled-program visualizer (shared graph spec + CLI render)](https://github.com/OpenAdaptAI/openadapt-flow/pull/184) (#184) — merged 
-
 
 
 ## openadapt-desktop
@@ -105,6 +105,8 @@
 - [fix: reconcile engine IPC + flow bridge with the cockpit frontend contract](https://github.com/OpenAdaptAI/openadapt-desktop/pull/34) (#34) — merged 
 
 - [feat: add compiled-program visualization view to desktop app](https://github.com/OpenAdaptAI/openadapt-desktop/pull/33) (#33) — merged 
+
+- [ci: auto-run native build/attest, gate only the publish step](https://github.com/OpenAdaptAI/openadapt-desktop/pull/31) (#31) — merged 
 
 - [feat: signing-ready native pipeline (Azure Trusted Signing + founder runbook)](https://github.com/OpenAdaptAI/openadapt-desktop/pull/30) (#30) — merged 
 
@@ -135,8 +137,6 @@
 - [ci: ship Experimental native installer pipeline](https://github.com/OpenAdaptAI/openadapt-desktop/pull/16) (#16) — merged 
 
 - [fix: remove stale package version claim](https://github.com/OpenAdaptAI/openadapt-desktop/pull/15) (#15) — merged 
-
-- [fix: keep desktop releases version-consistent](https://github.com/OpenAdaptAI/openadapt-desktop/pull/14) (#14) — merged 
 
 
 
