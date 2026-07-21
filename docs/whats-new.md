@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-21 05:43 UTC*
+> *Last updated: 2026-07-21 05:48 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [docs(readme): use the real OpenAdapt brand mark in the masthead](https://github.com/OpenAdaptAI/OpenAdapt/pull/1043) (#1043) — merged 
 
 - [docs(readme): fix Resolution ladder text overflow in masthead SVG](https://github.com/OpenAdaptAI/OpenAdapt/pull/1042) (#1042) — merged 
 
@@ -45,8 +47,6 @@
 - [docs: publish reference sandbox source notices](https://github.com/OpenAdaptAI/OpenAdapt/pull/1025) (#1025) — merged 
 
 - [docs: describe governed multi-surface target](https://github.com/OpenAdaptAI/OpenAdapt/pull/1024) (#1024) — merged 
-
-- [Add one-command Cloud pairing](https://github.com/OpenAdaptAI/OpenAdapt/pull/1023) (#1023) — merged 
 
 
 
