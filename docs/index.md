@@ -125,7 +125,7 @@ Two orthogonal axes, one contract:
 
 | Deployment ↓ / Substrate → | **Web (browser)** | **Windows UIA** | **Native macOS** | **RDP** | **Citrix** |
 |---|---|---|---|---|---|
-| **OpenAdapt Cloud** | Managed runner, schedules, reports, usage, and billing | Separately ordered, workflow-qualified deployment | Separately ordered, workflow-qualified deployment | Separately ordered, workflow-qualified deployment | Separately ordered design-partner deployment |
+| **OpenAdapt Cloud** | Managed runner, schedules, reports, usage, and billing | Not multi-tenant hosted; runs in the customer boundary | Not multi-tenant hosted; runs in the customer boundary | Not multi-tenant hosted; runs in the customer boundary | Design-partner; runs in the customer boundary |
 | **Customer cloud / BYOC** | Customer runner and storage with managed governance | Customer runner and storage | Customer runner and storage | Customer runner and storage | Customer runner and storage |
 | **Self-hosted / on-prem** | Local runner and audit trail | Local runner and audit trail | Local runner and audit trail | Local runner and audit trail | Local runner and audit trail |
 
@@ -135,7 +135,9 @@ it gates certification, identity and effect coverage, approval fallback,
 encryption, and manifest integrity before execution.
 
 The public subscription covers approved browser workflows. Desktop and
-virtual-desktop lanes require a separate order and workflow-specific
+virtual-desktop lanes run in the customer boundary (self-hosted or on-prem today,
+control-plane-managed BYOC as that Experimental lane opens), not in OpenAdapt's
+multi-tenant cloud, and they require a separate order and workflow-specific
 qualification; they are not entitlements of the browser subscription. The
 [hosted guide](guides/hosted.md),
 [qualification evidence](get-started/what-works-today.md), and commercial terms

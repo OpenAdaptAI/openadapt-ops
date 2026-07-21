@@ -78,11 +78,19 @@ Two backends cover it behind the same protocol:
     behavior is detailed in
     [LIMITS](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/LIMITS.md).
 
-## How the desktop substrate is hosted
+## Where the desktop substrate runs today
 
-When the desktop runner executes in our infrastructure (rather than inside a
-customer's perimeter), the Windows surface is a **QEMU/KVM guest on a Linux
-host**, streamed for
+Today the desktop and Citrix substrates run **inside the customer boundary**:
+self-hosted or on-prem on a machine the customer controls (see
+[Deploy on-prem](../guides/deploy-on-prem.md)), and, as that lane opens,
+control-plane-managed in the customer's own cloud (BYOC). The public managed
+subscription runs the browser substrate only. The desktop mechanism, backends,
+and safety gates are the same wherever they run; what differs is who owns the
+machine and the data.
+
+OpenAdapt also runs the desktop substrate in its own infrastructure as an
+**internal, licensing-gated lane** rather than a public offer. There the Windows
+surface is a **QEMU/KVM guest on a Linux host**, streamed for
 monitoring/recording over **RDP through Apache Guacamole**. RDP is Windows-native,
 so nothing streaming-related runs inside the guest and the VM stays clean for
 snapshot-revert between runs. The deterministic replay path itself drives the
@@ -91,8 +99,9 @@ guest through the in-session agent contract, not the stream.
 Desktop execution is provisioned per qualified workflow, so Windows licensing,
 warm-state policy, isolation, recovery, and cost are explicit deployment inputs
 rather than hidden properties of the runner. The same job and report contract
-also supports a customer-owned Windows session when data must remain inside the
-customer boundary.
+drives a customer-owned Windows session unchanged. Multi-tenant hosting of the
+desktop substrate in OpenAdapt's cloud is deferred; it is not part of any public
+offer.
 
 ## Qualification record
 
@@ -117,8 +126,9 @@ customer boundary.
   Exact snapshot cleanup passed. Review the
   [immutable sanitized report](https://github.com/OpenAdaptAI/openadapt-flow/blob/6610d24cebba27918b8ea507b2f05a094057ac85/benchmark/rdp/results_82a658a_20260718.sanitized.json).
 - Citrix/VDI is driven pixel-first through the same identity gate and effect
-  verification as every substrate, and each workflow is qualified in its real
-  ICA/HDX environment.
+  verification as every substrate. No real ICA/HDX environment has been qualified
+  yet (status: Exploratory); each workflow must be qualified in its real ICA/HDX
+  environment before consequential use.
 - The public hosted subscription currently entitles approved browser workflows.
   Desktop and virtual-desktop deployments are scoped and qualified separately.
 
