@@ -129,7 +129,7 @@ the identity check and the audit trail, protected by a documented boundary rathe
 than by redaction. Production images must stage the allowlisted spaCy model
 locally, not download one at runtime.
 
-## Encryption at rest: setup and the honest caveat
+## Encryption at rest
 
 Everything lives under `storage_root` (default `/srv/openadapt`), which you place
 on a **full-disk-encrypted** volume (LUKS / BitLocker / FileVault; OpenAdapt never
@@ -140,24 +140,23 @@ holds the disk key). At-rest protection has three layers:
 | The disk holding `storage_root` (bundles, runs, audit, frames) | **Operator full-disk encryption** (LUKS / BitLocker / FileVault) | REAL: the primary PHI/PII-at-rest control. Operator-provisioned |
 | The identity band inside `workflow.json` | **Salted-hash `identity_template`** (no plaintext name / DOB / MRN; optional external `OPENADAPT_FLOW_IDENTITY_SALT`) | REAL. A hash of a low-entropy identifier is brute-forceable by a holder of both bundle and salt, so it is **not** a cryptographic seal |
 | The bundle `workflow.json` + durable checkpoints | **Opt-in AES-256-GCM sealing** via `OPENADAPT_BUNDLE_KEY` (`Workflow.save(encrypt=True)`; scrypt-derived key) | REAL (opt-in, shipped). A wrong/missing key or tampered ciphertext fails loud and safe |
-| `templates/*.png` (recorded screen crops of identifiers) | Full-disk encryption + governance guards (kept out of git); opt-in Presidio image redaction | REAL for FDE + guard, but see the caveat |
+| `templates/*.png` (recorded screen crops of identifiers) | **AES-256-GCM sealing with the bundle key** plus full-disk encryption and governance guards | REAL when bundle encryption is enabled; plaintext crops are removed after sealing and authenticated ciphertext is verified on load |
 
 Enable the per-bundle seal for cryptographic at-rest protection that does not
 depend solely on the volume:
 
 ```bash
-export OPENADAPT_BUNDLE_KEY=…            # seals workflow.json + checkpoints (AES-256-GCM)
+export OPENADAPT_BUNDLE_KEY=…            # seals workflow.json, template crops, and checkpoints
 ```
 
-!!! danger "Honest at-rest caveat: the identifier crops"
+!!! warning "Identifier crops remain regulated data"
     The identity check needs a **rendered crop of the identifier** (an image of
     the MRN / name as it appeared on screen), stored as `templates/*.png`. These
-    crops are **rendered pixels of PHI/PII**, and they are **not yet sealed inside
-    the per-bundle encrypted container**; they still rely on **operator full-disk
-    encryption**. Enable `OPENADAPT_BUNDLE_KEY` for the JSON and checkpoints, but
-    do **not** represent the whole bundle as cryptographically sealed. Full-disk
-    encryption remains the baseline control for the template crops. Treat every
-    bundle as PHI/PII.
+    crops are **rendered pixels of PHI/PII**. With bundle encryption enabled,
+    OpenAdapt seals them as authenticated `*.enc` assets and removes the
+    plaintext copies; replay decrypts them in memory. Encryption does not make
+    them non-regulated, so keep full-disk encryption, access controls, retention,
+    and key-management controls in place and treat every bundle as PHI/PII.
 
 ## The local audit log
 
@@ -248,8 +247,9 @@ than a business associate for that shape, and a BAA is not the operative
 instrument for it. Where your procurement requires written terms, a US HIPAA
 Business Associate Agreement, or for an Ontario clinic a PHIPA service-provider
 agreement, can be signed following review. Hosted processing of PHI inside
-OpenAdapt's infrastructure, which would require a BAA and a HIPAA risk analysis,
-is not offered today. No part of the software is a certification. What the
+OpenAdapt's infrastructure is governed by a signed BAA and a
+deployment-specific HIPAA risk analysis before regulated data is admitted. No
+part of the software is a certification. What the
 software provides (PHI processed locally, protected at rest by full-disk
 encryption plus in-bundle identity hashing plus opt-in AES-256-GCM sealing, and
 a local append-only audit trail) is the technical substrate those agreements
