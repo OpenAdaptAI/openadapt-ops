@@ -1,6 +1,17 @@
 name: Sync Documentation
 
 on:
+  # Same-repo docs merges publish directly, with no dispatch round-trip.
+  # A push that only touches this repo's docs sources builds and deploys the
+  # site as-is; the cross-repo content-sync steps below are skipped on push.
+  push:
+    branches: [main]
+    paths:
+      - 'docs/**'
+      - 'mkdocs.yml'
+      - '.github/workflows/sync.yml'
+  # Cross-repo content sync: sub-repos dispatch repo-updated (see trigger.yml)
+  # when their README/changelog changes so their pages re-sync here.
   repository_dispatch:
     types: [repo-updated]
   schedule:
@@ -37,13 +48,19 @@ jobs:
       - name: Install dependencies
         run: uv sync --locked --extra llm --extra dev
 
+      # Cross-repo content sync (pulls from OTHER repos): runs on
+      # repository_dispatch / schedule / workflow_dispatch, but is skipped on a
+      # same-repo push, which just builds and deploys this repo's docs as-is.
       - name: Sync READMEs
+        if: ${{ success() && github.event_name != 'push' }}
         run: uv run python scripts/sync_readmes.py
 
       - name: Aggregate changelogs
+        if: ${{ success() && github.event_name != 'push' }}
         run: uv run python scripts/aggregate_changelog.py
 
       - name: Generate What's New
+        if: ${{ success() && github.event_name != 'push' }}
         run: uv run python scripts/generate_whats_new.py
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -65,7 +82,10 @@ jobs:
 
       # Persist exactly the generated source that passed the gates before
       # publishing it. A protected-branch rejection therefore blocks deploy.
+      # Skipped on push: no cross-repo sync ran, so there is nothing new to
+      # persist and no second commit to push back to main.
       - name: Commit updated docs source
+        if: ${{ success() && github.event_name != 'push' }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
