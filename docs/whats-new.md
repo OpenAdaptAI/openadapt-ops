@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-21 04:46 UTC*
+> *Last updated: 2026-07-21 04:58 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [docs(readme): add real visualize graph, loop/halt diagrams, and run screenshots](https://github.com/OpenAdaptAI/OpenAdapt/pull/1040) (#1040) — merged 
 
 - [docs(readme): add local-first path, restructure Quick Start into Local + Cloud](https://github.com/OpenAdaptAI/OpenAdapt/pull/1039) (#1039) — merged 
 
@@ -45,8 +47,6 @@
 - [docs: recognize active openadapt-agent v2 bridge](https://github.com/OpenAdaptAI/OpenAdapt/pull/1022) (#1022) — merged 
 
 - [fix: remove dead config module with undeclared pydantic_settings import](https://github.com/OpenAdaptAI/OpenAdapt/pull/1021) (#1021) — merged 
-
-- [docs: remove design-partner claim; align backend labels with LIMITS.md](https://github.com/OpenAdaptAI/OpenAdapt/pull/1020) (#1020) — merged 
 
 
 
