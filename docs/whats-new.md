@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-21 13:14 UTC*
+> *Last updated: 2026-07-21 14:13 UTC*
 
 
 
@@ -53,6 +53,8 @@
 ## openadapt-flow
 
 
+- [ci: make Flow releases explicitly dispatched](https://github.com/OpenAdaptAI/openadapt-flow/pull/224) (#224) — merged 
+
 - [fix(runtime): close typed-input masked false success](https://github.com/OpenAdaptAI/openadapt-flow/pull/223) (#223) — merged 
 
 - [fix(hardening): make seeded adversarial search process-stable](https://github.com/OpenAdaptAI/openadapt-flow/pull/222) (#222) — merged 
@@ -91,12 +93,12 @@
 
 - [docs(readme): substrate-aware refresh of the engine README](https://github.com/OpenAdaptAI/openadapt-flow/pull/201) (#201) — merged 
 
-- [docs(paper): adversarial peer review + clearly-correct honesty fixes](https://github.com/OpenAdaptAI/openadapt-flow/pull/200) (#200) — merged 
-
 
 
 ## openadapt-desktop
 
+
+- [Gate Desktop releases on explicit green-main dispatch](https://github.com/OpenAdaptAI/openadapt-desktop/pull/39) (#39) — merged 
 
 - [Bundle Flow into native desktop installers](https://github.com/OpenAdaptAI/openadapt-desktop/pull/38) (#38) — merged 
 
@@ -135,8 +137,6 @@
 - [Use canonical engine version in runtime messaging](https://github.com/OpenAdaptAI/openadapt-desktop/pull/19) (#19) — merged 
 
 - [Bump native desktop to 0.1.1](https://github.com/OpenAdaptAI/openadapt-desktop/pull/18) (#18) — merged 
-
-- [Fix native release publish runtime](https://github.com/OpenAdaptAI/openadapt-desktop/pull/17) (#17) — merged 
 
 
 
