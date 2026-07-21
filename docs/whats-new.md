@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-21 14:13 UTC*
+> *Last updated: 2026-07-21 23:45 UTC*
 
 
 
@@ -53,6 +53,12 @@
 ## openadapt-flow
 
 
+- [fix(mockmed): stabilize textarea render metrics](https://github.com/OpenAdaptAI/openadapt-flow/pull/227) (#227) — merged 
+
+- [fix(resolver): refuse ambiguous OCR targets](https://github.com/OpenAdaptAI/openadapt-flow/pull/226) (#226) — merged 
+
+- [fix: enforce the public source artifact boundary](https://github.com/OpenAdaptAI/openadapt-flow/pull/225) (#225) — merged 
+
 - [ci: make Flow releases explicitly dispatched](https://github.com/OpenAdaptAI/openadapt-flow/pull/224) (#224) — merged 
 
 - [fix(runtime): close typed-input masked false success](https://github.com/OpenAdaptAI/openadapt-flow/pull/223) (#223) — merged 
@@ -62,6 +68,14 @@
 - [fix(ci): restore standalone EffectBench boundary](https://github.com/OpenAdaptAI/openadapt-flow/pull/221) (#221) — merged 
 
 - [fix(ci): tomli fallback so the 3.10 test-matrix leg collects (unblocks green main)](https://github.com/OpenAdaptAI/openadapt-flow/pull/220) (#220) — merged 
+
+- [feat(lending): add collateral-write fault class + single-surface arm for honest cross-domain comparability](https://github.com/OpenAdaptAI/openadapt-flow/pull/219) (#219) — merged 
+
+- [feat(runtime): state-dependency robustness (settle readiness + interstitials)](https://github.com/OpenAdaptAI/openadapt-flow/pull/218) (#218) — merged 
+
+- [docs(paper): honest disclosures for adversarial review #2 (closed-world, statistics, positioning, ethics)](https://github.com/OpenAdaptAI/openadapt-flow/pull/217) (#217) — merged 
+
+- [feat(benchmark): publish bounded paid-agent aggregates](https://github.com/OpenAdaptAI/openadapt-flow/pull/216) (#216) — merged 
 
 - [feat(hardening): harder cases (latency/reflow/dense) + close 36 new silent-wrongs](https://github.com/OpenAdaptAI/openadapt-flow/pull/215) (#215) — merged 
 
@@ -78,20 +92,6 @@
 - [docs(paper): second adversarial review (independent-harness / stats / second-domain / benchmark lens)](https://github.com/OpenAdaptAI/openadapt-flow/pull/209) (#209) — merged 
 
 - [feat(benchmark): second (non-healthcare) domain: MockLoan lending effect-verification study](https://github.com/OpenAdaptAI/openadapt-flow/pull/208) (#208) — merged 
-
-- [feat(visualize): expand loop bodies in the program graph + compact loop showcase](https://github.com/OpenAdaptAI/openadapt-flow/pull/207) (#207) — merged 
-
-- [feat(benchmark): independent end-to-end silent-wrong-effect harness (real SWER)](https://github.com/OpenAdaptAI/openadapt-flow/pull/206) (#206) — merged 
-
-- [feat(benchmark): package EffectBench/SWER as a standalone, versioned, runnable benchmark](https://github.com/OpenAdaptAI/openadapt-flow/pull/205) (#205) — merged 
-
-- [fix(ci): restore green main — derive protocol members via get_protocol_members (py3.10/3.11)](https://github.com/OpenAdaptAI/openadapt-flow/pull/204) (#204) — merged 
-
-- [docs: rewrite workflow-program IR as an implemented spec + formalize semantics](https://github.com/OpenAdaptAI/openadapt-flow/pull/203) (#203) — merged 
-
-- [feat(report): per-step before/after screenshots for every step in REPORT.md](https://github.com/OpenAdaptAI/openadapt-flow/pull/202) (#202) — merged 
-
-- [docs(readme): substrate-aware refresh of the engine README](https://github.com/OpenAdaptAI/openadapt-flow/pull/201) (#201) — merged 
 
 
 
