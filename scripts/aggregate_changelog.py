@@ -24,9 +24,36 @@ def fetch_releases(github_slug, per_page=5):
         return []
     return [
         {"tag": r["tag_name"], "date": r["published_at"][:10],
-         "url": r["html_url"], "body": (r.get("body") or "").strip()[:200]}
+         "url": r["html_url"], "body": (r.get("body") or "").strip()[:400]}
         for r in resp.json() if not r.get("draft")
     ]
+
+
+def summarize_body(body, tag=""):
+    """Return a one-line, heading-free summary of a release body.
+
+    GitHub release bodies frequently open with a heading that only restates the
+    version (for example ``## v1.7.1 (2026-07-19)``). Injected verbatim, that
+    line duplicates the tag we already print and its leading ``#`` corrupts the
+    changelog page's heading hierarchy. Skip such redundant leading headings and
+    return the first real line of notes as inline (heading-free) text. Returns
+    an empty string when the body carries no notes beyond the version header.
+    """
+    tag_norm = tag.lstrip("vV").strip()
+    for raw in body.splitlines():
+        line = raw.strip()
+        if not line:
+            continue
+        text = line.lstrip("#").strip()
+        if not text:
+            continue
+        if line.startswith("#"):
+            heading = text.lstrip("vV").strip()
+            # A leading heading that merely restates the version is noise.
+            if tag and (tag in text or (tag_norm and heading.startswith(tag_norm))):
+                continue
+        return text
+    return ""
 
 
 def aggregate(repos=None, docs_dir=None):
@@ -44,8 +71,8 @@ def aggregate(repos=None, docs_dir=None):
         lines.append(f"\n## {repo['name']}\n")
         for r in releases:
             lines.append(f"- **[{r['tag']}]({r['url']})** ({r['date']})")
-            if r["body"]:
-                summary = r["body"].split("\n")[0]
+            summary = summarize_body(r["body"], r["tag"])
+            if summary:
                 lines.append(f"  {summary}")
 
     out_path = docs_dir / "changelog.md"
