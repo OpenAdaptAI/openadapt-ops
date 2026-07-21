@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-21 06:05 UTC*
+> *Last updated: 2026-07-21 06:10 UTC*
 
 
 
@@ -53,7 +53,17 @@
 ## openadapt-flow
 
 
+- [feat(benchmark): independent end-to-end silent-wrong-effect harness (real SWER)](https://github.com/OpenAdaptAI/openadapt-flow/pull/206) (#206) — merged 
+
 - [fix(ci): restore green main — derive protocol members via get_protocol_members (py3.10/3.11)](https://github.com/OpenAdaptAI/openadapt-flow/pull/204) (#204) — merged 
+
+- [docs: rewrite workflow-program IR as an implemented spec + formalize semantics](https://github.com/OpenAdaptAI/openadapt-flow/pull/203) (#203) — merged 
+
+- [docs(readme): substrate-aware refresh of the engine README](https://github.com/OpenAdaptAI/openadapt-flow/pull/201) (#201) — merged 
+
+- [docs(paper): adversarial peer review + clearly-correct honesty fixes](https://github.com/OpenAdaptAI/openadapt-flow/pull/200) (#200) — merged 
+
+- [docs(paper): correct stale README (byline set; workshop bib is a copy, not a symlink)](https://github.com/OpenAdaptAI/openadapt-flow/pull/199) (#199) — merged 
 
 - [feat(validation): configurable hardening corpus + private-corpus release-boundary guard](https://github.com/OpenAdaptAI/openadapt-flow/pull/197) (#197) — merged 
 
@@ -82,16 +92,6 @@
 - [feat(effectbench): author the first task pack (~40 tasks, all 7 divergence categories)](https://github.com/OpenAdaptAI/openadapt-flow/pull/185) (#185) — merged 
 
 - [feat: compiled-program visualizer (shared graph spec + CLI render)](https://github.com/OpenAdaptAI/openadapt-flow/pull/184) (#184) — merged 
-
-- [feat(citrix): CVAD 30-day trial-mode Azure lab provisioning helpers](https://github.com/OpenAdaptAI/openadapt-flow/pull/182) (#182) — merged 
-
-- [bench(canvas): no-DOM HTML5-canvas vision-ladder qualification (accepted)](https://github.com/OpenAdaptAI/openadapt-flow/pull/181) (#181) — merged 
-
-- [docs(paper): set author line (Richard Abrich, OpenAdapt / MLDSAI Inc.)](https://github.com/OpenAdaptAI/openadapt-flow/pull/180) (#180) — merged 
-
-- [feat: resolve pixel-verify identity gate from deployment runtime config](https://github.com/OpenAdaptAI/openadapt-flow/pull/179) (#179) — merged 
-
-- [feat(benchmark): EffectBench foundation — episode schema + substrate-agnostic effect-oracle harness](https://github.com/OpenAdaptAI/openadapt-flow/pull/178) (#178) — merged 
 
 
 
