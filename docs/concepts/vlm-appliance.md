@@ -55,7 +55,7 @@ record instead of the screen.
 
 ## Why on-prem matters
 
-Identity crops and full frames can carry PHI. The control is not redaction (the
+Identity crops and full frames can carry PHI/PII. The control is not redaction (the
 identity check needs the literal identifier), it is deployment. The appliance is
 designed to run on your infrastructure with no external model calls or payload
 persistence. Enforce and test its network and retention policy for the actual

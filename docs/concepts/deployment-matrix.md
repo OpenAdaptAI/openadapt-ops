@@ -47,7 +47,7 @@ will remain sanitized; a real EMR can display PHI as soon as replay begins.
 | Existing raw authoring artifact | Refuse generic remote upload. | Keep within customer policy. | Local. |
 | Explicit hosted-recorder observations | Allow only for a public-HTTPS, non-regulated session inside the declared hosted recording boundary. | Keep within customer policy. | Local. |
 | Approved sanitized derivative | Allow when manifest, hash, review, and destination pass. | Allow to a verified customer endpoint when policy permits. | Local or explicitly exported. |
-| PHI-bearing runtime frame | Outside the shared hosted boundary unless a specific regulated service is configured. | Remains inside customer boundary. | Remains local. |
+| PHI/PII-bearing runtime frame | Outside the shared hosted boundary unless a specific regulated service is configured. | Remains inside customer boundary. | Remains local. |
 | Minimized control metadata | Allow by schema and destination policy. | Allow by schema and destination policy. | Optional/no egress. |
 | Secret value | Never browser-visible or serialized into enqueue payloads. | Resolve inside customer runner. | Resolve locally. |
 
@@ -56,7 +56,7 @@ will remain sanitized; a real EMR can display PHI as soon as replay begins.
 “Scrubbed” means the source was inventoried, a separate copy was transformed,
 the result was rescanned, unresolved content was refused, and a manifest binds
 the policy and approval to the exact derivative hash. It does not mean the
-source was modified or that every future run is PHI-free.
+source was modified or that every future run is PHI/PII-free.
 
 It also does not mean a transformed recording remains runnable. Register the
 approved recording derivative, compile/lint/certify/replay locally, then
@@ -115,8 +115,8 @@ not create a price, quota, SLA, certification, or backend entitlement.
 ## Customer-controlled regulated execution
 
 Use a customer-controlled boundary when a live workflow necessarily displays
-PHI or other regulated data. Sanitized authoring derivatives and minimized
-metadata may cross approved endpoints; PHI-bearing live frames and values stay
+PHI/PII or other regulated data. Sanitized authoring derivatives and minimized
+metadata may cross approved endpoints; PHI/PII-bearing live frames and values stay
 inside the boundary.
 
 A deployment scope must name:

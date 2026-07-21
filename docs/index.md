@@ -142,7 +142,7 @@ qualification; they are not entitlements of the browser subscription. The
 [hosted guide](guides/hosted.md),
 [qualification evidence](get-started/what-works-today.md), and commercial terms
 define the accepted scope. Artifacts cross boundaries only as approved sanitized
-derivatives; PHI-bearing runtime observations stay inside their declared trusted
+derivatives; PHI/PII-bearing runtime observations stay inside their declared trusted
 execution boundary.
 
 ---

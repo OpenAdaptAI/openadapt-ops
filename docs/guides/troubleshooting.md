@@ -51,7 +51,7 @@ disambiguate confusable glyphs. See
   halting, without weakening the wrong-record guarantee. See
   [the halt-learn loop](../concepts/halt-learn-loop.md) and
   [`teach`](../reference/cli.md#teach).
-- **`report-break`** to surface the halt centrally (PHI-free) for triage:
+- **`report-break`** to surface the halt centrally (PHI/PII-free) for triage:
   [`report-break`](../reference/cli.md#report-break).
 - Where the render is stable, capturing the identifier crop at compile time and
   using a higher-fidelity backend (structured a11y/DOM text instead of pixels)
@@ -84,9 +84,9 @@ token, or the durable upload queue is holding items to retry.
   If it was revoked, mint a new one at
   `app.openadapt.ai/dashboard/settings/ingest` (see
   [Connect to a cloud workspace](../desktop/connect-to-cloud.md)).
-- Confirm you are on the right lane: **regulated/PHI recordings are not pushed to
+- Confirm you are on the right lane: **regulated/PHI/PII recordings are not pushed to
   the cloud**, they stay local on the [on-prem lane](deploy-on-prem.md). A refused
-  PHI-bearing push is the fail-closed PHI boundary working as intended.
+  PHI/PII-bearing push is the fail-closed PHI/PII boundary working as intended.
 
 ## The Windows agent landed in session 0 {#session-0}
 
@@ -102,7 +102,7 @@ blank screen and input goes into the void. See
 session (session 1)**, not as a session-0 service. Launch it in the logged-on
 user's session. It binds to loopback by default and supports an optional bearer
 token, `OAFLOW_AGENT_TOKEN`, so its execute channel is not left unauthenticated in
-a PHI deployment. For Citrix/RDP, ensure the agent runs inside the same
+a PHI/PII deployment. For Citrix/RDP, ensure the agent runs inside the same
 interactive session that renders the application.
 
 ## `openadapt connect` fails with `No such command 'connect'` {#connect-no-such-command}

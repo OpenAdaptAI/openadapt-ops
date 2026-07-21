@@ -47,7 +47,7 @@ openadapt flow emit-mcp   bundle --out server.py
 
 ## Privacy of the artifacts
 
-The `REPORT.md` and console logs can be processed by the PHI sanitizer on the
+The `REPORT.md` and console logs can be processed by the PHI/PII sanitizer on the
 persist/log path (Presidio-backed, via the optional `privacy` extra). The
 compiled bundle and `report.json` keep literal identifiers on purpose: they are
 the identity check and the audit trail, protected by a documented boundary
