@@ -80,7 +80,7 @@ See [Hosted browser execution](../guides/hosted.md) for the complete protocol.
 
 The managed browser path comprises:
 
-- Stripe Checkout using the configured product and price;
+- Stripe Checkout for the public subscription;
 - authentication, onboarding, and organization isolation;
 - local recording, compilation, repair, and runtime validation before upload;
 - bounded hosted recording for explicitly initiated, public-HTTPS,
@@ -102,7 +102,7 @@ entitlement. The first genuine paid subscription extends that operational
 evidence through webhook activation, managed execution, usage, portal, and
 cancellation.
 
-The configured Stripe offer is the commercial source of truth. This matrix does
+Stripe is the commercial source of truth for pricing. This matrix does
 not create a price, quota, SLA, certification, or backend entitlement.
 
 ## Customer-controlled regulated execution

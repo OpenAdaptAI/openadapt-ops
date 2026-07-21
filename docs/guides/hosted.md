@@ -15,8 +15,8 @@ cannot enter the OpenAdapt-hosted boundary.
 [Start with OpenAdapt](https://openadapt.ai/#pricing){ .md-button .md-button--primary }
 [Review the data boundary](security-review.md){ .md-button }
 
-Stripe is the commercial source of truth. The website retrieves the live offer
-server-side and Checkout confirms the same Product and Price before payment.
+Payment runs through Stripe, and the price shown on the website is the exact
+price you pay at Checkout.
 
 <figure markdown="span">
   ![The OpenAdapt Cloud workspace overview: counts for workflows, hosted runs used, and items needing attention, a Runs stopped before guessing panel listing a halt to review, a recent-runs table, and the workflow list.](../assets/screenshots/dashboard-overview.png){ width="900" }
@@ -49,7 +49,7 @@ support.
 ## Hosted recorder boundary
 
 The hosted recorder is a real, bounded authoring path rather than a simulated
-demo. A qualified Modal browser session produced PNG frames, accepted and
+demo. A qualified hosted browser session produced PNG frames, accepted and
 retained input evidence, assembled a native recording, created one compileable
 workflow idempotently, enforced its resource limits, and removed the ephemeral
 qualification data. That qualification used an `openadapt-flow` 1.8.0 worker.
@@ -310,8 +310,8 @@ managed endpoint is not valid merely because the user has a subscription.
 ## Production mode versus mock mode
 
 Mock mode is a development tool that returns synthetic users, workflows, and
-run results. Live mode uses the configured authentication, database, object
-storage, runner, callback secrets, and billing services.
+run results. Live mode uses real authentication, database, object
+storage, runner, and billing services.
 
 A production deployment must explicitly select live mode and pass dependency
 health checks. If a runner or billing dependency is missing, the affected

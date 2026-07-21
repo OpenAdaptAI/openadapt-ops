@@ -42,9 +42,9 @@ The runnable scaffold ships in the engine repo under
 [`deploy/on-prem/`](https://github.com/OpenAdaptAI/openadapt-flow/tree/main/deploy/on-prem);
 the compliance posture is in `deploy/on-prem/COMPLIANCE.md`.
 
-## One config wires the deployment
+## One config drives the deployment
 
-A production run is wired by a single
+A production run is defined by a single
 [`deployment.yaml`](../reference/deployment-config.md) (backend URL, system of
 record to verify writes against, optional API actuation tier, durable runtime,
 safety policy), read by `certify`, `run`, and `resume`:
