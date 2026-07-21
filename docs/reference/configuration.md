@@ -20,7 +20,7 @@ See [Parameters and secrets](../guides/parameters-and-secrets.md).
 
 | Variable | Purpose |
 |---|---|
-| `OPENADAPT_FLOW_SCRUB` | `on` runs the PHI sanitizer over `REPORT.md` and console logs on the persist and log path. Missing dependencies, invalid config, and processing errors fail closed. Requires the `privacy` extra (`pip install 'openadapt[privacy]'`) and the allowlisted spaCy model. |
+| `OPENADAPT_FLOW_SCRUB` | `on` runs the PHI/PII sanitizer over `REPORT.md` and console logs on the persist and log path. Missing dependencies, invalid config, and processing errors fail closed. Requires the `privacy` extra (`pip install 'openadapt[privacy]'`) and the allowlisted spaCy model. |
 
 The compiled bundle and `report.json` keep literal identifiers behind a
 documented boundary and are **not** scrubbed by this flag; they are the identity
@@ -101,7 +101,7 @@ variables supply its endpoint and credentials, keeping them out of the YAML.
 
 | Variable | Purpose |
 |---|---|
-| `OAFLOW_AGENT_TOKEN` | Optional bearer token for the [desktop in-session agent server](../concepts/backends.md#the-in-session-agent-the-session-0-problem). Its `/execute_windows` channel is remote code execution by contract; the server binds to loopback by default, and a token makes every request authenticate. Set it in any PHI deployment that exposes the agent beyond loopback. |
+| `OAFLOW_AGENT_TOKEN` | Optional bearer token for the [desktop in-session agent server](../concepts/backends.md#the-in-session-agent-the-session-0-problem). Its `/execute_windows` channel is remote code execution by contract; the server binds to loopback by default, and a token makes every request authenticate. Set it in any PHI/PII deployment that exposes the agent beyond loopback. |
 
 ## Benchmark (agent arm only)
 

@@ -7,8 +7,8 @@ covers the path: sign in → mint an ingest token → connect the desktop app �
 a recording → see it in the dashboard.
 
 !!! note "Which lane are you in?"
-    The cloud workspace is the **self-serve, non-PHI lane**: browser/web
-    automation with no regulated data. For **PHI or other regulated data**, do
+    The cloud workspace is the **self-serve, non-PHI/PII lane**: browser/web
+    automation with no regulated data. For **PHI/PII or other regulated data**, do
     **not** push to the cloud; use the
     [on-prem deployment](../guides/deploy-on-prem.md) instead, where recordings
     and teaching never leave your network. See
@@ -102,9 +102,9 @@ The recording directory is zipped before upload (the server ingests a `.zip`; th
 engine emits a directory). You can also push an already-compiled bundle with
 `--kind bundle`. See [`push`](../reference/cli.md#push).
 
-!!! warning "Push scrubs, but the cloud lane is for non-PHI work"
+!!! warning "Push scrubs, but the cloud lane is for non-PHI/PII work"
     A pre-push scrub runs fail-closed and the server re-scans on ingest, but the
-    cloud lane is **not** the PHI lane. Keep regulated recordings local and use
+    cloud lane is **not** the PHI/PII lane. Keep regulated recordings local and use
     [on-prem](../guides/deploy-on-prem.md).
 
 ## 5. See it in the dashboard
@@ -115,7 +115,7 @@ runnable; any run that halts surfaces under **Needs attention** for triage.
 
 ## Reporting a halt back to the workspace
 
-When a governed run halts locally, send a **PHI-free** break descriptor to the
+When a governed run halts locally, send a **PHI/PII-free** break descriptor to the
 workspace so the halt is visible centrally, without the recording ever leaving
 the machine:
 

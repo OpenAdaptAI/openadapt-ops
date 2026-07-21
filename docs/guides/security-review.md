@@ -26,16 +26,16 @@ enables model grounding and configures an appliance.
 | Question | Current answer |
 |---|---|
 | Which components see screenshots? | The recorder and runner do. A configured model endpoint may receive a permitted crop or frame. Generic hosted upload admits only an approved sanitized derivative. The separate, explicitly initiated hosted recorder sees raw observations for public, non-regulated targets inside its declared hosted boundary. |
-| Which components can transmit screenshots? | Deterministic local replay does not transmit them. The optional model client can send permitted data to its configured endpoint. Generic hosted upload sends the manifest-bound derivative, never the source by assumption. The hosted recorder transmits its raw frames inside its declared non-regulated authoring boundary. PHI-bearing runtime screenshots stay inside the declared trusted execution boundary. |
+| Which components can transmit screenshots? | Deterministic local replay does not transmit them. The optional model client can send permitted data to its configured endpoint. Generic hosted upload sends the manifest-bound derivative, never the source by assumption. The hosted recorder transmits its raw frames inside its declared non-regulated authoring boundary. PHI/PII-bearing runtime screenshots stay inside the declared trusted execution boundary. |
 | What can the sanitizer upload? | Only the exact derivative whose inventory, transformations, rescan, unresolved findings, review state, destination, and hash satisfy policy. Unknown, symlinked, unsupported, or unresolved content aborts instead of passing through unchanged. |
-| What does local review establish? | It lets an authorized operator compare the sanitized derivative, correct redactions, and approve the exact hash. Review adds context but is not mathematical proof that no PHI remains. Any later modification invalidates approval. |
+| What does local review establish? | It lets an authorized operator compare the sanitized derivative, correct redactions, and approve the exact hash. Review adds context but is not mathematical proof that no PHI/PII remains. Any later modification invalidates approval. |
 | Does Cloud independently witness sanitation review? | No. Cloud accounts for every accepted ZIP byte and verifies the manifest/hash contract and submitting ingest token, but it does not observe the local viewer or rerun OCR/NER. Reviewer identity, separation of duties, and evidence custody remain deployment controls. |
 | Can an uploader claim automatic sanitation approval? | No. Automatic approval is disabled by default. If a deployment enables it, the exact approval envelope must carry an HMAC from a deployment-allowlisted key ID; the ingest token cannot enable or forge that capability by itself. This still proves signer possession, not independent de-identification. |
 | What happens for an unknown deployment or destination? | The request is refused before an egress policy is selected. It never falls back to the shared cloud lane. A verified customer endpoint can have a different policy from an OpenAdapt-managed endpoint. |
 | Where are workflow secrets stored? | Password fields and fields named with `--secret` are not written to recordings, bundles, event logs, or frames. Replay resolves them from `OPENADAPT_FLOW_SECRET_<FIELD>`. Deployment credentials should be injected from the operator's secret store, not committed to YAML. |
 | Where is the hosted ingest token stored? | Resolution order is the CLI flag, `OPENADAPT_INGEST_TOKEN`, OS keychain, then an existing config migration token. The current CLI requires an explicit flag before using plaintext config storage. |
-| Which artifacts may contain PHI? | Treat raw recordings, bundles, templates, `report.json`, checkpoints, live frames, OCR/accessibility text, model inputs, and effect evidence as PHI-bearing until the applicable policy proves otherwise. The sanitized derivative is separate from the source. |
-| What leaves a regulated runner? | Only destinations and artifact classes allowed by the deployment policy. Minimized control metadata and approved derivatives may cross an approved boundary; PHI-bearing runtime values and frames remain inside it. Target-app and verifier traffic remains deployment-specific. |
+| Which artifacts may contain PHI/PII? | Treat raw recordings, bundles, templates, `report.json`, checkpoints, live frames, OCR/accessibility text, model inputs, and effect evidence as PHI/PII-bearing until the applicable policy proves otherwise. The sanitized derivative is separate from the source. |
+| What leaves a regulated runner? | Only destinations and artifact classes allowed by the deployment policy. Minimized control metadata and approved derivatives may cross an approved boundary; PHI/PII-bearing runtime values and frames remain inside it. Target-app and verifier traffic remains deployment-specific. |
 | What happens during model-assisted repair? | The deterministic ladder runs first. If model grounding is explicitly allowed, a proposal is still subject to the identity and postcondition gates and is counted in the report. A model proposal is not an automatic safety exemption. |
 | Can model inference run on-prem? | Yes. The optional VLM service is designed for a private-LAN deployment with no retention. Keep model grounding disabled if the deployment does not need it. |
 | Is upload code physically absent from regulated builds? | The compiler does not currently publish a separate, verified "regulated binary" exclusion guarantee. Enforce no-egress at the host/network boundary and verify the installed artifact. The desktop recorder documents build-time exclusions for its own enterprise builds; that is not a blanket compiler guarantee. |
@@ -45,7 +45,7 @@ enables model grounding and configures an appliance.
 | Can a retried run execute twice? | Live clients supply a request-bound idempotency key, and the database permits one queued/running run per workflow. Dispatch is claimed once and the provider call ID is recorded. If acknowledgement is lost, the run remains reserved and single-flight for callback or operator/provider reconciliation; timeout alone does not authorize a refund and retry. |
 
 !!! danger "Approval applies to exact bytes"
-    Compilation does not make a bundle PHI-free. Upload requires a sanitized
+    Compilation does not make a bundle PHI/PII-free. Upload requires a sanitized
     derivative with a passing manifest and, when policy requires it, local
     approval of the exact derivative hash. If sanitation removes identity
     evidence needed for replay, parameterize it or keep the workflow in its
@@ -72,7 +72,7 @@ Every run produces a human-readable `REPORT.md` and machine-readable
 postconditions, effects, heals, and the halt reason. The on-prem queue adds a
 schema-minimized, append-only hash-chained audit log. Minimization reduces
 exposure but does not prove that operator detail or future schema changes cannot
-contain PHI; review and test the emitted schema.
+contain PHI/PII; review and test the emitted schema.
 
 A hash chain is tamper-evident only while its trusted head and access controls
 remain trustworthy. It is not an externally anchored signature service. The

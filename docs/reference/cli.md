@@ -559,7 +559,7 @@ the original inside its trusted runtime boundary.
 ## report-break
 
 Read a halted run's `report.json` and emit a scrubbed, schema-minimized halt
-descriptor. The recording stays local. A PHI-boundary rejection retries with a
+descriptor. The recording stays local. A PHI/PII-boundary rejection retries with a
 harder scrub and can fall back to local-only.
 
 ```bash

@@ -87,11 +87,11 @@ part of the local-execution path. The
 [data-boundary table](security-review.md#data-boundary-answers) states exactly
 which component can see and transmit what.
 
-## PHI posture: scrubbed where shareable, fail-closed where regulated
+## PHI/PII posture: scrubbed where shareable, fail-closed where regulated
 
-OpenAdapt treats PHI handling as an engineering surface with a published map.
+OpenAdapt treats PHI/PII handling as an engineering surface with a published map.
 [PRIVACY.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/PRIVACY.md)
-enumerates every path where PHI is persisted, logged, or transmitted, and names
+enumerates every path where PHI/PII is persisted, logged, or transmitted, and names
 the control on each. The posture in brief:
 
 - **Scrubbing on the persist and log paths.** PHI/PII scrubbing is provided by
@@ -102,7 +102,7 @@ the control on each. The posture in brief:
   scrubbed before printing.
 - **A regulated deployment pins `OPENADAPT_FLOW_SCRUB=on` and fails closed.**
   Under `on`, a missing scrubbing capability aborts the run instead of writing
-  plaintext PHI, and image redaction of persisted frames is implied: a
+  plaintext PHI/PII, and image redaction of persisted frames is implied: a
   compliance-pinned run cannot leave unredacted full-frame screenshots in the
   shareable report. The on-prem queue refuses to start unless scrub is `on`.
   ([PRIVACY.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/PRIVACY.md),
@@ -116,7 +116,7 @@ the control on each. The posture in brief:
   AES-256-GCM sealing (`Workflow.save(encrypt=True)` with
   `OPENADAPT_BUNDLE_KEY`) encrypts `workflow.json`, every template screenshot
   crop, and durable run checkpoints into authenticated containers. No
-  cleartext PHI-bearing screenshot remains on disk in an encrypted bundle, and
+  cleartext PHI/PII-bearing screenshot remains on disk in an encrypted bundle, and
   keyed loads decrypt in memory only. A wrong key or a tampered ciphertext
   fails loudly, never partially. The identity band in a compiled bundle is a
   salted hash, not plaintext.
@@ -131,7 +131,7 @@ the control on each. The posture in brief:
 - **Honest boundaries where scrubbing would break safety.** The recorded
   identity evidence and the run's identity audit trail intentionally retain
   literal identifiers. Scrubbing them would defeat the wrong-record check they
-  exist to power. Those artifacts are governed as PHI-at-rest inside your
+  exist to power. Those artifacts are governed as PHI/PII-at-rest inside your
   boundary (filesystem controls, retention, full-disk encryption), and the map
   says so explicitly rather than pretending otherwise.
   ([PRIVACY.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/PRIVACY.md))
@@ -186,7 +186,7 @@ you can hand to an auditor:
   ([Read and audit run reports](run-reports.md),
   [PRIVACY.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/PRIVACY.md))
 - **A tamper-evident index on-prem.** The on-prem package adds an append-only,
-  hash-chained, PHI-free audit log over runs and release changes; any silent
+  hash-chained, PHI/PII-free audit log over runs and release changes; any silent
   edit breaks every subsequent hash and is caught by the attestation script.
   ([ON_PREM.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/ON_PREM.md))
 - **You can prove the no-egress posture, repeatedly.** `verify-airgap.sh` scans
@@ -245,7 +245,7 @@ bundles and injected from the environment at replay; deployment and hosted
 tokens live in your secret store or the OS keychain.
 
 **What is encrypted?**
-In transit: the PHI-bearing desktop control channel is TLS with per-run
+In transit: the PHI/PII-bearing desktop control channel is TLS with per-run
 certificate pinning, fail-closed. At rest: opt-in AES-256-GCM sealing for the
 bundle, its screenshot crops, and checkpoints, layered on operator full-disk
 encryption. Key management (KMS, rotation, escrow) remains yours. OpenAdapt

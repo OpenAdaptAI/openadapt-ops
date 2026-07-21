@@ -30,7 +30,7 @@ How-to guides for real deployments. Each assumes you have
 
 -   [__Deploy on-prem__](deploy-on-prem.md)
 
-    Keep data in the building: PHI scrubbing and the on-prem VLM appliance.
+    Keep data in the building: PHI/PII scrubbing and the on-prem VLM appliance.
 
 -   [__The hosted option__](hosted.md)
 
@@ -39,7 +39,7 @@ How-to guides for real deployments. Each assumes you have
 
 -   [__Security and data handling__](security-and-data-handling.md)
 
-    The pilot-approval dossier: local-by-default data flow, PHI posture,
+    The pilot-approval dossier: local-by-default data flow, PHI/PII posture,
     secrets, verification and audit, and the IT-review FAQ.
 
 -   [__Security and deployment review__](security-review.md)

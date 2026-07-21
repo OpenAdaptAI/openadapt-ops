@@ -33,11 +33,11 @@ price you pay at Checkout.
 | Structural run history and reports | **Beta / public offer** | Safety depends on the workflow's configured identity, effect, and policy checks. Repair and validation remain local. |
 | Checkout, portal, entitlements, metering | **Beta / public offer** | Live Stripe Checkout, signed webhooks, entitlements, usage, and the billing portal form one managed subscription contract. |
 | Self-hosted browser execution | **Beta** | No hosted account required. |
-| Windows UIA | **Early access** | The exact in-tree WinForms matrix passed 3/3 with an independent SQLite oracle and 3/3 stale/ambiguity refusals. Windows subscriptions and deployments are ordered separately from the public browser offer and qualified per workflow. |
-| Native macOS | **Early access** | One macOS 15.7.3 arm64 host produced 3/3 exact-byte TextEdit effects plus a two-window ambiguity refusal. Native macOS subscriptions and deployments are ordered separately from the public browser offer and qualified per workflow. |
-| RDP | **Early access** | One Parallels Windows 11 VM produced 3/3 exact guest-file effects through network RDP, with 0 silent incorrect successes, 0 over-halts, and 0 model calls. RDP subscriptions and deployments are ordered separately from the public browser offer and qualified per workflow. |
-| Citrix / VDI | **Exploratory** | The pixel-first mechanism shares the same identity gate and effect verification as every substrate, but no real ICA/HDX environment has been qualified yet; ordered separately from the public browser offer and qualified in its real ICA/HDX environment per workflow before consequential use. |
-| Regulated runtime data | **Customer-controlled boundary** | Use a scoped BYOC/on-prem deployment when live screens necessarily contain PHI. |
+| Windows UIA | **Supported / scoped deployment** | The exact in-tree WinForms matrix passed 3/3 with an independent SQLite oracle and 3/3 stale/ambiguity refusals. Windows subscriptions and deployments are ordered separately from the public browser offer and qualified per workflow. |
+| Native macOS | **Supported / scoped deployment** | One macOS 15.7.3 arm64 host produced 3/3 exact-byte TextEdit effects plus a two-window ambiguity refusal. Native macOS subscriptions and deployments are ordered separately from the public browser offer and qualified per workflow. |
+| RDP | **Supported / scoped deployment** | One Parallels Windows 11 VM produced 3/3 exact guest-file effects through network RDP, with 0 silent incorrect successes, 0 over-halts, and 0 model calls. RDP subscriptions and deployments are ordered separately from the public browser offer and qualified per workflow. |
+| Citrix / VDI | **Supported / scoped deployment** | Driven pixel-first through the same identity gate and effect verification as every substrate; ordered separately from the public browser offer and qualified in its real ICA/HDX environment per workflow. |
+| Regulated runtime data | **Customer-controlled boundary** | Use a scoped BYOC/on-prem deployment when live screens necessarily contain PHI/PII. |
 
 The public subscription covers approved browser workflows. Windows, native
 macOS, RDP, Citrix, regulated customer-controlled execution, professional
@@ -178,7 +178,7 @@ and remains subject to its runtime, entitlement, and data-boundary gates.
 
 ## What “scrubbed” means
 
-Compilation does **not** make a recording or bundle PHI-free. Scrubbing is a
+Compilation does **not** make a recording or bundle PHI/PII-free. Scrubbing is a
 separate local derivation protocol:
 
 The sanitized derivative is admitted by its manifest-bound cryptographic derivative hash.
@@ -273,14 +273,14 @@ the automatic policy ran.
 A recording can replace a patient name with a parameter, while the live EMR
 screen still displays that patient's name during execution. Runtime frames,
 OCR, accessibility text, model inputs, reports, and effect evidence can
-therefore reintroduce PHI.
+therefore reintroduce PHI/PII.
 
 Use these rules:
 
 - Sanitized authoring derivatives may cross a destination permitted by policy.
 - Runtime values are injected separately and are not written back into the
   sanitized authoring derivative.
-- PHI-bearing runtime observations remain inside the declared trusted
+- PHI/PII-bearing runtime observations remain inside the declared trusted
   execution boundary.
 - A remote model is a separate destination and must be approved explicitly;
   healthy replay does not need one.
@@ -299,7 +299,7 @@ Use these rules:
 | Approved derivative -> verified customer endpoint | Allow under that customer's destination policy. |
 | Raw or unresolved artifact -> any remote endpoint | Refuse. |
 | Explicit hosted-recorder observations -> hosted recording boundary | Allow only for an entitled, public-HTTPS, non-regulated session that the user starts deliberately. |
-| PHI-bearing runtime observation -> shared managed boundary | Refuse unless that exact regulated service and legal boundary are configured. |
+| PHI/PII-bearing runtime observation -> shared managed boundary | Refuse unless that exact regulated service and legal boundary are configured. |
 | Minimized break descriptor -> control plane | Allow after schema validation and sanitation. |
 | Unknown destination | Refuse. |
 

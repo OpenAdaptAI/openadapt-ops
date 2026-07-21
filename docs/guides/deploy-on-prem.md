@@ -33,8 +33,8 @@ stack locally:
 - **Deployment wiring**: a single [`deployment.yaml`](../reference/deployment-config.md)
   (backend URL, system-of-record effect verifier, actuation, durable runtime,
   policy). An empty file = fully local, zero egress.
-- **PHI scrubbing**: the optional `privacy` extra (Presidio-backed), fail-closed.
-- **A local, append-only audit log**: hash-chained, PHI-free.
+- **PHI/PII scrubbing**: the optional `privacy` extra (Presidio-backed), fail-closed.
+- **A local, append-only audit log**: hash-chained, PHI/PII-free.
 - **Durable state**: a halted run pauses durably and is resumable locally.
 - **(Optional) an on-prem VLM appliance**: a LAN-only GPU box, off by default.
 
@@ -103,8 +103,8 @@ defence-in-depth layers:
    kernel drops all IP traffic for the runner unless a LAN CIDR is explicitly
    allow-listed); the Docker Compose alternative puts the runner on an
    `internal: true` network with no gateway to the internet.
-3. **Fail-closed PHI handling.** `OPENADAPT_FLOW_SCRUB=on` makes a missing
-   scrubbing capability *abort* rather than write plaintext PHI.
+3. **Fail-closed PHI/PII handling.** `OPENADAPT_FLOW_SCRUB=on` makes a missing
+   scrubbing capability *abort* rather than write plaintext PHI/PII.
 4. **Attestation.** `verify-airgap.sh` scans your config and environment for any
    off-LAN URL or cloud key; with `--probe` it actively curls a public canary and
    **asserts the call fails**; with `--audit` it walks the audit-log hash chain.
@@ -119,7 +119,7 @@ The firewall is the real control; the `internal:true` network, `IPAddressDeny=an
 and `verify-airgap.sh` are defence-in-depth and attestation, not a replacement for
 a correct network boundary.
 
-## PHI scrubbing on the persist and log paths
+## PHI/PII scrubbing on the persist and log paths
 
 The sanitizer processes `REPORT.md` and console logs. Missing dependencies,
 unsupported configuration, and sanitizer errors fail closed, but detector false
@@ -129,7 +129,7 @@ the identity check and the audit trail, protected by a documented boundary rathe
 than by redaction. Production images must stage the allowlisted spaCy model
 locally, not download one at runtime.
 
-## Encryption at rest: setup and the honest caveat
+## Encryption at rest
 
 Everything lives under `storage_root` (default `/srv/openadapt`), which you place
 on a **full-disk-encrypted** volume (LUKS / BitLocker / FileVault; OpenAdapt never
@@ -137,37 +137,36 @@ holds the disk key). At-rest protection has three layers:
 
 | Layer | Control | Real today? |
 |---|---|---|
-| The disk holding `storage_root` (bundles, runs, audit, frames) | **Operator full-disk encryption** (LUKS / BitLocker / FileVault) | REAL: the primary PHI-at-rest control. Operator-provisioned |
+| The disk holding `storage_root` (bundles, runs, audit, frames) | **Operator full-disk encryption** (LUKS / BitLocker / FileVault) | REAL: the primary PHI/PII-at-rest control. Operator-provisioned |
 | The identity band inside `workflow.json` | **Salted-hash `identity_template`** (no plaintext name / DOB / MRN; optional external `OPENADAPT_FLOW_IDENTITY_SALT`) | REAL. A hash of a low-entropy identifier is brute-forceable by a holder of both bundle and salt, so it is **not** a cryptographic seal |
 | The bundle `workflow.json` + durable checkpoints | **Opt-in AES-256-GCM sealing** via `OPENADAPT_BUNDLE_KEY` (`Workflow.save(encrypt=True)`; scrypt-derived key) | REAL (opt-in, shipped). A wrong/missing key or tampered ciphertext fails loud and safe |
-| `templates/*.png` (recorded screen crops of identifiers) | Full-disk encryption + governance guards (kept out of git); opt-in Presidio image redaction | REAL for FDE + guard, but see the caveat |
+| `templates/*.png` (recorded screen crops of identifiers) | **AES-256-GCM sealing with the bundle key** plus full-disk encryption and governance guards | REAL when bundle encryption is enabled; plaintext crops are removed after sealing and authenticated ciphertext is verified on load |
 
 Enable the per-bundle seal for cryptographic at-rest protection that does not
 depend solely on the volume:
 
 ```bash
-export OPENADAPT_BUNDLE_KEY=…            # seals workflow.json + checkpoints (AES-256-GCM)
+export OPENADAPT_BUNDLE_KEY=…            # seals workflow.json, template crops, and checkpoints
 ```
 
-!!! danger "Honest at-rest caveat: the identifier crops"
+!!! warning "Identifier crops remain regulated data"
     The identity check needs a **rendered crop of the identifier** (an image of
     the MRN / name as it appeared on screen), stored as `templates/*.png`. These
-    crops are **rendered pixels of PHI**, and they are **not yet sealed inside
-    the per-bundle encrypted container**; they still rely on **operator full-disk
-    encryption**. Enable `OPENADAPT_BUNDLE_KEY` for the JSON and checkpoints, but
-    do **not** represent the whole bundle as cryptographically sealed. Full-disk
-    encryption remains the baseline control for the template crops. Treat every
-    bundle as PHI.
+    crops are **rendered pixels of PHI/PII**. With bundle encryption enabled,
+    OpenAdapt seals them as authenticated `*.enc` assets and removes the
+    plaintext copies; replay decrypts them in memory. Encryption does not make
+    them non-regulated, so keep full-disk encryption, access controls, retention,
+    and key-management controls in place and treat every bundle as PHI/PII.
 
 ## The local audit log
 
 `audit/audit.log` is a tamper-evident **index** over the runs: newline-delimited
-JSON, append-only, **PHI-free by construction**. Each record carries a UTC
+JSON, append-only, **PHI/PII-free by construction**. Each record carries a UTC
 timestamp, an event (`queued` / `started` / `verified` / `halted` / `failed` /
 `resumed`), an opaque job id, the bundle basename, the run-dir path, the process
 exit code, the OS actor, an operator note, and `prev_sha`, a sha256 chain to the
 previous line, so any silent edit or deletion breaks every subsequent hash and is
-caught by `verify-airgap.sh --audit`. The per-step PHI detail stays beside each
+caught by `verify-airgap.sh --audit`. The per-step PHI/PII detail stays beside each
 run in `runs/<id>/report.json` under the encrypted volume; the audit log records
 *that* a run happened and *how it ended*, never the underlying record data.
 
@@ -232,7 +231,7 @@ install pulls no model).
 | `templates/*.png` (identifier crops) | Yes (rendered pixels) | Full-disk encryption + governance guards (not yet inside the per-bundle seal) |
 | `report.json` | Yes, on purpose | Documented boundary; it is the audit trail |
 | `REPORT.md`, console logs | Sanitizer applied when `OPENADAPT_FLOW_SCRUB=on` | Processing errors fail closed; review for detector misses before egress |
-| `audit/audit.log` | No (PHI-free by construction) | Append-only, hash-chained |
+| `audit/audit.log` | No (PHI/PII-free by construction) | Append-only, hash-chained |
 | Identity crops to the appliance | Yes | Trusted local boundary; verify egress and retention controls |
 | Deterministic replay path | n/a | No OpenAdapt-hosted dependency; target and verifier traffic remains |
 
@@ -241,12 +240,21 @@ install pulls no model).
 **Not legal advice, and not a compliance guarantee.** OpenAdapt provides the
 software substrate for running compiled automations on-premise. Whether a given
 deployment satisfies PHIPA, PIPEDA, HIPAA, or another regime is a determination
-for the deploying organization's privacy officer and counsel. We do **not** sign
-a BAA, and no part of the software is a certification. What the software provides
-(PHI processed locally, protected at rest by full-disk encryption plus in-bundle
-identity hashing plus opt-in AES-256-GCM sealing, and a local append-only audit
-trail) is the technical substrate those agreements attest to. The full boundary
-list is in the engine repo's `deploy/on-prem/COMPLIANCE.md`.
+for the deploying organization's privacy officer and counsel. In this
+self-hosted deployment PHI stays inside your environment and does not enter
+OpenAdapt's infrastructure, so the software runs as an on-premise vendor rather
+than a business associate for that shape, and a BAA is not the operative
+instrument for it. Where your procurement requires written terms, a US HIPAA
+Business Associate Agreement, or for an Ontario clinic a PHIPA service-provider
+agreement, can be signed following review. Hosted processing of PHI inside
+OpenAdapt's infrastructure is governed by a signed BAA and a
+deployment-specific HIPAA risk analysis before regulated data is admitted. No
+part of the software is a certification. What the
+software provides (PHI processed locally, protected at rest by full-disk
+encryption plus in-bundle identity hashing plus opt-in AES-256-GCM sealing, and
+a local append-only audit trail) is the technical substrate those agreements
+attest to. The full boundary list is in the engine repo's
+`deploy/on-prem/COMPLIANCE.md`.
 
 For the strictest deployments: install with the `privacy` extra, run the
 appliance locally (or not at all, keeping the deterministic path only), set

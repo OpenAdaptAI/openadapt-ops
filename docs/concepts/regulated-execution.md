@@ -84,7 +84,7 @@ The pre-flight gate is the entry check; the same posture governs every step:
   proceeding on a "Saved" banner.
 - An ambiguous identity abstains up the ladder and halts if nothing verifies.
 - A missing scrubbing capability, under `OPENADAPT_FLOW_SCRUB=on`, aborts rather
-  than writing PHI at all.
+  than writing PHI/PII at all.
 
 A halt is not a dead end. It feeds the [halt-learn loop](halt-learn-loop.md),
 where an operator demonstrates the fix, a regression gate proves it weakens
