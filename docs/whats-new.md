@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-21 04:43 UTC*
+> *Last updated: 2026-07-21 04:46 UTC*
 
 
 
@@ -166,6 +166,8 @@
 
 ## openadapt-evals
 
+
+- [docs: refresh README as evidence-generating eval infra](https://github.com/OpenAdaptAI/openadapt-evals/pull/271) (#271) — merged 
 
 - [docs(evals): bind current Flow release performance](https://github.com/OpenAdaptAI/openadapt-evals/pull/270) (#270) — merged 
 
