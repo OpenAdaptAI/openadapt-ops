@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-21 08:44 UTC*
+> *Last updated: 2026-07-21 13:14 UTC*
 
 
 
@@ -53,11 +53,19 @@
 ## openadapt-flow
 
 
+- [fix(runtime): close typed-input masked false success](https://github.com/OpenAdaptAI/openadapt-flow/pull/223) (#223) — merged 
+
+- [fix(hardening): make seeded adversarial search process-stable](https://github.com/OpenAdaptAI/openadapt-flow/pull/222) (#222) — merged 
+
 - [fix(ci): restore standalone EffectBench boundary](https://github.com/OpenAdaptAI/openadapt-flow/pull/221) (#221) — merged 
 
 - [fix(ci): tomli fallback so the 3.10 test-matrix leg collects (unblocks green main)](https://github.com/OpenAdaptAI/openadapt-flow/pull/220) (#220) — merged 
 
 - [feat(hardening): harder cases (latency/reflow/dense) + close 36 new silent-wrongs](https://github.com/OpenAdaptAI/openadapt-flow/pull/215) (#215) — merged 
+
+- [fix(effect_e2e): open-world ground truth + independent delta primitive + closed-world disclosure (review #2 finding #3)](https://github.com/OpenAdaptAI/openadapt-flow/pull/214) (#214) — merged 
+
+- [feat(effectbench): pluggable external system-of-record + oracle interface (reference oracle marked reference-only)](https://github.com/OpenAdaptAI/openadapt-flow/pull/213) (#213) — merged 
 
 - [feat(connector): engine-side BYOC outbound-pull daemon (openadapt-flow connector)](https://github.com/OpenAdaptAI/openadapt-flow/pull/212) (#212) — merged 
 
@@ -79,24 +87,18 @@
 
 - [docs: rewrite workflow-program IR as an implemented spec + formalize semantics](https://github.com/OpenAdaptAI/openadapt-flow/pull/203) (#203) — merged 
 
+- [feat(report): per-step before/after screenshots for every step in REPORT.md](https://github.com/OpenAdaptAI/openadapt-flow/pull/202) (#202) — merged 
+
 - [docs(readme): substrate-aware refresh of the engine README](https://github.com/OpenAdaptAI/openadapt-flow/pull/201) (#201) — merged 
 
 - [docs(paper): adversarial peer review + clearly-correct honesty fixes](https://github.com/OpenAdaptAI/openadapt-flow/pull/200) (#200) — merged 
-
-- [docs(paper): correct stale README (byline set; workshop bib is a copy, not a symlink)](https://github.com/OpenAdaptAI/openadapt-flow/pull/199) (#199) — merged 
-
-- [feat(validation): configurable hardening corpus + private-corpus release-boundary guard](https://github.com/OpenAdaptAI/openadapt-flow/pull/197) (#197) — merged 
-
-- [feat(runtime): user-configurable ("bring your own") grounding model with fail-closed PHI allowlist](https://github.com/OpenAdaptAI/openadapt-flow/pull/196) (#196) — merged 
-
-- [fix(demo_media): stop burning the status badge into run_openemr footage](https://github.com/OpenAdaptAI/openadapt-flow/pull/195) (#195) — merged 
-
-- [feat(validation): vision hardening flywheel — adversarial perturbation sweep + silent-wrong ratchet](https://github.com/OpenAdaptAI/openadapt-flow/pull/194) (#194) — merged 
 
 
 
 ## openadapt-desktop
 
+
+- [Bundle Flow into native desktop installers](https://github.com/OpenAdaptAI/openadapt-desktop/pull/38) (#38) — merged 
 
 - [docs: refresh README for the reconciled cockpit and wired engine sidecar](https://github.com/OpenAdaptAI/openadapt-desktop/pull/37) (#37) — merged 
 
@@ -135,8 +137,6 @@
 - [Bump native desktop to 0.1.1](https://github.com/OpenAdaptAI/openadapt-desktop/pull/18) (#18) — merged 
 
 - [Fix native release publish runtime](https://github.com/OpenAdaptAI/openadapt-desktop/pull/17) (#17) — merged 
-
-- [ci: ship Experimental native installer pipeline](https://github.com/OpenAdaptAI/openadapt-desktop/pull/16) (#16) — merged 
 
 
 
