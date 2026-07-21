@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-21 06:27 UTC*
+> *Last updated: 2026-07-21 06:54 UTC*
 
 
 
@@ -53,7 +53,13 @@
 ## openadapt-flow
 
 
+- [docs(paper): cite the real end-to-end silent-wrong-effect numbers as the headline](https://github.com/OpenAdaptAI/openadapt-flow/pull/211) (#211) — merged 
+
+- [fix(mockmed): revert focus/caret CSS that broke deterministic e2e halts (follow-up to #204)](https://github.com/OpenAdaptAI/openadapt-flow/pull/210) (#210) — merged 
+
 - [docs(paper): second adversarial review (independent-harness / stats / second-domain / benchmark lens)](https://github.com/OpenAdaptAI/openadapt-flow/pull/209) (#209) — merged 
+
+- [feat(benchmark): second (non-healthcare) domain: MockLoan lending effect-verification study](https://github.com/OpenAdaptAI/openadapt-flow/pull/208) (#208) — merged 
 
 - [feat(visualize): expand loop bodies in the program graph + compact loop showcase](https://github.com/OpenAdaptAI/openadapt-flow/pull/207) (#207) — merged 
 
@@ -87,16 +93,12 @@
 
 - [fix(ci): unblock main — de-symlink workshop bib (sdist) + deterministic pixel font test](https://github.com/OpenAdaptAI/openadapt-flow/pull/189) (#189) — merged 
 
-- [feat(compiler): author data-driven LOOP from a single demonstration](https://github.com/OpenAdaptAI/openadapt-flow/pull/188) (#188) — merged 
-
-- [feat(citrix_daas): staged, guarded PREP kit for DaaS-Standard-for-Azure 7-day trial (clock NOT started)](https://github.com/OpenAdaptAI/openadapt-flow/pull/187) (#187) — merged 
-
-- [feat(benchmark): EffectBench multi-baseline runner adapter — one arm interface, identical task+oracle](https://github.com/OpenAdaptAI/openadapt-flow/pull/186) (#186) — merged 
-
 
 
 ## openadapt-desktop
 
+
+- [docs: refresh README for the reconciled cockpit and wired engine sidecar](https://github.com/OpenAdaptAI/openadapt-desktop/pull/37) (#37) — merged 
 
 - [feat: reconcile cockpit frontend, wired engine, and fail-closed policy sync onto main](https://github.com/OpenAdaptAI/openadapt-desktop/pull/36) (#36) — merged 
 
@@ -136,8 +138,6 @@
 
 - [ci: ship Experimental native installer pipeline](https://github.com/OpenAdaptAI/openadapt-desktop/pull/16) (#16) — merged 
 
-- [fix: remove stale package version claim](https://github.com/OpenAdaptAI/openadapt-desktop/pull/15) (#15) — merged 
-
 
 
 ## openadapt-agent
@@ -161,6 +161,8 @@
 
 ## openadapt-ml
 
+
+- [docs: refresh README with honest research positioning](https://github.com/OpenAdaptAI/openadapt-ml/pull/67) (#67) — merged 
 
 - [docs: add lifecycle status banner](https://github.com/OpenAdaptAI/openadapt-ml/pull/66) (#66) — merged 
 
@@ -187,6 +189,8 @@
 
 ## openadapt-capture
 
+
+- [docs: refresh README to shared OpenAdapt house style](https://github.com/OpenAdaptAI/openadapt-capture/pull/37) (#37) — merged 
 
 - [chore(deps): bump peter-evans/repository-dispatch from 3 to 4](https://github.com/OpenAdaptAI/openadapt-capture/pull/36) (#36) — merged 
 
@@ -217,6 +221,8 @@
 ## openadapt-privacy
 
 
+- [docs: refresh README to shared OpenAdapt house style](https://github.com/OpenAdaptAI/openadapt-privacy/pull/8) (#8) — merged 
+
 - [chore: add MIT LICENSE file](https://github.com/OpenAdaptAI/openadapt-privacy/pull/7) (#7) — merged 
 
 - [chore: declare privacy release line](https://github.com/OpenAdaptAI/openadapt-privacy/pull/6) (#6) — merged 
@@ -230,6 +236,8 @@
 ## openadapt-types
 
 
+- [docs: refresh README to shared OpenAdapt house style](https://github.com/OpenAdaptAI/openadapt-types/pull/8) (#8) — merged 
+
 - [docs: add lifecycle status banner](https://github.com/OpenAdaptAI/openadapt-types/pull/7) (#7) — merged 
 
 - [fix: keep release lock metadata consistent](https://github.com/OpenAdaptAI/openadapt-types/pull/6) (#6) — merged 
@@ -238,6 +246,8 @@
 
 ## openadapt-grounding
 
+
+- [docs: refresh README to shared OpenAdapt house style](https://github.com/OpenAdaptAI/openadapt-grounding/pull/5) (#5) — merged 
 
 - [docs: add Research status banner (not required by the product)](https://github.com/OpenAdaptAI/openadapt-grounding/pull/4) (#4) — merged 
 
