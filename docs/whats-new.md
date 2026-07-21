@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-21 03:23 UTC*
+> *Last updated: 2026-07-21 03:42 UTC*
 
 
 
@@ -98,6 +98,10 @@
 ## openadapt-desktop
 
 
+- [feat: reconcile cockpit frontend, wired engine, and fail-closed policy sync onto main](https://github.com/OpenAdaptAI/openadapt-desktop/pull/36) (#36) — merged 
+
+- [feat: read-only "Grounding model" section in desktop Settings](https://github.com/OpenAdaptAI/openadapt-desktop/pull/35) (#35) — merged 
+
 - [fix: reconcile engine IPC + flow bridge with the cockpit frontend contract](https://github.com/OpenAdaptAI/openadapt-desktop/pull/34) (#34) — merged 
 
 - [feat: add compiled-program visualization view to desktop app](https://github.com/OpenAdaptAI/openadapt-desktop/pull/33) (#33) — merged 
@@ -133,10 +137,6 @@
 - [fix: remove stale package version claim](https://github.com/OpenAdaptAI/openadapt-desktop/pull/15) (#15) — merged 
 
 - [fix: keep desktop releases version-consistent](https://github.com/OpenAdaptAI/openadapt-desktop/pull/14) (#14) — merged 
-
-- [feat: align desktop with the hosted workflow loop](https://github.com/OpenAdaptAI/openadapt-desktop/pull/13) (#13) — merged 
-
-- [feat: rewire engine for hosted loop (auth, ingest push, flow bridge)](https://github.com/OpenAdaptAI/openadapt-desktop/pull/11) (#11) — merged 
 
 
 
