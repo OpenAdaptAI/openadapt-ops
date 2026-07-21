@@ -63,7 +63,7 @@ For a bundle that will do consequential writes, gate it behind a policy with
 ## Handling variation
 
 If the same workflow runs with different values each time (a different note, a
-different patient), make those values [parameters](parameters-and-secrets.md).
+different record), make those values [parameters](parameters-and-secrets.md).
 If it runs with real conditionals or loops, that is the
 [workflow-program IR](../concepts/workflow-ir.md) and
 [multi-trace induction](../concepts/multi-trace-induction.md): record the common

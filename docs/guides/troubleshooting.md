@@ -38,7 +38,7 @@ glyph-confusable identifier** (an MRN where `O`/`0` or `l`/`1`/`I` are ambiguous
 far more often than on the browser.
 
 **Cause.** The identity gate doing its job, not a bug: it **halts rather than
-guessing** a wrong-patient click. On a pure-pixel substrate there is no structured
+guessing** a wrong-record click. On a pure-pixel substrate there is no structured
 accessibility text, so the identity ladder falls back to OCR, which cannot always
 disambiguate confusable glyphs. See
 [the identity gate](../concepts/identity-gate.md) and
@@ -48,7 +48,7 @@ disambiguate confusable glyphs. See
 
 - **`teach` the correction.** Demonstrate the fix once and `teach` compiles it
   back into the workflow as a governed, guarded branch so that state stops
-  halting, without weakening the wrong-patient guarantee. See
+  halting, without weakening the wrong-record guarantee. See
   [the halt-learn loop](../concepts/halt-learn-loop.md) and
   [`teach`](../reference/cli.md#teach).
 - **`report-break`** to surface the halt centrally (PHI-free) for triage:

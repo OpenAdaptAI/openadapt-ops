@@ -1,6 +1,6 @@
 # The capability ladder
 
-One semantic step (open this patient, save this note) can run different ways
+One semantic step (open this record, save this note) can run different ways
 depending on what the app exposes. The capability ladder separates **what** a
 step means from **how** the app lets you do it: one compiled step, several
 implementations, the highest-fidelity viable one wins.
@@ -36,8 +36,8 @@ visual guess.
 ## Why fidelity matters for safety
 
 The rung you land on changes what the system can guarantee. Identity is the
-clearest example. Two different patients with the same name and date of birth,
-distinguished only by a medical record number differing by a single `O` versus
+clearest example. Two different records with the same name and date of birth,
+distinguished only by an identifier differing by a single `O` versus
 `0` glyph, render to a byte-identical OCR band. On the **visual** rung, OCR
 cannot separate them, so OpenAdapt refuses rather than guesses. On the
 **structural** rung, the two rows are different strings in the tree, so the same
