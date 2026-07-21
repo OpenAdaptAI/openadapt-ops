@@ -2,7 +2,7 @@
 
 Target-state policy: every execution substrate is presented as a first-class
 mechanism, not ranked below the browser. Substrates with a validated real
-environment are **Supported / scoped deployment** (Windows UIA, native macOS,
+environment are **Early access** (Windows UIA, native macOS,
 RDP); Citrix/VDI is **Exploratory** until a real ICA/HDX environment is qualified,
 matching the canonical status.json ladder. This guard does not police the
 availability label beyond that; it pins the substrate-evidence section to the
@@ -26,7 +26,7 @@ def _read(relative_path: str) -> str:
 def test_scoped_windows_macos_and_rdp_evidence_is_exact_and_bounded():
     what_works = _read("get-started/what-works-today.md")
 
-    assert "Windows UIA backend | **Supported / scoped deployment**" in what_works
+    assert "Windows UIA backend | **Early access**" in what_works
     assert "`20260717-candidate-56759c8-v2` in-tree WinForms matrix completed 3/3 trials" in what_works
     assert "independent SQLite oracle confirmed 3/3 effects" in what_works
     assert "stale-target and ambiguous-target controls each refused 3/3" in what_works
@@ -36,7 +36,7 @@ def test_scoped_windows_macos_and_rdp_evidence_is_exact_and_bounded():
     assert "defafbae758a75c8e149d9693f2cffe1f2264b8c" in what_works
     assert "https://github.com/OpenAdaptAI/openadapt-flow/pull/132" in what_works
 
-    assert "Native macOS backend | **Supported / scoped deployment**" in what_works
+    assert "Native macOS backend | **Early access**" in what_works
     assert "one macOS 15.7.3 arm64 host" in what_works
     assert "candidate `b1b61a5` completed 3/3 exact-byte TextEdit trials" in what_works
     assert "refused a two-window ambiguity without changing either file" in what_works
@@ -48,7 +48,7 @@ def test_scoped_windows_macos_and_rdp_evidence_is_exact_and_bounded():
     assert "ca1b522cad215875f7471782283f8f8bb8e6c998" in what_works
     assert "https://github.com/OpenAdaptAI/openadapt-flow/pull/135" in what_works
 
-    assert "RDP backend | **Supported / scoped deployment**" in what_works
+    assert "RDP backend | **Early access**" in what_works
     assert "one Parallels Windows 11 VM at 1280x800 with Aardwolf 0.2.14" in what_works
     assert "candidate `82a658a` completed 3/3 trials" in what_works
     assert "unique file through the Windows Run dialog over network RDP" in what_works
@@ -78,7 +78,7 @@ def test_public_offer_and_scoped_substrate_evidence_remain_distinct():
     combined = "\n".join(pages)
 
     assert "acceptance remains in progress" not in combined
-    assert "RDP backend | **Supported / scoped deployment**" in combined
+    assert "RDP backend | **Early access**" in combined
     # Citrix / VDI is a first-class substrate mechanism but has no validated real
     # environment yet, so its honest label is Exploratory, matching the canonical
     # status.json ladder. The ICA/HDX honesty is preserved: each Citrix/VDI
