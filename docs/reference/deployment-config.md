@@ -78,10 +78,20 @@ policy:
 
 ### `backend`
 
+`kind` selects the substrate the runner drives; every substrate runs the same
+bundle, resolution ladder, and gates behind one
+[backend protocol](../concepts/backends.md). `url` and `headed` are **web-only**;
+each other substrate targets through its own field in place of `url`.
+
 | Field | Default | Meaning |
 |---|---|---|
-| `url` | `null` | The GUI URL under automation. `null` lets the command choose its default (`replay`/`run` serve the bundled MockMed demo). |
-| `headed` | `false` | Run the browser visible (demo / debugging). |
+| `kind` | `web` | Substrate to drive: `web` (Playwright/Chromium), `windows` (native Windows via the in-session agent), `macos` (a native macOS app window), `linux` (an exact AT-SPI app window), or `rdp` (pixel-only remote desktop / Citrix). |
+| `url` | `null` | **`web` only.** The GUI URL under automation. `null` lets the command choose its default (`replay`/`run` serve the bundled MockMed demo). |
+| `headed` | `false` | **`web` only.** Run the browser visible (demo / debugging). |
+| `agent_url` | `null` | **`windows`.** Base URL of the in-guest agent (e.g. `http://localhost:5001`). Required for `kind: windows`. `agent_token` / `agent_tls_pin` authenticate and pin it. |
+| `macos_app` | `null` | **`macos`.** Owner application name or substring. Required for `kind: macos`; `macos_window_title` disambiguates a multi-window app. |
+| `linux_app` | `null` | **`linux`.** Exact AT-SPI application name. Required for `kind: linux`, along with `linux_window_title`. |
+| `rdp_host` | `null` | **`rdp`.** Host/IP for a network RDP session. Required for `kind: rdp` unless `rdp_window` names a local Citrix / remote-display client window to drive instead. |
 
 ### `actuation`
 
@@ -136,7 +146,8 @@ flag tweaks one run:
 openadapt flow run bundle --config deployment.yaml --durable
 ```
 
-The overrides: `--url` / `--headed` (backend), `--effects-kind` /
+The overrides: `--backend` / `--url` / `--headed` / `--agent-url` / `--rdp-host`
+(backend), `--effects-kind` /
 `--effects-base-url` / `--effects-root` (effects), `--api-actuator` /
 `--api-base-url` (actuation), `--durable` and `--allow-model-grounding`
 (runtime). See the [CLI reference](cli.md#run) and the

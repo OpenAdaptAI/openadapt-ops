@@ -13,7 +13,7 @@ is a subcommand of `openadapt flow`.
 
 | Verb | What it does | Exit code |
 |---|---|---|
-| [`record`](#record) | Record your own app (`--url`) in a headed browser | 0 |
+| [`record`](#record) | Record your own app on any [substrate](#backend) (browser via `--url`, native Windows or Citrix/RDP via `--backend`) | 0 |
 | [`demo-record`](#demo-record) | Serve the sample app and record the canonical demo | 0 |
 | [`compile`](#compile) | Compile a recording into a workflow bundle | 0 |
 | [`induce`](#induce) | Induce a parameterized program from **multiple** recordings | 0 if certified, 2 if underdetermined |
@@ -77,7 +77,11 @@ openadapt flow run bundle --backend rdp --rdp-host 10.0.0.5 --config deployment.
 
 ## record
 
-Open a headed browser on your own app and record what you do.
+Record what you do on your own app. The [backend selector](#backend) chooses the
+substrate: `--backend web` (the default) opens a headed browser on the app at
+`--url`; `--backend windows` records a native Windows desktop through its
+in-session agent, and `--backend rdp` records a pixel-only Citrix/RDP session.
+The example below records the web substrate.
 
 ```bash
 openadapt flow record --url https://your.app --out rec
@@ -85,7 +89,7 @@ openadapt flow record --url https://your.app --out rec
 
 | Flag | Description |
 |---|---|
-| `--url` (required) | URL of the app to record against |
+| `--url` | URL of the app to record against. **Required for `--backend web`** (the default); other substrates target through the [backend selector](#backend) instead. |
 | `--out` (required) | Recording output directory |
 | `--secret FIELD` | Mark a typed field (by name or id) as a **secret**: never persisted, injected at replay from `OPENADAPT_FLOW_SECRET_<FIELD>`. `input[type=password]` is always secret. Repeatable. |
 | `--param FIELD` | Record a typed field as a **parameter**: its demonstrated value becomes the default, overridable at replay with `--param`. Repeatable. |
@@ -180,7 +184,11 @@ all **fail loudly** and write no bundle. Once authored, drive the loop with
 
 ## replay
 
-Replay a bundle. With no `--url`, it serves the bundled sample app.
+Replay a bundle against the substrate chosen by the [backend selector](#backend).
+On the default `web` backend, `--url` names the target app and, with no `--url`,
+replay serves the bundled sample app. For a native Windows desktop or a
+pixel-only Citrix/RDP session, use `--backend windows`/`--backend rdp` with its
+target flag instead of `--url`. The example below replays the web substrate.
 
 ```bash
 openadapt flow replay bundle --url https://your.app --param note="Follow-up"
@@ -189,8 +197,8 @@ openadapt flow replay bundle --url https://your.app --param note="Follow-up"
 | Flag | Description |
 |---|---|
 | `bundle` (positional) | Workflow bundle directory |
-| `--url` | Target app URL (default: serve the bundled sample app) |
-| `--drift` | Comma-separated drift modes (`theme,move,rename,modal`) to demonstrate self-healing; only valid **without** `--url` |
+| `--url` | Target app URL for the `web` backend (default: serve the bundled sample app). Non-web substrates target through the [backend selector](#backend) instead. |
+| `--drift` | Comma-separated drift modes (`theme,move,rename,modal`) to demonstrate self-healing on the bundled web demo; only valid **without** `--url` |
 | `--run-dir` | Run output directory (default: `runs/replay-<UTC timestamp>`) |
 | `--param K=V` | Parameter substitution. Repeatable. |
 | `--save-healed-to DIR` | Write the healed bundle to this directory |

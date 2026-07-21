@@ -48,14 +48,16 @@ milliseconds.
 ## The record, compile, replay loop
 
 ```bash
-openadapt flow record  --url https://your.app --out rec   # demonstrate once
+openadapt flow record  --url https://your.app --out rec   # demonstrate once (web)
 openadapt flow compile rec --out bundle --name my-task    # compile
 openadapt flow replay  bundle --url https://your.app      # replay, local, $0
 ```
 
-`record` opens a headed browser on your own app and captures what you do.
-`compile` turns the recording into a bundle. `replay` runs the bundle
-deterministically and writes an illustrated report.
+On the web substrate shown here, `record` opens a headed browser on your own app
+and captures what you do; the same loop records a native Windows desktop or a
+pixel-only Citrix/RDP session by choosing a [backend](backends.md) instead of a
+`--url`. `compile` turns the recording into a bundle. `replay` runs the bundle
+deterministically on the same substrate and writes an illustrated report.
 
 ## Vision-first behind a small backend
 
