@@ -164,47 +164,40 @@ measured runs. This excludes authoring, review, infrastructure, exception, and
 service costs. Full methodology and caveats live in the [openadapt-flow benchmark
 docs](https://github.com/OpenAdaptAI/openadapt-flow/tree/main/benchmark).
 
-Detailed task definitions, environments, run counts, oracles, and failure
-taxonomies live in the [qualification evidence](get-started/what-works-today.md)
-and [engine benchmarks](https://github.com/OpenAdaptAI/openadapt-flow/tree/main/benchmark).
+### Governed replay across verticals
 
----
+On 2026-07-21, the paid computer-use agent arm was run on all three pinned,
+synthetic reference environments. Each trial began from a reset baseline,
+drove the same task contract as the compiled reference, and was classified by
+an arm-independent system-of-record oracle rather than pixels or the agent's
+self-report. The agent used `claude-sonnet-5` with explicit action and cost
+caps.
 
-## Governed replay across verticals
+| Vertical (pinned, synthetic) | Earlier compiled / API reference | Paid computer-use agent |
+|---|---|---|
+| **Insurance** (openIMIS claim intake) | 3/3 compiled replays SQL-verified, $0, 0 model calls | **3/3 correct**, 0/3 over-halt, 0/3 silent incorrect, $0.4793/run |
+| **Lending** (Frappe Lending loan application) | compiled + API 12/12 correct, $0, 0 model calls | **6/6 correct writes** (5/6 clean), 1/6 post-write cost-cap over-halt, 0/6 silent incorrect, $0.4240/run |
+| **Healthcare** (OpenEMR patient registration) | compiled + API 12/12 correct, $0, 0 model calls | **0/6 correct; 6/6 missing write**, 0/6 over-halt, 0/6 silent incorrect, $0.8901/run |
 
-The head-to-head above exists only where **both arms** were actually run. To
-show coverage across our three ICP verticals we also publish **compiled-replay
-evidence** from pinned, local, synthetic reference environments. This is not a
-head-to-head: the paid computer-use-agent arm was **not run** for the lending
-and insurance environments, and was intentionally omitted from the pinned-local
-healthcare subset. Read these as governed-replay evidence verified by an
-independent effect oracle, not as a win over an agent.
+These are **not matched head-to-head rows**. The paid-agent trials used newly
+provisioned baselines separate from the earlier compiled/API subsets, and the
+sample is small (3-6 trials per environment). They are local engineering
+evidence, not a publication matrix, certification result, or broad claim about
+computer-use agents. The OpenEMR row is an honest negative result: all six
+bounded runs ended after exhausting their action budget without writing a
+patient.
 
-All three run through the **Browser (Playwright)** substrate, whose reference
-path is **Beta**. Every figure below is copied from the [workflow reference
-catalog](https://openadapt.ai/workflows) and traces to the committed
-[openadapt-flow benchmark READMEs](https://github.com/OpenAdaptAI/openadapt-flow/tree/main/benchmark).
-
-| Vertical | Application (pinned) | Independent effect oracle | Result | Honest scope |
-|---|---|---|---|---|
-| **Healthcare** | OpenEMR v8.0.0.3 (local) | Separate read-only REST readback + direct SQL + per-row table-delta | 12/12 model-free rows correct (compiled 6/6 + direct-API 6/6; baseline + cosmetic drift, 3/cell); 0 silent wrong writes, 0 over-halts, 0 model calls, $0 | Matched local model-free engineering subset (2026-07-16). Agent arm omitted; `publication_ready: false`. |
-| **Lending** | Frappe Lending v16.2.0 (local) | Read-only REST + direct MariaDB + exact per-table row-count contract (`tabLoan Application: +1`, all others +0) | 12/12 model-free rows correct (compiled 6/6 + direct-API 6/6; baseline + cosmetic drift, 3/cell); 0 silent wrong writes, 0 over-halts, 0 model calls, $0 | Local model-free compiled-vs-API subset (2026-07-16). Paid agent arm **not run**; `publication_ready: false`. |
-| **Insurance** | openIMIS 25.10 (local) | Direct SQL: exactly one non-voided claim row in status "Entered" for the demonstrated insuree and facility | 3/3 compiled replays SQL-verified (1 recorded demonstration + 3 replays; wall times 25.6s / 26.6s / 30.3s); 0 duplicate claims, 0 wrong-policyholder writes, 0 model calls | **Reference demonstration, not a benchmark**: no agent arm, no trial matrix, no publication protocol. AGPL-3.0, repository-only. |
-
-Every vertical environment is a synthetic, pinned, loopback-only fixture on one
-local macOS arm64 host, with no customer data and no customer deployment. The
-healthcare row here is the pinned-local model-free subset; it is a **different
-run** from the flagship OpenEMR *live-demo* head-to-head above (20/20 vs. 10/10,
-2026-07-08), which is a field result on a shared public instance rather than a
-CI-reproducible benchmark. Frappe Lending and openIMIS are both API-rich browser
-references; a real deployment of either would prefer the API arm, and neither is
+All three environments used synthetic data on one local host and ran through
+the **Browser (Playwright)** substrate, whose reference path is **Beta**. The
+healthcare row is distinct from the shared-public-demo OpenEMR field result
+above. Frappe Lending and openIMIS are API-rich references, and neither is
 evidence for a legacy Windows/Citrix system.
 
-Because the agent arm was not run for lending or insurance, **do not read 12/12
-or 3/3 as beating an agent**. They are governed compiled-replay results. Task
-definitions, exact image digests, oracles, and failure taxonomies live in the
-[workflow reference catalog](https://openadapt.ai/workflows) and the
-[engine benchmarks](https://github.com/OpenAdaptAI/openadapt-flow/tree/main/benchmark).
+The public [aggregate report](https://github.com/OpenAdaptAI/openadapt-flow/tree/main/benchmark/agent_arm_verticals)
+retains the method, run counts, outcomes, failure taxonomy, and caveats. Raw
+per-run rows, environment fingerprints, detailed spend records, and
+application-specific driver/oracle recipes are retained privately and are not
+part of the public repository or package.
 
 ---
 
