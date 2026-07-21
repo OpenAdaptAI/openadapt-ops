@@ -126,8 +126,9 @@ offer.
   Exact snapshot cleanup passed. Review the
   [immutable sanitized report](https://github.com/OpenAdaptAI/openadapt-flow/blob/6610d24cebba27918b8ea507b2f05a094057ac85/benchmark/rdp/results_82a658a_20260718.sanitized.json).
 - Citrix/VDI is driven pixel-first through the same identity gate and effect
-  verification as every substrate, and each workflow is qualified in its real
-  ICA/HDX environment.
+  verification as every substrate. No real ICA/HDX environment has been qualified
+  yet (status: Exploratory); each workflow must be qualified in its real ICA/HDX
+  environment before consequential use.
 - The public hosted subscription currently entitles approved browser workflows.
   Desktop and virtual-desktop deployments are scoped and qualified separately.
 

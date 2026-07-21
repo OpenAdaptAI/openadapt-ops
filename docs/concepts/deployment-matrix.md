@@ -162,12 +162,13 @@ qualified in its real environment. The published qualification evidence to date:
   0 over-halts, and 0 model calls. Exact snapshot cleanup passed. Review
   [Flow PR #142](https://github.com/OpenAdaptAI/openadapt-flow/pull/142)
   and the [immutable sanitized report](https://github.com/OpenAdaptAI/openadapt-flow/blob/6610d24cebba27918b8ea507b2f05a094057ac85/benchmark/rdp/results_82a658a_20260718.sanitized.json).
-- **Citrix / VDI:** Driven pixel-first through the same remote-display adapter
-  and the same identity gate and effect verification as every other substrate.
-  Each Citrix/VDI workflow is qualified in its real ICA/HDX environment: the
-  client, latency, compression, DPI, lock-screen, and synthetic-input behavior
-  are exercised against the actual application, the same real-environment
-  qualification step every substrate goes through.
+- **Citrix / VDI (Exploratory):** Driven pixel-first through the same
+  remote-display adapter and the same identity gate and effect verification as
+  every other substrate. No real ICA/HDX environment has been qualified yet. Each
+  Citrix/VDI workflow must be qualified in its real ICA/HDX environment before
+  consequential use: the client, latency, compression, DPI, lock-screen, and
+  synthetic-input behavior are exercised against the actual application, the same
+  real-environment qualification step every substrate goes through.
 
 Review [Qualification evidence](../get-started/what-works-today.md) and the engine's
 [published limits](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/LIMITS.md)

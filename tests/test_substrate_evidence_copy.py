@@ -1,12 +1,15 @@
 """Keep buyer-facing substrate availability tied to exact, bounded evidence.
 
-Target-state policy: every execution substrate is presented as first-class and
-**Supported / scoped deployment**, not ranked below the browser. This guard does
-not police the availability label; it pins the substrate-evidence section to the
-current target-state wording and verifies that each first-class substrate still
-ships its exact, bounded evidence (run counts, oracle, immutable commit, Flow PR)
-and an honest per-surface boundary. The public browser offer must stay distinct
-from these scoped deployments.
+Target-state policy: every execution substrate is presented as a first-class
+mechanism, not ranked below the browser. Substrates with a validated real
+environment are **Supported / scoped deployment** (Windows UIA, native macOS,
+RDP); Citrix/VDI is **Exploratory** until a real ICA/HDX environment is qualified,
+matching the canonical status.json ladder. This guard does not police the
+availability label beyond that; it pins the substrate-evidence section to the
+current honest wording and verifies that each qualified substrate still ships its
+exact, bounded evidence (run counts, oracle, immutable commit, Flow PR) and an
+honest per-surface boundary. The public browser offer must stay distinct from
+these scoped deployments.
 """
 
 from pathlib import Path
@@ -76,10 +79,12 @@ def test_public_offer_and_scoped_substrate_evidence_remain_distinct():
 
     assert "acceptance remains in progress" not in combined
     assert "RDP backend | **Supported / scoped deployment**" in combined
-    # Citrix / VDI is first-class and Supported / scoped deployment, and the
-    # ICA/HDX honesty is preserved: each Citrix/VDI workflow is qualified in its
-    # own real ICA/HDX environment rather than inheriting RDP's evidence.
-    assert "Citrix / VDI backend | **Supported / scoped deployment**" in combined
+    # Citrix / VDI is a first-class substrate mechanism but has no validated real
+    # environment yet, so its honest label is Exploratory, matching the canonical
+    # status.json ladder. The ICA/HDX honesty is preserved: each Citrix/VDI
+    # workflow must be qualified in its own real ICA/HDX environment before
+    # consequential use rather than inheriting RDP's evidence.
+    assert "Citrix / VDI backend | **Exploratory**" in combined
     assert "in its real ICA/HDX environment" in combined
     # The public browser subscription stays distinct from the scoped substrate
     # deployments.
