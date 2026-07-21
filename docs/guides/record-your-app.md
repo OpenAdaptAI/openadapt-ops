@@ -1,14 +1,17 @@
 # Record your own app
 
 The bundled demo shows the loop end to end, but the point is your app. This
-guide records a real workflow on a real web application, compiles it, and replays
-it.
+guide records a real workflow, compiles it, and replays it. It uses the **web
+substrate** throughout; a native Windows desktop or a pixel-only Citrix/RDP
+session follows the same steps with a different
+[backend](../reference/cli.md#backend) (`--backend windows` / `--backend rdp` and
+its target flag) in place of `--url`.
 
 ## Record
 
-`record --url` opens a headed browser on your app and watches what you do:
-clicks, typing, key presses, and scrolls. It writes the same recording format
-`compile` consumes.
+On the web substrate, `record --url` opens a headed browser on your app and
+watches what you do: clicks, typing, key presses, and scrolls. It writes the same
+recording format `compile` consumes.
 
 ```bash
 openadapt flow record --url https://your.app --out rec

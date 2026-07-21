@@ -1,13 +1,21 @@
 # Run a deployment
 
-`replay` is the demo-shaped command: with no `--url` it serves the bundled
-sample app, and `--drift` demonstrates governed re-resolution on it. `run` is the
-same execution path wired for a **real deployment** (a backend, effect
-verification, API actuation, a durable runtime, and a policy) all from one
-[`deployment.yaml`](../reference/deployment-config.md). This guide takes a
-certified bundle to a governed deployment run. Passing it does not by itself
-qualify a backend or workflow for production; qualify each workflow in its real
-environment.
+`replay` runs a bundle against whatever substrate you point it at. The
+[backend selector](../reference/cli.md#backend) chooses the surface: `--backend
+web` (the default) drives a browser, and there, with no `--url`, it serves the
+bundled sample app so you can watch the loop end to end (`--drift` demonstrates
+governed re-resolution on that demo). Other substrates set `--backend` with its
+target flag instead of `--url`: `--backend windows` drives a native Windows
+desktop through its in-session agent (`--agent-url`), and `--backend rdp` drives
+a pixel-only remote-desktop or Citrix session (`--rdp-host`). The demo path is
+one example, not the definition. `run` is the same execution path wired for a
+**real deployment** (a backend, effect verification, API actuation, a durable
+runtime, and a policy) all from one
+[`deployment.yaml`](../reference/deployment-config.md), which is where a governed
+run gets its substrate: from the config's `backend` section, not from `--url`.
+This guide takes a certified bundle to a governed deployment run. Passing it does
+not by itself qualify a backend or workflow for production; qualify each workflow
+in its real environment.
 
 ## One config wires the whole run
 

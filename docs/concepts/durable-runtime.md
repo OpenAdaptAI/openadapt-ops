@@ -37,9 +37,11 @@ flowchart LR
 ## Resume never re-runs a confirmed write
 
 A GUI automation cannot resume from serialized state alone: it needs a live
-backend and live vision. So `resume` rebuilds a fresh live backend (from the
-deployment config's `backend.url` or `--url`), re-binds the run's parameters
-from the run manifest, and **continues from the last verified checkpoint**.
+backend and live vision. So `resume` rebuilds a fresh live backend through the
+same [backend selector](../reference/cli.md#backend) as `replay` and `run` (from
+the deployment config's `backend` section, or a `--backend` / `--url` /
+`--rdp-host` override), re-binds the run's parameters from the run manifest, and
+**continues from the last verified checkpoint**.
 Steps before the checkpoint are not re-performed, which is the whole point on an
 irreversible write.
 
