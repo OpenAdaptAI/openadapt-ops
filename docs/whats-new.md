@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-20 21:13 UTC*
+> *Last updated: 2026-07-21 03:21 UTC*
 
 
 
@@ -53,6 +53,18 @@
 ## openadapt-flow
 
 
+- [feat(validation): configurable hardening corpus + private-corpus release-boundary guard](https://github.com/OpenAdaptAI/openadapt-flow/pull/197) (#197) — merged 
+
+- [feat(runtime): user-configurable ("bring your own") grounding model with fail-closed PHI allowlist](https://github.com/OpenAdaptAI/openadapt-flow/pull/196) (#196) — merged 
+
+- [fix(demo_media): stop burning the status badge into run_openemr footage](https://github.com/OpenAdaptAI/openadapt-flow/pull/195) (#195) — merged 
+
+- [feat(validation): vision hardening flywheel — adversarial perturbation sweep + silent-wrong ratchet](https://github.com/OpenAdaptAI/openadapt-flow/pull/194) (#194) — merged 
+
+- [fix(paper): GH_REPO in publish job so paper-latest release is created](https://github.com/OpenAdaptAI/openadapt-flow/pull/193) (#193) — merged 
+
+- [ci(paper): publish built PDF to stable paper-latest release + notify web](https://github.com/OpenAdaptAI/openadapt-flow/pull/192) (#192) — merged 
+
 - [feat(effects): auto-derived, different-path on-screen read-back oracle (no-connector default)](https://github.com/OpenAdaptAI/openadapt-flow/pull/191) (#191) — merged 
 
 - [docs(readme): document the for-each data-driven loop and visualize commands](https://github.com/OpenAdaptAI/openadapt-flow/pull/190) (#190) — merged 
@@ -79,24 +91,16 @@
 
 - [feat(benchmark): EffectBench foundation — episode schema + substrate-agnostic effect-oracle harness](https://github.com/OpenAdaptAI/openadapt-flow/pull/178) (#178) — merged 
 
-- [feat(benchmark): index pinned system-of-record environments for the effect benchmark](https://github.com/OpenAdaptAI/openadapt-flow/pull/173) (#173) — merged 
-
-- [feat(identity): jitter-robust pixel identity VERIFY (config-gated, default off)](https://github.com/OpenAdaptAI/openadapt-flow/pull/172) (#172) — merged 
-
-- [feat: macOS AX IdentityBackend + StructuralActionBackend (identity parity)](https://github.com/OpenAdaptAI/openadapt-flow/pull/171) (#171) — merged 
-
-- [docs(paper): sharpen thesis, add figures, foreground the safety instrument](https://github.com/OpenAdaptAI/openadapt-flow/pull/170) (#170) — merged 
-
-- [test: pin backend optional-capability matrix to the maturity map](https://github.com/OpenAdaptAI/openadapt-flow/pull/169) (#169) — merged 
-
-- [test: assert zero-model-call reference bar on Windows/RDP replays](https://github.com/OpenAdaptAI/openadapt-flow/pull/168) (#168) — merged 
-
-- [fix: honor landmark contradiction for labeled anchors in template_global rung](https://github.com/OpenAdaptAI/openadapt-flow/pull/166) (#166) — merged 
+- [build: update transformers requirement from <5.13,>=5.5 to >=5.5,<5.15](https://github.com/OpenAdaptAI/openadapt-flow/pull/176) (#176) — merged 
 
 
 
 ## openadapt-desktop
 
+
+- [fix: reconcile engine IPC + flow bridge with the cockpit frontend contract](https://github.com/OpenAdaptAI/openadapt-desktop/pull/34) (#34) — merged 
+
+- [feat: add compiled-program visualization view to desktop app](https://github.com/OpenAdaptAI/openadapt-desktop/pull/33) (#33) — merged 
 
 - [feat: signing-ready native pipeline (Azure Trusted Signing + founder runbook)](https://github.com/OpenAdaptAI/openadapt-desktop/pull/30) (#30) — merged 
 
@@ -134,8 +138,6 @@
 
 - [feat: rewire engine for hosted loop (auth, ingest push, flow bridge)](https://github.com/OpenAdaptAI/openadapt-desktop/pull/11) (#11) — merged 
 
-- [feat: Tauri shell + Vite/React cockpit on the design system (W2)](https://github.com/OpenAdaptAI/openadapt-desktop/pull/10) (#10) — merged 
-
 
 
 ## openadapt-agent
@@ -160,8 +162,6 @@
 
 - [docs: add lifecycle status banner](https://github.com/OpenAdaptAI/openadapt-ml/pull/66) (#66) — merged 
 
-- [refactor: make openadapt-ml a leaf; break ml<->evals import cycle](https://github.com/OpenAdaptAI/openadapt-ml/pull/65) (#65) — merged 
-
 
 
 ## openadapt-evals
@@ -179,12 +179,20 @@
 
 - [feat: evaluate openadapt-flow on WAA (demonstrate-then-replay + hybrid-as-agent) with cost-guarded dry-run](https://github.com/OpenAdaptAI/openadapt-evals/pull/265) (#265) — merged 
 
-- [refactor: source Benchmark* types from openadapt-types; break ml<->evals cycle](https://github.com/OpenAdaptAI/openadapt-evals/pull/264) (#264) — merged 
-
 
 
 ## openadapt-capture
 
+
+- [chore(deps): bump peter-evans/repository-dispatch from 3 to 4](https://github.com/OpenAdaptAI/openadapt-capture/pull/36) (#36) — merged 
+
+- [chore(deps): bump astral-sh/setup-uv from 4 to 7](https://github.com/OpenAdaptAI/openadapt-capture/pull/35) (#35) — merged 
+
+- [chore(deps): bump python-semantic-release/python-semantic-release from 9.15.2 to 10.6.1](https://github.com/OpenAdaptAI/openadapt-capture/pull/34) (#34) — merged 
+
+- [chore(deps): bump actions/dependency-review-action from 4.9.0 to 5.0.0](https://github.com/OpenAdaptAI/openadapt-capture/pull/33) (#33) — merged 
+
+- [chore(deps): bump actions/checkout from 4 to 7](https://github.com/OpenAdaptAI/openadapt-capture/pull/32) (#32) — merged 
 
 - [chore: add security CI (CodeQL, gitleaks, dependency-review, Dependabot)](https://github.com/OpenAdaptAI/openadapt-capture/pull/31) (#31) — merged 
 
@@ -221,8 +229,6 @@
 - [docs: add lifecycle status banner](https://github.com/OpenAdaptAI/openadapt-types/pull/7) (#7) — merged 
 
 - [fix: keep release lock metadata consistent](https://github.com/OpenAdaptAI/openadapt-types/pull/6) (#6) — merged 
-
-- [feat: add canonical Benchmark* types (Task/Observation/Action/Agent)](https://github.com/OpenAdaptAI/openadapt-types/pull/5) (#5) — merged 
 
 
 

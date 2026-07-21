@@ -18,6 +18,8 @@
 
 ## openadapt-flow
 
+- **[paper-latest](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/paper-latest)** (2026-07-20)
+  Auto-published from paper/build/main.pdf on every push to main. Always reflects the current LaTeX source; do not edit by hand.
 - **[v1.19.0](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.19.0)** (2026-07-19)
   ## v1.19.0 (2026-07-19)
 - **[v1.18.1](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.18.1)** (2026-07-19)
@@ -26,8 +28,6 @@
   ## v1.18.0 (2026-07-19)
 - **[v1.17.2](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.17.2)** (2026-07-19)
   ## v1.17.2 (2026-07-19)
-- **[v1.17.1](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.17.1)** (2026-07-19)
-  ## v1.17.1 (2026-07-19)
 
 ## openadapt-desktop
 
