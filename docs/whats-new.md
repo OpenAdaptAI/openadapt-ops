@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-21 06:54 UTC*
+> *Last updated: 2026-07-21 08:44 UTC*
 
 
 
@@ -53,6 +53,14 @@
 ## openadapt-flow
 
 
+- [fix(ci): restore standalone EffectBench boundary](https://github.com/OpenAdaptAI/openadapt-flow/pull/221) (#221) — merged 
+
+- [fix(ci): tomli fallback so the 3.10 test-matrix leg collects (unblocks green main)](https://github.com/OpenAdaptAI/openadapt-flow/pull/220) (#220) — merged 
+
+- [feat(hardening): harder cases (latency/reflow/dense) + close 36 new silent-wrongs](https://github.com/OpenAdaptAI/openadapt-flow/pull/215) (#215) — merged 
+
+- [feat(connector): engine-side BYOC outbound-pull daemon (openadapt-flow connector)](https://github.com/OpenAdaptAI/openadapt-flow/pull/212) (#212) — merged 
+
 - [docs(paper): cite the real end-to-end silent-wrong-effect numbers as the headline](https://github.com/OpenAdaptAI/openadapt-flow/pull/211) (#211) — merged 
 
 - [fix(mockmed): revert focus/caret CSS that broke deterministic e2e halts (follow-up to #204)](https://github.com/OpenAdaptAI/openadapt-flow/pull/210) (#210) — merged 
@@ -64,6 +72,8 @@
 - [feat(visualize): expand loop bodies in the program graph + compact loop showcase](https://github.com/OpenAdaptAI/openadapt-flow/pull/207) (#207) — merged 
 
 - [feat(benchmark): independent end-to-end silent-wrong-effect harness (real SWER)](https://github.com/OpenAdaptAI/openadapt-flow/pull/206) (#206) — merged 
+
+- [feat(benchmark): package EffectBench/SWER as a standalone, versioned, runnable benchmark](https://github.com/OpenAdaptAI/openadapt-flow/pull/205) (#205) — merged 
 
 - [fix(ci): restore green main — derive protocol members via get_protocol_members (py3.10/3.11)](https://github.com/OpenAdaptAI/openadapt-flow/pull/204) (#204) — merged 
 
@@ -82,16 +92,6 @@
 - [fix(demo_media): stop burning the status badge into run_openemr footage](https://github.com/OpenAdaptAI/openadapt-flow/pull/195) (#195) — merged 
 
 - [feat(validation): vision hardening flywheel — adversarial perturbation sweep + silent-wrong ratchet](https://github.com/OpenAdaptAI/openadapt-flow/pull/194) (#194) — merged 
-
-- [fix(paper): GH_REPO in publish job so paper-latest release is created](https://github.com/OpenAdaptAI/openadapt-flow/pull/193) (#193) — merged 
-
-- [ci(paper): publish built PDF to stable paper-latest release + notify web](https://github.com/OpenAdaptAI/openadapt-flow/pull/192) (#192) — merged 
-
-- [feat(effects): auto-derived, different-path on-screen read-back oracle (no-connector default)](https://github.com/OpenAdaptAI/openadapt-flow/pull/191) (#191) — merged 
-
-- [docs(readme): document the for-each data-driven loop and visualize commands](https://github.com/OpenAdaptAI/openadapt-flow/pull/190) (#190) — merged 
-
-- [fix(ci): unblock main — de-symlink workshop bib (sdist) + deterministic pixel font test](https://github.com/OpenAdaptAI/openadapt-flow/pull/189) (#189) — merged 
 
 
 
@@ -142,6 +142,8 @@
 
 ## openadapt-agent
 
+
+- [feat: expose governed attended actions over MCP](https://github.com/OpenAdaptAI/openadapt-agent/pull/8) (#8) — merged 
 
 - [feat(dist): registry manifests + discoverability for the MCP bridge](https://github.com/OpenAdaptAI/openadapt-agent/pull/7) (#7) — merged 
 
