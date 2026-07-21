@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-21 05:48 UTC*
+> *Last updated: 2026-07-21 06:00 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [docs(readme): add a data-driven loop program graph beside the linear one](https://github.com/OpenAdaptAI/OpenAdapt/pull/1045) (#1045) — merged 
 
 - [docs(readme): use the real OpenAdapt brand mark in the masthead](https://github.com/OpenAdaptAI/OpenAdapt/pull/1043) (#1043) — merged 
 
@@ -46,12 +48,12 @@
 
 - [docs: publish reference sandbox source notices](https://github.com/OpenAdaptAI/OpenAdapt/pull/1025) (#1025) — merged 
 
-- [docs: describe governed multi-surface target](https://github.com/OpenAdaptAI/OpenAdapt/pull/1024) (#1024) — merged 
-
 
 
 ## openadapt-flow
 
+
+- [fix(ci): restore green main — derive protocol members via get_protocol_members (py3.10/3.11)](https://github.com/OpenAdaptAI/openadapt-flow/pull/204) (#204) — merged 
 
 - [feat(validation): configurable hardening corpus + private-corpus release-boundary guard](https://github.com/OpenAdaptAI/openadapt-flow/pull/197) (#197) — merged 
 
@@ -90,8 +92,6 @@
 - [feat: resolve pixel-verify identity gate from deployment runtime config](https://github.com/OpenAdaptAI/openadapt-flow/pull/179) (#179) — merged 
 
 - [feat(benchmark): EffectBench foundation — episode schema + substrate-agnostic effect-oracle harness](https://github.com/OpenAdaptAI/openadapt-flow/pull/178) (#178) — merged 
-
-- [build: update transformers requirement from <5.13,>=5.5 to >=5.5,<5.15](https://github.com/OpenAdaptAI/openadapt-flow/pull/176) (#176) — merged 
 
 
 
