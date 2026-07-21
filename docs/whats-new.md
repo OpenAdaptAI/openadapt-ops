@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-21 05:36 UTC*
+> *Last updated: 2026-07-21 05:43 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [docs(readme): fix Resolution ladder text overflow in masthead SVG](https://github.com/OpenAdaptAI/OpenAdapt/pull/1042) (#1042) — merged 
 
 - [docs(readme): add SVG masthead hero and fix mermaid loop control overlap](https://github.com/OpenAdaptAI/OpenAdapt/pull/1041) (#1041) — merged 
 
@@ -45,8 +47,6 @@
 - [docs: describe governed multi-surface target](https://github.com/OpenAdaptAI/OpenAdapt/pull/1024) (#1024) — merged 
 
 - [Add one-command Cloud pairing](https://github.com/OpenAdaptAI/OpenAdapt/pull/1023) (#1023) — merged 
-
-- [docs: recognize active openadapt-agent v2 bridge](https://github.com/OpenAdaptAI/OpenAdapt/pull/1022) (#1022) — merged 
 
 
 
