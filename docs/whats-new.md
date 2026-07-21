@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-21 06:00 UTC*
+> *Last updated: 2026-07-21 06:05 UTC*
 
 
 
@@ -9,6 +9,8 @@
 
 
 - [docs(readme): add a data-driven loop program graph beside the linear one](https://github.com/OpenAdaptAI/OpenAdapt/pull/1045) (#1045) — merged 
+
+- [docs: reconcile masthead SVG + substrate maturity to the canonical ladder (scoped -> early access)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1044) (#1044) — merged 
 
 - [docs(readme): use the real OpenAdapt brand mark in the masthead](https://github.com/OpenAdaptAI/OpenAdapt/pull/1043) (#1043) — merged 
 
@@ -45,8 +47,6 @@
 - [docs: bind complete reference sandbox source inventory](https://github.com/OpenAdaptAI/OpenAdapt/pull/1027) (#1027) — merged 
 
 - [docs: bind sandbox notices to packaging fix](https://github.com/OpenAdaptAI/OpenAdapt/pull/1026) (#1026) — merged 
-
-- [docs: publish reference sandbox source notices](https://github.com/OpenAdaptAI/OpenAdapt/pull/1025) (#1025) — merged 
 
 
 
