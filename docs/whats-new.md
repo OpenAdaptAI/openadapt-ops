@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-21 04:58 UTC*
+> *Last updated: 2026-07-21 05:36 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [docs(readme): add SVG masthead hero and fix mermaid loop control overlap](https://github.com/OpenAdaptAI/OpenAdapt/pull/1041) (#1041) — merged 
 
 - [docs(readme): add real visualize graph, loop/halt diagrams, and run screenshots](https://github.com/OpenAdaptAI/OpenAdapt/pull/1040) (#1040) — merged 
 
@@ -45,8 +47,6 @@
 - [Add one-command Cloud pairing](https://github.com/OpenAdaptAI/OpenAdapt/pull/1023) (#1023) — merged 
 
 - [docs: recognize active openadapt-agent v2 bridge](https://github.com/OpenAdaptAI/OpenAdapt/pull/1022) (#1022) — merged 
-
-- [fix: remove dead config module with undeclared pydantic_settings import](https://github.com/OpenAdaptAI/OpenAdapt/pull/1021) (#1021) — merged 
 
 
 
@@ -142,6 +142,8 @@
 
 ## openadapt-agent
 
+
+- [feat(dist): registry manifests + discoverability for the MCP bridge](https://github.com/OpenAdaptAI/openadapt-agent/pull/7) (#7) — merged 
 
 - [chore(deps): Bump actions/checkout from 4 to 7](https://github.com/OpenAdaptAI/openadapt-agent/pull/6) (#6) — merged 
 
