@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-21 23:45 UTC*
+> *Last updated: 2026-07-23 19:03 UTC*
 
 
 
@@ -53,6 +53,16 @@
 ## openadapt-flow
 
 
+- [ci: revert same-runner identity parallelization](https://github.com/OpenAdaptAI/openadapt-flow/pull/232) (#232) — merged 
+
+- [ci: parallelize profiled identity regressions](https://github.com/OpenAdaptAI/openadapt-flow/pull/231) (#231) — merged 
+
+- [ci: move full matrix to qualification lane](https://github.com/OpenAdaptAI/openadapt-flow/pull/230) (#230) — merged 
+
+- [test(citrix): inspect protocol surface without actuation](https://github.com/OpenAdaptAI/openadapt-flow/pull/229) (#229) — merged 
+
+- [fix: keep interop types green in all-extras development](https://github.com/OpenAdaptAI/openadapt-flow/pull/228) (#228) — merged 
+
 - [fix(mockmed): stabilize textarea render metrics](https://github.com/OpenAdaptAI/openadapt-flow/pull/227) (#227) — merged 
 
 - [fix(resolver): refuse ambiguous OCR targets](https://github.com/OpenAdaptAI/openadapt-flow/pull/226) (#226) — merged 
@@ -82,16 +92,6 @@
 - [fix(effect_e2e): open-world ground truth + independent delta primitive + closed-world disclosure (review #2 finding #3)](https://github.com/OpenAdaptAI/openadapt-flow/pull/214) (#214) — merged 
 
 - [feat(effectbench): pluggable external system-of-record + oracle interface (reference oracle marked reference-only)](https://github.com/OpenAdaptAI/openadapt-flow/pull/213) (#213) — merged 
-
-- [feat(connector): engine-side BYOC outbound-pull daemon (openadapt-flow connector)](https://github.com/OpenAdaptAI/openadapt-flow/pull/212) (#212) — merged 
-
-- [docs(paper): cite the real end-to-end silent-wrong-effect numbers as the headline](https://github.com/OpenAdaptAI/openadapt-flow/pull/211) (#211) — merged 
-
-- [fix(mockmed): revert focus/caret CSS that broke deterministic e2e halts (follow-up to #204)](https://github.com/OpenAdaptAI/openadapt-flow/pull/210) (#210) — merged 
-
-- [docs(paper): second adversarial review (independent-harness / stats / second-domain / benchmark lens)](https://github.com/OpenAdaptAI/openadapt-flow/pull/209) (#209) — merged 
-
-- [feat(benchmark): second (non-healthcare) domain: MockLoan lending effect-verification study](https://github.com/OpenAdaptAI/openadapt-flow/pull/208) (#208) — merged 
 
 
 
@@ -143,6 +143,10 @@
 ## openadapt-agent
 
 
+- [release: openadapt-agent v2.0.1](https://github.com/OpenAdaptAI/openadapt-agent/pull/10) (#10) — merged 
+
+- [release: openadapt-agent v2.0.0](https://github.com/OpenAdaptAI/openadapt-agent/pull/9) (#9) — merged 
+
 - [feat: expose governed attended actions over MCP](https://github.com/OpenAdaptAI/openadapt-agent/pull/8) (#8) — merged 
 
 - [feat(dist): registry manifests + discoverability for the MCP bridge](https://github.com/OpenAdaptAI/openadapt-agent/pull/7) (#7) — merged 
@@ -183,14 +187,12 @@
 
 - [fix: keep release lock metadata consistent](https://github.com/OpenAdaptAI/openadapt-evals/pull/267) (#267) — merged 
 
-- [feat: lightweight meta-benchmark harness (unify Environment/verify + metrics; OSWorld/BrowserGym stubs for phase 2)](https://github.com/OpenAdaptAI/openadapt-evals/pull/266) (#266) — merged 
-
-- [feat: evaluate openadapt-flow on WAA (demonstrate-then-replay + hybrid-as-agent) with cost-guarded dry-run](https://github.com/OpenAdaptAI/openadapt-evals/pull/265) (#265) — merged 
-
 
 
 ## openadapt-capture
 
+
+- [fix: dispatch docs updates to canonical repository](https://github.com/OpenAdaptAI/openadapt-capture/pull/38) (#38) — merged 
 
 - [docs: refresh README to shared OpenAdapt house style](https://github.com/OpenAdaptAI/openadapt-capture/pull/37) (#37) — merged 
 
@@ -226,12 +228,6 @@
 - [docs: refresh README to shared OpenAdapt house style](https://github.com/OpenAdaptAI/openadapt-privacy/pull/8) (#8) — merged 
 
 - [chore: add MIT LICENSE file](https://github.com/OpenAdaptAI/openadapt-privacy/pull/7) (#7) — merged 
-
-- [chore: declare privacy release line](https://github.com/OpenAdaptAI/openadapt-privacy/pull/6) (#6) — merged 
-
-- [fix(ci): release through protected main](https://github.com/OpenAdaptAI/openadapt-privacy/pull/5) (#5) — merged 
-
-- [fix: remove vulnerable transformer dependency from Presidio scrubber](https://github.com/OpenAdaptAI/openadapt-privacy/pull/4) (#4) — merged 
 
 
 
