@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-23 23:35 UTC*
+> *Last updated: 2026-07-23 23:36 UTC*
 
 
 
@@ -98,6 +98,8 @@
 ## openadapt-desktop
 
 
+- [ci: build managed FFmpeg runtime assets](https://github.com/OpenAdaptAI/openadapt-desktop/pull/41) (#41) — merged 
+
 - [Gate Desktop releases on explicit green-main dispatch](https://github.com/OpenAdaptAI/openadapt-desktop/pull/39) (#39) — merged 
 
 - [Bundle Flow into native desktop installers](https://github.com/OpenAdaptAI/openadapt-desktop/pull/38) (#38) — merged 
@@ -135,8 +137,6 @@
 - [docs: refresh Current Status and Known Gaps to post-wiring reality](https://github.com/OpenAdaptAI/openadapt-desktop/pull/20) (#20) — merged 
 
 - [Use canonical engine version in runtime messaging](https://github.com/OpenAdaptAI/openadapt-desktop/pull/19) (#19) — merged 
-
-- [Bump native desktop to 0.1.1](https://github.com/OpenAdaptAI/openadapt-desktop/pull/18) (#18) — merged 
 
 
 
