@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-23 19:05 UTC*
+> *Last updated: 2026-07-23 22:15 UTC*
 
 
 
@@ -191,6 +191,8 @@
 
 ## openadapt-capture
 
+
+- [fix: replace copyleft input dependencies](https://github.com/OpenAdaptAI/openadapt-capture/pull/40) (#40) — merged 
 
 - [fix: dispatch docs updates to canonical repository](https://github.com/OpenAdaptAI/openadapt-capture/pull/38) (#38) — merged 
 
