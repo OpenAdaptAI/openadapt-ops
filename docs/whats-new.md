@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-23 22:20 UTC*
+> *Last updated: 2026-07-23 23:31 UTC*
 
 
 
@@ -53,6 +53,8 @@
 ## openadapt-flow
 
 
+- [fix: remove SciPy from core runtime](https://github.com/OpenAdaptAI/openadapt-flow/pull/233) (#233) — merged 
+
 - [ci: revert same-runner identity parallelization](https://github.com/OpenAdaptAI/openadapt-flow/pull/232) (#232) — merged 
 
 - [ci: parallelize profiled identity regressions](https://github.com/OpenAdaptAI/openadapt-flow/pull/231) (#231) — merged 
@@ -90,8 +92,6 @@
 - [feat(hardening): harder cases (latency/reflow/dense) + close 36 new silent-wrongs](https://github.com/OpenAdaptAI/openadapt-flow/pull/215) (#215) — merged 
 
 - [fix(effect_e2e): open-world ground truth + independent delta primitive + closed-world disclosure (review #2 finding #3)](https://github.com/OpenAdaptAI/openadapt-flow/pull/214) (#214) — merged 
-
-- [feat(effectbench): pluggable external system-of-record + oracle interface (reference oracle marked reference-only)](https://github.com/OpenAdaptAI/openadapt-flow/pull/213) (#213) — merged 
 
 
 
@@ -191,6 +191,8 @@
 
 ## openadapt-capture
 
+
+- [fix: isolate video codec runtime from capture](https://github.com/OpenAdaptAI/openadapt-capture/pull/41) (#41) — merged 
 
 - [fix: replace copyleft input dependencies](https://github.com/OpenAdaptAI/openadapt-capture/pull/40) (#40) — merged 
 
