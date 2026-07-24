@@ -22,8 +22,14 @@ a recording → see it in the dashboard.
 ## 1. Create or sign in to your workspace
 
 Sign in at [app.openadapt.ai](https://app.openadapt.ai) (Google or magic-link).
-Your account resolves to exactly one **organization**; every token and workflow
-belongs to it.
+Each workspace action is scoped to exactly one active **organization**; every
+token and workflow belongs to that organization.
+
+The dashboard account menu shows the signed-in email and active organization.
+It also provides **Security & 2FA**, organization switching when the account
+belongs to multiple workspaces, and **Sign out**. See
+[Account security and privileged access](../guides/account-security.md) for
+authenticator setup and protected-session behavior.
 
 ## 2. Mint an ingest token
 

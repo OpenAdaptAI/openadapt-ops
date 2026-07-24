@@ -18,6 +18,10 @@ cannot enter the OpenAdapt-hosted boundary.
 Payment runs through Stripe, and the price shown on the website is the exact
 price you pay at Checkout.
 
+[Manage account security and privileged access](account-security.md), including
+authenticator setup, step-up verification, recovery codes, organization
+switching, and sign-out.
+
 <figure markdown="span">
   ![The OpenAdapt Cloud workspace overview: counts for workflows, hosted runs used, and items needing attention, a Runs stopped before guessing panel listing a halt to review, a recent-runs table, and the workflow list.](../assets/screenshots/dashboard-overview.png){ width="900" }
   <figcaption>The managed control plane. The overview counts workflows, hosted runs, and items needing attention, surfaces runs that stopped before guessing for review, and lists recent runs and workflows.</figcaption>
