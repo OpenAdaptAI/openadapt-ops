@@ -46,15 +46,17 @@ is no longer available:
 1. Open the protected page and choose **Use recovery code** at the verification
    prompt.
 2. Enter one unused recovery code.
-3. Cloud removes the inaccessible authenticator factors and returns to
-   **Security & 2FA**.
-4. Enroll and verify a new authenticator before continuing to the protected
+3. Cloud removes the inaccessible authenticator factors. Supabase invalidates
+   the account's active sessions as part of administrative factor removal, so
+   Cloud returns you to sign-in explicitly.
+4. Sign in again; Cloud returns to **Security & 2FA**.
+5. Enroll and verify a new authenticator before continuing to the protected
    destination.
 
 A recovery code does not grant a two-factor session or open the protected page.
-It restores the account to the enrollment step while preserving the ordinary
-signed-in session. Each code works once; if factor removal fails, Cloud restores
-the code instead of burning it on an incomplete recovery.
+It restores the account to the enrollment path through normal reauthentication.
+Each code works once; if factor removal fails, Cloud restores the code instead
+of burning it on an incomplete recovery.
 
 ## Switch workspace or account
 

@@ -30,7 +30,8 @@ def test_account_and_organization_switching_are_distinguished():
 
 def test_recovery_returns_to_enrollment_without_granting_privileged_access():
     assert "choose **Use recovery code**" in GUIDE_PROSE
-    assert "returns to **Security & 2FA**" in GUIDE_PROSE
+    assert "returns you to sign-in explicitly" in GUIDE_PROSE
+    assert "Sign in again; Cloud returns to **Security & 2FA**" in GUIDE_PROSE
     assert "does not grant a two-factor session or open the protected page" in GUIDE_PROSE
     assert "restores the code instead of burning it" in GUIDE_PROSE
 
