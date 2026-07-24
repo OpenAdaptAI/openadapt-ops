@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-24 01:18 UTC*
+> *Last updated: 2026-07-24 02:21 UTC*
 
 
 
@@ -53,6 +53,8 @@
 ## openadapt-flow
 
 
+- [fix: isolate Capture codec fixture in adapter tests](https://github.com/OpenAdaptAI/openadapt-flow/pull/234) (#234) — merged 
+
 - [fix: remove SciPy from core runtime](https://github.com/OpenAdaptAI/openadapt-flow/pull/233) (#233) — merged 
 
 - [ci: revert same-runner identity parallelization](https://github.com/OpenAdaptAI/openadapt-flow/pull/232) (#232) — merged 
@@ -91,8 +93,6 @@
 
 - [feat(hardening): harder cases (latency/reflow/dense) + close 36 new silent-wrongs](https://github.com/OpenAdaptAI/openadapt-flow/pull/215) (#215) — merged 
 
-- [fix(effect_e2e): open-world ground truth + independent delta primitive + closed-world disclosure (review #2 finding #3)](https://github.com/OpenAdaptAI/openadapt-flow/pull/214) (#214) — merged 
-
 
 
 ## openadapt-desktop
@@ -101,6 +101,8 @@
 - [fix: make FFmpeg runtime build portable](https://github.com/OpenAdaptAI/openadapt-desktop/pull/42) (#42) — merged 
 
 - [ci: build managed FFmpeg runtime assets](https://github.com/OpenAdaptAI/openadapt-desktop/pull/41) (#41) — merged 
+
+- [feat: ship Flow 1.20.1 with verified managed runtimes](https://github.com/OpenAdaptAI/openadapt-desktop/pull/40) (#40) — merged 
 
 - [Gate Desktop releases on explicit green-main dispatch](https://github.com/OpenAdaptAI/openadapt-desktop/pull/39) (#39) — merged 
 
@@ -135,8 +137,6 @@
 - [ci: keep native installer prereleases fresh with engine releases](https://github.com/OpenAdaptAI/openadapt-desktop/pull/22) (#22) — merged 
 
 - [feat: experimental runner loop for cloud-dispatched governed runs (P0)](https://github.com/OpenAdaptAI/openadapt-desktop/pull/21) (#21) — merged 
-
-- [docs: refresh Current Status and Known Gaps to post-wiring reality](https://github.com/OpenAdaptAI/openadapt-desktop/pull/20) (#20) — merged 
 
 
 
