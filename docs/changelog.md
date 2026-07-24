@@ -31,6 +31,8 @@
 
 ## openadapt-desktop
 
+- **[v0.9.0](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/v0.9.0)** (2026-07-24)
+  _This release is published under the MIT License._
 - **[ffmpeg-runtime-v8.1.2-r1](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/ffmpeg-runtime-v8.1.2-r1)** (2026-07-24)
   Separately licensed, process-isolated FFmpeg and ffprobe runtime assets for OpenAdapt Desktop. Built from the official signed FFmpeg source with GPL, nonfree, and version3 features disabled. The Desktop installer and Python sidecar do not embed these files.
 - **[v0.8.0](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/v0.8.0)** (2026-07-21)
@@ -39,8 +41,6 @@
   _This release is published under the MIT License._
 - **[v0.6.2](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/v0.6.2)** (2026-07-19)
   > [!NOTE]
-- **[v0.6.1](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/v0.6.1)** (2026-07-19)
-  _This release is published under the MIT License._
 
 ## openadapt-ml
 
