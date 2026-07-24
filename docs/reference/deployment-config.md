@@ -23,6 +23,7 @@ name: mockmed-triage-demo          # audit / logs only
 
 # -- backend: where/how to drive the target application's GUI ---------------
 backend:
+  kind: web                       # web | windows | macos | linux | rdp | citrix
   url: http://localhost:8080       # GUI under automation; omit to use the
                                    # command's default (replay serves MockMed)
   headed: false                    # true => a visible browser (demo/debugging)
@@ -85,13 +86,56 @@ each other substrate targets through its own field in place of `url`.
 
 | Field | Default | Meaning |
 |---|---|---|
-| `kind` | `web` | Substrate to drive: `web` (Playwright/Chromium), `windows` (native Windows via the in-session agent), `macos` (a native macOS app window), `linux` (an exact AT-SPI app window), or `rdp` (pixel-only remote desktop / Citrix). |
+| `kind` | `web` | Substrate to drive: `web` (Playwright/Chromium), `windows` (native Windows via the in-session agent), `macos` (a native macOS app window), `linux` (an exact AT-SPI app window), `rdp` (network RDP or a bound local remote-display window), or `citrix` (the dedicated Citrix Workspace/Viewer window backend). |
 | `url` | `null` | **`web` only.** The GUI URL under automation. `null` lets the command choose its default (`replay`/`run` serve the bundled MockMed demo). |
 | `headed` | `false` | **`web` only.** Run the browser visible (demo / debugging). |
 | `agent_url` | `null` | **`windows`.** Base URL of the in-guest agent (e.g. `http://localhost:5001`). Required for `kind: windows`. `agent_token` / `agent_tls_pin` authenticate and pin it. |
 | `macos_app` | `null` | **`macos`.** Owner application name or substring. Required for `kind: macos`; `macos_window_title` disambiguates a multi-window app. |
 | `linux_app` | `null` | **`linux`.** Exact AT-SPI application name. Required for `kind: linux`, along with `linux_window_title`. |
-| `rdp_host` | `null` | **`rdp`.** Host/IP for a network RDP session. Required for `kind: rdp` unless `rdp_window` names a local Citrix / remote-display client window to drive instead. |
+| `linux_window_title` | `null` | **`linux`.** Exact AT-SPI top-level window title. Required for `kind: linux`; zero or multiple matches are refused. |
+| `linux_allow_physical_input` | `false` | **`linux`.** Explicitly permits window-bound X11 input when native AT-SPI actuation is unavailable. |
+| `rdp_host` | `null` | **`rdp` network mode.** Host/IP for a network RDP session. Required for network `kind: rdp`; never use it with `kind: citrix`. |
+| `rdp_username` / `rdp_password` / `rdp_domain` | `null` | **`rdp` network mode.** Credentials passed to the RDP transport. Keep secrets out of committed YAML and inject them at the deployment boundary. |
+| `rdp_port` | `3389` | **`rdp` network mode.** Remote Desktop port. |
+| `rdp_window` | `null` | **`rdp` local-window or `citrix`.** Exact local client owner/process. Citrix defaults to the host OS's Workspace/Viewer owner, but a deployment can pin it explicitly. |
+| `rdp_window_title` | `null` | **`rdp` local-window or `citrix`.** Exact client-window title used to bind one session. Zero or multiple matches are refused. Pin this in a governed deployment when more than one session can exist. |
+| `rdp_max_frame_age_s` | `10.0` | **`rdp` or `citrix`.** Maximum age of the captured frame that established a coordinate/input lease. A stale frame halts before input. Choose and qualify a deliberate positive value for the deployment. |
+| `rdp_readiness_text` | `null` | **`rdp` or `citrix`.** Stable text that must be visible on the current frame before input. Governed Citrix `run` and `resume` require a nonblank value and refuse before actuation when it is absent. |
+| `rdp_readiness_min_ratio` | `0.85` | **`rdp` or `citrix`.** OCR similarity threshold for the readiness marker, from `0.0` to `1.0`. |
+
+### Citrix Workspace configuration
+
+Citrix is a dedicated backend, not an alias for generic RDP. Set
+`kind: citrix` so Flow constructs `CitrixWorkspaceBackend`, binds the local
+Workspace/Viewer window, and carries that closed target through governed run,
+halt, and durable resume.
+
+```yaml
+backend:
+  kind: citrix
+  rdp_window: wfica32                         # Windows; host default is used if omitted
+  rdp_window_title: Claims - Citrix Workspace # exact session binding
+  rdp_max_frame_age_s: 3.0                   # refuse stale coordinate leases
+  rdp_readiness_text: Claims queue            # required by governed run/resume
+  rdp_readiness_min_ratio: 0.90
+```
+
+On macOS, the default Citrix owner is `Citrix Viewer`; on Windows it is
+`wfica32`. An explicit owner is optional when the platform default is correct.
+For a governed deployment, use an exact title whenever multiple Workspace
+sessions can exist, set the required readiness marker to stable application
+chrome (not record-specific data), and qualify the frame-age and OCR thresholds
+against the actual session. `kind: citrix` rejects `rdp_host`; use `kind: rdp`
+for a network RDP transport.
+
+!!! important "Governed Citrix deployment profile"
+    Treat `rdp_window_title`, `rdp_max_frame_age_s`, and
+    `rdp_readiness_text` as required deployment safety inputs: the exact title
+    binds the intended session, the positive frame-age limit refuses stale
+    coordinates, and the stable readiness marker rejects lock, login,
+    disconnect, or wrong-application screens. Flow enforces a nonblank
+    readiness marker for governed Citrix `run` and `resume`; deployment review
+    must also pin and qualify the title and frame-age value before writes.
 
 ### `actuation`
 
@@ -146,8 +190,11 @@ flag tweaks one run:
 openadapt flow run bundle --config deployment.yaml --durable
 ```
 
-The overrides: `--backend` / `--url` / `--headed` / `--agent-url` / `--rdp-host`
-(backend), `--effects-kind` /
+The overrides: `--backend` / `--url` / `--headed` / `--agent-url` /
+`--macos-app` / `--macos-window-title` / `--linux-app` /
+`--linux-window-title` / `--linux-allow-physical-input` / `--rdp-host` /
+`--rdp-window` / `--rdp-window-title` / `--rdp-readiness-text` (backend),
+`--effects-kind` /
 `--effects-base-url` / `--effects-root` (effects), `--api-actuator` /
 `--api-base-url` (actuation), `--durable` and `--allow-model-grounding`
 (runtime). See the [CLI reference](cli.md#run) and the

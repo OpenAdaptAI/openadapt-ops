@@ -113,17 +113,29 @@ pre-payment trials verified tenant-bound Checkout and refusal before entitlement
 The first genuine paid subscription extends the evidence through signed-webhook
 activation, managed execution, usage, portal, and cancellation.
 
-Windows UIA, native macOS, RDP, and Citrix/VDI are first-class substrates,
+Windows UIA, native macOS, native Linux, RDP, and Citrix/VDI are first-class substrates,
 ordered as scoped deployments and qualified per workflow in their real
 environment. The published qualification evidence to date: Windows UIA passed
 one 3/3 in-tree WinForms matrix with an independent SQLite oracle; native macOS
 passed one-host TextEdit action-effect and ambiguity-refusal evidence (its
 preserved original batch remains failed on a cleanup-warning classification, and
-a hash-bound adjudication verified the actual cleanup); RDP passed 3/3
-one-snapshot network-input trials with independent guest-file readback; and
-Citrix/VDI is driven pixel-first through the same identity gate and effect
-verification, qualified in its real ICA/HDX environment per workflow. The public
-browser subscription is ordered separately from these scoped deployments. See
+a hash-bound adjudication verified the actual cleanup); native Linux's required
+Ubuntu 24.04 X11/AT-SPI lane completed 3/3 exact-file effects and refused 3/3
+ambiguous plus 3/3 stale targets; and RDP has two complementary bounded records:
+3/3 Aardwolf-over-Windows guest-file effects with independent guest-tools
+readback, plus a separate full record -> compile -> governed replay/refusal
+lifecycle over a real FreeRDP round trip.
+
+Citrix/VDI uses the dedicated Citrix Workspace-window backend: it binds an exact
+owner/title, requires current-frame readiness before governed input, and carries
+the closed target through durable resume. Its accepted no-DOM stand-in completed
+3/3 healthy effects and 3/3 severe-drift safe-halts with zero silent incorrect
+successes, false completions, healthy over-halts, drift writes, or model calls.
+The retained artifact explicitly records `code_readiness_accepted: true` and
+`ica_hdx_accepted: false`; it proves the shipped window/backend contract, not a
+counted real ICA/HDX client/codec/latency/DPI batch. That exact environment is a
+per-deployment evidence boundary. The public browser subscription is ordered
+separately from these customer-controlled deployments. See
 [Qualification evidence](../get-started/what-works-today.md)
 for the exact reports.
 See [Hosted browser

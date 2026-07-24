@@ -30,9 +30,9 @@ module inside it:
 | Repository | Lifecycle | Public role |
 |---|---|---|
 | [OpenAdapt](https://github.com/OpenAdaptAI/OpenAdapt) | **Supported** | Installer/meta-package and unified `openadapt flow` dispatcher. |
-| [openadapt-flow](https://github.com/OpenAdaptAI/openadapt-flow) | **Supported** | Canonical compiler and governed runtime. Drives web, native Windows, native macOS, RDP, and Citrix/VDI as first-class substrates behind one backend protocol. |
+| [openadapt-flow](https://github.com/OpenAdaptAI/openadapt-flow) | **Supported** | Canonical compiler and governed runtime. Drives web, native Windows, native macOS, native Linux, RDP, and Citrix/VDI as first-class substrates behind one backend protocol. |
 | [openadapt-cloud](https://github.com/OpenAdaptAI/openadapt-cloud) | **Supported** | Live control plane for the public managed-browser subscription: organizations, exact-hash admission, runner orchestration, reports, billing, and usage. |
-| [openadapt-desktop](https://github.com/OpenAdaptAI/openadapt-desktop) | **Supported** | The `desktop-v0.5.1` release provides six install/uninstall-smoke-tested installers for Windows, macOS, and Linux, plus exact checksums, platform metadata, and build attestations. |
+| [openadapt-desktop](https://github.com/OpenAdaptAI/openadapt-desktop) | **Supported** | Public Beta `desktop-v0.9.0` provides Windows MSI/NSIS, macOS arm64/x64 DMG, and Linux AppImage/DEB installers. Every installer path was installed, launched, and uninstalled in the native release workflow; the release includes exact checksums, platform metadata, and build attestations. |
 | [openadapt-agent](https://github.com/OpenAdaptAI/openadapt-agent) | **Supported** | Active v2 bridge that exposes governed Flow bundles to MCP clients and Agent Skills. The pre-v2 model-driven execution wrapper is the deprecated line; the repository itself is active. |
 | [openadapt-capture](https://github.com/OpenAdaptAI/openadapt-capture) | **Supported** | Optional native mouse, keyboard, and screen recorder behind Flow's Windows and RDP recording path. Browser recording remains inside Flow's Playwright listener. |
 | [openadapt-privacy](https://github.com/OpenAdaptAI/openadapt-privacy) | **Supported** | Optional PII/PHI scrubbing used on configured persist, log, and upload paths. |

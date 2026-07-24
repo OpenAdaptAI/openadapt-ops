@@ -103,3 +103,48 @@ def test_desktop_beta_release_is_current_and_cross_platform():
         assert "Linux" in source
     assert "SHA256SUMS" in what_works
     assert "installed, launched, and uninstalled" in what_works
+
+
+def test_deployment_config_selects_dedicated_citrix_backend_and_safety_contract():
+    deployment = _read("reference/deployment-config.md")
+
+    assert "`citrix` (the dedicated Citrix Workspace/Viewer window backend)" in deployment
+    assert "Citrix is a dedicated backend, not an alias for generic RDP" in deployment
+    assert "kind: citrix" in deployment
+    assert "Flow constructs `CitrixWorkspaceBackend`" in deployment
+    assert "rdp_window_title: Claims - Citrix Workspace" in deployment
+    assert "rdp_max_frame_age_s: 3.0" in deployment
+    assert "rdp_readiness_text: Claims queue" in deployment
+    assert "rdp_readiness_min_ratio: 0.90" in deployment
+    assert "`kind: citrix` rejects `rdp_host`" in deployment
+    assert "Governed Citrix `run` and `resume` require a nonblank value" in deployment
+    assert "Treat `rdp_window_title`, `rdp_max_frame_age_s`, and" in deployment
+    assert "`rdp_readiness_text` as required deployment safety inputs" in deployment
+
+
+def test_source_of_truth_pages_cover_all_released_substrates_and_current_desktop():
+    hosted = _read("guides/hosted.md")
+    security = _read("guides/security-review.md")
+    ecosystem = _read("ecosystem/index.md")
+    governance = _read("reference/documentation-governance.md")
+
+    for source in [hosted, security]:
+        assert "native Linux" in source or "Native Linux" in source
+        assert "Aardwolf-over-Windows" in source
+        assert "real FreeRDP round trip" in source
+        assert "3/3 healthy effects and 3/3 severe-drift safe-halts" in source
+        assert "`code_readiness_accepted: true`" in source
+        assert "`ica_hdx_accepted: false`" in source
+
+    assert "native Linux" in ecosystem
+    assert "desktop-v0.9.0" in ecosystem
+    assert "desktop-v0.5.1" not in ecosystem
+    for substrate in [
+        "web",
+        "native Windows",
+        "native macOS",
+        "native\n   Linux",
+        "RDP",
+        "Citrix/VDI",
+    ]:
+        assert substrate in governance
