@@ -13,8 +13,8 @@ jump to what you need.
 
 -   [__The substrate model__](substrate-model.md)
 
-    Routing across web, native Windows, native macOS, and pixel-only Citrix/RDP;
-    one runner contract, every substrate first-class.
+    Routing across browser, native Windows, native macOS, native Linux, RDP,
+    and Citrix/VDI; one runner contract, every substrate first-class.
 
 -   [__The deployment matrix__](deployment-matrix.md)
 
@@ -73,10 +73,11 @@ jump to what you need.
 
 -   [__Backends: where it runs__](backends.md)
 
-    Browser (Playwright), native Windows (UIA), native macOS, RDP, and
-    Citrix/VDI are all first-class substrates behind one backend protocol. The
-    same bundle, resolution ladder, identity gate, and effect verification run on
-    each; every workflow is qualified in its real environment.
+    Browser (Playwright), native Windows (UIA), native macOS, native Linux
+    (AT-SPI), RDP, and Citrix/VDI are all first-class substrates behind one
+    backend protocol. The same bundle, resolution ladder, identity gate, and
+    effect verification run on each; every workflow is qualified in its real
+    environment.
 
 -   [__The on-prem VLM appliance__](vlm-appliance.md)
 

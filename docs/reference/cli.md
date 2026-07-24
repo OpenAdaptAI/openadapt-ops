@@ -13,7 +13,7 @@ is a subcommand of `openadapt flow`.
 
 | Verb | What it does | Exit code |
 |---|---|---|
-| [`record`](#record) | Record your own app on any [substrate](#backend) (browser via `--url`, native Windows or Citrix/RDP via `--backend`) | 0 |
+| [`record`](#record) | Record your own app on any [substrate](#backend) (browser via `--url`; Windows, macOS, Linux, RDP, or Citrix via `--backend`) | 0 |
 | [`demo-record`](#demo-record) | Serve the sample app and record the canonical demo | 0 |
 | [`compile`](#compile) | Compile a recording into a workflow bundle | 0 |
 | [`induce`](#induce) | Induce a parameterized program from **multiple** recordings | 0 if certified, 2 if underdetermined |
@@ -47,31 +47,48 @@ is a subcommand of `openadapt flow`.
 ## Choosing a backend {#backend}
 
 `record`, `replay`, `run`, and `resume` all accept a **backend selector** that
-chooses what the workflow drives: a browser, a native Windows desktop, or a
-pixel-only remote session. It overrides the `backend` section of a
+chooses what the workflow drives: a browser, native Windows/macOS/Linux
+desktop, RDP session, or Citrix Workspace window. It overrides the `backend` section of a
 [`--config`](deployment-config.md). With no flag the default is `web`, which
 reproduces the historical browser behavior. See
 [Backends, where it runs](../concepts/backends.md) for the substrate model.
 
 | Flag | Description |
 |---|---|
-| `--backend {web,windows,rdp}` | `web` (default; Playwright/Chromium), `windows` (native Windows via the WAA HTTP agent, needs `--agent-url`), or `rdp` (pixel-only remote desktop / Citrix, needs `--rdp-host`, or a configured `rdp_window` for a local Citrix/Parallels window) |
+| `--backend {web,windows,macos,linux,rdp,citrix}` | Select the released adapter: browser, Windows UIA, exact native macOS window, exact Linux AT-SPI window, RDP transport/window, or the dedicated Citrix Workspace-window preset. |
 | `--agent-url URL` | Base URL of the in-guest Windows (WAA) agent for `--backend windows` (e.g. `http://localhost:5001`). Overrides `backend.agent_url` |
-| `--rdp-host HOST` | RDP host/IP for `--backend rdp` (network RDP via FreeRDP). Overrides `backend.rdp_host`. For a **local** Citrix/Parallels window instead of a network host, set `backend.rdp_window` in `--config` |
+| `--macos-app APP` | Exact owner application for `--backend macos` (for example `TextEdit`). |
+| `--macos-window-title TITLE` | Window-title substring for `--backend macos`; ambiguous matches are refused. |
+| `--linux-app APP` | Exact AT-SPI application name for `--backend linux` (for example `gedit`). |
+| `--linux-window-title TITLE` | Exact top-level window title for `--backend linux`; zero or multiple matches are refused. |
+| `--linux-allow-physical-input` | Explicitly allow window-bound X11 pointer/keyboard fallback when native AT-SPI actuation is unavailable. |
+| `--rdp-host HOST` | RDP host/IP for `--backend rdp` (network RDP). For a local client window use `--rdp-window` instead. |
+| `--rdp-window OWNER` | Exact local remote-display window owner/process for `rdp` or `citrix` (`Citrix Viewer` on macOS; `wfica32` on Windows by default for Citrix). |
+| `--rdp-window-title TITLE` | Exact local RDP/Citrix client-window title used to disambiguate multiple owner matches. |
+| `--rdp-readiness-text TEXT` | Stable text that must be visible before input. Required for governed Citrix `run`. |
 
 ```bash
 # Drive a native Windows app through the in-session agent
 openadapt flow replay bundle --backend windows --agent-url http://localhost:5001
 
-# Drive a pixel-only Citrix / RDP session
+# Drive one exact native Linux application window through AT-SPI
+openadapt flow replay bundle --backend linux \
+  --linux-app gedit --linux-window-title 'Patient notes'
+
+# Drive network RDP
 openadapt flow run bundle --backend rdp --rdp-host 10.0.0.5 --config deployment.yaml
+
+# Drive a bound Citrix Workspace window and refuse a locked/not-ready frame
+openadapt flow run bundle --backend citrix \
+  --rdp-window-title 'Ward A' --rdp-readiness-text 'Appointments' \
+  --config deployment.yaml
 ```
 
 !!! note "Selecting a backend"
-    `web` (browser), `windows`, and `rdp` (also the transport for Citrix/VDI) are
-    all first-class substrates behind one backend protocol, running the same
-    bundle, resolution ladder, identity gate, and effect verification. Every
-    workflow is qualified in its real environment. See the
+    `web`, `windows`, `macos`, `linux`, `rdp`, and `citrix` are released
+    adapters behind one backend protocol, running the same bundle, resolution
+    ladder, identity gate, and effect verification. Every workflow is qualified
+    in its real environment. See the
     [backend support table](../concepts/backends.md#status-at-a-glance) and
     [Qualification evidence](../get-started/what-works-today.md).
 
@@ -79,9 +96,9 @@ openadapt flow run bundle --backend rdp --rdp-host 10.0.0.5 --config deployment.
 
 Record what you do on your own app. The [backend selector](#backend) chooses the
 substrate: `--backend web` (the default) opens a headed browser on the app at
-`--url`; `--backend windows` records a native Windows desktop through its
-in-session agent, and `--backend rdp` records a pixel-only Citrix/RDP session.
-The example below records the web substrate.
+`--url`; the native and remote selectors record Windows, macOS, Linux, RDP, or
+Citrix through their exact target flags. The example below records the web
+substrate.
 
 ```bash
 openadapt flow record --url https://your.app --out rec
@@ -186,9 +203,9 @@ all **fail loudly** and write no bundle. Once authored, drive the loop with
 
 Replay a bundle against the substrate chosen by the [backend selector](#backend).
 On the default `web` backend, `--url` names the target app and, with no `--url`,
-replay serves the bundled sample app. For a native Windows desktop or a
-pixel-only Citrix/RDP session, use `--backend windows`/`--backend rdp` with its
-target flag instead of `--url`. The example below replays the web substrate.
+replay serves the bundled sample app. For Windows, macOS, Linux, RDP, or Citrix,
+select its backend and exact target flags instead of `--url`. The example below
+replays the web substrate.
 
 ```bash
 openadapt flow replay bundle --url https://your.app --param note="Follow-up"

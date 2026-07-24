@@ -3,8 +3,9 @@
 This walks through compiling a workflow on **your own** web app: record what you
 do, compile it, replay it, and read the report. It takes about five minutes and
 makes zero model calls. Web is the quickest substrate to start on; the same
-record, compile, replay loop drives a native Windows desktop or a pixel-only
-Citrix/RDP session by choosing a [backend](../reference/cli.md#backend).
+record, compile, replay loop drives native Windows, macOS, or Linux applications
+and RDP or Citrix sessions by choosing a
+[backend](../reference/cli.md#backend).
 
 ## Prerequisites
 

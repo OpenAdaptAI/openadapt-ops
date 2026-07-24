@@ -54,10 +54,11 @@ openadapt flow replay  bundle --url https://your.app      # replay, local, $0
 ```
 
 On the web substrate shown here, `record` opens a headed browser on your own app
-and captures what you do; the same loop records a native Windows desktop or a
-pixel-only Citrix/RDP session by choosing a [backend](backends.md) instead of a
-`--url`. `compile` turns the recording into a bundle. `replay` runs the bundle
-deterministically on the same substrate and writes an illustrated report.
+and captures what you do. The same loop records native Windows, macOS, or Linux
+applications and pixel-only RDP or Citrix sessions by choosing a
+[backend](backends.md) instead of a `--url`. `compile` turns the recording into
+a bundle. `replay` runs the bundle deterministically on the same substrate and
+writes an illustrated report.
 
 ## Vision-first behind a small backend
 
@@ -66,9 +67,9 @@ pixel surface (PNG in, clicks and keys out) behind a small `Backend` protocol,
 which is why the whole loop runs in CI with no OS permissions. Where a backend
 exposes more than pixels (a browser DOM, a native accessibility tree, an API),
 OpenAdapt uses that higher-fidelity signal via
-[the capability ladder](capability-ladder.md). The web (Playwright), desktop
-(Windows/UIA), native macOS, RDP, and Citrix/VDI [backends](backends.md) are all
-adapters to the same protocol, not rewrites.
+[the capability ladder](capability-ladder.md). The web (Playwright), Windows
+UIA, native macOS, native Linux AT-SPI, RDP, and Citrix/VDI
+[backends](backends.md) are all adapters to the same protocol, not rewrites.
 
 ## An API compiler for the API-less long tail
 

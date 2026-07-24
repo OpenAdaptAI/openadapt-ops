@@ -7,12 +7,12 @@ hide:
 # Show it a repeated workflow. OpenAdapt compiles it into governed, deterministic replay.
 
 <p class="oa-lede">
-OpenAdapt is a demonstration compiler for repeated GUI work in the browser,
-native desktop, Citrix, and other virtual desktops. Demonstrate a task once.
-OpenAdapt compiles it into a deterministic, locally executable program that
-replays with no model calls on a healthy run. When interfaces drift, it
-re-resolves targets deterministically or uses an explicitly configured model
-tier, records the repair, and halts instead of guessing when verification
+OpenAdapt is a demonstration compiler for repeated GUI work across browser,
+Windows, macOS, Linux, RDP, Citrix, and other virtual desktops. Demonstrate a
+task once. OpenAdapt compiles it into a deterministic, locally executable
+program that replays with no model calls on a healthy run. When interfaces
+drift, it re-resolves targets deterministically or uses an explicitly configured
+model tier, records the repair, and halts instead of guessing when verification
 fails.
 </p>
 
@@ -36,11 +36,11 @@ a thousand times. OpenAdapt compiles the demonstration instead, so the model is
 consulted only to repair the script, not to drive it.
 
 One compiled workflow and one governance model run across browser, Windows,
-native macOS, RDP, Citrix, and other VDI surfaces. Each substrate supplies the
-strongest observations and actions available; the compiler, identity checks,
-effect verification, policy, repair, and audit trail stay consistent. Teams
-qualify each workflow against its real application and success oracle before
-production use.
+native macOS, native Linux, RDP, Citrix, and other VDI surfaces. Each substrate
+supplies the strongest observations and actions available; the compiler,
+identity checks, effect verification, policy, repair, and audit trail stay
+consistent. Teams qualify each workflow against its real application and
+success oracle before production use.
 
 ---
 
@@ -123,22 +123,23 @@ deployment boundaries. A [substrate-agnostic runner](concepts/substrate-model.md
 routes each job to the right driver while governance stays above that boundary.
 Two orthogonal axes, one contract:
 
-| Deployment ↓ / Substrate → | **Web (browser)** | **Windows UIA** | **Native macOS** | **RDP** | **Citrix** |
-|---|---|---|---|---|---|
-| **OpenAdapt Cloud** | Managed runner, schedules, reports, usage, and billing | Not multi-tenant hosted; runs in the customer boundary | Not multi-tenant hosted; runs in the customer boundary | Not multi-tenant hosted; runs in the customer boundary | Design-partner; runs in the customer boundary |
-| **Customer cloud / BYOC** | Customer runner and storage with managed governance | Customer runner and storage | Customer runner and storage | Customer runner and storage | Customer runner and storage |
-| **Self-hosted / on-prem** | Local runner and audit trail | Local runner and audit trail | Local runner and audit trail | Local runner and audit trail | Local runner and audit trail |
+| Deployment ↓ / Substrate → | **Web (browser)** | **Windows UIA** | **Native macOS** | **Native Linux** | **RDP** | **Citrix / VDI** |
+|---|---|---|---|---|---|---|
+| **OpenAdapt Cloud** | Managed runner, schedules, reports, usage, and billing | Customer-controlled runtime connected to Cloud | Customer-controlled runtime connected to Cloud | Customer-controlled runtime connected to Cloud | Customer-controlled runtime connected to Cloud | Customer-controlled runtime connected to Cloud |
+| **Customer cloud / BYOC** | Customer runner and storage with managed governance | Customer runner and storage | Customer runner and storage | Customer runner and storage | Customer runner and storage | Customer runner and storage |
+| **Self-hosted / on-prem** | Local runner and audit trail | Local runner and audit trail | Local runner and audit trail | Local runner and audit trail | Local runner and audit trail | Local runner and audit trail |
 
 You choose where execution and data live. For regulated data the
 [`run`](concepts/regulated-execution.md) verb is **fail-closed by default**:
 it gates certification, identity and effect coverage, approval fallback,
 encryption, and manifest integrity before execution.
 
-The public subscription covers approved browser workflows. Desktop and
-virtual-desktop lanes run in the customer boundary (self-hosted or on-prem today,
-control-plane-managed BYOC as that Experimental lane opens), not in OpenAdapt's
-multi-tenant cloud, and they require a separate order and workflow-specific
-qualification; they are not entitlements of the browser subscription. The
+The public subscription covers approved browser workflows on the managed
+runner. Windows, macOS, Linux, RDP, and Citrix/VDI execute in a local,
+self-hosted, or customer-controlled boundary and can connect to the same Cloud
+control plane for governed operation. They are not silently moved into
+OpenAdapt's shared managed-browser boundary or included as managed-runner
+entitlements. The
 [hosted guide](guides/hosted.md),
 [qualification evidence](get-started/what-works-today.md), and commercial terms
 define the accepted scope. Artifacts cross boundaries only as approved sanitized

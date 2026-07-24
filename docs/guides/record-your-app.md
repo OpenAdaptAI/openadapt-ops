@@ -2,10 +2,9 @@
 
 The bundled demo shows the loop end to end, but the point is your app. This
 guide records a real workflow, compiles it, and replays it. It uses the **web
-substrate** throughout; a native Windows desktop or a pixel-only Citrix/RDP
-session follows the same steps with a different
-[backend](../reference/cli.md#backend) (`--backend windows` / `--backend rdp` and
-its target flag) in place of `--url`.
+substrate** throughout; Windows, macOS, Linux, RDP, and Citrix follow the same
+steps with a different [backend](../reference/cli.md#backend) and its exact
+target flags in place of `--url`.
 
 ## Record
 
