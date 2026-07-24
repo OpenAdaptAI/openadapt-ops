@@ -6,25 +6,24 @@ schema. What differs across lanes is data handling, not substrate capability.
 
 ## Deployment architecture
 
-| Deployment / substrate | Browser | Windows UIA | Native macOS | RDP | Citrix / VDI |
-|---|---|---|---|---|---|
-| **OpenAdapt Hosted** | Managed execution, schedules, reports, usage, and billing | Not a public hosted offer; runs in the customer boundary | Not a public hosted offer; runs in the customer boundary | Not a public hosted offer; runs in the customer boundary | Not a public hosted offer; runs in the customer boundary |
-| **Customer cloud / BYOC** | Customer runner and storage with managed governance | Customer runner and storage | Customer runner and storage | Customer runner and storage | Customer runner and storage |
-| **Self-hosted / on-prem** | Local runner and audit trail | Local runner and audit trail | Local runner and audit trail | Local runner and audit trail | Local runner and audit trail |
+| Deployment / substrate | Browser | Windows UIA | Native macOS | Native Linux | RDP | Citrix / VDI |
+|---|---|---|---|---|---|---|
+| **OpenAdapt Hosted** | Managed execution, schedules, reports, usage, and billing | Customer-controlled runtime connected to Cloud | Customer-controlled runtime connected to Cloud | Customer-controlled runtime connected to Cloud | Customer-controlled runtime connected to Cloud | Customer-controlled runtime connected to Cloud |
+| **Customer cloud / BYOC** | Customer runner and storage with managed governance | Customer runner and storage | Customer runner and storage | Customer runner and storage | Customer runner and storage | Customer runner and storage |
+| **Self-hosted / on-prem** | Local runner and audit trail | Local runner and audit trail | Local runner and audit trail | Local runner and audit trail | Local runner and audit trail | Local runner and audit trail |
 
 Every substrate is a first-class target of the shared compiler, runner, and
 safety gates. Where each lane is available today differs, and the matrix states
 that plainly rather than implying uniform hosted availability. The public
 $500/month self-serve subscription runs the browser substrate in OpenAdapt's
-cloud. Windows, native macOS, RDP, and Citrix/VDI run in the customer boundary:
-self-hosted or on-prem today, and control-plane-managed in the customer's own
-cloud (BYOC) as that Experimental lane opens. An in-our-cloud desktop runner
+cloud. Windows, native macOS, native Linux, RDP, and Citrix/VDI run in a local,
+self-hosted, or customer-controlled boundary and can connect to Cloud for
+governed operation. An in-our-cloud desktop runner
 exists only as an internal, licensing-gated lane, and multi-tenant hosting of the
 desktop substrate in OpenAdapt's cloud is deferred; neither is part of any public
-offer. Between the customer-boundary lanes the difference is a per-workflow
-qualified commercial order rather than a capability gap, and none of these
-substrates is an entitlement of the browser subscription. The matrix describes
-the product architecture; the
+managed-runner offer. None of these native or remote substrates is silently
+moved into the shared managed-browser boundary or included as a managed-runner
+entitlement. The matrix describes the product architecture; the
 [qualification appendix](../get-started/what-works-today.md) and commercial terms
 define the accepted workload and entitlement.
 
@@ -155,20 +154,28 @@ qualified in its real environment. The published qualification evidence to date:
   SHA-256-bound adjudication verified actual cleanup and accepts the action
   effect and ambiguity refusal. Review [Flow PR #135](https://github.com/OpenAdaptAI/openadapt-flow/pull/135)
   and the [exact adjudication](https://github.com/OpenAdaptAI/openadapt-flow/blob/ca1b522cad215875f7471782283f8f8bb8e6c998/benchmark/macos_native/textedit_counted_3plus1_b1b61a5_20260717.adjudication.json).
-- **RDP:** Candidate `82a658a`
-  passed 3/3 unique-file trials on one Parallels Windows 11 VM over network RDP;
-  exact guest-tools readback confirmed every effect. Trial latencies were
-  51.845s, 10.467s, and 7.477s, with 0 failures, 0 silent incorrect successes,
-  0 over-halts, and 0 model calls. Exact snapshot cleanup passed. Review
-  [Flow PR #142](https://github.com/OpenAdaptAI/openadapt-flow/pull/142)
-  and the [immutable sanitized report](https://github.com/OpenAdaptAI/openadapt-flow/blob/6610d24cebba27918b8ea507b2f05a094057ac85/benchmark/rdp/results_82a658a_20260718.sanitized.json).
-- **Citrix / VDI (Exploratory):** Driven pixel-first through the same
-  remote-display adapter and the same identity gate and effect verification as
-  every other substrate. No real ICA/HDX environment has been qualified yet. Each
-  Citrix/VDI workflow must be qualified in its real ICA/HDX environment before
-  consequential use: the client, latency, compression, DPI, lock-screen, and
-  synthetic-input behavior are exercised against the actual application, the same
-  real-environment qualification step every substrate goes through.
+- **Linux native:** Required current-main `linux-atspi-x11` at exact Flow commit
+  `3de5fc67` confirmed 3/3 exact-file effects, 3/3 ambiguity refusals, and
+  3/3 stale-target refusals on the in-tree GTK3/X11 fixture, with 0 silent
+  incorrect successes, 0 over-halts, 0 operator interventions, and 0 model
+  calls. Review the [exact required CI job](https://github.com/OpenAdaptAI/openadapt-flow/actions/runs/30059807758/job/89378981573).
+- **RDP:** Candidate `82a658a` passed 3/3 unique-file trials on one Parallels
+  Windows 11 VM over Aardwolf network RDP with exact guest-tools readback. A
+  separate full governed lifecycle over a real FreeRDP3 round trip passed 3/3
+  healthy effects and 3/3 drift safe-halts with zero model calls, silent
+  incorrect successes, false completions, drift writes, or healthy over-halts.
+  Review [Flow PR #142](https://github.com/OpenAdaptAI/openadapt-flow/pull/142),
+  [Flow PR #177](https://github.com/OpenAdaptAI/openadapt-flow/pull/177), the
+  [Aardwolf report](https://github.com/OpenAdaptAI/openadapt-flow/blob/6610d24cebba27918b8ea507b2f05a094057ac85/benchmark/rdp/results_82a658a_20260718.sanitized.json),
+  and the [FreeRDP report](https://github.com/OpenAdaptAI/openadapt-flow/blob/affedc5f1f0de533a0744deaa8e30a203c91c6b3/benchmark/rdp_ladder/results.json).
+- **Citrix / VDI:** The released dedicated `--backend citrix` binds the exact
+  Workspace window, gates readiness, and preserves the target through durable
+  resume. Its accepted no-DOM artifact records 3/3 healthy effects and 3/3
+  drift safe-halts with zero model calls, silent writes, false completions, or
+  healthy over-halts. It also explicitly records `ica_hdx_accepted: false`:
+  this is bounded evidence for the shipped backend contract over a no-DOM
+  stand-in, not a counted real ICA/HDX batch. Review [Flow PR #183](https://github.com/OpenAdaptAI/openadapt-flow/pull/183)
+  and the [immutable report](https://github.com/OpenAdaptAI/openadapt-flow/blob/f6faac5b900b78cbda5980de0e983a9f987285ac/benchmark/citrix_workspace/results.json).
 
 Review [Qualification evidence](../get-started/what-works-today.md) and the engine's
 [published limits](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/LIMITS.md)

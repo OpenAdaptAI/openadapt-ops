@@ -16,8 +16,8 @@ the resolution ladder, the [identity gate](identity-gate.md),
 
 Two orthogonal questions about any run, kept separate:
 
-- **Substrate**: *what surface is being driven?* Web (browser) or
-  Windows-desktop / Citrix-RDP.
+- **Substrate**: *what surface is being driven?* Browser, Windows UIA, native
+  macOS, native Linux, RDP, or Citrix/VDI.
 - **Deployment**: *where does the run execute and who owns the data?* See
   [the deployment matrix](deployment-matrix.md).
 
@@ -31,9 +31,11 @@ pixels or resolved field values.
 flowchart TD
     J[Job: signed bundle + target + params] --> R{{Substrate-agnostic runner}}
     R -->|target_kind = web| W[Browser sandbox<br/>Playwright backend]
-    R -->|target_kind = desktop| D[Windows session<br/>WindowsBackend / FreeRDP]
+    R -->|target_kind = desktop| D[Native desktop<br/>Windows / macOS / Linux]
+    R -->|target_kind = remote| V[Remote display<br/>RDP / Citrix]
     W --> L[Resolution ladder · identity gate · effect verification]
     D --> L
+    V --> L
     L --> C[[Signed report + minimized callback]]
 ```
 
@@ -45,14 +47,14 @@ compares **structured text** where `0` and `O` are distinct characters. The
 whole record → compile → replay loop runs in CI with no OS permissions. See
 [Backends](backends.md#web-playwright).
 
-## The Windows-desktop / Citrix substrate: the wedge
+## Native desktop and remote applications: the wedge
 
 The differentiated work has no web UI and no usable API: a native Windows EMR, a
 WinForms line-of-business app, a clinical tool published through Citrix. This is
 where a computer-use agent is otherwise the only option and where a wrong write
 is expensive.
 
-Two backends cover it behind the same protocol:
+The released backends cover it behind the same protocol:
 
 - **`WindowsBackend`** drives a native Windows desktop through an in-session
   agent. Its shipped typed RPC exposes bounded screenshot, input, and UIA
@@ -61,10 +63,18 @@ Two backends cover it behind the same protocol:
   native controls expose `Name` / `Value` text **even without a stable
   `AutomationId`**, so structured identity is viable on desktop, not just the
   browser.
+- The **native macOS backend** binds one exact application window and uses
+  Accessibility metadata plus retained visual evidence.
+- **`LinuxBackend`** binds one exact AT-SPI application and top-level window,
+  uses structural actuation where available, and refuses ambiguous or stale
+  native targets.
 - **`FreeRDPBackend`** drives a legacy app over RDP as **pure pixels**: no
   accessibility tree, no DOM, no structured layer. This is the floor the
   vision-first runtime was built for, the lowest-fidelity surface a Citrix/VDI
   deployment may expose.
+- **`CitrixWorkspaceBackend`** is the dedicated `--backend citrix` preset over
+  the exact-window remote-display backend. It binds the Workspace owner/title
+  and gates readiness before governed input.
 
 !!! info "Citrix / RDP is pixel-first: the identity gate adapts to it"
     On a pure-pixel substrate the ladder runs on its visual floor and the
@@ -80,13 +90,13 @@ Two backends cover it behind the same protocol:
 
 ## Where the desktop substrate runs today
 
-Today the desktop and Citrix substrates run **inside the customer boundary**:
-self-hosted or on-prem on a machine the customer controls (see
-[Deploy on-prem](../guides/deploy-on-prem.md)), and, as that lane opens,
-control-plane-managed in the customer's own cloud (BYOC). The public managed
-subscription runs the browser substrate only. The desktop mechanism, backends,
-and safety gates are the same wherever they run; what differs is who owns the
-machine and the data.
+Desktop, RDP, and Citrix substrates run **inside the customer boundary**:
+locally, self-hosted/on-prem on a machine the customer controls (see
+[Deploy on-prem](../guides/deploy-on-prem.md)), or in a configured
+customer-controlled cloud runtime. The public managed runner executes approved
+browser workflows. Customer-controlled runtimes can connect to the same Cloud
+control plane for reports and governed operation without moving sensitive live
+observations into the shared managed-browser boundary.
 
 OpenAdapt also runs the desktop substrate in its own infrastructure as an
 **internal, licensing-gated lane** rather than a public offer. There the Windows
@@ -118,17 +128,21 @@ offer.
   over-halts. The original batch remains failed due to cleanup-warning
   classification; a hash-bound adjudication verified actual cleanup and accepts
   those effects/refusal.
-- RDP is qualified for candidate `82a658a` on one Parallels Windows 11
-  VM at 1280x800 with Aardwolf 0.2.14: 3/3 Windows Run-dialog unique-file
-  trials, exact independent guest-tools readback, latencies of 51.845s, 10.467s,
-  and 7.477s, 0 failures, 0 silent incorrect successes, 0 over-halts, and 0 model
-  calls.
-  Exact snapshot cleanup passed. Review the
-  [immutable sanitized report](https://github.com/OpenAdaptAI/openadapt-flow/blob/6610d24cebba27918b8ea507b2f05a094057ac85/benchmark/rdp/results_82a658a_20260718.sanitized.json).
-- Citrix/VDI is driven pixel-first through the same identity gate and effect
-  verification as every substrate. No real ICA/HDX environment has been qualified
-  yet (status: Exploratory); each workflow must be qualified in its real ICA/HDX
-  environment before consequential use.
+- Linux AT-SPI is a required current-main CI lane. Exact Flow commit
+  `3de5fc67` confirmed 3/3 exact-file effects, 3/3 ambiguity refusals, and
+  3/3 stale-target refusals on the in-tree GTK3/X11 fixture, with zero silent
+  incorrect successes, over-halts, operator interventions, or model calls.
+- RDP has complementary accepted evidence: 3/3 Aardwolf-over-Windows
+  transport/input effects, plus a full real-FreeRDP record → compile → governed
+  replay lifecycle with 3/3 healthy effects and 3/3 drift safe-halts. The
+  [FreeRDP artifact](https://github.com/OpenAdaptAI/openadapt-flow/blob/affedc5f1f0de533a0744deaa8e30a203c91c6b3/benchmark/rdp_ladder/results.json)
+  covers a synthetic Linux task on a real protocol round trip; it does not
+  inherit the separate Windows/Aardwolf scope.
+- Citrix/VDI ships as dedicated `--backend citrix` with exact Workspace-window
+  binding, readiness gating, and durable resume. Its accepted no-DOM contract
+  evidence records 3/3 healthy effects and 3/3 drift safe-halts. The artifact
+  explicitly records `ica_hdx_accepted: false`: a counted real ICA/HDX batch is
+  a separate evidence/qualification boundary, not a missing backend.
 - The public hosted subscription currently entitles approved browser workflows.
   Desktop and virtual-desktop deployments are scoped and qualified separately.
 

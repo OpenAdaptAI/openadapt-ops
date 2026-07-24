@@ -2,14 +2,15 @@
 
 A compiled workflow does not care what is underneath it. The runtime sits behind
 a small four-method `Backend` protocol (screenshot in; click, type, key, scroll
-out), so the same bundle, the same resolution ladder, and the same identity gate
-run against a browser, a native Windows desktop, or a pixel-only remote session.
+out), so the same bundle, resolution ladder, identity gate, effect checks, and
+reporting run against browser, Windows, macOS, Linux, RDP, and Citrix/VDI.
 Backends are **adapters, not rewrites**.
 
 !!! tip "Selecting a backend on the CLI"
     `record`, `replay`, `run`, and `resume` take
-    [`--backend {web,windows,rdp}`](../reference/cli.md#backend) (with
-    `--agent-url` for Windows and `--rdp-host` for RDP). The default is `web`.
+    [`--backend {web,windows,macos,linux,rdp,citrix}`](../reference/cli.md#backend).
+    Each native backend has an exact target selector; governed Citrix `run`
+    also requires a readiness marker. The default is `web`.
     See [Choosing a backend](../reference/cli.md#backend).
 
 ## Vision-first, not vision-only
@@ -83,6 +84,40 @@ selection, and stale-target rejection. The older `/execute_windows`
 compatibility route remains a migration surface and is disabled by default; it
 is not the production RPC contract.
 
+### Desktop: native macOS
+
+The native macOS backend captures and drives one exact application window. It
+uses the owner plus an optional title substring to bind the target, refuses
+ambiguous or non-frontmost windows before input, and fails loud when Screen
+Recording or Accessibility permission is unavailable.
+
+!!! info "macOS qualification evidence"
+    On one macOS 15.7.3 arm64 host, counted candidate `b1b61a5` completed 3/3
+    exact-byte TextEdit trials and refused a two-window ambiguity without
+    changing either file, with 0 silent incorrect successes and 0 over-halts.
+    The immutable original report remains failed because cleanup warnings were
+    classified as a batch failure; a separate SHA-256-bound adjudication
+    verified actual cleanup and accepts only the action-effect and
+    ambiguity-refusal evidence. Review [Flow PR #135](https://github.com/OpenAdaptAI/openadapt-flow/pull/135)
+    and the [exact adjudication](https://github.com/OpenAdaptAI/openadapt-flow/blob/ca1b522cad215875f7471782283f8f8bb8e6c998/benchmark/macos_native/textedit_counted_3plus1_b1b61a5_20260717.adjudication.json).
+
+### Desktop: native Linux (AT-SPI)
+
+`LinuxBackend` binds one exact AT-SPI application and top-level window, resolves
+structural controls, and revalidates the target fingerprint immediately before
+actuation. `--linux-allow-physical-input` is an explicit X11-only fallback when
+native AT-SPI actuation is unavailable; it is never selected silently.
+
+!!! info "Linux qualification evidence"
+    Required current-main job
+    [`linux-atspi-x11`](https://github.com/OpenAdaptAI/openadapt-flow/actions/runs/30059807758/job/89378981573)
+    at exact commit `3de5fc67` confirmed 3/3 independently checked exact-file
+    effects, 3/3 ambiguity refusals, and 3/3 stale-target refusals on a fresh
+    GTK3 process per trial. It recorded 0 silent incorrect successes,
+    0 over-halts, 0 operator interventions, and 0 model calls. The scope is the
+    in-tree GTK3 fixture on isolated Ubuntu 24.04 X11/AT-SPI, not Wayland or
+    arbitrary third-party applications.
+
 ### Remote: RDP (pixel-only)
 
 The `FreeRDPBackend` drives a legacy application over **RDP**, read pixel-only:
@@ -111,37 +146,39 @@ there.
     [Flow PR #142](https://github.com/OpenAdaptAI/openadapt-flow/pull/142)
     and the [immutable sanitized report](https://github.com/OpenAdaptAI/openadapt-flow/blob/6610d24cebba27918b8ea507b2f05a094057ac85/benchmark/rdp/results_82a658a_20260718.sanitized.json).
 
+    A separate full governed lifecycle uses the swappable transport contract
+    over a real FreeRDP3 client/server round trip. It recorded, compiled, and
+    replayed a synthetic note write with 3/3 healthy effects and 3/3
+    drift safe-halts, zero model calls, silent incorrect successes, false
+    completions, drift writes, or healthy over-halts. That result is scoped to
+    a synthetic Linux Tk task and simulated drift on the real RDP session; it
+    is not the Aardwolf transport or a Windows-app qualification. Review
+    [Flow PR #177](https://github.com/OpenAdaptAI/openadapt-flow/pull/177) and
+    the [accepted FreeRDP lifecycle report](https://github.com/OpenAdaptAI/openadapt-flow/blob/affedc5f1f0de533a0744deaa8e30a203c91c6b3/benchmark/rdp_ladder/results.json).
+
 ### Remote-display / Citrix / VDI (pixel-only)
 
-Citrix and other virtual-desktop surfaces are first-class substrates. They are
-driven pixel-first through the same remote-display adapter that captures a named
-application window and injects input at screen coordinates, the exact mechanism
-the vision-first runtime was built for. The same bundle, resolution ladder,
-identity gate, and effect verification apply here as everywhere else.
+`CitrixWorkspaceBackend` is the released, dedicated `--backend citrix` path. It
+selects the exact Citrix Workspace/Viewer owner for the host OS, optionally
+binds an exact window title, refuses ambiguous targets, requires a visible
+readiness marker for governed `run`, and carries the closed target into durable
+resume. It is pixel-only by construction, so the same visual resolution,
+identity, effect, policy, and halt contracts run without pretending a DOM or
+accessibility tree exists.
 
-Each Citrix/VDI deployment is qualified in its real ICA/HDX environment, where
-the client's compression and latency, DPI mapping, credentials and lock
-screens, and synthetic-input acceptance are exercised against the actual
-application: the same "qualify the workflow in its real environment" step every
-substrate goes through.
+!!! info "Citrix qualification evidence"
+    The accepted no-DOM qualification completed 3/3 healthy effects and 3/3
+    severe-drift safe-halts, with 0 model calls, silent incorrect successes,
+    false completions, healthy over-halts, or drift writes. Review
+    [Flow PR #183](https://github.com/OpenAdaptAI/openadapt-flow/pull/183) and
+    the [immutable report](https://github.com/OpenAdaptAI/openadapt-flow/blob/f6faac5b900b78cbda5980de0e983a9f987285ac/benchmark/citrix_workspace/results.json).
 
-### Native macOS
-
-A native exact-window candidate in [Flow PR #135](https://github.com/OpenAdaptAI/openadapt-flow/pull/135)
-captures only a uniquely selected application window, refuses ambiguous or
-non-frontmost targets, and fails before input when Screen Recording or
-Accessibility access is missing. On one macOS 15.7.3 arm64 host, counted
-candidate `b1b61a5` completed 3/3 exact-byte TextEdit trials and refused a
-two-window ambiguity without changing either file, with 0 silent incorrect
-successes and 0 over-halts.
-
-The [immutable original report](https://github.com/OpenAdaptAI/openadapt-flow/blob/ca1b522cad215875f7471782283f8f8bb8e6c998/benchmark/macos_native/textedit_counted_3plus1_b1b61a5_20260717.json)
-still says `status: failed`: its graceful-close cleanup warnings were classified
-as a batch failure. A separate [SHA-256-bound adjudication](https://github.com/OpenAdaptAI/openadapt-flow/blob/ca1b522cad215875f7471782283f8f8bb8e6c998/benchmark/macos_native/textedit_counted_3plus1_b1b61a5_20260717.adjudication.json)
-verified all exact harness PIDs and the temporary root were absent, preserved
-the original result, and accepted only the action-effect and ambiguity-refusal
-evidence. This is one-host TextEdit evidence, not clean-machine, design-partner,
-production, broad-app, AX structural-resolution, or general macOS acceptance.
+    The accepted artifact explicitly records `code_readiness_accepted: true`
+    and `ica_hdx_accepted: false`. It qualifies the shipped Workspace-window
+    backend contract over a no-DOM canvas stand-in, not a counted real ICA/HDX
+    batch. The exact client, codec, latency, DPI, lock/readiness, input,
+    identity, and effect matrix is qualified separately for consequential
+    ICA/HDX use.
 
 ## Status at a glance
 
@@ -150,8 +187,9 @@ production, broad-app, AX structural-resolution, or general macOS acceptance.
 | Playwright (web) | Browser DOM | Yes (DOM) | Structured text (DOM) | **First-class**: structured DOM identity |
 | `WindowsBackend` | Native Windows | Via UIA | UI Automation `Name`/`Value` | **First-class**: UIA structured identity |
 | Native macOS | Native macOS | Exact window candidate; AX candidate metadata | Window identity and pixel/OCR floor | **First-class**: window identity and AX metadata |
+| `LinuxBackend` | Native Linux | Yes (AT-SPI) | Exact app/window plus AT-SPI role/name/fingerprint | **First-class**: AT-SPI structured identity |
 | `FreeRDPBackend` | Pixel-only network RDP | No | Pixel / OCR floor | **First-class**: pixel/OCR identity floor |
-| Citrix / VDI | ICA/HDX remote application | Deployment-dependent | Pixel / OCR floor unless the client exposes more | **First-class**: pixel/OCR identity floor via the client |
+| `CitrixWorkspaceBackend` | Citrix Workspace / VDI window | No | Exact Workspace owner/title/readiness plus pixel/OCR floor | **First-class**: governed pixel identity floor |
 
 Every backend runs the same bundle, resolution ladder, identity gate, and effect
 verification. What varies per substrate is how high up the

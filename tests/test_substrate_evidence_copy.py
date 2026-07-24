@@ -1,15 +1,9 @@
-"""Keep buyer-facing substrate availability tied to exact, bounded evidence.
+"""Keep released substrate availability tied to exact, bounded evidence.
 
-Target-state policy: every execution substrate is presented as a first-class
-mechanism, not ranked below the browser. Substrates with a validated real
-environment are **Early access** (Windows UIA, native macOS,
-RDP); Citrix/VDI is **Exploratory** until a real ICA/HDX environment is qualified,
-matching the canonical status.json ladder. This guard does not police the
-availability label beyond that; it pins the substrate-evidence section to the
-current honest wording and verifies that each qualified substrate still ships its
-exact, bounded evidence (run counts, oracle, immutable commit, Flow PR) and an
-honest per-surface boundary. The public browser offer must stay distinct from
-these scoped deployments.
+Every backend is presented as implemented in the governed product. The tests
+also preserve the two independent honesty dimensions: task/environment evidence
+does not become a broad app-support claim, and the managed browser runner does
+not silently absorb customer-controlled desktop or remote execution.
 """
 
 from pathlib import Path
@@ -23,48 +17,60 @@ def _read(relative_path: str) -> str:
     return (DOCS / relative_path).read_text()
 
 
-def test_scoped_windows_macos_and_rdp_evidence_is_exact_and_bounded():
+def test_native_desktop_evidence_is_exact_and_bounded():
     what_works = _read("get-started/what-works-today.md")
 
-    assert "Windows UIA backend | **Early access**" in what_works
-    assert "`20260717-candidate-56759c8-v2` in-tree WinForms matrix completed 3/3 trials" in what_works
+    assert "Windows UIA backend | **Supported**" in what_works
+    assert (
+        "`20260717-candidate-56759c8-v2` in-tree WinForms matrix completed "
+        "3/3 trials" in what_works
+    )
     assert "independent SQLite oracle confirmed 3/3 effects" in what_works
     assert "stale-target and ambiguous-target controls each refused 3/3" in what_works
     assert "0 silent incorrect successes, 0 over-halts, and 0 model calls" in what_works
-    assert "Each Windows workflow is qualified in its real environment" in what_works
     assert "preserves earlier rejected diagnostic runs" in what_works
     assert "defafbae758a75c8e149d9693f2cffe1f2264b8c" in what_works
-    assert "https://github.com/OpenAdaptAI/openadapt-flow/pull/132" in what_works
 
-    assert "Native macOS backend | **Early access**" in what_works
-    assert "one macOS 15.7.3 arm64 host" in what_works
+    assert "Native macOS backend | **Supported**" in what_works
     assert "candidate `b1b61a5` completed 3/3 exact-byte TextEdit trials" in what_works
     assert "refused a two-window ambiguity without changing either file" in what_works
     assert "immutable original report remains `status: failed`" in what_works
-    assert "immutable evidence commit `ca1b522`" in what_works
-    assert "`ca1b522` preserves its reports and adjudication but is not the current PR head" in what_works
     assert "verifies the exact harness PIDs and temporary root were absent" in what_works
-    assert "Each macOS workflow is qualified in its real environment" in what_works
     assert "ca1b522cad215875f7471782283f8f8bb8e6c998" in what_works
-    assert "https://github.com/OpenAdaptAI/openadapt-flow/pull/135" in what_works
 
-    assert "RDP backend | **Early access**" in what_works
-    assert "one Parallels Windows 11 VM at 1280x800 with Aardwolf 0.2.14" in what_works
-    assert "candidate `82a658a` completed 3/3 trials" in what_works
-    assert "unique file through the Windows Run dialog over network RDP" in what_works
-    assert "Independent guest-tools readback confirmed the exact file contents" in what_works
-    assert "51.845s, 10.467s, and 7.477s" in what_works
-    assert "0 failures, 0 silent incorrect successes, 0 over-halts, and 0 model calls" in what_works
-    assert "restored the exact eight-snapshot inventory" in what_works
-    assert "returned the current pointer without resume to the unchanged original base" in what_works
-    assert "Each RDP workflow is qualified in its real environment" in what_works
-    assert "not counted as acceptance trials" in what_works
-    assert "results_82a658a_20260718.sanitized.json" in what_works
-    assert "6610d24cebba27918b8ea507b2f05a094057ac85" in what_works
-    assert "https://github.com/OpenAdaptAI/openadapt-flow/pull/142" in what_works
+    assert "Native Linux backend | **Supported**" in what_works
+    assert "3/3 exact-file effects" in what_works
+    assert "3/3 ambiguous-target refusals" in what_works
+    assert "3/3 stale-target refusals" in what_works
+    assert "3de5fc67acf3024a621f812c5a6ed9be07fac335" in what_works
+    assert "30059807758/job/89378981573" in what_works
+    assert "does not establish Wayland or arbitrary third-party application support" in what_works
 
 
-def test_public_offer_and_scoped_substrate_evidence_remain_distinct():
+def test_remote_evidence_covers_rdp_lifecycle_and_citrix_contract():
+    what_works = _read("get-started/what-works-today.md")
+
+    assert "RDP backend | **Supported**" in what_works
+    assert "Aardwolf 0.2.14 over a Parallels Windows 11 VM" in what_works
+    assert "3/3 Windows Run-dialog file effects" in what_works
+    assert "full governed lifecycle at mechanism commit `6031fde`" in what_works
+    assert "3/3 healthy effects and 3/3 drift safe-halts" in what_works
+    assert "affedc5f1f0de533a0744deaa8e30a203c91c6b3" in what_works
+    assert "https://github.com/OpenAdaptAI/openadapt-flow/pull/177" in what_works
+    assert "not Aardwolf, a Windows-app qualification, Citrix ICA/HDX" in what_works
+
+    assert "Citrix / VDI backend | **Supported**" in what_works
+    assert "dedicated `--backend citrix` path" in what_works
+    assert "requires a readiness marker for governed `run`" in what_works
+    assert "carries the closed target into durable resume" in what_works
+    assert "3/3 healthy effects and 3/3 severe-drift safe-halts" in what_works
+    assert "`code_readiness_accepted: true` and `ica_hdx_accepted: false`" in what_works
+    assert "not a counted real ICA/HDX batch" in what_works
+    assert "f6faac5b900b78cbda5980de0e983a9f987285ac" in what_works
+    assert "https://github.com/OpenAdaptAI/openadapt-flow/pull/183" in what_works
+
+
+def test_public_managed_runner_and_customer_runtime_boundaries_remain_distinct():
     pages = [
         _read("get-started/what-works-today.md"),
         _read("concepts/deployment-matrix.md"),
@@ -77,18 +83,68 @@ def test_public_offer_and_scoped_substrate_evidence_remain_distinct():
     ]
     combined = "\n".join(pages)
 
-    assert "acceptance remains in progress" not in combined
-    assert "RDP backend | **Early access**" in combined
-    # Citrix / VDI is a first-class substrate mechanism but has no validated real
-    # environment yet, so its honest label is Exploratory, matching the canonical
-    # status.json ladder. The ICA/HDX honesty is preserved: each Citrix/VDI
-    # workflow must be qualified in its own real ICA/HDX environment before
-    # consequential use rather than inheriting RDP's evidence.
-    assert "Citrix / VDI backend | **Exploratory**" in combined
-    assert "in its real ICA/HDX environment" in combined
-    # The public browser subscription stays distinct from the scoped substrate
-    # deployments.
+    for stale_label in ["Early access", "Exploratory", "Design-partner"]:
+        assert stale_label not in combined
+
     assert "The public subscription covers approved browser workflows" in combined
-    assert "scoped separately from the public browser offer" in combined
-    assert "ordered separately from these scoped deployments" in combined
-    assert "hosted launch candidate" not in combined
+    assert "Customer-controlled runtime connected to Cloud" in combined
+    assert "shared managed-browser boundary" in combined
+    assert "not a counted real ICA/HDX batch" in combined
+
+
+def test_desktop_beta_release_is_current_and_cross_platform():
+    what_works = _read("get-started/what-works-today.md")
+    install = _read("desktop/install.md")
+
+    for source in [what_works, install]:
+        assert "desktop-v0.9.0" in source
+        assert "Windows" in source
+        assert "macOS" in source
+        assert "Linux" in source
+    assert "SHA256SUMS" in what_works
+    assert "installed, launched, and uninstalled" in what_works
+
+
+def test_deployment_config_selects_dedicated_citrix_backend_and_safety_contract():
+    deployment = _read("reference/deployment-config.md")
+
+    assert "`citrix` (the dedicated Citrix Workspace/Viewer window backend)" in deployment
+    assert "Citrix is a dedicated backend, not an alias for generic RDP" in deployment
+    assert "kind: citrix" in deployment
+    assert "Flow constructs `CitrixWorkspaceBackend`" in deployment
+    assert "rdp_window_title: Claims - Citrix Workspace" in deployment
+    assert "rdp_max_frame_age_s: 3.0" in deployment
+    assert "rdp_readiness_text: Claims queue" in deployment
+    assert "rdp_readiness_min_ratio: 0.90" in deployment
+    assert "`kind: citrix` rejects `rdp_host`" in deployment
+    assert "Governed Citrix `run` and `resume` require a nonblank value" in deployment
+    assert "Treat `rdp_window_title`, `rdp_max_frame_age_s`, and" in deployment
+    assert "`rdp_readiness_text` as required deployment safety inputs" in deployment
+
+
+def test_source_of_truth_pages_cover_all_released_substrates_and_current_desktop():
+    hosted = _read("guides/hosted.md")
+    security = _read("guides/security-review.md")
+    ecosystem = _read("ecosystem/index.md")
+    governance = _read("reference/documentation-governance.md")
+
+    for source in [hosted, security]:
+        assert "native Linux" in source or "Native Linux" in source
+        assert "Aardwolf-over-Windows" in source
+        assert "real FreeRDP round trip" in source
+        assert "3/3 healthy effects and 3/3 severe-drift safe-halts" in source
+        assert "`code_readiness_accepted: true`" in source
+        assert "`ica_hdx_accepted: false`" in source
+
+    assert "native Linux" in ecosystem
+    assert "desktop-v0.9.0" in ecosystem
+    assert "desktop-v0.5.1" not in ecosystem
+    for substrate in [
+        "web",
+        "native Windows",
+        "native macOS",
+        "native\n   Linux",
+        "RDP",
+        "Citrix/VDI",
+    ]:
+        assert substrate in governance

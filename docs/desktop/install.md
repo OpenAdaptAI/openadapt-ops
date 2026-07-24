@@ -16,13 +16,20 @@ you explicitly push it to a [cloud workspace](connect-to-cloud.md).
 
 Get the installer from
 [openadapt.ai/download](https://openadapt.ai/download). The page detects your OS
-and architecture and offers the right build.
+and architecture and offers the right build. Public Beta release
+`desktop-v0.9.0` ships the complete Windows, macOS, and Linux installer set with
+`SHA256SUMS` and per-platform provenance metadata.
 
 | OS | Installer |
 |---|---|
 | Windows | `.msi` or `.exe` |
 | macOS (Apple Silicon / Intel) | `.dmg` |
 | Linux | `.AppImage` or `.deb` |
+
+The desktop app and `openadapt flow` use the same released engine. Browser
+workflows can use the managed OpenAdapt Cloud runner; native desktop, RDP, and
+Citrix workflows execute locally or in a self-hosted/customer-controlled runtime
+and can connect to Cloud for governed reports and updates.
 
 ## 2. Get past the first-launch OS warning
 
