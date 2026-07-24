@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-24 21:52 UTC*
+> *Last updated: 2026-07-24 22:05 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [fix: expose native replay substrates through launcher](https://github.com/OpenAdaptAI/OpenAdapt/pull/1046) (#1046) — merged 
 
 - [docs(readme): add a data-driven loop program graph beside the linear one](https://github.com/OpenAdaptAI/OpenAdapt/pull/1045) (#1045) — merged 
 
@@ -45,8 +47,6 @@
 - [fix: forward all engine options through `openadapt flow record`](https://github.com/OpenAdaptAI/OpenAdapt/pull/1028) (#1028) — merged 
 
 - [docs: bind complete reference sandbox source inventory](https://github.com/OpenAdaptAI/OpenAdapt/pull/1027) (#1027) — merged 
-
-- [docs: bind sandbox notices to packaging fix](https://github.com/OpenAdaptAI/OpenAdapt/pull/1026) (#1026) — merged 
 
 
 
