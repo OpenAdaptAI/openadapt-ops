@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-23 23:36 UTC*
+> *Last updated: 2026-07-24 00:13 UTC*
 
 
 
@@ -98,6 +98,8 @@
 ## openadapt-desktop
 
 
+- [fix: make FFmpeg runtime build portable](https://github.com/OpenAdaptAI/openadapt-desktop/pull/42) (#42) — merged 
+
 - [ci: build managed FFmpeg runtime assets](https://github.com/OpenAdaptAI/openadapt-desktop/pull/41) (#41) — merged 
 
 - [Gate Desktop releases on explicit green-main dispatch](https://github.com/OpenAdaptAI/openadapt-desktop/pull/39) (#39) — merged 
@@ -135,8 +137,6 @@
 - [feat: experimental runner loop for cloud-dispatched governed runs (P0)](https://github.com/OpenAdaptAI/openadapt-desktop/pull/21) (#21) — merged 
 
 - [docs: refresh Current Status and Known Gaps to post-wiring reality](https://github.com/OpenAdaptAI/openadapt-desktop/pull/20) (#20) — merged 
-
-- [Use canonical engine version in runtime messaging](https://github.com/OpenAdaptAI/openadapt-desktop/pull/19) (#19) — merged 
 
 
 
@@ -184,8 +184,6 @@
 - [docs(evals): publish bounded OpenAdapt performance evidence](https://github.com/OpenAdaptAI/openadapt-evals/pull/269) (#269) — merged 
 
 - [docs: add lifecycle status banner](https://github.com/OpenAdaptAI/openadapt-evals/pull/268) (#268) — merged 
-
-- [fix: keep release lock metadata consistent](https://github.com/OpenAdaptAI/openadapt-evals/pull/267) (#267) — merged 
 
 
 
@@ -241,8 +239,6 @@
 - [docs: refresh README to shared OpenAdapt house style](https://github.com/OpenAdaptAI/openadapt-types/pull/8) (#8) — merged 
 
 - [docs: add lifecycle status banner](https://github.com/OpenAdaptAI/openadapt-types/pull/7) (#7) — merged 
-
-- [fix: keep release lock metadata consistent](https://github.com/OpenAdaptAI/openadapt-types/pull/6) (#6) — merged 
 
 
 
