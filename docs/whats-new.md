@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-24 22:06 UTC*
+> *Last updated: 2026-07-24 23:21 UTC*
 
 
 
@@ -98,6 +98,8 @@
 ## openadapt-desktop
 
 
+- [Add native and remote execution targets to the Desktop cockpit](https://github.com/OpenAdaptAI/openadapt-desktop/pull/43) (#43) — merged 
+
 - [fix: make FFmpeg runtime build portable](https://github.com/OpenAdaptAI/openadapt-desktop/pull/42) (#42) — merged 
 
 - [ci: build managed FFmpeg runtime assets](https://github.com/OpenAdaptAI/openadapt-desktop/pull/41) (#41) — merged 
@@ -135,8 +137,6 @@
 - [feat: handle secure local pairing links](https://github.com/OpenAdaptAI/openadapt-desktop/pull/23) (#23) — merged 
 
 - [ci: keep native installer prereleases fresh with engine releases](https://github.com/OpenAdaptAI/openadapt-desktop/pull/22) (#22) — merged 
-
-- [feat: experimental runner loop for cloud-dispatched governed runs (P0)](https://github.com/OpenAdaptAI/openadapt-desktop/pull/21) (#21) — merged 
 
 
 
