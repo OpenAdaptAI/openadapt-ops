@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-24 01:04 UTC*
+> *Last updated: 2026-07-24 01:14 UTC*
 
 
 
@@ -189,6 +189,8 @@
 
 ## openadapt-capture
 
+
+- [fix: report FFmpeg input worker startup failure](https://github.com/OpenAdaptAI/openadapt-capture/pull/43) (#43) — merged 
 
 - [Stream capture frames directly to FFmpeg](https://github.com/OpenAdaptAI/openadapt-capture/pull/42) (#42) — merged 
 
