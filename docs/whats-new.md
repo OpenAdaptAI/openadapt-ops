@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-24 00:13 UTC*
+> *Last updated: 2026-07-24 01:04 UTC*
 
 
 
@@ -189,6 +189,8 @@
 
 ## openadapt-capture
 
+
+- [Stream capture frames directly to FFmpeg](https://github.com/OpenAdaptAI/openadapt-capture/pull/42) (#42) — merged 
 
 - [fix: isolate video codec runtime from capture](https://github.com/OpenAdaptAI/openadapt-capture/pull/41) (#41) — merged 
 
