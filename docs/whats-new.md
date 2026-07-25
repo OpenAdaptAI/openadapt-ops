@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-25 08:03 UTC*
+> *Last updated: 2026-07-25 08:09 UTC*
 
 
 
@@ -98,6 +98,8 @@
 ## openadapt-desktop
 
 
+- [Complete qualification identity and effect editing](https://github.com/OpenAdaptAI/openadapt-desktop/pull/47) (#47) — merged 
+
 - [feat: consume canonical Flow qualification projects](https://github.com/OpenAdaptAI/openadapt-desktop/pull/46) (#46) — merged 
 
 - [feat: author identity and effect qualification contracts](https://github.com/OpenAdaptAI/openadapt-desktop/pull/45) (#45) — merged 
@@ -135,8 +137,6 @@
 - [chore: bump native version to 0.6.2 for the launch-panic fix release](https://github.com/OpenAdaptAI/openadapt-desktop/pull/28) (#28) — merged 
 
 - [fix: gate updater plugin on config presence so packaged apps launch](https://github.com/OpenAdaptAI/openadapt-desktop/pull/27) (#27) — merged 
-
-- [fix: align native package descriptions](https://github.com/OpenAdaptAI/openadapt-desktop/pull/25) (#25) — merged 
 
 
 
