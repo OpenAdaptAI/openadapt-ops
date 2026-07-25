@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-25 19:50 UTC*
+> *Last updated: 2026-07-25 21:25 UTC*
 
 
 
@@ -53,6 +53,8 @@
 ## openadapt-flow
 
 
+- [feat: publish real governed demo evidence](https://github.com/OpenAdaptAI/openadapt-flow/pull/245) (#245) — merged 
+
 - [feat: add atomic bundle sealing command](https://github.com/OpenAdaptAI/openadapt-flow/pull/244) (#244) — merged 
 
 - [feat: transport precise execution outcomes](https://github.com/OpenAdaptAI/openadapt-flow/pull/243) (#243) — merged 
@@ -91,12 +93,12 @@
 
 - [fix(resolver): refuse ambiguous OCR targets](https://github.com/OpenAdaptAI/openadapt-flow/pull/226) (#226) — merged 
 
-- [fix: enforce the public source artifact boundary](https://github.com/OpenAdaptAI/openadapt-flow/pull/225) (#225) — merged 
-
 
 
 ## openadapt-desktop
 
+
+- [feat: add privacy-safe automation control overlay](https://github.com/OpenAdaptAI/openadapt-desktop/pull/61) (#61) — merged 
 
 - [fix: make macOS Intel crypto runtime self-contained](https://github.com/OpenAdaptAI/openadapt-desktop/pull/60) (#60) — merged 
 
@@ -135,8 +137,6 @@
 - [feat: add compiled-program visualization view to desktop app](https://github.com/OpenAdaptAI/openadapt-desktop/pull/33) (#33) — merged 
 
 - [ci: auto-run native build/attest, gate only the publish step](https://github.com/OpenAdaptAI/openadapt-desktop/pull/31) (#31) — merged 
-
-- [feat: signing-ready native pipeline (Azure Trusted Signing + founder runbook)](https://github.com/OpenAdaptAI/openadapt-desktop/pull/30) (#30) — merged 
 
 
 
@@ -227,6 +227,8 @@
 
 ## openadapt-types
 
+
+- [Add shared cross-surface control overlay contract](https://github.com/OpenAdaptAI/openadapt-types/pull/9) (#9) — merged 
 
 - [docs: refresh README to shared OpenAdapt house style](https://github.com/OpenAdaptAI/openadapt-types/pull/8) (#8) — merged 
 
