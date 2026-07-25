@@ -82,14 +82,32 @@ controls around those limits.
 
 ## Encryption and storage
 
-`Workflow.save(..., encrypt=True)` with `OPENADAPT_BUNDLE_KEY` enables
-AES-256-GCM sealing for `workflow.json`, template crops, and durable
-checkpoints; encrypted loads decrypt them in memory. Plaintext remains the
-default compiler output, and OpenAdapt does not provide a KMS or key-rotation
-service. Keep operator-provisioned full-disk encryption for the complete
-storage root as defense in depth. The on-prem installer reminds the operator of
-this requirement but does not provision or attest LUKS, BitLocker, or
-FileVault.
+Inject `OPENADAPT_BUNDLE_KEY` from the deployment's secret manager, then run
+`openadapt flow seal SOURCE --out DESTINATION`. The command preserves the
+source, refuses symlinks and an existing destination, AES-256-GCM encrypts
+`workflow.json` and template crops, verifies the sealed result, and expires
+inherited certification. Durable checkpoints use the same key and encrypted
+loads decrypt in memory. Raw recordings and run reports remain outside this
+bundle container, so keep operator-provisioned full-disk encryption for the
+complete storage root. OpenAdapt does not provide KMS, key rotation, or disk
+encryption.
+
+## Hosted retention and recovery
+
+Hosted retention is enforced through a versioned policy for recordings,
+reports, run metadata, and the declared recovery window. Legal holds pause
+eligible deletion. Tenant erasure is organization-scoped and leaves an
+append-only, PHI/PII-free receipt containing resource identifiers, counts, and
+digests rather than deleted payloads.
+
+Scheduled destructive retention additionally requires a recent complete
+scratch-restore receipt. The shipped operator path exports roles, schema, data,
+and private Storage objects; performs a second exact source read; restores only
+to an explicitly confirmed scratch project; rehashes the full result; and then
+records the immutable receipt. Production currently has no qualifying provider
+recovery point or complete scratch-restore receipt, so this destructive path
+remains gated. The configured retention component being ready does **not** imply
+provider PITR, object-storage recovery, or a backup SLA.
 
 ## Updates and rollback
 
@@ -106,12 +124,14 @@ onboarding, organization isolation, browser runner orchestration, artifacts,
 reports, teaching, billing, and usage metering. Production explicitly selects
 live dependencies; a missing runner, storage, or billing dependency returns an
 operational failure and never substitutes mock success. Mock mode remains for
-development and is visibly synthetic. On Flow 1.8.0, the bounded hosted recorder
-passed a non-simulated provider record-to-compile qualification, authenticated
-live health qualified the exact-version services, and three clean-account
-pre-payment trials verified tenant-bound Checkout and refusal before entitlement.
-The first genuine paid subscription extends the evidence through signed-webhook
-activation, managed execution, usage, portal, and cancellation.
+development and is visibly synthetic. The retained non-simulated hosted-recorder
+qualification was run on Flow 1.8.0; the live runner and compiler now report the
+published Flow 1.23.0 identity. The public readiness endpoint currently verifies
+live mode, authentication, database migrations, private storage, runner,
+compiler, recorder, callbacks, scheduler, retention policy, secret encryption,
+runtime-validation allowlists, and live billing configuration. Readiness proves
+those dependencies and contracts are configured and reachable; it is not a
+customer workflow qualification or an SLA.
 
 Windows UIA, native macOS, native Linux, RDP, and Citrix/VDI are first-class substrates,
 ordered as scoped deployments and qualified per workflow in their real
@@ -149,6 +169,24 @@ coordinates; it does not broaden the bounded qualification results above.
 See [Hosted browser
 execution](hosted.md) and [Qualification evidence](../get-started/what-works-today.md).
 
+## Release and secure-development evidence
+
+Python releases publish immutable wheel and sdist artifacts with PyPI
+provenance attestations. Desktop `desktop-v0.12.1` publishes its complete
+Windows, macOS, and Linux installer set with checksums, a CycloneDX SBOM,
+per-platform metadata, and GitHub build-provenance attestations. The native
+installers are still unsigned on Windows/Linux and ad-hoc signed on macOS;
+Apple Developer ID/notarization and Windows Authenticode are distinct
+credential-dependent gates.
+
+The public repositories and hosted control plane run pinned secret scanning,
+static analysis, and exact dependency audits in CI. Those engineering controls
+do not create a SOC 2 report. Incident-response policies and templates are
+prepared but are not an operating program until adopted and exercised. Any DPA,
+HIPAA BAA, or PHIPA terms require counsel review for the qualified service and
+data flow. These are the remaining external gates; they are not inferred from
+code presence.
+
 ## Review checklist
 
 - Confirm which process can capture screens and inject input.
@@ -159,7 +197,8 @@ execution](hosted.md) and [Qualification evidence](../get-started/what-works-tod
 - Treat bundles, crops, checkpoints, recordings, and `report.json` as sensitive;
   verify the sanitation manifest and exact approved derivative hash before any
   upload.
-- Verify full-disk encryption and backup/restore outside OpenAdapt.
+- Verify full-disk encryption and the complete database + object-storage
+  recovery procedure for the declared boundary.
 - Review identity coverage, effects, policy, and approval requirements for each
   consequential action.
 - Exercise halt, resume, duplicate write, partial save, stale write, and wrong
@@ -167,8 +206,9 @@ execution](hosted.md) and [Qualification evidence](../get-started/what-works-tod
 - Exercise double-submit, reused-key-with-different-parameters, concurrent run,
   lost dispatch acknowledgement, and delayed callback scenarios. Confirm that
   uncertain dispatch is investigated against provider history before any rerun.
-- Establish a signed update and rollback procedure; do not rely on the current
-  stub.
+- Verify release checksums and provenance; for unsigned/ad-hoc native builds,
+  document the publisher-warning procedure until platform signing identities
+  are provisioned.
 - Request current legal/compliance artifacts directly. Do not infer SOC 2,
   HIPAA, PHIPA, or BAA status from architecture documentation.
 

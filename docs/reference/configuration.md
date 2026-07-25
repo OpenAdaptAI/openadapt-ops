@@ -34,10 +34,11 @@ every identifier, so review artifacts before egress. See
 |---|---|
 | `OPENADAPT_BUNDLE_KEY` | Passphrase used by encrypted bundle saves/loads and durable checkpoints. `run` requires an encrypted bundle by default. |
 
-Encryption is opt-in when a bundle is written through
-`Workflow.save(..., encrypt=True)`; normal compile output is plaintext. OpenAdapt
-provides the AEAD mechanism, not key custody, rotation, or recovery. See the
-[security and deployment review](../guides/security-review.md).
+Encryption is opt-in: inject the key and run `openadapt flow seal SOURCE --out
+DESTINATION`; normal compile output is plaintext. The same key encrypts durable
+checkpoints written during run/resume. OpenAdapt provides the AEAD mechanism,
+not key custody, rotation, or recovery. See the [security and deployment
+review](../guides/security-review.md).
 
 ## The on-prem VLM appliance
 

@@ -100,13 +100,12 @@ Production selects live mode explicitly. Development mock mode is visibly
 synthetic. A missing production dependency makes the affected operation
 unavailable rather than substituting a simulated success.
 
-The hosted recorder passed its bounded, non-simulated live-provider
-qualification on a Flow 1.8.0 worker. Authenticated live health qualified the
-exact-version replay and compiler service identities, and three independent
-pre-payment trials verified tenant-bound live Checkout and refusal before
-entitlement. The first genuine paid subscription extends that operational
-evidence through webhook activation, managed execution, usage, portal, and
-cancellation.
+The retained hosted-recorder qualification used a Flow 1.8.0 worker. The live
+runner and compiler now report the published Flow 1.23.0 identity, and public
+readiness checks live authentication, database, private storage, runner,
+compiler, recorder, callbacks, scheduler, retention, secret encryption,
+validation policy, and billing dependencies. That is configuration and service
+identity evidence, not a customer workflow qualification or SLA.
 
 Stripe is the commercial source of truth for pricing. This matrix does
 not create a price, quota, SLA, certification, or backend entitlement.

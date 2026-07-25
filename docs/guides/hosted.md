@@ -32,7 +32,7 @@ switching, and sign-out.
 | Surface | Launch status | Boundary |
 |---|---|---|
 | Local browser record -> compile -> managed execute | **Beta / public offer** | Governed authoring and validation remain local; managed execution uses the qualified browser substrate. |
-| Hosted browser record -> compileable workflow | **Beta / bounded launch component** | Non-simulated live-provider qualification passed on `openadapt-flow` 1.8.0 for a public, non-regulated target. Authenticated live health also qualified the exact-version replay and compiler service identities. This is a separate raw-observation boundary, not the reviewed-derivative upload lane. |
+| Hosted browser record -> compileable workflow | **Beta / bounded launch component** | The retained non-simulated provider qualification used `openadapt-flow` 1.8.0; the current live runner and compiler report the published 1.23.0 identity. This is a separate raw-observation boundary, not the reviewed-derivative upload lane. |
 | Account, organization, onboarding | **Beta / public offer** | Checkout and sign-in bind the subscription to an isolated organization. |
 | Structural run history and reports | **Beta / public offer** | Safety depends on the workflow's configured identity, effect, and policy checks. Repair and validation remain local. |
 | Checkout, portal, entitlements, metering | **Beta / public offer** | Live Stripe Checkout, signed webhooks, entitlements, usage, and the billing portal form one managed subscription contract. |
@@ -57,13 +57,12 @@ The hosted recorder is a real, bounded authoring path rather than a simulated
 demo. A qualified hosted browser session produced PNG frames, accepted and
 retained input evidence, assembled a native recording, created one compileable
 workflow idempotently, enforced its resource limits, and removed the ephemeral
-qualification data. That qualification used an `openadapt-flow` 1.8.0 worker.
-Authenticated live health probes separately confirmed the deployed replay and
-compiler endpoints, their service identities, and their exact Flow version.
-Health evidence is complemented by three independent production pre-payment
-trials that verified tenant-bound live Checkout and refusal before entitlement.
-The first genuine paid subscription will extend that evidence through signed-
-webhook activation, managed execution, usage, portal, and cancellation.
+qualification data. That retained qualification used an `openadapt-flow` 1.8.0
+worker. The live runner and compiler now report the published 1.23.0 identity,
+and the public readiness endpoint verifies the configured live dependencies,
+including authentication, storage, callbacks, scheduling, retention, secret
+encryption, validation policy, and billing. Readiness is dependency evidence,
+not a customer workflow qualification or an SLA.
 
 The recorder accepts only public HTTPS DNS hosts and refuses credentials in the
 start URL, literal IP addresses, private or mixed DNS answers, and private
@@ -325,6 +324,24 @@ what “production fails closed instead of silently using mock mode” means. It
 protects customers from believing a fabricated development run actually
 executed; it does not disable production functionality.
 
+## Retention, deletion, and restore evidence
+
+The hosted service applies a versioned retention policy to recordings, reports,
+run metadata, and the declared recovery window. Legal holds pause eligible
+deletion. Tenant erasure is scoped to one organization and produces an
+append-only receipt containing resource identifiers, counts, and digests rather
+than deleted payloads.
+
+Scheduled destructive retention is separately gated on a recent complete
+scratch-restore receipt. The operator path exports roles, schema, data, and
+every private Storage object; reads the source twice; restores only to an
+explicitly confirmed scratch project; and verifies exact hashes before recording
+the receipt. Production currently has no qualifying provider recovery point or
+complete scratch-restore receipt, so scheduled deletion remains gated. This does
+not claim provider PITR, object-storage recovery, or a backup SLA. The live
+[readiness endpoint](https://app.openadapt.ai/api/health/ready) exposes retention
+configuration independently from that destructive-operation gate.
+
 ## Production control checklist
 
 Before directing traffic to a production deployment, verify:
@@ -344,7 +361,8 @@ Before directing traffic to a production deployment, verify:
 - request-bound idempotency, one active run per workflow, and a lost provider
   acknowledgement that remains single-flight until callback or operator review;
 - Stripe Checkout, portal, signed idempotent webhooks, entitlements, and usage;
-- logs, alerts, deletion, retention, backup, restore, update, and rollback;
+- logs, alerts, legal holds, tenant erasure, deletion receipts, complete
+  database + object-storage scratch restore, update, and rollback;
 - a clean-account sign-up -> subscribe -> record sanitize/review/approve ->
   recording push -> local compile/lint/certify/replay -> bundle
   sanitize/review/approve -> `validate-hosted` -> attested bundle push ->
