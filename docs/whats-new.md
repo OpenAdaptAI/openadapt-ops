@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-25 08:25 UTC*
+> *Last updated: 2026-07-25 08:33 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [build(deps): update CodeQL actions together](https://github.com/OpenAdaptAI/OpenAdapt/pull/1054) (#1054) — merged 
 
 - [fix(ci): restore verified docs dispatch action](https://github.com/OpenAdaptAI/OpenAdapt/pull/1053) (#1053) — merged 
 
@@ -45,8 +47,6 @@
 - [build(deps): bump actions/attest from 4.1.1 to 4.2.0](https://github.com/OpenAdaptAI/OpenAdapt/pull/1034) (#1034) — merged 
 
 - [build(deps): bump pypa/gh-action-pypi-publish from 1.14.0 to 1.14.1](https://github.com/OpenAdaptAI/OpenAdapt/pull/1033) (#1033) — merged 
-
-- [chore: add Contributor Covenant Code of Conduct](https://github.com/OpenAdaptAI/OpenAdapt/pull/1032) (#1032) — merged 
 
 
 
