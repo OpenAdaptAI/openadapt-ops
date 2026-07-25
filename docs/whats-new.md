@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-25 01:08 UTC*
+> *Last updated: 2026-07-25 01:16 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [docs: fix README safety wording wrap](https://github.com/OpenAdaptAI/OpenAdapt/pull/1048) (#1048) — merged 
 
 - [docs: rebuild flagship README around first value](https://github.com/OpenAdaptAI/OpenAdapt/pull/1047) (#1047) — merged 
 
@@ -45,8 +47,6 @@
 - [docs: reconcile README substrate maturity to the canonical status manifest](https://github.com/OpenAdaptAI/OpenAdapt/pull/1030) (#1030) — merged 
 
 - [docs: refresh reference sandbox source inventory](https://github.com/OpenAdaptAI/OpenAdapt/pull/1029) (#1029) — merged 
-
-- [fix: forward all engine options through `openadapt flow record`](https://github.com/OpenAdaptAI/OpenAdapt/pull/1028) (#1028) — merged 
 
 
 
