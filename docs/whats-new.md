@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-25 03:44 UTC*
+> *Last updated: 2026-07-25 04:12 UTC*
 
 
 
@@ -53,6 +53,8 @@
 ## openadapt-flow
 
 
+- [fix: visualize durable target evidence](https://github.com/OpenAdaptAI/openadapt-flow/pull/237) (#237) — merged 
+
 - [feat: add versioned qualification project contract](https://github.com/OpenAdaptAI/openadapt-flow/pull/236) (#236) — merged 
 
 - [docs: reconcile desktop and remote substrate evidence](https://github.com/OpenAdaptAI/openadapt-flow/pull/235) (#235) — merged 
@@ -90,8 +92,6 @@
 - [feat(lending): add collateral-write fault class + single-surface arm for honest cross-domain comparability](https://github.com/OpenAdaptAI/openadapt-flow/pull/219) (#219) — merged 
 
 - [feat(runtime): state-dependency robustness (settle readiness + interstitials)](https://github.com/OpenAdaptAI/openadapt-flow/pull/218) (#218) — merged 
-
-- [docs(paper): honest disclosures for adversarial review #2 (closed-world, statistics, positioning, ethics)](https://github.com/OpenAdaptAI/openadapt-flow/pull/217) (#217) — merged 
 
 
 
