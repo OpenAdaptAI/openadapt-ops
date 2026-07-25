@@ -31,6 +31,8 @@
 
 ## openadapt-desktop
 
+- **[v0.12.1](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/v0.12.1)** (2026-07-25)
+  _This release is published under the MIT License._
 - **[v0.12.0](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/v0.12.0)** (2026-07-25)
   _This release is published under the MIT License._
 - **[v0.11.0](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/v0.11.0)** (2026-07-25)
@@ -39,8 +41,6 @@
   _This release is published under the MIT License._
 - **[desktop-v0.11.0](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/desktop-v0.11.0)** (2026-07-25)
   <!-- installer-release -->
-- **[desktop-v0.10.0](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/desktop-v0.10.0)** (2026-07-25)
-  <!-- openadapt-superseded-by: desktop-v0.11.0 -->
 
 ## openadapt-ml
 
