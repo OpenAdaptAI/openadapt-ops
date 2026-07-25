@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-25 00:02 UTC*
+> *Last updated: 2026-07-25 00:08 UTC*
 
 
 
@@ -181,6 +181,8 @@
 
 ## openadapt-capture
 
+
+- [chore: remove generated viewer artifact](https://github.com/OpenAdaptAI/openadapt-capture/pull/44) (#44) — merged 
 
 - [fix: report FFmpeg input worker startup failure](https://github.com/OpenAdaptAI/openadapt-capture/pull/43) (#43) — merged 
 
