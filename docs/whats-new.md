@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-25 08:23 UTC*
+> *Last updated: 2026-07-25 08:25 UTC*
 
 
 
@@ -9,6 +9,8 @@
 
 
 - [fix(ci): restore verified docs dispatch action](https://github.com/OpenAdaptAI/OpenAdapt/pull/1053) (#1053) — merged 
+
+- [build(deps): bump astral-sh/setup-uv from 8.3.2 to 9.0.0](https://github.com/OpenAdaptAI/OpenAdapt/pull/1052) (#1052) — merged 
 
 - [build(deps): bump peter-evans/repository-dispatch from 3 to 4](https://github.com/OpenAdaptAI/OpenAdapt/pull/1049) (#1049) — merged 
 
@@ -45,8 +47,6 @@
 - [build(deps): bump pypa/gh-action-pypi-publish from 1.14.0 to 1.14.1](https://github.com/OpenAdaptAI/OpenAdapt/pull/1033) (#1033) — merged 
 
 - [chore: add Contributor Covenant Code of Conduct](https://github.com/OpenAdaptAI/OpenAdapt/pull/1032) (#1032) — merged 
-
-- [chore: add security CI (CodeQL, gitleaks, dependency-review, Dependabot)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1031) (#1031) — merged 
 
 
 
