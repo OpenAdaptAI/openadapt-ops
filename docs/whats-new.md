@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-25 04:12 UTC*
+> *Last updated: 2026-07-25 04:32 UTC*
 
 
 
@@ -53,6 +53,8 @@
 ## openadapt-flow
 
 
+- [feat: add two-phase remote actuation leases](https://github.com/OpenAdaptAI/openadapt-flow/pull/238) (#238) — merged 
+
 - [fix: visualize durable target evidence](https://github.com/OpenAdaptAI/openadapt-flow/pull/237) (#237) — merged 
 
 - [feat: add versioned qualification project contract](https://github.com/OpenAdaptAI/openadapt-flow/pull/236) (#236) — merged 
@@ -90,8 +92,6 @@
 - [fix(ci): tomli fallback so the 3.10 test-matrix leg collects (unblocks green main)](https://github.com/OpenAdaptAI/openadapt-flow/pull/220) (#220) — merged 
 
 - [feat(lending): add collateral-write fault class + single-surface arm for honest cross-domain comparability](https://github.com/OpenAdaptAI/openadapt-flow/pull/219) (#219) — merged 
-
-- [feat(runtime): state-dependency robustness (settle readiness + interstitials)](https://github.com/OpenAdaptAI/openadapt-flow/pull/218) (#218) — merged 
 
 
 
@@ -181,6 +181,8 @@
 
 ## openadapt-capture
 
+
+- [Capture Windows UIA evidence with native actions](https://github.com/OpenAdaptAI/openadapt-capture/pull/45) (#45) — merged 
 
 - [chore: remove generated viewer artifact](https://github.com/OpenAdaptAI/openadapt-capture/pull/44) (#44) — merged 
 
