@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-25 08:51 UTC*
+> *Last updated: 2026-07-25 16:57 UTC*
 
 
 
@@ -53,6 +53,10 @@
 ## openadapt-flow
 
 
+- [feat: transport precise execution outcomes](https://github.com/OpenAdaptAI/openadapt-flow/pull/243) (#243) — merged 
+
+- [feat: enforce qualified identity signal quorums](https://github.com/OpenAdaptAI/openadapt-flow/pull/242) (#242) — merged 
+
 - [feat: add named execution profiles](https://github.com/OpenAdaptAI/openadapt-flow/pull/241) (#241) — merged 
 
 - [feat: add minimum effect tier setter](https://github.com/OpenAdaptAI/openadapt-flow/pull/240) (#240) — merged 
@@ -88,10 +92,6 @@
 - [fix: enforce the public source artifact boundary](https://github.com/OpenAdaptAI/openadapt-flow/pull/225) (#225) — merged 
 
 - [ci: make Flow releases explicitly dispatched](https://github.com/OpenAdaptAI/openadapt-flow/pull/224) (#224) — merged 
-
-- [fix(runtime): close typed-input masked false success](https://github.com/OpenAdaptAI/openadapt-flow/pull/223) (#223) — merged 
-
-- [fix(hardening): make seeded adversarial search process-stable](https://github.com/OpenAdaptAI/openadapt-flow/pull/222) (#222) — merged 
 
 
 
