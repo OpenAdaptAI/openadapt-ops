@@ -51,6 +51,14 @@ element usually exposes `Name` / `Value` text **even when it has no stable
 `AutomationId`**, so UIA-based identity is viable on most native apps even where
 a durable selector is not.
 
+Native authoring uses `openadapt-capture` rather than a second recorder inside
+Flow. Capture retains the UIA element observed at each demonstrated action, and
+the compiler walks that evidence to the nearest actionable node before storing
+the structural target. Window-scoped recordings convert the observation into
+the captured window's coordinate space before compilation. RDP and Citrix
+recordings intentionally omit local client UIA: the remote application remains
+an externally observed pixel surface.
+
 Desktop (and Citrix/VDI) is the **differentiated wedge**: the work that has no
 web UI and no usable API, where a computer-use agent is the only alternative and
 a wrong write is expensive. Structured desktop text distinguishes an `O` from a
@@ -130,6 +138,13 @@ its visual floor and the identity gate falls back to its pixel/OCR tiers, which
 is why a look-alike identifier can force a [halt rather than a verify](identity-gate.md)
 there.
 
+For every consequential remote action, the runtime uses a two-phase actuation
+lease. It captures a fresh frame, re-resolves the target, and rechecks identity
+on that frame. The backend then captures again under its input lock and refuses
+before the first input edge if pixels, dimensions, session readiness, or the
+leased context changed. A potentially stale coordinate is never delivered
+merely because the remote connection is still alive.
+
 !!! info "RDP qualification evidence"
     On one Parallels Windows 11 VM at 1280x800 with Aardwolf 0.2.14, candidate
     `82a658a` completed 3/3 trials that created a unique file through the Windows
@@ -165,6 +180,12 @@ readiness marker for governed `run`, and carries the closed target into durable
 resume. It is pixel-only by construction, so the same visual resolution,
 identity, effect, policy, and halt contracts run without pretending a DOM or
 accessibility tree exists.
+
+Citrix uses the same two-phase remote actuation contract as RDP. Immediately
+before a consequential action, OpenAdapt reacquires the exact Workspace window,
+focus, geometry, readiness, fresh pixels, resolved target, and record identity.
+The first input edge is refused if any of that evidence changes after
+resolution.
 
 !!! info "Citrix qualification evidence"
     The accepted no-DOM qualification completed 3/3 healthy effects and 3/3

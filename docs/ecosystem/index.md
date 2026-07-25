@@ -34,7 +34,7 @@ module inside it:
 | [openadapt-cloud](https://github.com/OpenAdaptAI/openadapt-cloud) | **Supported** | Live control plane for the public managed-browser subscription: organizations, exact-hash admission, runner orchestration, reports, billing, and usage. |
 | [openadapt-desktop](https://github.com/OpenAdaptAI/openadapt-desktop) | **Supported** | Public Beta `desktop-v0.10.0` provides Windows MSI/NSIS, macOS arm64/x64 DMG, and Linux AppImage/DEB installers. Every installer path was installed, launched, and uninstalled in the native release workflow; the release includes exact checksums, platform metadata, and build attestations. |
 | [openadapt-agent](https://github.com/OpenAdaptAI/openadapt-agent) | **Supported** | Active v2 bridge that exposes governed Flow bundles to MCP clients and Agent Skills. The pre-v2 model-driven execution wrapper is the deprecated line; the repository itself is active. |
-| [openadapt-capture](https://github.com/OpenAdaptAI/openadapt-capture) | **Supported** | Optional native mouse, keyboard, and screen recorder behind Flow's Windows and RDP recording path. Browser recording remains inside Flow's Playwright listener. |
+| [openadapt-capture](https://github.com/OpenAdaptAI/openadapt-capture) | **Supported** | Canonical native screen, mouse, keyboard, timing, and window-scoped recorder behind Flow's Windows, macOS, Linux, RDP, and Citrix recording paths. Capture 1.1 retains Windows UIA evidence at action time; remote sessions remain externally black-box. Browser recording remains inside Flow's Playwright listener. |
 | [openadapt-privacy](https://github.com/OpenAdaptAI/openadapt-privacy) | **Supported** | Optional PII/PHI scrubbing used on configured persist, log, and upload paths. |
 | [openadapt-types](https://github.com/OpenAdaptAI/openadapt-types) | **Supported** | Shared interoperability schemas; contributor-facing, not an end-user product. |
 
@@ -58,7 +58,7 @@ flowchart LR
     E[openadapt-evals<br/>benchmarks] -.measures.-> F
 ```
 
-The compiler is the product. Capture can feed it demonstrations, the ML layer
+The compiler is the product. Capture feeds it native and remote demonstrations, the ML layer
 can supply optional on-prem models, Agent gives MCP clients and Agent Skills a
 governed route into Flow bundles, and evals measures adjacent research. This page
 intentionally does not expose internal developer tools as product components.

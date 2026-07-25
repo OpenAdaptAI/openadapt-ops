@@ -76,6 +76,13 @@ The released backends cover it behind the same protocol:
   the exact-window remote-display backend. It binds the Workspace owner/title
   and gates readiness before governed input.
 
+Consequential RDP and Citrix input is two-phase. The runtime acquires a fresh
+actuation frame, re-resolves the target, and rechecks record identity. The
+backend then verifies the same session/window, focus where applicable,
+geometry, readiness, and pixels immediately before the first input edge. A
+change invalidates the one-shot lease and halts instead of reusing stale
+coordinates.
+
 !!! info "Citrix / RDP is pixel-first: the identity gate adapts to it"
     On a pure-pixel substrate the ladder runs on its visual floor and the
     identity gate uses its pixel/OCR tiers. When an identifier is genuinely
