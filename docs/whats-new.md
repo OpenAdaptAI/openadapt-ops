@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-25 22:43 UTC*
+> *Last updated: 2026-07-25 23:20 UTC*
 
 
 
@@ -53,6 +53,8 @@
 ## openadapt-flow
 
 
+- [fix: keep generated benchmark runs out of distributions](https://github.com/OpenAdaptAI/openadapt-flow/pull/248) (#248) — merged 
+
 - [feat: seal durable state for encrypted production runs](https://github.com/OpenAdaptAI/openadapt-flow/pull/246) (#246) — merged 
 
 - [feat: publish real governed demo evidence](https://github.com/OpenAdaptAI/openadapt-flow/pull/245) (#245) — merged 
@@ -90,8 +92,6 @@
 - [test(citrix): inspect protocol surface without actuation](https://github.com/OpenAdaptAI/openadapt-flow/pull/229) (#229) — merged 
 
 - [fix: keep interop types green in all-extras development](https://github.com/OpenAdaptAI/openadapt-flow/pull/228) (#228) — merged 
-
-- [fix(mockmed): stabilize textarea render metrics](https://github.com/OpenAdaptAI/openadapt-flow/pull/227) (#227) — merged 
 
 
 
@@ -227,6 +227,8 @@
 
 ## openadapt-types
 
+
+- [feat: add exact overlay target tracking contract](https://github.com/OpenAdaptAI/openadapt-types/pull/10) (#10) — merged 
 
 - [Add shared cross-surface control overlay contract](https://github.com/OpenAdaptAI/openadapt-types/pull/9) (#9) — merged 
 

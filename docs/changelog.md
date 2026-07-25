@@ -90,6 +90,8 @@
 
 ## openadapt-types
 
+- **[v0.5.0](https://github.com/OpenAdaptAI/openadapt-types/releases/tag/v0.5.0)** (2026-07-25)
+  Bug Fixes
 - **[v0.4.0](https://github.com/OpenAdaptAI/openadapt-types/releases/tag/v0.4.0)** (2026-07-25)
   Documentation
 - **[v0.3.1](https://github.com/OpenAdaptAI/openadapt-types/releases/tag/v0.3.1)** (2026-07-16)
