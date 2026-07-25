@@ -1,12 +1,16 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-25 08:09 UTC*
+> *Last updated: 2026-07-25 08:21 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [fix(ci): restore verified docs dispatch action](https://github.com/OpenAdaptAI/OpenAdapt/pull/1053) (#1053) — merged 
+
+- [build(deps): bump peter-evans/repository-dispatch from 3 to 4](https://github.com/OpenAdaptAI/OpenAdapt/pull/1049) (#1049) — merged 
 
 - [docs: fix README safety wording wrap](https://github.com/OpenAdaptAI/OpenAdapt/pull/1048) (#1048) — merged 
 
@@ -44,14 +48,12 @@
 
 - [chore: add security CI (CodeQL, gitleaks, dependency-review, Dependabot)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1031) (#1031) — merged 
 
-- [docs: reconcile README substrate maturity to the canonical status manifest](https://github.com/OpenAdaptAI/OpenAdapt/pull/1030) (#1030) — merged 
-
-- [docs: refresh reference sandbox source inventory](https://github.com/OpenAdaptAI/OpenAdapt/pull/1029) (#1029) — merged 
-
 
 
 ## openadapt-flow
 
+
+- [feat: add named execution profiles](https://github.com/OpenAdaptAI/openadapt-flow/pull/241) (#241) — merged 
 
 - [feat: add minimum effect tier setter](https://github.com/OpenAdaptAI/openadapt-flow/pull/240) (#240) — merged 
 
@@ -90,8 +92,6 @@
 - [fix(runtime): close typed-input masked false success](https://github.com/OpenAdaptAI/openadapt-flow/pull/223) (#223) — merged 
 
 - [fix(hardening): make seeded adversarial search process-stable](https://github.com/OpenAdaptAI/openadapt-flow/pull/222) (#222) — merged 
-
-- [fix(ci): restore standalone EffectBench boundary](https://github.com/OpenAdaptAI/openadapt-flow/pull/221) (#221) — merged 
 
 
 
