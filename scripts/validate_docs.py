@@ -39,6 +39,7 @@ REQUIRED_PUBLIC_PAGES = {
     "reference/compatibility.md": (
         "pip install openadapt",
         "`openadapt-flow >=1.7,<2`",
+        "`openadapt-flow >=1.22,<2` + `openadapt-capture >=1.1.0`",
         "`openadapt-capture >=1.1.0`",
         "Production deployments should pin the exact versions",
     ),
