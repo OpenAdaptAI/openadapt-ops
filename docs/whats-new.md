@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-25 00:08 UTC*
+> *Last updated: 2026-07-25 00:45 UTC*
 
 
 
@@ -98,6 +98,8 @@
 ## openadapt-desktop
 
 
+- [feat: author identity and effect qualification contracts](https://github.com/OpenAdaptAI/openadapt-desktop/pull/45) (#45) — merged 
+
 - [feat: add first writable qualification cockpit slice](https://github.com/OpenAdaptAI/openadapt-desktop/pull/44) (#44) — merged 
 
 - [Add native and remote execution targets to the Desktop cockpit](https://github.com/OpenAdaptAI/openadapt-desktop/pull/43) (#43) — merged 
@@ -135,8 +137,6 @@
 - [fix: align native package descriptions](https://github.com/OpenAdaptAI/openadapt-desktop/pull/25) (#25) — merged 
 
 - [fix: align native release copy and metadata](https://github.com/OpenAdaptAI/openadapt-desktop/pull/24) (#24) — merged 
-
-- [feat: handle secure local pairing links](https://github.com/OpenAdaptAI/openadapt-desktop/pull/23) (#23) — merged 
 
 
 
