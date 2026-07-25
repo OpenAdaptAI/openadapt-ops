@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-25 04:36 UTC*
+> *Last updated: 2026-07-25 06:10 UTC*
 
 
 
@@ -53,6 +53,10 @@
 ## openadapt-flow
 
 
+- [feat: add minimum effect tier setter](https://github.com/OpenAdaptAI/openadapt-flow/pull/240) (#240) — merged 
+
+- [feat: compile captured Windows UIA evidence](https://github.com/OpenAdaptAI/openadapt-flow/pull/239) (#239) — merged 
+
 - [feat: add two-phase remote actuation leases](https://github.com/OpenAdaptAI/openadapt-flow/pull/238) (#238) — merged 
 
 - [fix: visualize durable target evidence](https://github.com/OpenAdaptAI/openadapt-flow/pull/237) (#237) — merged 
@@ -88,10 +92,6 @@
 - [fix(hardening): make seeded adversarial search process-stable](https://github.com/OpenAdaptAI/openadapt-flow/pull/222) (#222) — merged 
 
 - [fix(ci): restore standalone EffectBench boundary](https://github.com/OpenAdaptAI/openadapt-flow/pull/221) (#221) — merged 
-
-- [fix(ci): tomli fallback so the 3.10 test-matrix leg collects (unblocks green main)](https://github.com/OpenAdaptAI/openadapt-flow/pull/220) (#220) — merged 
-
-- [feat(lending): add collateral-write fault class + single-surface arm for honest cross-domain comparability](https://github.com/OpenAdaptAI/openadapt-flow/pull/219) (#219) — merged 
 
 
 
@@ -181,6 +181,8 @@
 
 ## openadapt-capture
 
+
+- [fix: preserve observer setup failure at readiness timeout](https://github.com/OpenAdaptAI/openadapt-capture/pull/47) (#47) — merged 
 
 - [Capture Windows UIA evidence with native actions](https://github.com/OpenAdaptAI/openadapt-capture/pull/45) (#45) — merged 
 
