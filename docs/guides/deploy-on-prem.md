@@ -139,15 +139,19 @@ holds the disk key). At-rest protection has three layers:
 |---|---|---|
 | The disk holding `storage_root` (bundles, runs, audit, frames) | **Operator full-disk encryption** (LUKS / BitLocker / FileVault) | REAL: the primary PHI/PII-at-rest control. Operator-provisioned |
 | The identity band inside `workflow.json` | **Salted-hash `identity_template`** (no plaintext name / DOB / MRN; optional external `OPENADAPT_FLOW_IDENTITY_SALT`) | REAL. A hash of a low-entropy identifier is brute-forceable by a holder of both bundle and salt, so it is **not** a cryptographic seal |
-| The bundle `workflow.json` + durable checkpoints | **Opt-in AES-256-GCM sealing** via `OPENADAPT_BUNDLE_KEY` (`Workflow.save(encrypt=True)`; scrypt-derived key) | REAL (opt-in, shipped). A wrong/missing key or tampered ciphertext fails loud and safe |
+| The bundle `workflow.json` + durable checkpoints | **Opt-in AES-256-GCM sealing** via `OPENADAPT_BUNDLE_KEY` (`openadapt flow seal` for the bundle; the same key for runtime checkpoints) | REAL (opt-in, shipped). A wrong/missing key or tampered ciphertext fails loud and safe |
 | `templates/*.png` (recorded screen crops of identifiers) | **AES-256-GCM sealing with the bundle key** plus full-disk encryption and governance guards | REAL when bundle encryption is enabled; plaintext crops are removed after sealing and authenticated ciphertext is verified on load |
 
 Enable the per-bundle seal for cryptographic at-rest protection that does not
 depend solely on the volume:
 
 ```bash
-export OPENADAPT_BUNDLE_KEY=…            # seals workflow.json, template crops, and checkpoints
+export OPENADAPT_BUNDLE_KEY=…
+openadapt flow seal bundle-v2 --out bundle-prod  # seals workflow.json + template crops
 ```
+
+Run and resume the sealed destination with the same injected key so durable
+checkpoints are encrypted as they are written.
 
 !!! warning "Identifier crops remain regulated data"
     The identity check needs a **rendered crop of the identifier** (an image of

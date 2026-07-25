@@ -47,12 +47,11 @@ policy it will run under.
 uncertified policy, unarmed consequential action, write without an effect
 contract, unavailable verifier without explicit approval, or broken manifest.
 Normal compilation creates a plaintext bundle, so create a production copy and
-seal it with the shipped library API before admission.
+seal it with the shipped CLI before admission.
 
 ```bash
-cp -R bundle bundle-prod
 export OPENADAPT_BUNDLE_KEY='<inject from your secret manager>'
-python -c 'from openadapt_flow.ir import Workflow; w=Workflow.load("bundle-prod"); w.save("bundle-prod", encrypt=True)'
+openadapt flow seal bundle --out bundle-prod
 
 openadapt flow certify bundle-prod --config deployment.yaml
 openadapt flow run bundle-prod --config deployment.yaml --dry-run
@@ -66,9 +65,10 @@ demo-only `--drift` teaching aid is not offered; the backend URL, system of
 record, actuation tier, durability, and policy come from the config. Direct flags
 override individual fields for a single run.
 
-There is no dedicated `seal` CLI verb yet. `Workflow.save(..., encrypt=True)`
-seals workflow JSON and template crops; the key comes from the environment here.
-Production key custody, rotation, and recovery are operator responsibilities.
+`seal` preserves the source, refuses symlinks and an existing destination,
+encrypts workflow JSON and template crops, verifies the result, and expires any
+certification inherited from the source. The key comes from the environment;
+production key custody, rotation, and recovery are operator responsibilities.
 
 ## Verify writes against the system of record
 

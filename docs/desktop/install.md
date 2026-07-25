@@ -17,8 +17,9 @@ you explicitly push it to a [cloud workspace](connect-to-cloud.md).
 Get the installer from
 [openadapt.ai/download](https://openadapt.ai/download). The page detects your OS
 and architecture and offers the right build. Public Beta release
-`desktop-v0.10.0` ships the complete Windows, macOS, and Linux installer set with
-`SHA256SUMS` and per-platform provenance metadata.
+`desktop-v0.12.1` ships the complete Windows, macOS, and Linux installer set with
+`SHA256SUMS`, a CycloneDX SBOM, per-platform metadata, and build-provenance
+attestations.
 
 | OS | Installer |
 |---|---|
@@ -33,8 +34,9 @@ and can connect to Cloud for governed reports and updates.
 
 ## 2. Get past the first-launch OS warning
 
-The current builds are **not code-signed yet**, so your OS shows a one-time
-warning at first launch. Expected for unsigned software, not a download problem.
+The Windows/Linux builds are **unsigned** and the macOS builds are **ad-hoc
+signed**, so your OS can show a one-time publisher warning at first launch.
+Verify `SHA256SUMS` and the release provenance before overriding it.
 
 === "macOS"
 

@@ -112,14 +112,18 @@ the control on each. The posture in brief:
   one-time `PlaintextPHIWarning`: an operator can never believe a run is
   de-identified when it is not.
   ([PRIVACY.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/PRIVACY.md))
-- **Encryption at rest, applied to the artifacts that matter.** Opt-in
-  AES-256-GCM sealing (`Workflow.save(encrypt=True)` with
-  `OPENADAPT_BUNDLE_KEY`) encrypts `workflow.json`, every template screenshot
-  crop, and durable run checkpoints into authenticated containers. No
+- **Encryption at rest, applied to the artifacts that matter.** The production
+  `openadapt flow seal SOURCE --out DESTINATION` path, with
+  `OPENADAPT_BUNDLE_KEY` injected from the deployment's secret manager, uses
+  AES-256-GCM to encrypt `workflow.json`, every template screenshot
+  crop, and the same key encrypts durable run checkpoints when the runtime
+  writes them. No
   cleartext PHI/PII-bearing screenshot remains on disk in an encrypted bundle, and
-  keyed loads decrypt in memory only. A wrong key or a tampered ciphertext
-  fails loudly, never partially. The identity band in a compiled bundle is a
-  salted hash, not plaintext.
+  keyed loads decrypt in memory only. The command preserves the source, refuses
+  symlinks and an existing destination, verifies the sealed result, and expires
+  inherited certification. A wrong key or a tampered ciphertext fails loudly,
+  never partially. The identity band in a compiled bundle is a salted hash, not
+  plaintext.
   ([phi_at_rest.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/phi_at_rest.md))
 - **Encryption in transit on the desktop control channel.** The Windows agent
   channel that carries live screenshots runs HTTPS with a per-run self-signed
@@ -195,6 +199,36 @@ you can hand to an auditor:
   a repeatable pre-flight for your own attestation.
   ([ON_PREM.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/ON_PREM.md))
 
+## Hosted retention, deletion, and recovery
+
+The hosted service applies a versioned retention policy to recordings, reports,
+run metadata, and the declared recovery window. Legal holds pause eligible
+deletion. Tenant erasure is organization-scoped and produces an append-only,
+PHI/PII-free receipt with identifiers, counts, and digests rather than deleted
+payloads.
+
+Destructive scheduled retention has a separate recovery gate: it refuses to run
+without a recent receipt proving a complete database **and private object
+storage** restore into an isolated scratch environment. The restore tooling
+exports roles, schema, data, and every content-addressed object, reads the source
+twice, restores only to the confirmed scratch target, and rehashes the result.
+The production provider currently reports no available provider recovery point,
+so scheduled deletion remains gated. That is not a claim of provider PITR or a
+backup SLA. The public
+[readiness endpoint](https://app.openadapt.ai/api/health/ready) reports the
+configured retention component separately from this destructive-operation gate.
+
+## Release integrity
+
+The public Desktop `desktop-v0.12.1` release includes Windows, macOS, and Linux
+installers, `SHA256SUMS`, a CycloneDX SBOM, per-platform metadata, and GitHub
+build-provenance attestations. These prove source and build provenance, not
+publisher identity. Windows and Linux installers remain unsigned and macOS
+installers are ad-hoc signed; Apple Developer ID/notarization and Windows
+Authenticode require the corresponding external identities. Verify the
+[release assets](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/desktop-v0.12.1)
+before overriding an operating-system publisher warning.
+
 ## Deployment options
 
 All three shapes run the same engine and the same safety gates. The
@@ -255,8 +289,9 @@ supplies the AEAD substrate, not a KMS.
 **What audit evidence do we get?**
 Per-run scrubbed `REPORT.md` + `report.json` with identity coverage, effect
 verdicts, and one-way contract hashes; on-prem, an append-only hash-chained
-audit log; and single-use, digest-bound authorization records for governed
-runs. ([Read and audit run reports](run-reports.md))
+audit log; hosted, PHI/PII-free retention and deletion receipts; and single-use,
+digest-bound authorization records for governed runs.
+([Read and audit run reports](run-reports.md))
 
 **Are you SOC 2 / HIPAA certified?**
 We describe controls, not certifications, in documentation. Request current
@@ -274,5 +309,6 @@ reviewer checklist and boundary table, alongside the engine's
 [phi_at_rest.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/phi_at_rest.md),
 [phi_in_transit.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/phi_in_transit.md),
 and [known limits](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/LIMITS.md).
-Everything this page claims is in the open-source repository for your team to
-verify.
+Engine controls are open source and directly reviewable. Hosted controls expose
+their public contracts and live readiness state; the hosted control-plane source
+remains proprietary.

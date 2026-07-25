@@ -87,10 +87,9 @@ A real deployment must replace demo drift flags with explicit backend, effect,
 durability, and policy configuration:
 
 ```bash
-# 10. Prepare an encrypted candidate, then inspect and pass the run gate
-cp -R bundle-v2 bundle-prod
+# 10. Seal an encrypted candidate, then inspect and pass the run gate
 export OPENADAPT_BUNDLE_KEY='<inject from your secret manager>'
-python -c 'from openadapt_flow.ir import Workflow; w=Workflow.load("bundle-prod"); w.save("bundle-prod", encrypt=True)'
+openadapt flow seal bundle-v2 --out bundle-prod
 openadapt flow certify bundle-prod --config deployment.yaml
 openadapt flow run bundle-prod --config deployment.yaml --dry-run
 openadapt flow run bundle-prod --config deployment.yaml
@@ -98,9 +97,10 @@ openadapt flow run bundle-prod --config deployment.yaml
 
 Follow [Run a deployment](../guides/run-a-deployment.md), then complete the
 [security and deployment review](../guides/security-review.md). Do not promote a
-bundle just because the sample-app tour passed. The base CLI has no dedicated
-`seal` verb yet, so the encryption step uses the shipped library API; key
-custody and rotation belong to the deployment.
+bundle just because the sample-app tour passed. `seal` preserves the source,
+refuses symlinks and an existing destination, encrypts the workflow and template
+crops, verifies the result, and expires any certification inherited from the
+source. Key custody and rotation belong to the deployment.
 
 ## Beyond one demonstration
 

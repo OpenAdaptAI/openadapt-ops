@@ -105,11 +105,11 @@ still apply, and `run` is honest about them:
   surface the action wrote to: **same-surface** confirmation, not an independent
   system-of-record check. A REST/FHIR/document-hash verifier reads the *record*;
   a screen read-back reads the *pixels*.
-- **Encryption is opt-in at authoring time.** `Workflow.save(..., encrypt=True)`
-  seals workflow JSON and template crops, but normal compilation writes
-  plaintext. `run` refuses plaintext by default; keep full-disk encryption as
-  defense in depth and use `--strict-templates` to refuse any unsealed image
-  asset.
+- **Encryption is opt-in at authoring time.** `openadapt flow seal SOURCE --out
+  DESTINATION` seals workflow JSON and template crops, but normal compilation
+  writes plaintext. `run` refuses plaintext by default; keep full-disk
+  encryption as defense in depth and use `--strict-templates` to refuse any
+  unsealed image asset.
 - **A green certification is scoped to what the policy asserts.** `certify`
   enforces the policy you wrote; a gap the policy does not name is not caught by
   `run`.
