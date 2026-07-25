@@ -56,9 +56,14 @@ openadapt flow replay  bundle --url https://your.app      # replay, local, $0
 On the web substrate shown here, `record` opens a headed browser on your own app
 and captures what you do. The same loop records native Windows, macOS, or Linux
 applications and pixel-only RDP or Citrix sessions by choosing a
-[backend](backends.md) instead of a `--url`. `compile` turns the recording into
-a bundle. `replay` runs the bundle deterministically on the same substrate and
-writes an illustrated report.
+[backend](backends.md) instead of a `--url`. Those native and remote
+demonstrations reuse `openadapt-capture` for screen, input, timing, and
+window-scoped evidence. On native Windows, action-time UIA observations are
+retained beside the captured event so compilation can keep the nearest
+actionable structural target; RDP and Citrix deliberately suppress local
+client UIA because accessibility metadata does not cross the remote boundary.
+`compile` turns the recording into a bundle. `replay` runs the bundle
+deterministically on the same substrate and writes an illustrated report.
 
 ## Vision-first behind a small backend
 

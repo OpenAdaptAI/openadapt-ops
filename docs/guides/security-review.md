@@ -138,6 +138,14 @@ per-deployment evidence boundary. The public browser subscription is ordered
 separately from these customer-controlled deployments. See
 [Qualification evidence](../get-started/what-works-today.md)
 for the exact reports.
+
+For consequential RDP and Citrix actions, the runtime acquires a fresh frame,
+re-resolves target and identity, and arms a one-shot actuation lease. The
+backend refuses before input if the client/session, focus where applicable,
+geometry, readiness, or pixels changed after that resolution. This mechanism
+prevents a still-connected but changed remote session from inheriting stale
+coordinates; it does not broaden the bounded qualification results above.
+
 See [Hosted browser
 execution](hosted.md) and [Qualification evidence](../get-started/what-works-today.md).
 

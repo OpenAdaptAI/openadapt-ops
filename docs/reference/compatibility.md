@@ -17,7 +17,8 @@ not a separate product onboarding path.
 | Component | Compatible range | Role |
 |---|---|---|
 | `openadapt` 1.x | `openadapt-flow >=1.7,<2` | Public installer and `openadapt flow …` CLI |
-| `openadapt-flow` 1.x + native capture | `openadapt-capture >=0.6` | Optional Windows/RDP demonstration recording |
+| `openadapt-flow` 1.x + native capture | `openadapt-capture >=1.1.0` | Canonical native demonstration recording for Windows, macOS, Linux, RDP, and Citrix |
+| Windows action-time UIA handoff | `openadapt-flow >=1.22,<2` + `openadapt-capture >=1.1.0` | Retains the nearest actionable UIA node for native Windows compilation; RDP and Citrix remain externally black-box |
 | `openadapt-flow` 1.x + privacy extra | `openadapt-privacy[presidio] >=1.0` | Configured local scrub/redaction paths |
 | `openadapt-flow` interoperability extra | `openadapt-types >=0.2,<0.4` | Contributor-facing schema boundary |
 | Python | 3.10-3.12 | Supported runtime range for the current 1.x line |

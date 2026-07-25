@@ -138,6 +138,11 @@ risk work required for the actual deployment.
 Every substrate is a first-class execution target and every workflow is
 qualified in its real environment. The published qualification evidence to date:
 
+Consequential RDP and Citrix actions share a two-phase remote contract: a fresh
+frame is resolved and identity-checked, then a one-shot input lease refuses
+changed session/window context, focus where applicable, geometry, readiness, or
+pixels before delivery.
+
 - **Browser:** Local engine and public managed substrate, exercised end to end
   against a real third-party application in the published engine evidence.
 - **Windows UIA:** The counted
