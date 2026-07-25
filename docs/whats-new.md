@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-25 18:37 UTC*
+> *Last updated: 2026-07-25 19:05 UTC*
 
 
 
@@ -98,6 +98,8 @@
 ## openadapt-desktop
 
 
+- [fix: make macOS Intel crypto runtime self-contained](https://github.com/OpenAdaptAI/openadapt-desktop/pull/60) (#60) — merged 
+
 - [feat: support Flow 1.23 precise outcomes and context identity](https://github.com/OpenAdaptAI/openadapt-desktop/pull/58) (#58) — merged 
 
 - [Publish Desktop SBOM and add security gates](https://github.com/OpenAdaptAI/openadapt-desktop/pull/48) (#48) — merged 
@@ -135,8 +137,6 @@
 - [ci: auto-run native build/attest, gate only the publish step](https://github.com/OpenAdaptAI/openadapt-desktop/pull/31) (#31) — merged 
 
 - [feat: signing-ready native pipeline (Azure Trusted Signing + founder runbook)](https://github.com/OpenAdaptAI/openadapt-desktop/pull/30) (#30) — merged 
-
-- [docs: README release-pointer + version hygiene](https://github.com/OpenAdaptAI/openadapt-desktop/pull/29) (#29) — merged 
 
 
 
