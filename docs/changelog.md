@@ -18,6 +18,8 @@
 
 ## openadapt-flow
 
+- **[v1.23.0](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.23.0)** (2026-07-25)
+  _This release is published under the MIT License._
 - **[v1.22.0](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.22.0)** (2026-07-25)
   _This release is published under the MIT License._
 - **[v1.21.0](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.21.0)** (2026-07-25)
@@ -25,8 +27,6 @@
 - **[v1.20.2](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.20.2)** (2026-07-25)
   _This release is published under the MIT License._
 - **[v1.20.1](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.20.1)** (2026-07-24)
-  _This release is published under the MIT License._
-- **[v1.20.0](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.20.0)** (2026-07-23)
   _This release is published under the MIT License._
 
 ## openadapt-desktop
