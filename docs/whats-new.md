@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-25 00:45 UTC*
+> *Last updated: 2026-07-25 01:08 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [docs: rebuild flagship README around first value](https://github.com/OpenAdaptAI/OpenAdapt/pull/1047) (#1047) — merged 
 
 - [fix: expose native replay substrates through launcher](https://github.com/OpenAdaptAI/OpenAdapt/pull/1046) (#1046) — merged 
 
@@ -45,8 +47,6 @@
 - [docs: refresh reference sandbox source inventory](https://github.com/OpenAdaptAI/OpenAdapt/pull/1029) (#1029) — merged 
 
 - [fix: forward all engine options through `openadapt flow record`](https://github.com/OpenAdaptAI/OpenAdapt/pull/1028) (#1028) — merged 
-
-- [docs: bind complete reference sandbox source inventory](https://github.com/OpenAdaptAI/OpenAdapt/pull/1027) (#1027) — merged 
 
 
 
