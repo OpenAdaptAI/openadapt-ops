@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-25 01:16 UTC*
+> *Last updated: 2026-07-25 03:23 UTC*
 
 
 
@@ -53,6 +53,8 @@
 ## openadapt-flow
 
 
+- [feat: add versioned qualification project contract](https://github.com/OpenAdaptAI/openadapt-flow/pull/236) (#236) — merged 
+
 - [docs: reconcile desktop and remote substrate evidence](https://github.com/OpenAdaptAI/openadapt-flow/pull/235) (#235) — merged 
 
 - [fix: isolate Capture codec fixture in adapter tests](https://github.com/OpenAdaptAI/openadapt-flow/pull/234) (#234) — merged 
@@ -91,12 +93,12 @@
 
 - [docs(paper): honest disclosures for adversarial review #2 (closed-world, statistics, positioning, ethics)](https://github.com/OpenAdaptAI/openadapt-flow/pull/217) (#217) — merged 
 
-- [feat(benchmark): publish bounded paid-agent aggregates](https://github.com/OpenAdaptAI/openadapt-flow/pull/216) (#216) — merged 
-
 
 
 ## openadapt-desktop
 
+
+- [feat: consume canonical Flow qualification projects](https://github.com/OpenAdaptAI/openadapt-desktop/pull/46) (#46) — merged 
 
 - [feat: author identity and effect qualification contracts](https://github.com/OpenAdaptAI/openadapt-desktop/pull/45) (#45) — merged 
 
@@ -135,8 +137,6 @@
 - [fix: gate updater plugin on config presence so packaged apps launch](https://github.com/OpenAdaptAI/openadapt-desktop/pull/27) (#27) — merged 
 
 - [fix: align native package descriptions](https://github.com/OpenAdaptAI/openadapt-desktop/pull/25) (#25) — merged 
-
-- [fix: align native release copy and metadata](https://github.com/OpenAdaptAI/openadapt-desktop/pull/24) (#24) — merged 
 
 
 
