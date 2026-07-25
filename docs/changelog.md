@@ -18,6 +18,8 @@
 
 ## openadapt-flow
 
+- **[v1.22.0](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.22.0)** (2026-07-25)
+  _This release is published under the MIT License._
 - **[v1.21.0](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.21.0)** (2026-07-25)
   _This release is published under the MIT License._
 - **[v1.20.2](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.20.2)** (2026-07-25)
@@ -26,8 +28,6 @@
   _This release is published under the MIT License._
 - **[v1.20.0](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.20.0)** (2026-07-23)
   _This release is published under the MIT License._
-- **[paper-latest](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/paper-latest)** (2026-07-20)
-  Auto-published from paper/build/main.pdf on every push to main. Always reflects the current LaTeX source; do not edit by hand.
 
 ## openadapt-desktop
 
