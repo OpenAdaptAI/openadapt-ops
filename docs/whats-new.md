@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-25 18:20 UTC*
+> *Last updated: 2026-07-25 18:37 UTC*
 
 
 
@@ -53,6 +53,8 @@
 ## openadapt-flow
 
 
+- [feat: add atomic bundle sealing command](https://github.com/OpenAdaptAI/openadapt-flow/pull/244) (#244) — merged 
+
 - [feat: transport precise execution outcomes](https://github.com/OpenAdaptAI/openadapt-flow/pull/243) (#243) — merged 
 
 - [feat: enforce qualified identity signal quorums](https://github.com/OpenAdaptAI/openadapt-flow/pull/242) (#242) — merged 
@@ -90,8 +92,6 @@
 - [fix(resolver): refuse ambiguous OCR targets](https://github.com/OpenAdaptAI/openadapt-flow/pull/226) (#226) — merged 
 
 - [fix: enforce the public source artifact boundary](https://github.com/OpenAdaptAI/openadapt-flow/pull/225) (#225) — merged 
-
-- [ci: make Flow releases explicitly dispatched](https://github.com/OpenAdaptAI/openadapt-flow/pull/224) (#224) — merged 
 
 
 
