@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-25 22:20 UTC*
+> *Last updated: 2026-07-25 22:29 UTC*
 
 
 
@@ -98,6 +98,8 @@
 ## openadapt-desktop
 
 
+- [fix: label Desktop CLI as Beta](https://github.com/OpenAdaptAI/openadapt-desktop/pull/62) (#62) — merged 
+
 - [feat: add privacy-safe automation control overlay](https://github.com/OpenAdaptAI/openadapt-desktop/pull/61) (#61) — merged 
 
 - [fix: make macOS Intel crypto runtime self-contained](https://github.com/OpenAdaptAI/openadapt-desktop/pull/60) (#60) — merged 
@@ -135,8 +137,6 @@
 - [fix: reconcile engine IPC + flow bridge with the cockpit frontend contract](https://github.com/OpenAdaptAI/openadapt-desktop/pull/34) (#34) — merged 
 
 - [feat: add compiled-program visualization view to desktop app](https://github.com/OpenAdaptAI/openadapt-desktop/pull/33) (#33) — merged 
-
-- [ci: auto-run native build/attest, gate only the publish step](https://github.com/OpenAdaptAI/openadapt-desktop/pull/31) (#31) — merged 
 
 
 
