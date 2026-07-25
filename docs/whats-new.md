@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-25 17:40 UTC*
+> *Last updated: 2026-07-25 18:20 UTC*
 
 
 
@@ -98,6 +98,8 @@
 ## openadapt-desktop
 
 
+- [feat: support Flow 1.23 precise outcomes and context identity](https://github.com/OpenAdaptAI/openadapt-desktop/pull/58) (#58) — merged 
+
 - [Publish Desktop SBOM and add security gates](https://github.com/OpenAdaptAI/openadapt-desktop/pull/48) (#48) — merged 
 
 - [Complete qualification identity and effect editing](https://github.com/OpenAdaptAI/openadapt-desktop/pull/47) (#47) — merged 
@@ -135,8 +137,6 @@
 - [feat: signing-ready native pipeline (Azure Trusted Signing + founder runbook)](https://github.com/OpenAdaptAI/openadapt-desktop/pull/30) (#30) — merged 
 
 - [docs: README release-pointer + version hygiene](https://github.com/OpenAdaptAI/openadapt-desktop/pull/29) (#29) — merged 
-
-- [chore: bump native version to 0.6.2 for the launch-panic fix release](https://github.com/OpenAdaptAI/openadapt-desktop/pull/28) (#28) — merged 
 
 
 
