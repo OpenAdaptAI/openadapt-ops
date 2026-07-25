@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-24 23:21 UTC*
+> *Last updated: 2026-07-25 00:02 UTC*
 
 
 
@@ -53,6 +53,8 @@
 ## openadapt-flow
 
 
+- [docs: reconcile desktop and remote substrate evidence](https://github.com/OpenAdaptAI/openadapt-flow/pull/235) (#235) — merged 
+
 - [fix: isolate Capture codec fixture in adapter tests](https://github.com/OpenAdaptAI/openadapt-flow/pull/234) (#234) — merged 
 
 - [fix: remove SciPy from core runtime](https://github.com/OpenAdaptAI/openadapt-flow/pull/233) (#233) — merged 
@@ -91,12 +93,12 @@
 
 - [feat(benchmark): publish bounded paid-agent aggregates](https://github.com/OpenAdaptAI/openadapt-flow/pull/216) (#216) — merged 
 
-- [feat(hardening): harder cases (latency/reflow/dense) + close 36 new silent-wrongs](https://github.com/OpenAdaptAI/openadapt-flow/pull/215) (#215) — merged 
-
 
 
 ## openadapt-desktop
 
+
+- [feat: add first writable qualification cockpit slice](https://github.com/OpenAdaptAI/openadapt-desktop/pull/44) (#44) — merged 
 
 - [Add native and remote execution targets to the Desktop cockpit](https://github.com/OpenAdaptAI/openadapt-desktop/pull/43) (#43) — merged 
 
@@ -136,8 +138,6 @@
 
 - [feat: handle secure local pairing links](https://github.com/OpenAdaptAI/openadapt-desktop/pull/23) (#23) — merged 
 
-- [ci: keep native installer prereleases fresh with engine releases](https://github.com/OpenAdaptAI/openadapt-desktop/pull/22) (#22) — merged 
-
 
 
 ## openadapt-agent
@@ -159,18 +159,12 @@
 
 - [chore: add security CI (CodeQL, gitleaks, dependency-review, Dependabot)](https://github.com/OpenAdaptAI/openadapt-agent/pull/3) (#3) — merged 
 
-- [feat!: repurpose openadapt-agent as the agent-facing MCP + Agent Skills bridge (v2.0.0.dev0, Experimental)](https://github.com/OpenAdaptAI/openadapt-agent/pull/2) (#2) — merged 
-
-- [docs: add Deprecated status banner (successor: openadapt-flow)](https://github.com/OpenAdaptAI/openadapt-agent/pull/1) (#1) — merged 
-
 
 
 ## openadapt-ml
 
 
 - [docs: refresh README with honest research positioning](https://github.com/OpenAdaptAI/openadapt-ml/pull/67) (#67) — merged 
-
-- [docs: add lifecycle status banner](https://github.com/OpenAdaptAI/openadapt-ml/pull/66) (#66) — merged 
 
 
 
@@ -182,8 +176,6 @@
 - [docs(evals): bind current Flow release performance](https://github.com/OpenAdaptAI/openadapt-evals/pull/270) (#270) — merged 
 
 - [docs(evals): publish bounded OpenAdapt performance evidence](https://github.com/OpenAdaptAI/openadapt-evals/pull/269) (#269) — merged 
-
-- [docs: add lifecycle status banner](https://github.com/OpenAdaptAI/openadapt-evals/pull/268) (#268) — merged 
 
 
 
@@ -218,22 +210,12 @@
 
 - [docs: focus capture on its current product role](https://github.com/OpenAdaptAI/openadapt-capture/pull/29) (#29) — merged 
 
-- [chore: modernize Recorder framing, CI coverage, and dependency floors](https://github.com/OpenAdaptAI/openadapt-capture/pull/28) (#28) — merged 
-
-- [docs: note openadapt-flow desktop record on-ramp in status banner](https://github.com/OpenAdaptAI/openadapt-capture/pull/27) (#27) — merged 
-
-- [chore: add MIT LICENSE file](https://github.com/OpenAdaptAI/openadapt-capture/pull/26) (#26) — merged 
-
-- [docs: add Experimental status banner; label old pipeline as historical](https://github.com/OpenAdaptAI/openadapt-capture/pull/25) (#25) — merged 
-
 
 
 ## openadapt-privacy
 
 
 - [docs: refresh README to shared OpenAdapt house style](https://github.com/OpenAdaptAI/openadapt-privacy/pull/8) (#8) — merged 
-
-- [chore: add MIT LICENSE file](https://github.com/OpenAdaptAI/openadapt-privacy/pull/7) (#7) — merged 
 
 
 
@@ -242,23 +224,12 @@
 
 - [docs: refresh README to shared OpenAdapt house style](https://github.com/OpenAdaptAI/openadapt-types/pull/8) (#8) — merged 
 
-- [docs: add lifecycle status banner](https://github.com/OpenAdaptAI/openadapt-types/pull/7) (#7) — merged 
-
 
 
 ## openadapt-grounding
 
 
 - [docs: refresh README to shared OpenAdapt house style](https://github.com/OpenAdaptAI/openadapt-grounding/pull/5) (#5) — merged 
-
-- [docs: add Research status banner (not required by the product)](https://github.com/OpenAdaptAI/openadapt-grounding/pull/4) (#4) — merged 
-
-
-
-## openadapt-retrieval
-
-
-- [docs: add Research status banner (not required by the product)](https://github.com/OpenAdaptAI/openadapt-retrieval/pull/5) (#5) — merged 
 
 
 
