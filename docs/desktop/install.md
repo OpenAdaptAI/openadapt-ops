@@ -17,7 +17,7 @@ you explicitly push it to a [cloud workspace](connect-to-cloud.md).
 Get the installer from
 [openadapt.ai/download](https://openadapt.ai/download). The page detects your OS
 and architecture and offers the right build. Public Beta release
-`desktop-v0.12.1` ships the complete Windows, macOS, and Linux installer set with
+`desktop-v0.13.0` ships the complete Windows, macOS, and Linux installer set with
 `SHA256SUMS`, a CycloneDX SBOM, per-platform metadata, and build-provenance
 attestations.
 
@@ -109,6 +109,19 @@ are ready to record a real workflow.
 
 The [troubleshooting guide](../guides/troubleshooting.md) covers these and other
 first-week failures.
+
+## During a governed run
+
+Desktop 0.13.0 can show a separate always-on-top status surface without adding
+anything to the target application. While OpenAdapt is observing or executing,
+the surface is non-focusable, ignores pointer input, exposes no controls, and is
+excluded from capture before it becomes visible. Controls become interactive
+only after the run reaches a safe paused or terminal state. The overlay reports
+runtime state; OpenAdapt never uses it as resolution or verification evidence.
+
+For published footage, capture inclusion is a separate presentation-mode choice
+and does not weaken the pointer or focus boundary. See the exact released
+[control-overlay contract](https://github.com/OpenAdaptAI/openadapt-desktop/blob/desktop-v0.13.0/docs/CONTROL_OVERLAY.md).
 
 ## Where to go next
 
