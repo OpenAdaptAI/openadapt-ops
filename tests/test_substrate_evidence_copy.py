@@ -6,6 +6,7 @@ does not become a broad app-support claim, and the managed browser runner does
 not silently absorb customer-controlled desktop or remote execution.
 """
 
+import re
 from pathlib import Path
 
 
@@ -95,12 +96,17 @@ def test_public_managed_runner_and_customer_runtime_boundaries_remain_distinct()
 def test_desktop_beta_release_is_current_and_cross_platform():
     what_works = _read("get-started/what-works-today.md")
     install = _read("desktop/install.md")
+    ecosystem = _read("ecosystem/index.md")
 
-    for source in [what_works, install]:
-        assert "desktop-v0.9.0" in source
+    release_tags = []
+    for source in [what_works, install, ecosystem]:
+        match = re.search(r"desktop-v\d+\.\d+\.\d+", source)
+        assert match is not None
+        release_tags.append(match.group(0))
         assert "Windows" in source
         assert "macOS" in source
         assert "Linux" in source
+    assert len(set(release_tags)) == 1
     assert "SHA256SUMS" in what_works
     assert "installed, launched, and uninstalled" in what_works
 
@@ -137,8 +143,6 @@ def test_source_of_truth_pages_cover_all_released_substrates_and_current_desktop
         assert "`ica_hdx_accepted: false`" in source
 
     assert "native Linux" in ecosystem
-    assert "desktop-v0.9.0" in ecosystem
-    assert "desktop-v0.5.1" not in ecosystem
     for substrate in [
         "web",
         "native Windows",

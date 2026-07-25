@@ -33,6 +33,8 @@
 
 - **[v0.10.0](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/v0.10.0)** (2026-07-25)
   _This release is published under the MIT License._
+- **[desktop-v0.10.0](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/desktop-v0.10.0)** (2026-07-25)
+  <!-- installer-release -->
 - **[v0.9.0](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/v0.9.0)** (2026-07-24)
   _This release is published under the MIT License._
 - **[ffmpeg-runtime-v8.1.2-r1](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/ffmpeg-runtime-v8.1.2-r1)** (2026-07-24)
