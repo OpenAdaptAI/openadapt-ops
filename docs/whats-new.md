@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-25 21:44 UTC*
+> *Last updated: 2026-07-25 22:20 UTC*
 
 
 
@@ -53,6 +53,8 @@
 ## openadapt-flow
 
 
+- [feat: seal durable state for encrypted production runs](https://github.com/OpenAdaptAI/openadapt-flow/pull/246) (#246) — merged 
+
 - [feat: publish real governed demo evidence](https://github.com/OpenAdaptAI/openadapt-flow/pull/245) (#245) — merged 
 
 - [feat: add atomic bundle sealing command](https://github.com/OpenAdaptAI/openadapt-flow/pull/244) (#244) — merged 
@@ -90,8 +92,6 @@
 - [fix: keep interop types green in all-extras development](https://github.com/OpenAdaptAI/openadapt-flow/pull/228) (#228) — merged 
 
 - [fix(mockmed): stabilize textarea render metrics](https://github.com/OpenAdaptAI/openadapt-flow/pull/227) (#227) — merged 
-
-- [fix(resolver): refuse ambiguous OCR targets](https://github.com/OpenAdaptAI/openadapt-flow/pull/226) (#226) — merged 
 
 
 
