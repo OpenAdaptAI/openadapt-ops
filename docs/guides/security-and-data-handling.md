@@ -220,13 +220,13 @@ configured retention component separately from this destructive-operation gate.
 
 ## Release integrity
 
-The public Desktop `desktop-v0.12.1` release includes Windows, macOS, and Linux
+The public Desktop `desktop-v0.13.0` release includes Windows, macOS, and Linux
 installers, `SHA256SUMS`, a CycloneDX SBOM, per-platform metadata, and GitHub
 build-provenance attestations. These prove source and build provenance, not
 publisher identity. Windows and Linux installers remain unsigned and macOS
 installers are ad-hoc signed; Apple Developer ID/notarization and Windows
 Authenticode require the corresponding external identities. Verify the
-[release assets](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/desktop-v0.12.1)
+[release assets](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/desktop-v0.13.0)
 before overriding an operating-system publisher warning.
 
 ## Deployment options
