@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-26 21:56 UTC*
+> *Last updated: 2026-07-26 22:34 UTC*
 
 
 
@@ -110,6 +110,8 @@
 
 - [feat: support Flow 1.23 precise outcomes and context identity](https://github.com/OpenAdaptAI/openadapt-desktop/pull/58) (#58) — merged 
 
+- [ci: bump the actions group with 9 updates](https://github.com/OpenAdaptAI/openadapt-desktop/pull/56) (#56) — merged 
+
 - [build: bump the cargo-minor group in /src-tauri with 3 updates](https://github.com/OpenAdaptAI/openadapt-desktop/pull/52) (#52) — merged 
 
 - [Publish Desktop SBOM and add security gates](https://github.com/OpenAdaptAI/openadapt-desktop/pull/48) (#48) — merged 
@@ -135,8 +137,6 @@
 - [Bundle Flow into native desktop installers](https://github.com/OpenAdaptAI/openadapt-desktop/pull/38) (#38) — merged 
 
 - [docs: refresh README for the reconciled cockpit and wired engine sidecar](https://github.com/OpenAdaptAI/openadapt-desktop/pull/37) (#37) — merged 
-
-- [feat: reconcile cockpit frontend, wired engine, and fail-closed policy sync onto main](https://github.com/OpenAdaptAI/openadapt-desktop/pull/36) (#36) — merged 
 
 
 
@@ -179,6 +179,8 @@
 
 ## openadapt-capture
 
+
+- [feat: preserve keyboard shortcuts as typed capture events](https://github.com/OpenAdaptAI/openadapt-capture/pull/49) (#49) — merged 
 
 - [fix: bound native structural evidence](https://github.com/OpenAdaptAI/openadapt-capture/pull/48) (#48) — merged 
 
