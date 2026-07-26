@@ -10,8 +10,8 @@ arrives three weeks after signature.
 
 - [ ] One named workflow with a clear start state and a clear finished state.
 - [ ] A workflow owner who performs it today and can demonstrate it end to end.
-- [ ] Approximate monthly volume and minutes per manual execution (feeds the
-      [ROI worksheet](roi-calculator.md)).
+- [ ] Approximate monthly volume and minutes per manual execution for the
+      customer-specific economic model.
 - [ ] The consequence of doing it wrong (wrong record, duplicate, missed
       entry), stated plainly. This drives the risk class and verification
       strength.

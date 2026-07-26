@@ -3,8 +3,7 @@
 This section is the buyer-facing collateral for OpenAdapt's commercial
 offers. Every price and claim here matches the public
 [pricing page](https://openadapt.ai/pricing) and the
-[qualification evidence appendix](../get-started/what-works-today.md). Where a
-term is not yet finalized it is marked explicitly rather than implied.
+[qualification evidence appendix](../get-started/what-works-today.md).
 
 ## The offer ladder
 
@@ -21,12 +20,11 @@ The ladder is sequential by design: qualification before pilot, pilot before
 production. The sprint is paid even when the correct outcome is not to
 automate; a well-evidenced "do not automate" is a full-value deliverable.
 
-## Sales and evaluation collateral
+## Buyer and evaluation resources
 
 | Document | Use it when |
 |---|---|
 | [Qualification Sprint one-pager](qualification-sprint.md) | Introducing the entry offer to a buyer. |
-| [Statement of Work template](sow-template.md) | Drafting the sprint contract. |
 | [Scope and prerequisite checklist](scope-checklist.md) | Confirming the customer can actually start. |
 | [Qualification report outline](qualification-report-outline.md) | Showing a buyer what they will receive. |
 | [Acceptance matrix template](acceptance-matrix.md) | Agreeing pass/fail criteria up front. |
@@ -35,19 +33,16 @@ automate; a well-evidenced "do not automate" is a full-value deliverable.
 | [External Citrix zero-install brief](citrix-external-brief.md) | A buyer whose workflow lives behind Citrix or VDI. |
 | [OEM architecture and commercial brief](oem-brief.md) | A vendor that wants to embed verified execution. |
 | [Procurement FAQ](procurement-faq.md) | Procurement, legal, and vendor-risk questions. |
-| [Competitive battlecards](battlecards.md) | Positioning against RPA, agents, and scripts. |
-| [ROI worksheet](roi-calculator.md) | Building the economic case with the buyer's own numbers. |
-| [Legal document outlines](legal-outlines.md) | Structuring design-partner and publication agreements. |
 
 ## Honesty rules for this section
 
 These documents follow the same rules as the public site:
 
-- No invented customers, quotes, or case data. The one referenced case study is
-  [published with preliminary figures and a pending-confirmation caveat](https://openadapt.ai/customers/rvu-audit-heart-care).
+- Customer results name the workflow and the result actually reported. See the
+  [RVU audit customer case](https://openadapt.ai/customers/rvu-audit-heart-care).
 - No claimed certifications. SOC 2 status is stated plainly in the
   [security packet](security-packet.md).
 - Bounded evidence stays bounded. Qualification evidence for one workflow,
   application, and environment is never presented as a general support claim.
-- Competitors are credited for what they are genuinely good at. See the
-  [battlecards](battlecards.md).
+- Commercial terms are established in a customer-specific written proposal and
+  agreement, not in public templates.

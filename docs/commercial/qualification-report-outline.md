@@ -92,7 +92,7 @@ The seeded-fault results, summarized in the
 | Field | Definition |
 |---|---|
 | Volume and time baseline | Customer-provided run volume and manual minutes. |
-| Modeled savings | Per the [ROI worksheet](roi-calculator.md), under conservative assumptions, with every input attributed. |
+| Modeled savings | Customer-specific economic model using conservative, attributed inputs. |
 | Costs | Sprint, pilot, production, and operational intervention costs. |
 
 ## 9. Evidence pack manifest

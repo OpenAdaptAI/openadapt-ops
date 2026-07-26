@@ -80,7 +80,7 @@ your marketing as in ours.
   environments, and support; per-end-customer workflow qualification is scoped
   separately or delivered by the partner using the qualification tooling.
 - Early OEM partners operate under a
-  [design-partner structure](legal-outlines.md): defined feedback obligations,
+  customer-specific design-partner agreement: defined feedback obligations,
   early access to the reference API, and input into its shape.
 - The engine is MIT-licensed and auditable; embedding does not depend on a
   proprietary black box for its safety story.
