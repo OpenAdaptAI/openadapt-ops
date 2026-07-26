@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-26 20:13 UTC*
+> *Last updated: 2026-07-26 21:04 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [ci(release): reconcile platform manifest after publish](https://github.com/OpenAdaptAI/OpenAdapt/pull/1058) (#1058) — merged 
 
 - [feat: platform release manifest v1 + open-core licensing boundary (Sections 13 + 22)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1057) (#1057) — merged 
 
@@ -46,12 +48,14 @@
 
 - [build(deps): bump actions/checkout from 6 to 7](https://github.com/OpenAdaptAI/OpenAdapt/pull/1036) (#1036) — merged 
 
-- [build(deps): bump actions/setup-python from 6 to 7](https://github.com/OpenAdaptAI/OpenAdapt/pull/1035) (#1035) — merged 
-
 
 
 ## openadapt-flow
 
+
+- [feat(repair): governed promotion lifecycle with campaigns, canary, and rollback (Section 9)](https://github.com/OpenAdaptAI/openadapt-flow/pull/265) (#265) — merged 
+
+- [feat(cli): explicit surface selection for production profiles + surface-bound workflows (Section 5)](https://github.com/OpenAdaptAI/openadapt-flow/pull/263) (#263) — merged 
 
 - [feat(compiler): field-label parameter inference with one-shot operator confirm](https://github.com/OpenAdaptAI/openadapt-flow/pull/262) (#262) — merged 
 
@@ -88,10 +92,6 @@
 - [feat: transport precise execution outcomes](https://github.com/OpenAdaptAI/openadapt-flow/pull/243) (#243) — merged 
 
 - [feat: enforce qualified identity signal quorums](https://github.com/OpenAdaptAI/openadapt-flow/pull/242) (#242) — merged 
-
-- [feat: add named execution profiles](https://github.com/OpenAdaptAI/openadapt-flow/pull/241) (#241) — merged 
-
-- [feat: add minimum effect tier setter](https://github.com/OpenAdaptAI/openadapt-flow/pull/240) (#240) — merged 
 
 
 
