@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-26 22:39 UTC*
+> *Last updated: 2026-07-26 23:35 UTC*
 
 
 
@@ -53,6 +53,10 @@
 ## openadapt-flow
 
 
+- [Fix scheduled quickstart and no-DOM qualification gates](https://github.com/OpenAdaptAI/openadapt-flow/pull/267) (#267) — merged 
+
+- [bench: complex multi-system workflow benchmarks (email + spreadsheet + API + multi-app)](https://github.com/OpenAdaptAI/openadapt-flow/pull/266) (#266) — merged 
+
 - [feat(repair): governed promotion lifecycle with campaigns, canary, and rollback (Section 9)](https://github.com/OpenAdaptAI/openadapt-flow/pull/265) (#265) — merged 
 
 - [feat(effects): verifier adapter platform (Section 4)](https://github.com/OpenAdaptAI/openadapt-flow/pull/264) (#264) — merged 
@@ -88,10 +92,6 @@
 - [feat: seal durable state for encrypted production runs](https://github.com/OpenAdaptAI/openadapt-flow/pull/246) (#246) — merged 
 
 - [feat: publish real governed demo evidence](https://github.com/OpenAdaptAI/openadapt-flow/pull/245) (#245) — merged 
-
-- [feat: add atomic bundle sealing command](https://github.com/OpenAdaptAI/openadapt-flow/pull/244) (#244) — merged 
-
-- [feat: transport precise execution outcomes](https://github.com/OpenAdaptAI/openadapt-flow/pull/243) (#243) — merged 
 
 
 

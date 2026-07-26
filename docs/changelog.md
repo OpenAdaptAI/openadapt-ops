@@ -70,6 +70,8 @@
 
 ## openadapt-capture
 
+- **[v1.2.0](https://github.com/OpenAdaptAI/openadapt-capture/releases/tag/v1.2.0)** (2026-07-26)
+  _This release is published under the MIT License._
 - **[v1.1.1](https://github.com/OpenAdaptAI/openadapt-capture/releases/tag/v1.1.1)** (2026-07-25)
   _This release is published under the MIT License._
 - **[v1.1.0](https://github.com/OpenAdaptAI/openadapt-capture/releases/tag/v1.1.0)** (2026-07-25)
@@ -77,8 +79,6 @@
 - **[v1.0.4](https://github.com/OpenAdaptAI/openadapt-capture/releases/tag/v1.0.4)** (2026-07-24)
   _This release is published under the MIT License._
 - **[v1.0.3](https://github.com/OpenAdaptAI/openadapt-capture/releases/tag/v1.0.3)** (2026-07-23)
-  _This release is published under the MIT License._
-- **[v1.0.2](https://github.com/OpenAdaptAI/openadapt-capture/releases/tag/v1.0.2)** (2026-07-23)
   _This release is published under the MIT License._
 
 ## openadapt-privacy
