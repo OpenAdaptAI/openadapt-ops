@@ -157,6 +157,21 @@ nav:
     - Settings and policy governance: concepts/settings-governance.md
     - Security and data handling: guides/security-and-data-handling.md
     - Security and deployment review: guides/security-review.md
+  - Commercial:
+    - commercial/index.md
+    - Qualification Sprint: commercial/qualification-sprint.md
+    - Statement of Work template: commercial/sow-template.md
+    - Scope and prerequisite checklist: commercial/scope-checklist.md
+    - Qualification report outline: commercial/qualification-report-outline.md
+    - Acceptance matrix template: commercial/acceptance-matrix.md
+    - Security packet: commercial/security-packet.md
+    - Deployment boundaries: commercial/deployment-boundaries.md
+    - External Citrix zero-install brief: commercial/citrix-external-brief.md
+    - OEM architecture and commercial brief: commercial/oem-brief.md
+    - Procurement FAQ: commercial/procurement-faq.md
+    - Competitive battlecards: commercial/battlecards.md
+    - ROI worksheet: commercial/roi-calculator.md
+    - Legal document outlines: commercial/legal-outlines.md
   - Internals:
     - The substrate model: concepts/substrate-model.md
     - The deployment matrix: concepts/deployment-matrix.md
