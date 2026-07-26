@@ -29,8 +29,9 @@ into a broad application-support claim. Before consequential use, qualify the
 exact workflow, application, environment, identity contract, effect oracle, and
 deployment boundary.
 
-The machine-readable [status manifest](https://openadapt.ai/status.json)
-publishes the same release, availability, evidence, and deployment dimensions.
+The [interactive status viewer](https://openadapt.ai/artifacts/json?source=%2Fstatus.json)
+presents the same release, availability, evidence, and deployment dimensions;
+the [raw JSON](https://openadapt.ai/status.json) remains available for tools.
 The public managed runner executes approved browser workflows. Native desktop,
 RDP, and Citrix/VDI workflows execute locally or in a self-hosted or
 customer-controlled runtime connected to the same governance model.
