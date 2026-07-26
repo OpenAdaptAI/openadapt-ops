@@ -25,6 +25,7 @@ is a subcommand of `openadapt flow`.
 | [`teach`](#teach) | Resolve a halted run from a fix demonstration, governed | 0 if promoted, 1 if refused, 2 on bad inputs |
 | [`lint`](#lint) | Report a bundle's coverage gaps | nonzero by severity |
 | [`certify`](#certify) | Enforce a safety policy, refuse the bundle if it fails | 2 on failure |
+| [`qualify`](#qualify) | Review, test, explain, and certify a versioned qualification project | nonzero on refusal |
 | [`disambiguate`](#disambiguate) | Surface and resolve compile-time ambiguities | 2 if a consequential ambiguity is unresolved |
 | [`connect`](#connect) | Pair this computer to a Cloud workspace (launcher command, needs OpenAdapt 1.7+) | 0/1 |
 | [`login`](#login) | Validate a hosted ingest token and remember the host | 0/1 |
@@ -388,6 +389,58 @@ openadapt flow certify bundle --config deployment.yaml
 
 Provide `--policy` or a `--config` that sets `policy.policy`; certify errors if
 neither supplies a policy. Exits 2 when the bundle fails certification.
+
+## qualify
+
+Create and operate a versioned qualification project for one compiled workflow,
+application, execution surface, and environment. The commands below are the
+scriptable counterpart of the Desktop qualification cockpit: they review action
+risk, bind identity and effect contracts, run representative and fault cases,
+explain refusals, and issue certification for the exact reviewed revision.
+
+```bash
+openadapt flow qualify init bundle \
+  --target citrix \
+  --application Accuro \
+  --application-version 2026.1 \
+  --environment-digest "$QUALIFIED_ENVIRONMENT_SHA256" \
+  --minimum-tier 3
+
+openadapt flow qualify inspect bundle --policy clinical-write
+openadapt flow qualify explain bundle --policy clinical-write
+openadapt flow qualify certify bundle \
+  --policy clinical-write \
+  --evidence-root qualification-evidence
+```
+
+| Subcommand | What it does |
+|---|---|
+| `schema` | Print the machine-readable qualification project schema. |
+| `init` | Bind a bundle to its target surface, application/version, environment, runtime, required runner capabilities, and minimum verification tier. |
+| `inspect` | Show graph, action inventory, coverage, case state, requalification conditions, and certification readiness. |
+| `set-risk` | Assign `read_only`, `state_changing`, `consequential`, or `irreversible` to one action, with an explanation. |
+| `set-identity` | Arm an action with the canonical identity ladder or explicit signals, regions, matching rules, and quorum. |
+| `set-effect` | Set the required verification tier for one declared effect. |
+| `trust-runner` | Trust a qualification runner's signing key for imported case receipts. |
+| `add-case` | Add a representative or fault case and its expected precise outcome. |
+| `run` | Import and validate signed case-result receipts against the current workflow revision and environment. |
+| `add-requalification` | Record an application, environment, workflow, policy, runtime, expiry, or operator-triggered requalification condition. |
+| `explain` | Explain every certification refusal and the action needed to resolve it. |
+| `report` | Generate the qualification report, including versions, action/risk inventory, identity and effect coverage, cases, exclusions, capabilities, hashes, and requalification conditions. |
+| `certify` | Certify the exact project revision when its required contracts and cases pass. |
+
+`init --target` accepts `web`, `windows`, `macos`, `linux`, `rdp`, or
+`citrix`. `add-case --kind` accepts `representative`, `ambiguity`,
+`wrong_identity`, `stale_identity`, `weak_effect`, or `missing_effect`; its
+expected outcome is one of `verified`, `completed_unverified`, `halted`,
+`failed`, or `rolled_back`. Use each subcommand's `--help` for its complete
+identity-signal, screen-region, effect, and runner-signing options.
+
+Qualification does not copy secret values into the bundle. Case inputs and raw
+evidence remain in the local evidence root; imported receipts are accepted only
+when their signatures, environment, revision, capabilities, and evidence hashes
+match the project. See [Qualify a workflow](../guides/qualify-a-workflow.md) for
+the complete Desktop and CLI journey.
 
 ## disambiguate
 

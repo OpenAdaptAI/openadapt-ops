@@ -135,6 +135,7 @@ nav:
     - Parameters and secrets: guides/parameters-and-secrets.md
     - The capability ladder: concepts/capability-ladder.md
     - Write and enforce a policy: guides/policy-and-certification.md
+    - Qualify a workflow: guides/qualify-a-workflow.md
     - Policy and certify: concepts/policy-and-certify.md
     - Effect verification: concepts/effect-verification.md
     - The identity gate: concepts/identity-gate.md
