@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-26 19:01 UTC*
+> *Last updated: 2026-07-26 19:27 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [feat: platform release manifest v1 + open-core licensing boundary (Sections 13 + 22)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1057) (#1057) — merged 
 
 - [docs: lead the README with the verified-execution product story (compile, replay, verify, halt)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1056) (#1056) — merged 
 
@@ -45,8 +47,6 @@
 - [build(deps): bump actions/checkout from 6 to 7](https://github.com/OpenAdaptAI/OpenAdapt/pull/1036) (#1036) — merged 
 
 - [build(deps): bump actions/setup-python from 6 to 7](https://github.com/OpenAdaptAI/OpenAdapt/pull/1035) (#1035) — merged 
-
-- [build(deps): bump actions/attest from 4.1.1 to 4.2.0](https://github.com/OpenAdaptAI/OpenAdapt/pull/1034) (#1034) — merged 
 
 
 
