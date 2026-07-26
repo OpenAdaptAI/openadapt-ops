@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-26 13:06 UTC*
+> *Last updated: 2026-07-26 19:01 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [docs: lead the README with the verified-execution product story (compile, replay, verify, halt)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1056) (#1056) — merged 
 
 - [build(deps): update CodeQL actions together](https://github.com/OpenAdaptAI/OpenAdapt/pull/1054) (#1054) — merged 
 
@@ -46,12 +48,12 @@
 
 - [build(deps): bump actions/attest from 4.1.1 to 4.2.0](https://github.com/OpenAdaptAI/OpenAdapt/pull/1034) (#1034) — merged 
 
-- [build(deps): bump pypa/gh-action-pypi-publish from 1.14.0 to 1.14.1](https://github.com/OpenAdaptAI/OpenAdapt/pull/1033) (#1033) — merged 
-
 
 
 ## openadapt-flow
 
+
+- [feat(runtime): explicit transaction outcome taxonomy + effect journal + idempotency (Section 3)](https://github.com/OpenAdaptAI/openadapt-flow/pull/259) (#259) — merged 
 
 - [Fix exact presentation timing and harden openIMIS replay](https://github.com/OpenAdaptAI/openadapt-flow/pull/257) (#257) — merged 
 
@@ -90,8 +92,6 @@
 - [feat: add two-phase remote actuation leases](https://github.com/OpenAdaptAI/openadapt-flow/pull/238) (#238) — merged 
 
 - [fix: visualize durable target evidence](https://github.com/OpenAdaptAI/openadapt-flow/pull/237) (#237) — merged 
-
-- [feat: add versioned qualification project contract](https://github.com/OpenAdaptAI/openadapt-flow/pull/236) (#236) — merged 
 
 
 
