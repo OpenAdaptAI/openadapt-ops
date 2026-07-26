@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-26 19:28 UTC*
+> *Last updated: 2026-07-26 20:13 UTC*
 
 
 
@@ -53,7 +53,13 @@
 ## openadapt-flow
 
 
+- [feat(compiler): field-label parameter inference with one-shot operator confirm](https://github.com/OpenAdaptAI/openadapt-flow/pull/262) (#262) — merged 
+
+- [style: ruff-format transaction module (restores lint gate)](https://github.com/OpenAdaptAI/openadapt-flow/pull/260) (#260) — merged 
+
 - [feat(runtime): explicit transaction outcome taxonomy + effect journal + idempotency (Section 3)](https://github.com/OpenAdaptAI/openadapt-flow/pull/259) (#259) — merged 
+
+- [bench(citrix): comprehensive deterministic ICA/HDX stand-in qualification (Section 10)](https://github.com/OpenAdaptAI/openadapt-flow/pull/258) (#258) — merged 
 
 - [Fix exact presentation timing and harden openIMIS replay](https://github.com/OpenAdaptAI/openadapt-flow/pull/257) (#257) — merged 
 
@@ -87,16 +93,12 @@
 
 - [feat: add minimum effect tier setter](https://github.com/OpenAdaptAI/openadapt-flow/pull/240) (#240) — merged 
 
-- [feat: compile captured Windows UIA evidence](https://github.com/OpenAdaptAI/openadapt-flow/pull/239) (#239) — merged 
-
-- [feat: add two-phase remote actuation leases](https://github.com/OpenAdaptAI/openadapt-flow/pull/238) (#238) — merged 
-
-- [fix: visualize durable target evidence](https://github.com/OpenAdaptAI/openadapt-flow/pull/237) (#237) — merged 
-
 
 
 ## openadapt-desktop
 
+
+- [feat: capability-aware surface availability with precise remediation (Section 6)](https://github.com/OpenAdaptAI/openadapt-desktop/pull/64) (#64) — merged 
 
 - [feat: post-compose exact overlay presentation videos](https://github.com/OpenAdaptAI/openadapt-desktop/pull/63) (#63) — merged 
 
@@ -135,8 +137,6 @@
 - [feat: reconcile cockpit frontend, wired engine, and fail-closed policy sync onto main](https://github.com/OpenAdaptAI/openadapt-desktop/pull/36) (#36) — merged 
 
 - [feat: read-only "Grounding model" section in desktop Settings](https://github.com/OpenAdaptAI/openadapt-desktop/pull/35) (#35) — merged 
-
-- [fix: reconcile engine IPC + flow bridge with the cockpit frontend contract](https://github.com/OpenAdaptAI/openadapt-desktop/pull/34) (#34) — merged 
 
 
 
