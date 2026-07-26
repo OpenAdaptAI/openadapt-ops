@@ -150,6 +150,18 @@ execution boundary.
 
 ## Measured, not claimed
 
+The [public Cloud demo](https://app.openadapt.ai/demo#footage) keeps the same
+visual contract used on the OpenAdapt website: switch between the **Recorded
+demonstration** and **Compiled replay**, then choose **Guided view** or **Raw
+footage**. Guided view adds the runtime presentation layer to a derivative;
+raw evidence media remains unchanged. A target outline appears only when the
+runtime bound that rectangle to the exact decoded replay frame. **VERIFIED**
+means the complete declared contract passed; **HALTED** means the run stopped
+rather than claim an outcome it could not prove.
+
+[Watch the real-application demo](https://app.openadapt.ai/demo#footage){ .md-button .md-button--primary }
+[Inspect the exact OpenEMR evidence](https://openadapt.ai/artifacts/json?source=%2Freference%2Fopenemr-patient-registration-standard-synthetic-v1%2Fmanifest.json){ .md-button }
+
 We publish the numbers and the failure modes. These two results run **both
 arms**, compiled replay against a computer-use agent, under the same
 arm-independent success check. **OpenEMR** is the flagship real-EMR
