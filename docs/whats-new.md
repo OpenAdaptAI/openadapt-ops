@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-25 23:20 UTC*
+> *Last updated: 2026-07-26 04:11 UTC*
 
 
 
@@ -53,6 +53,10 @@
 ## openadapt-flow
 
 
+- [fix(runtime): verify uncertain delivery without retry](https://github.com/OpenAdaptAI/openadapt-flow/pull/250) (#250) — merged 
+
+- [feat(playwright): guard structural actions across frames](https://github.com/OpenAdaptAI/openadapt-flow/pull/249) (#249) — merged 
+
 - [fix: keep generated benchmark runs out of distributions](https://github.com/OpenAdaptAI/openadapt-flow/pull/248) (#248) — merged 
 
 - [feat: seal durable state for encrypted production runs](https://github.com/OpenAdaptAI/openadapt-flow/pull/246) (#246) — merged 
@@ -89,14 +93,12 @@
 
 - [ci: move full matrix to qualification lane](https://github.com/OpenAdaptAI/openadapt-flow/pull/230) (#230) — merged 
 
-- [test(citrix): inspect protocol surface without actuation](https://github.com/OpenAdaptAI/openadapt-flow/pull/229) (#229) — merged 
-
-- [fix: keep interop types green in all-extras development](https://github.com/OpenAdaptAI/openadapt-flow/pull/228) (#228) — merged 
-
 
 
 ## openadapt-desktop
 
+
+- [feat: post-compose exact overlay presentation videos](https://github.com/OpenAdaptAI/openadapt-desktop/pull/63) (#63) — merged 
 
 - [fix: label Desktop CLI as Beta](https://github.com/OpenAdaptAI/openadapt-desktop/pull/62) (#62) — merged 
 
@@ -136,8 +138,6 @@
 
 - [fix: reconcile engine IPC + flow bridge with the cockpit frontend contract](https://github.com/OpenAdaptAI/openadapt-desktop/pull/34) (#34) — merged 
 
-- [feat: add compiled-program visualization view to desktop app](https://github.com/OpenAdaptAI/openadapt-desktop/pull/33) (#33) — merged 
-
 
 
 ## openadapt-agent
@@ -175,8 +175,6 @@
 
 - [docs(evals): bind current Flow release performance](https://github.com/OpenAdaptAI/openadapt-evals/pull/270) (#270) — merged 
 
-- [docs(evals): publish bounded OpenAdapt performance evidence](https://github.com/OpenAdaptAI/openadapt-evals/pull/269) (#269) — merged 
-
 
 
 ## openadapt-capture
@@ -211,10 +209,6 @@
 - [chore(deps): bump actions/checkout from 4 to 7](https://github.com/OpenAdaptAI/openadapt-capture/pull/32) (#32) — merged 
 
 - [chore: add security CI (CodeQL, gitleaks, dependency-review, Dependabot)](https://github.com/OpenAdaptAI/openadapt-capture/pull/31) (#31) — merged 
-
-- [feat: window-scoped recording (capture one window in its own pixel space)](https://github.com/OpenAdaptAI/openadapt-capture/pull/30) (#30) — merged 
-
-- [docs: focus capture on its current product role](https://github.com/OpenAdaptAI/openadapt-capture/pull/29) (#29) — merged 
 
 
 
