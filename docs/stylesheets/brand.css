@@ -321,6 +321,12 @@ a:focus-visible {
 /* The docs footer carries the same warm ground, hairline, and quiet links as
    the public site instead of switching to unrelated dark chrome. */
 [data-md-color-scheme="default"] .md-footer {
+  /* Material's footer children consume these variables directly. Define the
+     light-scheme foreground scale on the component so copyright text, links,
+     navigation labels, and icons cannot inherit the dark-footer defaults. */
+  --md-footer-fg-color: var(--oa-ink);
+  --md-footer-fg-color--light: var(--oa-ink-2);
+  --md-footer-fg-color--lighter: var(--oa-ink-2);
   background: var(--oa-ground);
   border-top: 1px solid var(--oa-hairline);
   color: var(--oa-ink-2);
@@ -349,6 +355,10 @@ a:focus-visible {
   text-decoration: underline;
   text-decoration-color: var(--oa-link-underline);
   text-underline-offset: 0.2em;
+}
+[data-md-color-scheme="default"] .md-copyright {
+  font-size: 0.72rem;
+  line-height: 1.5;
 }
 
 @media screen and (max-width: 76.25em) {

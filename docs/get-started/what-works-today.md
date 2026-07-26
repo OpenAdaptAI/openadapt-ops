@@ -32,6 +32,11 @@ deployment boundary.
 The [interactive status viewer](https://openadapt.ai/artifacts/json?source=%2Fstatus.json)
 presents the same release, availability, evidence, and deployment dimensions;
 the [raw JSON](https://openadapt.ai/status.json) remains available for tools.
+For a visual tour, the [public Cloud demo](https://app.openadapt.ai/demo#footage)
+shows recorded demonstrations, compiled replays, exact-frame guided overlays,
+VERIFIED outcomes, and fail-safe HALTED cases. Its evidence links open the
+corresponding manifests in the first-party JSON viewer instead of presenting
+media as proof by itself.
 The public managed runner executes approved browser workflows. Native desktop,
 RDP, and Citrix/VDI workflows execute locally or in a self-hosted or
 customer-controlled runtime connected to the same governance model.
