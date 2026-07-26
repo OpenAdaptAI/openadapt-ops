@@ -23,6 +23,11 @@ How-to guides for real deployments. Each assumes you have
 
     Use `lint` and `certify` to make "runnable" distinct from "safe."
 
+-   [__Qualify a workflow__](qualify-a-workflow.md)
+
+    Review the graph and risk, bind identity and effects, run representative
+    and fault cases, certify, seal, export, and deploy from Desktop or CLI.
+
 -   [__Run a deployment__](run-a-deployment.md)
 
     Wire a real backend, effect verification, actuation, and durability from
