@@ -150,17 +150,32 @@ execution boundary.
 
 ## Measured, not claimed
 
-The [public Cloud demo](https://app.openadapt.ai/demo#footage) keeps the same
-visual contract used on the OpenAdapt website: switch between the **Recorded
-demonstration** and **Compiled replay**, then choose **Guided view** or **Raw
-footage**. Guided view adds the runtime presentation layer to a derivative;
-raw evidence media remains unchanged. A target outline appears only when the
-runtime bound that rectangle to the exact decoded replay frame. **VERIFIED**
-means the complete declared contract passed; **HALTED** means the run stopped
-rather than claim an outcome it could not prove.
+The [OpenAdapt website](https://openadapt.ai/how-it-works) and
+[public Cloud demo](https://app.openadapt.ai/demo#footage) share one viewer
+contract for real OpenEMR, Frappe Lending, and openIMIS footage:
 
-[Watch the real-application demo](https://app.openadapt.ai/demo#footage){ .md-button .md-button--primary }
-[Inspect the exact OpenEMR evidence](https://openadapt.ai/artifacts/json?source=%2Freference%2Fopenemr-patient-registration-standard-synthetic-v1%2Fmanifest.json){ .md-button }
+- **Recorded demonstration** is source capture and carries no execution outcome.
+- **Verified replay** appears only for exact replay media bound to a complete
+  passing outcome contract.
+- **Fail-safe halt** appears only when exact retained halt media exists. The
+  current openIMIS reference includes it; the viewer never invents a halt mode
+  for another application.
+
+**Guided view** adds the presentation layer to a derivative; **Raw footage**
+shows the immutable media. Guided target tracking appears only when the media
+digest, exact decoded frame, viewport mapping, and runtime target binding all
+agree. The status capsule uses a bottom corner that does not cover the target
+or another protected region, and disappears if neither corner is safe. Neither
+the target outline nor the capsule is verification evidence.
+
+Cloud uses the same application, mode, and view choices, then adds an openIMIS
+deep dive with the compiled graph, contracts, six retained Standard-profile
+results, and byte-inventoried evidence links. **VERIFIED** means the complete
+declared contract passed; **HALTED** means the run stopped rather than claim an
+outcome it could not prove.
+
+[Watch the shared real-application demo](https://openadapt.ai/how-it-works){ .md-button .md-button--primary }
+[Inspect the Cloud evidence deep dive](https://app.openadapt.ai/demo#footage){ .md-button }
 
 We publish the numbers and the failure modes. These two results run **both
 arms**, compiled replay against a computer-use agent, under the same

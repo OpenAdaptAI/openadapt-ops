@@ -32,11 +32,14 @@ deployment boundary.
 The [interactive status viewer](https://openadapt.ai/artifacts/json?source=%2Fstatus.json)
 presents the same release, availability, evidence, and deployment dimensions;
 the [raw JSON](https://openadapt.ai/status.json) remains available for tools.
-For a visual tour, the [public Cloud demo](https://app.openadapt.ai/demo#footage)
-shows recorded demonstrations, compiled replays, exact-frame guided overlays,
-VERIFIED outcomes, and fail-safe HALTED cases. Its evidence links open the
-corresponding manifests in the first-party JSON viewer instead of presenting
-media as proof by itself.
+For a visual tour, the [OpenAdapt website](https://openadapt.ai/how-it-works) and
+[public Cloud demo](https://app.openadapt.ai/demo#footage) share the same real
+application choices and presentation vocabulary: **Recorded demonstration**,
+outcome-bound **Verified replay**, exact retained **Fail-safe halt** footage
+where available, and **Guided view** versus immutable **Raw footage**. Guided
+targets are bound to an exact decoded frame rather than inferred by the viewer.
+Cloud then adds the openIMIS graph, contracts, six Standard-profile results, and
+byte-inventoried evidence links; media is never presented as proof by itself.
 The public managed runner executes approved browser workflows. Native desktop,
 RDP, and Citrix/VDI workflows execute locally or in a self-hosted or
 customer-controlled runtime connected to the same governance model.
