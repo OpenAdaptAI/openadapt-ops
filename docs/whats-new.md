@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-26 23:54 UTC*
+> *Last updated: 2026-07-26 23:57 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [feat: add one-command local quickstart](https://github.com/OpenAdaptAI/OpenAdapt/pull/1059) (#1059) — merged 
 
 - [ci(release): reconcile platform manifest after publish](https://github.com/OpenAdaptAI/OpenAdapt/pull/1058) (#1058) — merged 
 
@@ -45,8 +47,6 @@
 - [docs(readme): mention for-each loops and visualize in the launcher quickstart](https://github.com/OpenAdaptAI/OpenAdapt/pull/1038) (#1038) — merged 
 
 - [build(deps): bump actions/dependency-review-action from 4.9.0 to 5.0.0](https://github.com/OpenAdaptAI/OpenAdapt/pull/1037) (#1037) — merged 
-
-- [build(deps): bump actions/checkout from 6 to 7](https://github.com/OpenAdaptAI/OpenAdapt/pull/1036) (#1036) — merged 
 
 
 
