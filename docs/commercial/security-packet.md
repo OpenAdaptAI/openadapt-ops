@@ -46,7 +46,7 @@ append-only, hash-chained audit log.
 
 | Item | Status |
 |---|---|
-| SOC 2 | **Not attested.** OpenAdapt does not hold a SOC 2 report, has not opened an auditor-defined observation period, and does not claim certification. An internal controls matrix, gap assessment, and evidence plan are maintained against Security, Availability, and Confidentiality criteria. Target date for opening an observation period: **[FOUNDER TO CONFIRM DATE]**. |
+| SOC 2 | **Not attested.** OpenAdapt does not hold a SOC 2 report and does not claim certification. Request the current security-controls packet for implementation evidence and remaining gaps. |
 | HIPAA / BAA | No standing BAA offering. Deployments that touch PHI use a customer-controlled boundary; BAA and counsel review are engagement-specific. |
 | Penetration test | Request current status directly; do not infer from documentation. |
 | Vulnerability disclosure | Coordinated disclosure via private GitHub advisories, acknowledgment target within 5 business days (engine `SECURITY.md`). |

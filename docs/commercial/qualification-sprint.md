@@ -23,8 +23,6 @@ sprints or scoped extensions.
 - The sprint fee is due regardless of outcome. **"Do not automate" is a valid,
   full-value result**: you paid for a defensible decision, and a well-evidenced
   no saves you the far larger cost of a bad production deployment.
-- Conversion credit: a portion of the sprint fee credits toward the first
-  production year. Exact percentage: **[FOUNDER TO CONFIRM]**.
 
 ## When the clock starts
 
@@ -74,8 +72,8 @@ We recommend against automation, and say so in the report, when for example:
   example uncontrolled application releases with no test tenant).
 - A direct API or batch interface already exists that makes GUI automation the
   wrong tool. We will tell you to use it.
-- The volume and value do not clear the [ROI worksheet](roi-calculator.md)
-  under conservative assumptions.
+- The volume and value do not clear an agreed economic threshold under
+  conservative assumptions.
 
 ## Acceptance criteria
 
@@ -114,5 +112,5 @@ qualified fixture set:
   pursuing.
 
 Start by describing the workflow at
-[openadapt.ai/qualify](https://openadapt.ai/qualify), or use the
-[Statement of Work template](sow-template.md) to contract directly.
+[openadapt.ai/qualify](https://openadapt.ai/qualify). The written proposal and
+agreement define the exact scope, payment schedule, and production options.

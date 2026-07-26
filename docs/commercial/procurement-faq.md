@@ -12,7 +12,7 @@ A fixed-scope engineering assessment of one workflow, from $15,000 (native,
 RDP, and Citrix scopes typically $25,000 to $40,000), delivering a signed
 go/no-go report, coverage matrix, and evidence pack. It is paid regardless of
 outcome; "do not automate" is a full-value deliverable. See the
-[one-pager](qualification-sprint.md) and [SOW template](sow-template.md).
+[Qualification Sprint one-pager](qualification-sprint.md).
 
 **Is there a subscription?**
 OpenAdapt Cloud is $500.00/month for managed browser execution of approved
@@ -27,11 +27,11 @@ environment, runners, evidence, support, and requalification scope. OEM
 embedding is typically $75,000 to $150,000 per year plus integration.
 
 **Does the sprint fee credit toward production?**
-A portion of the sprint fee credits toward the first production year; the
-exact percentage is being finalized: **[FOUNDER TO CONFIRM]**.
+Any production credit is stated in the customer-specific written proposal. No
+credit is implied by this public documentation.
 
 **What are the payment terms?**
-Per SOW; the template proposes 50% at signature, 50% at delivery for sprints.
+The customer-specific written proposal and agreement state the payment terms.
 
 ## Licensing and lock-in
 
@@ -53,10 +53,8 @@ operator-verifiable no-egress posture. See
 ## Security and compliance
 
 **Are you SOC 2 certified?**
-No. OpenAdapt does not hold a SOC 2 report and does not claim certification;
-an internal controls matrix and evidence plan are maintained, and the target
-date for an observation period is **[FOUNDER TO CONFIRM DATE]**. See the
-[security packet](security-packet.md).
+No. OpenAdapt does not hold a SOC 2 report and does not claim certification.
+See the [security packet](security-packet.md).
 
 **Will you sign a BAA / process PHI in your cloud?**
 The managed cloud lane is for non-regulated data. PHI-bearing workflows run in
