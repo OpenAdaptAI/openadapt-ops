@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-26 23:35 UTC*
+> *Last updated: 2026-07-26 23:38 UTC*
 
 
 
@@ -98,6 +98,8 @@
 ## openadapt-desktop
 
 
+- [Complete the Desktop qualification cockpit lifecycle](https://github.com/OpenAdaptAI/openadapt-desktop/pull/66) (#66) — merged 
+
 - [ci: keep docs dispatch on proven v3](https://github.com/OpenAdaptAI/openadapt-desktop/pull/65) (#65) — merged 
 
 - [feat: capability-aware surface availability with precise remediation (Section 6)](https://github.com/OpenAdaptAI/openadapt-desktop/pull/64) (#64) — merged 
@@ -135,8 +137,6 @@
 - [feat: ship Flow 1.20.1 with verified managed runtimes](https://github.com/OpenAdaptAI/openadapt-desktop/pull/40) (#40) — merged 
 
 - [Gate Desktop releases on explicit green-main dispatch](https://github.com/OpenAdaptAI/openadapt-desktop/pull/39) (#39) — merged 
-
-- [Bundle Flow into native desktop installers](https://github.com/OpenAdaptAI/openadapt-desktop/pull/38) (#38) — merged 
 
 
 
