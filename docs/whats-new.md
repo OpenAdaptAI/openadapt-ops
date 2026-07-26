@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-26 21:33 UTC*
+> *Last updated: 2026-07-26 21:48 UTC*
 
 
 
@@ -55,6 +55,8 @@
 
 - [feat(repair): governed promotion lifecycle with campaigns, canary, and rollback (Section 9)](https://github.com/OpenAdaptAI/openadapt-flow/pull/265) (#265) — merged 
 
+- [feat(effects): verifier adapter platform (Section 4)](https://github.com/OpenAdaptAI/openadapt-flow/pull/264) (#264) — merged 
+
 - [feat(cli): explicit surface selection for production profiles + surface-bound workflows (Section 5)](https://github.com/OpenAdaptAI/openadapt-flow/pull/263) (#263) — merged 
 
 - [feat(compiler): field-label parameter inference with one-shot operator confirm](https://github.com/OpenAdaptAI/openadapt-flow/pull/262) (#262) — merged 
@@ -90,8 +92,6 @@
 - [feat: add atomic bundle sealing command](https://github.com/OpenAdaptAI/openadapt-flow/pull/244) (#244) — merged 
 
 - [feat: transport precise execution outcomes](https://github.com/OpenAdaptAI/openadapt-flow/pull/243) (#243) — merged 
-
-- [feat: enforce qualified identity signal quorums](https://github.com/OpenAdaptAI/openadapt-flow/pull/242) (#242) — merged 
 
 
 
@@ -179,6 +179,8 @@
 
 ## openadapt-capture
 
+
+- [fix: bound native structural evidence](https://github.com/OpenAdaptAI/openadapt-capture/pull/48) (#48) — merged 
 
 - [fix: preserve observer setup failure at readiness timeout](https://github.com/OpenAdaptAI/openadapt-capture/pull/47) (#47) — merged 
 
