@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-26 10:44 UTC*
+> *Last updated: 2026-07-26 12:41 UTC*
 
 
 
@@ -53,6 +53,8 @@
 ## openadapt-flow
 
 
+- [Fix exact presentation timing and harden openIMIS replay](https://github.com/OpenAdaptAI/openadapt-flow/pull/257) (#257) — merged 
+
 - [Add a bounded local JSON artifact viewer](https://github.com/OpenAdaptAI/openadapt-flow/pull/255) (#255) — merged 
 
 - [fix(bundle): preserve sealed v2 frame-path compatibility](https://github.com/OpenAdaptAI/openadapt-flow/pull/254) (#254) — merged 
@@ -90,8 +92,6 @@
 - [fix: visualize durable target evidence](https://github.com/OpenAdaptAI/openadapt-flow/pull/237) (#237) — merged 
 
 - [feat: add versioned qualification project contract](https://github.com/OpenAdaptAI/openadapt-flow/pull/236) (#236) — merged 
-
-- [docs: reconcile desktop and remote substrate evidence](https://github.com/OpenAdaptAI/openadapt-flow/pull/235) (#235) — merged 
 
 
 
