@@ -1,12 +1,16 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-27 15:18 UTC*
+> *Last updated: 2026-07-27 16:35 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [docs(metadata): align launcher with governed execution](https://github.com/OpenAdaptAI/OpenAdapt/pull/1064) (#1064) — merged 
+
+- [ci: detect unreleased work and silently skipped publishes](https://github.com/OpenAdaptAI/OpenAdapt/pull/1063) (#1063) — merged 
 
 - [fix(manifest): correct published digests and make drift detectable](https://github.com/OpenAdaptAI/OpenAdapt/pull/1062) (#1062) — merged 
 
@@ -44,10 +48,6 @@
 
 - [docs(readme): fix Resolution ladder text overflow in masthead SVG](https://github.com/OpenAdaptAI/OpenAdapt/pull/1042) (#1042) — merged 
 
-- [docs(readme): add SVG masthead hero and fix mermaid loop control overlap](https://github.com/OpenAdaptAI/OpenAdapt/pull/1041) (#1041) — merged 
-
-- [docs(readme): add real visualize graph, loop/halt diagrams, and run screenshots](https://github.com/OpenAdaptAI/OpenAdapt/pull/1040) (#1040) — merged 
-
 
 
 ## openadapt-flow
@@ -57,7 +57,11 @@
 
 - [fix(risk): stop flagging text-field focus clicks as ambiguous](https://github.com/OpenAdaptAI/openadapt-flow/pull/278) (#278) — merged 
 
+- [docs: make the paper submission-ready and discharge both adversarial reviews](https://github.com/OpenAdaptAI/openadapt-flow/pull/277) (#277) — merged 
+
 - [docs(effectbench): frame reference counts as pinned fixture values, not a published result](https://github.com/OpenAdaptAI/openadapt-flow/pull/276) (#276) — merged 
+
+- [feat: bind remote attended decisions to AAL2](https://github.com/OpenAdaptAI/openadapt-flow/pull/275) (#275) — merged 
 
 - [ci: move recurring qualification matrices to weekly gates](https://github.com/OpenAdaptAI/openadapt-flow/pull/274) (#274) — merged 
 
@@ -89,14 +93,14 @@
 
 - [bench(citrix): comprehensive deterministic ICA/HDX stand-in qualification (Section 10)](https://github.com/OpenAdaptAI/openadapt-flow/pull/258) (#258) — merged 
 
-- [Fix exact presentation timing and harden openIMIS replay](https://github.com/OpenAdaptAI/openadapt-flow/pull/257) (#257) — merged 
-
-- [Add a bounded local JSON artifact viewer](https://github.com/OpenAdaptAI/openadapt-flow/pull/255) (#255) — merged 
-
 
 
 ## openadapt-desktop
 
+
+- [fix: make the local Desktop cockpit account-free](https://github.com/OpenAdaptAI/openadapt-desktop/pull/72) (#72) — merged 
+
+- [ci: detect unreleased work and silently skipped publishes](https://github.com/OpenAdaptAI/openadapt-desktop/pull/70) (#70) — merged 
 
 - [fix(release): point "Latest" at the native installers](https://github.com/OpenAdaptAI/openadapt-desktop/pull/69) (#69) — merged 
 
@@ -133,10 +137,6 @@
 - [feat: author identity and effect qualification contracts](https://github.com/OpenAdaptAI/openadapt-desktop/pull/45) (#45) — merged 
 
 - [feat: add first writable qualification cockpit slice](https://github.com/OpenAdaptAI/openadapt-desktop/pull/44) (#44) — merged 
-
-- [Add native and remote execution targets to the Desktop cockpit](https://github.com/OpenAdaptAI/openadapt-desktop/pull/43) (#43) — merged 
-
-- [fix: make FFmpeg runtime build portable](https://github.com/OpenAdaptAI/openadapt-desktop/pull/42) (#42) — merged 
 
 
 
@@ -180,6 +180,10 @@
 ## openadapt-capture
 
 
+- [ci: simplify and harden release health](https://github.com/OpenAdaptAI/openadapt-capture/pull/58) (#58) — merged 
+
+- [ci: detect unreleased work and silently skipped publishes](https://github.com/OpenAdaptAI/openadapt-capture/pull/57) (#57) — merged 
+
 - [chore(deps): update release and CodeQL actions](https://github.com/OpenAdaptAI/openadapt-capture/pull/56) (#56) — merged 
 
 - [fix(audio): make narration capture on-device only and fail closed](https://github.com/OpenAdaptAI/openadapt-capture/pull/51) (#51) — merged 
@@ -215,10 +219,6 @@
 - [chore(deps): bump python-semantic-release/python-semantic-release from 9.15.2 to 10.6.1](https://github.com/OpenAdaptAI/openadapt-capture/pull/34) (#34) — merged 
 
 - [chore(deps): bump actions/dependency-review-action from 4.9.0 to 5.0.0](https://github.com/OpenAdaptAI/openadapt-capture/pull/33) (#33) — merged 
-
-- [chore(deps): bump actions/checkout from 4 to 7](https://github.com/OpenAdaptAI/openadapt-capture/pull/32) (#32) — merged 
-
-- [chore: add security CI (CodeQL, gitleaks, dependency-review, Dependabot)](https://github.com/OpenAdaptAI/openadapt-capture/pull/31) (#31) — merged 
 
 
 
