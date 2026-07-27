@@ -1,3 +1,9 @@
+---
+description: >-
+  Install the OpenAdapt Desktop cockpit on Windows, macOS, or Linux, grant the
+  required permissions, and verify your first local recording.
+---
+
 # Desktop app: install and first run
 
 The OpenAdapt desktop app is the local cockpit for the record →
@@ -112,7 +118,7 @@ first-week failures.
 
 ## During a governed run
 
-Desktop 0.13.1 can show a separate always-on-top status surface without adding
+Desktop 0.14.0 can show a separate always-on-top status surface without adding
 anything to the target application. While OpenAdapt is observing or executing,
 the surface is non-focusable, ignores pointer input, exposes no controls, and is
 excluded from capture before it becomes visible. Controls become interactive

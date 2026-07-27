@@ -152,12 +152,12 @@ nav:
     - Connect to a cloud workspace: desktop/connect-to-cloud.md
     - Troubleshooting: guides/troubleshooting.md
   - Security:
+    - Security and deployment review: guides/security-review.md
     - Account security and privileged access: guides/account-security.md
     - Qualification evidence: get-started/what-works-today.md
     - Fail-closed regulated execution: concepts/regulated-execution.md
     - Settings and policy governance: concepts/settings-governance.md
     - Security and data handling: guides/security-and-data-handling.md
-    - Security and deployment review: guides/security-review.md
   - Commercial:
     - commercial/index.md
     - Qualification Sprint: commercial/qualification-sprint.md

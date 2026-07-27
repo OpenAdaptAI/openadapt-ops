@@ -1,3 +1,9 @@
+---
+description: >-
+  Inspect OpenAdapt qualification evidence by exact workflow, application,
+  environment, run count, effect oracle, refusal case, and execution surface.
+---
+
 # Qualification evidence
 
 OpenAdapt compiles demonstrated GUI workflows into deterministic, locally

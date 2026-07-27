@@ -1,5 +1,5 @@
 ---
-title: OpenAdapt package documentation moved
+title: openadapt-agent documentation moved
 description: OpenAdapt package documentation now lives in the canonical product and component guide.
 canonical: https://docs.openadapt.ai/ecosystem/
 redirect_to: /ecosystem/
@@ -8,15 +8,9 @@ hide:
   - toc
 ---
 
-# OpenAdapt package documentation moved
+# openadapt-agent documentation moved
 
-The product and package guide now lives at
-[Package and repository lifecycle](/ecosystem/). The public installation path
-is:
-
-```bash
-pip install openadapt
-openadapt flow --help
-```
+The current product and component guide lives at
+[Package and repository lifecycle](/ecosystem/).
 
 [Continue to the current guide →](/ecosystem/){ .md-button .md-button--primary }

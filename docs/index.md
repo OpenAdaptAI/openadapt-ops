@@ -1,5 +1,8 @@
 ---
 title: OpenAdapt, the demonstration compiler
+description: >-
+  Learn how OpenAdapt compiles demonstrated browser, desktop, RDP, and Citrix
+  workflows into deterministic replay with identity, effect, and refusal gates.
 hide:
   - toc
 ---
@@ -18,7 +21,7 @@ fails.
 
 [Try it locally](get-started/index.md){ .md-button .md-button--primary }
 [Read the concepts](concepts/demonstration-compiler.md){ .md-button }
-[Evaluate a workflow](https://openadapt.ai/#book){ .md-button }
+[Evaluate a workflow](https://openadapt.ai/qualify){ .md-button }
 
 ---
 
@@ -53,9 +56,10 @@ success oracle before production use.
     ---
 
     A compiled workflow replays with **zero model calls** on the healthy path.
-    Local template match, OCR, and geometry resolve each step. Self-hosted
-    healthy replay has no model-API charge; hosted infrastructure and service
-    pricing are separate.
+    Structural selectors or accessibility evidence lead where the surface
+    provides them; visual anchors, OCR, and geometry cover opaque interfaces.
+    Self-hosted healthy replay has no model-API charge; hosted infrastructure
+    and service pricing are separate.
 
     [The demonstration compiler →](concepts/demonstration-compiler.md)
 
