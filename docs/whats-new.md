@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-27 06:45 UTC*
+> *Last updated: 2026-07-27 12:27 UTC*
 
 
 
@@ -53,11 +53,17 @@
 ## openadapt-flow
 
 
+- [docs(effectbench): frame reference counts as pinned fixture values, not a published result](https://github.com/OpenAdaptAI/openadapt-flow/pull/276) (#276) — merged 
+
+- [ci: move recurring qualification matrices to weekly gates](https://github.com/OpenAdaptAI/openadapt-flow/pull/274) (#274) — merged 
+
 - [feat: make browser runtime an opt-in capability](https://github.com/OpenAdaptAI/openadapt-flow/pull/273) (#273) — merged 
 
 - [feat: add signed local attended-decision view](https://github.com/OpenAdaptAI/openadapt-flow/pull/272) (#272) — merged 
 
 - [feat: emit privacy-safe failures from customer runners](https://github.com/OpenAdaptAI/openadapt-flow/pull/270) (#270) — merged 
+
+- [fix: bind qualified risk and effect policy end to end](https://github.com/OpenAdaptAI/openadapt-flow/pull/269) (#269) — merged 
 
 - [feat: govern right-click, drag, and shortcuts across substrates](https://github.com/OpenAdaptAI/openadapt-flow/pull/268) (#268) — merged 
 
@@ -86,12 +92,6 @@
 - [fix(bundle): preserve sealed v2 frame-path compatibility](https://github.com/OpenAdaptAI/openadapt-flow/pull/254) (#254) — merged 
 
 - [feat(demo): publish exact-bound MockMed v3 presentation evidence](https://github.com/OpenAdaptAI/openadapt-flow/pull/253) (#253) — merged 
-
-- [fix(playwright): bind nested-frame identity and input](https://github.com/OpenAdaptAI/openadapt-flow/pull/252) (#252) — merged 
-
-- [feat(runtime): emit exact-bound browser overlay events](https://github.com/OpenAdaptAI/openadapt-flow/pull/251) (#251) — merged 
-
-- [fix(runtime): verify uncertain delivery without retry](https://github.com/OpenAdaptAI/openadapt-flow/pull/250) (#250) — merged 
 
 
 
