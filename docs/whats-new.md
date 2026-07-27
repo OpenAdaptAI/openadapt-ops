@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-27 14:27 UTC*
+> *Last updated: 2026-07-27 15:18 UTC*
 
 
 
@@ -9,6 +9,10 @@
 
 
 - [fix(manifest): correct published digests and make drift detectable](https://github.com/OpenAdaptAI/OpenAdapt/pull/1062) (#1062) — merged 
+
+- [ci: reduce launcher PR matrix cost](https://github.com/OpenAdaptAI/OpenAdapt/pull/1061) (#1061) — merged 
+
+- [feat: add explicit browser install capability](https://github.com/OpenAdaptAI/OpenAdapt/pull/1060) (#1060) — merged 
 
 - [feat: add one-command local quickstart](https://github.com/OpenAdaptAI/OpenAdapt/pull/1059) (#1059) — merged 
 
@@ -44,16 +48,14 @@
 
 - [docs(readme): add real visualize graph, loop/halt diagrams, and run screenshots](https://github.com/OpenAdaptAI/OpenAdapt/pull/1040) (#1040) — merged 
 
-- [docs(readme): add local-first path, restructure Quick Start into Local + Cloud](https://github.com/OpenAdaptAI/OpenAdapt/pull/1039) (#1039) — merged 
-
-- [docs(readme): mention for-each loops and visualize in the launcher quickstart](https://github.com/OpenAdaptAI/OpenAdapt/pull/1038) (#1038) — merged 
-
 
 
 ## openadapt-flow
 
 
 - [feat: bind PHI-free qualified identity signals](https://github.com/OpenAdaptAI/openadapt-flow/pull/279) (#279) — merged 
+
+- [fix(risk): stop flagging text-field focus clicks as ambiguous](https://github.com/OpenAdaptAI/openadapt-flow/pull/278) (#278) — merged 
 
 - [docs(effectbench): frame reference counts as pinned fixture values, not a published result](https://github.com/OpenAdaptAI/openadapt-flow/pull/276) (#276) — merged 
 
@@ -91,12 +93,12 @@
 
 - [Add a bounded local JSON artifact viewer](https://github.com/OpenAdaptAI/openadapt-flow/pull/255) (#255) — merged 
 
-- [fix(bundle): preserve sealed v2 frame-path compatibility](https://github.com/OpenAdaptAI/openadapt-flow/pull/254) (#254) — merged 
-
 
 
 ## openadapt-desktop
 
+
+- [fix(release): point "Latest" at the native installers](https://github.com/OpenAdaptAI/openadapt-desktop/pull/69) (#69) — merged 
 
 - [ci: reserve full desktop platform matrices for exact main](https://github.com/OpenAdaptAI/openadapt-desktop/pull/68) (#68) — merged 
 
@@ -135,8 +137,6 @@
 - [Add native and remote execution targets to the Desktop cockpit](https://github.com/OpenAdaptAI/openadapt-desktop/pull/43) (#43) — merged 
 
 - [fix: make FFmpeg runtime build portable](https://github.com/OpenAdaptAI/openadapt-desktop/pull/42) (#42) — merged 
-
-- [ci: build managed FFmpeg runtime assets](https://github.com/OpenAdaptAI/openadapt-desktop/pull/41) (#41) — merged 
 
 
 
@@ -179,6 +179,10 @@
 
 ## openadapt-capture
 
+
+- [chore(deps): update release and CodeQL actions](https://github.com/OpenAdaptAI/openadapt-capture/pull/56) (#56) — merged 
+
+- [fix(audio): make narration capture on-device only and fail closed](https://github.com/OpenAdaptAI/openadapt-capture/pull/51) (#51) — merged 
 
 - [ci: move native capture integration to exact main](https://github.com/OpenAdaptAI/openadapt-capture/pull/50) (#50) — merged 
 

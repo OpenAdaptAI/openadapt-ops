@@ -5,6 +5,8 @@
 
 ## OpenAdapt
 
+- **[v1.10.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.10.0)** (2026-07-27)
+  Bug Fixes
 - **[v1.9.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.9.0)** (2026-07-26)
   Chores
 - **[v1.8.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.8.0)** (2026-07-26)
@@ -12,8 +14,6 @@
 - **[v1.7.3](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.7.3)** (2026-07-25)
   Bug Fixes
 - **[v1.7.2](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.7.2)** (2026-07-24)
-  Bug Fixes
-- **[v1.7.1](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.7.1)** (2026-07-19)
   Bug Fixes
 
 ## openadapt-flow
@@ -32,7 +32,7 @@
 ## openadapt-desktop
 
 - **[v0.14.0](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/v0.14.0)** (2026-07-26)
-  Bug Fixes
+  <!-- openadapt-installer-pointer:start -->
 - **[desktop-v0.14.0](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/desktop-v0.14.0)** (2026-07-26)
   <!-- installer-release -->
 - **[v0.13.1](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/v0.13.1)** (2026-07-25)
@@ -70,6 +70,8 @@
 
 ## openadapt-capture
 
+- **[v1.2.1](https://github.com/OpenAdaptAI/openadapt-capture/releases/tag/v1.2.1)** (2026-07-27)
+  Bug Fixes
 - **[v1.2.0](https://github.com/OpenAdaptAI/openadapt-capture/releases/tag/v1.2.0)** (2026-07-26)
   Bug Fixes
 - **[v1.1.1](https://github.com/OpenAdaptAI/openadapt-capture/releases/tag/v1.1.1)** (2026-07-25)
@@ -77,8 +79,6 @@
 - **[v1.1.0](https://github.com/OpenAdaptAI/openadapt-capture/releases/tag/v1.1.0)** (2026-07-25)
   Bug Fixes
 - **[v1.0.4](https://github.com/OpenAdaptAI/openadapt-capture/releases/tag/v1.0.4)** (2026-07-24)
-  Bug Fixes
-- **[v1.0.3](https://github.com/OpenAdaptAI/openadapt-capture/releases/tag/v1.0.3)** (2026-07-23)
   Bug Fixes
 
 ## openadapt-privacy
