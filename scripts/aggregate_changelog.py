@@ -29,15 +29,31 @@ def fetch_releases(github_slug, per_page=5):
     ]
 
 
+# Boilerplate that python-semantic-release puts at the top of every release
+# body. It is identical in every release of every repository, so surfacing it
+# as a release's summary says nothing about what shipped -- openadapt-flow
+# v1.24.0 reached the published changelog carrying only this line, with its
+# actual "Bug Fixes" content dropped. Match on the licence sentence rather than
+# on italics generally, so a genuinely informative emphasised line survives.
+BOILERPLATE_MARKERS = ("this release is published under the",)
+
+
+def _is_boilerplate(text):
+    """True when a line is per-release legal boilerplate, not release notes."""
+    stripped = text.strip().strip("_*").strip().lower()
+    return any(stripped.startswith(marker) for marker in BOILERPLATE_MARKERS)
+
+
 def summarize_body(body, tag=""):
     """Return a one-line, heading-free summary of a release body.
 
     GitHub release bodies frequently open with a heading that only restates the
     version (for example ``## v1.7.1 (2026-07-19)``). Injected verbatim, that
     line duplicates the tag we already print and its leading ``#`` corrupts the
-    changelog page's heading hierarchy. Skip such redundant leading headings and
-    return the first real line of notes as inline (heading-free) text. Returns
-    an empty string when the body carries no notes beyond the version header.
+    changelog page's heading hierarchy. Skip such redundant leading headings,
+    skip the identical licence boilerplate every release carries, and return the
+    first real line of notes as inline (heading-free) text. Returns an empty
+    string when the body carries no notes beyond those.
     """
     tag_norm = tag.lstrip("vV").strip()
     for raw in body.splitlines():
@@ -46,6 +62,8 @@ def summarize_body(body, tag=""):
             continue
         text = line.lstrip("#").strip()
         if not text:
+            continue
+        if _is_boilerplate(text):
             continue
         if line.startswith("#"):
             heading = text.lstrip("vV").strip()

@@ -6,41 +6,41 @@
 ## OpenAdapt
 
 - **[v1.9.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.9.0)** (2026-07-26)
-  _This release is published under the MIT License._
+  Chores
 - **[v1.8.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.8.0)** (2026-07-26)
-  _This release is published under the MIT License._
+  Build System
 - **[v1.7.3](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.7.3)** (2026-07-25)
-  _This release is published under the MIT License._
+  Bug Fixes
 - **[v1.7.2](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.7.2)** (2026-07-24)
-  _This release is published under the MIT License._
+  Bug Fixes
 - **[v1.7.1](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.7.1)** (2026-07-19)
-  _This release is published under the MIT License._
+  Bug Fixes
 
 ## openadapt-flow
 
 - **[v1.24.0](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.24.0)** (2026-07-27)
-  _This release is published under the MIT License._
+  Bug Fixes
 - **[v1.23.0](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.23.0)** (2026-07-25)
-  _This release is published under the MIT License._
+  Bug Fixes
 - **[v1.22.0](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.22.0)** (2026-07-25)
-  _This release is published under the MIT License._
+  Bug Fixes
 - **[v1.21.0](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.21.0)** (2026-07-25)
-  _This release is published under the MIT License._
+  Bug Fixes
 - **[v1.20.2](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.20.2)** (2026-07-25)
-  _This release is published under the MIT License._
+  Bug Fixes
 
 ## openadapt-desktop
 
 - **[v0.14.0](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/v0.14.0)** (2026-07-26)
-  _This release is published under the MIT License._
+  Bug Fixes
 - **[desktop-v0.14.0](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/desktop-v0.14.0)** (2026-07-26)
   <!-- installer-release -->
 - **[v0.13.1](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/v0.13.1)** (2026-07-25)
-  _This release is published under the MIT License._
+  Bug Fixes
 - **[v0.13.0](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/v0.13.0)** (2026-07-25)
-  _This release is published under the MIT License._
+  Chores
 - **[v0.12.1](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/v0.12.1)** (2026-07-25)
-  _This release is published under the MIT License._
+  Bug Fixes
 
 ## openadapt-ml
 
@@ -71,20 +71,20 @@
 ## openadapt-capture
 
 - **[v1.2.0](https://github.com/OpenAdaptAI/openadapt-capture/releases/tag/v1.2.0)** (2026-07-26)
-  _This release is published under the MIT License._
+  Bug Fixes
 - **[v1.1.1](https://github.com/OpenAdaptAI/openadapt-capture/releases/tag/v1.1.1)** (2026-07-25)
-  _This release is published under the MIT License._
+  Bug Fixes
 - **[v1.1.0](https://github.com/OpenAdaptAI/openadapt-capture/releases/tag/v1.1.0)** (2026-07-25)
-  _This release is published under the MIT License._
+  Bug Fixes
 - **[v1.0.4](https://github.com/OpenAdaptAI/openadapt-capture/releases/tag/v1.0.4)** (2026-07-24)
-  _This release is published under the MIT License._
+  Bug Fixes
 - **[v1.0.3](https://github.com/OpenAdaptAI/openadapt-capture/releases/tag/v1.0.3)** (2026-07-23)
-  _This release is published under the MIT License._
+  Bug Fixes
 
 ## openadapt-privacy
 
 - **[v1.0.0](https://github.com/OpenAdaptAI/openadapt-privacy/releases/tag/v1.0.0)** (2026-07-15)
-  _This release is published under the MIT License._
+  Bug Fixes
 - **[v0.1.1](https://github.com/OpenAdaptAI/openadapt-privacy/releases/tag/v0.1.1)** (2026-01-29)
   Bug Fixes
 

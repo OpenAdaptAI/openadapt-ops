@@ -116,3 +116,31 @@ def test_fetch_releases_handles_http_error(mocker):
     mocker.patch("aggregate_changelog.requests.get", return_value=mock_resp)
     result = fetch_releases("OpenAdaptAI/broken")
     assert result == []
+
+
+def test_summarize_body_skips_licence_boilerplate():
+    """Every python-semantic-release body opens with the same licence line.
+
+    openadapt-flow v1.24.0 reached the published changelog carrying only that
+    sentence, so the page recorded a release with no visible content while its
+    actual "Bug Fixes" notes were dropped.
+    """
+    body = (
+        "## v1.24.0 (2026-07-27)\n\n"
+        "_This release is published under the MIT License._\n\n"
+        "### Bug Fixes\n\n"
+        "- Harden rich action admission\n"
+    )
+    assert summarize_body(body, "v1.24.0") == "Bug Fixes"
+
+
+def test_summarize_body_boilerplate_only_returns_empty():
+    """A release whose body is only version header plus licence has no notes."""
+    body = "## v1.7.1 (2026-07-19)\n\n_This release is published under the MIT License._"
+    assert summarize_body(body, "v1.7.1") == ""
+
+
+def test_summarize_body_keeps_informative_emphasised_line():
+    """Only the licence sentence is boilerplate, not emphasis in general."""
+    body = "## v2.0.0 (2026-07-27)\n\n_Breaking: the compile API moved._"
+    assert summarize_body(body, "v2.0.0") == "_Breaking: the compile API moved._"
