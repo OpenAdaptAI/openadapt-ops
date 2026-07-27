@@ -1,5 +1,6 @@
 """Aggregate CHANGELOGs from all repos into a unified changelog page."""
 
+import os
 import pathlib
 import requests
 import yaml
@@ -19,9 +20,17 @@ def load_repos(path=REPOS_YML):
 def fetch_releases(github_slug, per_page=5):
     """Fetch recent releases from GitHub API."""
     url = f"{GITHUB_API}/repos/{github_slug}/releases?per_page={per_page}"
-    resp = requests.get(url, timeout=15)
+    headers = {"Accept": "application/vnd.github+json"}
+    token = os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN")
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+    resp = requests.get(url, headers=headers, timeout=15)
     if resp.status_code != 200:
-        return []
+        raise RuntimeError(
+            f"GitHub releases request failed for {github_slug}: HTTP "
+            f"{resp.status_code}. Refusing to replace the changelog with an "
+            "empty generated page."
+        )
     return [
         {"tag": r["tag_name"], "date": r["published_at"][:10],
          "url": r["html_url"], "body": (r.get("body") or "").strip()[:400]}

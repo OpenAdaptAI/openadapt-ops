@@ -58,6 +58,8 @@ jobs:
       - name: Aggregate changelogs
         if: ${{ success() && github.event_name != 'push' }}
         run: uv run python scripts/aggregate_changelog.py
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Generate What's New
         if: ${{ success() && github.event_name != 'push' }}
