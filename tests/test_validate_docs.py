@@ -90,8 +90,8 @@ def _write_contract_docs(root):
             "Production deployments should pin the exact versions."
         ),
         "packages/openadapt.md": (
+            "---\nredirect_to: /ecosystem/\n---\n\n"
             "# OpenAdapt package documentation moved\n\n"
-            '<meta http-equiv="refresh" content="0; url=/ecosystem/">\n\n'
             "`pip install openadapt`"
         ),
     }

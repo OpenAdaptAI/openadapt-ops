@@ -361,6 +361,27 @@ a:focus-visible {
   line-height: 1.5;
 }
 
+/* Material's default slate footer mutes copyright links below AA contrast at
+   the small footer size. Keep the dark footer quiet, but make every action
+   readable against the actual #111317 meta background. */
+[data-md-color-scheme="slate"] .md-footer__link,
+[data-md-color-scheme="slate"] .md-footer__title,
+[data-md-color-scheme="slate"] .md-footer-meta__inner,
+[data-md-color-scheme="slate"] .md-copyright,
+[data-md-color-scheme="slate"] .md-copyright__highlight,
+[data-md-color-scheme="slate"] .md-social__link {
+  color: #c9cdc2;
+}
+[data-md-color-scheme="slate"] .md-footer-meta.md-typeset a {
+  color: #86d9a8;
+}
+[data-md-color-scheme="slate"] .md-footer__link:hover,
+[data-md-color-scheme="slate"] .md-footer-meta.md-typeset a:focus,
+[data-md-color-scheme="slate"] .md-footer-meta.md-typeset a:hover,
+[data-md-color-scheme="slate"] .md-social__link:hover {
+  color: #a8e8bf;
+}
+
 @media screen and (max-width: 76.25em) {
   .md-grid {
     padding-left: 0.8rem;

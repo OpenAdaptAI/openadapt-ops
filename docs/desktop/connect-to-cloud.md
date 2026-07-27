@@ -1,3 +1,9 @@
+---
+description: >-
+  Pair OpenAdapt Desktop or the CLI with an OpenAdapt Cloud workspace, approve
+  local artifacts, and publish an attested workflow for governed operation.
+---
+
 # Connect the desktop app to a cloud workspace
 
 The local loop (record, compile, replay, teach) works offline and needs no
@@ -16,8 +22,9 @@ a recording → see it in the dashboard.
 
 !!! info "Hosted subscription"
     OpenAdapt Hosted is a public $500/month subscription for approved browser
-    workflows. Start at [openadapt.ai](https://openadapt.ai/#pricing), then use
-    the same workspace and ingest-token mechanism below.
+    workflows. Start at the
+    [Cloud plan](https://openadapt.ai/pricing#cloud-preview), then use the same
+    workspace and ingest-token mechanism below.
 
 ## 1. Create or sign in to your workspace
 
@@ -92,32 +99,36 @@ openadapt flow login --token oai_ingest_…      # validates + remembers the hos
 environment variable, then `~/.openadapt/config.toml`. See the
 [CLI reference](../reference/cli.md#login).
 
-## 4. Push your first recording
+## 4. Register the recording, then publish the governed bundle
 
 Record a workflow (see [Record your own app](../guides/record-your-app.md)), then
-push it. From the desktop app, use **Push to cloud** on the recording (where your
-build includes it). Or from the CLI:
+create, review, approve, and register its sanitized derivative. From the desktop
+app, use **Push to cloud** on the approved recording. Or use the CLI:
 
 ```bash
 openadapt flow push ./my-recording --name "Triage"
-#   → zips the recording, POSTs it to /api/ingest,
-#     compiles it in the cloud, and prints a workflow id + dashboard URL
+#   → prepares the local derivative and opens review when approval is needed
 ```
 
-The recording directory is zipped before upload (the server ingests a `.zip`; the
-engine emits a directory). You can also push an already-compiled bundle with
-`--kind bundle`. See [`push`](../reference/cli.md#push).
+Recording registration preserves the exact approved source and returns its next
+validation step; it does not turn a recording into a runnable workflow. Compile
+the approved derivative locally, run strict lint, certification, and a governed
+replay, then sanitize and approve the bundle, run `validate-hosted`, and push the
+exact attested bundle. The complete copy-and-paste sequence is in
+[OpenAdapt Hosted](../guides/hosted.md#exact-local-to-hosted-sequence) and the
+[`push` reference](../reference/cli.md#push).
 
 !!! warning "Push scrubs, but the cloud lane is for non-PHI/PII work"
     A pre-push scrub runs fail-closed and the server re-scans on ingest, but the
     cloud lane is **not** the PHI/PII lane. Keep regulated recordings local and use
     [on-prem](../guides/deploy-on-prem.md).
 
-## 5. See it in the dashboard
+## 5. See the governed workflow in the dashboard
 
-Open the dashboard URL that `push` printed (or go to
-`app.openadapt.ai/dashboard/workflows`). The workflow appears there, compiled and
-runnable; any run that halts surfaces under **Needs attention** for triage.
+After the attested bundle is accepted, open the dashboard URL that `push`
+printed (or go to `app.openadapt.ai/dashboard/workflows`). The governed workflow
+and its active bundle appear together; any run that halts surfaces under
+**Needs attention** for triage.
 
 ## Reporting a halt back to the workspace
 

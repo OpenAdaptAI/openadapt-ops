@@ -1,3 +1,9 @@
+---
+description: >-
+  Install OpenAdapt and complete the five-minute record, compile, certify,
+  replay, repair, seal, and deploy journey from the unified CLI.
+---
+
 # Get started
 
 OpenAdapt turns a single demonstration into a deterministic, locally-run

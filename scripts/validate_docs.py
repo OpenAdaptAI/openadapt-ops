@@ -44,7 +44,7 @@ REQUIRED_PUBLIC_PAGES = {
         "Production deployments should pin the exact versions",
     ),
     "packages/openadapt.md": (
-        'content="0; url=/ecosystem/"',
+        "redirect_to: /ecosystem/",
         "pip install openadapt",
     ),
 }

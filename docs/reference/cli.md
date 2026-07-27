@@ -25,6 +25,7 @@ is a subcommand of `openadapt flow`.
 | [`teach`](#teach) | Resolve a halted run from a fix demonstration, governed | 0 if promoted, 1 if refused, 2 on bad inputs |
 | [`lint`](#lint) | Report a bundle's coverage gaps | nonzero by severity |
 | [`certify`](#certify) | Enforce a safety policy, refuse the bundle if it fails | 2 on failure |
+| [`seal`](#seal) | Copy, encrypt, integrity-check, and atomically publish a deployment candidate | 0 on success, 2 on refusal |
 | [`qualify`](#qualify) | Review, test, explain, and certify a versioned qualification project | nonzero on refusal |
 | [`disambiguate`](#disambiguate) | Surface and resolve compile-time ambiguities | 2 if a consequential ambiguity is unresolved |
 | [`connect`](#connect) | Pair this computer to a Cloud workspace (launcher command, needs OpenAdapt 1.7+) | 0/1 |
@@ -389,6 +390,29 @@ openadapt flow certify bundle --config deployment.yaml
 
 Provide `--policy` or a `--config` that sets `policy.policy`; certify errors if
 neither supplies a policy. Exits 2 when the bundle fails certification.
+
+## seal
+
+Copy a reviewed bundle into a new encrypted deployment candidate without
+modifying the source. The key comes only from `OPENADAPT_BUNDLE_KEY`, so it does
+not leak through process arguments. `seal` refuses symlinks, an invalid source,
+or an existing destination; verifies the encrypted result before atomic
+publication; and invalidates any certification inherited from the source so the
+exact sealed bytes must pass certification before deployment.
+
+```bash
+export OPENADAPT_BUNDLE_KEY='<inject from your secret manager>'
+openadapt flow seal bundle-v2 --out bundle-prod
+openadapt flow certify bundle-prod --config deployment.yaml
+```
+
+| Argument / flag | Description |
+|---|---|
+| `source` (positional) | Existing workflow bundle directory. It is validated and never modified. |
+| `--out`, `-o` (required) | New destination directory. It must not already exist. |
+
+Exits `0` after verified publication and `2` on refusal. Key custody and
+rotation remain deployment responsibilities.
 
 ## qualify
 

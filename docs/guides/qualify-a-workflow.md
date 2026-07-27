@@ -1,3 +1,9 @@
+---
+description: >-
+  Review a compiled workflow, assign risk, bind identity and effect checks, run
+  qualification cases, certify it, and export a sealed governed artifact.
+---
+
 # Qualify a workflow
 
 Qualification turns a compiled demonstration into a governed artifact tied to

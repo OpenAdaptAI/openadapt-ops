@@ -1,3 +1,9 @@
+---
+description: >-
+  Review OpenAdapt's architecture, execution boundaries, sensitive-data flow,
+  identity and effect gates, release integrity, and deployment checklist.
+---
+
 # Security and deployment review
 
 This page answers the questions an enterprise security reviewer should ask
@@ -172,7 +178,7 @@ execution](hosted.md) and [Qualification evidence](../get-started/what-works-tod
 ## Release and secure-development evidence
 
 Python releases publish immutable wheel and sdist artifacts with PyPI
-provenance attestations. Desktop `desktop-v0.13.1` publishes its complete
+provenance attestations. Desktop `desktop-v0.14.0` publishes its complete
 Windows, macOS, and Linux installer set with checksums, a CycloneDX SBOM,
 per-platform metadata, and GitHub build-provenance attestations. The native
 installers are still unsigned on Windows/Linux and ad-hoc signed on macOS;

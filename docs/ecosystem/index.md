@@ -21,7 +21,8 @@ for the tested package ranges.
 These labels describe the public role of a repository, not the quality of every
 module inside it:
 
-- **Supported**: a product or optional component you can build on.
+- **Beta**: an active product or component on the supported product path.
+- **Experimental**: an active integration whose contract is still being proven.
 - **Research**: evidence or model work, not required by deterministic replay.
 - **Deprecated**: retained for history or migration; no new integrations.
 
@@ -29,14 +30,14 @@ module inside it:
 
 | Repository | Lifecycle | Public role |
 |---|---|---|
-| [OpenAdapt](https://github.com/OpenAdaptAI/OpenAdapt) | **Supported** | Installer/meta-package and unified `openadapt flow` dispatcher. |
-| [openadapt-flow](https://github.com/OpenAdaptAI/openadapt-flow) | **Supported** | Canonical compiler and governed runtime. Drives web, native Windows, native macOS, native Linux, RDP, and Citrix/VDI as first-class substrates behind one backend protocol. |
-| [OpenAdapt Cloud](https://app.openadapt.ai/) | **Supported** | Proprietary live control plane for the managed subscription: organizations, exact-hash admission, runner orchestration, reports, billing, and usage. |
-| [openadapt-desktop](https://github.com/OpenAdaptAI/openadapt-desktop) | **Supported** | Public Beta `desktop-v0.14.0` provides Windows MSI/NSIS, macOS arm64/x64 DMG, and Linux AppImage/DEB installers. Every installer path is installed, launched, and uninstalled in the native release workflow; the release includes exact checksums, a CycloneDX SBOM, platform metadata, and build-provenance attestations. |
-| [openadapt-agent](https://github.com/OpenAdaptAI/openadapt-agent) | **Supported** | Active v2 bridge that exposes governed Flow bundles to MCP clients and Agent Skills. The pre-v2 model-driven execution wrapper is the deprecated line; the repository itself is active. |
-| [openadapt-capture](https://github.com/OpenAdaptAI/openadapt-capture) | **Supported** | Canonical native screen, mouse, keyboard, timing, and window-scoped recorder behind Flow's Windows, macOS, Linux, RDP, and Citrix recording paths. Capture 1.1 retains Windows UIA evidence at action time; remote sessions remain externally black-box. Browser recording remains inside Flow's Playwright listener. |
-| [openadapt-privacy](https://github.com/OpenAdaptAI/openadapt-privacy) | **Supported** | Optional PII/PHI scrubbing used on configured persist, log, and upload paths. |
-| [openadapt-types](https://github.com/OpenAdaptAI/openadapt-types) | **Supported** | Shared interoperability schemas; contributor-facing, not an end-user product. |
+| [OpenAdapt](https://github.com/OpenAdaptAI/OpenAdapt) | **Beta** | Installer/meta-package and unified `openadapt flow` dispatcher. |
+| [openadapt-flow](https://github.com/OpenAdaptAI/openadapt-flow) | **Beta** | Canonical compiler and governed runtime. Drives web, native Windows, native macOS, native Linux, RDP, and Citrix/VDI as first-class substrates behind one backend protocol. |
+| [OpenAdapt Cloud](https://app.openadapt.ai/) | **Beta** | Proprietary live control plane for the managed subscription: organizations, exact-hash admission, runner orchestration, reports, billing, and usage. |
+| [openadapt-desktop](https://github.com/OpenAdaptAI/openadapt-desktop) | **Beta** | Public `desktop-v0.14.0` provides Windows MSI/NSIS, macOS arm64/x64 DMG, and Linux AppImage/DEB installers. Every installer path is installed, launched, and uninstalled in the native release workflow; the release includes exact checksums, a CycloneDX SBOM, platform metadata, and build-provenance attestations. |
+| [openadapt-agent](https://github.com/OpenAdaptAI/openadapt-agent) | **Experimental** | Active v2 bridge that exposes governed Flow bundles to MCP clients and Agent Skills. The pre-v2 model-driven execution wrapper is the deprecated line; the repository itself is active. |
+| [openadapt-capture](https://github.com/OpenAdaptAI/openadapt-capture) | **Beta** | Canonical native screen, mouse, keyboard, timing, and window-scoped recorder behind Flow's Windows, macOS, Linux, RDP, and Citrix recording paths. Capture 1.1 retains Windows UIA evidence at action time; remote sessions remain externally black-box. Browser recording remains inside Flow's Playwright listener. |
+| [openadapt-privacy](https://github.com/OpenAdaptAI/openadapt-privacy) | **Experimental** | Optional PII/PHI scrubbing used on configured persist, log, and upload paths. |
+| [openadapt-types](https://github.com/OpenAdaptAI/openadapt-types) | **Experimental** | Shared interoperability schemas; contributor-facing, not an end-user product. |
 
 ## Research components
 
