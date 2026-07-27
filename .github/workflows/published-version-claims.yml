@@ -1,0 +1,72 @@
+name: Published version claims
+
+# docs.openadapt.ai advertises component versions. Those go stale when ANOTHER
+# repository releases, so no commit lands here and no pull request can catch
+# it -- on 2026-07-27 openadapt-flow 1.24.0 published and four live pages,
+# including the security-review page, kept asserting "the published Flow
+# 1.23.0 identity". Only a schedule can notice that class of drift.
+#
+# The offline half (registry consistency and the publication-claim scan) runs
+# on every pull request inside ci.yml. This workflow adds the daily PyPI
+# comparison. It is one stdlib-only step with no dependency install, so it
+# costs seconds a day rather than a matrix.
+
+on:
+  schedule:
+    - cron: '41 6 * * *'
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'docs/published-version-claims.json'
+      - 'scripts/check_published_version_claims.py'
+      - '.github/workflows/published-version-claims.yml'
+
+concurrency:
+  group: published-version-claims-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Compare documented versions to PyPI
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      # Standard library only: no uv sync, no lockfile, no cache.
+      - name: Check documented versions against the published releases
+        run: python scripts/check_published_version_claims.py
+
+  report-drift:
+    # A red scheduled run in a repository nobody has open is not a signal.
+    # Give the drift an owner and a paper trail instead of a stale red dot.
+    needs: check
+    if: >-
+      ${{ always() && needs.check.result == 'failure' &&
+          (github.event_name == 'schedule' ||
+           github.event_name == 'workflow_dispatch') }}
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: File or update the docs version drift issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TITLE="docs.openadapt.ai advertises a superseded release"
+          BODY="The daily published-version check failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+          A version stated on the live documentation site no longer matches the current published release. Reproduce with \`python scripts/check_published_version_claims.py\`, then correct the page and \`docs/published-version-claims.json\` in the same change."
+          EXISTING=$(gh issue list --repo "${{ github.repository }}" --state open \
+            --search "in:title \"$TITLE\"" --json number --jq '.[0].number // empty')
+          if [ -n "$EXISTING" ]; then
+            gh issue comment "$EXISTING" --repo "${{ github.repository }}" --body "$BODY"
+          else
+            gh issue create --repo "${{ github.repository }}" --title "$TITLE" --body "$BODY"
+          fi

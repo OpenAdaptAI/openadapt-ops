@@ -43,5 +43,11 @@ jobs:
       - name: Validate product documentation contract
         run: uv run python scripts/validate_docs.py
 
+      # Offline half only: structure and the claim registry. The PyPI
+      # comparison runs daily in published-version-claims.yml, because the
+      # docs go stale when another repository releases, not when a PR lands.
+      - name: Validate published version claims (offline)
+        run: uv run python scripts/check_published_version_claims.py --offline
+
       - name: Build canonical documentation in strict mode
         run: uv run mkdocs build --strict

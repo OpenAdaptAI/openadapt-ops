@@ -125,8 +125,8 @@ reports, teaching, billing, and usage metering. Production explicitly selects
 live dependencies; a missing runner, storage, or billing dependency returns an
 operational failure and never substitutes mock success. Mock mode remains for
 development and is visibly synthetic. The retained non-simulated hosted-recorder
-qualification was run on Flow 1.8.0; the live runner and compiler now report the
-published Flow 1.23.0 identity. The public readiness endpoint currently verifies
+qualification was run on Flow 1.8.0; the live runner and compiler report the
+pinned managed-runtime Flow 1.23.0 identity. The public readiness endpoint currently verifies
 live mode, authentication, database migrations, private storage, runner,
 compiler, recorder, callbacks, scheduler, retention policy, secret encryption,
 runtime-validation allowlists, and live billing configuration. Readiness proves

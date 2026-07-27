@@ -1,0 +1,102 @@
+{
+  "$comment": [
+    "Registry of every version number the published docs state about an",
+    "OpenAdapt component, and what kind of claim each one is.",
+    "Enforced by scripts/check_published_version_claims.py.",
+    "",
+    "Why this exists: on 2026-07-27 openadapt-flow 1.24.0 published and four",
+    "sentences on docs.openadapt.ai -- including one on the security-review",
+    "page -- kept asserting that the live runner reported 'the published Flow",
+    "1.23.0 identity'. The NUMBER was right (the managed runtime really does",
+    "pin 1.23.0); the word 'published' was what became false. Nothing could",
+    "detect that, because no machine-readable record said which numbers are",
+    "supposed to track the current release and which are deliberately frozen.",
+    "",
+    "kind:",
+    "  pypi-latest        This text asserts the CURRENT PUBLISHED release of",
+    "                     `package`. Checked against PyPI daily; a mismatch",
+    "                     fails.",
+    "  pinned-deployment  A version something is deliberately pinned to. It is",
+    "                     NOT a claim about the newest release and must never",
+    "                     be reworded into one. Bump it only with evidence.",
+    "  historical         A version some retained measurement was taken on.",
+    "                     Frozen forever; bumping it would falsify the record.",
+    "",
+    "Adding a 'published X.Y.Z' style sentence to docs/ without a matching",
+    "pypi-latest entry here fails the check."
+  ],
+  "changelog_tracks_pypi": {
+    "OpenAdapt": "openadapt",
+    "openadapt-flow": "openadapt-flow",
+    "openadapt-desktop": "openadapt-desktop",
+    "openadapt-capture": "openadapt-capture",
+    "openadapt-evals": "openadapt-evals",
+    "openadapt-ml": "openadapt-ml"
+  },
+  "generated_pages": [
+    "docs/changelog.md",
+    "docs/whats-new.md"
+  ],
+  "claims": [
+    {
+      "id": "hosted-runner-managed-runtime-pin",
+      "kind": "pinned-deployment",
+      "package": "openadapt-flow",
+      "version": "1.23.0",
+      "evidence": "openadapt-cloud runner/runtime-version.json pins openadapt_flow 1.23.0 (wheel sha256 b5d10dfc294479866d6dddd4c1a6afc9164414f0634703173b7e440dc0133bec); https://app.openadapt.ai/api/health/ready reports ready:true, mode:live.",
+      "verified_on": "2026-07-27",
+      "locations": [
+        {
+          "file": "docs/concepts/deployment-matrix.md",
+          "context": "report the pinned managed-runtime Flow 1.23.0 identity"
+        },
+        {
+          "file": "docs/guides/security-review.md",
+          "context": "report the\npinned managed-runtime Flow 1.23.0 identity"
+        },
+        {
+          "file": "docs/guides/hosted.md",
+          "context": "report the pinned managed-runtime 1.23.0 identity"
+        },
+        {
+          "file": "docs/guides/hosted.md",
+          "context": "report the pinned managed-runtime 1.23.0\nidentity"
+        },
+        {
+          "file": "docs/get-started/what-works-today.md",
+          "context": "reports the pinned managed-runtime 1.23.0 runner/compiler identity"
+        }
+      ]
+    },
+    {
+      "id": "hosted-recorder-qualification",
+      "kind": "historical",
+      "package": "openadapt-flow",
+      "version": "1.8.0",
+      "evidence": "The retained non-simulated hosted-recorder qualification was run on a Flow 1.8.0 worker. Frozen: bumping it would falsify what was measured.",
+      "verified_on": "2026-07-27",
+      "locations": [
+        {
+          "file": "docs/concepts/deployment-matrix.md",
+          "context": "qualification used a Flow 1.8.0 worker"
+        },
+        {
+          "file": "docs/guides/security-review.md",
+          "context": "was run on Flow 1.8.0"
+        },
+        {
+          "file": "docs/guides/hosted.md",
+          "context": "qualification used `openadapt-flow` 1.8.0"
+        },
+        {
+          "file": "docs/guides/hosted.md",
+          "context": "That retained qualification used an `openadapt-flow` 1.8.0"
+        },
+        {
+          "file": "docs/get-started/what-works-today.md",
+          "context": "hosted session on `openadapt-flow` 1.8.0"
+        }
+      ]
+    }
+  ]
+}

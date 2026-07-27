@@ -101,7 +101,7 @@ synthetic. A missing production dependency makes the affected operation
 unavailable rather than substituting a simulated success.
 
 The retained hosted-recorder qualification used a Flow 1.8.0 worker. The live
-runner and compiler now report the published Flow 1.23.0 identity, and public
+runner and compiler report the pinned managed-runtime Flow 1.23.0 identity, and public
 readiness checks live authentication, database, private storage, runner,
 compiler, recorder, callbacks, scheduler, retention, secret encryption,
 validation policy, and billing dependencies. That is configuration and service
