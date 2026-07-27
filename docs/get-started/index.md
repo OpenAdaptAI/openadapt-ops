@@ -9,21 +9,34 @@ data boundary.
 ## Install
 
 ```bash
-pip install openadapt
+pip install 'openadapt[browser]'
 ```
 
-The default backend is a headless browser. The first time you record or
-replay against a web app, the browser provisions automatically. To provision it
-ahead of time:
+This walkthrough selects the browser capability explicitly. Playwright is not
+part of the lightweight base runtime used by native desktop, RDP, or Citrix
+workflows. The first time you record or replay a web app, the matching Chromium
+build provisions automatically. To provision it ahead of time:
 
 ```bash
 playwright install chromium
 ```
 
-The public install and command path is `pip install openadapt` followed by
-`openadapt flow <verb>`. Contributors who work on the engine directly can use
+The public package and command path remains `openadapt` followed by `openadapt
+flow <verb>`; extras select only the substrate dependencies you need.
+Contributors who work on the engine directly can use
 the standalone [`openadapt-flow`](https://github.com/OpenAdaptAI/openadapt-flow)
 package; it is not a second end-user onboarding path.
+
+For native or remote-only work, keep the base install and add only the selected
+driver:
+
+```bash
+pip install openadapt
+pip install 'openadapt[capture,windows]'  # example: native Windows
+pip install 'openadapt[capture,rdp]'      # example: network RDP
+```
+
+Neither path installs or downloads Chromium.
 
 ## The complete demo journey
 

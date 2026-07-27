@@ -53,6 +53,12 @@ egress for the deployed image. See
 
 ## Browser provisioning
 
+Browser support has two intentionally separate layers. Install the Playwright
+driver only for web workflows with `pip install 'openadapt[browser]'`. The
+matching Chromium build downloads lazily on the first web action. Native
+desktop, RDP, and Citrix commands neither import Playwright nor trigger a
+browser download.
+
 | Variable | Purpose |
 |---|---|
 | `OPENADAPT_FLOW_NO_AUTO_INSTALL` | Disables automatic browser provisioning. Set it when you manage the browser yourself (e.g. you ran `playwright install chromium` ahead of time in a controlled image). |
