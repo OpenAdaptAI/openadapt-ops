@@ -110,12 +110,25 @@ def test_aggregate_drops_duplicate_version_heading(tmp_path, mocker):
     assert "Halt-on-drift fix" in content
 
 
-def test_fetch_releases_handles_http_error(mocker):
+def test_fetch_releases_refuses_to_replace_changelog_on_http_error(mocker):
     mock_resp = mocker.Mock()
     mock_resp.status_code = 500
     mocker.patch("aggregate_changelog.requests.get", return_value=mock_resp)
-    result = fetch_releases("OpenAdaptAI/broken")
-    assert result == []
+    with pytest.raises(RuntimeError, match="Refusing to replace the changelog"):
+        fetch_releases("OpenAdaptAI/broken")
+
+
+def test_fetch_releases_authenticates_when_github_token_is_available(
+    monkeypatch, mocker
+):
+    monkeypatch.setenv("GH_TOKEN", "test-token")
+    mock_resp = mocker.Mock(status_code=200)
+    mock_resp.json.return_value = []
+    get = mocker.patch("aggregate_changelog.requests.get", return_value=mock_resp)
+
+    fetch_releases("OpenAdaptAI/example")
+
+    assert get.call_args.kwargs["headers"]["Authorization"] == "Bearer test-token"
 
 
 def test_summarize_body_skips_licence_boilerplate():
