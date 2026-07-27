@@ -7,7 +7,7 @@ import pytest
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "scripts"))
 
-from aggregate_changelog import aggregate, fetch_releases, summarize_body
+from aggregate_changelog import aggregate, fetch_releases, load_repos, summarize_body
 
 
 def test_aggregate_writes_changelog(tmp_path, mocker):
@@ -129,6 +129,21 @@ def test_fetch_releases_authenticates_when_github_token_is_available(
     fetch_releases("OpenAdaptAI/example")
 
     assert get.call_args.kwargs["headers"]["Authorization"] == "Bearer test-token"
+
+
+def test_private_repo_is_not_loaded_into_public_changelog(tmp_path):
+    registry = tmp_path / "repos.yml"
+    registry.write_text(
+        "repos:\n"
+        "  - name: public\n"
+        "    github: OpenAdaptAI/public\n"
+        "    changelog: true\n"
+        "  - name: private\n"
+        "    github: OpenAdaptAI/private\n"
+        "    changelog: false\n"
+    )
+
+    assert [repo["name"] for repo in load_repos(registry)] == ["public"]
 
 
 def test_summarize_body_skips_licence_boilerplate():

@@ -17,7 +17,11 @@ PROMPTS_DIR = ROOT / "prompts"
 
 def load_repos(path=REPOS_YML):
     with open(path) as f:
-        return yaml.safe_load(f)["repos"]
+        return [
+            repo
+            for repo in yaml.safe_load(f)["repos"]
+            if repo.get("public_updates", True)
+        ]
 
 
 def fetch_merged_prs(github_slug, days=7):

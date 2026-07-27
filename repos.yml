@@ -1,6 +1,8 @@
 # Repositories aggregated into the docs site.
 #
-# These entries feed the aggregated Changelog and the What's New digest.
+# Public entries feed the aggregated Changelog and the What's New digest.
+# Private product repositories remain in the registry for lifecycle context but
+# opt out of public release-feed aggregation.
 # They intentionally do NOT set `doc_page`: the docs site presents a single
 # curated Ecosystem page (docs/ecosystem/index.md) rather than mirroring each
 # repo's README, which drifts out of sync with the product. Add `doc_page:
@@ -27,7 +29,13 @@ repos:
     github: OpenAdaptAI/openadapt-cloud
     category: core
     lifecycle: beta
-    changelog: true
+    # The control-plane repository is private. The repository-scoped token used
+    # to build the public docs cannot read its release or pull-request feeds,
+    # and granting that token cross-repository access would widen the trust
+    # boundary solely for marketing aggregation. Publish curated Cloud updates
+    # on a public surface instead.
+    changelog: false
+    public_updates: false
 
   - name: openadapt-desktop
     github: OpenAdaptAI/openadapt-desktop
