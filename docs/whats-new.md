@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-27 12:27 UTC*
+> *Last updated: 2026-07-27 14:27 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [fix(manifest): correct published digests and make drift detectable](https://github.com/OpenAdaptAI/OpenAdapt/pull/1062) (#1062) — merged 
 
 - [feat: add one-command local quickstart](https://github.com/OpenAdaptAI/OpenAdapt/pull/1059) (#1059) — merged 
 
@@ -46,12 +48,12 @@
 
 - [docs(readme): mention for-each loops and visualize in the launcher quickstart](https://github.com/OpenAdaptAI/OpenAdapt/pull/1038) (#1038) — merged 
 
-- [build(deps): bump actions/dependency-review-action from 4.9.0 to 5.0.0](https://github.com/OpenAdaptAI/OpenAdapt/pull/1037) (#1037) — merged 
-
 
 
 ## openadapt-flow
 
+
+- [feat: bind PHI-free qualified identity signals](https://github.com/OpenAdaptAI/openadapt-flow/pull/279) (#279) — merged 
 
 - [docs(effectbench): frame reference counts as pinned fixture values, not a published result](https://github.com/OpenAdaptAI/openadapt-flow/pull/276) (#276) — merged 
 
@@ -91,14 +93,14 @@
 
 - [fix(bundle): preserve sealed v2 frame-path compatibility](https://github.com/OpenAdaptAI/openadapt-flow/pull/254) (#254) — merged 
 
-- [feat(demo): publish exact-bound MockMed v3 presentation evidence](https://github.com/OpenAdaptAI/openadapt-flow/pull/253) (#253) — merged 
-
 
 
 ## openadapt-desktop
 
 
 - [ci: reserve full desktop platform matrices for exact main](https://github.com/OpenAdaptAI/openadapt-desktop/pull/68) (#68) — merged 
+
+- [fix: keep browser provisioning substrate-aware](https://github.com/OpenAdaptAI/openadapt-desktop/pull/67) (#67) — merged 
 
 - [Complete the Desktop qualification cockpit lifecycle](https://github.com/OpenAdaptAI/openadapt-desktop/pull/66) (#66) — merged 
 
@@ -135,8 +137,6 @@
 - [fix: make FFmpeg runtime build portable](https://github.com/OpenAdaptAI/openadapt-desktop/pull/42) (#42) — merged 
 
 - [ci: build managed FFmpeg runtime assets](https://github.com/OpenAdaptAI/openadapt-desktop/pull/41) (#41) — merged 
-
-- [feat: ship Flow 1.20.1 with verified managed runtimes](https://github.com/OpenAdaptAI/openadapt-desktop/pull/40) (#40) — merged 
 
 
 
