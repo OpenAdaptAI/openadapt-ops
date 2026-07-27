@@ -8,9 +8,23 @@ import pytest
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "scripts"))
 
-from generate_whats_new import generate, llm_summarize
+from generate_whats_new import generate, llm_summarize, load_repos
 
 FIXTURES = pathlib.Path(__file__).parent / "fixtures"
+
+
+def test_load_repos_omits_private_update_feeds(tmp_path):
+    registry = tmp_path / "repos.yml"
+    registry.write_text(
+        "repos:\n"
+        "  - name: public\n"
+        "    github: OpenAdaptAI/public\n"
+        "  - name: private\n"
+        "    github: OpenAdaptAI/private\n"
+        "    public_updates: false\n"
+    )
+
+    assert [repo["name"] for repo in load_repos(registry)] == ["public"]
 
 
 def test_generate_without_llm(tmp_path, mocker, monkeypatch):
