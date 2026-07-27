@@ -10,15 +10,15 @@ and RDP or Citrix sessions by choosing a
 ## Prerequisites
 
 - **Python 3.10-3.12.** The engine declares `requires-python >=3.10,<3.13`.
-- **macOS, Linux, or Windows.** This walkthrough uses the Playwright-driven
-  Chromium browser, the default backend, so it has no OS-specific steps. The browser
-  provisions automatically the first time you record or replay; to provision it
-  ahead of time, run `playwright install chromium`.
+- **macOS, Linux, or Windows.** This walkthrough selects the Playwright-driven
+  browser capability, so it has no OS-specific steps. Its matching Chromium
+  provisions automatically on the first web action; native, RDP, and Citrix
+  paths do not install it.
 
 Install the CLI if you have not already:
 
 ```bash
-pip install openadapt
+pip install 'openadapt[browser]'
 ```
 
 Or use the installer script from the landing page, which installs
@@ -26,7 +26,7 @@ Or use the installer script from the landing page, which installs
 `openadapt` command:
 
 ```bash
-curl -fsSL https://openadapt.ai/install.sh | sh
+curl -fsSL https://openadapt.ai/install.sh | sh -s -- browser
 ```
 
 No web app of your own to record against? No setup needed:
