@@ -18,6 +18,8 @@
 
 ## openadapt-flow
 
+- **[v1.24.0](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.24.0)** (2026-07-27)
+  _This release is published under the MIT License._
 - **[v1.23.0](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.23.0)** (2026-07-25)
   _This release is published under the MIT License._
 - **[v1.22.0](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.22.0)** (2026-07-25)
@@ -25,8 +27,6 @@
 - **[v1.21.0](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.21.0)** (2026-07-25)
   _This release is published under the MIT License._
 - **[v1.20.2](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.20.2)** (2026-07-25)
-  _This release is published under the MIT License._
-- **[v1.20.1](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.20.1)** (2026-07-24)
   _This release is published under the MIT License._
 
 ## openadapt-desktop
@@ -90,6 +90,8 @@
 
 ## openadapt-types
 
+- **[v0.6.0](https://github.com/OpenAdaptAI/openadapt-types/releases/tag/v0.6.0)** (2026-07-27)
+  Features
 - **[v0.5.0](https://github.com/OpenAdaptAI/openadapt-types/releases/tag/v0.5.0)** (2026-07-25)
   Bug Fixes
 - **[v0.4.0](https://github.com/OpenAdaptAI/openadapt-types/releases/tag/v0.4.0)** (2026-07-25)
@@ -98,8 +100,6 @@
   Bug Fixes
 - **[v0.3.0](https://github.com/OpenAdaptAI/openadapt-types/releases/tag/v0.3.0)** (2026-07-13)
   Features
-- **[v0.2.0](https://github.com/OpenAdaptAI/openadapt-types/releases/tag/v0.2.0)** (2026-03-29)
-  Continuous Integration
 
 ## openadapt-grounding
 

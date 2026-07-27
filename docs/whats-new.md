@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-26 23:59 UTC*
+> *Last updated: 2026-07-27 06:43 UTC*
 
 
 
@@ -53,6 +53,14 @@
 ## openadapt-flow
 
 
+- [feat: make browser runtime an opt-in capability](https://github.com/OpenAdaptAI/openadapt-flow/pull/273) (#273) — merged 
+
+- [feat: add signed local attended-decision view](https://github.com/OpenAdaptAI/openadapt-flow/pull/272) (#272) — merged 
+
+- [feat: emit privacy-safe failures from customer runners](https://github.com/OpenAdaptAI/openadapt-flow/pull/270) (#270) — merged 
+
+- [feat: govern right-click, drag, and shortcuts across substrates](https://github.com/OpenAdaptAI/openadapt-flow/pull/268) (#268) — merged 
+
 - [Fix scheduled quickstart and no-DOM qualification gates](https://github.com/OpenAdaptAI/openadapt-flow/pull/267) (#267) — merged 
 
 - [bench: complex multi-system workflow benchmarks (email + spreadsheet + API + multi-app)](https://github.com/OpenAdaptAI/openadapt-flow/pull/266) (#266) — merged 
@@ -85,18 +93,12 @@
 
 - [fix(runtime): verify uncertain delivery without retry](https://github.com/OpenAdaptAI/openadapt-flow/pull/250) (#250) — merged 
 
-- [feat(playwright): guard structural actions across frames](https://github.com/OpenAdaptAI/openadapt-flow/pull/249) (#249) — merged 
-
-- [fix: keep generated benchmark runs out of distributions](https://github.com/OpenAdaptAI/openadapt-flow/pull/248) (#248) — merged 
-
-- [feat: seal durable state for encrypted production runs](https://github.com/OpenAdaptAI/openadapt-flow/pull/246) (#246) — merged 
-
-- [feat: publish real governed demo evidence](https://github.com/OpenAdaptAI/openadapt-flow/pull/245) (#245) — merged 
-
 
 
 ## openadapt-desktop
 
+
+- [ci: reserve full desktop platform matrices for exact main](https://github.com/OpenAdaptAI/openadapt-desktop/pull/68) (#68) — merged 
 
 - [Complete the Desktop qualification cockpit lifecycle](https://github.com/OpenAdaptAI/openadapt-desktop/pull/66) (#66) — merged 
 
@@ -136,8 +138,6 @@
 
 - [feat: ship Flow 1.20.1 with verified managed runtimes](https://github.com/OpenAdaptAI/openadapt-desktop/pull/40) (#40) — merged 
 
-- [Gate Desktop releases on explicit green-main dispatch](https://github.com/OpenAdaptAI/openadapt-desktop/pull/39) (#39) — merged 
-
 
 
 ## openadapt-agent
@@ -171,14 +171,16 @@
 ## openadapt-evals
 
 
-- [docs: refresh README as evidence-generating eval infra](https://github.com/OpenAdaptAI/openadapt-evals/pull/271) (#271) — merged 
+- [feat(evals): rebind published evidence to Flow 1.24.0 and guard against drift](https://github.com/OpenAdaptAI/openadapt-evals/pull/272) (#272) — merged 
 
-- [docs(evals): bind current Flow release performance](https://github.com/OpenAdaptAI/openadapt-evals/pull/270) (#270) — merged 
+- [docs: refresh README as evidence-generating eval infra](https://github.com/OpenAdaptAI/openadapt-evals/pull/271) (#271) — merged 
 
 
 
 ## openadapt-capture
 
+
+- [ci: move native capture integration to exact main](https://github.com/OpenAdaptAI/openadapt-capture/pull/50) (#50) — merged 
 
 - [feat: preserve keyboard shortcuts as typed capture events](https://github.com/OpenAdaptAI/openadapt-capture/pull/49) (#49) — merged 
 
@@ -225,6 +227,8 @@
 
 ## openadapt-types
 
+
+- [feat: add signed human decision task contract](https://github.com/OpenAdaptAI/openadapt-types/pull/11) (#11) — merged 
 
 - [feat: add exact overlay target tracking contract](https://github.com/OpenAdaptAI/openadapt-types/pull/10) (#10) — merged 
 
