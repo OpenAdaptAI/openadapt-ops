@@ -5,6 +5,12 @@ on:
   push:
     branches:
       - main
+    # A docs-source push is independently validated by sync.yml immediately
+    # before deployment. Avoid installing, testing, and building it twice.
+    paths-ignore:
+      - 'docs/**'
+      - 'mkdocs.yml'
+      - '.github/workflows/sync.yml'
 
 permissions:
   contents: read
