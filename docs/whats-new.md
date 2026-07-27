@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-27 16:35 UTC*
+> *Last updated: 2026-07-27 18:33 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [docs: remove obsolete planning artifacts](https://github.com/OpenAdaptAI/OpenAdapt/pull/1065) (#1065) — merged 
 
 - [docs(metadata): align launcher with governed execution](https://github.com/OpenAdaptAI/OpenAdapt/pull/1064) (#1064) — merged 
 
@@ -46,12 +48,16 @@
 
 - [docs(readme): use the real OpenAdapt brand mark in the masthead](https://github.com/OpenAdaptAI/OpenAdapt/pull/1043) (#1043) — merged 
 
-- [docs(readme): fix Resolution ladder text overflow in masthead SVG](https://github.com/OpenAdaptAI/OpenAdapt/pull/1042) (#1042) — merged 
-
 
 
 ## openadapt-flow
 
+
+- [ci: detect unreleased work and silently skipped publishes](https://github.com/OpenAdaptAI/openadapt-flow/pull/283) (#283) — merged 
+
+- [feat(tutorial): make the free path reach VERIFIED and emit a local receipt](https://github.com/OpenAdaptAI/openadapt-flow/pull/281) (#281) — merged 
+
+- [fix(transaction): require positive evidence of absence for HALTED_BEFORE_EFFECT](https://github.com/OpenAdaptAI/openadapt-flow/pull/280) (#280) — merged 
 
 - [feat: bind PHI-free qualified identity signals](https://github.com/OpenAdaptAI/openadapt-flow/pull/279) (#279) — merged 
 
@@ -87,16 +93,14 @@
 
 - [feat(compiler): field-label parameter inference with one-shot operator confirm](https://github.com/OpenAdaptAI/openadapt-flow/pull/262) (#262) — merged 
 
-- [style: ruff-format transaction module (restores lint gate)](https://github.com/OpenAdaptAI/openadapt-flow/pull/260) (#260) — merged 
-
-- [feat(runtime): explicit transaction outcome taxonomy + effect journal + idempotency (Section 3)](https://github.com/OpenAdaptAI/openadapt-flow/pull/259) (#259) — merged 
-
-- [bench(citrix): comprehensive deterministic ICA/HDX stand-in qualification (Section 10)](https://github.com/OpenAdaptAI/openadapt-flow/pull/258) (#258) — merged 
-
 
 
 ## openadapt-desktop
 
+
+- [fix: attest observed qualification capabilities](https://github.com/OpenAdaptAI/openadapt-desktop/pull/74) (#74) — merged 
+
+- [fix(release): mirror the attested installer set onto the engine release](https://github.com/OpenAdaptAI/openadapt-desktop/pull/73) (#73) — merged 
 
 - [fix: make the local Desktop cockpit account-free](https://github.com/OpenAdaptAI/openadapt-desktop/pull/72) (#72) — merged 
 
@@ -134,14 +138,12 @@
 
 - [feat: consume canonical Flow qualification projects](https://github.com/OpenAdaptAI/openadapt-desktop/pull/46) (#46) — merged 
 
-- [feat: author identity and effect qualification contracts](https://github.com/OpenAdaptAI/openadapt-desktop/pull/45) (#45) — merged 
-
-- [feat: add first writable qualification cockpit slice](https://github.com/OpenAdaptAI/openadapt-desktop/pull/44) (#44) — merged 
-
 
 
 ## openadapt-agent
 
+
+- [feat(dist): add local MCPB distribution](https://github.com/OpenAdaptAI/openadapt-agent/pull/11) (#11) — merged 
 
 - [release: openadapt-agent v2.0.1](https://github.com/OpenAdaptAI/openadapt-agent/pull/10) (#10) — merged 
 
@@ -171,6 +173,8 @@
 ## openadapt-evals
 
 
+- [docs(evidence): correct the 1.16.1 vs 1.24.0 apples-to-apples claim](https://github.com/OpenAdaptAI/openadapt-evals/pull/273) (#273) — merged 
+
 - [feat(evals): rebind published evidence to Flow 1.24.0 and guard against drift](https://github.com/OpenAdaptAI/openadapt-evals/pull/272) (#272) — merged 
 
 - [docs: refresh README as evidence-generating eval infra](https://github.com/OpenAdaptAI/openadapt-evals/pull/271) (#271) — merged 
@@ -179,6 +183,8 @@
 
 ## openadapt-capture
 
+
+- [build: keep repository clutter out of source archive](https://github.com/OpenAdaptAI/openadapt-capture/pull/59) (#59) — merged 
 
 - [ci: simplify and harden release health](https://github.com/OpenAdaptAI/openadapt-capture/pull/58) (#58) — merged 
 
@@ -217,8 +223,6 @@
 - [chore(deps): bump astral-sh/setup-uv from 4 to 7](https://github.com/OpenAdaptAI/openadapt-capture/pull/35) (#35) — merged 
 
 - [chore(deps): bump python-semantic-release/python-semantic-release from 9.15.2 to 10.6.1](https://github.com/OpenAdaptAI/openadapt-capture/pull/34) (#34) — merged 
-
-- [chore(deps): bump actions/dependency-review-action from 4.9.0 to 5.0.0](https://github.com/OpenAdaptAI/openadapt-capture/pull/33) (#33) — merged 
 
 
 
