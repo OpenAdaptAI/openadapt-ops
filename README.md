@@ -73,9 +73,9 @@ uv run pytest tests/ -q
   served at `docs.openadapt.ai`. It runs when:
   - a push to `main` touches `docs/**`, `mkdocs.yml`, or the workflow itself,
     which builds and deploys this repository's docs as-is;
-  - a sub-repository dispatches a `repo-updated` event (see
-    [`.github/workflows/trigger.yml`](.github/workflows/trigger.yml)) so its
-    README and changelog pages re-sync here;
+  - a sub-repository's `notify-docs.yml` workflow dispatches a `repo-updated`
+    event after its public README, changelog, or release changes, so those
+    pages re-sync here;
   - the weekly schedule or a manual run performs a full cross-repo rebuild.
 
   Every path validates and builds in strict mode before deploying, so a failing
