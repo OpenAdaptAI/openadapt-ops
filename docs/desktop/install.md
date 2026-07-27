@@ -17,7 +17,7 @@ you explicitly push it to a [cloud workspace](connect-to-cloud.md).
 Get the installer from
 [openadapt.ai/download](https://openadapt.ai/download). The page detects your OS
 and architecture and offers the right build. Public Beta release
-`desktop-v0.13.1` ships the complete Windows, macOS, and Linux installer set with
+`desktop-v0.14.0` ships the complete Windows, macOS, and Linux installer set with
 `SHA256SUMS`, a CycloneDX SBOM, per-platform metadata, and build-provenance
 attestations.
 
@@ -128,7 +128,7 @@ and disappears if neither corner is safe. These presentation elements are not
 verification evidence and do not weaken the pointer, focus, or capture-exclusion
 boundary. [Watch the public demo](https://app.openadapt.ai/demo#footage) or
 review the exact released
-[control-overlay contract](https://github.com/OpenAdaptAI/openadapt-desktop/blob/desktop-v0.13.1/docs/CONTROL_OVERLAY.md).
+[control-overlay contract](https://github.com/OpenAdaptAI/openadapt-desktop/blob/desktop-v0.14.0/docs/CONTROL_OVERLAY.md).
 
 ## Where to go next
 
