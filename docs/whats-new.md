@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-28 03:27 UTC*
+> *Last updated: 2026-07-28 03:39 UTC*
 
 
 
@@ -98,6 +98,8 @@
 ## openadapt-desktop
 
 
+- [fix(scrubber): refuse a scrub that could not run instead of reporting zero redactions](https://github.com/OpenAdaptAI/openadapt-desktop/pull/87) (#87) — merged 
+
 - [fix(auth): stop the unwired browser-PKCE provider from stalling login](https://github.com/OpenAdaptAI/openadapt-desktop/pull/86) (#86) — merged 
 
 - [feat(portal): render the reject answer and keep the action bar usable](https://github.com/OpenAdaptAI/openadapt-desktop/pull/84) (#84) — merged 
@@ -135,8 +137,6 @@
 - [fix: keep browser provisioning substrate-aware](https://github.com/OpenAdaptAI/openadapt-desktop/pull/67) (#67) — merged 
 
 - [Complete the Desktop qualification cockpit lifecycle](https://github.com/OpenAdaptAI/openadapt-desktop/pull/66) (#66) — merged 
-
-- [ci: keep docs dispatch on proven v3](https://github.com/OpenAdaptAI/openadapt-desktop/pull/65) (#65) — merged 
 
 
 
@@ -186,6 +186,8 @@
 
 ## openadapt-evals
 
+
+- [fix(evals): make "could not measure" representable everywhere it produced a number](https://github.com/OpenAdaptAI/openadapt-evals/pull/277) (#277) — merged 
 
 - [ci: enforce the ruff config this repo already declares](https://github.com/OpenAdaptAI/openadapt-evals/pull/276) (#276) — merged 
 
@@ -259,6 +261,8 @@
 
 ## openadapt-types
 
+
+- [fix: report an unparseable action as FAIL, not as a completed task](https://github.com/OpenAdaptAI/openadapt-types/pull/16) (#16) — merged 
 
 - [fix(human-decision): give operator disagreement a closed wire channel](https://github.com/OpenAdaptAI/openadapt-types/pull/15) (#15) — merged 
 

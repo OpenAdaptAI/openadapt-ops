@@ -92,6 +92,8 @@
 
 ## openadapt-types
 
+- **[v0.6.4](https://github.com/OpenAdaptAI/openadapt-types/releases/tag/v0.6.4)** (2026-07-28)
+  Bug Fixes
 - **[v0.6.3](https://github.com/OpenAdaptAI/openadapt-types/releases/tag/v0.6.3)** (2026-07-28)
   Bug Fixes
 - **[v0.6.2](https://github.com/OpenAdaptAI/openadapt-types/releases/tag/v0.6.2)** (2026-07-27)
@@ -100,8 +102,6 @@
   Bug Fixes
 - **[v0.6.0](https://github.com/OpenAdaptAI/openadapt-types/releases/tag/v0.6.0)** (2026-07-27)
   Features
-- **[v0.5.0](https://github.com/OpenAdaptAI/openadapt-types/releases/tag/v0.5.0)** (2026-07-25)
-  Bug Fixes
 
 ## openadapt-grounding
 
