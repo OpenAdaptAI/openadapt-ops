@@ -19,8 +19,26 @@ its postconditions passed and, where declared, its
 checkpoint marks verified progress, not merely "the click fired."
 
 When the run halts (an unhandled screen, a refuted write, an escalation), it
-writes a **pending escalation** into the run directory and stops. Work already
-done is durably recorded; nothing after the checkpoint was performed.
+writes a **pending escalation** into the run directory and stops. Everything up
+to the last checkpoint is durably recorded and verified.
+
+The halting step itself is **not** checkpointed, and the runtime does not claim
+it did nothing. Several halts happen *after* the action was delivered, because
+that is when the evidence arrives: a screen postcondition is read after the
+click, and a refuted write is a write that was sent and then read back absent
+from the system of record. **A halt is not a rollback.**
+
+What the halting step may already have done is stated in the run's terminal
+`transaction_outcome`, and is never inferred from the checkpoint:
+
+- **`HALTED_BEFORE_EFFECT`** — absence was positively established for every
+  consequential step. There is nothing to reconcile.
+- **`RECONCILIATION_REQUIRED`** — delivery or persistence is uncertain,
+  conflicting, or unverifiable. Reconcile the current state before resuming; the
+  runtime will not blind-retry.
+
+The runtime never returns the first outcome to spare you the second. An empty
+evidence list means verification never ran, not that nothing happened.
 
 ```mermaid
 flowchart LR
