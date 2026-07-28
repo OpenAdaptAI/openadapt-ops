@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-28 08:30 UTC*
+> *Last updated: 2026-07-28 08:40 UTC*
 
 
 
@@ -176,6 +176,8 @@
 ## openadapt-ml
 
 
+- [fix: preserve benchmark agent failures](https://github.com/OpenAdaptAI/openadapt-ml/pull/72) (#72) — merged 
+
 - [chore(release): enforce the source-policy boundary](https://github.com/OpenAdaptAI/openadapt-ml/pull/71) (#71) — merged 
 
 - [fix: stop reporting evaluation and grounding failures as empty results](https://github.com/OpenAdaptAI/openadapt-ml/pull/70) (#70) — merged 
@@ -190,6 +192,8 @@
 
 ## openadapt-evals
 
+
+- [fix: preserve agent and readiness failures](https://github.com/OpenAdaptAI/openadapt-evals/pull/279) (#279) — merged 
 
 - [chore(release): enforce the source-policy boundary](https://github.com/OpenAdaptAI/openadapt-evals/pull/278) (#278) — merged 
 
