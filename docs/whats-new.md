@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-28 13:53 UTC*
+> *Last updated: 2026-07-28 13:58 UTC*
 
 
 
@@ -177,6 +177,8 @@
 
 ## openadapt-ml
 
+
+- [Reject unmeasured ML training outcomes](https://github.com/OpenAdaptAI/openadapt-ml/pull/73) (#73) — merged 
 
 - [fix: preserve benchmark agent failures](https://github.com/OpenAdaptAI/openadapt-ml/pull/72) (#72) — merged 
 
