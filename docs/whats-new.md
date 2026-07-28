@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-28 06:27 UTC*
+> *Last updated: 2026-07-28 08:28 UTC*
 
 
 
@@ -55,6 +55,8 @@
 
 - [chore(release): derive the private-artifact rules from the policy manifest](https://github.com/OpenAdaptAI/openadapt-flow/pull/300) (#300) — merged 
 
+- [fix(rdp): revalidate focused selects from context](https://github.com/OpenAdaptAI/openadapt-flow/pull/299) (#299) — merged 
+
 - [fix(docs): correct a false halt claim; pin HOW the free path reaches VERIFIED](https://github.com/OpenAdaptAI/openadapt-flow/pull/298) (#298) — merged 
 
 - [feat(decisions): run the outbound decision lane, so a halt reaches a phone](https://github.com/OpenAdaptAI/openadapt-flow/pull/297) (#297) — merged 
@@ -91,12 +93,14 @@
 
 - [docs: make the paper submission-ready and discharge both adversarial reviews](https://github.com/OpenAdaptAI/openadapt-flow/pull/277) (#277) — merged 
 
-- [docs(effectbench): frame reference counts as pinned fixture values, not a published result](https://github.com/OpenAdaptAI/openadapt-flow/pull/276) (#276) — merged 
-
 
 
 ## openadapt-desktop
 
+
+- [feat(auth): add loopback pairing and credential rotation](https://github.com/OpenAdaptAI/openadapt-desktop/pull/90) (#90) — merged 
+
+- [ci: skip duplicate desktop artifact matrices](https://github.com/OpenAdaptAI/openadapt-desktop/pull/89) (#89) — merged 
 
 - [feat: compile recordings automatically after stop](https://github.com/OpenAdaptAI/openadapt-desktop/pull/88) (#88) — merged 
 
@@ -133,10 +137,6 @@
 - [ci: detect unreleased work and silently skipped publishes](https://github.com/OpenAdaptAI/openadapt-desktop/pull/70) (#70) — merged 
 
 - [fix(release): point "Latest" at the native installers](https://github.com/OpenAdaptAI/openadapt-desktop/pull/69) (#69) — merged 
-
-- [ci: reserve full desktop platform matrices for exact main](https://github.com/OpenAdaptAI/openadapt-desktop/pull/68) (#68) — merged 
-
-- [fix: keep browser provisioning substrate-aware](https://github.com/OpenAdaptAI/openadapt-desktop/pull/67) (#67) — merged 
 
 
 
@@ -189,6 +189,8 @@
 ## openadapt-evals
 
 
+- [chore(release): enforce the source-policy boundary](https://github.com/OpenAdaptAI/openadapt-evals/pull/278) (#278) — merged 
+
 - [fix(evals): make "could not measure" representable everywhere it produced a number](https://github.com/OpenAdaptAI/openadapt-evals/pull/277) (#277) — merged 
 
 - [ci: enforce the ruff config this repo already declares](https://github.com/OpenAdaptAI/openadapt-evals/pull/276) (#276) — merged 
@@ -207,6 +209,8 @@
 
 ## openadapt-capture
 
+
+- [chore(release): enforce the source-policy boundary](https://github.com/OpenAdaptAI/openadapt-capture/pull/63) (#63) — merged 
 
 - [fix: refuse an unready recording](https://github.com/OpenAdaptAI/openadapt-capture/pull/62) (#62) — merged 
 
@@ -246,12 +250,12 @@
 
 - [fix: dispatch docs updates to canonical repository](https://github.com/OpenAdaptAI/openadapt-capture/pull/38) (#38) — merged 
 
-- [docs: refresh README to shared OpenAdapt house style](https://github.com/OpenAdaptAI/openadapt-capture/pull/37) (#37) — merged 
-
 
 
 ## openadapt-privacy
 
+
+- [chore(release): enforce the source-policy boundary](https://github.com/OpenAdaptAI/openadapt-privacy/pull/11) (#11) — merged 
 
 - [fix: stop reporting a failed scrub as a successful one](https://github.com/OpenAdaptAI/openadapt-privacy/pull/10) (#10) — merged 
 
@@ -263,6 +267,8 @@
 
 ## openadapt-types
 
+
+- [chore(release): enforce the source-policy boundary](https://github.com/OpenAdaptAI/openadapt-types/pull/17) (#17) — merged 
 
 - [fix: report an unparseable action as FAIL, not as a completed task](https://github.com/OpenAdaptAI/openadapt-types/pull/16) (#16) — merged 
 
