@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-28 00:09 UTC*
+> *Last updated: 2026-07-28 01:37 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [fix: regenerate platform manifest for openadapt-flow 1.25.1](https://github.com/OpenAdaptAI/OpenAdapt/pull/1067) (#1067) — merged 
 
 - [docs: remove obsolete planning artifacts](https://github.com/OpenAdaptAI/OpenAdapt/pull/1065) (#1065) — merged 
 
@@ -46,18 +48,22 @@
 
 - [docs: reconcile masthead SVG + substrate maturity to the canonical ladder (scoped -> early access)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1044) (#1044) — merged 
 
-- [docs(readme): use the real OpenAdapt brand mark in the masthead](https://github.com/OpenAdaptAI/OpenAdapt/pull/1043) (#1043) — merged 
-
 
 
 ## openadapt-flow
 
 
+- [chore: gitignore .private/](https://github.com/OpenAdaptAI/openadapt-flow/pull/292) (#292) — merged 
+
 - [feat(rdp): atomically verify native option selections](https://github.com/OpenAdaptAI/openadapt-flow/pull/291) (#291) — merged 
+
+- [feat(console): close the mobile attended-decision loop with an e2e acceptance test](https://github.com/OpenAdaptAI/openadapt-flow/pull/290) (#290) — merged 
 
 - [fix(receipt): require complete evidence for VERIFIED receipts](https://github.com/OpenAdaptAI/openadapt-flow/pull/289) (#289) — merged 
 
 - [fix(ci): make release-health alerts fail observable](https://github.com/OpenAdaptAI/openadapt-flow/pull/288) (#288) — merged 
+
+- [ci: bump the actions group with 2 updates](https://github.com/OpenAdaptAI/openadapt-flow/pull/286) (#286) — merged 
 
 - [fix(compiler): stop a parameter's demonstrated value becoming a pixel invariant](https://github.com/OpenAdaptAI/openadapt-flow/pull/285) (#285) — merged 
 
@@ -86,12 +92,6 @@
 - [feat: add signed local attended-decision view](https://github.com/OpenAdaptAI/openadapt-flow/pull/272) (#272) — merged 
 
 - [feat: emit privacy-safe failures from customer runners](https://github.com/OpenAdaptAI/openadapt-flow/pull/270) (#270) — merged 
-
-- [fix: bind qualified risk and effect policy end to end](https://github.com/OpenAdaptAI/openadapt-flow/pull/269) (#269) — merged 
-
-- [feat: govern right-click, drag, and shortcuts across substrates](https://github.com/OpenAdaptAI/openadapt-flow/pull/268) (#268) — merged 
-
-- [Fix scheduled quickstart and no-DOM qualification gates](https://github.com/OpenAdaptAI/openadapt-flow/pull/267) (#267) — merged 
 
 
 
@@ -249,6 +249,8 @@
 
 ## openadapt-types
 
+
+- [fix(human-decision): give operator disagreement a closed wire channel](https://github.com/OpenAdaptAI/openadapt-types/pull/15) (#15) — merged 
 
 - [chore: gitignore .private/](https://github.com/OpenAdaptAI/openadapt-types/pull/14) (#14) — merged 
 
