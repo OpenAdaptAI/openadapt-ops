@@ -227,6 +227,48 @@ identifier; the control there is the trusted local boundary and verified retenti
 behavior, not redaction. Unset the URL and no model tiers exist (the default
 install pulls no model).
 
+## Reaching the decision portal from a phone
+
+When a run halts, OpenAdapt puts a bounded question in front of a person through
+the [attended decision portal](../concepts/halt-learn-loop.md#where-a-halt-goes-the-attended-decision).
+On-premise, that portal runs on the runner itself and its evidence never leaves
+your network.
+
+!!! warning "Plan the ingress before you pilot the phone path"
+    The portal is **loopback-only by default**. It binds `127.0.0.1`, and a phone
+    on your network **cannot reach it** until you put trusted TLS in front of the
+    runner yourself: an enterprise reverse proxy beside the runner, a VPN, or a
+    ZTNA hostname. There is no self-signed bypass and no wildcard bind, so this
+    is not something that can be worked around at install time.
+
+    Budget for it in the same conversation as the rest of your ingress. Locally,
+    on the runner's own screen, the portal works with no configuration at all.
+
+This is deliberate, and in a governed deployment it is the easier posture to
+defend: OpenAdapt does not open a listening surface on your network on your
+behalf. You publish the runner under **your** certificate, **your** access
+policy, and **your** logging, so the phone path inherits the controls your
+security team already operates and already audits instead of introducing a
+parallel one they have to review from scratch.
+
+The recommended shape is a reverse proxy running beside the runner and
+forwarding to loopback — which is why `customer_ingress` still binds loopback
+unless you name a specific address. Set the mode, the public origin, and the
+acknowledgement together; the portal refuses to start on any partial
+combination. The exact variables are in
+[Configuration](../reference/configuration.md#the-mobile-decision-portal).
+
+Two boundary points worth carrying into a security review:
+
+- **Pairing is one-use and reversed.** The runner shows a QR carrying only a
+  short-lived pairing secret; the phone shows a confirmation code back, which
+  the operator types on the runner. The phone never receives the engine's
+  console capability, and paired devices are listed and revocable.
+- **Protected evidence stays local and uncached.** Decision projections and
+  evidence crops are served `no-store` and are never written to a service-worker
+  cache. Only raster image types are relayed to the phone; an SVG is refused,
+  because it is an active document rather than a screenshot.
+
 ## What crosses which boundary
 
 | Artifact | Contains identifiers? | Control |
@@ -237,6 +279,8 @@ install pulls no model).
 | `REPORT.md`, console logs | Sanitizer applied when `OPENADAPT_FLOW_SCRUB=on` | Processing errors fail closed; review for detector misses before egress |
 | `audit/audit.log` | No (PHI/PII-free by construction) | Append-only, hash-chained |
 | Identity crops to the appliance | Yes | Trusted local boundary; verify egress and retention controls |
+| Decision evidence to a paired phone | Yes (rendered pixels) | Stays on your network; `no-store`, never service-worker cached, raster types only, session bound to one approved pairing |
+| Decision envelope to a hosted control plane | No (structurally) | Opaque ids, digests, closed enums, bounded counts only; no free-text field exists to carry a value |
 | Deterministic replay path | n/a | No OpenAdapt-hosted dependency; target and verifier traffic remains |
 
 ## Compliance posture, stated honestly

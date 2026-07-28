@@ -1,16 +1,189 @@
-# The halt-learn loop
+# Attended decisions and the halt-learn loop
 
-A [halt](identity-gate.md) is honest, but a halt that teaches the system nothing
-means the same unhandled state halts forever. The halt-learn loop closes that
-gap: an operator demonstrates the fix once, the correction is folded into the
-workflow *through the governed induction path*, a regression gate proves the
-revision weakens nothing, and that state never halts again.
+A [halt](identity-gate.md) is honest, but a halt nobody hears is just a stopped
+run, and a halt that teaches the system nothing means the same unhandled state
+halts forever. This page covers both halves of the answer: **where a halt goes**
+— the bounded question OpenAdapt puts in front of a person — and **what happens
+when that person teaches the fix**, which is the halt-learn loop proper.
 
-It does this **without ever handing control to a free-form agent** and
-**without any model call on the runtime path**. A revision is adopted only if it
-provably does not regress safety.
+Both halves refuse rather than guess. Neither hands control to a free-form
+agent, and neither puts a model call on the runtime path.
 
-## The loop
+## Where a halt goes: the attended decision
+
+When a run cannot confirm something, it stops and projects the paused step into
+a **bounded question** a member of staff can answer — from a workstation, or
+from a phone on your own network through ingress you control.
+
+The question is closed by construction. `openadapt-flow` projects the pause into
+a signed task carrying typed categories, bounded counts, and digests; the client
+owns every sentence a person reads. The runner never sends prose and the phone
+never renders a runner string, so protected content has no field on the wire to
+travel in. What the operator sees is composed locally: which step could not
+start, what kind of target it was looking for, what the
+[resolution ladder](capability-ladder.md) tried on each rung, and what the
+engine will re-prove if they continue.
+
+The client is a **responsive web app served by the runner itself** — deliberately
+not a native iOS or Android application, so there is no app store, no separate
+update channel, and no second place for protected evidence to come to rest.
+
+### The phone returns a decision, not an execution result
+
+This is the property everything else rests on. Answering does not perform the
+step, and it does not mark the run verified.
+
+When an answer arrives, the engine:
+
+1. validates the signed task digest, the exact pause capability, and the
+   engine-derived allowed-action list;
+2. takes a single-flight lease, so two people cannot both decide one task;
+3. **re-reads the live application** and re-runs its identity, postcondition,
+   and effect checks against a fresh observation;
+4. continues only if that fresh check passes — and **refuses** when the
+   application is not actually in the state the step needs.
+
+So "I fixed it" means *I prepared the live state; now go and check it*. It never
+means "repeat the paused write". A run reaches `VERIFIED` only when the complete
+configured contract proves the intended effect, exactly as on an unattended run.
+An operator's answer is an input to a verification, never a substitute for one —
+which is why an operator who is mistaken produces a second halt rather than a
+silent wrong write.
+
+!!! note "The operator's own work is verified, not replayed"
+    When the person completed the step themselves, OpenAdapt advances the resume
+    point on the strength of **outcome verification** and records the step as a
+    human-attended actuation. It does not actuate the application a second time.
+    A step whose postconditions or independent effect check do not pass is
+    refused, not banked.
+
+The reply is also honest about delivery. Three states stay distinct and are
+never collapsed into one another: not sent, sent, and **may have been sent**. A
+decision whose fate is genuinely unknown is reported as uncertain rather than
+retried, because a blind retry is how one write becomes two. A fresh idempotency
+key does not launder an uncertain delivery into a clean one.
+
+### Full evidence stays on the runner
+
+The retained screen, the observed values, the OCR, and the failing target never
+leave the customer-controlled runner. Only a typed, PHI-free envelope crosses to
+a hosted control plane: opaque identifiers, digests, closed enums, bounded
+counts, and expiry. There is no free-text field anywhere in that envelope, so
+raw values and prose are **structurally unable** to travel rather than being
+stripped in transit.
+
+The direct consequence is that a hosted dashboard shows **less** than the phone
+on the runner — it can say the *shape* of a failure but not its content. That is
+the design working, not a gap:
+
+- "0 of 2 required identity signals confirmed the record on screen" is a bounded
+  integer and crosses the boundary safely.
+- "could not find the button labelled *Open*" names on-screen content, so it
+  stays local.
+
+A hosted surface that says less is a surface that cannot leak more. An operator
+who needs the full picture opens the run on the runner, where the evidence
+already is — and the hosted surface says so, rather than letting absent detail
+read as "OpenAdapt does not know".
+
+Sending a decision *back* through a hosted control plane is off unless you turn
+it on: it requires remote issuance to be explicitly enabled in your deployment
+configuration and bound to an exact tenant and runner, and it carries a stronger
+authentication requirement. Unconfigured, tasks are issued for the local
+decision surface and the hosted view is read-only triage.
+
+### Reaching it from a phone is your ingress, not ours
+
+!!! warning "The portal is loopback-only until you publish it"
+    Out of the box the decision portal binds `127.0.0.1` and advertises a
+    loopback URL. **A phone cannot reach it, and a fresh install will not serve
+    one.** Publishing it to a phone requires *you* to terminate trusted TLS in
+    front of the runner — an enterprise reverse proxy, a VPN, or a ZTNA
+    hostname — and to record that decision in configuration.
+
+    Plan for this before you pilot the phone path. See
+    [the portal settings](../reference/configuration.md#the-mobile-decision-portal)
+    for the exact variables and
+    [Deploy on-prem](../guides/deploy-on-prem.md#reaching-the-decision-portal-from-a-phone)
+    for where it sits in a deployment.
+
+We did not punch a hole in your network for our convenience, and there is no
+"bind everything" switch to make a demo easier. The boundary in front of a
+runner that can see protected records is yours to open, deliberately, under your
+own certificate and access policy — so the phone path inherits the
+authentication, device posture, and logging you already run, instead of asking
+you to trust a second one.
+
+Every widening step is explicit and **fails closed**. A wildcard bind address is
+refused in every mode. So is a plaintext origin, an origin carrying a path or
+credentials, a hostname where a literal address is required, and a published
+mode missing either its public origin or its operator acknowledgement. Any
+invalid combination raises and the portal does not start; it never quietly
+widens its own exposure to become reachable. There is no self-signed-certificate
+bypass and no test-only wide bind.
+
+### Pairing a phone
+
+Pairing runs the opposite way round from the obvious design, and the reversal is
+the point.
+
+The runner shows a QR code; the **phone** displays a short confirmation code,
+which the operator types back on the runner. The code is minted *on the claiming
+device at claim time*, so it is only ever shown to whoever actually claimed the
+pairing.
+
+Do it the intuitive way — derive the code from the pairing and show it on the
+runner — and an attacker who photographed the QR from across the room and
+claimed it first would be shown the very code the runner's screen was already
+displaying. The "matching code" would then confirm the attacker. Minting per
+claim means a remote attacker's phone shows a code the operator cannot see, and
+the mismatch is visible immediately.
+
+The rest of the shape follows from the same posture:
+
+- The QR link carries **only a pairing secret** — no console capability, no
+  pause capability, no tenant, run, or pause identifier.
+- The secret rides in the URL **fragment**, which browsers never transmit, so it
+  cannot land in a reverse-proxy access log or a referrer header.
+- It is **claimable exactly once**, atomically. A second phone scanning the same
+  code is refused.
+- It expires shortly after it is shown, enforced server-side and re-checked at
+  approval, against both a monotonic and a wall clock so neither a suspended
+  machine nor a clock change can extend the window.
+- A claimed session is **unusable until approved**, attempts are bounded, and
+  showing a new QR retires every earlier unapproved pairing so a stolen code
+  cannot sit latent.
+- Secrets and session tokens are stored only as digests and compared in constant
+  time. Paired devices are listed and revocable, and sessions expire.
+
+The phone never receives the engine's console capability. It holds a session
+token bound to that runner and that approved pairing, and nothing else.
+
+### What the three answers do
+
+The answers differ in whether your saved workflow changes — which is exactly
+what an operator cannot infer from their names, so each one states its
+consequence in full:
+
+| Answer | Effect on this run | Effect on future runs |
+|---|---|---|
+| Check and continue | Re-verifies live state, then continues | None — the same drift stops the next run |
+| Teach the correction | Continues nothing now | Enters the halt-learn loop below |
+| Needs more help | Leaves the run paused and untouched | None |
+
+Operating-system notifications for these are generic by construction: the runner
+reads a single count from a PHI-free endpoint and renders a fixed template. No
+upstream string is ever forwarded to a notification, on any channel.
+
+**"Teach the correction" is the front door to the rest of this page.**
+
+## The learn loop
+
+Answering a halt keeps one run moving. Teaching the correction is what stops the
+same unhandled state halting forever: an operator demonstrates the fix once, the
+correction is folded into the workflow *through the governed induction path*, a
+regression gate proves the revision weakens nothing, and that state never halts
+again. A revision is adopted only if it provably does not regress safety.
 
 ```mermaid
 flowchart TD
@@ -123,3 +296,13 @@ not shipped. It is the counterpart to
 [multi-trace induction](multi-trace-induction.md) (recover the program from
 several traces) and [policy and certify](policy-and-certify.md) (refuse a bundle
 whose gaps were not closed): learn only what you can prove safe.
+
+The attended decision is the same posture pointed at people. It would be easier
+to treat a tap as an answer, publish the portal on every interface so a phone
+just works, and forward the failing screen to a dashboard where support can see
+it. Each of those would move a decision, a network boundary, or a protected
+record somewhere it does not belong. Instead the person supplies the one thing a
+machine cannot — an observation about the world — and the engine keeps
+everything it is actually good at: re-reading live state, checking identity and
+effects, and refusing. A halt reaches a phone in seconds, and it still cannot
+turn into a wrong write because somebody was in a hurry.

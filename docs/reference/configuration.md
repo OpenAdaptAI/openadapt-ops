@@ -110,6 +110,41 @@ variables supply its endpoint and credentials, keeping them out of the YAML.
 |---|---|
 | `OAFLOW_AGENT_TOKEN` | Optional bearer token for the [desktop in-session agent server](../concepts/backends.md#the-in-session-agent-the-session-0-problem). Its `/execute_windows` channel is remote code execution by contract; the server binds to loopback by default, and a token makes every request authenticate. Set it in any PHI/PII deployment that exposes the agent beyond loopback. |
 
+## The mobile decision portal
+
+These govern where the [attended decision portal](../concepts/halt-learn-loop.md#where-a-halt-goes-the-attended-decision)
+listens and what URL it advertises to a paired phone.
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `OPENADAPT_PORTAL_INGRESS_MODE` | `loopback` | `loopback` (this computer only) or `customer_ingress` (published through your own HTTPS/VPN ingress). |
+| `OPENADAPT_PORTAL_PUBLIC_ORIGIN` | *(unset)* | The exact `https://` origin your reverse proxy, VPN, or ZTNA hostname publishes for this runner. Required for `customer_ingress`. |
+| `OPENADAPT_PORTAL_INGRESS_ACKNOWLEDGED` | `false` | Explicit record that your organization operates that ingress and has reviewed protected evidence reaching phones. Required for `customer_ingress`. |
+| `OPENADAPT_PORTAL_BIND_HOST` | *(unset)* | Optional **literal IP address** to bind, for when your ingress is not on this host. Left unset, the portal stays on `127.0.0.1` behind a same-host reverse proxy. |
+| `OPENADAPT_PORTAL_PORT` | `0` | `0` selects an ephemeral port. |
+| `OPENADAPT_PORTAL_CONSOLE_PORT` | `7863` | Loopback port for the supervised attended console the portal relays to. |
+
+!!! warning "Loopback is the default, and a phone cannot reach it"
+    Unconfigured, the portal binds `127.0.0.1` and advertises a loopback URL.
+    That is a complete, working configuration *on that computer* — the pairing
+    screen says a phone cannot reach it rather than minting a link that fails on
+    your network. Serving a phone is an explicit decision you make by standing up
+    trusted TLS in front of the runner. See
+    [Deploy on-prem](../guides/deploy-on-prem.md#reaching-the-decision-portal-from-a-phone).
+
+Every widening step fails closed, and the portal **does not start** on an invalid
+combination rather than falling back to something more exposed:
+
+- A wildcard bind address (`0.0.0.0`, `::`, empty, `*`) is refused in **every**
+  mode. There is no "bind everything for testing" switch.
+- The public origin must be a bare `https://` origin — no plaintext, no path,
+  no query, no embedded credentials, and no self-signed bypass.
+- `OPENADAPT_PORTAL_BIND_HOST` must be a literal IP, not a hostname, and never
+  an unspecified or multicast address.
+- `customer_ingress` requires **both** a public origin and the acknowledgement.
+- Setting a public origin or bind host while the mode is still `loopback` is an
+  error, so a half-finished rollout cannot look configured when it is not.
+
 ## Benchmark (agent arm only)
 
 | Variable | Purpose |

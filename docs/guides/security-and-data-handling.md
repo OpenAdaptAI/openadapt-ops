@@ -80,6 +80,41 @@ your screens or records**:
   host is refused outright.
   ([SANITIZED_ARTIFACTS.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/SANITIZED_ARTIFACTS.md))
 
+### When a halt is answered by a person
+
+The same boundary governs the
+[attended decision path](../concepts/halt-learn-loop.md#where-a-halt-goes-the-attended-decision),
+where a halted run is answered by staff — including from a phone.
+
+- **The decision surface is served by the runner, inside your boundary.** It is
+  a responsive web app on the runner itself, not a native mobile app and not a
+  hosted page. It is **loopback-only until you publish it** through your own
+  trusted TLS ingress; it fails closed on any partial configuration and offers
+  no self-signed bypass or wildcard bind. See
+  [the portal settings](../reference/configuration.md#the-mobile-decision-portal).
+- **Protected evidence does not leave the runner.** The retained screen, the
+  observed values, the OCR, and the failing target stay local. Projections and
+  evidence crops are served `no-store` and are never written to a
+  service-worker cache; only raster image types are relayed, and an SVG is
+  refused because it is an active document rather than a screenshot.
+- **The hosted envelope cannot represent a record.** What crosses to a control
+  plane is opaque identifiers, digests, closed enums, bounded counts, and
+  expiry. There is no free-text field anywhere in it, so values and prose are
+  *structurally* unable to travel rather than being stripped in transit. A
+  hosted dashboard therefore shows **less** than the runner-local surface by
+  design: it can state the shape of a failure, not its content.
+- **A person's answer is not a result.** The phone returns a signed decision.
+  The engine re-reads live state and re-runs its identity, postcondition, and
+  effect checks before continuing, and refuses when the application is not in
+  the state the step needs. An accepted tap never produces `VERIFIED`, and
+  notifications on any channel carry a fixed template and a count — never an
+  upstream string.
+- **Sending decisions back through a hosted control plane is opt-in.** It is off
+  unless remote issuance is enabled in your deployment configuration and bound
+  to an exact tenant and runner, and it carries a stronger authentication
+  requirement. Unconfigured, decisions are local and the hosted view is
+  read-only triage.
+
 The one deliberate exception is the separate hosted browser recorder for
 public, non-regulated targets, which sees raw observations inside its own
 declared hosted boundary. It is a distinct, explicitly initiated lane, not

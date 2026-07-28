@@ -97,3 +97,8 @@ halts a correct run rather than gamble. That is the cheap direction to be wrong.
 Clicking by position is what caused wrong-record writes, so OpenAdapt takes the
 halt. Deployments that cannot tolerate it can escalate each halt to a fallback
 rather than proceed blindly.
+
+A halt is not a dead end: it becomes a bounded question in front of a person,
+answerable from a phone on your own network. What that person's answer does —
+and, importantly, what it does *not* authorize — is the
+[attended decision path](halt-learn-loop.md#where-a-halt-goes-the-attended-decision).
