@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-28 02:23 UTC*
+> *Last updated: 2026-07-28 02:34 UTC*
 
 
 
@@ -174,6 +174,8 @@
 ## openadapt-ml
 
 
+- [build: bound ruff to >=0.16,<0.17 and make lint config explicit](https://github.com/OpenAdaptAI/openadapt-ml/pull/69) (#69) — merged 
+
 - [chore: gitignore .private/](https://github.com/OpenAdaptAI/openadapt-ml/pull/68) (#68) — merged 
 
 - [docs: refresh README with honest research positioning](https://github.com/OpenAdaptAI/openadapt-ml/pull/67) (#67) — merged 
@@ -182,6 +184,8 @@
 
 ## openadapt-evals
 
+
+- [fix: bound ruff, declare an explicit lint rule set, and fix what it found](https://github.com/OpenAdaptAI/openadapt-evals/pull/275) (#275) — merged 
 
 - [chore: gitignore .private/](https://github.com/OpenAdaptAI/openadapt-evals/pull/274) (#274) — merged 
 
@@ -281,6 +285,8 @@
 
 ## openadapt-retrieval
 
+
+- [fix: stop silently dropping a failed FAISS reconstruction, and bound the linter](https://github.com/OpenAdaptAI/openadapt-retrieval/pull/8) (#8) — merged 
 
 - [fix(ci): release through protected main via explicit dispatch](https://github.com/OpenAdaptAI/openadapt-retrieval/pull/7) (#7) — merged 
 
