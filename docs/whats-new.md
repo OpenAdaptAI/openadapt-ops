@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-28 01:44 UTC*
+> *Last updated: 2026-07-28 02:23 UTC*
 
 
 
@@ -9,6 +9,8 @@
 
 
 - [fix: regenerate platform manifest for openadapt-flow 1.25.1](https://github.com/OpenAdaptAI/OpenAdapt/pull/1067) (#1067) — merged 
+
+- [chore: gitignore .private/](https://github.com/OpenAdaptAI/OpenAdapt/pull/1066) (#1066) — merged 
 
 - [docs: remove obsolete planning artifacts](https://github.com/OpenAdaptAI/OpenAdapt/pull/1065) (#1065) — merged 
 
@@ -45,8 +47,6 @@
 - [fix: expose native replay substrates through launcher](https://github.com/OpenAdaptAI/OpenAdapt/pull/1046) (#1046) — merged 
 
 - [docs(readme): add a data-driven loop program graph beside the linear one](https://github.com/OpenAdaptAI/OpenAdapt/pull/1045) (#1045) — merged 
-
-- [docs: reconcile masthead SVG + substrate maturity to the canonical ladder (scoped -> early access)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1044) (#1044) — merged 
 
 
 
@@ -98,6 +98,8 @@
 ## openadapt-desktop
 
 
+- [feat(portal): render the reject answer and keep the action bar usable](https://github.com/OpenAdaptAI/openadapt-desktop/pull/84) (#84) — merged 
+
 - [chore: gitignore .private/](https://github.com/OpenAdaptAI/openadapt-desktop/pull/83) (#83) — merged 
 
 - [fix(portal): stop the phone recommending continue, and put the reading on the path to the answer](https://github.com/OpenAdaptAI/openadapt-desktop/pull/82) (#82) — merged 
@@ -135,8 +137,6 @@
 - [ci: keep docs dispatch on proven v3](https://github.com/OpenAdaptAI/openadapt-desktop/pull/65) (#65) — merged 
 
 - [feat: capability-aware surface availability with precise remediation (Section 6)](https://github.com/OpenAdaptAI/openadapt-desktop/pull/64) (#64) — merged 
-
-- [feat: post-compose exact overlay presentation videos](https://github.com/OpenAdaptAI/openadapt-desktop/pull/63) (#63) — merged 
 
 
 
@@ -271,6 +271,8 @@
 ## openadapt-grounding
 
 
+- [fix(ci): release through protected main via explicit dispatch](https://github.com/OpenAdaptAI/openadapt-grounding/pull/7) (#7) — merged 
+
 - [chore: gitignore .private/](https://github.com/OpenAdaptAI/openadapt-grounding/pull/6) (#6) — merged 
 
 - [docs: refresh README to shared OpenAdapt house style](https://github.com/OpenAdaptAI/openadapt-grounding/pull/5) (#5) — merged 
@@ -279,6 +281,8 @@
 
 ## openadapt-retrieval
 
+
+- [fix(ci): release through protected main via explicit dispatch](https://github.com/OpenAdaptAI/openadapt-retrieval/pull/7) (#7) — merged 
 
 - [chore: gitignore .private/](https://github.com/OpenAdaptAI/openadapt-retrieval/pull/6) (#6) — merged 
 
