@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-28 08:43 UTC*
+> *Last updated: 2026-07-28 13:53 UTC*
 
 
 
@@ -53,6 +53,8 @@
 ## openadapt-flow
 
 
+- [fix(compiler): retain exact opaque field labels](https://github.com/OpenAdaptAI/openadapt-flow/pull/304) (#304) — merged 
+
 - [chore(release): derive the private-artifact rules from the policy manifest](https://github.com/OpenAdaptAI/openadapt-flow/pull/300) (#300) — merged 
 
 - [fix(rdp): revalidate focused selects from context](https://github.com/OpenAdaptAI/openadapt-flow/pull/299) (#299) — merged 
@@ -91,12 +93,12 @@
 
 - [fix(risk): stop flagging text-field focus clicks as ambiguous](https://github.com/OpenAdaptAI/openadapt-flow/pull/278) (#278) — merged 
 
-- [docs: make the paper submission-ready and discharge both adversarial reviews](https://github.com/OpenAdaptAI/openadapt-flow/pull/277) (#277) — merged 
-
 
 
 ## openadapt-desktop
 
+
+- [chore(release): enforce the generated source-policy boundary](https://github.com/OpenAdaptAI/openadapt-desktop/pull/91) (#91) — merged 
 
 - [feat(auth): add loopback pairing and credential rotation](https://github.com/OpenAdaptAI/openadapt-desktop/pull/90) (#90) — merged 
 
@@ -136,12 +138,12 @@
 
 - [ci: detect unreleased work and silently skipped publishes](https://github.com/OpenAdaptAI/openadapt-desktop/pull/70) (#70) — merged 
 
-- [fix(release): point "Latest" at the native installers](https://github.com/OpenAdaptAI/openadapt-desktop/pull/69) (#69) — merged 
-
 
 
 ## openadapt-agent
 
+
+- [chore(release): enforce the generated source-policy boundary](https://github.com/OpenAdaptAI/openadapt-agent/pull/24) (#24) — merged 
 
 - [fix: honor precise Flow execution outcomes](https://github.com/OpenAdaptAI/openadapt-agent/pull/23) (#23) — merged 
 
@@ -193,6 +195,8 @@
 ## openadapt-evals
 
 
+- [chore: refuse false benchmark completion](https://github.com/OpenAdaptAI/openadapt-evals/pull/280) (#280) — merged 
+
 - [fix: preserve agent and readiness failures](https://github.com/OpenAdaptAI/openadapt-evals/pull/279) (#279) — merged 
 
 - [chore(release): enforce the source-policy boundary](https://github.com/OpenAdaptAI/openadapt-evals/pull/278) (#278) — merged 
@@ -215,6 +219,8 @@
 
 ## openadapt-capture
 
+
+- [chore: refuse invented capture input and geometry](https://github.com/OpenAdaptAI/openadapt-capture/pull/64) (#64) — merged 
 
 - [chore(release): enforce the source-policy boundary](https://github.com/OpenAdaptAI/openadapt-capture/pull/63) (#63) — merged 
 
@@ -254,12 +260,12 @@
 
 - [fix: replace copyleft input dependencies](https://github.com/OpenAdaptAI/openadapt-capture/pull/40) (#40) — merged 
 
-- [fix: dispatch docs updates to canonical repository](https://github.com/OpenAdaptAI/openadapt-capture/pull/38) (#38) — merged 
-
 
 
 ## openadapt-privacy
 
+
+- [fix: scrub nested privacy structures recursively](https://github.com/OpenAdaptAI/openadapt-privacy/pull/12) (#12) — merged 
 
 - [chore(release): enforce the source-policy boundary](https://github.com/OpenAdaptAI/openadapt-privacy/pull/11) (#11) — merged 
 
@@ -273,6 +279,8 @@
 
 ## openadapt-types
 
+
+- [feat: add runner capability contract](https://github.com/OpenAdaptAI/openadapt-types/pull/18) (#18) — merged 
 
 - [chore(release): enforce the source-policy boundary](https://github.com/OpenAdaptAI/openadapt-types/pull/17) (#17) — merged 
 
