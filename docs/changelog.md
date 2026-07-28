@@ -70,6 +70,8 @@
 
 ## openadapt-capture
 
+- **[v1.2.2](https://github.com/OpenAdaptAI/openadapt-capture/releases/tag/v1.2.2)** (2026-07-28)
+  Bug Fixes
 - **[v1.2.1](https://github.com/OpenAdaptAI/openadapt-capture/releases/tag/v1.2.1)** (2026-07-27)
   Bug Fixes
 - **[v1.2.0](https://github.com/OpenAdaptAI/openadapt-capture/releases/tag/v1.2.0)** (2026-07-26)
@@ -77,8 +79,6 @@
 - **[v1.1.1](https://github.com/OpenAdaptAI/openadapt-capture/releases/tag/v1.1.1)** (2026-07-25)
   Bug Fixes
 - **[v1.1.0](https://github.com/OpenAdaptAI/openadapt-capture/releases/tag/v1.1.0)** (2026-07-25)
-  Bug Fixes
-- **[v1.0.4](https://github.com/OpenAdaptAI/openadapt-capture/releases/tag/v1.0.4)** (2026-07-24)
   Bug Fixes
 
 ## openadapt-privacy

@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-28 03:40 UTC*
+> *Last updated: 2026-07-28 03:49 UTC*
 
 
 
@@ -206,6 +206,8 @@
 ## openadapt-capture
 
 
+- [fix: stop fabricating display metrics, window data, and UIA evidence](https://github.com/OpenAdaptAI/openadapt-capture/pull/61) (#61) — merged 
+
 - [chore: gitignore .private/](https://github.com/OpenAdaptAI/openadapt-capture/pull/60) (#60) — merged 
 
 - [build: keep repository clutter out of source archive](https://github.com/OpenAdaptAI/openadapt-capture/pull/59) (#59) — merged 
@@ -243,8 +245,6 @@
 - [docs: refresh README to shared OpenAdapt house style](https://github.com/OpenAdaptAI/openadapt-capture/pull/37) (#37) — merged 
 
 - [chore(deps): bump peter-evans/repository-dispatch from 3 to 4](https://github.com/OpenAdaptAI/openadapt-capture/pull/36) (#36) — merged 
-
-- [chore(deps): bump astral-sh/setup-uv from 4 to 7](https://github.com/OpenAdaptAI/openadapt-capture/pull/35) (#35) — merged 
 
 
 
