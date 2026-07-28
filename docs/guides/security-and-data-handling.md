@@ -86,12 +86,19 @@ The same boundary governs the
 [attended decision path](../concepts/halt-learn-loop.md#where-a-halt-goes-the-attended-decision),
 where a halted run is answered by staff — including from a phone.
 
-- **The decision surface is served by the runner, inside your boundary.** It is
-  a responsive web app on the runner itself, not a native mobile app and not a
-  hosted page. It is **loopback-only until you publish it** through your own
-  trusted TLS ingress; it fails closed on any partial configuration and offers
-  no self-signed bypass or wildcard bind. See
+- **The full-evidence decision surface is served by the runner, inside your
+  boundary.** It is a responsive web app on the runner itself, not a native
+  mobile app and not a hosted page. It is **loopback-only until you publish it**
+  through your own trusted TLS ingress; it fails closed on any partial
+  configuration and offers no self-signed bypass or wildcard bind. See
   [the portal settings](../reference/configuration.md#the-mobile-decision-portal).
+- **If you do not operate an ingress, use the hosted lane instead.** The runner
+  dials **out** to the control plane, so there is no inbound port, no
+  certificate, and nothing to configure on your network. That lane carries the
+  signed PHI-free task and the closed halt context only: closed enums, bounded
+  integers, and booleans, with **no string field and no image**. It is not
+  scrubbed evidence — it is an envelope that cannot represent a record. See
+  [Reaching it from a phone](../concepts/halt-learn-loop.md#reaching-it-from-a-phone).
 - **Protected evidence does not leave the runner.** The retained screen, the
   observed values, the OCR, and the failing target stay local. Projections and
   evidence crops are served `no-store` and are never written to a

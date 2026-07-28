@@ -128,9 +128,49 @@ listens and what URL it advertises to a paired phone.
     Unconfigured, the portal binds `127.0.0.1` and advertises a loopback URL.
     That is a complete, working configuration *on that computer* — the pairing
     screen says a phone cannot reach it rather than minting a link that fails on
-    your network. Serving a phone is an explicit decision you make by standing up
-    trusted TLS in front of the runner. See
+    your network. Publishing **this** surface to a phone is an explicit decision
+    you make by standing up trusted TLS in front of the runner. See
     [Deploy on-prem](../guides/deploy-on-prem.md#reaching-the-decision-portal-from-a-phone).
+
+    **You do not have to.** The hosted lane below reaches a phone from anywhere
+    with nothing configured on your network; it carries less, and it says so.
+
+## Answering a halt on a phone with no ingress
+
+The runner dials **out** to the control plane — no inbound port, no port
+forward, no certificate, no reverse proxy, no static address — so a phone
+reaches the queue from anywhere. Turn it on in the deployment configuration,
+bound to the exact tenant and runner the control plane issued for this machine:
+
+```yaml
+human_decisions:
+  remote:
+    enabled: true
+    tenant_id: <from the control plane>
+    runner_id: <from the control plane>
+    # context_tier: remote_closed_context   # the default
+```
+
+| Variable | Purpose |
+|---|---|
+| `OPENADAPT_RUNNER_TOKEN` | The per-runner credential the control plane issued. The desktop app stores it in the operating-system keychain when you connect this computer, and passes it to the engine; set it by hand only for a headless runner. |
+
+| Setting | Default | Purpose |
+|---|---|---|
+| `human_decisions.remote.enabled` | `false` | Must be literally `true`. A truthy string does not enable it. |
+| `human_decisions.remote.tenant_id` | *(unset)* | Required when enabled. |
+| `human_decisions.remote.runner_id` | *(unset)* | Required when enabled. |
+| `human_decisions.remote.context_tier` | `remote_closed_context` | `remote_closed_context` (what broke, as closed enums and bounded integers) or `remote_identifiers` (identifiers and counts only). `local_full` is refused by name — protected evidence never leaves the runner. |
+
+The execution profile applies its own ceiling, and the **weaker** of the two
+wins, so configuration cannot widen what a profile permits.
+
+!!! note "Every misconfiguration stops the console"
+    A missing runner credential, a deployment that did not enable remote
+    issuance, a read-only console, or a plaintext control-plane origin each
+    refuse to start rather than run a console whose phone lane is silently
+    absent. A lane that looks on and is not is worse than one that is plainly
+    off.
 
 Every widening step fails closed, and the portal **does not start** on an invalid
 combination rather than falling back to something more exposed:

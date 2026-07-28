@@ -72,12 +72,14 @@ counts, and expiry. There is no free-text field anywhere in that envelope, so
 raw values and prose are **structurally unable** to travel rather than being
 stripped in transit.
 
-The direct consequence is that a hosted dashboard shows **less** than the phone
-on the runner — it can say the *shape* of a failure but not its content. That is
-the design working, not a gap:
+The direct consequence is that a hosted surface shows **less** than the runner —
+it can say the *shape* of a failure but not its content. That is the design
+working, not a gap:
 
 - "0 of 2 required identity signals confirmed the record on screen" is a bounded
   integer and crosses the boundary safely.
+- "the OCR rung was tried and did not resolve a unique target" is a pair of
+  closed enums and crosses safely too.
 - "could not find the button labelled *Open*" names on-screen content, so it
   stays local.
 
@@ -92,7 +94,45 @@ configuration and bound to an exact tenant and runner, and it carries a stronger
 authentication requirement. Unconfigured, tasks are issued for the local
 decision surface and the hosted view is read-only triage.
 
-### Reaching it from a phone is your ingress, not ours
+### Reaching it from a phone
+
+There are two ways, and they trade fidelity against what your network has to do.
+Neither of them asks OpenAdapt to open a hole in it.
+
+#### The hosted lane — nothing to configure
+
+**This is the default answer for a practice without an IT department.** The
+runner makes **outbound HTTPS requests only** to the control plane: no inbound
+port, no port forward, no certificate, no reverse proxy, no static address. It
+works behind NAT on an ordinary broadband line.
+
+1. Connect the desktop app to OpenAdapt Cloud once. It registers this computer
+   and stores its credential in the operating-system keychain.
+2. Turn on remote decisions in your deployment configuration, bound to the exact
+   tenant and runner the control plane issued.
+3. Staff open the hosted queue on a phone and sign in. It is a web page; there
+   is nothing to install.
+
+That is the whole list. **You do not terminate TLS.** The only TLS involved is
+the runner's outbound connection to a public host with an ordinary public
+certificate.
+
+What the phone shows on this lane is the *closed halt context*: which category
+of check failed, which resolution rungs were tried and what each one returned,
+which contracts a "Continue" will re-prove, and bounded counts. Every value is a
+closed enum, a bounded integer, or a boolean — **there is no string field and no
+image**, so the hosted service is structurally unable to hold a name, an MRN, an
+observed value, or a workflow label. It is not scrubbed; it has nowhere to put
+them.
+
+The one thing it gives up is the target control's own accessible name. The phone
+says *"OpenAdapt could not find the button"* rather than *"the button labelled
+`Open`"*, and it tells you a name exists that it is not showing you.
+
+#### The runner-local portal — full fidelity, on your own terms
+
+The portal on the runner serves everything, including the protected screenshot
+crops. That is why it is the path with a network requirement.
 
 !!! warning "The portal is loopback-only until you publish it"
     Out of the box the decision portal binds `127.0.0.1` and advertises a
@@ -101,7 +141,7 @@ decision surface and the hosted view is read-only triage.
     front of the runner — an enterprise reverse proxy, a VPN, or a ZTNA
     hostname — and to record that decision in configuration.
 
-    Plan for this before you pilot the phone path. See
+    Use the hosted lane above if you do not operate one. See
     [the portal settings](../reference/configuration.md#the-mobile-decision-portal)
     for the exact variables and
     [Deploy on-prem](../guides/deploy-on-prem.md#reaching-the-decision-portal-from-a-phone)
@@ -110,9 +150,9 @@ decision surface and the hosted view is read-only triage.
 We did not punch a hole in your network for our convenience, and there is no
 "bind everything" switch to make a demo easier. The boundary in front of a
 runner that can see protected records is yours to open, deliberately, under your
-own certificate and access policy — so the phone path inherits the
-authentication, device posture, and logging you already run, instead of asking
-you to trust a second one.
+own certificate and access policy — so this path inherits the authentication,
+device posture, and logging you already run, instead of asking you to trust a
+second one.
 
 Every widening step is explicit and **fails closed**. A wildcard bind address is
 refused in every mode. So is a plaintext origin, an origin carrying a path or
