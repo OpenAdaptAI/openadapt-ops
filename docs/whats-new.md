@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-27 18:33 UTC*
+> *Last updated: 2026-07-28 00:09 UTC*
 
 
 
@@ -53,6 +53,16 @@
 ## openadapt-flow
 
 
+- [feat(rdp): atomically verify native option selections](https://github.com/OpenAdaptAI/openadapt-flow/pull/291) (#291) — merged 
+
+- [fix(receipt): require complete evidence for VERIFIED receipts](https://github.com/OpenAdaptAI/openadapt-flow/pull/289) (#289) — merged 
+
+- [fix(ci): make release-health alerts fail observable](https://github.com/OpenAdaptAI/openadapt-flow/pull/288) (#288) — merged 
+
+- [fix(compiler): stop a parameter's demonstrated value becoming a pixel invariant](https://github.com/OpenAdaptAI/openadapt-flow/pull/285) (#285) — merged 
+
+- [docs: label every headline benchmark number with the engine it was measured on](https://github.com/OpenAdaptAI/openadapt-flow/pull/284) (#284) — merged 
+
 - [ci: detect unreleased work and silently skipped publishes](https://github.com/OpenAdaptAI/openadapt-flow/pull/283) (#283) — merged 
 
 - [feat(tutorial): make the free path reach VERIFIED and emit a local receipt](https://github.com/OpenAdaptAI/openadapt-flow/pull/281) (#281) — merged 
@@ -83,20 +93,28 @@
 
 - [Fix scheduled quickstart and no-DOM qualification gates](https://github.com/OpenAdaptAI/openadapt-flow/pull/267) (#267) — merged 
 
-- [bench: complex multi-system workflow benchmarks (email + spreadsheet + API + multi-app)](https://github.com/OpenAdaptAI/openadapt-flow/pull/266) (#266) — merged 
-
-- [feat(repair): governed promotion lifecycle with campaigns, canary, and rollback (Section 9)](https://github.com/OpenAdaptAI/openadapt-flow/pull/265) (#265) — merged 
-
-- [feat(effects): verifier adapter platform (Section 4)](https://github.com/OpenAdaptAI/openadapt-flow/pull/264) (#264) — merged 
-
-- [feat(cli): explicit surface selection for production profiles + surface-bound workflows (Section 5)](https://github.com/OpenAdaptAI/openadapt-flow/pull/263) (#263) — merged 
-
-- [feat(compiler): field-label parameter inference with one-shot operator confirm](https://github.com/OpenAdaptAI/openadapt-flow/pull/262) (#262) — merged 
-
 
 
 ## openadapt-desktop
 
+
+- [chore: gitignore .private/](https://github.com/OpenAdaptAI/openadapt-desktop/pull/83) (#83) — merged 
+
+- [fix(portal): stop the phone recommending continue, and put the reading on the path to the answer](https://github.com/OpenAdaptAI/openadapt-desktop/pull/82) (#82) — merged 
+
+- [fix(installer): ship a capture the bundled Flow will actually accept](https://github.com/OpenAdaptAI/openadapt-desktop/pull/81) (#81) — merged 
+
+- [fix(portal): kill the console process tree and stop deriving temp dirs from pins](https://github.com/OpenAdaptAI/openadapt-desktop/pull/80) (#80) — merged 
+
+- [fix(portal): teach the phone the receipt shape and say what actually broke](https://github.com/OpenAdaptAI/openadapt-desktop/pull/79) (#79) — merged 
+
+- [fix(portal): freeze the attended console and wire the decision portal to a deployment target](https://github.com/OpenAdaptAI/openadapt-desktop/pull/78) (#78) — merged 
+
+- [fix(test): read portal shell assets as UTF-8](https://github.com/OpenAdaptAI/openadapt-desktop/pull/77) (#77) — merged 
+
+- [fix(policy): bind the resolved safety policy to dispatched runs](https://github.com/OpenAdaptAI/openadapt-desktop/pull/76) (#76) — merged 
+
+- [feat(portal): add the runner-local mobile decision portal and QR pairing](https://github.com/OpenAdaptAI/openadapt-desktop/pull/75) (#75) — merged 
 
 - [fix: attest observed qualification capabilities](https://github.com/OpenAdaptAI/openadapt-desktop/pull/74) (#74) — merged 
 
@@ -120,28 +138,26 @@
 
 - [feat: post-compose exact overlay presentation videos](https://github.com/OpenAdaptAI/openadapt-desktop/pull/63) (#63) — merged 
 
-- [fix: label Desktop CLI as Beta](https://github.com/OpenAdaptAI/openadapt-desktop/pull/62) (#62) — merged 
-
-- [feat: add privacy-safe automation control overlay](https://github.com/OpenAdaptAI/openadapt-desktop/pull/61) (#61) — merged 
-
-- [fix: make macOS Intel crypto runtime self-contained](https://github.com/OpenAdaptAI/openadapt-desktop/pull/60) (#60) — merged 
-
-- [feat: support Flow 1.23 precise outcomes and context identity](https://github.com/OpenAdaptAI/openadapt-desktop/pull/58) (#58) — merged 
-
-- [ci: bump the actions group with 9 updates](https://github.com/OpenAdaptAI/openadapt-desktop/pull/56) (#56) — merged 
-
-- [build: bump the cargo-minor group in /src-tauri with 3 updates](https://github.com/OpenAdaptAI/openadapt-desktop/pull/52) (#52) — merged 
-
-- [Publish Desktop SBOM and add security gates](https://github.com/OpenAdaptAI/openadapt-desktop/pull/48) (#48) — merged 
-
-- [Complete qualification identity and effect editing](https://github.com/OpenAdaptAI/openadapt-desktop/pull/47) (#47) — merged 
-
-- [feat: consume canonical Flow qualification projects](https://github.com/OpenAdaptAI/openadapt-desktop/pull/46) (#46) — merged 
-
 
 
 ## openadapt-agent
 
+
+- [chore: gitignore .private/](https://github.com/OpenAdaptAI/openadapt-agent/pull/21) (#21) — merged 
+
+- [chore(ci): pin every workflow action to a full commit SHA](https://github.com/OpenAdaptAI/openadapt-agent/pull/20) (#20) — merged 
+
+- [chore(deps): Bump actions/setup-python from 6 to 7](https://github.com/OpenAdaptAI/openadapt-agent/pull/19) (#19) — merged 
+
+- [chore(deps): Bump actions/download-artifact from 5 to 8](https://github.com/OpenAdaptAI/openadapt-agent/pull/18) (#18) — merged 
+
+- [chore(deps): bump github/codeql-action init+analyze to v4.37.3 together](https://github.com/OpenAdaptAI/openadapt-agent/pull/17) (#17) — merged 
+
+- [chore(deps): Bump actions/upload-artifact from 4 to 7](https://github.com/OpenAdaptAI/openadapt-agent/pull/15) (#15) — merged 
+
+- [chore(deps): Bump actions/setup-node from 6 to 7](https://github.com/OpenAdaptAI/openadapt-agent/pull/13) (#13) — merged 
+
+- [chore(deps): Bump actions/checkout from 5 to 7](https://github.com/OpenAdaptAI/openadapt-agent/pull/12) (#12) — merged 
 
 - [feat(dist): add local MCPB distribution](https://github.com/OpenAdaptAI/openadapt-agent/pull/11) (#11) — merged 
 
@@ -153,18 +169,12 @@
 
 - [feat(dist): registry manifests + discoverability for the MCP bridge](https://github.com/OpenAdaptAI/openadapt-agent/pull/7) (#7) — merged 
 
-- [chore(deps): Bump actions/checkout from 4 to 7](https://github.com/OpenAdaptAI/openadapt-agent/pull/6) (#6) — merged 
-
-- [chore(deps): Bump actions/dependency-review-action from 4.9.0 to 5.0.0](https://github.com/OpenAdaptAI/openadapt-agent/pull/5) (#5) — merged 
-
-- [chore(deps): Bump actions/setup-python from 5 to 7](https://github.com/OpenAdaptAI/openadapt-agent/pull/4) (#4) — merged 
-
-- [chore: add security CI (CodeQL, gitleaks, dependency-review, Dependabot)](https://github.com/OpenAdaptAI/openadapt-agent/pull/3) (#3) — merged 
-
 
 
 ## openadapt-ml
 
+
+- [chore: gitignore .private/](https://github.com/OpenAdaptAI/openadapt-ml/pull/68) (#68) — merged 
 
 - [docs: refresh README with honest research positioning](https://github.com/OpenAdaptAI/openadapt-ml/pull/67) (#67) — merged 
 
@@ -172,6 +182,8 @@
 
 ## openadapt-evals
 
+
+- [chore: gitignore .private/](https://github.com/OpenAdaptAI/openadapt-evals/pull/274) (#274) — merged 
 
 - [docs(evidence): correct the 1.16.1 vs 1.24.0 apples-to-apples claim](https://github.com/OpenAdaptAI/openadapt-evals/pull/273) (#273) — merged 
 
@@ -183,6 +195,8 @@
 
 ## openadapt-capture
 
+
+- [chore: gitignore .private/](https://github.com/OpenAdaptAI/openadapt-capture/pull/60) (#60) — merged 
 
 - [build: keep repository clutter out of source archive](https://github.com/OpenAdaptAI/openadapt-capture/pull/59) (#59) — merged 
 
@@ -222,12 +236,12 @@
 
 - [chore(deps): bump astral-sh/setup-uv from 4 to 7](https://github.com/OpenAdaptAI/openadapt-capture/pull/35) (#35) — merged 
 
-- [chore(deps): bump python-semantic-release/python-semantic-release from 9.15.2 to 10.6.1](https://github.com/OpenAdaptAI/openadapt-capture/pull/34) (#34) — merged 
-
 
 
 ## openadapt-privacy
 
+
+- [chore: gitignore .private/](https://github.com/OpenAdaptAI/openadapt-privacy/pull/9) (#9) — merged 
 
 - [docs: refresh README to shared OpenAdapt house style](https://github.com/OpenAdaptAI/openadapt-privacy/pull/8) (#8) — merged 
 
@@ -235,6 +249,12 @@
 
 ## openadapt-types
 
+
+- [chore: gitignore .private/](https://github.com/OpenAdaptAI/openadapt-types/pull/14) (#14) — merged 
+
+- [fix: close the attended terminal-outcome contract gap with HumanDecisionReceiptV1](https://github.com/OpenAdaptAI/openadapt-types/pull/13) (#13) — merged 
+
+- [fix: close free text in human decision timestamps and pin canonicalization](https://github.com/OpenAdaptAI/openadapt-types/pull/12) (#12) — merged 
 
 - [feat: add signed human decision task contract](https://github.com/OpenAdaptAI/openadapt-types/pull/11) (#11) — merged 
 
@@ -249,7 +269,16 @@
 ## openadapt-grounding
 
 
+- [chore: gitignore .private/](https://github.com/OpenAdaptAI/openadapt-grounding/pull/6) (#6) — merged 
+
 - [docs: refresh README to shared OpenAdapt house style](https://github.com/OpenAdaptAI/openadapt-grounding/pull/5) (#5) — merged 
+
+
+
+## openadapt-retrieval
+
+
+- [chore: gitignore .private/](https://github.com/OpenAdaptAI/openadapt-retrieval/pull/6) (#6) — merged 
 
 
 
