@@ -32,6 +32,8 @@ from sweep_default_branch_ci import (  # noqa: E402
     classify_run,
     is_github_managed,
     is_push_gated,
+    render,
+    token_sees_private,
 )
 
 NOW = datetime(2026, 7, 28, 12, 0, tzinfo=timezone.utc)
@@ -229,3 +231,29 @@ def test_github_managed_paths():
     assert is_github_managed("dynamic/dependabot/dependabot-updates")
     assert is_github_managed("dynamic/github-code-scanning/codeql")
     assert not is_github_managed(".github/workflows/ci.yml")
+
+
+# --------------------------------------------------------------------------
+# The report must say which half of the organisation it looked at
+# --------------------------------------------------------------------------
+
+
+def test_a_token_that_lists_no_private_repository_is_detected():
+    """The first real run said "1 of 26" while 8 private repositories were invisible."""
+    assert not token_sees_private([{"name": "a", "private": False}])
+    assert token_sees_private([{"name": "a", "private": False}, {"name": "b", "private": True}])
+
+
+def test_the_report_says_so_when_it_saw_no_private_repository():
+    class _Reader:
+        calls = 0
+
+    clean = [{"repo": "OpenAdaptAI/x", "branch": "main", "failures": [], "notes": [],
+              "unreadable": False}]
+    hidden = render(clean, _Reader(), "", 6.0, sees_private=False)
+    assert "PUBLIC repositories we own" in hidden
+    assert "saw no private repository" in hidden
+
+    full = render(clean, _Reader(), "", 6.0, sees_private=True)
+    assert "PUBLIC repositories" not in full
+    assert "saw no private repository" not in full
