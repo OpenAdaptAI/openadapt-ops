@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-28 08:28 UTC*
+> *Last updated: 2026-07-28 08:30 UTC*
 
 
 
@@ -175,6 +175,8 @@
 
 ## openadapt-ml
 
+
+- [chore(release): enforce the source-policy boundary](https://github.com/OpenAdaptAI/openadapt-ml/pull/71) (#71) — merged 
 
 - [fix: stop reporting evaluation and grounding failures as empty results](https://github.com/OpenAdaptAI/openadapt-ml/pull/70) (#70) — merged 
 
