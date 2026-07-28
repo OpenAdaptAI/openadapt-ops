@@ -44,6 +44,8 @@
 
 ## openadapt-ml
 
+- **[v0.16.2](https://github.com/OpenAdaptAI/openadapt-ml/releases/tag/v0.16.2)** (2026-07-28)
+  Bug Fixes
 - **[v0.16.1](https://github.com/OpenAdaptAI/openadapt-ml/releases/tag/v0.16.1)** (2026-06-12)
   Bug Fixes
 - **[v0.16.0](https://github.com/OpenAdaptAI/openadapt-ml/releases/tag/v0.16.0)** (2026-06-12)
@@ -51,8 +53,6 @@
 - **[v0.15.1](https://github.com/OpenAdaptAI/openadapt-ml/releases/tag/v0.15.1)** (2026-03-21)
   Bug Fixes
 - **[v0.15.0](https://github.com/OpenAdaptAI/openadapt-ml/releases/tag/v0.15.0)** (2026-03-19)
-  Bug Fixes
-- **[v0.14.1](https://github.com/OpenAdaptAI/openadapt-ml/releases/tag/v0.14.1)** (2026-03-04)
   Bug Fixes
 
 ## openadapt-evals
@@ -83,6 +83,8 @@
 
 ## openadapt-privacy
 
+- **[v1.0.1](https://github.com/OpenAdaptAI/openadapt-privacy/releases/tag/v1.0.1)** (2026-07-28)
+  Bug Fixes
 - **[v1.0.0](https://github.com/OpenAdaptAI/openadapt-privacy/releases/tag/v1.0.0)** (2026-07-15)
   Bug Fixes
 - **[v0.1.1](https://github.com/OpenAdaptAI/openadapt-privacy/releases/tag/v0.1.1)** (2026-01-29)
