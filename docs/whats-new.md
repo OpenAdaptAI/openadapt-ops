@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-28 02:49 UTC*
+> *Last updated: 2026-07-28 03:24 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [chore(ci): derive the source-boundary guard from the policy manifest](https://github.com/OpenAdaptAI/OpenAdapt/pull/1069) (#1069) — merged 
 
 - [docs: stop telling readers that status.json fixes itself](https://github.com/OpenAdaptAI/OpenAdapt/pull/1068) (#1068) — merged 
 
@@ -45,8 +47,6 @@
 - [docs: fix README safety wording wrap](https://github.com/OpenAdaptAI/OpenAdapt/pull/1048) (#1048) — merged 
 
 - [docs: rebuild flagship README around first value](https://github.com/OpenAdaptAI/OpenAdapt/pull/1047) (#1047) — merged 
-
-- [fix: expose native replay substrates through launcher](https://github.com/OpenAdaptAI/OpenAdapt/pull/1046) (#1046) — merged 
 
 
 
@@ -98,6 +98,8 @@
 ## openadapt-desktop
 
 
+- [fix(auth): stop the unwired browser-PKCE provider from stalling login](https://github.com/OpenAdaptAI/openadapt-desktop/pull/86) (#86) — merged 
+
 - [feat(portal): render the reject answer and keep the action bar usable](https://github.com/OpenAdaptAI/openadapt-desktop/pull/84) (#84) — merged 
 
 - [chore: gitignore .private/](https://github.com/OpenAdaptAI/openadapt-desktop/pull/83) (#83) — merged 
@@ -136,8 +138,6 @@
 
 - [ci: keep docs dispatch on proven v3](https://github.com/OpenAdaptAI/openadapt-desktop/pull/65) (#65) — merged 
 
-- [feat: capability-aware surface availability with precise remediation (Section 6)](https://github.com/OpenAdaptAI/openadapt-desktop/pull/64) (#64) — merged 
-
 
 
 ## openadapt-agent
@@ -173,6 +173,8 @@
 
 ## openadapt-ml
 
+
+- [fix: stop reporting evaluation and grounding failures as empty results](https://github.com/OpenAdaptAI/openadapt-ml/pull/70) (#70) — merged 
 
 - [build: bound ruff to >=0.16,<0.17 and make lint config explicit](https://github.com/OpenAdaptAI/openadapt-ml/pull/69) (#69) — merged 
 
@@ -246,6 +248,8 @@
 
 ## openadapt-privacy
 
+
+- [fix: stop reporting a failed scrub as a successful one](https://github.com/OpenAdaptAI/openadapt-privacy/pull/10) (#10) — merged 
 
 - [chore: gitignore .private/](https://github.com/OpenAdaptAI/openadapt-privacy/pull/9) (#9) — merged 
 
