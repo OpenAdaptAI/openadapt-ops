@@ -82,6 +82,11 @@ when it cannot be. Same posture as the
 [identity gate](identity-gate.md) and [effect verification](effect-verification.md):
 when the right action is not determined, stop, and here, stop *resumably*.
 
+How that handover actually reaches a person — the bounded question, what an
+answer does and does not authorize, and why the engine re-verifies rather than
+trusting it — is the
+[attended decision path](halt-learn-loop.md#where-a-halt-goes-the-attended-decision).
+
 See the [Run a deployment](../guides/run-a-deployment.md) guide for a worked
 durable run, and the [CLI reference](../reference/cli.md#resume) for `resume` /
 `approve` exit codes.
