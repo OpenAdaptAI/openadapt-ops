@@ -96,9 +96,16 @@ PERMISSIONS
 -----------
 A public repository's Actions API is readable with no authentication at all, so
 the default repository-scoped ``GITHUB_TOKEN`` reads every public repository we
-own. A private repository returns 404 to that token. Private repositories are
-therefore listed as "not readable" and never reported as failures, unless a
-token with ``actions:read`` on them is supplied in ``OA_SWEEP_TOKEN``.
+own and no new secret is needed.
+
+A private repository is not merely 404 to that token: it does not appear in the
+organisation listing at all, so the sweep cannot even name it as skipped. The
+first real run therefore reported "1 of 26 repositories we own" while 8 private
+repositories were invisible. An understated count is the muted signal this job
+exists to prevent, so the report states plainly when it saw no private
+repository. Supply a token with ``actions:read`` on them in ``OA_SWEEP_TOKEN`` to
+cover them; a repository that IS listed but whose Actions API refuses the token
+is reported as "not readable", never as a failure.
 
 COST
 ----
@@ -321,8 +328,22 @@ def classify_run(
     return (NOT_PUSH_GATED if workflow is not None and workflow_source else RETIRED), retirement
 
 
+def token_sees_private(repositories: list[dict]) -> bool:
+    """Did the organisation listing include even one private repository?
+
+    A repository-scoped ``GITHUB_TOKEN`` does not merely 404 on a private
+    repository's Actions API -- the repository never appears in the organisation
+    listing at all, so the sweep cannot report it as "not readable" because it
+    never learns it exists. The first real run said "1 of 26 repositories we own"
+    while 8 private repositories were invisible. A quietly understated count is
+    exactly the muted signal this job exists to prevent, so the report says which
+    half of the organisation it actually looked at.
+    """
+    return any(repo.get("private") for repo in repositories)
+
+
 def owned_repositories(reader: Reader) -> list[dict]:
-    """Every non-archived, non-fork repository in the organisation."""
+    """Every non-archived, non-fork repository in the organisation the token can see."""
     found: list[dict] = []
     page = 1
     while True:
@@ -464,17 +485,38 @@ def sweep_repository(reader: Reader, repo: dict, running_grace_hours: float) -> 
     return result
 
 
-def render(results: list[dict], reader: Reader, run_url: str, running_grace_hours: float) -> str:
+def render(
+    results: list[dict],
+    reader: Reader,
+    run_url: str,
+    running_grace_hours: float,
+    sees_private: bool = True,
+) -> str:
     failing = sorted((r for r in results if r["failures"]), key=lambda r: r["repo"])
     noted = sorted(
         (r for r in results if not r["failures"] and r["notes"]), key=lambda r: r["repo"]
     )
     unreadable = sorted((r for r in results if r["unreadable"]), key=lambda r: r["repo"])
 
+    scope = "repositories we own" if sees_private else "PUBLIC repositories we own"
     lines = [
-        f"**{len(failing)} of {len(results)} repositories we own do not have a genuinely "
+        f"**{len(failing)} of {len(results)} {scope} do not have a genuinely "
         "green default branch.**",
         "",
+    ]
+
+    if not sees_private:
+        # Say what was NOT looked at. A count that silently omits half the
+        # organisation is the understated signal this job exists to prevent.
+        lines += [
+            "> **This run saw no private repository.** A repository-scoped `GITHUB_TOKEN` "
+            "does not list them at all, so they are not skipped-and-reported here -- this "
+            "job never learns they exist. Set an `OA_SWEEP_TOKEN` secret holding a token "
+            "with `actions:read` on the private repositories to cover them.",
+            "",
+        ]
+
+    lines += [
         "`cancelled`, `timed_out` and `startup_failure` are not green: such a run proves "
         "nothing about the tree. The usual cause is concurrency `cancel-in-progress` when "
         "several merges land at once, so re-run the cancelled run rather than assuming the "
@@ -565,7 +607,13 @@ def main(argv: list[str] | None = None) -> int:
 
     results = [sweep_repository(reader, repo, args.running_grace_hours) for repo in repositories]
     failing = [result for result in results if result["failures"]]
-    body = render(results, reader, args.run_url, args.running_grace_hours)
+    body = render(
+        results,
+        reader,
+        args.run_url,
+        args.running_grace_hours,
+        sees_private=token_sees_private(repositories),
+    )
 
     print(body)
     print(
