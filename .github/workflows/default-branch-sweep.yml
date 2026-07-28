@@ -1,0 +1,138 @@
+name: Default branch sweep
+
+# One scheduled job that asks, for EVERY repository we own, whether its default
+# branch is genuinely green -- and files ONE issue.
+#
+# Why here, and why one: three repositories showed
+# `Release and PyPI Publish - failing` at the top of a PUBLIC repository page
+# for five months and nobody acted. The signal was never hidden; it was ignored.
+# A fourth per-repository badge would repeat that. Separately, no cross-repository
+# detector exists: the four `release-health` workflows each hardcode a single
+# `"repository"` in `.github/release-health.json` and ask a different question,
+# and `bin/oa-green` is a local script nothing runs on a schedule. This repository
+# already owns `repos.yml` and already files and updates one issue on a daily cron
+# in published-version-claims.yml, so this copies that pattern.
+#
+# Cost: one ubuntu-latest runner, standard library only, no dependency install,
+# no lockfile, no cache. About 30-60 seconds a day, and this repository is
+# public, so those minutes are free. Roughly 160 API reads against a 1000/hour
+# budget, with an explicit per_page on every list call and no pagination loop
+# except the organisation listing.
+
+on:
+  schedule:
+    # 07:11 UTC: after the overnight release and Dependabot traffic has settled,
+    # and offset from published-version-claims.yml at 06:41 so the two scheduled
+    # jobs in this repository do not start together.
+    - cron: '11 7 * * *'
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'scripts/sweep_default_branch_ci.py'
+      - 'tests/test_sweep_default_branch_ci.py'
+      - '.github/workflows/default-branch-sweep.yml'
+
+concurrency:
+  group: default-branch-sweep-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  self-test:
+    # A detector nobody has seen fire is a detector nobody should trust. The
+    # offline classification tests also run in Docs CI; running them here keeps
+    # a change to the detector self-contained.
+    name: Prove the classifier fires and stays quiet
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          enable-cache: true
+      - run: uv sync --locked --extra dev
+      - run: uv run pytest tests/test_sweep_default_branch_ci.py -q
+
+  sweep:
+    name: Sweep every default branch we own
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      # A public repository's Actions API is readable with no authentication at
+      # all, so the default repository-scoped token reads every public
+      # repository we own and needs no new secret. A private repository returns
+      # 404 to it and is listed as "not readable", never as a failure. Set the
+      # optional OA_SWEEP_TOKEN secret to a token with `actions:read` on the
+      # private repositories to cover them too; the job works without it.
+      - name: Sweep
+        id: sweep
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          OA_SWEEP_TOKEN: ${{ secrets.OA_SWEEP_TOKEN }}
+        run: |
+          python scripts/sweep_default_branch_ci.py \
+            --markdown default-branch-sweep.md \
+            --github-output "${GITHUB_OUTPUT}" \
+            --run-url "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+
+      # One issue for the whole organisation, rewritten in place. A new issue
+      # every day is the same as no issue: it stops being read. Editing a body
+      # does not notify, so a long-lived gap does not become a daily ping either.
+      - name: Open, reopen, or update the single sweep issue
+        if: steps.sweep.outputs.alert == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TITLE: "Default branch sweep - a repository we own is not green"
+        run: |
+          set -euo pipefail
+          # Compare the full title in jq rather than searching for it: a colon
+          # inside a GitHub search phrase is parsed as a qualifier.
+          EXISTING_JSON=$(gh issue list --repo "${GITHUB_REPOSITORY}" --state all \
+            --limit 1000 --json number,title,state \
+            --jq '[.[] | select(.title == env.TITLE)][0] // {}')
+          EXISTING=$(jq -r '.number // empty' <<< "${EXISTING_JSON}")
+          EXISTING_STATE=$(jq -r '.state // empty' <<< "${EXISTING_JSON}")
+          if [ -n "${EXISTING}" ]; then
+            if [ "${EXISTING_STATE}" = "CLOSED" ]; then
+              gh issue reopen "${EXISTING}" --repo "${GITHUB_REPOSITORY}"
+            fi
+            gh issue edit "${EXISTING}" --repo "${GITHUB_REPOSITORY}" \
+              --body-file default-branch-sweep.md
+            echo "Updated issue #${EXISTING}."
+          else
+            gh issue create --repo "${GITHUB_REPOSITORY}" \
+              --title "${TITLE}" --body-file default-branch-sweep.md
+          fi
+
+      # Silence when everything is green. Posting "all green" daily is how an
+      # alert gets muted.
+      - name: Close the issue once every default branch is green
+        if: steps.sweep.outputs.clear == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TITLE: "Default branch sweep - a repository we own is not green"
+        run: |
+          set -euo pipefail
+          EXISTING=$(gh issue list --repo "${GITHUB_REPOSITORY}" --state open \
+            --limit 1000 --json number,title \
+            --jq '[.[] | select(.title == env.TITLE)][0].number // empty')
+          if [ -n "${EXISTING}" ]; then
+            gh issue close "${EXISTING}" --repo "${GITHUB_REPOSITORY}" \
+              --comment "Every default branch we own is genuinely green as of ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}. Closing automatically."
+          else
+            echo "Nothing is red and no issue is open."
+          fi
