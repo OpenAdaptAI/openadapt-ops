@@ -1,12 +1,16 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-28 03:49 UTC*
+> *Last updated: 2026-07-28 06:27 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [chore: refresh Capture platform manifest](https://github.com/OpenAdaptAI/OpenAdapt/pull/1071) (#1071) — merged 
+
+- [fix: refuse an unready capture](https://github.com/OpenAdaptAI/OpenAdapt/pull/1070) (#1070) — merged 
 
 - [chore(ci): derive the source-boundary guard from the policy manifest](https://github.com/OpenAdaptAI/OpenAdapt/pull/1069) (#1069) — merged 
 
@@ -44,10 +48,6 @@
 
 - [build(deps): bump peter-evans/repository-dispatch from 3 to 4](https://github.com/OpenAdaptAI/OpenAdapt/pull/1049) (#1049) — merged 
 
-- [docs: fix README safety wording wrap](https://github.com/OpenAdaptAI/OpenAdapt/pull/1048) (#1048) — merged 
-
-- [docs: rebuild flagship README around first value](https://github.com/OpenAdaptAI/OpenAdapt/pull/1047) (#1047) — merged 
-
 
 
 ## openadapt-flow
@@ -56,6 +56,10 @@
 - [chore(release): derive the private-artifact rules from the policy manifest](https://github.com/OpenAdaptAI/openadapt-flow/pull/300) (#300) — merged 
 
 - [fix(docs): correct a false halt claim; pin HOW the free path reaches VERIFIED](https://github.com/OpenAdaptAI/openadapt-flow/pull/298) (#298) — merged 
+
+- [feat(decisions): run the outbound decision lane, so a halt reaches a phone](https://github.com/OpenAdaptAI/openadapt-flow/pull/297) (#297) — merged 
+
+- [feat(decisions): deliver halts to a phone without customer TLS ingress](https://github.com/OpenAdaptAI/openadapt-flow/pull/296) (#296) — merged 
 
 - [feat(attended): let an operator reject a halt and end the run](https://github.com/OpenAdaptAI/openadapt-flow/pull/295) (#295) — merged 
 
@@ -89,14 +93,12 @@
 
 - [docs(effectbench): frame reference counts as pinned fixture values, not a published result](https://github.com/OpenAdaptAI/openadapt-flow/pull/276) (#276) — merged 
 
-- [feat: bind remote attended decisions to AAL2](https://github.com/OpenAdaptAI/openadapt-flow/pull/275) (#275) — merged 
-
-- [ci: move recurring qualification matrices to weekly gates](https://github.com/OpenAdaptAI/openadapt-flow/pull/274) (#274) — merged 
-
 
 
 ## openadapt-desktop
 
+
+- [feat: compile recordings automatically after stop](https://github.com/OpenAdaptAI/openadapt-desktop/pull/88) (#88) — merged 
 
 - [fix(scrubber): refuse a scrub that could not run instead of reporting zero redactions](https://github.com/OpenAdaptAI/openadapt-desktop/pull/87) (#87) — merged 
 
@@ -136,12 +138,12 @@
 
 - [fix: keep browser provisioning substrate-aware](https://github.com/OpenAdaptAI/openadapt-desktop/pull/67) (#67) — merged 
 
-- [Complete the Desktop qualification cockpit lifecycle](https://github.com/OpenAdaptAI/openadapt-desktop/pull/66) (#66) — merged 
-
 
 
 ## openadapt-agent
 
+
+- [fix: honor precise Flow execution outcomes](https://github.com/OpenAdaptAI/openadapt-agent/pull/23) (#23) — merged 
 
 - [chore: gitignore .private/](https://github.com/OpenAdaptAI/openadapt-agent/pull/21) (#21) — merged 
 
@@ -206,6 +208,8 @@
 ## openadapt-capture
 
 
+- [fix: refuse an unready recording](https://github.com/OpenAdaptAI/openadapt-capture/pull/62) (#62) — merged 
+
 - [fix: stop fabricating display metrics, window data, and UIA evidence](https://github.com/OpenAdaptAI/openadapt-capture/pull/61) (#61) — merged 
 
 - [chore: gitignore .private/](https://github.com/OpenAdaptAI/openadapt-capture/pull/60) (#60) — merged 
@@ -243,8 +247,6 @@
 - [fix: dispatch docs updates to canonical repository](https://github.com/OpenAdaptAI/openadapt-capture/pull/38) (#38) — merged 
 
 - [docs: refresh README to shared OpenAdapt house style](https://github.com/OpenAdaptAI/openadapt-capture/pull/37) (#37) — merged 
-
-- [chore(deps): bump peter-evans/repository-dispatch from 3 to 4](https://github.com/OpenAdaptAI/openadapt-capture/pull/36) (#36) — merged 
 
 
 
