@@ -45,7 +45,7 @@ enables model grounding and configures an appliance.
 | What happens during model-assisted repair? | The deterministic ladder runs first. If model grounding is explicitly allowed, a proposal is still subject to the identity and postcondition gates and is counted in the report. A model proposal is not an automatic safety exemption. |
 | Can model inference run on-prem? | Yes. The optional VLM service is designed for a private-LAN deployment with no retention. Keep model grounding disabled if the deployment does not need it. |
 | Is upload code physically absent from regulated builds? | The compiler does not currently publish a separate, verified "regulated binary" exclusion guarantee. Enforce no-egress at the host/network boundary and verify the installed artifact. The desktop recorder documents build-time exclusions for its own enterprise builds; that is not a blanket compiler guarantee. |
-| What proves an uploaded bundle was tested? | `validate-hosted` checks exact recording/bundle provenance, strict lint, policy certification, risk class, and a successful matching local run report, then signs their hashes with the ingest token under a one-time challenge. Cloud verifies exact policy/risk-class allowlists and consumes the challenge once. This is operator self-attestation, not independent observation or third-party certification. |
+| What proves an uploaded bundle was tested? | `validate-hosted` checks exact recording/bundle provenance, strict lint, policy certification, risk class, and a successful matching local run report. Runtime-validation v3 signs that envelope with an organization-trusted Ed25519 runner key and uses a separate ingest-token MAC for the one-time challenge. Cloud verifies signer trust and current compiler, policy, and risk-class allowlists at ingest and dispatch. This is operator self-attestation, not independent observation or third-party certification. |
 | Can a hosted workflow target a private service? | Not through the managed browser lane. Admission requires public DNS names and the runner resolves them again, refusing literal IPs, special-use names, wildcards, and any private, loopback, link-local, reserved, or otherwise non-global answer. Provider resolver behavior and DNS-rebinding resistance remain live qualification items. Private applications require a qualified customer-controlled execution boundary rather than managed public egress. |
 | How is the declared runtime boundary enforced? | The qualified boundary ID is hashed into local replay evidence, persisted with the activated workflow, included in every job, installed independently in the runner, and returned by runner health. Cloud and the runner refuse a mismatch. This binds configuration; it does not independently certify that the named infrastructure satisfies a regulatory standard. |
 | Can a retried run execute twice? | Live clients supply a request-bound idempotency key, and the database permits one queued/running run per workflow. Dispatch is claimed once and the provider call ID is recorded. If acknowledgement is lost, the run remains reserved and single-flight for callback or operator/provider reconciliation; timeout alone does not authorize a refund and retry. |
@@ -64,12 +64,14 @@ enables model grounding and configures an appliance.
     execution-bearing content, parameterize before compiling.
 
 !!! note "Self-attestation is not independent certification"
-    The HMAC shows that the ingest-token holder signed a non-mutated envelope;
-    Cloud did not witness the local test. The envelope binds approved artifact
-    hashes, compiler/config and parameter-schema hashes, lint/certification
-    evidence hashes, policy, derived risk class, report hash, environment hash,
-    timestamp, and one-time challenge. Independent certification needs a
-    separately controlled evaluator, evidence custody, and signing identity.
+    The Ed25519 signature shows that an organization-trusted runner signed the
+    non-mutated envelope. The separate ingest MAC binds the submission to the
+    one-time token challenge. Cloud did not witness the local test. The envelope
+    binds approved artifact hashes, compiler/config and parameter-schema hashes,
+    lint/certification evidence hashes, policy, derived risk class, report hash,
+    environment hash, timestamp, and one-time challenge. Independent
+    certification needs a separately controlled evaluator, evidence custody,
+    and signing identity.
 
 ## Audit and integrity
 
@@ -135,7 +137,8 @@ qualification was run on Flow 1.8.0; the live runner and compiler report the
 pinned managed-runtime Flow 1.23.0 identity. The public readiness endpoint currently verifies
 live mode, authentication, database migrations, private storage, runner,
 compiler, recorder, callbacks, scheduler, retention policy, secret encryption,
-runtime-validation allowlists, and live billing configuration. Readiness proves
+runtime-validation allowlists, organization-bound signer trust, legacy-artifact
+migration state, and live billing configuration. Readiness proves
 those dependencies and contracts are configured and reachable; it is not a
 customer workflow qualification or an SLA.
 
@@ -178,7 +181,7 @@ execution](hosted.md) and [Qualification evidence](../get-started/what-works-tod
 ## Release and secure-development evidence
 
 Python releases publish immutable wheel and sdist artifacts with PyPI
-provenance attestations. Desktop `desktop-v0.14.0` publishes its complete
+provenance attestations. Desktop `desktop-v0.15.0` publishes its complete
 Windows, macOS, and Linux installer set with checksums, a CycloneDX SBOM,
 per-platform metadata, and GitHub build-provenance attestations. The native
 installers are still unsigned on Windows/Linux and ad-hoc signed on macOS;

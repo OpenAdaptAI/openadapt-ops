@@ -66,10 +66,11 @@ before compilation rather than weakening the privacy or runtime gate.
 
 Cloud checks the attestation's exact recording and bundle hashes, provenance,
 report and evidence hashes, policy, engine-derived `low`/`consequential` risk
-class, HMAC, freshness, and one-time organization/token challenge. Server-side
+class, organization-trusted Ed25519 runner signature, separate ingest-token MAC,
+freshness, and one-time organization/token challenge. Server-side signer trust,
 policy, risk-class, and deployed compiler-version allowlists are additional
-restrictions. This is operator self-attestation, not independent certification
-or a general safety guarantee.
+restrictions and are checked again before dispatch. This is operator
+self-attestation, not independent certification or a general safety guarantee.
 
 The risk-based launch default is:
 

@@ -19,8 +19,10 @@ not a separate product onboarding path.
 | `openadapt` 1.x | `openadapt-flow >=1.7,<2` | Public installer and `openadapt flow …` CLI |
 | `openadapt-flow` 1.x + native capture | `openadapt-capture >=1.1.0` | Canonical native demonstration recording for Windows, macOS, Linux, RDP, and Citrix |
 | Windows action-time UIA handoff | `openadapt-flow >=1.22,<2` + `openadapt-capture >=1.1.0` | Retains the nearest actionable UIA node for native Windows compilation; RDP and Citrix remain externally black-box |
+| Hosted attended decisions from Desktop | `openadapt-desktop >=0.15,<0.16` + `openadapt-flow >=1.26,<2` + `openadapt-types >=0.7,<0.8` | Sends a closed halt context through outbound HTTPS so an authenticated operator can answer from a phone; the customer-controlled runner revalidates the live application before action |
+| Runtime-validation v3 | `openadapt-flow >=1.26,<2` | Signs the exact qualification envelope with an organization-trusted Ed25519 runner key and binds its one-time ingest with a separate token MAC |
 | `openadapt-flow` 1.x + privacy extra | `openadapt-privacy[presidio] >=1.0` | Configured local scrub/redaction paths |
-| `openadapt-flow` interoperability extra | `openadapt-types >=0.2,<0.4` | Contributor-facing schema boundary |
+| `openadapt-flow` interoperability extra | `openadapt-types >=0.7,<0.8` | Contributor-facing schema boundary; Desktop 0.15 pins Types 0.7.0 for the runner-capability and attended-decision contracts |
 | Python | 3.10-3.12 | Supported runtime range for the current 1.x line |
 
 The package metadata is the executable source of truth for these ranges. CI

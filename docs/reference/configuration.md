@@ -142,6 +142,10 @@ forward, no certificate, no reverse proxy, no static address — so a phone
 reaches the queue from anywhere. Turn it on in the deployment configuration,
 bound to the exact tenant and runner the control plane issued for this machine:
 
+This Desktop-managed path requires OpenAdapt Desktop 0.15 or newer and
+`openadapt-flow` 1.26 or newer. Desktop checks the exact registered runner and
+the Flow version before it starts the attended console.
+
 ```yaml
 human_decisions:
   remote:

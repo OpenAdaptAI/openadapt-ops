@@ -98,19 +98,23 @@ The hosted lifecycle is:
    validation environment.
 6. Sanitize, review, and approve the compiled bundle. Bundle sanitation must
    preserve execution-bearing content.
-7. Run `validate-hosted`. It requests an expiring, one-time organization/token
-   challenge and creates an operator attestation bound to the exact approved
-   recording, bundle, compiler provenance, policy, risk class, and replay report.
-8. Immediately push the approved bundle with that attestation. Cloud consumes
+7. Provision one Ed25519 key for the customer-controlled runner. Give its
+   printed public entry to the Cloud deployment operator, who adds it to the
+   organization's trust policy. Keep the private key inside the runner boundary.
+8. Run `validate-hosted`. It requests an expiring, one-time organization/token
+   challenge and creates a v3 operator attestation bound to the exact approved
+   recording, bundle, compiler provenance, policy, risk class, replay report,
+   organization, and runner.
+9. Immediately push the approved bundle with that attestation. Cloud consumes
    the challenge and admits the bundle only if policy and risk-class allowlists
    also pass.
-9. Configure the vault secret-set reference and optional schedule. The target
+10. Configure the vault secret-set reference and optional schedule. The target
    URL, allowed hosts, and parameter schema are immutable attested bundle
    properties; supply non-secret parameter values for each run.
-10. Teach or repair a halted run locally, revalidate it, and activate the
+11. Teach or repair a halted run locally, revalidate it, and activate the
    attested replacement on the same workflow; promote only a revision that
    passes its gates.
-11. Inspect usage and manage the subscription through the billing portal.
+12. Inspect usage and manage the subscription through the billing portal.
 
 Checkout does not relax a safety or egress refusal. A paid organization cannot
 upload an unapproved artifact or execute a workflow that fails its configured
@@ -145,7 +149,15 @@ openadapt flow review-sanitized bundle.sanitized --original bundle
 openadapt flow approve-sanitized bundle.sanitized \
   --original bundle --reviewer alice@example.com
 
-# 4. Acquire the one-time challenge and bind the local evidence to it.
+# 4. Once per runner, create its signing key. Give the printed public entry to
+#    the Cloud deployment operator. Keep the private key local.
+openadapt flow runtime-keygen \
+  --out /secure/runner-ed25519.key \
+  --key-id clinic-runner-2026-07 \
+  --runner-id clinic-runner-01 \
+  --org-id 00000000-0000-4000-8000-000000000001
+
+# 5. Acquire the one-time challenge and bind the local evidence to it.
 openadapt flow validate-hosted \
   --recording recording.sanitized \
   --bundle bundle.sanitized \
@@ -153,10 +165,14 @@ openadapt flow validate-hosted \
   --policy clinical-write \
   --risk-class consequential \
   --environment validation/mock-emr-v1 \
+  --target-kind web \
   --target-url https://validation.example/login \
+  --signing-key-id clinic-runner-2026-07 \
+  --signing-runner-id clinic-runner-01 \
+  --signing-private-key-file /secure/runner-ed25519.key \
   --out triage.runtime-validation.json
 
-# 5. Consume the challenge by uploading the exact attested bundle once.
+# 6. Consume the challenge by uploading the exact attested bundle once.
 openadapt flow push bundle.sanitized --kind bundle --name "Triage" \
   --validation-attestation triage.runtime-validation.json
 ```
@@ -238,16 +254,20 @@ chain:
 - the approved bundle archive SHA-256 is the archive uploaded with the
   attestation.
 
-The client signs this envelope with the ingest token. Cloud verifies the HMAC,
+The customer-controlled runner signs this envelope with its organization-trusted
+Ed25519 key. A separate ingest-token MAC binds the complete submission to the
+one-time challenge. Cloud verifies the signature, runner and organization trust,
 fresh timestamp, exact bundle hash, configured policy, risk-class, and deployed
 compiler-version allowlists, and the challenge's organization, token, nonce,
-expiry, and unused state. The challenge expires after 15 minutes and is consumed
-transactionally by the accepted bundle upload.
+expiry, and unused state. It repeats the current signer, policy, risk-class, and
+compiler admission checks before dispatch. The challenge expires after 15
+minutes and is consumed transactionally by the accepted bundle upload.
 
 This is **operator self-attestation**, not independent certification. It proves
-that the token holder produced a tamper-evident envelope over the named local
-evidence; Cloud did not observe the local replay and the HMAC is not an auditor
-signature. `certify` means only that the bundle passed the selected policy.
+that the trusted runner signed a tamper-evident envelope and that the ingest
+token holder submitted that exact envelope. Cloud did not observe the local
+replay, and neither proof is an auditor signature. `certify` means only that the
+bundle passed the selected policy.
 Independent certification would require a separately controlled evaluator,
 test environment, evidence custody, and signing identity. Neither mechanism is
 a blanket safety, compliance, or correctness guarantee.

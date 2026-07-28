@@ -12,8 +12,10 @@ agent, and neither puts a model call on the runtime path.
 ## Where a halt goes: the attended decision
 
 When a run cannot confirm something, it stops and projects the paused step into
-a **bounded question** a member of staff can answer — from a workstation, or
-from a phone on your own network through ingress you control.
+a **bounded question** a member of staff can answer from a workstation or an
+authorized phone. The customer-controlled runner can dial out to the hosted
+decision lane, or an organization can publish the full-fidelity local portal
+through its own trusted ingress.
 
 The question is closed by construction. `openadapt-flow` projects the pause into
 a signed task carrying typed categories, bounded counts, and digests; the client
@@ -208,6 +210,7 @@ consequence in full:
 | Answer | Effect on this run | Effect on future runs |
 |---|---|---|
 | Check and continue | Re-verifies live state, then continues | None — the same drift stops the next run |
+| Reject and end run | Ends the run with the operator's rejection recorded | None |
 | Teach the correction | Continues nothing now | Enters the halt-learn loop below |
 | Needs more help | Leaves the run paused and untouched | None |
 

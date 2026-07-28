@@ -30,6 +30,7 @@ is a subcommand of `openadapt flow`.
 | [`disambiguate`](#disambiguate) | Surface and resolve compile-time ambiguities | 2 if a consequential ambiguity is unresolved |
 | [`connect`](#connect) | Pair this computer to a Cloud workspace (launcher command, needs OpenAdapt 1.7+) | 0/1 |
 | [`login`](#login) | Validate a hosted ingest token and remember the host | 0/1 |
+| [`runtime-keygen`](#runtime-keygen) | Create one Ed25519 runner key and print its public Cloud trust entry | 0/1 |
 | [`push`](#push) | Explicitly upload a recording or bundle to a control plane | 0/1 |
 | [`validate-hosted`](#validate-hosted) | Bind local validation evidence to a one-time hosted challenge | 0/1 |
 | [`report-break`](#report-break) | Send a scrubbed, schema-minimized halt descriptor | 0/1 |
@@ -522,6 +523,28 @@ openadapt flow login --token <ingest-token>
 | `--host` | Control-plane base URL. Defaults to the configured host, then `https://app.openadapt.ai`. |
 | `--no-save` | Validate without writing the host/token to the config file. |
 
+## runtime-keygen
+
+Create the Ed25519 key that identifies one customer-controlled qualification
+runner to an organization. The command refuses an existing output path. It
+prints the public trust entry for Cloud and keeps the private key file inside
+the runner boundary.
+
+```bash
+openadapt flow runtime-keygen \
+  --out /secure/runner-ed25519.key \
+  --key-id clinic-runner-2026-07 \
+  --runner-id clinic-runner-01 \
+  --org-id 00000000-0000-4000-8000-000000000001
+```
+
+| Flag | Description |
+|---|---|
+| `--out` | New private-key file. It must not exist. On POSIX, Flow creates it owner-only. |
+| `--key-id` | Stable public key identifier in the Cloud trust map. |
+| `--runner-id` | Exact runner identity that Cloud binds to this key. |
+| `--org-id` | Exact Cloud organization UUID that trusts this runner. |
+
 ## validate-hosted
 
 Acquire an expiring, one-time Cloud challenge and create a signed operator
@@ -538,8 +561,12 @@ openadapt flow validate-hosted \
   --policy clinical-write \
   --risk-class consequential \
   --environment validation/mock-emr-v1 \
+  --target-kind web \
   --target-url https://validation.example/login \
   --allowed-host cdn.validation.example \
+  --signing-key-id clinic-runner-2026-07 \
+  --signing-runner-id clinic-runner-01 \
+  --signing-private-key-file /secure/runner-ed25519.key \
   --out triage.runtime-validation.json
 ```
 
@@ -551,27 +578,34 @@ openadapt flow validate-hosted \
 | `--policy` | Named or file-backed policy that must pass again during validation. |
 | `--risk-class` | `low` or `consequential`; must match the risk derived from the compiled steps and be allowed by Cloud. |
 | `--environment` | Non-PHI validation-environment identifier; only its SHA-256 is included. |
+| `--target-kind` | Optional expected substrate: `web`, `windows`, `macos`, `linux`, `rdp`, or `citrix`. The report supplies the signed value; this flag can only cross-check it. |
 | `--target-url` | Exact non-PHI HTTPS entry URL. The report must bind the same requested URL and its actual browser origin; credentials, query strings, and fragments are refused. |
 | `--allowed-host` | Additional exact hostname allowed during hosted execution. Repeatable; the target hostname is included automatically. |
+| `--signing-key-id` | Cloud-trusted Ed25519 key ID for the v3 attestation. |
+| `--signing-runner-id` | Exact Cloud-trusted runner ID bound to the key. |
+| `--signing-private-key-file` | Local raw or canonical-base64 32-byte Ed25519 private key file. |
+| `--legacy-hmac-v2` | Emit HMAC-only v2 during a bounded migration. Do not use it for new trust. |
 | `--compiler-config` | Optional JSON object; its digest must match compiler provenance already sealed in the bundle. |
 | `--out` | Attestation JSON path. |
 | `--destination-kind`, `--trusted-host` | Destination policy for managed or exact-allowlisted customer endpoints. |
-| `--host`, `--token` | Override the configured control plane and token used for the challenge and HMAC. |
+| `--host`, `--token` | Override the configured control plane and token used for the challenge and separate ingest MAC. |
 
 The attestation binds the exact recording and bundle archive hashes, compiler
 identity/configuration, parameter schema, target/host execution boundary,
 lint/certification evidence, replay report, validation environment, policy,
 risk class, and challenge. The client also verifies the run report's workflow,
 bundle digest, source-recording provenance, parameter schema, and actual browser
-origin. Cloud verifies its configured exact policy, risk-class, and deployed
-compiler-version allowlists, and consumes the organization/token-bound challenge
-once when the bundle is accepted.
+origin. Cloud verifies the organization-bound runner signature, its configured
+exact policy, risk-class, and deployed compiler-version allowlists, and consumes
+the organization/token-bound challenge once when the bundle is accepted. It
+rechecks current signer trust and the deployment allowlists before dispatch.
 
-This is operator self-attestation, not an independent test or certification. The
-ingest-token HMAC proves possession and detects mutation; it does not prove that
-Cloud or an auditor observed the local replay. `certify` only evaluates the
-selected policy. For independent certification, use independent evidence custody
-and a separately controlled signer.
+This is operator self-attestation, not an independent test or certification.
+The Ed25519 signature binds the trusted runner. The separate ingest-token MAC
+binds the one-time submission. Neither proves that Cloud or an auditor observed
+the local replay. `certify` only evaluates the selected policy. For independent
+certification, use independent evidence custody and a separately controlled
+evaluator.
 
 ## push
 
