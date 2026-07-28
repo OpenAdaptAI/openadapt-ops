@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-28 02:35 UTC*
+> *Last updated: 2026-07-28 02:49 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [docs: stop telling readers that status.json fixes itself](https://github.com/OpenAdaptAI/OpenAdapt/pull/1068) (#1068) — merged 
 
 - [fix: regenerate platform manifest for openadapt-flow 1.25.1](https://github.com/OpenAdaptAI/OpenAdapt/pull/1067) (#1067) — merged 
 
@@ -46,12 +48,12 @@
 
 - [fix: expose native replay substrates through launcher](https://github.com/OpenAdaptAI/OpenAdapt/pull/1046) (#1046) — merged 
 
-- [docs(readme): add a data-driven loop program graph beside the linear one](https://github.com/OpenAdaptAI/OpenAdapt/pull/1045) (#1045) — merged 
-
 
 
 ## openadapt-flow
 
+
+- [feat(attended): let an operator reject a halt and end the run](https://github.com/OpenAdaptAI/openadapt-flow/pull/295) (#295) — merged 
 
 - [chore: gitignore .private/](https://github.com/OpenAdaptAI/openadapt-flow/pull/292) (#292) — merged 
 
@@ -90,8 +92,6 @@
 - [feat: make browser runtime an opt-in capability](https://github.com/OpenAdaptAI/openadapt-flow/pull/273) (#273) — merged 
 
 - [feat: add signed local attended-decision view](https://github.com/OpenAdaptAI/openadapt-flow/pull/272) (#272) — merged 
-
-- [feat: emit privacy-safe failures from customer runners](https://github.com/OpenAdaptAI/openadapt-flow/pull/270) (#270) — merged 
 
 
 
@@ -185,6 +185,8 @@
 ## openadapt-evals
 
 
+- [ci: enforce the ruff config this repo already declares](https://github.com/OpenAdaptAI/openadapt-evals/pull/276) (#276) — merged 
+
 - [fix: bound ruff, declare an explicit lint rule set, and fix what it found](https://github.com/OpenAdaptAI/openadapt-evals/pull/275) (#275) — merged 
 
 - [chore: gitignore .private/](https://github.com/OpenAdaptAI/openadapt-evals/pull/274) (#274) — merged 
@@ -274,6 +276,8 @@
 
 ## openadapt-grounding
 
+
+- [fix: bound ruff to 0.16.x and fix the defects its expanded defaults found](https://github.com/OpenAdaptAI/openadapt-grounding/pull/8) (#8) — merged 
 
 - [fix(ci): release through protected main via explicit dispatch](https://github.com/OpenAdaptAI/openadapt-grounding/pull/7) (#7) — merged 
 
