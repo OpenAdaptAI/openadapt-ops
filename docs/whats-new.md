@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-28 03:39 UTC*
+> *Last updated: 2026-07-28 03:40 UTC*
 
 
 
@@ -53,6 +53,10 @@
 ## openadapt-flow
 
 
+- [chore(release): derive the private-artifact rules from the policy manifest](https://github.com/OpenAdaptAI/openadapt-flow/pull/300) (#300) — merged 
+
+- [fix(docs): correct a false halt claim; pin HOW the free path reaches VERIFIED](https://github.com/OpenAdaptAI/openadapt-flow/pull/298) (#298) — merged 
+
 - [feat(attended): let an operator reject a halt and end the run](https://github.com/OpenAdaptAI/openadapt-flow/pull/295) (#295) — merged 
 
 - [chore: gitignore .private/](https://github.com/OpenAdaptAI/openadapt-flow/pull/292) (#292) — merged 
@@ -88,10 +92,6 @@
 - [feat: bind remote attended decisions to AAL2](https://github.com/OpenAdaptAI/openadapt-flow/pull/275) (#275) — merged 
 
 - [ci: move recurring qualification matrices to weekly gates](https://github.com/OpenAdaptAI/openadapt-flow/pull/274) (#274) — merged 
-
-- [feat: make browser runtime an opt-in capability](https://github.com/OpenAdaptAI/openadapt-flow/pull/273) (#273) — merged 
-
-- [feat: add signed local attended-decision view](https://github.com/OpenAdaptAI/openadapt-flow/pull/272) (#272) — merged 
 
 
 
