@@ -1,9 +1,10 @@
-# Durable runtime: checkpoint, resume, approve
+# Durable runtime: checkpoint, attended decision, resume
 
 A halt is the safety design working: the run stopped rather than guessing. But a
 halt mid-workflow should not mean starting over, and must never re-perform a
 write that already landed. The durable runtime turns a halt into a **durable
-pause** the operator can approve and resume from the last verified checkpoint.
+pause**. An authorized operator can make a bounded attended decision, and the
+runtime resumes only from the last verified checkpoint.
 
 !!! note "Off by default"
     The durable runtime is Tier-3 and opt-in. Enable it with `runtime.durable`
@@ -46,7 +47,7 @@ flowchart LR
     C --> B[Next step verified] --> C2[(Checkpoint)]
     C2 --> H{Halt?}
     H -->|escalation| P[(Pending escalation<br/>written to run dir)]
-    P --> AP[[approve]]
+    P --> AP[[attended decision]]
     AP --> RS[[resume]]
     RS -->|re-bind params,<br/>rebuild live backend| C2
     RS --> DONE([Continue from last<br/>verified checkpoint])
@@ -67,23 +68,28 @@ irreversible write.
 openadapt flow resume runs/replay-20260712-140233
 ```
 
-## Approval: an authenticated pause for a human
+## Attended decision: an authenticated pause for a human
 
 A durable pause is where a human decides whether the automation should continue.
-`approve` marks a pending escalation approved, and `resume --require-approval`
-refuses to continue until it is:
+The local `approve` and `resume --require-approval` path remains available:
 
 ```bash
 openadapt flow approve runs/replay-20260712-140233        # a human signs off
 openadapt flow resume  runs/replay-20260712-140233 --require-approval
 ```
 
-!!! note "Honest scope of approval today"
-    Approval is recorded as **auditable metadata** on the pending escalation,
-    and `resume --require-approval` gates on it. A full approval store (who,
-    when, a signature) is on the durable roadmap and is deliberately not
-    synthesized ad hoc. The safety property today: a run that requires approval
-    will not resume until an explicit `approve` step marks it so.
+For attended runs, Flow also emits a signed, bounded decision task. An operator
+can use the local console or an enabled hosted phone queue to Continue, Skip
+when the declared policy permits it, Teach, Reject, or Escalate. The task is
+bound to the exact pause, permitted operation, transition, expiry, and
+idempotency scope. A decision does not authorize a blind retry. Before a run
+continues, the runtime reacquires live state and re-proves the required
+postcondition, identity, and effect evidence.
+
+The hosted phone lane uses outbound runner HTTPS and an encrypted Web Push
+notification. It projects a closed context only; screenshots, OCR, values, and
+free-text application data stay on the customer-controlled runner. See
+[Attended decisions and the halt-learn loop](halt-learn-loop.md).
 
 ## The bounded-recovery posture
 

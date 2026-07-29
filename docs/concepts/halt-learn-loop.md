@@ -12,8 +12,9 @@ agent, and neither puts a model call on the runtime path.
 ## Where a halt goes: the attended decision
 
 When a run cannot confirm something, it stops and projects the paused step into
-a **bounded question** a member of staff can answer — from a workstation, or
-from a phone on your own network through ingress you control.
+a **bounded question** a member of staff can answer — from a workstation, from
+the hosted phone queue, or from a phone on your own network through ingress you
+control.
 
 The question is closed by construction. `openadapt-flow` projects the pause into
 a signed task carrying typed categories, bounded counts, and digests; the client
@@ -24,9 +25,10 @@ start, what kind of target it was looking for, what the
 [resolution ladder](capability-ladder.md) tried on each rung, and what the
 engine will re-prove if they continue.
 
-The client is a **responsive web app served by the runner itself** — deliberately
-not a native iOS or Android application, so there is no app store, no separate
-update channel, and no second place for protected evidence to come to rest.
+The decision client is a **responsive web app** — deliberately not a native iOS
+or Android application, so there is no app store or separate update channel.
+The customer-controlled runner serves the full local portal. The hosted queue
+receives only a closed, PHI-free decision context.
 
 ### The phone returns a decision, not an execution result
 
@@ -88,11 +90,11 @@ who needs the full picture opens the run on the runner, where the evidence
 already is — and the hosted surface says so, rather than letting absent detail
 read as "OpenAdapt does not know".
 
-Sending a decision *back* through a hosted control plane is off unless you turn
-it on: it requires remote issuance to be explicitly enabled in your deployment
-configuration and bound to an exact tenant and runner, and it carries a stronger
-authentication requirement. Unconfigured, tasks are issued for the local
-decision surface and the hosted view is read-only triage.
+Sending a decision *back* through a hosted control plane requires an explicit
+deployment opt-in bound to one tenant and one runner. It also requires the
+stronger authentication policy for remote issuance. The outbound runner lane,
+hosted mobile projection, and encrypted Web Push are deployed; an unconfigured
+runner keeps decisions on its local surface.
 
 ### Reaching it from a phone
 
@@ -112,6 +114,10 @@ works behind NAT on an ordinary broadband line.
    tenant and runner the control plane issued.
 3. Staff open the hosted queue on a phone and sign in. It is a web page; there
    is nothing to install.
+
+The hosted queue can send an encrypted Web Push notification when a signed task
+needs attention. The notification contains no application content. The opened
+queue shows only the closed halt context described below.
 
 That is the whole list. **You do not terminate TLS.** The only TLS involved is
 the runner's outbound connection to a public host with an ordinary public
@@ -198,6 +204,16 @@ The rest of the shape follows from the same posture:
 
 The phone never receives the engine's console capability. It holds a session
 token bound to that runner and that approved pairing, and nothing else.
+
+### One decision cannot become a second authority
+
+The signed task makes the presented question tamper-evident. It does not itself
+grant execution authority. Before a remote answer can change a run, the runner
+binds it again to the exact tenant, runner, task revision, pause capability,
+allowed operation, expected transition, expiry, and idempotency scope. It then
+takes a single-flight lease and repeats the live checks. A replayed, expired,
+or mismatched answer is refused. The control plane can request a decision; the
+customer-controlled runner remains the final authority for execution.
 
 ### What the three answers do
 
