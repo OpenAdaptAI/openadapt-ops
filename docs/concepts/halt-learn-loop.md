@@ -31,16 +31,28 @@ engine will re-prove if they continue.
 
 ### A qualified entity label, not a guessed domain
 
-An operator should see a useful noun. In a healthcare workflow that can be
-`patient record`; in an insurance workflow it can be `claim`; in a lending
-workflow it can be `loan application`. The runtime must not infer this noun
-from a screenshot, OCR, a parameter value, an application name, or a model.
+An operator should see a useful noun. The runtime must not infer this noun from
+a screenshot, OCR, a parameter value, an application name, or a model.
+
+The reviewed vocabulary for a remote surface is:
+
+| Workflow area | Remote-safe entity classes |
+| --- | --- |
+| Healthcare and coverage | `patient record`, `member record` |
+| Insurance and lending | `insurance claim`, `loan application`, `customer account`, `invoice` |
+| Service and operations | `service request`, `case`, `order`, `document` |
+| Neutral | `record`, `item` |
+
+Qualification can retain a custom class for the local operator surface. A
+remote surface does not render a custom or unrecognized class. It renders the
+signed neutral `record` or `item` fallback instead.
 
 The V2 signed decision task gets the label from the exact qualification
 contract. It binds the qualification project, revision, contract digest, bundle
 digest, and qualified step. A client uses the V2 label only after explicit V2
-negotiation with the runner. If either side does not negotiate V2, it uses the
-V1 task and renders the neutral fallback `record` or `item`.
+negotiation with the runner. If either side does not negotiate V2, or the class
+is not in the reviewed remote-safe vocabulary, the client renders the neutral
+fallback `record` or `item`.
 
 The label is presentation metadata. It is not an identity value and it does not
 say which patient, claim, borrower, policy, or account is on screen. Those
@@ -112,11 +124,10 @@ check proves the effect; otherwise it stays halted for safe review.
 The retained screen, the observed values, the OCR, and the failing target never
 leave the customer-controlled runner. Only a typed, PHI-free envelope crosses to
 a hosted control plane: opaque identifiers, digests, closed enums, bounded
-counts, expiry, and, in V2, one qualification-approved entity label. The V2
-label has a small fixed character set and a short maximum length. It is selected
-at qualification time, not from runtime evidence. There is no free-text field,
-so raw values and prose are **structurally unable** to travel rather than being
-stripped in transit.
+counts, expiry, and, in V2, one remote-safe entity class selected from the
+reviewed vocabulary above. It is selected at qualification time, not from
+runtime evidence. There is no free-text field, so raw values and prose are
+**structurally unable** to travel rather than being stripped in transit.
 
 The direct consequence is that a hosted surface shows **less** than the runner —
 it can say the *shape* of a failure but not its content. That is the design
@@ -171,11 +182,10 @@ certificate.
 What the phone shows on this lane is the *closed halt context*: which category
 of check failed, which resolution rungs were tried and what each one returned,
 which contracts a "Continue" will re-prove, and bounded counts. V1 has no
-string field or image. V2 can also carry one short, qualification-approved
-entity label, such as `claim`; it cannot carry a record value, a person name, an
-MRN, an observed value, or a workflow label. The hosted service cannot use this
-contract to hold those values. It is not scrubbed; the schema has nowhere to put
-them.
+string field or image. V2 can also carry one reviewed remote-safe entity class;
+it cannot carry a custom class, a record value, a person name, an MRN, an
+observed value, or a workflow label. The hosted service cannot use this contract
+to hold those values. It is not scrubbed; the schema has nowhere to put them.
 
 The one thing it gives up is the target control's own accessible name. The phone
 says *"OpenAdapt could not find the button"* rather than *"the button labelled
