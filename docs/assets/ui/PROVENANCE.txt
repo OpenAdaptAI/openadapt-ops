@@ -2,10 +2,11 @@ Current UI visual provenance
 =============================
 
 desktop-qualification-cockpit.png
-  SHA-256: 63a7fd80fc6cce886ace22ae168c9562e6ac217206866de6b0bfd57bd428fe61
-  1440 x 900. Focused synthetic Desktop qualification-cockpit capture from
-  accepted openadapt-desktop PR #93 capture set, head
-  1f50259ffb052776742b284a493eb9c735caa122. It contains no customer data.
+  SHA-256: 14cf86ae66ce91c0255eba74ac2c4fa3b8db188a01eb9c5874e90afe37300f9d
+  1600 x 1100. Unmodified source: OpenAdaptAI/openadapt-web, Web PR #332
+  final head 0e57c9ce7c7bd92e37af7e4ca4bf54833d949fe7,
+  public/desktop-preview/cockpit/10_dashboard_workflows.png. The documentation
+  copy is byte-identical to that source file. It contains synthetic data.
 
 mobile-decision-request.png
   SHA-256: 9c9c8673b3497d61fd0aa636fb175ace4fd0f37bcf2b738149a80eefaf8f6cec

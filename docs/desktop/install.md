@@ -105,8 +105,8 @@ The [troubleshooting guide](../guides/troubleshooting.md) covers these and other
 first-week failures.
 
 <figure markdown="span">
-  ![The Desktop workflow cockpit shows one ready workflow with complete identity and effect qualification counts, and one paused run awaiting review.](../assets/ui/desktop-qualification-cockpit.png){ width="900" }
-  <figcaption>A focused synthetic Desktop capture: a workflow is ready only after its declared identity and effect checks are complete; a paused run stays separate for review.</figcaption>
+  ![The Desktop workflow cockpit lists local workflows with their last run state, sync state, and actions to qualify, watch, teach, or push.](../assets/ui/desktop-qualification-cockpit.png){ width="900" }
+  <figcaption>A focused synthetic Desktop capture: the local workflow list keeps qualification, run review, teaching, and push actions with each workflow.</figcaption>
 </figure>
 
 ## During a governed run
