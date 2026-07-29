@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-28 13:58 UTC*
+> *Last updated: 2026-07-29 20:49 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [chore: refresh Desktop replay media from PR #93](https://github.com/OpenAdaptAI/OpenAdapt/pull/1073) (#1073) — merged 
 
 - [chore: refresh Capture platform manifest](https://github.com/OpenAdaptAI/OpenAdapt/pull/1071) (#1071) — merged 
 
@@ -46,14 +48,18 @@
 
 - [build(deps): bump astral-sh/setup-uv from 8.3.2 to 9.0.0](https://github.com/OpenAdaptAI/OpenAdapt/pull/1052) (#1052) — merged 
 
-- [build(deps): bump peter-evans/repository-dispatch from 3 to 4](https://github.com/OpenAdaptAI/OpenAdapt/pull/1049) (#1049) — merged 
-
 
 
 ## openadapt-flow
 
 
+- [feat: bind governed authorization templates to hosted attestations](https://github.com/OpenAdaptAI/openadapt-flow/pull/306) (#306) — merged 
+
+- [feat: complete governed qualification and managed delivery authority](https://github.com/OpenAdaptAI/openadapt-flow/pull/305) (#305) — merged 
+
 - [fix(compiler): retain exact opaque field labels](https://github.com/OpenAdaptAI/openadapt-flow/pull/304) (#304) — merged 
+
+- [fix(benchmark): check the MockMed encounter type as its own field](https://github.com/OpenAdaptAI/openadapt-flow/pull/302) (#302) — merged 
 
 - [chore(release): derive the private-artifact rules from the policy manifest](https://github.com/OpenAdaptAI/openadapt-flow/pull/300) (#300) — merged 
 
@@ -86,12 +92,6 @@
 - [ci: detect unreleased work and silently skipped publishes](https://github.com/OpenAdaptAI/openadapt-flow/pull/283) (#283) — merged 
 
 - [feat(tutorial): make the free path reach VERIFIED and emit a local receipt](https://github.com/OpenAdaptAI/openadapt-flow/pull/281) (#281) — merged 
-
-- [fix(transaction): require positive evidence of absence for HALTED_BEFORE_EFFECT](https://github.com/OpenAdaptAI/openadapt-flow/pull/280) (#280) — merged 
-
-- [feat: bind PHI-free qualified identity signals](https://github.com/OpenAdaptAI/openadapt-flow/pull/279) (#279) — merged 
-
-- [fix(risk): stop flagging text-field focus clicks as ambiguous](https://github.com/OpenAdaptAI/openadapt-flow/pull/278) (#278) — merged 
 
 
 
@@ -169,10 +169,6 @@
 
 - [release: openadapt-agent v2.0.0](https://github.com/OpenAdaptAI/openadapt-agent/pull/9) (#9) — merged 
 
-- [feat: expose governed attended actions over MCP](https://github.com/OpenAdaptAI/openadapt-agent/pull/8) (#8) — merged 
-
-- [feat(dist): registry manifests + discoverability for the MCP bridge](https://github.com/OpenAdaptAI/openadapt-agent/pull/7) (#7) — merged 
-
 
 
 ## openadapt-ml
@@ -189,8 +185,6 @@
 - [build: bound ruff to >=0.16,<0.17 and make lint config explicit](https://github.com/OpenAdaptAI/openadapt-ml/pull/69) (#69) — merged 
 
 - [chore: gitignore .private/](https://github.com/OpenAdaptAI/openadapt-ml/pull/68) (#68) — merged 
-
-- [docs: refresh README with honest research positioning](https://github.com/OpenAdaptAI/openadapt-ml/pull/67) (#67) — merged 
 
 
 
@@ -214,8 +208,6 @@
 - [docs(evidence): correct the 1.16.1 vs 1.24.0 apples-to-apples claim](https://github.com/OpenAdaptAI/openadapt-evals/pull/273) (#273) — merged 
 
 - [feat(evals): rebind published evidence to Flow 1.24.0 and guard against drift](https://github.com/OpenAdaptAI/openadapt-evals/pull/272) (#272) — merged 
-
-- [docs: refresh README as evidence-generating eval infra](https://github.com/OpenAdaptAI/openadapt-evals/pull/271) (#271) — merged 
 
 
 
@@ -267,6 +259,8 @@
 ## openadapt-privacy
 
 
+- [fix: make privacy scrubbing fail closed](https://github.com/OpenAdaptAI/openadapt-privacy/pull/13) (#13) — merged 
+
 - [fix: scrub nested privacy structures recursively](https://github.com/OpenAdaptAI/openadapt-privacy/pull/12) (#12) — merged 
 
 - [chore(release): enforce the source-policy boundary](https://github.com/OpenAdaptAI/openadapt-privacy/pull/11) (#11) — merged 
@@ -275,12 +269,12 @@
 
 - [chore: gitignore .private/](https://github.com/OpenAdaptAI/openadapt-privacy/pull/9) (#9) — merged 
 
-- [docs: refresh README to shared OpenAdapt house style](https://github.com/OpenAdaptAI/openadapt-privacy/pull/8) (#8) — merged 
-
 
 
 ## openadapt-types
 
+
+- [feat: coordinate Types 0.7 contracts](https://github.com/OpenAdaptAI/openadapt-types/pull/21) (#21) — merged 
 
 - [feat: add runner capability contract](https://github.com/OpenAdaptAI/openadapt-types/pull/18) (#18) — merged 
 
@@ -302,8 +296,6 @@
 
 - [Add shared cross-surface control overlay contract](https://github.com/OpenAdaptAI/openadapt-types/pull/9) (#9) — merged 
 
-- [docs: refresh README to shared OpenAdapt house style](https://github.com/OpenAdaptAI/openadapt-types/pull/8) (#8) — merged 
-
 
 
 ## openadapt-grounding
@@ -314,8 +306,6 @@
 - [fix(ci): release through protected main via explicit dispatch](https://github.com/OpenAdaptAI/openadapt-grounding/pull/7) (#7) — merged 
 
 - [chore: gitignore .private/](https://github.com/OpenAdaptAI/openadapt-grounding/pull/6) (#6) — merged 
-
-- [docs: refresh README to shared OpenAdapt house style](https://github.com/OpenAdaptAI/openadapt-grounding/pull/5) (#5) — merged 
 
 
 
