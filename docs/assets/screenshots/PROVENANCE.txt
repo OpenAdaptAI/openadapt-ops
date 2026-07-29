@@ -33,7 +33,9 @@ settings-governance.png
   concepts/settings-governance.md.
 
 dashboard-overview.png
-  The /dashboard overview of the OpenAdapt Cloud workspace: workflow and run
-  counts, the "Runs stopped before guessing" review panel, recent runs, and the
-  workflow list, headless-Chrome capture in local mock mode. Used on
-  guides/hosted.md.
+  The /dashboard overview of the OpenAdapt Cloud workspace at exact commit
+  f2300ee69b555d1676e69348999f910c1cc8cd8c. Cypress Electron captured the
+  focused 2560x1440 viewport in OPENADAPT_CLOUD_MODE=mock. It shows grouped
+  navigation and the visible LOCAL MOCK MODE banner. The fixture is synthetic
+  OpenEMR patient registration. SHA-256:
+  ea3b8065cc139f94202ce2422443566ad4fb74f159d0af255e3802f0b7e74a01.
