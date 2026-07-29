@@ -15,19 +15,43 @@ When a run cannot confirm something, it stops and projects the paused step into
 a **bounded request**. A member of staff can answer it at the runner, from the
 Cloud dashboard on a phone, or through a phone portal that the customer hosts.
 
-The request states one of six reasons for attention: record identity, target
+The request states one of six reasons for attention: entity identity, target
 ambiguity, a human-only step, saved-result verification, uncertain delivery, or
 a required halt. The runner offers only the actions that are safe for that
 request.
 
 The question is closed by construction. `openadapt-flow` projects the pause into
 a signed task carrying typed categories, bounded counts, and digests; the client
-owns every sentence a person reads. The runner never sends prose and the phone
-never renders a runner string, so protected content has no field on the wire to
-travel in. What the operator sees is composed locally: which step could not
-start, what kind of target it was looking for, what the
+owns every sentence a person reads. The runner never sends runtime-derived prose
+and the phone never renders a runtime-derived string. What the operator sees is
+composed locally: which step could not start, what kind of target it was looking
+for, what the
 [resolution ladder](capability-ladder.md) tried on each rung, and what the
 engine will re-prove if they continue.
+
+### A qualified entity label, not a guessed domain
+
+An operator should see a useful noun. In a healthcare workflow that can be
+`patient record`; in an insurance workflow it can be `claim`; in a lending
+workflow it can be `loan application`. The runtime must not infer this noun
+from a screenshot, OCR, a parameter value, an application name, or a model.
+
+The V2 signed decision task gets the label from the exact qualification
+contract. It binds the qualification project, revision, contract digest, bundle
+digest, and qualified step. A client uses the V2 label only after explicit V2
+negotiation with the runner. If either side does not negotiate V2, it uses the
+V1 task and renders the neutral fallback `record` or `item`.
+
+The label is presentation metadata. It is not an identity value and it does not
+say which patient, claim, borrower, policy, or account is on screen. Those
+values stay on the customer-controlled runner. Before any action continues, the
+runner re-reads the live application and revalidates identity and other required
+contracts.
+
+!!! note "Release dependency"
+    This V2 task contract needs the coordinated Flow, Desktop, and Cloud
+    release. The current deployed decision path continues to use the V1
+    domain-neutral fallback until that release is available.
 
 The decision client is a **responsive web app** — deliberately not a native iOS
 or Android application, so there is no app store or separate update channel.
@@ -88,8 +112,10 @@ check proves the effect; otherwise it stays halted for safe review.
 The retained screen, the observed values, the OCR, and the failing target never
 leave the customer-controlled runner. Only a typed, PHI-free envelope crosses to
 a hosted control plane: opaque identifiers, digests, closed enums, bounded
-counts, and expiry. There is no free-text field anywhere in that envelope, so
-raw values and prose are **structurally unable** to travel rather than being
+counts, expiry, and, in V2, one qualification-approved entity label. The V2
+label has a small fixed character set and a short maximum length. It is selected
+at qualification time, not from runtime evidence. There is no free-text field,
+so raw values and prose are **structurally unable** to travel rather than being
 stripped in transit.
 
 The direct consequence is that a hosted surface shows **less** than the runner —
@@ -144,10 +170,11 @@ certificate.
 
 What the phone shows on this lane is the *closed halt context*: which category
 of check failed, which resolution rungs were tried and what each one returned,
-which contracts a "Continue" will re-prove, and bounded counts. Every value is a
-closed enum, a bounded integer, or a boolean — **there is no string field and no
-image**, so the hosted service is structurally unable to hold a name, an MRN, an
-observed value, or a workflow label. It is not scrubbed; it has nowhere to put
+which contracts a "Continue" will re-prove, and bounded counts. V1 has no
+string field or image. V2 can also carry one short, qualification-approved
+entity label, such as `claim`; it cannot carry a record value, a person name, an
+MRN, an observed value, or a workflow label. The hosted service cannot use this
+contract to hold those values. It is not scrubbed; the schema has nowhere to put
 them.
 
 The one thing it gives up is the target control's own accessible name. The phone
