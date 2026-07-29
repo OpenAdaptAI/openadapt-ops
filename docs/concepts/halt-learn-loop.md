@@ -247,11 +247,11 @@ upstream string is ever forwarded to a notification, on any channel.
 
 ## The learn loop
 
-Answering a halt keeps one run moving. Teaching the correction is what stops the
-same unhandled state halting forever: an operator demonstrates the fix once, the
-correction is folded into the workflow *through the governed induction path*, a
-regression gate proves the revision weakens nothing, and that state never halts
-again. A revision is adopted only if it provably does not regress safety.
+Answering a halt keeps one run moving. Teach starts from the latest saved,
+eligible HALTED run. Desktop records the correction, compiles a candidate, and
+reruns qualification. Only a promoted candidate affects future runs. Each future
+run still requires its own runtime evidence and can halt. A candidate is adopted
+only if it passes the qualification and safety gates.
 
 ```mermaid
 flowchart TD
@@ -260,7 +260,7 @@ flowchart TD
     D --> I[Goverened induction:<br/>compile the fix as a<br/>guarded branch]
     I --> G{Regression gate +<br/>held-out canary}
     G -->|weakens identity / effect /<br/>risk, or underdetermined| Q([Quarantine:<br/>stays halting])
-    G -->|covers the new case,<br/>regresses nothing| P([Promote revision:<br/>never halts here again])
+    G -->|covers the new case,<br/>regresses nothing| P([Promote qualified<br/>candidate])
 ```
 
 1. **A halt emits a learnable trace.** The run report records the halt point,
@@ -275,10 +275,9 @@ flowchart TD
    graph, not a special case bolted on.
 4. **Gate, then canary.** A candidate must pass a deterministic **regression
    gate** and a held-out **canary** before promotion.
-5. **Promote or quarantine.** Only a revision that covers the new case *and*
-   regresses nothing becomes active. If the single correction underdetermines
-   the generalization, the loop **refuses to promote** and the workflow stays
-   halting: the same discipline as induction.
+5. **Promote or quarantine.** Only a candidate that passes qualification and
+   does not regress safety becomes active for future runs. If the correction
+   underdetermines the generalization, the loop **refuses to promote**.
 
 ## The regression gate: what a revision may not weaken
 
