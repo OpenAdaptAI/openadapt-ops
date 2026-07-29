@@ -1,9 +1,15 @@
-# OEM architecture and commercial brief
+# OpenAdapt Execute: OEM architecture and commercial brief
 
-For software vendors and platforms that want to embed verified GUI execution
-in their own product: an RCM platform that must write into customer EMRs, a
-vertical SaaS that must reach a legacy system with no API, an agent platform
-that needs a governed actuator.
+For software vendors and service providers that need to complete authorized
+transactions in customer systems they cannot integrate with: an RCM platform
+that must write into customer EMRs, a vertical SaaS that must reach a legacy
+system with no API, or an agent platform that needs a governed actuator.
+
+**OpenAdapt Execute** is the approved product direction for this work. It uses
+the MIT-licensed OpenAdapt Flow runtime in the customer-controlled execution
+boundary. The managed API, compatibility packs, production verifier recipes,
+and qualification intelligence are commercial services. The external API is
+not yet a public endpoint.
 
 ## The idea: a transaction API over GUI execution
 
@@ -12,25 +18,28 @@ surface is designed as a **transaction API**: your product submits an intent,
 and gets back a terminal outcome it can build product logic on.
 
 ```text
-submit(workflow, inputs, profile)
-    -> VERIFIED              # business effect confirmed in the system of record
-    -> COMPLETED_UNVERIFIED  # finished, but no independent confirmation; never
-                             # treated as success under standard or regulated profiles
-    -> HALTED                # a gate refused; durable, with the violated expectation named
-    -> FAILED                # aborted with no write
-    -> ROLLED_BACK           # a refuted effect was reconciled by compensation
+submit(qualified_workflow, inputs, idempotency_key, profile)
+    -> accepted(execution_id)
+
+event / poll result
+    -> VERIFIED                  # business effect confirmed in the system of record
+    -> COMPLETED_UNVERIFIED      # demo-only completion; never production success
+    -> HALTED                    # a gate stopped the run with evidence
+    -> FAILED                    # a platform failure with no possible effect
+    -> RECONCILIATION_REQUIRED   # delivery or persistence is uncertain; do not retry
 ```
 
-Each outcome carries the evidence behind it: run report, identity coverage,
-effect verdicts, and hashes binding the evidence to the exact bundle and
-inputs. Your product does not parse screenshots to guess what happened; it
-branches on a verdict.
+The API will be asynchronous because a transaction can wait for a person,
+survive a restart, or need reconciliation. Each result carries the evidence
+behind it: run report, identity coverage, effect verdicts, and hashes binding
+the evidence to the exact bundle and inputs. Your product does not parse
+screenshots to guess what happened; it branches on a verdict.
 
-**Status: this reference API is in design.** The underlying mechanics
-(governed run admission, terminal outcomes, effect verification, evidence
-binding) ship in the engine today; the stable embedding surface, versioned
-schemas, and external-executor adapter are being specified. OEM engagements at
-this stage are design-partner engagements and shape that surface.
+**Status: the public API contract is in design.** The underlying mechanics ship
+in Flow 1.26: governed run admission, signed attended decisions, durable
+resume, one-use managed authority, exact bundle/input binding, effect
+verification, and evidence binding. OpenAdapt is specifying the stable
+embedding surface, versioned schemas, webhooks, and SDKs with early OEM users.
 
 ## Integration surface
 
@@ -50,6 +59,10 @@ this stage are design-partner engagements and shape that surface.
 - **Evidence:** every run returns machine-readable evidence
   ([report schema](../guides/run-reports.md)) suitable for your own audit
   trail and your customers' reviewers.
+- **Authority:** a managed dispatch binds one use to the exact run, qualified
+  bundle digest, runtime-input digest, and governed authorization. A runner
+  validates the envelope locally before it can actuate. The control plane can
+  request work; it cannot widen local policy or mint a substitute authority.
 - **External executors:** the adapter contract
   (`authorize -> invoke -> observe -> verify -> VERIFIED | HALTED + evidence`)
   is designed so identity, authorization, verification, and evidence stay
