@@ -105,8 +105,8 @@ The [troubleshooting guide](../guides/troubleshooting.md) covers these and other
 first-week failures.
 
 <figure markdown="span">
-  ![The Desktop workflow cockpit lists local workflows with their last run state, sync state, and actions to qualify, watch, teach, or push.](../assets/ui/desktop-qualification-cockpit.png){ width="900" }
-  <figcaption>A focused synthetic Desktop capture: the local workflow list keeps qualification, run review, teaching, and push actions with each workflow.</figcaption>
+  ![The Desktop Workflows page lists Claims review handoff as halted and Invoice review handoff as verified, with sync labels and action buttons.](../assets/ui/desktop-qualification-cockpit.png){ width="900" }
+  <figcaption>The workflow library shows two local workflows, their step counts, last-run and sync labels, and available action buttons.</figcaption>
 </figure>
 
 ## During a governed run
