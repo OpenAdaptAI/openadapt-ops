@@ -43,16 +43,15 @@ The reviewed vocabulary for a remote surface is:
 | Service and operations | `service request`, `case`, `order`, `document` |
 | Neutral | `record`, `item` |
 
-Qualification can retain a custom class for the local operator surface. A
-remote surface does not render a custom or unrecognized class. It renders the
-signed neutral `record` or `item` fallback instead.
+Qualification selects one class from this reviewed vocabulary. If no specific
+class fits, it selects the signed neutral `record` or `item` fallback. This
+release does not accept an arbitrary custom class for shared presentation.
 
 The V2 signed decision task gets the label from the exact qualification
 contract. It binds the qualification project, revision, contract digest, bundle
 digest, and qualified step. A client uses the V2 label only after explicit V2
-negotiation with the runner. If either side does not negotiate V2, or the class
-is not in the reviewed remote-safe vocabulary, the client renders the neutral
-fallback `record` or `item`.
+negotiation with the runner. If either side does not negotiate V2, the client
+renders the neutral fallback `record` or `item`.
 
 The label is presentation metadata. It is not an identity value and it does not
 say which patient, claim, borrower, policy, or account is on screen. Those
@@ -183,9 +182,10 @@ What the phone shows on this lane is the *closed halt context*: which category
 of check failed, which resolution rungs were tried and what each one returned,
 which contracts a "Continue" will re-prove, and bounded counts. V1 has no
 string field or image. V2 can also carry one reviewed remote-safe entity class;
-it cannot carry a custom class, a record value, a person name, an MRN, an
-observed value, or a workflow label. The hosted service cannot use this contract
-to hold those values. It is not scrubbed; the schema has nowhere to put them.
+it cannot carry an arbitrary custom class, a record value, a person name, an
+MRN, an observed value, or a workflow label. The hosted service cannot use this
+contract to hold those values. It is not scrubbed; the schema has nowhere to put
+them.
 
 The one thing it gives up is the target control's own accessible name. The phone
 says *"OpenAdapt could not find the button"* rather than *"the button labelled
