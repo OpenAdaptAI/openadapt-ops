@@ -12,9 +12,13 @@ agent, and neither puts a model call on the runtime path.
 ## Where a halt goes: the attended decision
 
 When a run cannot confirm something, it stops and projects the paused step into
-a **bounded question** a member of staff can answer — from a workstation, from
-the hosted phone queue, or from a phone on your own network through ingress you
-control.
+a **bounded request**. A member of staff can answer it at the runner, from the
+Cloud dashboard on a phone, or through a phone portal that the customer hosts.
+
+The request states one of six reasons for attention: record identity, target
+ambiguity, a human-only step, saved-result verification, uncertain delivery, or
+a required halt. The runner offers only the actions that are safe for that
+request.
 
 The question is closed by construction. `openadapt-flow` projects the pause into
 a signed task carrying typed categories, bounded counts, and digests; the client
@@ -30,7 +34,7 @@ or Android application, so there is no app store or separate update channel.
 The customer-controlled runner serves the full local portal. The hosted queue
 receives only a closed, PHI-free decision context.
 
-### The phone returns a decision, not an execution result
+### The operator returns a decision, not an execution result
 
 This is the property everything else rests on. Answering does not perform the
 step, and it does not mark the run verified.
@@ -59,11 +63,11 @@ silent wrong write.
     A step whose postconditions or independent effect check do not pass is
     refused, not banked.
 
-The reply is also honest about delivery. Three states stay distinct and are
-never collapsed into one another: not sent, sent, and **may have been sent**. A
-decision whose fate is genuinely unknown is reported as uncertain rather than
-retried, because a blind retry is how one write becomes two. A fresh idempotency
-key does not launder an uncertain delivery into a clean one.
+The reply is also honest about delivery. Three states stay distinct: not sent,
+sent, and **may have been sent**. For uncertain delivery, use **Reconcile**.
+The runner reads the required postcondition and independent effect again. It
+does not send the action again. It reports a reconciled result only when that
+check proves the effect; otherwise it stays halted for safe review.
 
 ### Full evidence stays on the runner
 
@@ -112,8 +116,9 @@ works behind NAT on an ordinary broadband line.
    and stores its credential in the operating-system keychain.
 2. Turn on remote decisions in your deployment configuration, bound to the exact
    tenant and runner the control plane issued.
-3. Staff open the hosted queue on a phone and sign in. It is a web page; there
-   is nothing to install.
+3. In **Needs attention**, scan the dashboard QR code. It opens the same-origin
+   Cloud phone page, with no session or decision authority in the code. Sign in
+   there, then select **Notify this browser** if you want Web Push alerts.
 
 The hosted queue can send an encrypted Web Push notification when a signed task
 needs attention. The notification contains no application content. The opened
@@ -148,7 +153,7 @@ crops. That is why it is the path with a network requirement.
     hostname — and to record that decision in configuration.
 
     Use the hosted lane above if you do not operate one. See
-    [the portal settings](../reference/configuration.md#the-mobile-decision-portal)
+    [the portal settings](../reference/configuration.md#the-self-hosted-phone-portal)
     for the exact variables and
     [Deploy on-prem](../guides/deploy-on-prem.md#reaching-the-decision-portal-from-a-phone)
     for where it sits in a deployment.
@@ -173,10 +178,10 @@ bypass and no test-only wide bind.
 Pairing runs the opposite way round from the obvious design, and the reversal is
 the point.
 
-The runner shows a QR code; the **phone** displays a short confirmation code,
-which the operator types back on the runner. The code is minted *on the claiming
-device at claim time*, so it is only ever shown to whoever actually claimed the
-pairing.
+For the self-hosted portal, the runner shows a QR code. Scan it from the phone.
+The phone then shows a short, one-use pairing code. Type that code on the
+runner to approve that phone. This binds the phone to the local portal; it does
+not give the phone an engine or console capability.
 
 Do it the intuitive way — derive the code from the pairing and show it on the
 runner — and an attacker who photographed the QR from across the room and
@@ -215,17 +220,24 @@ takes a single-flight lease and repeats the live checks. A replayed, expired,
 or mismatched answer is refused. The control plane can request a decision; the
 customer-controlled runner remains the final authority for execution.
 
-### What the three answers do
+### What an operator can request
 
-The answers differ in whether your saved workflow changes — which is exactly
-what an operator cannot infer from their names, so each one states its
-consequence in full:
+The runner selects from these actions for the current request. A phone cannot
+add an action that the signed task did not permit.
 
-| Answer | Effect on this run | Effect on future runs |
-|---|---|---|
-| Check and continue | Re-verifies live state, then continues | None — the same drift stops the next run |
-| Teach the correction | Continues nothing now | Enters the halt-learn loop below |
-| Needs more help | Leaves the run paused and untouched | None |
+| Request | Result |
+|---|---|
+| Check and continue | The runner takes a fresh observation and resumes only when its checks pass. |
+| Skip | The runner resumes only when the workflow explicitly permits a skip. |
+| Stop this run | Ends this run without a further application action. |
+| Teach the correction | Leaves this run paused and opens the local correction path. |
+| Ask for help | Keeps the durable pause for an authorized colleague. |
+| Reconcile | For a sent or uncertain action, proves the saved effect without re-dispatch. |
+
+The receipt then reports one distinct outcome: verified and resumed, skipped and
+resumed, refused after revalidation, halted again, expired, demonstration
+requested, escalated, stopped by the operator, or reconciled and resumed. A
+recorded request is not a verified result.
 
 Operating-system notifications for these are generic by construction: the runner
 reads a single count from a PHI-free endpoint and renders a fixed template. No

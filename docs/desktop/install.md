@@ -6,7 +6,7 @@ description: >-
 
 # Desktop app: install and first run
 
-The OpenAdapt desktop app is the local cockpit for the record →
+OpenAdapt Desktop is a **Beta supporting surface**. The app is the local cockpit for the record →
 compile → replay → teach loop: record on your own machine, compile into a
 deterministic bundle with [`openadapt flow`](../reference/cli.md), then replay,
 review, and teach corrections, all locally. Nothing leaves your machine unless
@@ -36,7 +36,9 @@ attestations.
 The desktop app and `openadapt flow` use the same released engine. Browser
 workflows can use the managed OpenAdapt Cloud runner; native desktop, RDP, and
 Citrix workflows execute locally or in a self-hosted/customer-controlled runtime
-and can connect to Cloud for governed reports and updates.
+and can connect to Cloud for signed task delivery and governed reports. Cloud
+does not execute those local, native, RDP, or Citrix workflows: the configured
+runner executes them inside its own boundary.
 
 ## 2. Get past the first-launch OS warning
 

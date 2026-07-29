@@ -6,7 +6,7 @@ description: >-
 
 # Connect the desktop app to a cloud workspace
 
-The local loop (record, compile, replay, teach) works offline and needs no
+OpenAdapt Desktop is a **Beta supporting surface**. The local loop (record, compile, replay, teach) works offline and needs no
 account. A **cloud workspace** (`app.openadapt.ai`) adds an org-wide dashboard:
 pushed workflows are visible and runs needing attention are triaged. This page
 covers the path: sign in → mint an ingest token → connect the desktop app → push
@@ -131,6 +131,10 @@ and its active bundle appear together; any run that halts surfaces under
 **Needs attention** for triage.
 
 ## Reporting a halt back to the workspace
+
+Cloud signs and delivers a task to the registered runner. The runner remains
+the execution authority: it reads the local application, enforces the workflow
+policy, and returns its result. Cloud does not execute the local application.
 
 When a governed run halts locally, send a **PHI/PII-free** break descriptor to the
 workspace so the halt is visible centrally, without the recording ever leaving

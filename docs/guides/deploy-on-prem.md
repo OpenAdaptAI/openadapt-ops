@@ -256,7 +256,7 @@ forwarding to loopback — which is why `customer_ingress` still binds loopback
 unless you name a specific address. Set the mode, the public origin, and the
 acknowledgement together; the portal refuses to start on any partial
 combination. The exact variables are in
-[Configuration](../reference/configuration.md#the-mobile-decision-portal).
+[Configuration](../reference/configuration.md#the-self-hosted-phone-portal).
 
 Two boundary points worth carrying into a security review:
 
