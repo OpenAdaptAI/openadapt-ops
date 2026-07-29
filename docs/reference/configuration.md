@@ -110,10 +110,13 @@ variables supply its endpoint and credentials, keeping them out of the YAML.
 |---|---|
 | `OAFLOW_AGENT_TOKEN` | Optional bearer token for the [desktop in-session agent server](../concepts/backends.md#the-in-session-agent-the-session-0-problem). Its `/execute_windows` channel is remote code execution by contract; the server binds to loopback by default, and a token makes every request authenticate. Set it in any PHI/PII deployment that exposes the agent beyond loopback. |
 
-## The mobile decision portal
+## The self-hosted phone portal
 
 These govern where the [attended decision portal](../concepts/halt-learn-loop.md#where-a-halt-goes-the-attended-decision)
-listens and what URL it advertises to a paired phone.
+listens and what URL it advertises to a paired phone. Use it when your
+organization provides the HTTPS/VPN/ZTNA path to the runner. The runner shows a
+QR code. The phone displays a one-use pairing code, and the operator approves
+that code on the runner.
 
 | Variable | Default | Purpose |
 |---|---|---|
@@ -135,12 +138,15 @@ listens and what URL it advertises to a paired phone.
     **You do not have to.** The hosted lane below reaches a phone from anywhere
     with nothing configured on your network; it carries less, and it says so.
 
-## Answering a halt on a phone with no ingress
+## Cloud phone access with no inbound ingress
 
 The runner dials **out** to the control plane — no inbound port, no port
 forward, no certificate, no reverse proxy, no static address — so a phone
-reaches the queue from anywhere. Turn it on in the deployment configuration,
-bound to the exact tenant and runner the control plane issued for this machine:
+reaches the queue from anywhere. In Cloud **Needs attention**, scan the QR
+code, sign in on the same Cloud origin, and optionally enable generic Web Push
+alerts. The QR code carries no session, runner credential, or decision
+authority. Turn the runner lane on in the deployment configuration, bound to
+the exact tenant and runner the control plane issued for this machine:
 
 ```yaml
 human_decisions:

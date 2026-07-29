@@ -91,7 +91,7 @@ where a halted run is answered by staff — including from a phone.
   mobile app and not a hosted page. It is **loopback-only until you publish it**
   through your own trusted TLS ingress; it fails closed on any partial
   configuration and offers no self-signed bypass or wildcard bind. See
-  [the portal settings](../reference/configuration.md#the-mobile-decision-portal).
+  [the portal settings](../reference/configuration.md#the-self-hosted-phone-portal).
 - **If you do not operate an ingress, use the hosted lane instead.** The runner
   dials **out** to the control plane, so there is no inbound port, no
   certificate, and nothing to configure on your network. That lane carries the
