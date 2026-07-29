@@ -181,15 +181,13 @@ outcome it could not prove.
 [Watch the shared real-application demo](https://openadapt.ai/how-it-works){ .md-button .md-button--primary }
 [Inspect the Cloud evidence deep dive](https://app.openadapt.ai/demo#footage){ .md-button }
 
-We publish the numbers and the failure modes. These two results run **both
-arms**, compiled replay against a computer-use agent, under the same
-arm-independent success check. **OpenEMR** is the flagship real-EMR
-head-to-head; **MockMed** is the CI-reproducible control anyone can rerun:
+We publish the numbers and the failure modes. This result runs **both arms**,
+compiled replay against a computer-use agent, under the same arm-independent
+success check. **OpenEMR** is the flagship real-EMR head-to-head:
 
 | Task | Compiled replay | Computer-use agent |
 |---|---|---|
 | **OpenEMR** (real third-party EMR, add-patient-note, 18 steps) | 20/20, 39.2s p50, **$0/run**, 0 model calls | 10/10, 70.4s p50, ~$0.55/run |
-| **MockMed** (CI-reproducible triage task) | 100/100, 4.9s p50, **$0/run**, 0 model calls | 20/20, 37.5s p50, ~$0.27/run |
 
 The compiled arm made no model calls and recorded no model-API cost in these
 measured runs. This excludes authoring, review, infrastructure, exception, and

@@ -1,0 +1,22 @@
+Current UI visual provenance
+=============================
+
+desktop-qualification-cockpit.png
+  SHA-256: 14cf86ae66ce91c0255eba74ac2c4fa3b8db188a01eb9c5874e90afe37300f9d
+  1600 x 1100. Unmodified source: OpenAdaptAI/openadapt-web, Web PR #332
+  final head 0e57c9ce7c7bd92e37af7e4ca4bf54833d949fe7,
+  public/desktop-preview/cockpit/10_dashboard_workflows.png. The documentation
+  copy is byte-identical to that source file. It contains synthetic data.
+
+mobile-decision-request.png
+  SHA-256: 9c9c8673b3497d61fd0aa636fb175ace4fd0f37bcf2b738149a80eefaf8f6cec
+  860 x 1936. From openadapt-web branch agent/mobile-attended-decision at
+  3b1bbb756bad73d3f60f911af81d9acb96111a8a, public/attended-decision/
+  identity-request.png. Captured from the public attention demo after its
+  retained OpenEMR evidence frame had nonzero dimensions. The data is synthetic.
+
+mobile-decision-result.png
+  SHA-256: 5a83d5fd4b02f8c16f6ebb25f3ebb6eace839c3fede27077cde0c18945c5d728
+  860 x 1686. From the same branch, commit, and capture sequence as the request:
+  public/attended-decision/identity-verified.png. It is the runner result after
+  the permitted Check identity action. The data is synthetic.

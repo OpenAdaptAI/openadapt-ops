@@ -5,11 +5,6 @@ compiled, how each is doing, what it is worth, and where runs are getting stuck.
 The Cloud workspace has two read-only readouts for this: the workflow catalog and
 the step-level halt map.
 
-<figure markdown="span">
-  ![The workflow catalog and halt map in the Cloud workspace: a portfolio-at-a-glance summary, an ROI readout table, the per-workflow catalog with runs and success rate, and a step-level halt map naming where a run halted and why.](../assets/screenshots/workflow-catalog.png){ width="900" }
-  <figcaption>The catalog and halt map on one page. The catalog rolls up every compiled workflow with its runs, timing, and success rate, and the halt map drops to the step level to name where a run stopped and why.</figcaption>
-</figure>
-
 ## The catalog
 
 The catalog is a read-only portfolio readout across every compiled workflow in

@@ -34,6 +34,20 @@ or Android application, so there is no app store or separate update channel.
 The customer-controlled runner serves the full local portal. The hosted queue
 receives only a closed, PHI-free decision context.
 
+<div class="grid" markdown>
+
+<figure markdown="span">
+  ![A mobile identity request shows a retained synthetic OpenEMR frame, the available safe actions, and that no action was sent.](../assets/ui/mobile-decision-request.png){ width="330" }
+  <figcaption>Request: the retained frame is visible on the customer runner and the operator can request only a permitted action.</figcaption>
+</figure>
+
+<figure markdown="span">
+  ![A mobile decision result reports Identity verified after the runner re-read the live patient and target and saved a receipt.](../assets/ui/mobile-decision-result.png){ width="330" }
+  <figcaption>Result: the runner, not the phone, rechecks state and records the receipt before it reports a verified continuation.</figcaption>
+</figure>
+
+</div>
+
 ### The operator returns a decision, not an execution result
 
 This is the property everything else rests on. Answering does not perform the
