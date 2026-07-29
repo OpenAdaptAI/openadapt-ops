@@ -6,7 +6,7 @@ description: >-
 
 # Desktop app: install and first run
 
-OpenAdapt Desktop is a **Beta supporting surface**. The app is the local cockpit for the record →
+The app is the local cockpit for the record →
 compile → replay → teach loop: record on your own machine, compile into a
 deterministic bundle with [`openadapt flow`](../reference/cli.md), then replay,
 review, and teach corrections, all locally. Nothing leaves your machine unless
@@ -40,27 +40,13 @@ and can connect to Cloud for signed task delivery and governed reports. Cloud
 does not execute those local, native, RDP, or Citrix workflows: the configured
 runner executes them inside its own boundary.
 
-## 2. Get past the first-launch OS warning
+!!! note "Verify the release if your OS asks"
+    Check the release `SHA256SUMS` and provenance before you override a first
+    launch warning. Windows/Linux installers are unsigned and macOS installers
+    are ad-hoc signed. For platform-specific steps, see
+    [troubleshooting](../guides/troubleshooting.md).
 
-The Windows/Linux builds are **unsigned** and the macOS builds are **ad-hoc
-signed**, so your OS can show a one-time publisher warning at first launch.
-Verify `SHA256SUMS` and the release provenance before overriding it.
-
-=== "macOS"
-
-    macOS will say the app is from an unidentified developer. To open it the
-    first time: **right-click (or Control-click) OpenAdapt in Applications →
-    Open → Open**. macOS remembers your choice, so you won't see this again.
-    Signed, notarized builds are planned; the pipeline is signing-ready and
-    switches over once credentials are provisioned.
-
-=== "Windows"
-
-    Windows SmartScreen may show a blue **"Windows protected your PC"** banner.
-    Click **More info → Run anyway** to install. This appears because the
-    installer is not code-signed yet; signing is on the roadmap.
-
-## 3. Grant OS permissions (the step everyone misses)
+## 2. Grant OS permissions
 
 !!! danger "This is the #1 silent-failure mode"
     Until you grant the permissions below, screen capture returns a **blank or
@@ -102,7 +88,7 @@ Verify `SHA256SUMS` and the release provenance before overriding it.
     [troubleshooting guide](../guides/troubleshooting.md#session-0) for the
     session-0 / interactive-session caveat.
 
-## 4. Verify with a test recording
+## 3. Verify with a test recording
 
 Record a few seconds of any app, then stop (the same capture is available from
 [`openadapt flow record`](../reference/cli.md#record) on the CLI). If the frames
@@ -117,6 +103,11 @@ are ready to record a real workflow.
 
 The [troubleshooting guide](../guides/troubleshooting.md) covers these and other
 first-week failures.
+
+<figure markdown="span">
+  ![The Desktop workflow cockpit shows one ready workflow with complete identity and effect qualification counts, and one paused run awaiting review.](../assets/ui/desktop-qualification-cockpit.png){ width="900" }
+  <figcaption>A focused synthetic Desktop capture: a workflow is ready only after its declared identity and effect checks are complete; a paused run stays separate for review.</figcaption>
+</figure>
 
 ## During a governed run
 

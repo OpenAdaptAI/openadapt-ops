@@ -29,12 +29,8 @@ Or use the installer script from the landing page, which installs
 curl -fsSL https://openadapt.ai/install.sh | sh -s -- browser
 ```
 
-No web app of your own to record against? No setup needed:
-`openadapt flow demo-record --out rec` records the canonical triage task against
-the bundled MockMed sample app, and `replay` serves MockMed automatically when
-you omit `--url`. The
-[complete demo journey](index.md#the-complete-demo-journey) walks that path
-end to end.
+For local development and CI only, `openadapt flow demo-record --out rec` uses
+the bundled MockMed fixture. It is not a production workflow or product outcome.
 
 ## 1. Record
 

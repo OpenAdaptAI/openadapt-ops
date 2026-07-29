@@ -22,7 +22,7 @@ dialog. The app looks like it is recording but captures nothing.
     - Quit and reopen OpenAdapt; macOS only applies a newly granted Screen
       Recording permission after a restart.
 
-    Full steps: [Desktop app install and first run](../desktop/install.md#3-grant-os-permissions-the-step-everyone-misses).
+    Full steps: [Desktop app install and first run](../desktop/install.md#2-grant-os-permissions).
 
 === "Windows"
 
