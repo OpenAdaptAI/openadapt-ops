@@ -9,7 +9,7 @@ schema. What differs across lanes is data handling, not substrate capability.
 | Deployment / substrate | Browser | Windows UIA | Native macOS | Native Linux | RDP | Citrix / VDI |
 |---|---|---|---|---|---|---|
 | **OpenAdapt Hosted** | Managed execution, schedules, reports, usage, and billing | Customer-controlled runtime connected to Cloud | Customer-controlled runtime connected to Cloud | Customer-controlled runtime connected to Cloud | Customer-controlled runtime connected to Cloud | Customer-controlled runtime connected to Cloud |
-| **Customer cloud / BYOC** | Customer runner and storage with managed governance | Customer runner and storage | Customer runner and storage | Customer runner and storage | Customer runner and storage | Customer runner and storage |
+| **Customer cloud / bring your own cloud (BYOC)** | Customer runner and storage with managed governance | Customer runner and storage | Customer runner and storage | Customer runner and storage | Customer runner and storage | Customer runner and storage |
 | **Self-hosted / on-prem** | Local runner and audit trail | Local runner and audit trail | Local runner and audit trail | Local runner and audit trail | Local runner and audit trail | Local runner and audit trail |
 
 Every substrate is a first-class target of the shared compiler, runner, and
@@ -26,6 +26,13 @@ moved into the shared managed-browser boundary or included as a managed-runner
 entitlement. The matrix describes the product architecture; the
 [qualification appendix](../get-started/what-works-today.md) and commercial terms
 define the accepted workload and entitlement.
+
+In the existing BYOC connector and configuration, a runner and storage inside a
+customer-owned cloud boundary execute the workflow. OpenAdapt Cloud can send
+bounded authorization and control metadata and receive the declared result and
+evidence permitted by the data boundary. Other customer-controlled deployments
+can run on a workstation, server, or on-premises virtual machine without being
+BYOC. See the [glossary](../reference/glossary.md#byoc).
 
 ## Artifact boundary and runtime boundary
 

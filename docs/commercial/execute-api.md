@@ -8,6 +8,16 @@ and waits for a terminal receipt.
 This guide is for an approved private-pilot partner. OpenAdapt supplies the
 service credential and the identifiers from the qualification pack.
 
+## Choose where execution runs
+
+Execute can dispatch to an approved managed runner or to a customer-controlled
+runner. A customer-owned cloud runner and storage boundary can use the existing
+[bring your own cloud (BYOC)](../reference/glossary.md#byoc) connector. The
+customer runner executes the workflow. Cloud carries bounded authorization and
+control metadata and receives only the declared result and evidence allowed by
+the data boundary. Other customer-controlled deployments can use a workstation,
+server, or on-premises virtual machine without using BYOC.
+
 ## Authenticate the service
 
 OpenAdapt issues one service token. The token is restricted to one organization
