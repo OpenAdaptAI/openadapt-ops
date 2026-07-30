@@ -139,6 +139,7 @@ nav:
     - Policy and certify: concepts/policy-and-certify.md
     - Effect verification: concepts/effect-verification.md
     - The identity gate: concepts/identity-gate.md
+    - Qualification-owned entity language: concepts/qualification-owned-entity-language.md
   - Operate:
     - Run a deployment: guides/run-a-deployment.md
     - Read and audit run reports: guides/run-reports.md
