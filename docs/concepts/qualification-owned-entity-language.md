@@ -6,8 +6,8 @@ description: >-
 
 # Qualification-owned entity language
 
-An attended decision can name the *kind* of item that OpenAdapt must check.
-It must not name the live item itself.
+An attended decision can optionally name the *kind* of item that OpenAdapt must
+check. It must not name the live item itself.
 
 For example, a decision can say:
 
@@ -25,17 +25,22 @@ class and a neutral fallback. The Flow command and Desktop control that set a
 class are part of the coordinated V2 release work. Until that release, do not
 edit a signed task or sealed artifact by hand to change its wording.
 
-## Set the label during qualification
+The class is presentation metadata. It does not change authorization, identity
+checks, actuation, or verification. It is optional and its absence does not
+block qualification, certification, or execution.
 
-With the coordinated Flow and Desktop release, select one reviewed entity class
-for an exact workflow step that can create an attended decision. The class
-belongs to that step in that workflow version. It is not a setting for the
-whole organization or for all workflows that use the same application.
+## Optionally set the label during qualification
 
-The qualification author sets the class once while they create or revise that
-workflow version. OpenAdapt does not ask for a class during each run.
+With the coordinated Flow and Desktop release, a person or qualification tool
+can select one reviewed entity class for an exact workflow step that can create
+an attended decision. This does not require a separate author role. The same
+person who records, reviews, or deploys the workflow can set it.
 
-The qualification contract records:
+The class belongs to that step in that workflow version. It is not a setting
+for the whole organization or for all workflows that use the same application.
+OpenAdapt does not ask for a class during each run.
+
+When a class is set, the qualification contract records:
 
 - the exact workflow bundle and revision;
 - the exact step;
@@ -43,7 +48,8 @@ The qualification contract records:
 - a neutral fallback, normally `record` or `item`.
 
 For example, an OpenEMR check step can use `patient record`. A lending workflow
-can use `loan application`. A generic workflow can use `record`.
+can use `loan application`. If no class is set, OpenAdapt uses the neutral
+`record` or `item` fallback.
 
 ## What happens at run time
 
@@ -58,8 +64,9 @@ boundary. Before it resumes any action, it checks the live identity, current
 workflow state, focus, and target again. The label never approves an action by
 itself.
 
-If the signed class is unavailable, unknown, or not supported by the receiving
-surface, the surface shows the signed neutral fallback: `record` or `item`.
+If no class was set, or if the signed class is unavailable, unknown, or not
+supported by the receiving surface, the surface shows the signed neutral
+fallback: `record` or `item`.
 
 ## What OpenAdapt does not do
 
@@ -72,10 +79,10 @@ surface from receiving live entity information merely to choose its wording.
 
 ## Change control
 
-The class is part of the qualification contract. A change creates a new
-qualification revision and invalidates the previous certification. Review the
-change, run the required cases, and certify the new sealed version before
-deployment.
+When a class is set, it becomes part of the qualification contract. A later
+change creates a new qualification revision and invalidates the previous
+certification. Review the change, run the required cases, and certify the new
+sealed version before deployment.
 
 See [Qualify a workflow](../guides/qualify-a-workflow.md) for the full
 qualification process and [attended decisions](halt-learn-loop.md) for the
