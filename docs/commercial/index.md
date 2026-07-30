@@ -14,7 +14,7 @@ offers. Every price and claim here matches the public
 | OpenAdapt Cloud | $500.00/month | Managed self-service browser execution for non-regulated data, up to 10,000 runs/month. Separate from enterprise qualification. |
 | Supervised Production Pilot | Typically $30,000 to $60,000 | Prove the qualified workflow on representative production cases and leave with an acceptance report. |
 | Production | Typically $48,000 to $120,000/year | Annual scope covering the qualified workflow family, environment, runners, evidence, support, and requalification. |
-| OEM / embedding | Typically $75,000 to $150,000/year plus scoped integration | Embed the governed transaction runtime in another product. See the [OEM brief](oem-brief.md). |
+| OEM / embedding | Typically $75,000 to $150,000/year plus scoped integration | Embed verified execution in another product. See the [OpenAdapt Execute private-pilot guide](oem-brief.md). |
 
 The ladder is sequential by design: qualification before pilot, pilot before
 production. The sprint is paid even when the correct outcome is not to
@@ -31,7 +31,7 @@ automate; a well-evidenced "do not automate" is a full-value deliverable.
 | [Security packet](security-packet.md) | Answering a security or IT review. |
 | [Deployment boundaries](deployment-boundaries.md) | Explaining where execution and sensitive data live. |
 | [External Citrix zero-install brief](citrix-external-brief.md) | A buyer whose workflow lives behind Citrix or VDI. |
-| [OEM architecture and commercial brief](oem-brief.md) | A vendor that wants to embed verified execution. |
+| [OpenAdapt Execute private-pilot guide](oem-brief.md) | A vendor that wants to embed verified execution. The public API is not available yet. |
 | [Procurement FAQ](procurement-faq.md) | Procurement, legal, and vendor-risk questions. |
 
 ## Honesty rules for this section
