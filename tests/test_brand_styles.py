@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 
@@ -91,9 +92,13 @@ def test_docs_actions_and_logo_match_the_ink_on_paper_chrome() -> None:
         CSS,
         re.DOTALL,
     )
-    assert 'fill="#23281F"' in LOGO
-    assert ">Open</text>" in LOGO
-    assert ">Adapt</text>" in LOGO
+    logo = ET.fromstring(LOGO)
+    view_box = [float(value) for value in logo.attrib["viewBox"].split()]
+    assert view_box[2] / view_box[3] >= 4.5
+    assert all(
+        "textLength" not in element.attrib and "lengthAdjust" not in element.attrib
+        for element in logo.iter()
+    )
     assert 'content: "Docs"' in CSS
     assert "instead of reducing it to “Docs”" in CSS
     assert "filter: brightness(0) invert(1)" in CSS
