@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-29 20:49 UTC*
+> *Last updated: 2026-07-30 16:51 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [fix: make quickstart independently verified](https://github.com/OpenAdaptAI/OpenAdapt/pull/1077) (#1077) — merged 
 
 - [chore: refresh Desktop replay media from PR #93](https://github.com/OpenAdaptAI/OpenAdapt/pull/1073) (#1073) — merged 
 
@@ -46,12 +48,16 @@
 
 - [fix(ci): restore verified docs dispatch action](https://github.com/OpenAdaptAI/OpenAdapt/pull/1053) (#1053) — merged 
 
-- [build(deps): bump astral-sh/setup-uv from 8.3.2 to 9.0.0](https://github.com/OpenAdaptAI/OpenAdapt/pull/1052) (#1052) — merged 
-
 
 
 ## openadapt-flow
 
+
+- [fix(qualification): bind public evidence to case authority](https://github.com/OpenAdaptAI/openadapt-flow/pull/313) (#313) — merged 
+
+- [fix(qualification): run sealed local cases through governed authority](https://github.com/OpenAdaptAI/openadapt-flow/pull/310) (#310) — merged 
+
+- [feat: add attended reconciliation action](https://github.com/OpenAdaptAI/openadapt-flow/pull/307) (#307) — merged 
 
 - [feat: bind governed authorization templates to hosted attestations](https://github.com/OpenAdaptAI/openadapt-flow/pull/306) (#306) — merged 
 
@@ -86,12 +92,6 @@
 - [ci: bump the actions group with 2 updates](https://github.com/OpenAdaptAI/openadapt-flow/pull/286) (#286) — merged 
 
 - [fix(compiler): stop a parameter's demonstrated value becoming a pixel invariant](https://github.com/OpenAdaptAI/openadapt-flow/pull/285) (#285) — merged 
-
-- [docs: label every headline benchmark number with the engine it was measured on](https://github.com/OpenAdaptAI/openadapt-flow/pull/284) (#284) — merged 
-
-- [ci: detect unreleased work and silently skipped publishes](https://github.com/OpenAdaptAI/openadapt-flow/pull/283) (#283) — merged 
-
-- [feat(tutorial): make the free path reach VERIFIED and emit a local receipt](https://github.com/OpenAdaptAI/openadapt-flow/pull/281) (#281) — merged 
 
 
 
@@ -273,6 +273,10 @@
 
 ## openadapt-types
 
+
+- [feat: add Execute reference clients](https://github.com/OpenAdaptAI/openadapt-types/pull/23) (#23) — merged 
+
+- [feat: add qualified entity decision task v2](https://github.com/OpenAdaptAI/openadapt-types/pull/22) (#22) — merged 
 
 - [feat: coordinate Types 0.7 contracts](https://github.com/OpenAdaptAI/openadapt-types/pull/21) (#21) — merged 
 
