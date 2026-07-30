@@ -58,6 +58,28 @@ Each signal declares its source, exact or normalized comparison, and—when
 needed—its screen region, parameter binding, or extraction rule. Duplicate or
 conflicting records remain refusal conditions.
 
+## Safe entity language for attended decisions
+
+The released signed decision schema and Cloud receiver can preserve an approved
+entity class and neutral fallback. The Flow and Desktop controls that set the
+class are in the coordinated V2 release work.
+
+After that release, a qualification author selects a static class for each step
+that can halt for an operator. For example, use `patient record`, `insurance
+claim`, or `loan application`. This class describes the kind of item. It never
+contains the live identity of the item.
+
+The class and a neutral `record` or `item` fallback become part of the exact
+qualification contract. A signed decision task carries the approved class to a
+remote operator surface. The receiver renders only reviewed safe classes and
+uses the fallback when it cannot validate the class. A class change creates a
+new qualification revision and requires recertification.
+
+OpenAdapt never infers this language from a screen, OCR, parameters, an
+application name, or a model. See [qualification-owned entity
+language](../concepts/qualification-owned-entity-language.md) for the complete
+rule and current release status.
+
 ## Bind the resulting business effect
 
 Identity proves OpenAdapt is acting on the intended record. Effect verification
