@@ -32,6 +32,9 @@ for an exact workflow step that can create an attended decision. The class
 belongs to that step in that workflow version. It is not a setting for the
 whole organization or for all workflows that use the same application.
 
+The qualification author sets the class once while they create or revise that
+workflow version. OpenAdapt does not ask for a class during each run.
+
 The qualification contract records:
 
 - the exact workflow bundle and revision;
@@ -44,9 +47,11 @@ can use `loan application`. A generic workflow can use `record`.
 
 ## What happens at run time
 
-When the exact qualified step halts, Flow copies the approved class into the
-signed decision task. Cloud and Desktop show that class only when they can
-validate the task and recognize its reviewed remote-safe vocabulary.
+After the coordinated Flow and Desktop release, when the exact qualified step
+halts, Flow copies the approved class into the signed decision task. Cloud and
+Desktop show that class only when they can validate the task and recognize its
+reviewed remote-safe vocabulary. Desktop does not read this label before that
+release.
 
 The runner keeps the actual identity evidence in its declared customer
 boundary. Before it resumes any action, it checks the live identity, current
