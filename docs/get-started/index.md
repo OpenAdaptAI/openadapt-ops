@@ -7,34 +7,84 @@ description: >-
 # Get started
 
 OpenAdapt turns a single demonstration into a deterministic, locally-run
-workflow. This section takes you from an empty terminal to a compiled workflow
-and an illustrated run report in about five minutes. For a real deployment, pair
-the workflow with an explicit substrate, identity policy, effect oracle, and
-data boundary.
-
-## Install
+workflow. The fastest path takes two commands and needs no account, target
+application, API key, or operating-system automation permission:
 
 ```bash
-pip install 'openadapt[browser]'
+python -m pip install --upgrade 'openadapt[browser]'
+openadapt quickstart
 ```
 
-This walkthrough selects the browser capability explicitly. Playwright is not
-part of the lightweight base runtime used by native desktop, RDP, or Citrix
-workflows. The first time you record or replay a web app, the matching Chromium
-build provisions automatically. To provision it ahead of time:
+The command records the bundled synthetic MockMed task, compiles its observed
+effect contract, certifies it with the shipped clinical-write policy, and runs
+it under the Standard profile. A separate read-only API confirms the saved
+record outside the screen that performed the write. The healthy run returns
+`VERIFIED` with no model or Cloud call. OpenAdapt writes all artifacts to
+`openadapt-quickstart/` and refuses to overwrite that directory.
+
+You now have:
+
+- `openadapt-quickstart/recording/`: the demonstration and retained target
+  evidence;
+- `openadapt-quickstart/bundle/`: the inspectable compiled workflow; and
+- `openadapt-quickstart/run/REPORT.md`: the ordered actions, evidence, outcome,
+  and any halt reason.
+- `openadapt-quickstart/run/receipt.json`: a local, privacy-safe summary of the
+  synthetic verified run.
+
+Open the report, then inspect the program and its deployment gaps:
 
 ```bash
-playwright install chromium
+less openadapt-quickstart/run/REPORT.md
+openadapt flow visualize openadapt-quickstart/bundle --out graph.html
+openadapt flow lint openadapt-quickstart/bundle
 ```
 
-The public package and command path remains `openadapt` followed by `openadapt
-flow <verb>`; extras select only the substrate dependencies you need.
-Contributors who work on the engine directly can use
-the standalone [`openadapt-flow`](https://github.com/OpenAdaptAI/openadapt-flow)
-package; it is not a second end-user onboarding path.
+!!! important "A tutorial result is not production certification"
+    The bundled fixture proves that the local product path and its Standard
+    verification gates work. It certifies only this bundled synthetic task,
+    application, and local system of record. A customer workflow must bind its
+    own application, execution surface, action risks, identity checks,
+    independent effect verifier, fault cases, and deployment policy.
 
-For native or remote-only work, keep the base install and add only the selected
-driver:
+## See each stage
+
+`openadapt quickstart` runs these five stages for you:
+
+1. It starts the bundled application and its local persistence boundary.
+2. It records the synthetic task and observes the record state before and after
+   each action.
+3. It compiles the observed delta into an explicit effect contract.
+4. It applies the shipped `clinical-write` policy and the Standard run gate.
+5. It replays the task, confirms the saved record through the independent API,
+   and writes the local receipt.
+
+The same gate stops when the required evidence is missing or disagrees with the
+screen.
+
+## See a fail-safe halt
+
+Use the compiled tutorial bundle in an ordinary Demo-profile replay. This path
+has no independent verifier, so OpenAdapt must not reuse the Standard
+`VERIFIED` result:
+
+```bash
+openadapt flow replay openadapt-quickstart/bundle \
+  --drift modal \
+  --run-dir openadapt-quickstart-halt
+```
+
+The command returns a non-zero exit code because the expected outcome is a
+halt. Open `openadapt-quickstart-halt/REPORT.md` to see the retained evidence.
+Do not retry a possibly dispatched write. Reconcile it against an independent
+system of record first.
+
+## Install a different execution surface
+
+The browser extra is only for the browser tutorial. It does not form part of
+the lightweight base runtime for native desktop, RDP, or Citrix workflows.
+
+For native or remote-only work, install the selected driver:
 
 ```bash
 pip install openadapt
@@ -42,44 +92,10 @@ pip install 'openadapt[capture,windows]'  # example: native Windows
 pip install 'openadapt[capture,rdp]'      # example: network RDP
 ```
 
-Neither path installs or downloads Chromium.
-
-## The complete demo journey
-
-```bash
-# 1. Record the canonical demo (serves a local sample app, records a triage task)
-openadapt flow demo-record --out rec
-
-# 2. Compile the recording into a workflow bundle
-openadapt flow compile rec --out bundle --name my-task
-
-# 3. Check it for coverage gaps
-openadapt flow lint bundle
-
-# 4. Refuse it if it violates a safety policy
-openadapt flow certify bundle --policy clinical-write
-
-# 5. Replay it: local, deterministic, zero model calls
-openadapt flow replay bundle --run-dir runs/baseline
-
-# 6. Induce known drift and save the proposed healed bundle separately
-openadapt flow replay bundle --drift theme \
-  --run-dir runs/theme-drift --save-healed-to bundle-healed
-
-# 7. Inspect the human and machine-readable evidence
-less runs/theme-drift/REPORT.md
-python -m json.tool runs/theme-drift/report.json | less
-
-# 8. Prove the saved bundle replays cleanly before promoting it
-openadapt flow replay bundle-healed --run-dir runs/healed-canary
-```
-
-Steps 5, 6, and 8 serve the bundled sample app and write an illustrated
-`REPORT.md` plus `report.json` per run. Step 6 injects a theme the workflow has
-never seen; deterministic lower rungs re-resolve the targets and write a
-candidate to `bundle-healed`. The original `bundle` is not silently promoted, so
-review the diff and canary result first. `lint` and `certify` are the pre-deploy
-gate that separates "runnable" from "certified under this policy".
+Neither path installs or downloads Chromium. The public command remains
+`openadapt flow <verb>` for every surface. The standalone
+[`openadapt-flow`](https://github.com/OpenAdaptAI/openadapt-flow) package is for
+engine contributors. It is not a second end-user path.
 
 ## When a real run halts
 
