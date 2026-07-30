@@ -124,7 +124,7 @@ When the state is `terminal`, request
 returns HTTP `409`. It also returns HTTP `409` if the terminal run still waits
 for trusted evidence.
 
-Validate the response with `openadapt-types` 0.8.0 or its published JSON
+Validate the response with `openadapt-types` 0.9.0 or its published JSON
 Schema. Then confirm these bindings in your application:
 
 1. `execution_id` matches the accepted execution.
@@ -193,16 +193,19 @@ The `openadapt-types` models implement the same canonicalization and
 `verify_hmac()` check. Use them instead of maintaining a second algorithm when
 possible.
 
-<!--
-DEPENDENCY: Cloud PR #223 owns the final Execute webhook transport headers.
-Before this guide can merge, replace this comment and the paragraph below with
-the accepted header names and state which values are advisory copies of signed
-body fields. Do not publish header names from a superseded PR head.
--->
+Each delivery includes these transport headers:
 
-The final private-pilot setup will list the webhook transport headers here.
-Until that contract is accepted, depend on the signed body fields for event
-identity, delivery attempt, key selection, and verification.
+```http
+Content-Type: application/json
+User-Agent: OpenAdapt-Execute-Webhook/1.0
+X-OpenAdapt-Event-Id: <opaque-event-id>
+X-OpenAdapt-Delivery-Attempt: <positive-integer>
+```
+
+`X-OpenAdapt-Event-Id` and `X-OpenAdapt-Delivery-Attempt` are advisory copies
+of the signed body `event_id` and `delivery_attempt`. The signed body is
+authoritative. Select the secret with the signed body `issuer_key_id` and
+verify the signed body `signature`; the signature is not an HTTP header.
 
 ### Delivery, order, and retry rules
 
