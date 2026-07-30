@@ -188,7 +188,8 @@ banner as proof.
 
 Private-pilot integrations use signed, versioned webhook events and polling.
 Webhook retry, signature verification, ordering, and event deduplication are
-part of the Execute contract.
+part of the Execute contract. The [Execute integration guide](execute-api.md)
+shows the request, status, receipt, and webhook flow.
 
 ## Start with one workflow
 
