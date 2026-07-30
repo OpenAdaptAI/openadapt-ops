@@ -1,106 +1,223 @@
-# OpenAdapt Execute: OEM architecture and commercial brief
+# OpenAdapt Execute: private-pilot guide
 
-For software vendors and service providers that need to complete authorized
-transactions in customer systems they cannot integrate with: an RCM platform
-that must write into customer EMRs, a vertical SaaS that must reach a legacy
-system with no API, or an agent platform that needs a governed actuator.
+OpenAdapt Execute gives a software or service provider a safe way to complete
+an authorized transaction in an application that the provider cannot directly
+integrate with.
 
-**OpenAdapt Execute** is the approved product direction for this work. It uses
-the MIT-licensed OpenAdapt Flow runtime in the customer-controlled execution
-boundary. The managed API, compatibility packs, production verifier recipes,
-and qualification intelligence are commercial services. The external API is
-not yet a public endpoint.
-
-## The idea: a transaction API over GUI execution
-
-Most embedding integrations expose "run this script and hope." OpenAdapt's OEM
-surface is designed as a **transaction API**: your product submits an intent,
-and gets back a terminal outcome it can build product logic on.
+Your product decides the business action. OpenAdapt executes the qualified
+transaction in the customer-controlled browser, desktop, RDP, Citrix, or API
+environment. It then returns a precise outcome and a receipt.
 
 ```text
-submit(qualified_workflow, inputs, idempotency_key, profile)
-    -> accepted(execution_id)
-
-event / poll result
-    -> VERIFIED                  # business effect confirmed in the system of record
-    -> COMPLETED_UNVERIFIED      # demo-only completion; never production success
-    -> HALTED                    # a gate stopped the run with evidence
-    -> FAILED                    # a platform failure with no possible effect
-    -> RECONCILIATION_REQUIRED   # delivery or persistence is uncertain; do not retry
+authorized transaction
+  -> qualified local execution
+  -> effect verification
+  -> verified | a precise non-success outcome + receipt
 ```
 
-The API will be asynchronous because a transaction can wait for a person,
-survive a restart, or need reconciliation. Each result carries the evidence
-behind it: run report, identity coverage, effect verdicts, and hashes binding
-the evidence to the exact bundle and inputs. Your product does not parse
-screenshots to guess what happened; it branches on a verdict.
+This is a good fit for a vertical software vendor, an RCM provider, a BPO, or
+an integration firm. The provider already has structured inputs, business
+logic, and an exception team. OpenAdapt supplies the verified last action in
+the customer system.
 
-**Status: the public API contract is in design.** The underlying mechanics ship
-in Flow 1.26: governed run admission, signed attended decisions, durable
-resume, one-use managed authority, exact bundle/input binding, effect
-verification, and evidence binding. OpenAdapt is specifying the stable
-embedding surface, versioned schemas, webhooks, and SDKs with early OEM users.
+!!! note "Private pilot. Not a public API."
+    This page describes the private-pilot product contract. It is not an
+    self-service integration recipe and it does not publish partner access,
+    credentials, an SDK, or a webhook URL. `openadapt-types` 0.8.0 publishes
+    the shared async Execute schema, OpenAPI document, and signed decision
+    contract. OpenAdapt Cloud provides private execution, customer-runner
+    coordination, and receipt delivery for approved pilot partners.
 
-## Integration surface
+## What a partner gets
 
-- **Submission:** your control plane submits a qualified, sealed workflow
-  bundle plus typed inputs. Admission is fail-closed: an uncertified bundle,
-  missing coverage, or unsatisfied profile requirement is refused before
-  actuation, not discovered after.
-- **Execution profiles:** `demo`, `standard`, and `regulated` profiles compile
-  into explicit requirements (certification, sealed bundles, consequential
-  identity and effect coverage, egress policy). Your product selects a
-  profile, not a bag of flags.
-- **Runners:** execution lands on a runner in the right boundary: your cloud,
-  your customer's environment, or a managed browser runner for non-regulated
-  web targets ([deployment boundaries](deployment-boundaries.md)). Runners
-  advertise capabilities; a plan a runner cannot satisfy is rejected before
-  actuation.
-- **Evidence:** every run returns machine-readable evidence
-  ([report schema](../guides/run-reports.md)) suitable for your own audit
-  trail and your customers' reviewers.
-- **Authority:** a managed dispatch binds one use to the exact run, qualified
-  bundle digest, runtime-input digest, and governed authorization. A runner
-  validates the envelope locally before it can actuate. The control plane can
-  request work; it cannot widen local policy or mint a substitute authority.
-- **External executors:** the adapter contract
-  (`authorize -> invoke -> observe -> verify -> VERIFIED | HALTED + evidence`)
-  is designed so identity, authorization, verification, and evidence stay
-  authoritative even when another tool (a script, an RPA bot, an API call, an
-  agent) performs the action.
+OpenAdapt starts with one named transaction in one customer environment. For
+example: create a follow-up appointment, submit a claim correction, update a
+loan application, or post a reconciled record.
 
-## Responsibility boundaries
+The qualification work produces:
 
-| Responsibility | OpenAdapt | OEM partner |
+- a reviewed workflow and parameter contract;
+- a named application, version, environment, and runner boundary;
+- identity checks for each consequential action;
+- a declared effect and the required evidence strength;
+- an idempotency rule and an uncertain-delivery rule;
+- representative and fault cases;
+- a sealed qualified version and an acceptance report.
+
+The partner can then submit an authorized transaction to the private pilot
+service. The service selects only the exact qualified workflow and the exact
+customer-controlled runner that can meet the contract.
+
+## The Execute contract
+
+The production surface is asynchronous. A transaction can wait for a person,
+wait for reconciliation, or resume after a runner restart. A caller receives
+an execution identifier and observes state changes. It does not wait for a GUI
+session in one HTTP request.
+
+### ExecuteRequestV1
+
+Each `ExecuteRequestV1` contains exactly these public fields:
+
+- `schema_version: openadapt.execute-request/v1`;
+- `qualification_id`;
+- `workflow_version` and `workflow_digest`;
+- `environment_id`;
+- typed `parameters`;
+- `idempotency_key`;
+- `authorization_context` with `actor_id` and `authorization_reference`;
+- `effect_strength_schema_version`; and
+- `minimum_effect_strength`.
+
+The same idempotency key with the same request returns the existing execution.
+A changed request under that key is refused. OpenAdapt also keeps an
+effect-aware record of delivery, so it does not repeat a write after an
+uncertain result.
+
+### Internal qualification and runtime binding
+
+The qualification and runtime hold additional controls outside
+`ExecuteRequestV1`. They bind the approved workflow to its sealed bundle,
+policy, runner capability set, and customer environment. The runner also
+checks the locally issued authority and its exact delivery and input binding
+before it acts. These controls protect the execution path; they are not caller
+fields in the public Execute request.
+
+### Lifecycle states
+
+The private-pilot contract uses these states. A state describes current work;
+it is not a success claim.
+
+| State | Meaning |
+|---|---|
+| `queued` | OpenAdapt accepted the request for dispatch. |
+| `running` | The runner is observing, resolving, acting, or verifying. |
+| `decision_required` | A typed attended question needs an authorized person. |
+| `waiting_for_reconciliation` | A possible or conflicting effect needs a live read before OpenAdapt can continue. |
+| `terminal` | The execution has one final transaction outcome and a receipt. |
+
+### Terminal transaction outcomes
+
+The released OpenAdapt Execute v1 contract defines these outcomes. The
+private-pilot service exposes the same values without translating them into a
+generic "success" flag.
+
+| Outcome | Meaning for the partner |
+|---|---|
+| `verified` | The configured authorization, identity, postcondition, and effect contracts passed. |
+| `halted_before_effect` | OpenAdapt stopped and evidence established that no consequential effect occurred. |
+| `reconciliation_required` | Delivery, persistence, or the observed effect is uncertain or conflicting. Do not submit the write again. Reconcile first. |
+| `failed_platform` | A platform failure occurred before any possible business effect. |
+| `rejected_policy` | Qualification, authorization, identity, environment, or policy refused the transaction before effect. |
+| `rolled_back_verified` | A configured compensating action completed and the receipt includes verification evidence for that compensating effect. |
+
+`verified` is the business-success outcome. `rolled_back_verified` proves the
+configured compensating effect, not the original requested effect.
+
+## Customer-controlled execution
+
+The runner stays in the agreed customer boundary. This can be a workstation,
+a customer-managed VM, a VDI client, or a dedicated browser runner.
+
+The runner validates the exact authorization locally before it acts. The
+control plane cannot substitute the bundle, widen the policy, or reuse an
+authorization for a different input. Sensitive screen content and live entity
+identifiers stay in that boundary unless the customer explicitly configures a
+different evidence path.
+
+OpenAdapt uses a qualification-owned entity class only as static presentation
+metadata. A task may say `patient record`, `insurance claim`, or `loan
+application` when its certified contract declares that class. A remote surface
+does not infer a class or an identity from a screenshot, OCR, an application
+name, parameters, or a model. If the class is unavailable, it uses `record` or
+`item`. The runner rechecks the real identity before any resumed action.
+
+## Attended decisions and mobile delivery
+
+When the runner cannot prove a required condition, it creates one signed,
+typed decision task. The operator can answer from the local console or the
+authenticated phone/web decision surface. The phone receives a closed context;
+the customer runner retains the detailed evidence.
+
+An operator answer is not a command to repeat a write. The runner first
+reacquires focus, a fresh observation, the workflow state, identity evidence,
+and the target. It continues only if those checks pass. The resulting receipt
+binds the decision, the runner transition, and the final state to the exact
+task and authorization.
+
+The released public contract for this round trip is
+`openadapt-types` 0.8.0. It defines the async Execute schema and OpenAPI
+document, plus signed, PHI-safe decision tasks and receipts. Flow and Cloud use
+this contract for the decision relay and private-pilot execution. The partner
+event stream does not contain raw screenshots or live record data.
+
+## Receipts and partner integration
+
+### ExecuteEvidenceReceiptV1
+
+Every terminal execution returns an `ExecuteEvidenceReceiptV1` with exactly
+these public fields:
+
+- `schema_version: openadapt.execute-evidence-receipt/v1`;
+- `receipt_id`, `execution_id`, and `workflow_digest`;
+- the terminal `outcome`;
+- `contracts`: `authorization_passed`, `identity_passed`,
+  `postcondition_passed`, `effect_passed`, `minimum_effect_strength`, optional
+  `observed_effect_strength`, `model_used`, and `external_network_used`;
+- `delivery_uncertain`;
+- `compensation_effect_verified`: always present, normally `false`, and `true`
+  only when the outcome is `rolled_back_verified`;
+- `evidence_digest`; and
+- `issued_at`.
+
+The status resource supplies the receipt identifier only when its state is
+`terminal`. It also supplies the terminal outcome. This keeps an in-progress
+state separate from a final outcome.
+
+### Local and private evidence
+
+The customer-controlled runner retains richer evidence outside
+`ExecuteEvidenceReceiptV1`. This can include the exact bundle and input
+bindings, runner and environment details, report bodies, screenshots, live
+identity checks, and application observations. The public receipt identifies
+that evidence by digest. It does not copy it into the partner event stream.
+
+The partner stores the receipt with its own transaction record. This lets the
+partner tell an end customer what happened without using a screenshot or a UI
+banner as proof.
+
+Private-pilot integrations use signed, versioned webhook events and polling.
+Webhook retry, signature verification, ordering, and event deduplication are
+part of the Execute contract.
+
+## Start with one workflow
+
+The first step is a [Workflow Qualification Sprint](qualification-sprint.md),
+not broad platform integration. Bring one repeated transaction, the actual
+target application and environment, a verifier path, and the operator who
+handles exceptions.
+
+The sprint gives both teams a qualified transaction, a measured acceptance
+campaign, and a clear reuse decision. If the same transaction can transfer to
+additional customer environments, OpenAdapt and the partner turn it into a
+commercial compatibility pack.
+
+## Product boundary
+
+| Layer | Availability | Role |
 |---|---|---|
-| Engine, safety gates, report schema | R | uses |
-| Qualification tooling and evidence format | R | runs or resells |
-| Workflow qualification per customer environment | C (or delivered as a service) | R |
-| End-customer relationship, UX, and support | | R |
-| Deployment boundary and data handling per end customer | C | R |
-| Verifier read paths in end-customer systems | C | R |
-| Claims made to end customers about coverage | must match the evidence | R |
+| OpenAdapt Flow | MIT-licensed | Local compiler, governed runtime, transaction outcomes, qualification tools, and receipt mechanisms. |
+| `openadapt-types` 0.8.0 | MIT-licensed and released | Shared async Execute schema and OpenAPI document, plus signed decision-task and decision-receipt contracts. |
+| OpenAdapt Cloud foundation | Private and deployed | Tenant control plane, private Execute endpoints, customer-runner coordination, signed decision relay, audit records, and managed operations. |
+| OpenAdapt Execute | Private pilot | Versioned transaction submission, status, receipt delivery, and partner integration for approved pilot partners. |
+| Compatibility packs and verifier recipes | Commercial | Per-application and per-environment qualification assets, deployment evidence, and support. |
 
-The last row is contractual on purpose: bounded evidence stays bounded, in
-your marketing as in ours.
+The open runtime remains inspectable. The commercial value is the qualified
+transaction, customer-environment evidence, operational delivery, and support.
 
-## Commercial shape
+## Next step
 
-- **OEM programs: typically $75,000 to $150,000 annually, plus scoped
-  integration work**, matching the public
-  [pricing page](https://openadapt.ai/pricing).
-- Scope covers the embedding license, the integration surface, named
-  environments, and support; per-end-customer workflow qualification is scoped
-  separately or delivered by the partner using the qualification tooling.
-- Early OEM partners operate under a
-  customer-specific design-partner agreement: defined feedback obligations,
-  early access to the reference API, and input into its shape.
-- The engine is MIT-licensed and auditable; embedding does not depend on a
-  proprietary black box for its safety story.
+[Qualify one workflow](qualification-sprint.md){ .md-button .md-button--primary }
 
-## Where to start
-
-An OEM conversation starts the same way every OpenAdapt engagement does: with
-one real workflow. A [Qualification Sprint](qualification-sprint.md) against
-one of your end-customer environments produces the evidence that the
-integration is worth building, before either side commits to platform work.
+Bring one system, one transaction, and one measurable business result. We will
+define the execution and evidence contract together.

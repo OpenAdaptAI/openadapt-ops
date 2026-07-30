@@ -167,7 +167,7 @@ nav:
     - Security packet: commercial/security-packet.md
     - Deployment boundaries: commercial/deployment-boundaries.md
     - External Citrix zero-install brief: commercial/citrix-external-brief.md
-    - OEM architecture and commercial brief: commercial/oem-brief.md
+    - OpenAdapt Execute private-pilot guide: commercial/oem-brief.md
     - Procurement FAQ: commercial/procurement-faq.md
   - Internals:
     - The substrate model: concepts/substrate-model.md
