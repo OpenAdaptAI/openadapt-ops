@@ -181,6 +181,7 @@ nav:
     - Deployment configuration: reference/deployment-config.md
     - The bundle format: reference/bundle-format.md
     - Configuration and env vars: reference/configuration.md
+    - Glossary: reference/glossary.md
     - Package and repository lifecycle: ecosystem/index.md
     - Documentation source of truth: reference/documentation-governance.md
     - What's New: whats-new.md
