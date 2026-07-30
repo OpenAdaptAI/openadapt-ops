@@ -42,7 +42,7 @@ receives only a closed, PHI-free decision context.
 </figure>
 
 <figure markdown="span">
-  ![A mobile decision result reports Identity verified after the runner re-read the live patient and target and saved a receipt.](../assets/ui/mobile-decision-result.png){ width="330" }
+  ![A mobile decision result reports Identity verified after the runner re-read the live record and target and saved a receipt.](../assets/ui/mobile-decision-result.png){ width="330" }
   <figcaption>Result: the runner, not the phone, rechecks state and records the receipt before it reports a verified continuation.</figcaption>
 </figure>
 
