@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-30 16:52 UTC*
+> *Last updated: 2026-07-31 13:52 UTC*
 
 
 
@@ -9,6 +9,8 @@
 
 
 - [fix: make quickstart independently verified](https://github.com/OpenAdaptAI/OpenAdapt/pull/1077) (#1077) — merged 
+
+- [docs: add Execute partner entry point](https://github.com/OpenAdaptAI/OpenAdapt/pull/1074) (#1074) — merged 
 
 - [chore: refresh Desktop replay media from PR #93](https://github.com/OpenAdaptAI/OpenAdapt/pull/1073) (#1073) — merged 
 
@@ -46,12 +48,22 @@
 
 - [build(deps): update CodeQL actions together](https://github.com/OpenAdaptAI/OpenAdapt/pull/1054) (#1054) — merged 
 
-- [fix(ci): restore verified docs dispatch action](https://github.com/OpenAdaptAI/OpenAdapt/pull/1053) (#1053) — merged 
-
 
 
 ## openadapt-flow
 
+
+- [fix: simplify the RDP buyer story](https://github.com/OpenAdaptAI/openadapt-flow/pull/326) (#326) — merged 
+
+- [fix: clarify the RDP proof presentation](https://github.com/OpenAdaptAI/openadapt-flow/pull/324) (#324) — merged 
+
+- [chore(rdp): export evidence-bound hybrid timeline](https://github.com/OpenAdaptAI/openadapt-flow/pull/320) (#320) — merged 
+
+- [chore: improve RDP demo layout and pacing](https://github.com/OpenAdaptAI/openadapt-flow/pull/319) (#319) — merged 
+
+- [feat(rdp): qualify appointment booking with real graph proof](https://github.com/OpenAdaptAI/openadapt-flow/pull/318) (#318) — merged 
+
+- [chore(rdp): export proof-linked buyer demo](https://github.com/OpenAdaptAI/openadapt-flow/pull/316) (#316) — merged 
 
 - [fix(qualification): bind public evidence to case authority](https://github.com/OpenAdaptAI/openadapt-flow/pull/313) (#313) — merged 
 
@@ -80,18 +92,6 @@
 - [feat(attended): let an operator reject a halt and end the run](https://github.com/OpenAdaptAI/openadapt-flow/pull/295) (#295) — merged 
 
 - [chore: gitignore .private/](https://github.com/OpenAdaptAI/openadapt-flow/pull/292) (#292) — merged 
-
-- [feat(rdp): atomically verify native option selections](https://github.com/OpenAdaptAI/openadapt-flow/pull/291) (#291) — merged 
-
-- [feat(console): close the mobile attended-decision loop with an e2e acceptance test](https://github.com/OpenAdaptAI/openadapt-flow/pull/290) (#290) — merged 
-
-- [fix(receipt): require complete evidence for VERIFIED receipts](https://github.com/OpenAdaptAI/openadapt-flow/pull/289) (#289) — merged 
-
-- [fix(ci): make release-health alerts fail observable](https://github.com/OpenAdaptAI/openadapt-flow/pull/288) (#288) — merged 
-
-- [ci: bump the actions group with 2 updates](https://github.com/OpenAdaptAI/openadapt-flow/pull/286) (#286) — merged 
-
-- [fix(compiler): stop a parameter's demonstrated value becoming a pixel invariant](https://github.com/OpenAdaptAI/openadapt-flow/pull/285) (#285) — merged 
 
 
 
@@ -164,10 +164,6 @@
 - [chore(deps): Bump actions/checkout from 5 to 7](https://github.com/OpenAdaptAI/openadapt-agent/pull/12) (#12) — merged 
 
 - [feat(dist): add local MCPB distribution](https://github.com/OpenAdaptAI/openadapt-agent/pull/11) (#11) — merged 
-
-- [release: openadapt-agent v2.0.1](https://github.com/OpenAdaptAI/openadapt-agent/pull/10) (#10) — merged 
-
-- [release: openadapt-agent v2.0.0](https://github.com/OpenAdaptAI/openadapt-agent/pull/9) (#9) — merged 
 
 
 
@@ -249,10 +245,6 @@
 - [fix: report FFmpeg input worker startup failure](https://github.com/OpenAdaptAI/openadapt-capture/pull/43) (#43) — merged 
 
 - [Stream capture frames directly to FFmpeg](https://github.com/OpenAdaptAI/openadapt-capture/pull/42) (#42) — merged 
-
-- [fix: isolate video codec runtime from capture](https://github.com/OpenAdaptAI/openadapt-capture/pull/41) (#41) — merged 
-
-- [fix: replace copyleft input dependencies](https://github.com/OpenAdaptAI/openadapt-capture/pull/40) (#40) — merged 
 
 
 
