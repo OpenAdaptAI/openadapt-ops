@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-31 13:52 UTC*
+> *Last updated: 2026-07-31 14:20 UTC*
 
 
 
@@ -98,6 +98,8 @@
 ## openadapt-desktop
 
 
+- [feat: complete qualification and attended phone workflow](https://github.com/OpenAdaptAI/openadapt-desktop/pull/93) (#93) — merged 
+
 - [chore(release): enforce the generated source-policy boundary](https://github.com/OpenAdaptAI/openadapt-desktop/pull/91) (#91) — merged 
 
 - [feat(auth): add loopback pairing and credential rotation](https://github.com/OpenAdaptAI/openadapt-desktop/pull/90) (#90) — merged 
@@ -135,8 +137,6 @@
 - [fix(release): mirror the attested installer set onto the engine release](https://github.com/OpenAdaptAI/openadapt-desktop/pull/73) (#73) — merged 
 
 - [fix: make the local Desktop cockpit account-free](https://github.com/OpenAdaptAI/openadapt-desktop/pull/72) (#72) — merged 
-
-- [ci: detect unreleased work and silently skipped publishes](https://github.com/OpenAdaptAI/openadapt-desktop/pull/70) (#70) — merged 
 
 
 
