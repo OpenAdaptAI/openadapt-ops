@@ -20,7 +20,8 @@ not a separate product onboarding path.
 | `openadapt-flow` 1.x + native capture | `openadapt-capture >=1.1.0` | Canonical native demonstration recording for Windows, macOS, Linux, RDP, and Citrix |
 | Windows action-time UIA handoff | `openadapt-flow >=1.22,<2` + `openadapt-capture >=1.1.0` | Retains the nearest actionable UIA node for native Windows compilation; RDP and Citrix remain externally black-box |
 | `openadapt-flow` 1.x + privacy extra | `openadapt-privacy[presidio] >=1.0` | Configured local scrub/redaction paths |
-| `openadapt-flow` interoperability extra | `openadapt-types >=0.2,<0.4` | Contributor-facing schema boundary |
+| `openadapt-flow` 1.27.x interoperability and console extras | `openadapt-types >=0.7,<0.8` | Field-exact runtime overlay and attended-decision boundary tested by Flow |
+| OpenAdapt Execute reference clients | `openadapt-types >=0.9,<0.10` | Async Execute request, status, webhook, and receipt contracts for approved private pilots |
 | Python | 3.10-3.12 | Supported runtime range for the current 1.x line |
 
 The package metadata is the executable source of truth for these ranges. CI
@@ -31,8 +32,10 @@ and release archives are validated before publication.
 
 - Public launcher and engine APIs follow semantic versioning. Breaking CLI,
   bundle, or runtime-contract changes are reserved for a major release.
-- Optional 0.x schema packages may break at a minor release, so the engine pins
-  an upper bound and raises it only after its interoperability suite passes.
+- Optional 0.x schema packages may break at a minor release. Each consumer pins
+  the exact minor contract that it tests. Flow 1.27.x uses the 0.7 contract;
+  Execute clients use the 0.9 contract. Do not substitute one range for the
+  other.
 - Patch releases may ship immediately for security, safety, packaging, or
   installation defects. Routine capability changes should be consolidated so
   adopters see product releases rather than repository-level merge noise.

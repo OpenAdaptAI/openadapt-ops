@@ -119,9 +119,9 @@ nav:
   - Home: index.md
   - Start:
     - get-started/index.md
-    - Install and first run: desktop/install.md
     - Your first workflow: get-started/first-workflow.md
     - What you get: get-started/what-you-get.md
+    - Desktop application: desktop/install.md
   - Build:
     - concepts/index.md
     - All how-to guides: guides/index.md

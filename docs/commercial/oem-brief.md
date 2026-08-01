@@ -23,7 +23,7 @@ the customer system.
 !!! note "Private pilot. Not a public API."
     This page describes the private-pilot product contract. It is not an
     self-service integration recipe and it does not publish partner access,
-    credentials, an SDK, or a webhook URL. `openadapt-types` 0.8.0 publishes
+    credentials, an SDK, or a webhook URL. `openadapt-types` 0.9.0 publishes
     the shared async Execute schema, OpenAPI document, and signed decision
     contract. OpenAdapt Cloud provides private execution, customer-runner
     coordination, and receipt delivery for approved pilot partners.
@@ -146,7 +146,7 @@ binds the decision, the runner transition, and the final state to the exact
 task and authorization.
 
 The released public contract for this round trip is
-`openadapt-types` 0.8.0. It defines the async Execute schema and OpenAPI
+`openadapt-types` 0.9.0. It defines the async Execute schema and OpenAPI
 document, plus signed, PHI-safe decision tasks and receipts. Flow and Cloud use
 this contract for the decision relay and private-pilot execution. The partner
 event stream does not contain raw screenshots or live record data.
@@ -208,7 +208,7 @@ commercial compatibility pack.
 | Layer | Availability | Role |
 |---|---|---|
 | OpenAdapt Flow | MIT-licensed | Local compiler, governed runtime, transaction outcomes, qualification tools, and receipt mechanisms. |
-| `openadapt-types` 0.8.0 | MIT-licensed and released | Shared async Execute schema and OpenAPI document, plus signed decision-task and decision-receipt contracts. |
+| `openadapt-types` 0.9.0 | MIT-licensed and released | Shared async Execute schema and OpenAPI document, plus signed decision-task and decision-receipt contracts. |
 | OpenAdapt Cloud foundation | Private and deployed | Tenant control plane, private Execute endpoints, customer-runner coordination, signed decision relay, audit records, and managed operations. |
 | OpenAdapt Execute | Private pilot | Versioned transaction submission, status, receipt delivery, and partner integration for approved pilot partners. |
 | Compatibility packs and verifier recipes | Commercial | Per-application and per-environment qualification assets, deployment evidence, and support. |
