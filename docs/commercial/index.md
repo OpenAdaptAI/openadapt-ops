@@ -31,7 +31,7 @@ automate; a well-evidenced "do not automate" is a full-value deliverable.
 | [Security packet](security-packet.md) | Answering a security or IT review. |
 | [Deployment boundaries](deployment-boundaries.md) | Explaining where execution and sensitive data live. |
 | [External Citrix zero-install brief](citrix-external-brief.md) | A buyer whose workflow lives behind Citrix or VDI. |
-| [OpenAdapt Execute private-pilot guide](oem-brief.md) | A vendor that wants to embed verified execution. The public API is not available yet. |
+| [OpenAdapt Execute private-pilot guide](oem-brief.md) | A vendor that wants to embed verified execution. The API is available to approved private-pilot partners with scoped credentials. |
 | [Procurement FAQ](procurement-faq.md) | Procurement, legal, and vendor-risk questions. |
 
 ## Honesty rules for this section

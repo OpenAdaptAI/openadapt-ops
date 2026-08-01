@@ -6,9 +6,13 @@ description: >-
 
 # Get started
 
-OpenAdapt turns a single demonstration into a deterministic, locally-run
-workflow. The fastest path takes two commands and needs no account, target
-application, API key, or operating-system automation permission:
+Start with one complete local result. Then choose the guide for your target
+surface. You do not need to understand the package layout first.
+
+## First success: two commands
+
+The fastest path needs no account, target application, API key, or
+operating-system automation permission:
 
 ```bash
 python -m pip install --upgrade 'openadapt[browser]'
@@ -39,6 +43,15 @@ less openadapt-quickstart/run/REPORT.md
 openadapt flow visualize openadapt-quickstart/bundle --out graph.html
 openadapt flow lint openadapt-quickstart/bundle
 ```
+
+You can stop here after your first run. Next, use one of these paths:
+
+| Goal | Next guide |
+|---|---|
+| Record one real browser workflow | [Your first workflow](first-workflow.md) |
+| Use the Desktop application | [Install Desktop](../desktop/install.md) |
+| Use native desktop, RDP, or Citrix | [Install a different execution surface](#install-a-different-execution-surface) |
+| Prepare a qualified production run | [Move from demo to deployment](#move-from-demo-to-deployment) |
 
 !!! important "A tutorial result is not production certification"
     The bundled fixture proves that the local product path and its Standard
