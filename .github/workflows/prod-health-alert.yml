@@ -1,0 +1,82 @@
+name: Production health alert
+
+# $0 pager for the hosted control plane. Probes the real dependency
+# probe (openadapt-cloud src/lib/readiness.ts — returns {"ready":true}
+# with HTTP 200, or 503 with per-component detail). When the endpoint
+# is unhealthy or unreachable after 3 attempts spread over ~2 minutes,
+# the run FAILS; GitHub emails the actor who last modified this
+# workflow file on a failed scheduled run. Optional Telegram alert
+# fires when the crier bot secrets exist in this repo.
+#
+# Cadence: every 30 minutes = 48 runs/day of a <1-minute job. The repo
+# is public, so Actions minutes are free; even metered this would be
+# under ~50 min/day. 30 min bounds detection latency without turning
+# one transient blip into a page (the in-run retry absorbs blips).
+#
+# Caveats (documented, not hidden):
+# - GitHub auto-disables scheduled workflows after 60 days WITHOUT
+#   repo activity. sync.yml commits docs daily, which counts as
+#   activity; if that sync ever stops, these schedules die silently
+#   ~60 days later. See ops/backup/RESTORE_DRILL.md section 6.
+# - Failure emails go to the last committer of this file; keep that a
+#   monitored account.
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/30 * * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: prod-health
+  cancel-in-progress: false
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Probe app.openadapt.ai/api/health/ready (3 attempts over ~2 min)
+        run: |
+          set -u
+          url='https://app.openadapt.ai/api/health/ready'
+          attempts=3
+          for i in $(seq 1 "$attempts"); do
+            if body=$(curl -sS -m 20 -w '\n%{http_code}' "$url" 2>&1); then
+              code=$(printf '%s\n' "$body" | tail -n1)
+              json=$(printf '%s\n' "$body" | sed '$d')
+              ready=$(printf '%s' "$json" | jq -r '.ready // false' 2>/dev/null || echo 'parse-error')
+              echo "attempt ${i}/${attempts}: http=${code} ready=${ready}"
+              if [ "$code" = '200' ] && [ "$ready" = 'true' ]; then
+                exit 0
+              fi
+              # The endpoint is public and returns metadata-only detail;
+              # print which components are not ready to make the failure
+              # email actionable.
+              printf '%s' "$json" | jq -r '.components[]? | select(.state != "ready") | "NOT READY: \(.name): \(.detail)"' 2>/dev/null || true
+            else
+              echo "attempt ${i}/${attempts}: request failed (network error or timeout)"
+            fi
+            if [ "$i" -lt "$attempts" ]; then sleep 60; fi
+          done
+          echo "::error::${url} is unhealthy or unreachable after ${attempts} attempts over ~2 minutes."
+          exit 1
+
+      - name: Telegram alert (optional — runs only when crier secrets exist)
+        if: ${{ failure() }}
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_OWNER_ID: ${{ secrets.TELEGRAM_OWNER_ID }}
+        run: |
+          set -u
+          if [ -z "${TELEGRAM_BOT_TOKEN}" ] || [ -z "${TELEGRAM_OWNER_ID}" ]; then
+            echo 'Telegram secrets not configured; skipping. GitHub failure email is the pager.'
+            echo 'To enable: gh secret set TELEGRAM_BOT_TOKEN --repo OpenAdaptAI/openadapt-ops && gh secret set TELEGRAM_OWNER_ID --repo OpenAdaptAI/openadapt-ops (same values the crier bot uses).'
+            exit 0
+          fi
+          curl -sS -m 20 -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TELEGRAM_OWNER_ID}" \
+            --data-urlencode "text=ALERT: app.openadapt.ai /api/health/ready is unhealthy or unreachable. Run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" \
+            > /dev/null && echo 'Telegram alert sent.'
