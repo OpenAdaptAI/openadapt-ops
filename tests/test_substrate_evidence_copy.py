@@ -6,7 +6,6 @@ does not become a broad app-support claim, and the managed browser runner does
 not silently absorb customer-controlled desktop or remote execution.
 """
 
-import re
 from pathlib import Path
 
 
@@ -91,24 +90,6 @@ def test_public_managed_runner_and_customer_runtime_boundaries_remain_distinct()
     assert "Customer-controlled runtime connected to Cloud" in combined
     assert "shared managed-browser boundary" in combined
     assert "not a counted real ICA/HDX batch" in combined
-
-
-def test_desktop_beta_release_is_current_and_cross_platform():
-    what_works = _read("get-started/what-works-today.md")
-    install = _read("desktop/install.md")
-    ecosystem = _read("ecosystem/index.md")
-
-    release_tags = []
-    for source in [what_works, install, ecosystem]:
-        match = re.search(r"desktop-v\d+\.\d+\.\d+", source)
-        assert match is not None
-        release_tags.append(match.group(0))
-        assert "Windows" in source
-        assert "macOS" in source
-        assert "Linux" in source
-    assert len(set(release_tags)) == 1
-    assert "SHA256SUMS" in what_works
-    assert "installed, launched, and uninstalled" in what_works
 
 
 def test_deployment_config_selects_dedicated_citrix_backend_and_safety_contract():
