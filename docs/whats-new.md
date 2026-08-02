@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-07-31 14:20 UTC*
+> *Last updated: 2026-08-02 09:46 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [fix: refresh desktop platform manifest](https://github.com/OpenAdaptAI/OpenAdapt/pull/1081) (#1081) — merged 
 
 - [fix: make quickstart independently verified](https://github.com/OpenAdaptAI/OpenAdapt/pull/1077) (#1077) — merged 
 
@@ -46,8 +48,6 @@
 
 - [docs: lead the README with the verified-execution product story (compile, replay, verify, halt)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1056) (#1056) — merged 
 
-- [build(deps): update CodeQL actions together](https://github.com/OpenAdaptAI/OpenAdapt/pull/1054) (#1054) — merged 
-
 
 
 ## openadapt-flow
@@ -66,6 +66,8 @@
 - [chore(rdp): export proof-linked buyer demo](https://github.com/OpenAdaptAI/openadapt-flow/pull/316) (#316) — merged 
 
 - [fix(qualification): bind public evidence to case authority](https://github.com/OpenAdaptAI/openadapt-flow/pull/313) (#313) — merged 
+
+- [feat: carry managed Execute authority through BYOC](https://github.com/OpenAdaptAI/openadapt-flow/pull/312) (#312) — merged 
 
 - [fix(qualification): run sealed local cases through governed authority](https://github.com/OpenAdaptAI/openadapt-flow/pull/310) (#310) — merged 
 
@@ -91,12 +93,16 @@
 
 - [feat(attended): let an operator reject a halt and end the run](https://github.com/OpenAdaptAI/openadapt-flow/pull/295) (#295) — merged 
 
-- [chore: gitignore .private/](https://github.com/OpenAdaptAI/openadapt-flow/pull/292) (#292) — merged 
-
 
 
 ## openadapt-desktop
 
+
+- [ci: bump the actions group with 3 updates](https://github.com/OpenAdaptAI/openadapt-desktop/pull/98) (#98) — merged 
+
+- [build: bump jsdom from 25.0.1 to 30.0.1](https://github.com/OpenAdaptAI/openadapt-desktop/pull/96) (#96) — merged 
+
+- [ci: deduplicate native release builds](https://github.com/OpenAdaptAI/openadapt-desktop/pull/95) (#95) — merged 
 
 - [feat: complete qualification and attended phone workflow](https://github.com/OpenAdaptAI/openadapt-desktop/pull/93) (#93) — merged 
 
@@ -131,12 +137,6 @@
 - [fix(policy): bind the resolved safety policy to dispatched runs](https://github.com/OpenAdaptAI/openadapt-desktop/pull/76) (#76) — merged 
 
 - [feat(portal): add the runner-local mobile decision portal and QR pairing](https://github.com/OpenAdaptAI/openadapt-desktop/pull/75) (#75) — merged 
-
-- [fix: attest observed qualification capabilities](https://github.com/OpenAdaptAI/openadapt-desktop/pull/74) (#74) — merged 
-
-- [fix(release): mirror the attested installer set onto the engine release](https://github.com/OpenAdaptAI/openadapt-desktop/pull/73) (#73) — merged 
-
-- [fix: make the local Desktop cockpit account-free](https://github.com/OpenAdaptAI/openadapt-desktop/pull/72) (#72) — merged 
 
 
 
@@ -236,16 +236,6 @@
 
 - [fix: bound native structural evidence](https://github.com/OpenAdaptAI/openadapt-capture/pull/48) (#48) — merged 
 
-- [fix: preserve observer setup failure at readiness timeout](https://github.com/OpenAdaptAI/openadapt-capture/pull/47) (#47) — merged 
-
-- [Capture Windows UIA evidence with native actions](https://github.com/OpenAdaptAI/openadapt-capture/pull/45) (#45) — merged 
-
-- [chore: remove generated viewer artifact](https://github.com/OpenAdaptAI/openadapt-capture/pull/44) (#44) — merged 
-
-- [fix: report FFmpeg input worker startup failure](https://github.com/OpenAdaptAI/openadapt-capture/pull/43) (#43) — merged 
-
-- [Stream capture frames directly to FFmpeg](https://github.com/OpenAdaptAI/openadapt-capture/pull/42) (#42) — merged 
-
 
 
 ## openadapt-privacy
@@ -287,10 +277,6 @@
 - [fix: close free text in human decision timestamps and pin canonicalization](https://github.com/OpenAdaptAI/openadapt-types/pull/12) (#12) — merged 
 
 - [feat: add signed human decision task contract](https://github.com/OpenAdaptAI/openadapt-types/pull/11) (#11) — merged 
-
-- [feat: add exact overlay target tracking contract](https://github.com/OpenAdaptAI/openadapt-types/pull/10) (#10) — merged 
-
-- [Add shared cross-surface control overlay contract](https://github.com/OpenAdaptAI/openadapt-types/pull/9) (#9) — merged 
 
 
 
