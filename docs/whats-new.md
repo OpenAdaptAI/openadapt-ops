@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-08-02 17:04 UTC*
+> *Last updated: 2026-08-02 20:05 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [feat(quickstart): forward --break-it to the flow tutorial](https://github.com/OpenAdaptAI/OpenAdapt/pull/1084) (#1084) — merged 
 
 - [chore(release): refresh platform manifest for openadapt-flow 1.28.0](https://github.com/OpenAdaptAI/OpenAdapt/pull/1083) (#1083) — merged 
 
@@ -46,12 +48,12 @@
 
 - [feat: add one-command local quickstart](https://github.com/OpenAdaptAI/OpenAdapt/pull/1059) (#1059) — merged 
 
-- [ci(release): reconcile platform manifest after publish](https://github.com/OpenAdaptAI/OpenAdapt/pull/1058) (#1058) — merged 
-
 
 
 ## openadapt-flow
 
+
+- [feat(tutorial): add --break-it, the caught-fault demonstration](https://github.com/OpenAdaptAI/openadapt-flow/pull/331) (#331) — merged 
 
 - [docs: align entry commands and substrate maturity across repo READMEs](https://github.com/OpenAdaptAI/openadapt-flow/pull/329) (#329) — merged 
 
@@ -91,12 +93,12 @@
 
 - [fix(docs): correct a false halt claim; pin HOW the free path reaches VERIFIED](https://github.com/OpenAdaptAI/openadapt-flow/pull/298) (#298) — merged 
 
-- [feat(decisions): run the outbound decision lane, so a halt reaches a phone](https://github.com/OpenAdaptAI/openadapt-flow/pull/297) (#297) — merged 
-
 
 
 ## openadapt-desktop
 
+
+- [fix(ci): dispatch docs notification to renamed openadapt-ops repo](https://github.com/OpenAdaptAI/openadapt-desktop/pull/100) (#100) — merged 
 
 - [docs: align entry commands and substrate maturity across repo READMEs](https://github.com/OpenAdaptAI/openadapt-desktop/pull/99) (#99) — merged 
 
@@ -135,8 +137,6 @@
 - [fix(portal): freeze the attended console and wire the decision portal to a deployment target](https://github.com/OpenAdaptAI/openadapt-desktop/pull/78) (#78) — merged 
 
 - [fix(test): read portal shell assets as UTF-8](https://github.com/OpenAdaptAI/openadapt-desktop/pull/77) (#77) — merged 
-
-- [fix(policy): bind the resolved safety policy to dispatched runs](https://github.com/OpenAdaptAI/openadapt-desktop/pull/76) (#76) — merged 
 
 
 
