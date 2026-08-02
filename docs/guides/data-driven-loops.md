@@ -10,7 +10,7 @@ demonstration, and [`replay --worklist`](../reference/cli.md#replay) drives it.
 Record and compile the task once, as you would for a single run:
 
 ```bash
-openadapt flow record --url https://your.app --out rec
+openadapt flow record --backend web --url https://your.app --out rec
 openadapt flow compile rec --out bundle --name intake
 ```
 

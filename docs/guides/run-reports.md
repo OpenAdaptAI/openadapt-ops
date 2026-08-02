@@ -29,7 +29,10 @@ For each step, the report records:
   verified against the system of record, with its verdict.
 - **Model calls**: any call to a grounding or state-verification model, so the $0
   property is observable, not assumed.
-- **Outcome**: success, or a halt naming the violated expectation.
+- **Outcome**: success, or a halt naming the violated expectation. Every
+  terminal outcome (`VERIFIED`, `COMPLETED_UNVERIFIED`, `HALTED`, `FAILED`,
+  `ROLLED_BACK`), the transaction refinement, and every typed halt reason are
+  defined in [Run outcomes and halt reasons](../reference/run-outcomes.md).
 
 ## The identity-coverage line
 

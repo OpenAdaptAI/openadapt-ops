@@ -2,7 +2,9 @@
 
 First-week failure modes, keyed by symptom → cause → fix. Other docs explain *why*
 the runtime halts ([the identity gate](../concepts/identity-gate.md)); this page is
-the operational "it halted, now what."
+the operational "it halted, now what." For the definition of every terminal
+outcome and every typed halt reason — with per-reason remediation — see
+[Run outcomes and halt reasons](../reference/run-outcomes.md).
 
 ## Capture is blank or black
 
@@ -131,7 +133,8 @@ into a clean virtualenv instead. See
 
 - Re-read the run's `REPORT.md` and `report.json`: the halt reason, the resolver
   rung, and the drift signature are recorded there. See
-  [Read and audit run reports](run-reports.md).
+  [Read and audit run reports](run-reports.md) and
+  [Run outcomes and halt reasons](../reference/run-outcomes.md).
 - Check what a bundle is missing before you deploy it with
   [`lint`](../reference/cli.md#lint) and [`certify`](../reference/cli.md#certify).
 - Ask on the [Discord](https://discord.gg/yF527cQbDG) or open an issue on

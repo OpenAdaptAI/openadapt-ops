@@ -4,7 +4,10 @@ The honest current state of OpenAdapt's security posture, written for a
 security or vendor-risk reviewer. Deeper technical detail:
 [Security and data handling](../guides/security-and-data-handling.md) and the
 reviewer-oriented
-[Security and deployment review](../guides/security-review.md). Nothing on
+[Security and deployment review](../guides/security-review.md). Companion
+pages: [Subprocessors and hosted data retention](subprocessors.md),
+[Vulnerability disclosure](vulnerability-disclosure.md), and
+[PHI handling in one page](phi-handling.md). Nothing on
 this page is a compliance determination.
 
 ## Architecture in one paragraph
@@ -49,7 +52,8 @@ append-only, hash-chained audit log.
 | SOC 2 | **Not attested.** OpenAdapt does not hold a SOC 2 report and does not claim certification. Request the current security-controls packet for implementation evidence and remaining gaps. |
 | HIPAA / BAA | No standing BAA offering. Deployments that touch PHI use a customer-controlled boundary; BAA and counsel review are engagement-specific. |
 | Penetration test | Request current status directly; do not infer from documentation. |
-| Vulnerability disclosure | Coordinated disclosure via private GitHub advisories, acknowledgment target within 5 business days (engine `SECURITY.md`). |
+| Vulnerability disclosure | Coordinated disclosure: private GitHub advisories for the open-source packages, `hello@openadapt.ai` for hosted surfaces; acknowledgment target within 5 business days. Full channel and scope: [vulnerability disclosure](vulnerability-disclosure.md). |
+| Subprocessors | Hosted surfaces only; current provider list and roles: [subprocessors and hosted data retention](subprocessors.md). Local and on-prem deployments use none at run time. |
 | Supply chain | GitHub Actions pinned by commit SHA; Dependabot; public Desktop releases ship `SHA256SUMS`, a CycloneDX SBOM, and build-provenance attestations. Windows/Linux installers are currently unsigned and macOS is ad-hoc signed; verify checksums and provenance. |
 
 If a security questionnaire needs a signed answer on any row, request the
@@ -79,6 +83,31 @@ Full detail and diagram: [deployment boundaries](deployment-boundaries.md).
 Sensitive live observations never route into the shared managed boundary; a
 recording that was sanitized for upload does not make runtime data sanitized,
 and the documentation says so explicitly rather than implying otherwise.
+
+What crosses each boundary, per shape:
+
+```mermaid
+flowchart TB
+    subgraph localb [Fully local / air-gapped on-prem]
+        LE[Engine + recorder + verifier] --> LT[Target application]
+    end
+    subgraph byocb [Customer-controlled runner / BYOC]
+        BE[Runner in customer VM or cloud account] --> BT[Target application]
+    end
+    subgraph hostedb [Hosted control plane]
+        HC[Accounts, workflow versions,<br/>run history, billing]
+    end
+    subgraph managedb [Managed browser runner]
+        MR[Public-HTTPS,<br/>non-regulated targets only]
+    end
+    localb -. "nothing at run time;<br/>signed updates on operator-pulled media" .-> hostedb
+    byocb -. "declared results, evidence permitted by the<br/>deployment data boundary, minimized control metadata;<br/>raw frames and PHI/PII stay inside" .-> hostedb
+    hostedb -. "bounded authorization<br/>and control metadata" .-> byocb
+    hostedb --- MR
+```
+
+The PHI-specific narrative — scrubbing, the operator review gate, and the
+allow-list receipt — is one page: [PHI handling](phi-handling.md).
 
 ## What we will not claim
 
