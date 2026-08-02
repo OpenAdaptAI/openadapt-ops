@@ -268,7 +268,7 @@ build-provenance attestations. These prove source and build provenance, not
 publisher identity. Windows and Linux installers remain unsigned and macOS
 installers are ad-hoc signed; Apple Developer ID/notarization and Windows
 Authenticode require the corresponding external identities. Verify the
-[release assets](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/v0.15.0)
+[release assets](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/desktop-v0.15.0)
 before overriding an operating-system publisher warning.
 
 ## Deployment options
