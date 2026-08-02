@@ -5,6 +5,8 @@
 
 ## OpenAdapt
 
+- **[v1.10.4](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.10.4)** (2026-08-02)
+  Bug Fixes
 - **[v1.10.3](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.10.3)** (2026-07-30)
   Bug Fixes
 - **[v1.10.2](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.10.2)** (2026-07-28)
@@ -13,8 +15,6 @@
   Bug Fixes
 - **[v1.10.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.10.0)** (2026-07-27)
   Bug Fixes
-- **[v1.9.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.9.0)** (2026-07-26)
-  Chores
 
 ## openadapt-flow
 
