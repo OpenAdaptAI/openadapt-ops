@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-08-02 10:37 UTC*
+> *Last updated: 2026-08-02 10:43 UTC*
 
 
 
@@ -186,6 +186,8 @@
 
 ## openadapt-evals
 
+
+- [docs(evidence): rebind published evidence to Flow 1.27.1](https://github.com/OpenAdaptAI/openadapt-evals/pull/282) (#282) — merged 
 
 - [chore: refuse false benchmark completion](https://github.com/OpenAdaptAI/openadapt-evals/pull/280) (#280) — merged 
 
