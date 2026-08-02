@@ -9,6 +9,11 @@ description: >-
 Start with one complete local result. Then choose the guide for your target
 surface. You do not need to understand the package layout first.
 
+This is the whole loop — record a demonstration once, compile it, and replay
+it deterministically:
+
+![OpenAdapt records, compiles, and replays a demonstrated workflow](../assets/showcase/demo.gif)
+
 ## First success: two commands
 
 The fastest path needs no account, target application, API key, or
@@ -20,10 +25,12 @@ openadapt quickstart
 ```
 
 The command records the bundled synthetic MockMed task, compiles its observed
-effect contract, certifies it with the shipped clinical-write policy, and runs
-it under the Standard profile. A separate read-only API confirms the saved
-record outside the screen that performed the write. The healthy run returns
-`VERIFIED` with no model or Cloud call. OpenAdapt writes all artifacts to
+[effect contract](../reference/glossary.md#effect-contract), certifies it with
+the shipped clinical-write [policy](../reference/glossary.md#policy), and runs
+it under the Standard [profile](../reference/glossary.md#profile). A separate
+read-only API confirms the saved record outside the screen that performed the
+write. The healthy run returns
+[`VERIFIED`](../reference/run-outcomes.md) with no model or Cloud call. OpenAdapt writes all artifacts to
 `openadapt-quickstart/` and refuses to overwrite that directory.
 
 You now have:
@@ -87,10 +94,15 @@ openadapt flow replay openadapt-quickstart/bundle \
   --run-dir openadapt-quickstart-halt
 ```
 
-The command returns a non-zero exit code because the expected outcome is a
-halt. Open `openadapt-quickstart-halt/REPORT.md` to see the retained evidence.
-Do not retry a possibly dispatched write. Reconcile it against an independent
-system of record first.
+!!! success "The nonzero exit is the demonstration succeeding"
+    The command exits `1` **because the expected outcome is a
+    [halt](../reference/glossary.md#halt)** — the safety boundary refusing to
+    act on a screen state the compiled program has no branch for. If you see
+    `Replay HALTED`, the fail-closed gate worked; continue below. Open
+    `openadapt-quickstart-halt/REPORT.md` to see the retained evidence. Do not
+    retry a possibly dispatched write; reconcile it against an independent
+    system of record first. Every outcome is defined in
+    [Run outcomes and halt reasons](../reference/run-outcomes.md).
 
 ## Install a different execution surface
 
@@ -142,6 +154,13 @@ openadapt flow certify bundle-prod --config deployment.yaml
 openadapt flow run bundle-prod --config deployment.yaml --dry-run
 openadapt flow run bundle-prod --config deployment.yaml
 ```
+
+!!! success "If `certify` exits nonzero here, the gate is working"
+    A failing certification exits `2` and prints each violated requirement.
+    That is the point of the gate: an unsafe bundle is refused before it can
+    ship. Close the gaps it names (see
+    [Write and enforce a policy](../guides/policy-and-certification.md)), then
+    re-run `certify` and continue.
 
 Follow [Run a deployment](../guides/run-a-deployment.md), then complete the
 [security and deployment review](../guides/security-review.md). Do not promote a

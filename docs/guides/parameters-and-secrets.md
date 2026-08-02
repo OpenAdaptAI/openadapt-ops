@@ -10,7 +10,7 @@ Mark a typed field as a parameter at record time. Its demonstrated value becomes
 the default, overridable at replay:
 
 ```bash
-openadapt flow record --url https://your.app --out rec --param note
+openadapt flow record --backend web --url https://your.app --out rec --param note
 openadapt flow compile rec --out bundle --name my-task
 openadapt flow replay  bundle --url https://your.app --param note="Follow-up in 2 weeks"
 ```
@@ -48,7 +48,7 @@ log, the compiled bundle, or the saved frames (its on-screen region is redacted)
 At replay it is injected from the environment, and a missing one fails fast.
 
 ```bash
-openadapt flow record --url https://your.app --out rec --secret password
+openadapt flow record --backend web --url https://your.app --out rec --secret password
 export OPENADAPT_FLOW_SECRET_PASSWORD='...'          # supplied at replay time
 openadapt flow replay  bundle --url https://your.app
 ```

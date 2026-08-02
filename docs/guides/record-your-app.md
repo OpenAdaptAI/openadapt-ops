@@ -8,12 +8,12 @@ target flags in place of `--url`.
 
 ## Record
 
-On the web substrate, `record --url` opens a headed browser on your app and
+On the web substrate, `record --backend web --url` opens a headed browser on your app and
 watches what you do: clicks, typing, key presses, and scrolls. It writes the same
 recording format `compile` consumes.
 
 ```bash
-openadapt flow record --url https://your.app --out rec
+openadapt flow record --backend web --url https://your.app --out rec
 ```
 
 Perform the workflow the way you want it replayed, then press ++ctrl+c++ or close

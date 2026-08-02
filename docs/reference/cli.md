@@ -103,7 +103,7 @@ Citrix through their exact target flags. The example below records the web
 substrate.
 
 ```bash
-openadapt flow record --url https://your.app --out rec
+openadapt flow record --backend web --url https://your.app --out rec
 ```
 
 | Flag | Description |
@@ -239,7 +239,9 @@ default off, so an unconfigured replay behaves exactly as before):
 | `--durable` | Enable the Tier-3 [durable runtime](../concepts/durable-runtime.md): checkpoint each verified step, durably pause on halt, resumable via `resume` |
 | `--allow-model-grounding` | **Model-egress opt-in** (PHI audit REM-3): permit wiring an off-box model grounder / identity-VLM / state-verifier; screenshots may leave the box. Off by default: replay makes no model-service calls; target and effect-verifier traffic stays deployment-defined. |
 
-Exits 0 on success, 1 on a halt. With no model component wired, replay makes no
+Exits 0 on success, 1 on a halt (every terminal outcome and halt reason is
+defined in [Run outcomes and halt reasons](run-outcomes.md)). With no model
+component wired, replay makes no
 model-service calls; target and effect-verifier traffic follows the deployment
 config. The on-prem VLM appliance engages only when `--allow-model-grounding` is
 passed **and** [`OPENADAPT_FLOW_VLM_URL`](configuration.md) is set.
@@ -389,7 +391,9 @@ openadapt flow certify bundle --config deployment.yaml
 | `--config YAML` | [Deployment config](deployment-config.md) to read the policy from when `--policy` is omitted, so one file both certifies and runs the bundle |
 
 Provide `--policy` or a `--config` that sets `policy.policy`; certify errors if
-neither supplies a policy. Exits 2 when the bundle fails certification.
+neither supplies a policy. Exits 2 when the bundle fails certification — the
+gate refusing an unsafe bundle, not an error in your setup
+([exit codes](run-outcomes.md#cli-exit-codes)).
 
 ## seal
 

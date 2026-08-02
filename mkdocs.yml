@@ -143,6 +143,7 @@ nav:
   - Operate:
     - Run a deployment: guides/run-a-deployment.md
     - Read and audit run reports: guides/run-reports.md
+    - Run outcomes and halt reasons: reference/run-outcomes.md
     - Workflow catalog and halt map: guides/workflow-catalog.md
     - Attend a paused run and teach a correction: concepts/halt-learn-loop.md
     - Governed self-healing: concepts/self-healing.md
@@ -159,6 +160,8 @@ nav:
     - Fail-closed regulated execution: concepts/regulated-execution.md
     - Settings and policy governance: concepts/settings-governance.md
     - Security and data handling: guides/security-and-data-handling.md
+    - PHI handling in one page: commercial/phi-handling.md
+    - Vulnerability disclosure: commercial/vulnerability-disclosure.md
   - Commercial:
     - commercial/index.md
     - Qualification Sprint: commercial/qualification-sprint.md
@@ -166,6 +169,7 @@ nav:
     - Qualification report outline: commercial/qualification-report-outline.md
     - Acceptance matrix template: commercial/acceptance-matrix.md
     - Security packet: commercial/security-packet.md
+    - Subprocessors and data retention: commercial/subprocessors.md
     - Deployment boundaries: commercial/deployment-boundaries.md
     - External Citrix zero-install brief: commercial/citrix-external-brief.md
     - OpenAdapt Execute private-pilot guide: commercial/oem-brief.md

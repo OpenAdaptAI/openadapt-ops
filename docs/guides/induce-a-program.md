@@ -13,9 +13,9 @@ Record the task a few times, varying the values you intend to be parameters (a
 different note, a different record) and keeping the intended path the same:
 
 ```bash
-openadapt flow record --url https://your.app --out rec-1
-openadapt flow record --url https://your.app --out rec-2
-openadapt flow record --url https://your.app --out rec-3
+openadapt flow record --backend web --url https://your.app --out rec-1
+openadapt flow record --backend web --url https://your.app --out rec-2
+openadapt flow record --backend web --url https://your.app --out rec-3
 ```
 
 ## Induce
