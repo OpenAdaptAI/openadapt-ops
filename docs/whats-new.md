@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-08-02 10:43 UTC*
+> *Last updated: 2026-08-02 14:21 UTC*
 
 
 
@@ -53,6 +53,8 @@
 ## openadapt-flow
 
 
+- [fix: deliver consequential remote clicks through the frame lease](https://github.com/OpenAdaptAI/openadapt-flow/pull/328) (#328) — merged 
+
 - [fix: simplify the RDP buyer story](https://github.com/OpenAdaptAI/openadapt-flow/pull/326) (#326) — merged 
 
 - [fix: clarify the RDP proof presentation](https://github.com/OpenAdaptAI/openadapt-flow/pull/324) (#324) — merged 
@@ -90,8 +92,6 @@
 - [feat(decisions): run the outbound decision lane, so a halt reaches a phone](https://github.com/OpenAdaptAI/openadapt-flow/pull/297) (#297) — merged 
 
 - [feat(decisions): deliver halts to a phone without customer TLS ingress](https://github.com/OpenAdaptAI/openadapt-flow/pull/296) (#296) — merged 
-
-- [feat(attended): let an operator reject a halt and end the run](https://github.com/OpenAdaptAI/openadapt-flow/pull/295) (#295) — merged 
 
 
 
@@ -186,6 +186,8 @@
 
 ## openadapt-evals
 
+
+- [docs(evidence): rebind published evidence to Flow 1.28.0](https://github.com/OpenAdaptAI/openadapt-evals/pull/283) (#283) — merged 
 
 - [docs(evidence): rebind published evidence to Flow 1.27.1](https://github.com/OpenAdaptAI/openadapt-evals/pull/282) (#282) — merged 
 
