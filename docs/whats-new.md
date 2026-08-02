@@ -1,12 +1,16 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-08-02 14:21 UTC*
+> *Last updated: 2026-08-02 17:04 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [chore(release): refresh platform manifest for openadapt-flow 1.28.0](https://github.com/OpenAdaptAI/OpenAdapt/pull/1083) (#1083) — merged 
+
+- [docs: align entry commands and substrate maturity across repo READMEs](https://github.com/OpenAdaptAI/OpenAdapt/pull/1082) (#1082) — merged 
 
 - [fix: refresh desktop platform manifest](https://github.com/OpenAdaptAI/OpenAdapt/pull/1081) (#1081) — merged 
 
@@ -44,14 +48,12 @@
 
 - [ci(release): reconcile platform manifest after publish](https://github.com/OpenAdaptAI/OpenAdapt/pull/1058) (#1058) — merged 
 
-- [feat: platform release manifest v1 + open-core licensing boundary (Sections 13 + 22)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1057) (#1057) — merged 
-
-- [docs: lead the README with the verified-execution product story (compile, replay, verify, halt)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1056) (#1056) — merged 
-
 
 
 ## openadapt-flow
 
+
+- [docs: align entry commands and substrate maturity across repo READMEs](https://github.com/OpenAdaptAI/openadapt-flow/pull/329) (#329) — merged 
 
 - [fix: deliver consequential remote clicks through the frame lease](https://github.com/OpenAdaptAI/openadapt-flow/pull/328) (#328) — merged 
 
@@ -91,12 +93,12 @@
 
 - [feat(decisions): run the outbound decision lane, so a halt reaches a phone](https://github.com/OpenAdaptAI/openadapt-flow/pull/297) (#297) — merged 
 
-- [feat(decisions): deliver halts to a phone without customer TLS ingress](https://github.com/OpenAdaptAI/openadapt-flow/pull/296) (#296) — merged 
-
 
 
 ## openadapt-desktop
 
+
+- [docs: align entry commands and substrate maturity across repo READMEs](https://github.com/OpenAdaptAI/openadapt-desktop/pull/99) (#99) — merged 
 
 - [ci: bump the actions group with 3 updates](https://github.com/OpenAdaptAI/openadapt-desktop/pull/98) (#98) — merged 
 
@@ -135,8 +137,6 @@
 - [fix(test): read portal shell assets as UTF-8](https://github.com/OpenAdaptAI/openadapt-desktop/pull/77) (#77) — merged 
 
 - [fix(policy): bind the resolved safety policy to dispatched runs](https://github.com/OpenAdaptAI/openadapt-desktop/pull/76) (#76) — merged 
-
-- [feat(portal): add the runner-local mobile decision portal and QR pairing](https://github.com/OpenAdaptAI/openadapt-desktop/pull/75) (#75) — merged 
 
 
 
@@ -214,6 +214,8 @@
 ## openadapt-capture
 
 
+- [docs: align entry commands and substrate maturity across repo READMEs](https://github.com/OpenAdaptAI/openadapt-capture/pull/66) (#66) — merged 
+
 - [chore: refuse invented capture input and geometry](https://github.com/OpenAdaptAI/openadapt-capture/pull/64) (#64) — merged 
 
 - [chore(release): enforce the source-policy boundary](https://github.com/OpenAdaptAI/openadapt-capture/pull/63) (#63) — merged 
@@ -259,6 +261,8 @@
 
 ## openadapt-types
 
+
+- [docs: align entry commands and substrate maturity across repo READMEs](https://github.com/OpenAdaptAI/openadapt-types/pull/24) (#24) — merged 
 
 - [feat: add Execute reference clients](https://github.com/OpenAdaptAI/openadapt-types/pull/23) (#23) — merged 
 
