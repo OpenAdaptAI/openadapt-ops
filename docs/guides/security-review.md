@@ -178,9 +178,11 @@ execution](hosted.md) and [Qualification evidence](../get-started/what-works-tod
 ## Release and secure-development evidence
 
 Python releases publish immutable wheel and sdist artifacts with PyPI
-provenance attestations. Desktop `desktop-v0.15.0` publishes its complete
-Windows, macOS, and Linux installer set with checksums, a CycloneDX SBOM,
-per-platform metadata, and GitHub build-provenance attestations. The native
+provenance attestations. The current Desktop native installer release is
+`desktop-v0.14.0`. It publishes the Windows, macOS, and Linux installer set
+with checksums, a CycloneDX SBOM, per-platform metadata, and GitHub
+build-provenance attestations. Desktop 0.15.0 is available as Python packages.
+The native
 installers are still unsigned on Windows/Linux and ad-hoc signed on macOS;
 Apple Developer ID/notarization and Windows Authenticode are distinct
 credential-dependent gates.
