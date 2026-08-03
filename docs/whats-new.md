@@ -1,12 +1,16 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-08-02 20:05 UTC*
+> *Last updated: 2026-08-03 12:28 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [chore(deps): bump vulnerable locked versions in uv.lock](https://github.com/OpenAdaptAI/OpenAdapt/pull/1086) (#1086) — merged 
+
+- [chore(deps): remove dead legacy dependency manifests](https://github.com/OpenAdaptAI/OpenAdapt/pull/1085) (#1085) — merged 
 
 - [feat(quickstart): forward --break-it to the flow tutorial](https://github.com/OpenAdaptAI/OpenAdapt/pull/1084) (#1084) — merged 
 
@@ -44,16 +48,16 @@
 
 - [ci: reduce launcher PR matrix cost](https://github.com/OpenAdaptAI/OpenAdapt/pull/1061) (#1061) — merged 
 
-- [feat: add explicit browser install capability](https://github.com/OpenAdaptAI/OpenAdapt/pull/1060) (#1060) — merged 
-
-- [feat: add one-command local quickstart](https://github.com/OpenAdaptAI/OpenAdapt/pull/1059) (#1059) — merged 
-
 
 
 ## openadapt-flow
 
 
+- [fix(ci): bound the identity-ladder harness so the fast lane cannot time out](https://github.com/OpenAdaptAI/openadapt-flow/pull/333) (#333) — merged 
+
 - [feat(tutorial): add --break-it, the caught-fault demonstration](https://github.com/OpenAdaptAI/openadapt-flow/pull/331) (#331) — merged 
+
+- [docs: measured decomposition plan for runtime/replayer.py](https://github.com/OpenAdaptAI/openadapt-flow/pull/330) (#330) — merged 
 
 - [docs: align entry commands and substrate maturity across repo READMEs](https://github.com/OpenAdaptAI/openadapt-flow/pull/329) (#329) — merged 
 
@@ -88,10 +92,6 @@
 - [fix(benchmark): check the MockMed encounter type as its own field](https://github.com/OpenAdaptAI/openadapt-flow/pull/302) (#302) — merged 
 
 - [chore(release): derive the private-artifact rules from the policy manifest](https://github.com/OpenAdaptAI/openadapt-flow/pull/300) (#300) — merged 
-
-- [fix(rdp): revalidate focused selects from context](https://github.com/OpenAdaptAI/openadapt-flow/pull/299) (#299) — merged 
-
-- [fix(docs): correct a false halt claim; pin HOW the free path reaches VERIFIED](https://github.com/OpenAdaptAI/openadapt-flow/pull/298) (#298) — merged 
 
 
 
@@ -237,10 +237,6 @@
 - [fix(audio): make narration capture on-device only and fail closed](https://github.com/OpenAdaptAI/openadapt-capture/pull/51) (#51) — merged 
 
 - [ci: move native capture integration to exact main](https://github.com/OpenAdaptAI/openadapt-capture/pull/50) (#50) — merged 
-
-- [feat: preserve keyboard shortcuts as typed capture events](https://github.com/OpenAdaptAI/openadapt-capture/pull/49) (#49) — merged 
-
-- [fix: bound native structural evidence](https://github.com/OpenAdaptAI/openadapt-capture/pull/48) (#48) — merged 
 
 
 
