@@ -58,6 +58,16 @@ class BlobMatch:
 
 
 @dataclass
+class PathMatch:
+    """One pattern hit inside a tracked file path."""
+
+    sha: str
+    subject: str
+    path: str
+    pattern: str
+
+
+@dataclass
 class Plan:
     """Full impact report produced by :func:`build_plan`."""
 
@@ -69,6 +79,7 @@ class Plan:
     forks: int
     replacement: str
     blob_matches: List[BlobMatch] = field(default_factory=list)
+    path_matches: List[PathMatch] = field(default_factory=list)
 
 
 # ===================================================================
@@ -285,6 +296,60 @@ def scan_file_history(
     return history_matches
 
 
+def scan_file_paths(
+    patterns: List[Pattern],
+    cwd: Optional[str] = None,
+) -> List[PathMatch]:
+    """Scan tracked file paths across all local refs for *patterns*.
+
+    A confidential name can survive a content scrub when it appears only in a
+    removed or renamed path. Commit-message and blob scans cannot detect that
+    case, so path scanning is a separate history boundary.
+    """
+    marker = "@@TIDY_COMMIT@@"
+    result = run_git(
+        "log",
+        "--all",
+        f"--format={marker}%H%x09%s",
+        "--name-only",
+        cwd=cwd,
+        check=True,
+    )
+
+    matches: List[PathMatch] = []
+    seen: set[Tuple[str, str, str]] = set()
+    sha = ""
+    subject = ""
+
+    for raw_line in result.stdout.splitlines():
+        if raw_line.startswith(marker):
+            header = raw_line[len(marker):]
+            sha, _, subject = header.partition("\t")
+            continue
+        path = raw_line.strip()
+        if not sha or not path:
+            continue
+        for pattern in patterns:
+            haystack = path if pattern.case_sensitive else path.lower()
+            needle = pattern.text if pattern.case_sensitive else pattern.text.lower()
+            if needle not in haystack:
+                continue
+            key = (sha, path, pattern.text)
+            if key in seen:
+                continue
+            seen.add(key)
+            matches.append(
+                PathMatch(
+                    sha=sha,
+                    subject=subject,
+                    path=path,
+                    pattern=pattern.text,
+                )
+            )
+
+    return matches
+
+
 # ===================================================================
 # Planning
 # ===================================================================
@@ -294,6 +359,7 @@ def build_plan(
     matches: List[Match],
     replacement: str,
     blob_matches: Optional[List[BlobMatch]] = None,
+    path_matches: Optional[List[PathMatch]] = None,
     cwd: Optional[str] = None,
 ) -> Plan:
     """Compute the full impact report for the matched patterns.
@@ -302,9 +368,13 @@ def build_plan(
     """
     if blob_matches is None:
         blob_matches = []
+    if path_matches is None:
+        path_matches = []
 
     # Unique affected SHAs
-    affected_shas = sorted(set(m.sha for m in matches))
+    affected_shas = sorted(
+        {m.sha for m in matches} | {m.sha for m in path_matches}
+    )
     affected_commits = len(affected_shas)
 
     # Downstream commits — commits that descend from any affected commit
@@ -360,6 +430,7 @@ def build_plan(
         forks=forks,
         replacement=replacement,
         blob_matches=blob_matches,
+        path_matches=path_matches,
     )
 
 
@@ -434,6 +505,28 @@ def _build_blob_callback(patterns: List[Pattern], replacement: str) -> str:
     return "\n".join(lines)
 
 
+def _build_filename_callback(patterns: List[Pattern], replacement: str) -> str:
+    """Generate code for ``git filter-repo --filename-callback``.
+
+    The callback receives and returns byte strings. Patterns are literal even
+    when they contain regular-expression metacharacters.
+    """
+    lines: List[str] = []
+    lines.append("import re")
+    lines.append(f"replacement = {replacement!r}.encode('utf-8')")
+    lines.append("new_filename = filename")
+
+    for pattern in patterns:
+        flags = _re_flags_for_pattern(pattern)
+        literal = re.escape(pattern.text)
+        lines.append(
+            f"new_filename = re.sub({literal!r}.encode('utf-8'), replacement, new_filename, flags={flags})"
+        )
+
+    lines.append("return new_filename")
+    return "\n".join(lines)
+
+
 # ===================================================================
 # Subcommands
 # ===================================================================
@@ -460,6 +553,8 @@ def cmd_scan(args) -> None:
 
     # Scan file contents
     blob_matches = scan_file_contents(patterns, cwd=cwd)
+    history_matches = scan_file_history(patterns, cwd=cwd)
+    path_matches = scan_file_paths(patterns, cwd=cwd)
 
     output_json = getattr(args, "json", False)
 
@@ -484,12 +579,29 @@ def cmd_scan(args) -> None:
                 }
                 for b in blob_matches
             ],
+            "history_matches": [
+                {
+                    "sha": m.sha,
+                    "subject": m.subject,
+                    "pattern": m.pattern,
+                }
+                for m in history_matches
+            ],
+            "path_matches": [
+                {
+                    "sha": m.sha,
+                    "subject": m.subject,
+                    "path": m.path,
+                    "pattern": m.pattern,
+                }
+                for m in path_matches
+            ],
         }
         print(json.dumps(result, indent=2))
         return
 
     # Text output
-    if not commit_matches and not blob_matches:
+    if not commit_matches and not blob_matches and not history_matches and not path_matches:
         log("No matches found", level="OK")
         return
 
@@ -515,13 +627,29 @@ def cmd_scan(args) -> None:
                 print(f"\n  {b.path}")
             print(f"    L{b.line_number}: [{b.pattern}] {b.line.strip()}")
 
+    if history_matches:
+        print(f"\n{'='*60}")
+        print(f"FILE HISTORY MATCHES ({len(history_matches)})")
+        print(f"{'='*60}")
+        for m in history_matches:
+            print(f"  {_short_sha(m.sha)}  [{m.pattern}] {m.subject}")
+
+    if path_matches:
+        print(f"\n{'='*60}")
+        print(f"FILE PATH MATCHES ({len(path_matches)})")
+        print(f"{'='*60}")
+        for m in path_matches:
+            print(f"  {_short_sha(m.sha)}  [{m.pattern}] {m.path}")
+
     # Summary
     unique_commits = len(set(m.sha for m in commit_matches))
     unique_files = len(set(b.path for b in blob_matches))
     print(f"\n{'='*60}")
     print(f"SUMMARY: {len(commit_matches)} commit-message hit(s) in "
           f"{unique_commits} commit(s), "
-          f"{len(blob_matches)} file-content hit(s) in {unique_files} file(s)")
+          f"{len(blob_matches)} current file-content hit(s) in {unique_files} file(s), "
+          f"{len(history_matches)} historical file-content hit(s), and "
+          f"{len(path_matches)} file-path hit(s)")
     print(f"{'='*60}\n")
 
 
@@ -543,13 +671,21 @@ def cmd_plan(args) -> None:
     log(f"Scanning with {len(patterns)} pattern(s) ...")
     commit_matches = scan_commit_messages(patterns, cwd=cwd)
     blob_matches = scan_file_contents(patterns, cwd=cwd)
+    history_matches = scan_file_history(patterns, cwd=cwd)
+    path_matches = scan_file_paths(patterns, cwd=cwd)
 
-    if not commit_matches and not blob_matches:
+    if not commit_matches and not blob_matches and not history_matches and not path_matches:
         log("No matches found — nothing to plan", level="OK")
         return
 
     log("Building impact plan ...")
-    plan = build_plan(commit_matches, replacement, blob_matches=blob_matches, cwd=cwd)
+    plan = build_plan(
+        commit_matches + history_matches,
+        replacement,
+        blob_matches=blob_matches,
+        path_matches=path_matches,
+        cwd=cwd,
+    )
 
     # Print the plan
     print(f"\n{'='*60}")
@@ -568,6 +704,8 @@ def cmd_plan(args) -> None:
             print(f"    - {branch}")
     print(f"  Known forks      : {plan.forks}")
     print(f"  File-content hits: {len(plan.blob_matches)}")
+    print(f"  Historical hits  : {len(history_matches)}")
+    print(f"  File-path hits   : {len(plan.path_matches)}")
 
     # Before/after preview
     if commit_matches:
@@ -616,6 +754,19 @@ def cmd_plan(args) -> None:
         if remaining_blobs > 0:
             print(f"\n  ... and {remaining_blobs} more file hit(s)")
 
+    if path_matches:
+        print(f"\n  {'─'*50}")
+        print("  BEFORE / AFTER PREVIEW (file paths)")
+        print(f"  {'─'*50}")
+        for match in path_matches[:10]:
+            after = match.path
+            for pat in patterns:
+                flags = 0 if pat.case_sensitive else re.IGNORECASE
+                after = re.sub(re.escape(pat.text), replacement, after, flags=flags)
+            print(f"\n  {_short_sha(match.sha)}")
+            print(f"    BEFORE: {match.path}")
+            print(f"    AFTER : {after}")
+
     print(f"\n{'='*60}\n")
 
 
@@ -652,16 +803,24 @@ def cmd_clean(args) -> None:
     commit_matches = scan_commit_messages(patterns, cwd=cwd)
     blob_matches = scan_file_contents(patterns, cwd=cwd)
     history_matches = scan_file_history(patterns, cwd=cwd)
+    path_matches = scan_file_paths(patterns, cwd=cwd)
 
-    if not commit_matches and not blob_matches and not history_matches:
+    if not commit_matches and not blob_matches and not history_matches and not path_matches:
         log("No matches found — nothing to clean", level="OK")
         return
 
     log(f"Found {len(commit_matches)} commit-message hit(s), "
         f"{len(blob_matches)} file-content hit(s), and "
-        f"{len(history_matches)} file-history hit(s)")
+        f"{len(history_matches)} file-history hit(s), and "
+        f"{len(path_matches)} file-path hit(s)")
 
-    plan = build_plan(commit_matches, replacement, blob_matches=blob_matches, cwd=cwd)
+    plan = build_plan(
+        commit_matches + history_matches,
+        replacement,
+        blob_matches=blob_matches,
+        path_matches=path_matches,
+        cwd=cwd,
+    )
 
     # ── Step 1: Backup ──────────────────────────────────────────────
     log("Step 1/7: Creating backup bundle ...")
@@ -694,6 +853,7 @@ def cmd_clean(args) -> None:
     # Write callbacks to temp files
     msg_cb = _build_message_callback(patterns, replacement)
     blob_cb = _build_blob_callback(patterns, replacement)
+    filename_cb = _build_filename_callback(patterns, replacement)
 
     msg_cb_path = os.path.join(work_dir, "message_callback.py")
     blob_cb_path = os.path.join(work_dir, "blob_callback.py")
@@ -710,6 +870,8 @@ def cmd_clean(args) -> None:
         msg_cb,
         "--blob-callback",
         blob_cb,
+        "--filename-callback",
+        filename_cb,
         "--force",
     ]
 
@@ -732,9 +894,9 @@ def cmd_clean(args) -> None:
                 if not line or line.startswith("old"):
                     continue
                 parts = line.split()
-                if len(parts) >= 2:
+                if len(parts) >= 2 and parts[0] != parts[1] and set(parts[1]) != {"0"}:
                     commit_map[parts[0]] = parts[1]
-        log(f"Read {len(commit_map)} commit mapping(s)", level="OK")
+        log(f"Read {len(commit_map)} changed commit mapping(s)", level="OK")
     else:
         log("No commit-map found (filter-repo may not have rewritten any commits)", level="WARN")
 
@@ -772,6 +934,7 @@ def cmd_clean(args) -> None:
         except Exception as e:
             log(f"Could not disable protection on '{branch}': {e}", level="WARN")
 
+    push_failed = False
     try:
         # Force push all branches
         push_result = run_git(
@@ -781,6 +944,7 @@ def cmd_clean(args) -> None:
         )
         if push_result.returncode != 0:
             log(f"Force push (branches) failed:\n{push_result.stderr}", level="ERROR")
+            push_failed = True
         else:
             log("Branches force-pushed", level="OK")
 
@@ -792,6 +956,7 @@ def cmd_clean(args) -> None:
         )
         if tag_result.returncode != 0:
             log(f"Force push (tags) failed:\n{tag_result.stderr}", level="ERROR")
+            push_failed = True
         else:
             log("Tags force-pushed", level="OK")
     finally:
@@ -801,6 +966,13 @@ def cmd_clean(args) -> None:
                 restore_branch_protection(repo, prot)
             except Exception as e:
                 log(f"Could not restore protection on '{prot.branch}': {e}", level="ERROR")
+
+    if push_failed:
+        log(
+            f"Remote update failed. The rewritten mirror remains at {work_clone}",
+            level="ERROR",
+        )
+        sys.exit(1)
 
     # ── Step 7: Print old SHAs ──────────────────────────────────────
     log("Step 7/7: Summary ...")
@@ -845,6 +1017,8 @@ def cmd_verify(args) -> None:
     log("Verifying local repository ...")
     commit_matches = scan_commit_messages(patterns, cwd=cwd)
     blob_matches = scan_file_contents(patterns, cwd=cwd)
+    history_matches = scan_file_history(patterns, cwd=cwd)
+    path_matches = scan_file_paths(patterns, cwd=cwd)
 
     if commit_matches:
         log(
@@ -869,6 +1043,26 @@ def cmd_verify(args) -> None:
             print(f"  ... and {len(blob_matches) - 5} more")
     else:
         log("Local file contents: clean", level="OK")
+
+    if history_matches:
+        log(
+            f"FAIL: {len(history_matches)} historical file-content match(es) still present locally",
+            level="ERROR",
+        )
+        for m in history_matches[:5]:
+            print(f"  {_short_sha(m.sha)}: [{m.pattern}] {m.subject}")
+    else:
+        log("Local historical file contents: clean", level="OK")
+
+    if path_matches:
+        log(
+            f"FAIL: {len(path_matches)} historical file-path match(es) still present locally",
+            level="ERROR",
+        )
+        for m in path_matches[:5]:
+            print(f"  {_short_sha(m.sha)}: [{m.pattern}] {m.path}")
+    else:
+        log("Local file paths: clean", level="OK")
 
     # Remote verification via GitHub API
     if getattr(args, "remote", False):
@@ -913,7 +1107,7 @@ def cmd_verify(args) -> None:
               f"{total_failures} failure(s)")
 
     # Final summary
-    local_clean = not commit_matches and not blob_matches
+    local_clean = not commit_matches and not blob_matches and not history_matches and not path_matches
     if local_clean:
         log("Verification PASSED", level="OK")
     else:
@@ -1066,6 +1260,7 @@ def cmd_scan_org(args) -> None:
     total_commit_hits = 0
     total_blob_hits = 0
     total_history_hits = 0
+    total_path_hits = 0
     affected_repos: List[str] = []
 
     for name, clone_url in repos:
@@ -1076,8 +1271,9 @@ def cmd_scan_org(args) -> None:
         commit_matches = scan_commit_messages(patterns, cwd=repo_path)
         blob_matches = scan_file_contents(patterns, cwd=repo_path)
         history_matches = scan_file_history(patterns, cwd=repo_path)
+        path_matches = scan_file_paths(patterns, cwd=repo_path)
 
-        n_hits = len(commit_matches) + len(blob_matches) + len(history_matches)
+        n_hits = len(commit_matches) + len(blob_matches) + len(history_matches) + len(path_matches)
 
         if not output_json:
             # Always print repo header so output is unambiguous
@@ -1085,11 +1281,12 @@ def cmd_scan_org(args) -> None:
             print(f"  {name}  {'(' + str(n_hits) + ' matches)' if n_hits else '(clean)'}")
             print(f"{'='*60}")
 
-        if commit_matches or blob_matches or history_matches:
+        if commit_matches or blob_matches or history_matches or path_matches:
             affected_repos.append(name)
             total_commit_hits += len(commit_matches)
             total_blob_hits += len(blob_matches)
             total_history_hits += len(history_matches)
+            total_path_hits += len(path_matches)
 
             if output_json:
                 all_results[name] = {
@@ -1107,6 +1304,11 @@ def cmd_scan_org(args) -> None:
                         {"sha": m.sha, "subject": m.subject,
                          "pattern": m.pattern}
                         for m in history_matches
+                    ],
+                    "path_matches": [
+                        {"sha": m.sha, "subject": m.subject,
+                         "path": m.path, "pattern": m.pattern}
+                        for m in path_matches
                     ],
                 }
             else:
@@ -1129,6 +1331,10 @@ def cmd_scan_org(args) -> None:
                             seen_shas_h.add(m.sha)
                             print(f"  HISTORY {_short_sha(m.sha)}  {m.subject}")
 
+                if path_matches:
+                    for m in path_matches:
+                        print(f"  PATH {_short_sha(m.sha)}  [{m.pattern}] {m.path}")
+
     if output_json:
         print(json.dumps(all_results, indent=2))
     else:
@@ -1140,6 +1346,7 @@ def cmd_scan_org(args) -> None:
         print(f"  Total commit-message hits : {total_commit_hits}")
         print(f"  Total file-content hits   : {total_blob_hits}")
         print(f"  Total file-history hits   : {total_history_hits}")
+        print(f"  Total file-path hits      : {total_path_hits}")
         print(f"{'='*60}\n")
 
 
@@ -1179,7 +1386,9 @@ def cmd_clean_org(args) -> None:
 
     log(f"Found {len(repos)} repo(s) — scanning for matches ...")
 
-    affected: List[Tuple[str, str, List[Match], List[BlobMatch]]] = []
+    affected: List[
+        Tuple[str, str, List[Match], List[BlobMatch], List[Match], List[PathMatch]]
+    ] = []
 
     for name, clone_url in repos:
         repo_path = _ensure_repo_cloned(name, clone_url, base_dir)
@@ -1189,11 +1398,14 @@ def cmd_clean_org(args) -> None:
         commit_matches = scan_commit_messages(patterns, cwd=repo_path)
         blob_matches = scan_file_contents(patterns, cwd=repo_path)
         history_matches = scan_file_history(patterns, cwd=repo_path)
+        path_matches = scan_file_paths(patterns, cwd=repo_path)
 
-        if commit_matches or blob_matches or history_matches:
-            affected.append((name, repo_path, commit_matches, blob_matches))
+        if commit_matches or blob_matches or history_matches or path_matches:
+            affected.append(
+                (name, repo_path, commit_matches, blob_matches, history_matches, path_matches)
+            )
             log(f"{name}: {len(commit_matches)} commit + {len(blob_matches)} file + "
-                f"{len(history_matches)} history hit(s)")
+                f"{len(history_matches)} history + {len(path_matches)} path hit(s)")
         else:
             log(f"{name}: clean", level="OK")
 
@@ -1204,8 +1416,11 @@ def cmd_clean_org(args) -> None:
     # Summary before proceeding
     print(f"\n{'='*60}")
     print(f"REPOS TO CLEAN ({len(affected)}):")
-    for name, _, cm, bm in affected:
-        print(f"  {name}: {len(cm)} commit-message + {len(bm)} file-content hit(s)")
+    for name, _, cm, bm, hm, pm in affected:
+        print(
+            f"  {name}: {len(cm)} commit-message + {len(bm)} file-content + "
+            f"{len(hm)} file-history + {len(pm)} file-path hit(s)"
+        )
     print(f"{'='*60}\n")
 
     if not auto_yes:
@@ -1216,7 +1431,7 @@ def cmd_clean_org(args) -> None:
     # Clean each affected repo
     cleaned = 0
     failed = 0
-    for name, repo_path, _, _ in affected:
+    for name, repo_path, _, _, _, _ in affected:
         log(f"\n--- Cleaning {name} ---")
 
         try:
@@ -1230,12 +1445,20 @@ def cmd_clean_org(args) -> None:
         # Re-scan (in case state changed)
         cm = scan_commit_messages(patterns, cwd=repo_path)
         bm = scan_file_contents(patterns, cwd=repo_path)
+        hm = scan_file_history(patterns, cwd=repo_path)
+        pm = scan_file_paths(patterns, cwd=repo_path)
 
-        if not cm and not bm:
+        if not cm and not bm and not hm and not pm:
             log(f"{name}: no matches on re-scan — skipping", level="OK")
             continue
 
-        plan = build_plan(cm, replacement, blob_matches=bm, cwd=repo_path)
+        plan = build_plan(
+            cm + hm,
+            replacement,
+            blob_matches=bm,
+            path_matches=pm,
+            cwd=repo_path,
+        )
 
         # Backup
         backup_path = os.path.join(repo_path, f".git-backup-{os.getpid()}.bundle")
@@ -1257,11 +1480,13 @@ def cmd_clean_org(args) -> None:
 
         msg_cb = _build_message_callback(patterns, replacement)
         blob_cb = _build_blob_callback(patterns, replacement)
+        filename_cb = _build_filename_callback(patterns, replacement)
 
         filter_cmd = [
             "git", "filter-repo",
             "--message-callback", msg_cb,
             "--blob-callback", blob_cb,
+            "--filename-callback", filename_cb,
             "--force",
         ]
         result = run_cmd(filter_cmd, cwd=work_clone, check=False)
