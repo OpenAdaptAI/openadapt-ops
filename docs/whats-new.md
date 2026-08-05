@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-08-05 23:03 UTC*
+> *Last updated: 2026-08-05 23:51 UTC*
 
 
 
@@ -76,6 +76,8 @@
 ## openadapt-desktop
 
 
+- [fix: update vulnerable Python dependencies](https://github.com/OpenAdaptAI/openadapt-desktop/pull/103) (#103) — merged 
+
 - [fix(ci): dispatch docs notification to renamed openadapt-ops repo](https://github.com/OpenAdaptAI/openadapt-desktop/pull/100) (#100) — merged 
 
 - [docs: align entry commands and substrate maturity across repo READMEs](https://github.com/OpenAdaptAI/openadapt-desktop/pull/99) (#99) — merged 
@@ -92,6 +94,8 @@
 
 ## openadapt-evals
 
+
+- [ci: bind current evidence inputs](https://github.com/OpenAdaptAI/openadapt-evals/pull/285) (#285) — merged 
 
 - [docs(evidence): rebind published evidence to Flow 1.28.0](https://github.com/OpenAdaptAI/openadapt-evals/pull/283) (#283) — merged 
 
