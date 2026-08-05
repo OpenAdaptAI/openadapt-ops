@@ -9,6 +9,22 @@ when that person teaches the fix**, which is the halt-learn loop proper.
 Both halves refuse rather than guess. Neither hands control to a free-form
 agent, and neither puts a model call on the runtime path.
 
+## Terms used here
+
+- **BYOC** means bring your own cloud: a customer-owned cloud runner and
+  storage boundary. It is one form of customer-controlled execution.
+- An **effect verifier** independently reads the system of record to confirm a
+  declared write. It does not treat a screen message as proof.
+- **Qualification** is the versioned evidence that one exact workflow behaves
+  correctly in its named application, environment, and execution surface.
+- An **identity gate** checks the intended record before a consequential action
+  and halts if it cannot verify that record.
+- **Reconciliation** rechecks a possible or conflicting effect without
+  re-dispatching the action.
+
+See the [full glossary](../reference/glossary.md) for the shared terms and
+their contract boundaries.
+
 ## Where a halt goes: the attended decision
 
 When a run cannot confirm something, it stops and projects the paused step into
@@ -19,6 +35,19 @@ The request states one of six reasons for attention: record identity, target
 ambiguity, a human-only step, saved-result verification, uncertain delivery, or
 a required halt. The runner offers only the actions that are safe for that
 request.
+
+### Operational decisions are bounded; business judgment stays human
+
+An attended decision manages an **operational halt**. It can ask an authorized
+operator to prepare the live state, stop, skip an explicitly permitted step,
+escalate, teach a correction, or reconcile a possible effect. The signed task
+binds the exact run, pause, permitted actions, and revalidation requirements.
+
+It does not ask OpenAdapt to make arbitrary business judgment. A workflow that
+needs a business choice must either express that choice as a reviewed typed
+decision contract with permitted actions and a verifiable outcome, or stop for
+a human to complete the action. After either path, the runner rechecks the live
+identity, state, and configured effect before it reports `VERIFIED` or resumes.
 
 The question is closed by construction. `openadapt-flow` projects the pause into
 a signed task carrying typed categories, bounded counts, and digests; the client
