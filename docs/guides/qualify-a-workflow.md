@@ -60,23 +60,28 @@ conflicting records remain refusal conditions.
 
 ## Safe entity language for attended decisions
 
-The released signed decision schema can preserve an approved entity class and
-neutral fallback in the qualification contract.
+The released `HumanDecisionTaskV2` schema and Cloud receiver define the target
+contract for an approved entity class and neutral fallback. Flow 1.30.0 emits
+only `HumanDecisionTaskV1`: it does not yet store or emit the V2
+qualification-bound entity class. Until the coordinated Flow and Desktop
+release, use the neutral `record` or `item` wording and do not edit a signed
+task or sealed artifact by hand.
 
 The class is optional presentation metadata. It does not require a separate
 author role, and its absence does not block qualification, certification, or
 execution.
 
-The person or tool that prepares the qualification can select a static class
-for a step that can halt for an operator. For example, use `patient record`,
-`insurance claim`, or `loan application`. This class describes the kind of
-item. It never contains the live identity of the item.
+With the coordinated release, the person or tool that prepares the
+qualification can select a static class for a step that can halt for an
+operator. For example, use `patient record`, `insurance claim`, or `loan
+application`. This class describes the kind of item. It never contains the
+live identity of the item.
 
-The class and a neutral `record` or `item` fallback become part of the exact
-qualification contract. A signed decision task carries the approved class to a
-remote operator surface. The receiver renders only reviewed safe classes and
-uses the fallback when no class was set or when it cannot validate the class.
-A class change creates a new qualification revision and requires
+The target contract binds the class and a neutral `record` or `item` fallback
+to the exact qualification. A signed V2 decision task carries the approved
+class to a remote operator surface. The receiver renders only reviewed safe
+classes and uses the fallback when no class was set or when it cannot validate
+the class. A class change creates a new qualification revision and requires
 recertification.
 
 OpenAdapt never infers this language from a screen, OCR, parameters, an
