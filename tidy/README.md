@@ -2,7 +2,7 @@
 
 A CLI tool for scanning, planning, executing, verifying, and reporting
 git-history rewrites to remove sensitive patterns from commit messages,
-file contents, and **build artifacts** (GitHub Releases, GitHub Actions,
+file contents, historical file paths, and **build artifacts** (GitHub Releases, GitHub Actions,
 PyPI packages, and Docker/GHCR container images).
 
 ## Prerequisites
@@ -29,7 +29,8 @@ PyPI packages, and Docker/GHCR container images).
 
 ### scan
 
-Scan commit messages and tracked file contents for pattern matches.
+Scan commit messages, tracked and historical file contents, and historical
+file paths for pattern matches.
 
 ```
 python -m tidy scan --patterns tidy/patterns [--repo /path/to/repo] [--json]
@@ -58,8 +59,9 @@ Execute the full scrub pipeline:
 
 1. **Backup** — creates a git bundle of the entire repo.
 2. **Mirror clone** — works on a temporary `--mirror` clone.
-3. **filter-repo** — runs `git filter-repo` with both `--message-callback`
-   (commit messages) and `--blob-callback` (file contents).
+3. **filter-repo** — runs `git filter-repo` with `--message-callback`
+   (commit messages), `--blob-callback` (file contents), and
+   `--filename-callback` (historical file paths).
 4. **Commit map** — reads the old-SHA to new-SHA mapping.
 5. **Confirm** — prompts the user before force-pushing (skip with `--yes`).
 6. **Force push** — disables branch protection, force-pushes all branches
