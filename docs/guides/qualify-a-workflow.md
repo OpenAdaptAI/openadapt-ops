@@ -60,18 +60,17 @@ conflicting records remain refusal conditions.
 
 ## Safe entity language for attended decisions
 
-The released signed decision schema and Cloud receiver can preserve an approved
-entity class and neutral fallback. The Flow and Desktop controls that set the
-class are in the coordinated V2 release work.
+The released signed decision schema can preserve an approved entity class and
+neutral fallback in the qualification contract.
 
 The class is optional presentation metadata. It does not require a separate
 author role, and its absence does not block qualification, certification, or
 execution.
 
-After that release, the person or tool that prepares the qualification can
-select a static class for a step that can halt for an operator. For example,
-use `patient record`, `insurance claim`, or `loan application`. This class
-describes the kind of item. It never contains the live identity of the item.
+The person or tool that prepares the qualification can select a static class
+for a step that can halt for an operator. For example, use `patient record`,
+`insurance claim`, or `loan application`. This class describes the kind of
+item. It never contains the live identity of the item.
 
 The class and a neutral `record` or `item` fallback become part of the exact
 qualification contract. A signed decision task carries the approved class to a

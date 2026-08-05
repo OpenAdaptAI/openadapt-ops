@@ -50,6 +50,14 @@ document hash, not the pixels — and a non-confirmed verdict halts the run.
 Reports record them as one-way SHA-256 digests. See
 [Effect verification](../concepts/effect-verification.md).
 
+## Effect verifier
+
+An **effect verifier** is the configured independent read that evaluates an
+[effect contract](#effect-contract). It reads the system of record, such as an
+API, database, audit feed, or document store. A verifier does not infer a
+write from screen pixels. Its confirmed, refuted, or indeterminate result
+decides whether the run can continue.
+
 ## Halt
 
 The runtime's fail-closed refusal to act: when identity, a postcondition, an
@@ -67,6 +75,13 @@ identifier against the run's expected identity evidence before acting — the
 wrong-record guard. A conflict or an unreadable identity band halts the run
 rather than clicking into the wrong record. See
 [The identity gate](../concepts/identity-gate.md).
+
+## Reconciliation
+
+**Reconciliation** is a no-re-dispatch check after delivery is uncertain or an
+effect conflicts with the requested result. The runner reads the required
+postcondition and independent effect again. It reports a reconciled result only
+when that read proves the effect; otherwise the run stays halted for review.
 
 ## Policy
 
