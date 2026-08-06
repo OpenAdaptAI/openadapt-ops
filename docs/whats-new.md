@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-08-05 23:51 UTC*
+> *Last updated: 2026-08-06 11:31 UTC*
 
 
 
@@ -27,8 +27,6 @@
 - [fix: make quickstart independently verified](https://github.com/OpenAdaptAI/OpenAdapt/pull/1077) (#1077) — merged 
 
 - [docs: add Execute partner entry point](https://github.com/OpenAdaptAI/OpenAdapt/pull/1074) (#1074) — merged 
-
-- [chore: refresh Desktop replay media from PR #93](https://github.com/OpenAdaptAI/OpenAdapt/pull/1073) (#1073) — merged 
 
 
 
@@ -65,18 +63,16 @@
 
 - [fix(qualification): run sealed local cases through governed authority](https://github.com/OpenAdaptAI/openadapt-flow/pull/310) (#310) — merged 
 
-- [feat: add attended reconciliation action](https://github.com/OpenAdaptAI/openadapt-flow/pull/307) (#307) — merged 
-
-- [feat: bind governed authorization templates to hosted attestations](https://github.com/OpenAdaptAI/openadapt-flow/pull/306) (#306) — merged 
-
-- [feat: complete governed qualification and managed delivery authority](https://github.com/OpenAdaptAI/openadapt-flow/pull/305) (#305) — merged 
-
 
 
 ## openadapt-desktop
 
 
 - [fix: update vulnerable Python dependencies](https://github.com/OpenAdaptAI/openadapt-desktop/pull/103) (#103) — merged 
+
+- [feat: guide qualification fault cases](https://github.com/OpenAdaptAI/openadapt-desktop/pull/102) (#102) — merged 
+
+- [ci: publish verified desktop release manifest](https://github.com/OpenAdaptAI/openadapt-desktop/pull/101) (#101) — merged 
 
 - [fix(ci): dispatch docs notification to renamed openadapt-ops repo](https://github.com/OpenAdaptAI/openadapt-desktop/pull/100) (#100) — merged 
 
@@ -97,6 +93,8 @@
 
 - [ci: bind current evidence inputs](https://github.com/OpenAdaptAI/openadapt-evals/pull/285) (#285) — merged 
 
+- [test: add complex visual workflow campaign](https://github.com/OpenAdaptAI/openadapt-evals/pull/284) (#284) — merged 
+
 - [docs(evidence): rebind published evidence to Flow 1.28.0](https://github.com/OpenAdaptAI/openadapt-evals/pull/283) (#283) — merged 
 
 - [docs(evidence): rebind published evidence to Flow 1.27.1](https://github.com/OpenAdaptAI/openadapt-evals/pull/282) (#282) — merged 
@@ -110,23 +108,12 @@
 
 
 
-## openadapt-privacy
-
-
-- [fix: make privacy scrubbing fail closed](https://github.com/OpenAdaptAI/openadapt-privacy/pull/13) (#13) — merged 
-
-
-
 ## openadapt-types
 
 
 - [docs: align entry commands and substrate maturity across repo READMEs](https://github.com/OpenAdaptAI/openadapt-types/pull/24) (#24) — merged 
 
 - [feat: add Execute reference clients](https://github.com/OpenAdaptAI/openadapt-types/pull/23) (#23) — merged 
-
-- [feat: add qualified entity decision task v2](https://github.com/OpenAdaptAI/openadapt-types/pull/22) (#22) — merged 
-
-- [feat: coordinate Types 0.7 contracts](https://github.com/OpenAdaptAI/openadapt-types/pull/21) (#21) — merged 
 
 
 
