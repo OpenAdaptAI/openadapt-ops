@@ -20,10 +20,9 @@ name, account number, claim number, screen text, or another live identifier.
 
 ## Availability
 
-The signed V2 decision schema and Cloud receiver now preserve a reviewed entity
-class and a neutral fallback. The Flow command and Desktop control that set a
-class are part of the coordinated V2 release work. Until that release, do not
-edit a signed task or sealed artifact by hand to change its wording.
+The signed decision contract and its receivers preserve a reviewed entity class
+and a neutral fallback. Do not edit a signed task or sealed artifact by hand to
+change its wording.
 
 The class is presentation metadata. It does not change authorization, identity
 checks, actuation, or verification. It is optional and its absence does not
@@ -31,10 +30,10 @@ block qualification, certification, or execution.
 
 ## Optionally set the label during qualification
 
-With the coordinated Flow and Desktop release, a person or qualification tool
-can select one reviewed entity class for an exact workflow step that can create
-an attended decision. This does not require a separate author role. The same
-person who records, reviews, or deploys the workflow can set it.
+A person or qualification tool can select one reviewed entity class for an
+exact workflow step that can create an attended decision. This does not require
+a separate author role. The same person who records, reviews, or deploys the
+workflow can set it.
 
 The class belongs to that step in that workflow version. It is not a setting
 for the whole organization or for all workflows that use the same application.
@@ -53,11 +52,9 @@ can use `loan application`. If no class is set, OpenAdapt uses the neutral
 
 ## What happens at run time
 
-After the coordinated Flow and Desktop release, when the exact qualified step
-halts, Flow copies the approved class into the signed decision task. Cloud and
-Desktop show that class only when they can validate the task and recognize its
-reviewed remote-safe vocabulary. Desktop does not read this label before that
-release.
+When the exact qualified step pauses, Flow copies the approved class into the
+signed decision task. Cloud and Desktop show that class only when they can
+validate the task and recognize its reviewed remote-safe vocabulary.
 
 The runner keeps the actual identity evidence in its declared customer
 boundary. Before it resumes any action, it checks the live identity, current

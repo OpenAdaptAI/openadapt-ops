@@ -36,7 +36,7 @@ ambiguity, a human-only step, saved-result verification, uncertain delivery, or
 a required halt. The runner offers only the actions that are safe for that
 request.
 
-### Operational decisions are bounded; business judgment stays human
+### Operational attention is bounded
 
 An attended decision manages an **operational halt**. It can ask an authorized
 operator to prepare the live state, stop, skip an explicitly permitted step,
@@ -44,10 +44,11 @@ escalate, teach a correction, or reconcile a possible effect. The signed task
 binds the exact run, pause, permitted actions, and revalidation requirements.
 
 It does not ask OpenAdapt to make arbitrary business judgment. A workflow that
-needs a business choice must either express that choice as a reviewed typed
-decision contract with permitted actions and a verifiable outcome, or stop for
-a human to complete the action. After either path, the runner rechecks the live
-identity, state, and configured effect before it reports `VERIFIED` or resumes.
+needs a policy choice uses a separate
+[typed business decision](typed-business-decisions.md). That contract has finite
+options, authorized roles, and one exact successor for each option. It is not a
+halt recovery action. After either path, the runner rechecks the live identity,
+state, and configured effect before it reports `VERIFIED` or resumes.
 
 The question is closed by construction. `openadapt-flow` projects the pause into
 a signed task carrying typed categories, bounded counts, and digests; the client

@@ -119,7 +119,7 @@ A lifecycle state reports current work. It does not report the final result.
 |---|---|
 | `queued` | Wait for dispatch. |
 | `running` | Wait while the runner acts or verifies. |
-| `decision_required` | Let the authorized operator complete the signed decision task. |
+| `decision_required` | Let the authorized operator complete the signed task. An operational task has recovery actions; a business task has finite reviewed policy options. See [typed business decisions](../concepts/typed-business-decisions.md). |
 | `waiting_for_reconciliation` | Do not repeat the write. Wait for the live effect check. |
 | `terminal` | Read and validate the receipt. |
 

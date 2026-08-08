@@ -92,7 +92,7 @@ it is not a success claim.
 |---|---|
 | `queued` | OpenAdapt accepted the request for dispatch. |
 | `running` | The runner is observing, resolving, acting, or verifying. |
-| `decision_required` | A typed attended question needs an authorized person. |
+| `decision_required` | An operational attention task or a typed business choice needs an authorized person. The signed task limits the permitted recovery action or reviewed finite option. |
 | `waiting_for_reconciliation` | A possible or conflicting effect needs a live read before OpenAdapt can continue. |
 | `terminal` | The execution has one final transaction outcome and a receipt. |
 
@@ -135,9 +135,12 @@ name, parameters, or a model. If the class is unavailable, it uses `record` or
 ## Attended decisions and mobile delivery
 
 When the runner cannot prove a required condition, it creates one signed,
-typed decision task. The operator can answer from the local console or the
-authenticated phone/web decision surface. The phone receives a closed context;
-the customer runner retains the detailed evidence.
+operational attention task. The operator can answer from the local console or
+the authenticated phone/web decision surface. The phone receives a closed
+context; the customer runner retains the detailed evidence. A qualified
+workflow can also pause for a typed business decision with finite reviewed
+options. The two paths share delivery infrastructure but have separate
+authority contracts. See [typed business decisions](../concepts/typed-business-decisions.md).
 
 An operator answer is not a command to repeat a write. The runner first
 reacquires focus, a fresh observation, the workflow state, identity evidence,

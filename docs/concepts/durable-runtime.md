@@ -78,13 +78,18 @@ openadapt flow approve runs/replay-20260712-140233        # a human signs off
 openadapt flow resume  runs/replay-20260712-140233 --require-approval
 ```
 
-For attended runs, Flow also emits a signed, bounded decision task. An operator
-can use the local console or an enabled hosted phone queue to Continue, Skip
-when the declared policy permits it, Teach, Reject, or Escalate. The task is
-bound to the exact pause, permitted operation, transition, expiry, and
-idempotency scope. A decision does not authorize a blind retry. Before a run
-continues, the runtime reacquires live state and re-proves the required
+For an **operational halt**, Flow also emits a signed, bounded decision task.
+An operator can use the local console or an enabled hosted phone queue to
+Continue, Skip when the declared policy permits it, Teach, Reject, or Escalate.
+The task is bound to the exact pause, permitted operation, transition, expiry,
+and idempotency scope. A decision does not authorize a blind retry. Before a
+run continues, the runtime reacquires live state and re-proves the required
 postcondition, identity, and effect evidence.
+
+A declared business-policy choice is different. It has finite reviewed options,
+authorized roles, and a graph successor for each option. It cannot use generic
+Continue, Skip, or Teach authority. See
+[Typed business decisions](typed-business-decisions.md).
 
 The hosted phone lane uses outbound runner HTTPS and an encrypted Web Push
 notification. It projects a closed context only; screenshots, OCR, values, and

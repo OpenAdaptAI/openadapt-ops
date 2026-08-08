@@ -144,6 +144,7 @@ nav:
     - Run a deployment: guides/run-a-deployment.md
     - Read and audit run reports: guides/run-reports.md
     - Run outcomes and halt reasons: reference/run-outcomes.md
+    - Typed business decisions: concepts/typed-business-decisions.md
     - Workflow catalog and halt map: guides/workflow-catalog.md
     - Attend a paused run and teach a correction: concepts/halt-learn-loop.md
     - Governed self-healing: concepts/self-healing.md
