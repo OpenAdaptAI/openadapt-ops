@@ -102,8 +102,11 @@ Only the terminal receipt can report `VERIFIED`.
 
 Desktop, Cloud, and a customer-controlled operator service can deliver the
 same decision contract. The runner keeps live record values, screenshots, OCR,
-and local evidence inside the declared customer boundary. A remote task carries
-only the reviewed question and finite options plus signed opaque bindings.
+and local evidence inside the declared customer boundary. The portable remote
+task carries opaque bindings, option IDs, digests, counts, and closed status
+values. It does not carry the question or option text. The receiving surface
+resolves those reviewed static strings from a presentation artifact whose digest
+the signed delivery policy binds to the exact decision contract.
 
 If an option requires protected local evidence, the decision stays on a local
 operator surface. The system does not copy that evidence to a phone or use an

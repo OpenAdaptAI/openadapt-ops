@@ -88,11 +88,20 @@ fields in the public Execute request.
 The private-pilot contract uses these states. A state describes current work;
 it is not a success claim.
 
+!!! note "Target decision-event contract"
+    The target Execute event uses a signed discriminator to distinguish
+    `operational_attention` from `business_decision`. The first has bounded
+    recovery actions. The second has finite reviewed policy options. This
+    requires the pending `openadapt-types` Execute union and matching Cloud
+    relay integration. Until the exact schemas are released, a partner must use
+    only the signed task variants in its qualification pack and must not infer
+    a task type from presentation content.
+
 | State | Meaning |
 |---|---|
 | `queued` | OpenAdapt accepted the request for dispatch. |
 | `running` | The runner is observing, resolving, acting, or verifying. |
-| `decision_required` | An operational attention task or a typed business choice needs an authorized person. The signed task limits the permitted recovery action or reviewed finite option. |
+| `decision_required` | An authorized person must answer a signed task. In the target discriminated event, the task is an operational attention task or a typed business choice, with the permitted recovery action or reviewed finite option. |
 | `waiting_for_reconciliation` | A possible or conflicting effect needs a live read before OpenAdapt can continue. |
 | `terminal` | The execution has one final transaction outcome and a receipt. |
 

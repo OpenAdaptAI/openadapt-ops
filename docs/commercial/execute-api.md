@@ -115,11 +115,21 @@ Poll `GET /v1/executions/{execution_id}`. The response is an
 
 A lifecycle state reports current work. It does not report the final result.
 
+!!! note "Target decision-event contract"
+    The target Execute integration exposes `decision_required` as a
+    discriminated signed decision event. Its discriminator distinguishes
+    `operational_attention` from `business_decision` before a partner handles
+    the task. This requires the pending `openadapt-types` Execute union and the
+    matching Cloud relay integration. Until those exact schemas are released,
+    an integration must support only the signed task variants in its
+    qualification pack. It must not infer a task type from display copy or
+    optional fields.
+
 | State | Integration action |
 |---|---|
 | `queued` | Wait for dispatch. |
 | `running` | Wait while the runner acts or verifies. |
-| `decision_required` | Let the authorized operator complete the signed task. An operational task has recovery actions; a business task has finite reviewed policy options. See [typed business decisions](../concepts/typed-business-decisions.md). |
+| `decision_required` | Let the authorized operator complete the signed task. In the target discriminated event, an `operational_attention` task has recovery actions and a `business_decision` task has finite reviewed policy options. See [typed business decisions](../concepts/typed-business-decisions.md). |
 | `waiting_for_reconciliation` | Do not repeat the write. Wait for the live effect check. |
 | `terminal` | Read and validate the receipt. |
 

@@ -91,7 +91,7 @@ published status contract. Lifecycle states:
 |---|---|---|
 | `queued` | Accepted, not yet running. | Poll or wait for the webhook. |
 | `running` | Executing under its governed profile. | Wait. |
-| `decision_required` | The run paused for either an operational attention task or a declared typed business decision. | Use only the signed actions or finite options in the task. The engine re-verifies live state before continuing. See [attended decisions](../concepts/halt-learn-loop.md) and [typed business decisions](../concepts/typed-business-decisions.md). |
+| `decision_required` | The run paused for an attended decision. The target event contract distinguishes operational attention from a declared typed business decision. | Use only the signed actions or finite options in the task. The engine re-verifies live state before continuing. See [attended decisions](../concepts/halt-learn-loop.md) and [typed business decisions](../concepts/typed-business-decisions.md). |
 | `waiting_for_reconciliation` | A consequential write is uncertain; the run waits for reconciliation against the system of record. | Reconcile; do not re-submit the same request without its idempotency key. |
 | `terminal` | The run ended; `terminal_outcome` carries the result. | Read the outcome and evidence receipt. |
 
