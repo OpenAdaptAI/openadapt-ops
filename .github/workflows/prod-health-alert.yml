@@ -17,7 +17,7 @@ name: Production health alert
 # - GitHub auto-disables scheduled workflows after 60 days WITHOUT
 #   repo activity. sync.yml commits docs daily, which counts as
 #   activity; if that sync ever stops, these schedules die silently
-#   ~60 days later. See ops/backup/RESTORE_DRILL.md section 6.
+#   ~60 days later. See the alerts section in ops/backup/RESTORE_DRILL.md.
 # - Failure emails go to the last committer of this file; keep that a
 #   monitored account.
 

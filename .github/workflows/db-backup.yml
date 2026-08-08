@@ -1,124 +1,140 @@
 name: Production DB logical backup
 
-# $0 recovery point for the hosted control plane (AUDIT.md finding b:
-# pitr_enabled=false, zero provider physical backups as of 2026-07-25).
-# Daily `supabase db dump` (roles + schema + data, the exact triple the
-# cloud data-safety runbook prescribes), encrypted to an age public key
-# committed in ops/backup/age-recipients.txt, uploaded as a workflow
-# artifact with 90-day retention.
-#
-# The private key exists ONLY with the founder (see
-# ops/backup/RESTORE_DRILL.md). This repo is PUBLIC: artifacts are
-# downloadable by any logged-in GitHub user, so the age encryption is
-# load-bearing, not defense-in-depth. Never upload plaintext.
-#
-# Cost: the repo is public, so Actions minutes and artifact storage are
-# free. Daily cadence => RPO up to 24h (logical only). Anything better
-# (RPO minutes) requires the paid Supabase PITR add-on — see the
-# tradeoff table in ops/backup/RESTORE_DRILL.md.
-#
-# FAIL-CLOSED: this workflow fails loudly when the DB secret or the age
-# recipient is missing, and refuses to upload an empty or schema-only
-# dump. A backup job that silently succeeds without a usable backup is
-# worse than a red run.
+# Daily, off-provider logical recovery point. The database URL is a protected
+# production-backup environment secret. Only age ciphertext and a redacted
+# integrity manifest enter the private, public-access-blocked S3 bucket.
+# Maximum RPO: 24 hours. Retention: 90 days. This does not cover Storage
+# objects and does not replace provider PITR.
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: '23 7 * * *' # daily 07:23 UTC (off-peak; odd minute to avoid the top-of-hour scheduler crush)
+    - cron: '23 7 * * *'
 
 permissions:
   contents: read
+  id-token: write
 
 concurrency:
-  group: db-backup
+  group: production-db-backup
   cancel-in-progress: false
 
 jobs:
   dump:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    environment: production-backup
+    env:
+      AWS_REGION: us-east-1
+      BACKUP_BUCKET: ${{ vars.AWS_BACKUP_BUCKET }}
+      SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+      SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Require configuration (fail closed)
-        env:
-          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
-        run: |
-          fail=0
-          if [ -z "$SUPABASE_DB_URL" ]; then
-            echo '::error::Secret SUPABASE_DB_URL is not set. Founder action: gh secret set SUPABASE_DB_URL --repo OpenAdaptAI/openadapt-ops (value: the production Postgres connection string from Supabase -> Project Settings -> Database).'
-            fail=1
-          fi
-          if ! grep -Eq '^age1[0-9a-z]+$' ops/backup/age-recipients.txt; then
-            echo '::error::ops/backup/age-recipients.txt contains no age recipient. Founder action: generate the keypair per ops/backup/RESTORE_DRILL.md section 1 and commit the PUBLIC key line.'
-            fail=1
-          fi
-          exit "$fail"
+      - uses: aws-actions/configure-aws-credentials@e6de054238d6b7531b4efff3b6587d9aade6a06c # v6.2.3
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_BACKUP_ROLE_ARN }}
+          allowed-account-ids: '992382684924'
+          role-session-name: openadapt-db-backup-${{ github.run_id }}
 
       - uses: supabase/setup-cli@46f7f98c7f948ad727d22c1e67fab04c223a0520 # v3.0.0
         with:
-          version: latest # tracks server-version support in `supabase db dump`; the dump SQL itself is what we archive
+          version: 2.75.0
 
       - name: Install age
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq age
-          age --version
 
-      - name: Dump roles, schema, and data (cloud runbook triple)
-        env:
-          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+      - name: Validate the exact source, private target, and recipient
         run: |
           set -euo pipefail
-          mkdir -p dump
-          # Same commands as openadapt-cloud docs/RUNBOOK_DATA_SAFETY.md
-          # section 2 step 5: a single unflagged dump is schema-only and
-          # is NOT a recoverable backup.
-          supabase db dump --db-url "$SUPABASE_DB_URL" -f dump/roles.sql --role-only
-          supabase db dump --db-url "$SUPABASE_DB_URL" -f dump/schema.sql
-          supabase db dump --db-url "$SUPABASE_DB_URL" -f dump/data.sql --use-copy --data-only \
-            -x 'storage.buckets_vectors' -x 'storage.vector_indexes'
-
-      - name: Refuse an empty or schema-only dump (fail closed)
-        run: |
-          set -euo pipefail
-          test -s dump/roles.sql || { echo '::error::roles.sql is empty'; exit 1; }
-          grep -q 'CREATE' dump/schema.sql || { echo '::error::schema.sql has no CREATE statements'; exit 1; }
-          copies=$(grep -c '^COPY ' dump/data.sql || true)
-          bytes=$(wc -c < dump/data.sql)
-          echo "data.sql: ${copies} COPY blocks, ${bytes} bytes"
-          if [ "$copies" -lt 1 ]; then
-            echo '::error::data.sql contains no COPY blocks — this is schema-only or empty; refusing to upload a worthless artifact.'
+          if [ -z "$SUPABASE_DB_URL" ] || [ -z "$SUPABASE_PROJECT_REF" ]; then
+            echo '::error::The production-backup environment needs SUPABASE_DB_URL and SUPABASE_PROJECT_REF.'
             exit 1
           fi
+          if [ -z "$BACKUP_BUCKET" ]; then
+            echo '::error::The production-backup environment needs AWS_BACKUP_BUCKET.'
+            exit 1
+          fi
+          test "$(aws sts get-caller-identity --query Account --output text)" = '992382684924'
+          aws s3api get-public-access-block --bucket "$BACKUP_BUCKET" \
+            --query 'PublicAccessBlockConfiguration.[BlockPublicAcls,IgnorePublicAcls,BlockPublicPolicy,RestrictPublicBuckets]' \
+            --output text | grep -q $'True\tTrue\tTrue\tTrue'
+          python scripts/database_backup_contract.py validate-source \
+            --db-url "$SUPABASE_DB_URL" \
+            --project-ref "$SUPABASE_PROJECT_REF" \
+            --recipients ops/backup/age-recipients.txt
 
-      - name: Encrypt to the committed age public key
+      - name: Dump, validate, encrypt, and upload
         run: |
           set -euo pipefail
-          stamp=$(date -u +%Y%m%dT%H%M%SZ)
-          tar -czf "db-backup-${stamp}.tar.gz" -C dump roles.sql schema.sql data.sql
-          plain_sha=$(sha256sum "db-backup-${stamp}.tar.gz" | cut -d' ' -f1)
-          age -R ops/backup/age-recipients.txt -o "db-backup-${stamp}.tar.gz.age" "db-backup-${stamp}.tar.gz"
-          rm -f "db-backup-${stamp}.tar.gz" dump/roles.sql dump/schema.sql dump/data.sql
-          cipher_sha=$(sha256sum "db-backup-${stamp}.tar.gz.age" | cut -d' ' -f1)
-          {
-            echo "created_at_utc=${stamp}"
-            echo "workflow_run=${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
-            echo "repo_commit=${GITHUB_SHA}"
-            echo "plaintext_tar_sha256=${plain_sha}"
-            echo "ciphertext_sha256=${cipher_sha}"
-            echo "recipients_file_sha256=$(sha256sum ops/backup/age-recipients.txt | cut -d' ' -f1)"
-          } > manifest.txt
-          cat manifest.txt
-          echo "STAMP=${stamp}" >> "$GITHUB_ENV"
+          umask 077
+          mkdir -p dump
+          plain=''
+          cipher=''
+          cleanup() {
+            find dump -type f -delete 2>/dev/null || true
+            if [ -n "$plain" ]; then rm -f "$plain"; fi
+            if [ -n "$cipher" ]; then rm -f "$cipher"; fi
+            rm -f artifact-manifest.json
+          }
+          trap cleanup EXIT
 
-      - name: Upload encrypted artifact (90-day retention)
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        with:
-          name: db-backup-${{ env.STAMP }}
-          path: |
-            db-backup-*.tar.gz.age
-            manifest.txt
-          retention-days: 90
-          if-no-files-found: error
+          stamp=$(date -u +%Y%m%dT%H%M%SZ)
+          created_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          plain="db-backup-${stamp}.tar.gz"
+          cipher="${plain}.age"
+          prefix="daily/${stamp}"
+
+          # This is the maintained Supabase roles/schema/data procedure. One
+          # unflagged dump would be schema-only and is not a recovery point.
+          supabase db dump --db-url "$SUPABASE_DB_URL" -f dump/roles.sql --role-only
+          supabase db dump --db-url "$SUPABASE_DB_URL" -f dump/schema.sql
+          supabase db dump --db-url "$SUPABASE_DB_URL" -f dump/data.sql \
+            --use-copy --data-only \
+            -x 'storage.buckets_vectors' -x 'storage.vector_indexes'
+
+          python scripts/database_backup_contract.py create-contract \
+            --project-ref "$SUPABASE_PROJECT_REF" \
+            --recipients ops/backup/age-recipients.txt \
+            --dump-dir dump \
+            --created-at "$created_at" \
+            --supabase-cli-version "$(supabase --version)" \
+            --maximum-rpo-seconds 86400 \
+            --retention-days 90 \
+            --output dump/backup-contract.json
+
+          tar -czf "$plain" -C dump \
+            roles.sql schema.sql data.sql backup-contract.json
+          age -R ops/backup/age-recipients.txt -o "$cipher" "$plain"
+
+          python scripts/database_backup_contract.py create-manifest \
+            --contract dump/backup-contract.json \
+            --plaintext-archive "$plain" \
+            --ciphertext-archive "$cipher" \
+            --repository-commit "$GITHUB_SHA" \
+            --workflow-run-id "$GITHUB_RUN_ID" \
+            --output artifact-manifest.json
+          python scripts/database_backup_contract.py verify-artifact \
+            --manifest artifact-manifest.json \
+            --ciphertext-archive "$cipher"
+
+          local_sha=$(sha256sum "$cipher" | cut -d' ' -f1)
+          local_checksum=$(openssl dgst -sha256 -binary "$cipher" | base64)
+          aws s3 cp "$cipher" "s3://${BACKUP_BUCKET}/${prefix}/${cipher}" \
+            --only-show-errors --sse AES256 --metadata "sha256=${local_sha}" \
+            --checksum-algorithm SHA256
+          aws s3 cp artifact-manifest.json \
+            "s3://${BACKUP_BUCKET}/${prefix}/artifact-manifest.json" \
+            --only-show-errors --sse AES256 \
+            --content-type application/json --checksum-algorithm SHA256
+
+          remote_checksum=$(aws s3api get-object-attributes \
+            --bucket "$BACKUP_BUCKET" --key "${prefix}/${cipher}" \
+            --object-attributes Checksum \
+            --query 'Checksum.ChecksumSHA256' --output text)
+          test "$remote_checksum" = "$local_checksum"
+          echo "Encrypted database backup stored at s3://${BACKUP_BUCKET}/${prefix}/"
