@@ -145,6 +145,29 @@ and the target. It continues only if those checks pass. The resulting receipt
 binds the decision, the runner transition, and the final state to the exact
 task and authorization.
 
+<div class="grid" markdown>
+
+<figure markdown="span">
+  ![A mobile identity request shows a retained synthetic OpenEMR frame, the available safe actions, and that no action was sent.](../assets/ui/mobile-decision-request.png){ width="314" }
+  <figcaption>Request: the phone shows one bounded question and only the actions allowed for that exact pause.</figcaption>
+</figure>
+
+<figure markdown="span">
+  ![A mobile decision result confirms that the signed answer was accepted while the customer runner checks the live application.](../assets/ui/mobile-decision-pending.png){ width="314" }
+  <figcaption>Answer accepted: the signed answer is bound to the run, but the phone does not report success while the runner checks the live application.</figcaption>
+</figure>
+
+<figure markdown="span">
+  ![A mobile decision result reports Identity verified after the customer runner checked the live application and saved a bound receipt.](../assets/ui/mobile-decision-result.png){ width="314" }
+  <figcaption>Runner result: the answer does not become success until the customer runner checks the live state and records the receipt.</figcaption>
+</figure>
+
+</div>
+
+[Try all six synthetic decision types](https://app.openadapt.ai/demo/attention)
+or review the full
+[attended-decision contract](../concepts/halt-learn-loop.md#where-a-halt-goes-the-attended-decision).
+
 The released public contract for this round trip is
 `openadapt-types` 0.9.0. It defines the async Execute schema and OpenAPI
 document, plus signed, PHI-safe decision tasks and receipts. Flow and Cloud use
