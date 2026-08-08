@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-08-08 18:57 UTC*
+> *Last updated: 2026-08-08 18:59 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [docs: explain the mobile decision path](https://github.com/OpenAdaptAI/OpenAdapt/pull/1091) (#1091) — merged 
 
 - [feat: add guided deployment preflight](https://github.com/OpenAdaptAI/OpenAdapt/pull/1088) (#1088) — merged 
 
