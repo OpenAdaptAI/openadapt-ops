@@ -92,7 +92,7 @@ it is not a success claim.
 |---|---|
 | `queued` | OpenAdapt accepted the request for dispatch. |
 | `running` | The runner is observing, resolving, acting, or verifying. |
-| `decision_required` | A typed attended question needs an authorized person. |
+| `decision_required` | A bounded attended question needs an authorized person. |
 | `waiting_for_reconciliation` | A possible or conflicting effect needs a live read before OpenAdapt can continue. |
 | `terminal` | The execution has one final transaction outcome and a receipt. |
 
@@ -135,15 +135,44 @@ name, parameters, or a model. If the class is unavailable, it uses `record` or
 ## Attended decisions and mobile delivery
 
 When the runner cannot prove a required condition, it creates one signed,
-typed decision task. The operator can answer from the local console or the
-authenticated phone/web decision surface. The phone receives a closed context;
-the customer runner retains the detailed evidence.
+bounded operational decision task. The operator can answer from the local
+console or the authenticated phone/web decision surface. The hosted lane
+receives a closed-schema context without screenshots or protected fields. The
+runner-local portal can show detailed retained evidence inside the customer
+boundary.
 
 An operator answer is not a command to repeat a write. The runner first
 reacquires focus, a fresh observation, the workflow state, identity evidence,
 and the target. It continues only if those checks pass. The resulting receipt
 binds the decision, the runner transition, and the final state to the exact
 task and authorization.
+
+These three images show the runner-local, full-evidence portal with synthetic
+OpenEMR data. The hosted lane uses the same signed actions and transition
+states, but it does not receive these screenshots.
+
+<div class="grid" markdown>
+
+<figure markdown="span">
+  ![A mobile identity request shows a retained synthetic OpenEMR frame, the available safe actions, and that no action was sent.](../assets/ui/mobile-decision-request.jpg){ width="314" }
+  <figcaption>Request: the phone shows one bounded question and only the actions allowed for that exact pause.</figcaption>
+</figure>
+
+<figure markdown="span">
+  ![A mobile decision result confirms that the signed answer was accepted and awaits the customer runner.](../assets/ui/mobile-decision-pending.jpg){ width="314" }
+  <figcaption>Answer accepted: the signed answer is bound to the run. It is not a successful result. The customer runner must retrieve it and check the live application.</figcaption>
+</figure>
+
+<figure markdown="span">
+  ![A mobile decision result reports Identity verified after the customer runner checked the live application and saved a bound receipt.](../assets/ui/mobile-decision-result.jpg){ width="314" }
+  <figcaption>Runner result: the answer does not become success until the customer runner checks the live state and records the receipt.</figcaption>
+</figure>
+
+</div>
+
+[Try all six synthetic decision types](https://app.openadapt.ai/demo/attention)
+or review the full
+[attended-decision contract](../concepts/halt-learn-loop.md#where-a-halt-goes-the-attended-decision).
 
 The released public contract for this round trip is
 `openadapt-types` 0.9.0. It defines the async Execute schema and OpenAPI

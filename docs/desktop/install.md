@@ -129,6 +129,45 @@ boundary. [Watch the public demo](https://app.openadapt.ai/demo#footage) or
 review the exact released
 [control-overlay contract](https://github.com/OpenAdaptAI/openadapt-desktop/blob/desktop-v0.15.0/docs/CONTROL_OVERLAY.md).
 
+## Answer a pause from a phone
+
+Desktop can connect the customer runner to the hosted decision queue. It can
+also serve the same closed-schema decision contract through a customer-hosted
+portal. The hosted queue omits screenshots and protected fields. The
+runner-local portal can show the retained evidence while it stays inside the
+customer boundary. In both lanes, the phone returns one signed answer from the
+actions that the exact pause permits. The customer runner then checks the live
+application again before it continues.
+
+The three images below show the runner-local, full-evidence portal with
+synthetic OpenEMR data. They do not show the hosted no-image lane.
+
+<div class="grid" markdown>
+
+<figure markdown="span">
+  ![A mobile identity request shows a retained synthetic OpenEMR frame, the available safe actions, and that no action was sent.](../assets/ui/mobile-decision-request.jpg){ width="314" }
+  <figcaption>Request: one question, the retained screen, and the permitted actions.</figcaption>
+</figure>
+
+<figure markdown="span">
+  ![A mobile decision result confirms that the signed answer was accepted and awaits the customer runner.](../assets/ui/mobile-decision-pending.jpg){ width="314" }
+  <figcaption>Answer accepted: the phone saved the signed answer. This is not a successful result. The customer runner must retrieve it and check the live application.</figcaption>
+</figure>
+
+<figure markdown="span">
+  ![A mobile decision result reports Identity verified after the customer runner checked the live application and saved a bound receipt.](../assets/ui/mobile-decision-result.jpg){ width="314" }
+  <figcaption>Runner result: the live checks passed and the runner saved a bound receipt.</figcaption>
+</figure>
+
+</div>
+
+The hosted path uses outbound HTTPS and needs no inbound port. The self-hosted
+path stays loopback-only until the customer publishes it through trusted HTTPS
+or a VPN and explicitly enables that ingress. See
+[Attended decisions and the halt-learn loop](../concepts/halt-learn-loop.md)
+for the six request types, action effects, pairing sequence, authentication,
+expiry, and fresh-state checks.
+
 ## Where to go next
 
 <div class="grid cards" markdown>
