@@ -132,25 +132,30 @@ review the exact released
 ## Answer a pause from a phone
 
 Desktop can connect the customer runner to the hosted decision queue. It can
-also serve the same closed decision contract through a customer-hosted portal.
-The phone does not control the target application. It returns one signed answer
-from the actions that the exact pause permits. The customer runner then checks
-the live application again before it continues.
+also serve the same closed-schema decision contract through a customer-hosted
+portal. The hosted queue omits screenshots and protected fields. The
+runner-local portal can show the retained evidence while it stays inside the
+customer boundary. In both lanes, the phone returns one signed answer from the
+actions that the exact pause permits. The customer runner then checks the live
+application again before it continues.
+
+The three images below show the runner-local, full-evidence portal with
+synthetic OpenEMR data. They do not show the hosted no-image lane.
 
 <div class="grid" markdown>
 
 <figure markdown="span">
-  ![A mobile identity request shows a retained synthetic OpenEMR frame, the available safe actions, and that no action was sent.](../assets/ui/mobile-decision-request.png){ width="314" }
+  ![A mobile identity request shows a retained synthetic OpenEMR frame, the available safe actions, and that no action was sent.](../assets/ui/mobile-decision-request.jpg){ width="314" }
   <figcaption>Request: one question, the retained screen, and the permitted actions.</figcaption>
 </figure>
 
 <figure markdown="span">
-  ![A mobile decision result confirms that the signed answer was accepted while the customer runner checks the live application.](../assets/ui/mobile-decision-pending.png){ width="314" }
-  <figcaption>Answer accepted: the phone saved the signed answer. The runner is checking the live application.</figcaption>
+  ![A mobile decision result confirms that the signed answer was accepted and awaits the customer runner.](../assets/ui/mobile-decision-pending.jpg){ width="314" }
+  <figcaption>Answer accepted: the phone saved the signed answer. This is not a successful result. The customer runner must retrieve it and check the live application.</figcaption>
 </figure>
 
 <figure markdown="span">
-  ![A mobile decision result reports Identity verified after the customer runner checked the live application and saved a bound receipt.](../assets/ui/mobile-decision-result.png){ width="314" }
+  ![A mobile decision result reports Identity verified after the customer runner checked the live application and saved a bound receipt.](../assets/ui/mobile-decision-result.jpg){ width="314" }
   <figcaption>Runner result: the live checks passed and the runner saved a bound receipt.</figcaption>
 </figure>
 

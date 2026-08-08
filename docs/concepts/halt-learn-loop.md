@@ -63,20 +63,24 @@ or Android application, so there is no app store or separate update channel.
 The customer-controlled runner serves the full local portal. The hosted queue
 receives only a closed, PHI-free decision context.
 
+The three images below show the runner-local, full-evidence portal with
+synthetic OpenEMR data. The hosted lane uses the same signed actions and
+transition states, but it omits screenshots and protected fields.
+
 <div class="grid" markdown>
 
 <figure markdown="span">
-  ![A mobile identity request shows a retained synthetic OpenEMR frame, the available safe actions, and that no action was sent.](../assets/ui/mobile-decision-request.png){ width="314" }
+  ![A mobile identity request shows a retained synthetic OpenEMR frame, the available safe actions, and that no action was sent.](../assets/ui/mobile-decision-request.jpg){ width="314" }
   <figcaption>Request: this synthetic example shows the retained frame and only the actions that the exact pause permits.</figcaption>
 </figure>
 
 <figure markdown="span">
-  ![A mobile decision result confirms that the signed answer was accepted while the customer runner checks the live application.](../assets/ui/mobile-decision-pending.png){ width="314" }
-  <figcaption>Answer accepted: the signed answer is bound to the run. It is not a successful result. The runner must check the live application.</figcaption>
+  ![A mobile decision result confirms that the signed answer was accepted and awaits the customer runner.](../assets/ui/mobile-decision-pending.jpg){ width="314" }
+  <figcaption>Answer accepted: the signed answer is bound to the run. It is not a successful result. The customer runner must retrieve it and check the live application.</figcaption>
 </figure>
 
 <figure markdown="span">
-  ![A mobile decision result reports Identity verified after the runner re-read the live patient and target and saved a receipt.](../assets/ui/mobile-decision-result.png){ width="314" }
+  ![A mobile decision result reports Identity verified after the runner re-read the live patient and target and saved a receipt.](../assets/ui/mobile-decision-result.jpg){ width="314" }
   <figcaption>Result: the runner, not the phone, rechecks state and records the receipt before it reports a verified continuation.</figcaption>
 </figure>
 

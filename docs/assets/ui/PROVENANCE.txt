@@ -8,25 +8,25 @@ desktop-qualification-cockpit.png
   public/desktop-preview/cockpit/10_dashboard_workflows.png. The documentation
   copy is byte-identical to that source file. It contains synthetic data.
 
-mobile-decision-request.png
-  SHA-256: 2ec8ea714eff706ea08b1f2382ce27cd4000240b4d29ad8feb3c5cab0e39a9eb
+mobile-decision-request.jpg
+  SHA-256: 6249a4288a807a6f33ec05c3df6f1f52ef169a3ee25edf99feebbd89de37464e
   314 x 784. Phone-shell crop from an OpenAdaptAI/openadapt-cloud production
-  build at component commit 75c5ce39eb201c6d8f15215a0a49e48603a64a2d.
+  build at component commit f250ef34962e9237e49a3d04b37c6fead3b565f9.
   The supported production-browser capture used device scale factor 1. The
   files are not post-upscaled.
   The retained capture set is in commit
-  40138db8d4c2d0b18c16f8bb56dc99ca321b27dc. The route is
+  7e462d489b4b9fc249cefb5b70c9a6009c737a0c. The route is
   /demo/attention in Cloud PR #276. The data is synthetic OpenEMR application
   data.
 
-mobile-decision-pending.png
-  SHA-256: 202fc1ff69b6ba288c193f5677c56eec6b81881648a8d143789f62aac9d4281d
+mobile-decision-pending.jpg
+  SHA-256: fa616b67e072ed82291b7990e8623bc5d263f64547c5bbd269daf121d77791a5
   314 x 784. From the same source and capture sequence as the request. It shows
-  the accepted_pending_runner state. The signed answer was accepted once. The
-  customer runner has not yet returned a final result.
+  the decision_pending state. The signed answer was accepted once. No runner
+  receipt exists, and the workflow remains paused.
 
-mobile-decision-result.png
-  SHA-256: 62327c5a70f45688debcdf2e48ae7a62c5c810e94a5c40dcde9c440ef63acd69
+mobile-decision-result.jpg
+  SHA-256: 3096f8b5064a6271894c894e98c15919668a14ef0bd3aa0c59319710d75d69a6
   314 x 784. From the same source and capture sequence as the request. It is the
   completed runner result with the verified_and_resumed reason code. The data
   is synthetic OpenEMR application data.
