@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-08-06 11:31 UTC*
+> *Last updated: 2026-08-08 18:57 UTC*
 
 
 
@@ -24,14 +24,14 @@
 
 - [fix: refresh desktop platform manifest](https://github.com/OpenAdaptAI/OpenAdapt/pull/1081) (#1081) — merged 
 
-- [fix: make quickstart independently verified](https://github.com/OpenAdaptAI/OpenAdapt/pull/1077) (#1077) — merged 
-
-- [docs: add Execute partner entry point](https://github.com/OpenAdaptAI/OpenAdapt/pull/1074) (#1074) — merged 
-
 
 
 ## openadapt-flow
 
+
+- [feat: add typed durable business decisions](https://github.com/OpenAdaptAI/openadapt-flow/pull/339) (#339) — merged 
+
+- [Add cost-safe Citrix acceptance preflight](https://github.com/OpenAdaptAI/openadapt-flow/pull/338) (#338) — merged 
 
 - [feat: emit synthetic managed delivery marker](https://github.com/OpenAdaptAI/openadapt-flow/pull/337) (#337) — merged 
 
@@ -45,28 +45,20 @@
 
 - [fix: deliver consequential remote clicks through the frame lease](https://github.com/OpenAdaptAI/openadapt-flow/pull/328) (#328) — merged 
 
-- [fix: simplify the RDP buyer story](https://github.com/OpenAdaptAI/openadapt-flow/pull/326) (#326) — merged 
+- [test: add real-RDP multi-window vision campaign](https://github.com/OpenAdaptAI/openadapt-flow/pull/327) (#327) — merged 
 
-- [fix: clarify the RDP proof presentation](https://github.com/OpenAdaptAI/openadapt-flow/pull/324) (#324) — merged 
+- [feat: select the strongest qualified effect verifier](https://github.com/OpenAdaptAI/openadapt-flow/pull/323) (#323) — merged 
 
-- [chore(rdp): export evidence-bound hybrid timeline](https://github.com/OpenAdaptAI/openadapt-flow/pull/320) (#320) — merged 
-
-- [chore: improve RDP demo layout and pacing](https://github.com/OpenAdaptAI/openadapt-flow/pull/319) (#319) — merged 
-
-- [feat(rdp): qualify appointment booking with real graph proof](https://github.com/OpenAdaptAI/openadapt-flow/pull/318) (#318) — merged 
-
-- [chore(rdp): export proof-linked buyer demo](https://github.com/OpenAdaptAI/openadapt-flow/pull/316) (#316) — merged 
-
-- [fix(qualification): bind public evidence to case authority](https://github.com/OpenAdaptAI/openadapt-flow/pull/313) (#313) — merged 
-
-- [feat: carry managed Execute authority through BYOC](https://github.com/OpenAdaptAI/openadapt-flow/pull/312) (#312) — merged 
-
-- [fix(qualification): run sealed local cases through governed authority](https://github.com/OpenAdaptAI/openadapt-flow/pull/310) (#310) — merged 
+- [feat: emit qualified entity decision tasks v2](https://github.com/OpenAdaptAI/openadapt-flow/pull/308) (#308) — merged 
 
 
 
 ## openadapt-desktop
 
+
+- [docs: show mobile decision portal](https://github.com/OpenAdaptAI/openadapt-desktop/pull/109) (#109) — merged 
+
+- [fix: bind Teach corrections to halted runs](https://github.com/OpenAdaptAI/openadapt-desktop/pull/108) (#108) — merged 
 
 - [fix: update vulnerable Python dependencies](https://github.com/OpenAdaptAI/openadapt-desktop/pull/103) (#103) — merged 
 
@@ -83,8 +75,6 @@
 - [build: bump jsdom from 25.0.1 to 30.0.1](https://github.com/OpenAdaptAI/openadapt-desktop/pull/96) (#96) — merged 
 
 - [ci: deduplicate native release builds](https://github.com/OpenAdaptAI/openadapt-desktop/pull/95) (#95) — merged 
-
-- [feat: complete qualification and attended phone workflow](https://github.com/OpenAdaptAI/openadapt-desktop/pull/93) (#93) — merged 
 
 
 
@@ -112,8 +102,6 @@
 
 
 - [docs: align entry commands and substrate maturity across repo READMEs](https://github.com/OpenAdaptAI/openadapt-types/pull/24) (#24) — merged 
-
-- [feat: add Execute reference clients](https://github.com/OpenAdaptAI/openadapt-types/pull/23) (#23) — merged 
 
 
 
