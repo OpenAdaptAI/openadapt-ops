@@ -147,9 +147,12 @@ operator surface or a customer-controlled delivery route.
 - [Attend a paused run and teach a correction](halt-learn-loop.md) for a
   runtime safety halt.
 - [Qualify a workflow](../guides/qualify-a-workflow.md) for certification and
-  versioning.
+  versioning and the Desktop qualification cockpit.
 - [Workflow IR](workflow-ir.md) for graph nodes and controlled branches.
 - [Run outcomes and halt reasons](../reference/run-outcomes.md) for
   `decision_required` and terminal receipts.
 - [OpenAdapt Types](https://github.com/OpenAdaptAI/openadapt-types) for the
   portable task and answer-receipt schemas.
+- [OpenAdapt Flow](https://github.com/OpenAdaptAI/openadapt-flow) for the
+  local runtime that validates the decision contract and performs the later
+  revalidation.
