@@ -54,6 +54,15 @@ realistic cases with the relevant facts and the human choice. Then record a
 ask the reviewer to explain the permitted result. This separates a real policy
 rule from a one-off preference or an accidental action.
 
+The qualification capture below is not an attended run. It records reviewed
+context, a role, the finite options, and the selected policy treatment before
+the workflow is certified. The synthetic example shows a scheduling exception.
+
+<figure markdown>
+  ![A synthetic qualification screen asks a scheduling lead which approved policy applies to a scheduling exception.](../assets/ui/business-decision-qualification-capture.png){ width="430" }
+  <figcaption>Qualification capture: the reviewer records policy evidence before the workflow can use a decision node. It does not send a live execution request.</figcaption>
+</figure>
+
 The qualification review must preserve the distinction between these three
 outcomes:
 
@@ -109,6 +118,11 @@ The mobile or desktop surface shows one request, its reviewed context, and only
 the options that the contract permits. It cannot add a new option or free-text
 instruction.
 
+<figure markdown>
+  ![A synthetic mobile decision screen asks an operations lead to choose one approved exception route.](../assets/ui/business-decision-runtime-request.png){ width="330" }
+  <figcaption>Live-run decision: a qualified workflow has reached a declared human-authority point. The phone shows only the reviewed finite choices for this task.</figcaption>
+</figure>
+
 1. The route authenticates the person and verifies their permitted role.
 2. It submits one signed option with an idempotency key.
 3. The runner validates the task, policy, presentation, role, option, expiry,
@@ -141,6 +155,10 @@ presentation carries the static question and labels that the operator may read.
 The remote route does not receive raw cases or screen content. If a person must
 inspect protected live evidence to make the choice, use the runner-local
 operator surface or a customer-controlled delivery route.
+
+The screenshots on this page come from accepted synthetic Cloud demo sources.
+They show the two separate product surfaces. This page uses the retained,
+versioned captures rather than depending on a public demo route.
 
 ## Related documentation
 

@@ -30,3 +30,17 @@ mobile-decision-result.jpg
   314 x 784. From the same source and capture sequence as the request. It is the
   completed runner result with the verified_and_resumed reason code. The data
   is synthetic OpenEMR application data.
+
+business-decision-qualification-capture.png
+  SHA-256: 1876efdba92d3995cffcdca126d32d9e2493f7e4ffaf46b131f8580c09994862
+  860 x 3542. Byte-identical source: OpenAdaptAI/openadapt-cloud,
+  Cloud PR #281 merge commit 176595db43c3bfbf0a0bd4a1100e035e922396c0,
+  public/demo/qualification-judgment/judgment-capture-request.png. It is a
+  synthetic qualification capture. It is not a live execution request.
+
+business-decision-runtime-request.png
+  SHA-256: cf9ab3f36f6869ec80758ae70ff6aa2466d73615997de5d5eed351d2cdca1a65
+  520 x 880. Byte-identical source: OpenAdaptAI/openadapt-cloud,
+  Cloud PR #278 merge commit 167b2f0843229c5938f3d9e97de46f68b66e3476,
+  public/demo/judgment/business-decision-request.png. It is a synthetic
+  mobile live-run decision request. It does not report an execution result.
