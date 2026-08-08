@@ -3,7 +3,8 @@
 # This file must contain exactly the PUBLIC key line(s) of the founder's
 # age keypair — one `age1...` recipient per line. The PRIVATE key never
 # enters this repo, GitHub secrets, or CI. Generation procedure:
-# ops/backup/RESTORE_DRILL.md section 1.
+# ops/backup/RESTORE_DRILL.md, "One-time GitHub setup".
 #
 # The backup workflow FAILS (on purpose) until a real recipient line
 # exists below. Do not put anything secret in this file.
+age1cw6u268e7vrjsl224w69may8ujxvqhqfymz79xm99dup5mf5y9jqv0vcqu

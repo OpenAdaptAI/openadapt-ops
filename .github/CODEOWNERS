@@ -1,2 +1,9 @@
 # Default code owners. Enforced via branch protection (required review).
 * @abrichr
+
+# Production backup and restore trust boundary.
+/.github/workflows/db-backup.yml @abrichr
+/ops/backup/ @abrichr
+/scripts/database_backup_contract.py @abrichr
+/scripts/run_database_restore_drill.sh @abrichr
+/tests/test_database_backup_contract.py @abrichr

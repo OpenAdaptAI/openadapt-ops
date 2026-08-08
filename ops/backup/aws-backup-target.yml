@@ -1,0 +1,165 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Private encrypted database-backup target with exact writer and restore roles.
+
+Parameters:
+  GitHubOrganization:
+    Type: String
+    Default: OpenAdaptAI
+  GitHubRepository:
+    Type: String
+    Default: openadapt-ops
+  RestorePrincipalArn:
+    Type: String
+    Default: arn:aws:iam::992382684924:user/claude-ops
+    AllowedPattern: ^arn:aws:iam::992382684924:(user|role)/[A-Za-z0-9+=,.@_/-]+$
+    Description: Exact local operator principal that can assume the restore role.
+
+Resources:
+  GitHubActionsOidcProvider:
+    Type: AWS::IAM::OIDCProvider
+    Properties:
+      Url: https://token.actions.githubusercontent.com
+      ClientIdList:
+        - sts.amazonaws.com
+      ThumbprintList:
+        - 6938fd4d98bab03faadb97b34396831e3780aea1
+
+  BackupBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      BucketName: !Sub openadapt-production-db-backups-${AWS::AccountId}
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerEnforced
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      VersioningConfiguration:
+        Status: Enabled
+      LifecycleConfiguration:
+        Rules:
+          - Id: DeleteExpiredBackups
+            Status: Enabled
+            Prefix: daily/
+            ExpirationInDays: 90
+            NoncurrentVersionExpiration:
+              NoncurrentDays: 7
+            AbortIncompleteMultipartUpload:
+              DaysAfterInitiation: 1
+          - Id: DeleteExpiredDrillEvidence
+            Status: Enabled
+            Prefix: drills/
+            ExpirationInDays: 365
+            NoncurrentVersionExpiration:
+              NoncurrentDays: 7
+      Tags:
+        - Key: data-classification
+          Value: production-confidential
+        - Key: managed-by
+          Value: openadapt-ops
+
+  BackupBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref BackupBucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: DenyInsecureTransport
+            Effect: Deny
+            Principal: '*'
+            Action: s3:*
+            Resource:
+              - !GetAtt BackupBucket.Arn
+              - !Sub ${BackupBucket.Arn}/*
+            Condition:
+              Bool:
+                aws:SecureTransport: false
+          - Sid: RequireSseS3
+            Effect: Deny
+            Principal: '*'
+            Action: s3:PutObject
+            Resource: !Sub ${BackupBucket.Arn}/daily/*
+            Condition:
+              StringNotEquals:
+                s3:x-amz-server-side-encryption: AES256
+          - Sid: RequireSseS3ForDrillEvidence
+            Effect: Deny
+            Principal: '*'
+            Action: s3:PutObject
+            Resource: !Sub ${BackupBucket.Arn}/drills/*
+            Condition:
+              StringNotEquals:
+                s3:x-amz-server-side-encryption: AES256
+
+  BackupWriterRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: openadapt-ops-production-db-backup-writer
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Federated: !Ref GitHubActionsOidcProvider
+            Action: sts:AssumeRoleWithWebIdentity
+            Condition:
+              StringEquals:
+                token.actions.githubusercontent.com:aud: sts.amazonaws.com
+                token.actions.githubusercontent.com:sub: !Sub repo:${GitHubOrganization}/${GitHubRepository}:environment:production-backup
+      Policies:
+        - PolicyName: WriteEncryptedDailyBackups
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: s3:GetBucketPublicAccessBlock
+                Resource: !GetAtt BackupBucket.Arn
+              - Effect: Allow
+                Action:
+                  - s3:AbortMultipartUpload
+                  - s3:GetObjectAttributes
+                  - s3:PutObject
+                Resource: !Sub ${BackupBucket.Arn}/daily/*
+
+  BackupRestoreRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: openadapt-ops-production-db-backup-reader
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !Ref RestorePrincipalArn
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: ReadEncryptedDailyBackups
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: s3:GetBucketPublicAccessBlock
+                Resource: !GetAtt BackupBucket.Arn
+              - Effect: Allow
+                Action: s3:GetObject
+                Resource: !Sub ${BackupBucket.Arn}/daily/*
+              - Effect: Allow
+                Action: s3:PutObject
+                Resource: !Sub ${BackupBucket.Arn}/drills/*
+
+Outputs:
+  BackupBucketName:
+    Value: !Ref BackupBucket
+  BackupWriterRoleArn:
+    Value: !GetAtt BackupWriterRole.Arn
+  BackupRestoreRoleArn:
+    Value: !GetAtt BackupRestoreRole.Arn

@@ -1,0 +1,469 @@
+#!/usr/bin/env python3
+"""Fail-closed contracts for encrypted production database backups.
+
+This module never connects to a database. The workflows keep database access in
+the Supabase CLI and psql. This module validates target identity, verifies dump
+components, creates a redacted integrity manifest, and records restore evidence.
+"""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import re
+import sys
+import tarfile
+from datetime import datetime, timezone
+from pathlib import Path
+from urllib.parse import unquote, urlsplit
+
+
+CONTRACT_SCHEMA = "openadapt.database-backup-contract/v2"
+ARTIFACT_SCHEMA = "openadapt.database-backup-artifact/v2"
+RESTORE_EVIDENCE_SCHEMA = "openadapt.database-restore-evidence/v1"
+PROJECT_REF = re.compile(r"^[a-z0-9]{8,64}$")
+AGE_RECIPIENT = re.compile(r"^age1[0-9a-z]+$")
+REQUIRED_DUMPS = ("roles.sql", "schema.sql", "data.sql")
+ARCHIVE_MEMBERS = (*REQUIRED_DUMPS, "backup-contract.json")
+MAX_ARCHIVE_MEMBER_BYTES = 2 * 1024 * 1024 * 1024
+UNSAFE_PSQL_COMMAND = re.compile(
+    r"^\\(?:!|cd|copy|e(?:dit)?|i|ir|o|out|qecho|setenv|w(?:rite)?)(?:\s|$)",
+    re.MULTILINE | re.IGNORECASE,
+)
+COPY_PROGRAM = re.compile(r"\bCOPY\b[^;]*\bPROGRAM\b", re.IGNORECASE | re.DOTALL)
+
+
+class ContractError(ValueError):
+    """A backup or restore contract is unsafe or incomplete."""
+
+
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def sha256_text(value: str) -> str:
+    return hashlib.sha256(value.encode()).hexdigest()
+
+
+def stable_json(value: object) -> str:
+    return json.dumps(value, sort_keys=True, separators=(",", ":"))
+
+
+def project_ref(value: str, name: str) -> str:
+    value = value.strip()
+    if not PROJECT_REF.fullmatch(value):
+        raise ContractError(f"{name} is not a valid Supabase project reference")
+    return value
+
+
+def database_identity(url: str, expected_ref: str, name: str) -> dict[str, str]:
+    expected_ref = project_ref(expected_ref, f"{name} project reference")
+    parsed = urlsplit(url.strip())
+    if parsed.scheme not in {"postgres", "postgresql"}:
+        raise ContractError(f"{name} must use a postgres connection URL")
+    if not parsed.hostname or not parsed.username or not parsed.path.strip("/"):
+        raise ContractError(f"{name} is incomplete")
+    if parsed.hostname in {"localhost", "127.0.0.1", "::1"}:
+        raise ContractError(f"{name} must name the declared Supabase project")
+
+    username = unquote(parsed.username)
+    direct_host = parsed.hostname == f"db.{expected_ref}.supabase.co"
+    pooler_user = username == f"postgres.{expected_ref}"
+    pooler_host = parsed.hostname.endswith(".pooler.supabase.com")
+    if not direct_host and not (pooler_user and pooler_host):
+        raise ContractError(f"{name} does not match the declared Supabase project")
+
+    # This digest lets an operator compare identities without publishing the
+    # project reference, hostname, username, or connection string.
+    canonical = f"{expected_ref}|{parsed.hostname}|{username}|{parsed.path.strip('/')}"
+    return {
+        "identity_sha256": sha256_text(canonical),
+        "project_ref_sha256": sha256_text(expected_ref),
+    }
+
+
+def recipients(path: Path) -> list[str]:
+    values = [
+        line.strip()
+        for line in path.read_text(encoding="utf-8").splitlines()
+        if line.strip() and not line.lstrip().startswith("#")
+    ]
+    if not values or any(not AGE_RECIPIENT.fullmatch(value) for value in values):
+        raise ContractError("the recipient file must contain only age public recipients")
+    if len(values) != len(set(values)):
+        raise ContractError("the recipient file contains a duplicate recipient")
+    return sorted(values)
+
+
+def dump_inventory(root: Path) -> list[dict[str, object]]:
+    result: list[dict[str, object]] = []
+    for name in REQUIRED_DUMPS:
+        path = root / name
+        if not path.is_file() or path.stat().st_size <= 0:
+            raise ContractError(f"database dump component is missing or empty: {name}")
+        result.append(
+            {"name": name, "bytes": path.stat().st_size, "sha256": sha256_file(path)}
+        )
+
+    schema = (root / "schema.sql").read_text(encoding="utf-8", errors="replace")
+    data = (root / "data.sql").read_text(encoding="utf-8", errors="replace")
+    for name in REQUIRED_DUMPS:
+        sql = (root / name).read_text(encoding="utf-8", errors="replace")
+        if UNSAFE_PSQL_COMMAND.search(sql) or COPY_PROGRAM.search(sql):
+            raise ContractError(f"database dump contains an unsafe local command: {name}")
+    if not re.search(r"^CREATE\s", schema, re.MULTILINE | re.IGNORECASE):
+        raise ContractError("schema.sql contains no CREATE statement")
+    if not re.search(r"^COPY\s", data, re.MULTILINE | re.IGNORECASE):
+        raise ContractError("data.sql contains no COPY statement")
+    return result
+
+
+def parse_time(value: str, name: str) -> datetime:
+    try:
+        result = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError as error:
+        raise ContractError(f"{name} is not an ISO-8601 timestamp") from error
+    if result.tzinfo is None:
+        raise ContractError(f"{name} must include a timezone")
+    return result.astimezone(timezone.utc)
+
+
+def read_contract(path: Path) -> dict[str, object]:
+    value = json.loads(path.read_text(encoding="utf-8"))
+    if value.get("schema") != CONTRACT_SCHEMA:
+        raise ContractError("the backup contract schema is not supported")
+    contract = value.get("contract")
+    if not isinstance(contract, dict):
+        raise ContractError("the backup contract is missing")
+    expected = sha256_text(stable_json(contract))
+    if value.get("contract_sha256") != expected:
+        raise ContractError("the backup contract digest is invalid")
+    return value
+
+
+def read_manifest(path: Path) -> dict[str, object]:
+    value = json.loads(path.read_text(encoding="utf-8"))
+    if value.get("schema") != ARTIFACT_SCHEMA:
+        raise ContractError("the artifact manifest schema is not supported")
+    manifest = value.get("artifact")
+    if not isinstance(manifest, dict):
+        raise ContractError("the artifact manifest is missing")
+    expected = sha256_text(stable_json(manifest))
+    if value.get("artifact_sha256") != expected:
+        raise ContractError("the artifact manifest digest is invalid")
+    return value
+
+
+def validate_source(args: argparse.Namespace) -> None:
+    identity = database_identity(args.db_url, args.project_ref, "production database")
+    keys = recipients(Path(args.recipients))
+    print(
+        json.dumps(
+            {
+                "valid": True,
+                **identity,
+                "recipient_count": len(keys),
+                "recipients_sha256": sha256_text("\n".join(keys) + "\n"),
+            },
+            sort_keys=True,
+        )
+    )
+
+
+def create_contract(args: argparse.Namespace) -> None:
+    source_ref = project_ref(args.project_ref, "production project reference")
+    keys = recipients(Path(args.recipients))
+    created = parse_time(args.created_at, "created-at")
+    dump_files = dump_inventory(Path(args.dump_dir))
+    contract: dict[str, object] = {
+        "source_project_ref_sha256": sha256_text(source_ref),
+        "created_at": created.isoformat().replace("+00:00", "Z"),
+        "maximum_rpo_seconds": args.maximum_rpo_seconds,
+        "retention_days": args.retention_days,
+        "dump_files": dump_files,
+        "recipients_sha256": sha256_text("\n".join(keys) + "\n"),
+        "supabase_cli_version": args.supabase_cli_version,
+    }
+    envelope = {
+        "schema": CONTRACT_SCHEMA,
+        "contract": contract,
+        "contract_sha256": sha256_text(stable_json(contract)),
+    }
+    output = Path(args.output)
+    output.write_text(json.dumps(envelope, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    print(json.dumps({"contract": str(output), "contract_sha256": envelope["contract_sha256"]}))
+
+
+def create_manifest(args: argparse.Namespace) -> None:
+    contract = read_contract(Path(args.contract))
+    plaintext = Path(args.plaintext_archive)
+    ciphertext = Path(args.ciphertext_archive)
+    if not plaintext.is_file() or plaintext.stat().st_size <= 0:
+        raise ContractError("the plaintext archive is missing or empty")
+    if not ciphertext.is_file() or ciphertext.stat().st_size <= 0:
+        raise ContractError("the encrypted archive is missing or empty")
+    artifact: dict[str, object] = {
+        "backup_contract_sha256": contract["contract_sha256"],
+        "plaintext_archive": {
+            "bytes": plaintext.stat().st_size,
+            "sha256": sha256_file(plaintext),
+        },
+        "ciphertext_archive": {
+            "bytes": ciphertext.stat().st_size,
+            "sha256": sha256_file(ciphertext),
+        },
+        "repository_commit": args.repository_commit,
+        "workflow_run_id": args.workflow_run_id,
+    }
+    manifest = {
+        "schema": ARTIFACT_SCHEMA,
+        "artifact": artifact,
+        "artifact_sha256": sha256_text(stable_json(artifact)),
+    }
+    output = Path(args.output)
+    output.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    print(json.dumps({"manifest": str(output), "artifact_sha256": manifest["artifact_sha256"]}))
+
+
+def verify_artifact(args: argparse.Namespace) -> None:
+    manifest = read_manifest(Path(args.manifest))
+    artifact = manifest["artifact"]
+    assert isinstance(artifact, dict)
+    ciphertext = Path(args.ciphertext_archive)
+    expected = artifact.get("ciphertext_archive")
+    if not isinstance(expected, dict):
+        raise ContractError("the encrypted archive contract is missing")
+    if expected.get("bytes") != ciphertext.stat().st_size or expected.get("sha256") != sha256_file(ciphertext):
+        raise ContractError("the encrypted archive does not match the manifest")
+    print(json.dumps({"valid": True, "artifact_sha256": manifest["artifact_sha256"]}))
+
+
+def validate_restore_target(args: argparse.Namespace) -> None:
+    source_ref = project_ref(args.source_project_ref, "production project reference")
+    scratch_ref = project_ref(args.scratch_project_ref, "scratch project reference")
+    if source_ref == scratch_ref:
+        raise ContractError("the restore target is the production project")
+    identity = database_identity(args.scratch_db_url, scratch_ref, "scratch database")
+    print(json.dumps({"valid": True, **identity}, sort_keys=True))
+
+
+def extract_artifact(args: argparse.Namespace) -> None:
+    archive = Path(args.plaintext_archive)
+    manifest = read_manifest(Path(args.manifest))
+    artifact = manifest["artifact"]
+    assert isinstance(artifact, dict)
+    expected_archive = artifact.get("plaintext_archive")
+    if not isinstance(expected_archive, dict):
+        raise ContractError("the plaintext archive contract is missing")
+    if (
+        expected_archive.get("bytes") != archive.stat().st_size
+        or expected_archive.get("sha256") != sha256_file(archive)
+    ):
+        raise ContractError("the decrypted archive does not match the manifest")
+    output = Path(args.output_dir)
+    if output.exists() and any(output.iterdir()):
+        raise ContractError("the extraction directory is not empty")
+    output.mkdir(mode=0o700, parents=True, exist_ok=True)
+
+    with tarfile.open(archive, mode="r:gz") as bundle:
+        members = bundle.getmembers()
+        names = [member.name for member in members]
+        if sorted(names) != sorted(ARCHIVE_MEMBERS):
+            raise ContractError("the archive member allowlist does not match")
+        for member in members:
+            if not member.isfile():
+                raise ContractError("the archive contains a non-regular member")
+            if member.name.startswith("/") or ".." in Path(member.name).parts:
+                raise ContractError("the archive contains an unsafe member path")
+            if member.size <= 0 or member.size > MAX_ARCHIVE_MEMBER_BYTES:
+                raise ContractError("the archive contains an invalid member size")
+            source = bundle.extractfile(member)
+            if source is None:
+                raise ContractError("the archive member is not readable")
+            destination = output / member.name
+            with destination.open("xb") as target:
+                while chunk := source.read(1024 * 1024):
+                    target.write(chunk)
+            destination.chmod(0o600)
+
+    contract = read_contract(output / "backup-contract.json")
+    if artifact.get("backup_contract_sha256") != contract.get("contract_sha256"):
+        raise ContractError("the decrypted backup contract does not match the manifest")
+    inventory = dump_inventory(output)
+    expected = contract["contract"].get("dump_files")
+    if stable_json(inventory) != stable_json(expected):
+        raise ContractError("the extracted dump files do not match the backup contract")
+    print(json.dumps({"valid": True, "contract_sha256": contract["contract_sha256"]}))
+
+
+def verify_restored_dumps(args: argparse.Namespace) -> None:
+    source = {entry["name"]: entry for entry in dump_inventory(Path(args.source_dir))}
+    restored: dict[str, dict[str, object]] = {}
+    for name in ("schema.sql", "data.sql"):
+        path = Path(args.restored_dir) / name
+        if not path.is_file() or path.stat().st_size <= 0:
+            raise ContractError(f"the restored dump is missing or empty: {name}")
+        restored[name] = {
+            "name": name,
+            "bytes": path.stat().st_size,
+            "sha256": sha256_file(path),
+        }
+    # Roles are target-specific. Schema and data must reproduce exactly.
+    for name in ("schema.sql", "data.sql"):
+        if source[name]["sha256"] != restored[name]["sha256"]:
+            raise ContractError(f"the restored {name} does not match the backup")
+    print(
+        json.dumps(
+            {
+                "valid": True,
+                "schema_sha256": source["schema.sql"]["sha256"],
+                "data_sha256": source["data.sql"]["sha256"],
+            },
+            sort_keys=True,
+        )
+    )
+
+
+def record_restore(args: argparse.Namespace) -> None:
+    manifest = read_manifest(Path(args.manifest))
+    contract = read_contract(Path(args.contract))
+    source_ref = project_ref(args.source_project_ref, "production project reference")
+    scratch_ref = project_ref(args.scratch_project_ref, "scratch project reference")
+    if source_ref == scratch_ref:
+        raise ContractError("the restore target is the production project")
+    artifact = manifest["artifact"]
+    assert isinstance(artifact, dict)
+    payload = contract["contract"]
+    assert isinstance(payload, dict)
+    if artifact.get("backup_contract_sha256") != contract.get("contract_sha256"):
+        raise ContractError("the artifact and backup contract do not match")
+    if payload.get("source_project_ref_sha256") != sha256_text(source_ref):
+        raise ContractError("the backup does not belong to the declared production project")
+
+    verification = json.loads(Path(args.verification).read_text(encoding="utf-8"))
+    if verification.get("valid") is not True:
+        raise ContractError("the scratch restore verification did not pass")
+    dump_files = payload.get("dump_files")
+    if not isinstance(dump_files, list):
+        raise ContractError("the backup contract has no dump inventory")
+    expected_digests = {
+        entry.get("name"): entry.get("sha256")
+        for entry in dump_files
+        if isinstance(entry, dict)
+    }
+    for name in ("schema", "data"):
+        if verification.get(f"{name}_sha256") != expected_digests.get(f"{name}.sql"):
+            raise ContractError("the restore verification does not match the backup contract")
+    started = parse_time(args.started_at, "started-at")
+    completed = parse_time(args.completed_at, "completed-at")
+    if completed < started:
+        raise ContractError("the restore completion time precedes the start time")
+    recovery_point = parse_time(str(payload.get("created_at")), "backup recovery point")
+    receipt = {
+        "schema": RESTORE_EVIDENCE_SCHEMA,
+        "backup_contract_sha256": contract["contract_sha256"],
+        "artifact_sha256": manifest["artifact_sha256"],
+        "source_project_ref_sha256": sha256_text(source_ref),
+        "scratch_project_ref_sha256": sha256_text(scratch_ref),
+        "recovery_point_at": recovery_point.isoformat().replace("+00:00", "Z"),
+        "started_at": started.isoformat().replace("+00:00", "Z"),
+        "completed_at": completed.isoformat().replace("+00:00", "Z"),
+        "rpo_seconds_at_start": max(0, int((started - recovery_point).total_seconds())),
+        "rto_seconds": int((completed - started).total_seconds()),
+        "schema_sha256": verification["schema_sha256"],
+        "data_sha256": verification["data_sha256"],
+        "database_restored": True,
+        "storage_restored": False,
+    }
+    output = Path(args.output)
+    try:
+        with output.open("x", encoding="utf-8") as stream:
+            json.dump(receipt, stream, indent=2, sort_keys=True)
+            stream.write("\n")
+    except FileExistsError as error:
+        raise ContractError("the restore evidence output already exists") from error
+    print(json.dumps({"receipt": str(output), "rto_seconds": receipt["rto_seconds"]}))
+
+
+def parser() -> argparse.ArgumentParser:
+    root = argparse.ArgumentParser()
+    commands = root.add_subparsers(dest="command", required=True)
+
+    source = commands.add_parser("validate-source")
+    source.add_argument("--db-url", required=True)
+    source.add_argument("--project-ref", required=True)
+    source.add_argument("--recipients", required=True)
+    source.set_defaults(run=validate_source)
+
+    contract = commands.add_parser("create-contract")
+    contract.add_argument("--project-ref", required=True)
+    contract.add_argument("--recipients", required=True)
+    contract.add_argument("--dump-dir", required=True)
+    contract.add_argument("--created-at", required=True)
+    contract.add_argument("--supabase-cli-version", required=True)
+    contract.add_argument("--maximum-rpo-seconds", type=int, default=86400)
+    contract.add_argument("--retention-days", type=int, default=90)
+    contract.add_argument("--output", required=True)
+    contract.set_defaults(run=create_contract)
+
+    manifest = commands.add_parser("create-manifest")
+    manifest.add_argument("--contract", required=True)
+    manifest.add_argument("--plaintext-archive", required=True)
+    manifest.add_argument("--ciphertext-archive", required=True)
+    manifest.add_argument("--repository-commit", required=True)
+    manifest.add_argument("--workflow-run-id", required=True)
+    manifest.add_argument("--output", required=True)
+    manifest.set_defaults(run=create_manifest)
+
+    artifact = commands.add_parser("verify-artifact")
+    artifact.add_argument("--manifest", required=True)
+    artifact.add_argument("--ciphertext-archive", required=True)
+    artifact.set_defaults(run=verify_artifact)
+
+    target = commands.add_parser("validate-restore-target")
+    target.add_argument("--source-project-ref", required=True)
+    target.add_argument("--scratch-project-ref", required=True)
+    target.add_argument("--scratch-db-url", required=True)
+    target.set_defaults(run=validate_restore_target)
+
+    extract = commands.add_parser("extract-artifact")
+    extract.add_argument("--plaintext-archive", required=True)
+    extract.add_argument("--manifest", required=True)
+    extract.add_argument("--output-dir", required=True)
+    extract.set_defaults(run=extract_artifact)
+
+    restored = commands.add_parser("verify-restored-dumps")
+    restored.add_argument("--source-dir", required=True)
+    restored.add_argument("--restored-dir", required=True)
+    restored.set_defaults(run=verify_restored_dumps)
+
+    receipt = commands.add_parser("record-restore")
+    receipt.add_argument("--manifest", required=True)
+    receipt.add_argument("--contract", required=True)
+    receipt.add_argument("--verification", required=True)
+    receipt.add_argument("--source-project-ref", required=True)
+    receipt.add_argument("--scratch-project-ref", required=True)
+    receipt.add_argument("--started-at", required=True)
+    receipt.add_argument("--completed-at", required=True)
+    receipt.add_argument("--output", required=True)
+    receipt.set_defaults(run=record_restore)
+    return root
+
+
+def main() -> int:
+    args = parser().parse_args()
+    try:
+        args.run(args)
+    except (ContractError, OSError, json.JSONDecodeError) as error:
+        print(f"error: {error}", file=sys.stderr)
+        return 2
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
