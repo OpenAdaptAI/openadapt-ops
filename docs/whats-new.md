@@ -1,18 +1,18 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-08-10 10:19 UTC*
+> *Last updated: 2026-08-11 19:47 UTC*
 
 
 
 ## OpenAdapt
 
 
+- [fix(deps): bump h2 to 4.4.1 to resolve request-smuggling advisory](https://github.com/OpenAdaptAI/OpenAdapt/pull/1092) (#1092) — merged 
+
 - [docs: explain the mobile decision path](https://github.com/OpenAdaptAI/OpenAdapt/pull/1091) (#1091) — merged 
 
 - [feat: add guided deployment preflight](https://github.com/OpenAdaptAI/OpenAdapt/pull/1088) (#1088) — merged 
-
-- [chore(deps): move build off the yanked 1.5.1 release](https://github.com/OpenAdaptAI/OpenAdapt/pull/1087) (#1087) — merged 
 
 
 
