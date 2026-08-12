@@ -1,0 +1,30 @@
+# openadapt-flow deployment.yaml snippet: point the grounder at the
+# self-hosted Qwen endpoint on Modal (qwen_endpoint/app.py in openadapt-ops).
+#
+# Merge this `runtime:` block into an operator's deployment config (schema:
+# openadapt_flow/deployment.py; full example: docs/deployment.example.yaml in
+# the openadapt-flow repo). The endpoint URL below is the deterministic Modal
+# web-server URL for workspace `abrichr`; `modal deploy` prints the exact URL.
+#
+# The API key is a REFERENCE: `api_key_env` names an env var, never a literal.
+# Source it from the Keychain at runtime, e.g. via qwen_endpoint/with_token.sh:
+#   ./with_token.sh openadapt-flow run --config deployment.yaml ...
+
+runtime:
+  # Egress opt-in (PHI audit REM-3): the VLM grounder sends the screenshot to
+  # the endpoint. Without this flag the run stays fully local and the grounder
+  # below is refused.
+  allow_model_grounding: true
+
+  # The VLM fallback rung BEHIND the local OCR rung (bring-your-own-model).
+  grounding_model:
+    enabled: true
+    provider: openai_compatible
+    base_url: "https://abrichr--qwen-grounder-endpoint-serve.modal.run/v1"
+    model: "qwen2.5-vl-7b-instruct"
+    api_key_env: "OPENADAPT_FLOW_GROUNDING_API_KEY"
+
+  # PHI mode only (fail-closed): the endpoint host must be allowlisted or the
+  # run stays fully local. Harmless in non-PHI runs.
+  phi_grounding_allowlist:
+    - "abrichr--qwen-grounder-endpoint-serve.modal.run"
