@@ -1,0 +1,47 @@
+{
+  "schema_version": "openadapt.production-lifecycle-source/v1",
+  "repository": "OpenAdaptAI/.github",
+  "source_commit": "6d882bd3e5bb1e70bebaabce690800d3fe555e93",
+  "files": {
+    "admissions": {
+      "path": "production-lifecycle-admissions.json",
+      "url": "https://raw.githubusercontent.com/OpenAdaptAI/.github/6d882bd3e5bb1e70bebaabce690800d3fe555e93/production-lifecycle-admissions.json",
+      "sha256": "sha256:aa13f9abf9c70dacdb9b13fdf237c6b5f193011ce834ac7f616ff7441c3ecbd9"
+    },
+    "admissions_schema": {
+      "path": "schemas/production-lifecycle-admissions.schema.json",
+      "url": "https://raw.githubusercontent.com/OpenAdaptAI/.github/6d882bd3e5bb1e70bebaabce690800d3fe555e93/schemas/production-lifecycle-admissions.schema.json",
+      "sha256": "sha256:a263f929549a4098244965f1e4bee73707c99173829771af2d79bedc081bdd81"
+    },
+    "evidence_manifest_schema": {
+      "path": "schemas/production-lifecycle-evidence-manifest.schema.json",
+      "url": "https://raw.githubusercontent.com/OpenAdaptAI/.github/6d882bd3e5bb1e70bebaabce690800d3fe555e93/schemas/production-lifecycle-evidence-manifest.schema.json",
+      "sha256": "sha256:4bb0aff068c38ea0a407e27fac68ca9f4a178983af4f560f9dac5ebf8c672376"
+    },
+    "evidence_summary_schema": {
+      "path": "schemas/production-lifecycle-evidence-summary.schema.json",
+      "url": "https://raw.githubusercontent.com/OpenAdaptAI/.github/6d882bd3e5bb1e70bebaabce690800d3fe555e93/schemas/production-lifecycle-evidence-summary.schema.json",
+      "sha256": "sha256:01dd60e8e68391434a8bfd81a5c610f29b9d4a7ec2a36761622da141cdba7d58"
+    },
+    "lifecycle": {
+      "path": "repository-lifecycle.yml",
+      "url": "https://raw.githubusercontent.com/OpenAdaptAI/.github/6d882bd3e5bb1e70bebaabce690800d3fe555e93/repository-lifecycle.yml",
+      "sha256": "sha256:dc8af3941e3f865e2303ad075a0e7f4597d601c53f5795594cd4f9bcdc1f6420"
+    },
+    "policy": {
+      "path": "production-lifecycle-policy.json",
+      "url": "https://raw.githubusercontent.com/OpenAdaptAI/.github/6d882bd3e5bb1e70bebaabce690800d3fe555e93/production-lifecycle-policy.json",
+      "sha256": "sha256:e1444a08ce6b16736168cce027ce9d48abb2e0e246fc0cd79c0772fa8e423e11"
+    },
+    "policy_schema": {
+      "path": "schemas/production-lifecycle-policy.schema.json",
+      "url": "https://raw.githubusercontent.com/OpenAdaptAI/.github/6d882bd3e5bb1e70bebaabce690800d3fe555e93/schemas/production-lifecycle-policy.schema.json",
+      "sha256": "sha256:7ba6daadf2bd3b4382cebc958177e709272bb360fa0a0d231f648727ed34058c"
+    },
+    "validator": {
+      "path": "scripts/validate_production_lifecycle.py",
+      "url": "https://raw.githubusercontent.com/OpenAdaptAI/.github/6d882bd3e5bb1e70bebaabce690800d3fe555e93/scripts/validate_production_lifecycle.py",
+      "sha256": "sha256:7f665f8c385d496aed21a580278c2af75666ea57a749ed1bb404622b383e0b5a"
+    }
+  }
+}

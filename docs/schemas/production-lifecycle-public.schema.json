@@ -1,0 +1,136 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://docs.openadapt.ai/schemas/production-lifecycle-public.schema.json",
+  "title": "OpenAdapt public Production lifecycle projection",
+  "description": "Remote-safe projection of the evidence-gated Production lifecycle. Production is derived at read time from the latest signed admission; this file never stores a static Production flag.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "schema_version",
+    "source",
+    "policy_revision",
+    "maximum_admission_days",
+    "derivation",
+    "targets"
+  ],
+  "properties": {
+    "$schema": {"const": "schemas/production-lifecycle-public.schema.json"},
+    "schema_version": {"const": "openadapt.public-production-lifecycle/v1"},
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "repository", "source_commit", "files"],
+      "properties": {
+        "schema_version": {"const": "openadapt.production-lifecycle-source/v1"},
+        "repository": {"const": "OpenAdaptAI/.github"},
+        "source_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "files": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "admissions",
+            "admissions_schema",
+            "evidence_manifest_schema",
+            "evidence_summary_schema",
+            "lifecycle",
+            "policy",
+            "policy_schema",
+            "validator"
+          ],
+          "patternProperties": {
+            "^[a-z_]+$": {"$ref": "#/$defs/sourceFile"}
+          }
+        }
+      }
+    },
+    "policy_revision": {"type": "integer", "minimum": 1},
+    "maximum_admission_days": {"type": "integer", "minimum": 1},
+    "derivation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "static_production_state",
+        "expired_or_revoked_latest_behavior",
+        "fallback_to_older_release"
+      ],
+      "properties": {
+        "mode": {"const": "latest_signed_admission_at_read_time"},
+        "static_production_state": {"const": false},
+        "expired_or_revoked_latest_behavior": {"const": "no_production"},
+        "fallback_to_older_release": {"const": false}
+      }
+    },
+    "targets": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/target"}
+    }
+  },
+  "$defs": {
+    "digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "sourceFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "url", "sha256"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "url": {
+          "type": "string",
+          "pattern": "^https://raw\\.githubusercontent\\.com/OpenAdaptAI/\\.github/[0-9a-f]{40}/"
+        },
+        "sha256": {"$ref": "#/$defs/digest"}
+      }
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "display_name",
+        "lifecycle_scope",
+        "lifecycle_subject",
+        "source_repository",
+        "release_kind",
+        "required_claim_scope",
+        "required_artifact_kinds",
+        "package_index_project",
+        "artifact_authority_by_kind",
+        "latest_admission",
+        "admission_history"
+      ],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z][a-z0-9-]{1,63}$"},
+        "display_name": {"type": "string", "minLength": 1},
+        "lifecycle_scope": {"enum": ["repository", "public_surface"]},
+        "lifecycle_subject": {"type": "string", "minLength": 1},
+        "source_repository": {"type": "string", "pattern": "^OpenAdaptAI/[A-Za-z0-9._-]+$"},
+        "release_kind": {
+          "enum": ["public_package", "public_deployment", "private_deployment"]
+        },
+        "required_claim_scope": {"type": "string", "pattern": "^[a-z][a-z0-9_]{2,127}$"},
+        "required_artifact_kinds": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1}
+        },
+        "package_index_project": {
+          "oneOf": [{"type": "null"}, {"type": "string", "minLength": 1}]
+        },
+        "artifact_authority_by_kind": {
+          "type": "object",
+          "additionalProperties": {
+            "enum": ["pypi", "github_release", "managed_evidence"]
+          }
+        },
+        "latest_admission": {
+          "oneOf": [{"type": "null"}, {"type": "object"}]
+        },
+        "admission_history": {
+          "type": "array",
+          "items": {"type": "object"}
+        }
+      }
+    }
+  }
+}
