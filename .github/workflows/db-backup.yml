@@ -13,7 +13,6 @@ on:
 
 permissions:
   contents: read
-  id-token: write
 
 concurrency:
   group: production-db-backup
@@ -24,18 +23,36 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment: production-backup
+    permissions:
+      contents: read
+      id-token: write
     env:
       AWS_REGION: us-east-1
+      BACKUP_ROLE_ARN: ${{ vars.AWS_BACKUP_ROLE_ARN }}
       BACKUP_BUCKET: ${{ vars.AWS_BACKUP_BUCKET }}
       SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
       SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
     steps:
+      - name: Validate the protected environment configuration
+        run: |
+          set -euo pipefail
+          missing=()
+          [ -n "${BACKUP_ROLE_ARN}" ] || missing+=(AWS_BACKUP_ROLE_ARN)
+          [ -n "${BACKUP_BUCKET}" ] || missing+=(AWS_BACKUP_BUCKET)
+          [ -n "${SUPABASE_DB_URL}" ] || missing+=(SUPABASE_DB_URL)
+          [ -n "${SUPABASE_PROJECT_REF}" ] || missing+=(SUPABASE_PROJECT_REF)
+          if [ "${#missing[@]}" -ne 0 ]; then
+            echo "::error::The production-backup environment is missing: ${missing[*]}"
+            exit 1
+          fi
+          echo 'The four required production-backup settings are present.'
+
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - uses: aws-actions/configure-aws-credentials@e6de054238d6b7531b4efff3b6587d9aade6a06c # v6.2.3
         with:
           aws-region: ${{ env.AWS_REGION }}
-          role-to-assume: ${{ vars.AWS_BACKUP_ROLE_ARN }}
+          role-to-assume: ${{ env.BACKUP_ROLE_ARN }}
           allowed-account-ids: '992382684924'
           role-session-name: openadapt-db-backup-${{ github.run_id }}
 
@@ -138,3 +155,53 @@ jobs:
             --query 'Checksum.ChecksumSHA256' --output text)
           test "$remote_checksum" = "$local_checksum"
           echo "Encrypted database backup stored at s3://${BACKUP_BUCKET}/${prefix}/"
+
+  record-alert:
+    name: Keep one durable backup alert
+    needs: dump
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TITLE: Production database backup is not current
+    steps:
+      - name: Open, reopen, update, or close the backup issue
+        env:
+          BACKUP_RESULT: ${{ needs.dump.result }}
+        run: |
+          set -euo pipefail
+          existing_json=$(gh issue list --repo "${GITHUB_REPOSITORY}" --state all \
+            --limit 1000 --json number,title,state \
+            --jq '[.[] | select(.title == env.TITLE)][0] // {}')
+          existing=$(jq -r '.number // empty' <<< "${existing_json}")
+          existing_state=$(jq -r '.state // empty' <<< "${existing_json}")
+          if [ "${BACKUP_RESULT}" = 'success' ]; then
+            if [ -n "${existing}" ] && [ "${existing_state}" = 'OPEN' ]; then
+              gh issue close "${existing}" --repo "${GITHUB_REPOSITORY}" \
+                --comment "The encrypted database backup passed in ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}. The independent freshness check remains authoritative for the current recovery point."
+            else
+              echo 'The backup passed and no workflow-failure issue is open.'
+            fi
+            exit 0
+          fi
+
+          printf '%s\n' \
+            'The scheduled production database backup did not complete.' \
+            '' \
+            "Run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" \
+            '' \
+            'No new recovery point is claimed. Review the failed step before any retry.' \
+            > database-backup-alert.md
+          if [ -n "${existing}" ]; then
+            if [ "${existing_state}" = 'CLOSED' ]; then
+              gh issue reopen "${existing}" --repo "${GITHUB_REPOSITORY}"
+            fi
+            gh issue edit "${existing}" --repo "${GITHUB_REPOSITORY}" \
+              --body-file database-backup-alert.md
+          else
+            gh issue create --repo "${GITHUB_REPOSITORY}" \
+              --title "${TITLE}" --body-file database-backup-alert.md
+          fi

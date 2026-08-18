@@ -18,14 +18,20 @@ The design target is:
 - measured database-only RPO and recovery-time objective (RTO) evidence; and
 - the separate Cloud drill before any complete recovery claim.
 
-This is not yet a proven recovery path. As of 2026-08-08:
+This is not yet a proven recovery path. A read-only check on 2026-08-18 used
+AWS account `992382684924` and confirmed that the
+`openadapt-production-db-backup` CloudFormation stack does not exist. GitHub
+issue [#126](https://github.com/OpenAdaptAI/openadapt-ops/issues/126) records
+the matching protected-environment configuration failure. As of that check:
 
 - no daily backup has completed;
 - no scratch restore has completed;
 - no measured RTO exists;
 - provider PITR is not enabled;
 - the AWS stack is not deployed;
-- the production database URL is not configured in the GitHub environment;
+- the `production-backup` GitHub environment has none of its four required
+  settings;
+- the `production-backup-monitor` GitHub environment is not configured;
 - no scratch Supabase project is configured; and
 - one local private `age` key exists, but its required second vault or offline
   copy is not confirmed.
@@ -65,7 +71,9 @@ The CloudFormation template creates:
 - 90-day retention for daily backups;
 - 365-day retention for database-only drill evidence;
 - a GitHub OIDC writer role bound to the exact `production-backup`
-  environment; and
+  environment;
+- a read-only GitHub OIDC monitor role bound to the exact
+  `production-backup-monitor` environment; and
 - a local restore role bound to one exact AWS operator principal.
 
 The expected S3 Standard storage price is approximately USD 0.023 per GB each
@@ -101,7 +109,7 @@ aws cloudformation describe-stacks \
 
 ## One-time GitHub setup
 
-First protect the repository and the environment:
+First protect the repository and both environments:
 
 1. Protect `main` with a repository ruleset. Require a pull request and code
    owner review for the backup trust-boundary files in `.github/CODEOWNERS`.
@@ -114,6 +122,16 @@ First protect the repository and the environment:
 5. Set environment secrets:
    - `SUPABASE_DB_URL`: the production direct or session-pooler PostgreSQL URL
    - `SUPABASE_PROJECT_REF`: the exact production project reference
+6. Create the `production-backup-monitor` GitHub environment.
+7. Restrict that environment to the protected `main` branch. Do not require a
+   manual deployment approval because it would prevent the hourly schedule.
+8. Set two environment variables from the CloudFormation outputs:
+   - `AWS_BACKUP_BUCKET`
+   - `AWS_BACKUP_MONITOR_ROLE_ARN`
+
+The monitor environment has no secret. Its AWS role can list and inspect only
+the `daily/` objects. It cannot create, replace, delete, download, or decrypt a
+database backup.
 
 The workflow validates that the URL belongs to the declared Supabase project.
 It also checks AWS account `992382684924`, complete S3 public-access blocking,
@@ -133,6 +151,10 @@ next schedule.
 gh workflow run db-backup.yml --repo OpenAdaptAI/openadapt-ops --ref main
 gh run list --repo OpenAdaptAI/openadapt-ops \
   --workflow db-backup.yml --limit 5
+gh workflow run db-backup-freshness.yml \
+  --repo OpenAdaptAI/openadapt-ops --ref main
+gh run list --repo OpenAdaptAI/openadapt-ops \
+  --workflow db-backup-freshness.yml --limit 5
 ```
 
 Require all of these results:
@@ -142,6 +164,9 @@ Require all of these results:
   UTC stamp;
 - the stored SHA-256 checksum equals the local upload checksum; and
 - no GitHub Actions artifact exists for the run.
+- the separate read-only freshness workflow selects the same recovery point,
+  validates the redacted manifest digest, matches the S3 object size and remote
+  checksum, and reports an age of less than 24 hours.
 
 A successful upload proves backup creation and storage. It does not prove that
 the backup can restore.
@@ -257,10 +282,16 @@ as exposed. Do not keep encrypting new backups to both old and new recipients.
 
 ## Alerts and scheduled-workflow limits
 
-A failed backup job stays red and GitHub sends workflow failure notifications
-according to repository notification settings. The founder must monitor this
-signal. A later change should add a direct freshness alert from an independent
-system after the first successful object exists.
+A failed backup job stays red and opens or updates one durable GitHub issue.
+The hourly `Production DB backup freshness` workflow uses a separate read-only
+AWS role. It opens or updates one durable issue when the newest complete pair
+is absent, stale, or inconsistent. A successful run closes its matching issue.
+
+The two checks use different workflows and different AWS roles. They still use
+the same GitHub scheduler. Configure one external monitor to alert when either
+workflow stops running. The external monitor can inspect the workflow age or
+assume a separate read-only role and inspect the newest S3 recovery point. Do
+not give the external monitor the backup writer role.
 
 GitHub can disable schedules after 60 days without repository activity. The
 daily documentation sync currently keeps this repository active. Verify the

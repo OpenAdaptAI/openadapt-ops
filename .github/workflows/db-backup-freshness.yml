@@ -1,0 +1,136 @@
+name: Production DB backup freshness
+
+# Read-only check of the newest off-provider database recovery point. This job
+# cannot create, replace, or delete a backup. It inspects only the redacted
+# manifest and S3 metadata; it never downloads or decrypts database bytes.
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '43 * * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-db-backup-freshness
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: production-backup-monitor
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      AWS_REGION: us-east-1
+      BACKUP_BUCKET: ${{ vars.AWS_BACKUP_BUCKET }}
+      BACKUP_MONITOR_ROLE_ARN: ${{ vars.AWS_BACKUP_MONITOR_ROLE_ARN }}
+    steps:
+      - name: Validate the read-only monitor configuration
+        run: |
+          set -euo pipefail
+          missing=()
+          [ -n "${BACKUP_BUCKET}" ] || missing+=(AWS_BACKUP_BUCKET)
+          [ -n "${BACKUP_MONITOR_ROLE_ARN}" ] || missing+=(AWS_BACKUP_MONITOR_ROLE_ARN)
+          if [ "${#missing[@]}" -ne 0 ]; then
+            echo "::error::The production-backup-monitor environment is missing: ${missing[*]}"
+            exit 1
+          fi
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: aws-actions/configure-aws-credentials@e6de054238d6b7531b4efff3b6587d9aade6a06c # v6.2.3
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: ${{ env.BACKUP_MONITOR_ROLE_ARN }}
+          allowed-account-ids: '992382684924'
+          role-session-name: openadapt-db-backup-monitor-${{ github.run_id }}
+
+      - name: Verify the private bucket and select the newest recovery point
+        id: select
+        run: |
+          set -euo pipefail
+          test "$(aws sts get-caller-identity --query Account --output text)" = '992382684924'
+          aws s3api get-public-access-block --bucket "$BACKUP_BUCKET" \
+            --query 'PublicAccessBlockConfiguration.[BlockPublicAcls,IgnorePublicAcls,BlockPublicPolicy,RestrictPublicBuckets]' \
+            --output text | grep -q $'True\tTrue\tTrue\tTrue'
+          test "$(aws s3api get-bucket-encryption --bucket "$BACKUP_BUCKET" \
+            --query 'ServerSideEncryptionConfiguration.Rules[0].ApplyServerSideEncryptionByDefault.SSEAlgorithm' \
+            --output text)" = 'AES256'
+          aws s3api list-objects-v2 --bucket "$BACKUP_BUCKET" --prefix daily/ \
+            > /tmp/database-backup-inventory.json
+          python scripts/check_database_backup_freshness.py select \
+            --inventory /tmp/database-backup-inventory.json \
+            --output /tmp/database-backup-selection.json \
+            --github-output "$GITHUB_OUTPUT" \
+            --maximum-age-seconds 86400
+
+      - name: Verify the redacted manifest and the encrypted object
+        run: |
+          set -euo pipefail
+          aws s3api get-object --bucket "$BACKUP_BUCKET" \
+            --key '${{ steps.select.outputs.manifest_key }}' \
+            /tmp/database-backup-manifest.json > /dev/null
+          aws s3api get-object-attributes --bucket "$BACKUP_BUCKET" \
+            --key '${{ steps.select.outputs.ciphertext_key }}' \
+            --object-attributes Checksum,ObjectSize,StorageClass \
+            > /tmp/database-backup-attributes.json
+          python scripts/check_database_backup_freshness.py verify \
+            --selection /tmp/database-backup-selection.json \
+            --manifest /tmp/database-backup-manifest.json \
+            --attributes /tmp/database-backup-attributes.json
+
+  record-alert:
+    name: Keep one durable backup freshness alert
+    needs: verify
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TITLE: Production database recovery point is stale or unverified
+    steps:
+      - name: Open, reopen, update, or close the freshness issue
+        env:
+          VERIFY_RESULT: ${{ needs.verify.result }}
+        run: |
+          set -euo pipefail
+          existing_json=$(gh issue list --repo "${GITHUB_REPOSITORY}" --state all \
+            --limit 1000 --json number,title,state \
+            --jq '[.[] | select(.title == env.TITLE)][0] // {}')
+          existing=$(jq -r '.number // empty' <<< "${existing_json}")
+          existing_state=$(jq -r '.state // empty' <<< "${existing_json}")
+          if [ "${VERIFY_RESULT}" = 'success' ]; then
+            if [ -n "${existing}" ] && [ "${existing_state}" = 'OPEN' ]; then
+              gh issue close "${existing}" --repo "${GITHUB_REPOSITORY}" \
+                --comment "The newest encrypted recovery point is complete and less than 24 hours old in ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}."
+            else
+              echo 'The recovery point is current and no freshness issue is open.'
+            fi
+            exit 0
+          fi
+
+          printf '%s\n' \
+            'The read-only monitor did not prove a complete encrypted database recovery point from the last 24 hours.' \
+            '' \
+            "Run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" \
+            '' \
+            'The check reads only the redacted manifest and S3 metadata. It does not read or decrypt database bytes.' \
+            '' \
+            'Do not claim the 24-hour database RPO until a later run passes and closes this issue.' \
+            > database-backup-freshness-alert.md
+          if [ -n "${existing}" ]; then
+            if [ "${existing_state}" = 'CLOSED' ]; then
+              gh issue reopen "${existing}" --repo "${GITHUB_REPOSITORY}"
+            fi
+            gh issue edit "${existing}" --repo "${GITHUB_REPOSITORY}" \
+              --body-file database-backup-freshness-alert.md
+          else
+            gh issue create --repo "${GITHUB_REPOSITORY}" \
+              --title "${TITLE}" --body-file database-backup-freshness-alert.md
+          fi
