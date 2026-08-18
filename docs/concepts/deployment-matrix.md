@@ -108,11 +108,11 @@ synthetic. A missing production dependency makes the affected operation
 unavailable rather than substituting a simulated success.
 
 The retained hosted-recorder qualification used a Flow 1.8.0 worker. The
-current Cloud managed-runtime manifest pins Flow <!-- version-claim:hosted-runner-managed-runtime-pin -->1.31.0<!-- /version-claim:hosted-runner-managed-runtime-pin --> at release commit
-`2d225dea9a0ad29ca84ce1b037cc0ac671367e28`. Its wheel SHA-256 is
-`81133db1528ad1bb1f26e3fcb6aea61b0651db6d905cf2e4943e8383c1f3d29c` and
+current Cloud managed-runtime manifest pins Flow <!-- version-claim:hosted-runner-managed-runtime-pin:version -->1.31.0<!-- /version-claim:hosted-runner-managed-runtime-pin:version --> at release commit
+<code><!-- version-claim:hosted-runner-managed-runtime-pin:release_commit -->2d225dea9a0ad29ca84ce1b037cc0ac671367e28<!-- /version-claim:hosted-runner-managed-runtime-pin:release_commit --></code>. Its wheel SHA-256 is
+<code><!-- version-claim:hosted-runner-managed-runtime-pin:wheel_sha256 -->81133db1528ad1bb1f26e3fcb6aea61b0651db6d905cf2e4943e8383c1f3d29c<!-- /version-claim:hosted-runner-managed-runtime-pin:wheel_sha256 --></code> and
 its source SHA-256 is
-`cf1fc356d14d267df82be188de3e9a3575734f18f46ef91ac8075438cc731540`.
+<code><!-- version-claim:hosted-runner-managed-runtime-pin:sdist_sha256 -->cf1fc356d14d267df82be188de3e9a3575734f18f46ef91ac8075438cc731540<!-- /version-claim:hosted-runner-managed-runtime-pin:sdist_sha256 --></code>.
 The pin proves configured artifact identity. It does not prove that the build is
 deployed or that a hosted workflow passed acceptance. Public readiness checks
 live mode, authentication, database, private storage, runner, compiler,

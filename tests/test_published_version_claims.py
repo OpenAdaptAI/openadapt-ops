@@ -262,19 +262,26 @@ def _rendered_registry(version="1.31.0"):
                 "kind": "pinned-deployment",
                 "package": "openadapt-flow",
                 "version": version,
+                "release_commit": "a" * 40,
+                "wheel_sha256": "b" * 64,
+                "sdist_sha256": "c" * 64,
                 "rendered_locations": [
-                    {"file": "docs/a.md", "count": 1},
-                    {"file": "docs/b.md", "count": 2},
+                    {"file": "docs/a.md", "values": {"version": 1}},
+                    {"file": "docs/b.md", "values": {"version": 2}},
                 ],
             }
         ]
     }
 
 
-def _marked(claim_id="managed-runtime", version="1.31.0"):
+def _marked(
+    claim_id="managed-runtime",
+    field="version",
+    value="1.31.0",
+):
     return (
-        f"<!-- version-claim:{claim_id} -->{version}"
-        f"<!-- /version-claim:{claim_id} -->"
+        f"<!-- version-claim:{claim_id}:{field} -->{value}"
+        f"<!-- /version-claim:{claim_id}:{field} -->"
     )
 
 
@@ -295,6 +302,48 @@ def test_one_registry_version_renders_every_registered_location(tmp_path):
     assert "1.31.0" not in (tmp_path / "docs/a.md").read_text()
     assert (tmp_path / "docs/a.md").read_text().count("1.32.0") == 1
     assert (tmp_path / "docs/b.md").read_text().count("1.32.0") == 2
+
+
+def test_one_registry_claim_renders_the_complete_artifact_tuple(tmp_path):
+    registry = _rendered_registry(version="1.32.0")
+    claim = registry["claims"][0]
+    claim.update(
+        release_commit="d" * 40,
+        wheel_sha256="e" * 64,
+        sdist_sha256="f" * 64,
+        rendered_locations=[
+            {
+                "file": "docs/tuple.md",
+                "values": {
+                    "version": 1,
+                    "release_commit": 1,
+                    "wheel_sha256": 1,
+                    "sdist_sha256": 1,
+                },
+            }
+        ],
+    )
+    _tree(
+        tmp_path,
+        {
+            "docs/tuple.md": " ".join(
+                [
+                    _marked(),
+                    _marked(field="release_commit", value="a" * 40),
+                    _marked(field="wheel_sha256", value="b" * 64),
+                    _marked(field="sdist_sha256", value="c" * 64),
+                ]
+            )
+        },
+    )
+
+    errors, changed = render_version_claims(registry, root=tmp_path)
+
+    rendered = (tmp_path / "docs/tuple.md").read_text()
+    assert errors == []
+    assert [path.name for path in changed] == ["tuple.md"]
+    for expected in ("1.32.0", "d" * 40, "e" * 64, "f" * 64):
+        assert expected in rendered
 
 
 def test_render_check_fails_when_a_generated_value_is_stale(tmp_path):
@@ -333,7 +382,7 @@ def test_render_check_fails_for_missing_or_extra_marker(tmp_path):
 
 def test_render_refuses_malformed_marker_without_partial_writes(tmp_path):
     registry = _rendered_registry(version="1.32.0")
-    malformed = "<!-- version-claim:managed-runtime -->1.31.0"
+    malformed = "<!-- version-claim:managed-runtime:version -->1.31.0"
     _tree(
         tmp_path,
         {
@@ -347,6 +396,26 @@ def test_render_refuses_malformed_marker_without_partial_writes(tmp_path):
     assert changed == []
     assert any("incomplete or malformed" in error for error in errors)
     assert "1.31.0" in (tmp_path / "docs/a.md").read_text()
+
+
+def test_render_rejects_a_marker_with_an_invalid_identifier(tmp_path):
+    registry = _rendered_registry()
+    invalid = (
+        "<!-- version-claim:bad@:version -->1.31.0"
+        "<!-- /version-claim:bad@:version -->"
+    )
+    _tree(
+        tmp_path,
+        {
+            "docs/a.md": f"Flow {_marked()} artifact\n",
+            "docs/b.md": f"runner {_marked()} and compiler {invalid}\n",
+        },
+    )
+
+    errors, changed = render_version_claims(registry, root=tmp_path)
+
+    assert changed == []
+    assert any("incomplete or malformed" in error for error in errors)
 
 
 # --------------------------------------------------------------------------

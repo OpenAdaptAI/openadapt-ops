@@ -132,7 +132,7 @@ live dependencies; a missing runner, storage, or billing dependency returns an
 operational failure and never substitutes mock success. Mock mode remains for
 development and is visibly synthetic. The retained non-simulated hosted-recorder
 qualification was run on Flow 1.8.0. The current managed-runtime manifest pins
-Flow <!-- version-claim:hosted-runner-managed-runtime-pin -->1.31.0<!-- /version-claim:hosted-runner-managed-runtime-pin --> artifact identity; that pin does not prove live deployment or hosted
+Flow <!-- version-claim:hosted-runner-managed-runtime-pin:version -->1.31.0<!-- /version-claim:hosted-runner-managed-runtime-pin:version --> artifact identity; that pin does not prove live deployment or hosted
 workflow acceptance. The public readiness endpoint separately verifies live
 mode, authentication, database migrations, private storage, runner, compiler,
 runtime-validation trust, runtime boundary, bundle protection, recorder,

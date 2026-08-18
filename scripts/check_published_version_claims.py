@@ -16,8 +16,8 @@ Offline checks (run on every pull request; no network, cannot be flaky):
 1. Every registered claim location still exists and still contains its exact
    recorded context. A reword that turns a pinned or historical number back
    into a publication claim therefore cannot land silently.
-2. Every generated version marker matches the claim registry's one editable
-   version field. A release changes that field once and runs the deterministic
+2. Every generated claim marker matches the claim registry's structured
+   artifact tuple. A release changes that one record and runs the deterministic
    renderer; a stale or unregistered output fails.
 3. No authored page contains a "published X.Y.Z"-shaped sentence that is not
    registered as ``pypi-latest``. This is the specific sentence shape that went

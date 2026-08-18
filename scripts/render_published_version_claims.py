@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Render shared documentation versions from the claim registry.
+"""Render shared documentation artifact values from the claim registry.
 
 ``docs/published-version-claims.json`` is the only editable source for a
 rendered version claim. Authored pages keep invisible, inline markers around
@@ -22,14 +22,23 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 REGISTRY_PATH = ROOT / "docs" / "published-version-claims.json"
 
+NAME = re.compile(r"[A-Za-z0-9_.-]+")
 MARKER = re.compile(
-    r"<!-- version-claim:(?P<id>[A-Za-z0-9_.-]+) -->"
+    r"<!-- version-claim:(?P<id>[A-Za-z0-9_.-]+):"
+    r"(?P<field>[A-Za-z0-9_.-]+) -->"
     r"(?P<value>[^<\r\n]+?)"
-    r"<!-- /version-claim:(?P=id) -->"
+    r"<!-- /version-claim:(?P=id):(?P=field) -->"
 )
-OPEN_MARKER = re.compile(r"<!-- version-claim:[A-Za-z0-9_.-]+ -->")
-CLOSE_MARKER = re.compile(r"<!-- /version-claim:[A-Za-z0-9_.-]+ -->")
-SEMVER = re.compile(r"\d+\.\d+\.\d+")
+CLAIM_COMMENT = re.compile(
+    r"<!--(?:(?!-->).)*version-claim:(?:(?!-->).)*-->",
+    re.DOTALL | re.IGNORECASE,
+)
+FIELD_PATTERNS = {
+    "version": re.compile(r"\d+\.\d+\.\d+"),
+    "release_commit": re.compile(r"[0-9a-f]{40}"),
+    "wheel_sha256": re.compile(r"[0-9a-f]{64}"),
+    "sdist_sha256": re.compile(r"[0-9a-f]{64}"),
+}
 
 
 def load_registry(path: Path = REGISTRY_PATH) -> dict:
@@ -51,11 +60,11 @@ def render_version_claims(
 
     errors: list[str] = []
     claims: dict[str, dict] = {}
-    expected: Counter[tuple[str, str]] = Counter()
+    expected: Counter[tuple[str, str, str]] = Counter()
 
     for claim in registry.get("claims", []):
         claim_id = claim.get("id")
-        if not isinstance(claim_id, str) or not claim_id:
+        if not isinstance(claim_id, str) or not NAME.fullmatch(claim_id):
             errors.append("a rendered version claim has no valid id")
             continue
         if claim_id in claims:
@@ -64,54 +73,72 @@ def render_version_claims(
         claims[claim_id] = claim
 
         rendered_locations = claim.get("rendered_locations") or []
-        if rendered_locations and not SEMVER.fullmatch(str(claim.get("version", ""))):
-            errors.append(
-                f"claim {claim_id!r} has rendered locations but version "
-                f"{claim.get('version')!r} is not X.Y.Z"
-            )
         for location in rendered_locations:
             file_name = location.get("file")
-            count = location.get("count", 1)
             if not isinstance(file_name, str) or not file_name.startswith("docs/"):
                 errors.append(
                     f"claim {claim_id!r} has invalid rendered file {file_name!r}"
                 )
                 continue
-            if not isinstance(count, int) or isinstance(count, bool) or count < 1:
+            values = location.get("values")
+            if not isinstance(values, dict) or not values:
                 errors.append(
-                    f"claim {claim_id!r} has invalid marker count {count!r} "
-                    f"for {file_name}"
+                    f"claim {claim_id!r} has no rendered values for {file_name}"
                 )
                 continue
-            expected[(file_name, claim_id)] += count
+            for field, count in values.items():
+                if not isinstance(field, str) or not NAME.fullmatch(field):
+                    errors.append(
+                        f"claim {claim_id!r} has invalid rendered field {field!r}"
+                    )
+                    continue
+                value = claim.get(field)
+                if not isinstance(value, str) or not value:
+                    errors.append(
+                        f"claim {claim_id!r} has no value for rendered field "
+                        f"{field!r}"
+                    )
+                pattern = FIELD_PATTERNS.get(field)
+                if pattern is not None and (
+                    not isinstance(value, str) or not pattern.fullmatch(value)
+                ):
+                    errors.append(
+                        f"claim {claim_id!r} field {field!r} has invalid value "
+                        f"{value!r}"
+                    )
+                if not isinstance(count, int) or isinstance(count, bool) or count < 1:
+                    errors.append(
+                        f"claim {claim_id!r} has invalid marker count {count!r} "
+                        f"for {file_name} field {field!r}"
+                    )
+                    continue
+                expected[(file_name, claim_id, field)] += count
 
     docs_dir = root / "docs"
-    actual: Counter[tuple[str, str]] = Counter()
+    actual: Counter[tuple[str, str, str]] = Counter()
     source_by_path: dict[Path, str] = {}
     for path in sorted(docs_dir.rglob("*.md")):
         text = path.read_text(encoding="utf-8")
         source_by_path[path] = text
         matches = list(MARKER.finditer(text))
-        if (
-            len(matches) != len(OPEN_MARKER.findall(text))
-            or len(matches) != len(CLOSE_MARKER.findall(text))
-        ):
+        if len(CLAIM_COMMENT.findall(text)) != len(matches) * 2:
             errors.append(
                 f"{path.relative_to(root)} has an incomplete or malformed "
                 "version-claim marker pair"
             )
         relative = path.relative_to(root).as_posix()
         for match in matches:
-            actual[(relative, match.group("id"))] += 1
+            actual[(relative, match.group("id"), match.group("field"))] += 1
 
     for key in sorted(set(expected) | set(actual)):
         expected_count = expected[key]
         actual_count = actual[key]
         if expected_count != actual_count:
-            file_name, claim_id = key
+            file_name, claim_id, field = key
             errors.append(
-                f"claim {claim_id!r}: {file_name} has {actual_count} rendered "
-                f"marker(s); the registry requires {expected_count}"
+                f"claim {claim_id!r} field {field!r}: {file_name} has "
+                f"{actual_count} rendered marker(s); the registry requires "
+                f"{expected_count}"
             )
 
     if errors:
@@ -119,15 +146,16 @@ def render_version_claims(
 
     rendered_by_path: dict[Path, str] = {}
     for path, text in source_by_path.items():
-        if not OPEN_MARKER.search(text):
+        if not CLAIM_COMMENT.search(text):
             continue
 
         def replace(match: re.Match[str]) -> str:
             claim_id = match.group("id")
-            version = str(claims[claim_id]["version"])
+            field = match.group("field")
+            value = str(claims[claim_id][field])
             return (
-                f"<!-- version-claim:{claim_id} -->{version}"
-                f"<!-- /version-claim:{claim_id} -->"
+                f"<!-- version-claim:{claim_id}:{field} -->{value}"
+                f"<!-- /version-claim:{claim_id}:{field} -->"
             )
 
         rendered_by_path[path] = MARKER.sub(replace, text)

@@ -23,8 +23,8 @@
     "                     Frozen forever; bumping it would falsify the record.",
     "",
     "rendered_locations:",
-    "  Pages whose marked version is generated from the claim's one version",
-    "  field. Change that field once, then run the deterministic renderer.",
+    "  Pages whose marked values are generated from one structured claim.",
+    "  Change the claim fields once, then run the deterministic renderer.",
     "",
     "Adding a 'published X.Y.Z' style sentence to docs/ without a matching",
     "pypi-latest entry here fails the check."
@@ -47,24 +47,41 @@
       "kind": "pinned-deployment",
       "package": "openadapt-flow",
       "version": "1.31.0",
-      "evidence": "openadapt-cloud origin/main 4e0257a1299cc0869af3e3f664a6ebfa0b59db1 runner/runtime-version.json pins the openadapt_flow artifact at release commit 2d225dea9a0ad29ca84ce1b037cc0ac671367e28 (wheel sha256 81133db1528ad1bb1f26e3fcb6aea61b0651db6d905cf2e4943e8383c1f3d29c; sdist sha256 cf1fc356d14d267df82be188de3e9a3575734f18f46ef91ac8075438cc731540). The package version is the claim's version field. This records the configured artifact pin, not live deployment or hosted acceptance.",
+      "source_manifest_repository": "OpenAdaptAI/openadapt-cloud",
+      "source_manifest_commit": "4e0257a1299cc0869af3e3f664a6ebfa0b59db1",
+      "source_manifest_path": "runner/runtime-version.json",
+      "release_commit": "2d225dea9a0ad29ca84ce1b037cc0ac671367e28",
+      "wheel_sha256": "81133db1528ad1bb1f26e3fcb6aea61b0651db6d905cf2e4943e8383c1f3d29c",
+      "sdist_sha256": "cf1fc356d14d267df82be188de3e9a3575734f18f46ef91ac8075438cc731540",
+      "evidence": "The structured source-manifest fields bind the Cloud runtime manifest. The structured release commit and archive hashes bind the configured Flow artifacts. This records the configured artifact pin, not live deployment or hosted acceptance.",
       "verified_on": "2026-08-18",
       "rendered_locations": [
         {
           "file": "docs/concepts/deployment-matrix.md",
-          "count": 1
+          "values": {
+            "version": 1,
+            "release_commit": 1,
+            "wheel_sha256": 1,
+            "sdist_sha256": 1
+          }
         },
         {
           "file": "docs/guides/security-review.md",
-          "count": 1
+          "values": {
+            "version": 1
+          }
         },
         {
           "file": "docs/guides/hosted.md",
-          "count": 2
+          "values": {
+            "version": 2
+          }
         },
         {
           "file": "docs/get-started/what-works-today.md",
-          "count": 1
+          "values": {
+            "version": 1
+          }
         }
       ]
     },
