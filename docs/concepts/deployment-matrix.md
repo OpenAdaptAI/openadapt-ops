@@ -107,12 +107,20 @@ Production selects live mode explicitly. Development mock mode is visibly
 synthetic. A missing production dependency makes the affected operation
 unavailable rather than substituting a simulated success.
 
-The retained hosted-recorder qualification used a Flow 1.8.0 worker. The live
-runner and compiler report the pinned managed-runtime Flow 1.23.0 identity, and public
-readiness checks live authentication, database, private storage, runner,
-compiler, recorder, callbacks, scheduler, retention, secret encryption,
-validation policy, and billing dependencies. That is configuration and service
-identity evidence, not a customer workflow qualification or SLA.
+The retained hosted-recorder qualification used a Flow 1.8.0 worker. The
+current Cloud managed-runtime manifest pins Flow 1.31.0 at release commit
+`2d225dea9a0ad29ca84ce1b037cc0ac671367e28`. Its wheel SHA-256 is
+`81133db1528ad1bb1f26e3fcb6aea61b0651db6d905cf2e4943e8383c1f3d29c` and
+its source SHA-256 is
+`cf1fc356d14d267df82be188de3e9a3575734f18f46ef91ac8075438cc731540`.
+The pin proves configured artifact identity. It does not prove that the build is
+deployed or that a hosted workflow passed acceptance. Public readiness checks
+live mode, authentication, database, private storage, runner, compiler,
+runtime-validation trust, runtime boundary, bundle protection, recorder,
+callbacks, scheduler, human-decision Web Push, retention, security events,
+secret encryption, validation policy, and billing dependencies. Readiness is
+configuration and service-identity evidence, not a customer workflow
+qualification or SLA.
 
 Stripe is the commercial source of truth for pricing. This matrix does
 not create a price, quota, SLA, certification, or backend entitlement.

@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Private encrypted database-backup target with exact writer and restore roles.
+Description: Private encrypted database-backup target with exact writer, monitor, and restore roles.
 
 Parameters:
   GitHubOrganization:
@@ -130,6 +130,44 @@ Resources:
                   - s3:PutObject
                 Resource: !Sub ${BackupBucket.Arn}/daily/*
 
+  BackupMonitorRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: openadapt-ops-production-db-backup-monitor
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Federated: !Ref GitHubActionsOidcProvider
+            Action: sts:AssumeRoleWithWebIdentity
+            Condition:
+              StringEquals:
+                token.actions.githubusercontent.com:aud: sts.amazonaws.com
+                token.actions.githubusercontent.com:sub: !Sub repo:${GitHubOrganization}/${GitHubRepository}:environment:production-backup-monitor
+      Policies:
+        - PolicyName: VerifyEncryptedDailyBackups
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:GetBucketPublicAccessBlock
+                  - s3:GetEncryptionConfiguration
+                Resource: !GetAtt BackupBucket.Arn
+              - Effect: Allow
+                Action: s3:ListBucket
+                Resource: !GetAtt BackupBucket.Arn
+                Condition:
+                  StringLike:
+                    s3:prefix: daily/*
+              - Effect: Allow
+                Action: s3:GetObject
+                Resource: !Sub ${BackupBucket.Arn}/daily/*/artifact-manifest.json
+              - Effect: Allow
+                Action: s3:GetObjectAttributes
+                Resource: !Sub ${BackupBucket.Arn}/daily/*/*.age
+
   BackupRestoreRole:
     Type: AWS::IAM::Role
     Properties:
@@ -161,5 +199,7 @@ Outputs:
     Value: !Ref BackupBucket
   BackupWriterRoleArn:
     Value: !GetAtt BackupWriterRole.Arn
+  BackupMonitorRoleArn:
+    Value: !GetAtt BackupMonitorRole.Arn
   BackupRestoreRoleArn:
     Value: !GetAtt BackupRestoreRole.Arn

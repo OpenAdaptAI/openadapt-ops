@@ -131,13 +131,15 @@ reports, teaching, billing, and usage metering. Production explicitly selects
 live dependencies; a missing runner, storage, or billing dependency returns an
 operational failure and never substitutes mock success. Mock mode remains for
 development and is visibly synthetic. The retained non-simulated hosted-recorder
-qualification was run on Flow 1.8.0; the live runner and compiler report the
-pinned managed-runtime Flow 1.23.0 identity. The public readiness endpoint currently verifies
-live mode, authentication, database migrations, private storage, runner,
-compiler, recorder, callbacks, scheduler, retention policy, secret encryption,
-runtime-validation allowlists, and live billing configuration. Readiness proves
-those dependencies and contracts are configured and reachable; it is not a
-customer workflow qualification or an SLA.
+qualification was run on Flow 1.8.0. The current managed-runtime manifest pins
+Flow 1.31.0 artifact identity; that pin does not prove live deployment or hosted
+workflow acceptance. The public readiness endpoint separately verifies live
+mode, authentication, database migrations, private storage, runner, compiler,
+runtime-validation trust, runtime boundary, bundle protection, recorder,
+callbacks, scheduler, human-decision Web Push, retention policy, security
+events, secret encryption, runtime-validation allowlists, and live billing
+configuration. Readiness proves those dependencies and contracts are configured
+and reachable; it is not a customer workflow qualification or an SLA.
 
 Windows UIA, native macOS, native Linux, RDP, and Citrix/VDI are first-class substrates,
 ordered as scoped deployments and qualified per workflow in their real

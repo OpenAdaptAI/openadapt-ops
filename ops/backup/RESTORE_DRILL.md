@@ -18,14 +18,21 @@ The design target is:
 - measured database-only RPO and recovery-time objective (RTO) evidence; and
 - the separate Cloud drill before any complete recovery claim.
 
-This is not yet a proven recovery path. As of 2026-08-08:
+This is not yet a proven recovery path. A read-only check on 2026-08-18 used
+AWS account `992382684924` and confirmed that the
+`openadapt-production-db-backup` CloudFormation stack does not exist. GitHub
+issue [#126](https://github.com/OpenAdaptAI/openadapt-ops/issues/126) records
+the matching protected-environment configuration failure. As of that check:
 
 - no daily backup has completed;
 - no scratch restore has completed;
 - no measured RTO exists;
 - provider PITR is not enabled;
 - the AWS stack is not deployed;
-- the production database URL is not configured in the GitHub environment;
+- `main` has no repository ruleset or branch protection;
+- the `production-backup` GitHub environment has none of its four required
+  settings and has no deployment-branch restriction;
+- the `production-backup-monitor` GitHub environment is not configured;
 - no scratch Supabase project is configured; and
 - one local private `age` key exists, but its required second vault or offline
   copy is not confirmed.
@@ -56,6 +63,30 @@ take separate logical snapshots. Do not run it during a schema migration. The
 complete Cloud drill pauses writes, exports and rechecks Storage, restores both
 boundaries, and produces the canonical retention receipt.
 
+## GitHub trust gate before AWS setup
+
+Create the external GitHub gates before the CloudFormation stack creates an
+OIDC role. The OIDC subject binds a role to an environment. The environment's
+deployment policy is the exact branch gate.
+
+1. Protect `main` with a repository ruleset. Require a pull request and the
+   applicable status checks. Add required code-owner review only when a second
+   authorized maintainer can approve the founder's pull request.
+2. Create the `production-backup` GitHub environment.
+3. Give it one custom deployment branch policy: the exact `main` branch. Do not
+   select every protected branch. Do not add a tag or wildcard policy.
+4. Create the `production-backup-monitor` GitHub environment.
+5. Give it the same single custom `main` branch policy.
+6. Do not require a manual environment approval. An approval wait would prevent
+   the scheduled jobs.
+
+Verify that `main` reports as protected. Verify that each environment reports
+`custom_branch_policies: true`, `protected_branches: false`, and one policy with
+the exact name `main`. Both workflows repeat this check after the environment
+admits the job and before they request AWS credentials. The job has read-only
+Actions permission for this API check. Do not deploy the AWS stack until this
+gate passes.
+
 ## One-time AWS setup
 
 The CloudFormation template creates:
@@ -65,13 +96,20 @@ The CloudFormation template creates:
 - 90-day retention for daily backups;
 - 365-day retention for database-only drill evidence;
 - a GitHub OIDC writer role bound to the exact `production-backup`
-  environment; and
+  environment;
+- a read-only GitHub OIDC monitor role bound to the exact
+  `production-backup-monitor` environment; and
 - a local restore role bound to one exact AWS operator principal.
 
 The expected S3 Standard storage price is approximately USD 0.023 per GB each
 month, plus small request charges. For example, retaining 90 daily 100 MB
 backups is approximately 9 GB, or USD 0.21 each month before requests. The
 template does not create a paid KMS key and does not enable Supabase PITR.
+
+The backup workflow uses one S3 `PutObject` with a caller-supplied full-object
+SHA-256. S3 validates that checksum before it accepts the object. This launch
+path refuses an encrypted archive above 5 GiB before upload. Build and qualify a
+multipart contract before a production database can exceed that limit.
 
 An AWS principal with CloudFormation, IAM, and S3 administration rights must
 run:
@@ -99,21 +137,26 @@ aws cloudformation describe-stacks \
   --query 'Stacks[0].Outputs'
 ```
 
-## One-time GitHub setup
+## Complete the GitHub settings after AWS setup
 
-First protect the repository and the environment:
+The branch and environment gates already exist. Add the AWS outputs and the
+database identity only after the stack passes validation:
 
-1. Protect `main` with a repository ruleset. Require a pull request and code
-   owner review for the backup trust-boundary files in `.github/CODEOWNERS`.
-2. Create the `production-backup` GitHub environment.
-3. Restrict that environment to the protected `main` branch. Do not require a
-   manual deployment approval because it would prevent the daily schedule.
-4. Set environment variables from the CloudFormation outputs:
+1. Set `production-backup` environment variables from the CloudFormation
+   outputs:
    - `AWS_BACKUP_BUCKET`
    - `AWS_BACKUP_ROLE_ARN`
-5. Set environment secrets:
+2. Set `production-backup` environment secrets:
    - `SUPABASE_DB_URL`: the production direct or session-pooler PostgreSQL URL
    - `SUPABASE_PROJECT_REF`: the exact production project reference
+3. Set `production-backup-monitor` environment variables from the
+   CloudFormation outputs:
+   - `AWS_BACKUP_BUCKET`
+   - `AWS_BACKUP_MONITOR_ROLE_ARN`
+
+The monitor environment has no secret. Its AWS role can list and inspect only
+the `daily/` objects. It cannot create, replace, delete, download, or decrypt a
+database backup.
 
 The workflow validates that the URL belongs to the declared Supabase project.
 It also checks AWS account `992382684924`, complete S3 public-access blocking,
@@ -133,6 +176,10 @@ next schedule.
 gh workflow run db-backup.yml --repo OpenAdaptAI/openadapt-ops --ref main
 gh run list --repo OpenAdaptAI/openadapt-ops \
   --workflow db-backup.yml --limit 5
+gh workflow run db-backup-freshness.yml \
+  --repo OpenAdaptAI/openadapt-ops --ref main
+gh run list --repo OpenAdaptAI/openadapt-ops \
+  --workflow db-backup-freshness.yml --limit 5
 ```
 
 Require all of these results:
@@ -140,8 +187,13 @@ Require all of these results:
 - the workflow succeeds on the exact `main` commit;
 - S3 contains one ciphertext object and one redacted manifest below the same
   UTC stamp;
-- the stored SHA-256 checksum equals the local upload checksum; and
+- the stored SHA-256 checksum equals the local upload checksum;
+- S3 reports the exact caller-supplied full-object SHA-256 for the ciphertext;
+- the encrypted archive is no more than the enforced 5 GiB launch limit;
 - no GitHub Actions artifact exists for the run.
+- the separate read-only freshness workflow selects the same recovery point,
+  validates the redacted manifest digest, matches the S3 object size and remote
+  checksum, and reports an age of less than 24 hours.
 
 A successful upload proves backup creation and storage. It does not prove that
 the backup can restore.
@@ -257,10 +309,16 @@ as exposed. Do not keep encrypting new backups to both old and new recipients.
 
 ## Alerts and scheduled-workflow limits
 
-A failed backup job stays red and GitHub sends workflow failure notifications
-according to repository notification settings. The founder must monitor this
-signal. A later change should add a direct freshness alert from an independent
-system after the first successful object exists.
+A failed backup job stays red and opens or updates one durable GitHub issue.
+The hourly `Production DB backup freshness` workflow uses a separate read-only
+AWS role. It opens or updates one durable issue when the newest complete pair
+is absent, stale, or inconsistent. A successful run closes its matching issue.
+
+The two checks use different workflows and different AWS roles. They still use
+the same GitHub scheduler. Configure one external monitor to alert when either
+workflow stops running. The external monitor can inspect the workflow age or
+assume a separate read-only role and inspect the newest S3 recovery point. Do
+not give the external monitor the backup writer role.
 
 GitHub can disable schedules after 60 days without repository activity. The
 daily documentation sync currently keeps this repository active. Verify the

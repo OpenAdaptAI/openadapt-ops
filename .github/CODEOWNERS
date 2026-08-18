@@ -1,9 +1,20 @@
-# Default code owners. Enforced via branch protection (required review).
+# Default code owners. This file routes review. Repository branch protection
+# must separately require a code-owner review before this becomes an enforced
+# merge gate.
 * @abrichr
 
 # Production backup and restore trust boundary.
 /.github/workflows/db-backup.yml @abrichr
+/.github/workflows/db-backup-freshness.yml @abrichr
+/.github/workflows/prod-health-alert.yml @abrichr
+/ops/PRODUCTION_OPERATIONS.md @abrichr
 /ops/backup/ @abrichr
 /scripts/database_backup_contract.py @abrichr
+/scripts/check_database_backup_freshness.py @abrichr
+/scripts/check_github_environment_gate.py @abrichr
+/scripts/check_production_readiness.py @abrichr
 /scripts/run_database_restore_drill.sh @abrichr
 /tests/test_database_backup_contract.py @abrichr
+/tests/test_database_backup_freshness.py @abrichr
+/tests/test_github_environment_gate.py @abrichr
+/tests/test_production_readiness.py @abrichr

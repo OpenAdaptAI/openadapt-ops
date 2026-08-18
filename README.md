@@ -39,6 +39,8 @@ MIT. The flagship code lives at
 - **`tidy/`**: a CLI for scanning and scrubbing sensitive patterns from git
   history and build artifacts (GitHub Releases, Actions, PyPI, and GHCR). See
   [`tidy/README.md`](tidy/README.md).
+- **`ops/`**: production operations and recovery runbooks. Start with
+  [`ops/PRODUCTION_OPERATIONS.md`](ops/PRODUCTION_OPERATIONS.md).
 - **`repos.yml`**: the list of ecosystem repositories the pipeline reads from.
 
 ## Build the docs locally

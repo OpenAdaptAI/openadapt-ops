@@ -4,7 +4,9 @@ name: Production DB logical backup
 # production-backup environment secret. Only age ciphertext and a redacted
 # integrity manifest enter the private, public-access-blocked S3 bucket.
 # Maximum RPO: 24 hours. Retention: 90 days. This does not cover Storage
-# objects and does not replace provider PITR.
+# objects and does not replace provider PITR. The launch path uses one
+# S3 PutObject with a service-validated full-object SHA-256 and refuses an
+# encrypted archive above the 5 GiB PutObject limit before upload.
 
 on:
   workflow_dispatch:
@@ -13,7 +15,6 @@ on:
 
 permissions:
   contents: read
-  id-token: write
 
 concurrency:
   group: production-db-backup
@@ -24,18 +25,64 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment: production-backup
+    permissions:
+      actions: read
+      contents: read
+      id-token: write
     env:
       AWS_REGION: us-east-1
+      BACKUP_ROLE_ARN: ${{ vars.AWS_BACKUP_ROLE_ARN }}
       BACKUP_BUCKET: ${{ vars.AWS_BACKUP_BUCKET }}
       SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
       SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+      EXPECTED_GITHUB_ENVIRONMENT: production-backup
+      GITHUB_REF_PROTECTED: ${{ github.ref_protected }}
     steps:
+      - name: Validate the protected environment configuration
+        run: |
+          set -euo pipefail
+          missing=()
+          [ -n "${BACKUP_ROLE_ARN}" ] || missing+=(AWS_BACKUP_ROLE_ARN)
+          [ -n "${BACKUP_BUCKET}" ] || missing+=(AWS_BACKUP_BUCKET)
+          [ -n "${SUPABASE_DB_URL}" ] || missing+=(SUPABASE_DB_URL)
+          [ -n "${SUPABASE_PROJECT_REF}" ] || missing+=(SUPABASE_PROJECT_REF)
+          if [ "${#missing[@]}" -ne 0 ]; then
+            echo "::error::The production-backup environment is missing: ${missing[*]}"
+            exit 1
+          fi
+          if [ "${GITHUB_REF}" != 'refs/heads/main' ]; then
+            echo "::error::The database backup must run from refs/heads/main, not ${GITHUB_REF}."
+            exit 1
+          fi
+          if [ "${GITHUB_REF_PROTECTED}" != 'true' ]; then
+            echo '::error::The database backup refuses an unprotected main branch.'
+            exit 1
+          fi
+          echo 'The four required production-backup settings are present.'
+
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Verify the exact GitHub environment gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api "repos/${GITHUB_REPOSITORY}/environments/${EXPECTED_GITHUB_ENVIRONMENT}" \
+            > /tmp/database-backup-environment.json
+          gh api "repos/${GITHUB_REPOSITORY}/environments/${EXPECTED_GITHUB_ENVIRONMENT}/deployment-branch-policies?per_page=100" \
+            > /tmp/database-backup-environment-policies.json
+          python scripts/check_github_environment_gate.py \
+            --environment-json /tmp/database-backup-environment.json \
+            --policies-json /tmp/database-backup-environment-policies.json \
+            --expected-environment "${EXPECTED_GITHUB_ENVIRONMENT}" \
+            --expected-branch main \
+            --actual-ref "${GITHUB_REF}" \
+            --ref-protected "${GITHUB_REF_PROTECTED}"
 
       - uses: aws-actions/configure-aws-credentials@e6de054238d6b7531b4efff3b6587d9aade6a06c # v6.2.3
         with:
           aws-region: ${{ env.AWS_REGION }}
-          role-to-assume: ${{ vars.AWS_BACKUP_ROLE_ARN }}
+          role-to-assume: ${{ env.BACKUP_ROLE_ARN }}
           allowed-account-ids: '992382684924'
           role-session-name: openadapt-db-backup-${{ github.run_id }}
 
@@ -80,6 +127,8 @@ jobs:
             if [ -n "$plain" ]; then rm -f "$plain"; fi
             if [ -n "$cipher" ]; then rm -f "$cipher"; fi
             rm -f artifact-manifest.json
+            rm -f s3-upload-contract.json /tmp/database-backup-object-attributes.json
+            rm -f /tmp/database-backup-put-response.json
           }
           trap cleanup EXIT
 
@@ -122,19 +171,81 @@ jobs:
             --manifest artifact-manifest.json \
             --ciphertext-archive "$cipher"
 
-          local_sha=$(sha256sum "$cipher" | cut -d' ' -f1)
-          local_checksum=$(openssl dgst -sha256 -binary "$cipher" | base64)
-          aws s3 cp "$cipher" "s3://${BACKUP_BUCKET}/${prefix}/${cipher}" \
-            --only-show-errors --sse AES256 --metadata "sha256=${local_sha}" \
-            --checksum-algorithm SHA256
+          python scripts/database_backup_contract.py prepare-single-put \
+            --manifest artifact-manifest.json \
+            --ciphertext-archive "$cipher" \
+            --output s3-upload-contract.json
+          cipher_bytes=$(jq -r '.bytes' s3-upload-contract.json)
+          local_sha=$(jq -r '.sha256' s3-upload-contract.json)
+          local_checksum=$(jq -r '.checksum_sha256' s3-upload-contract.json)
+          aws s3api put-object \
+            --bucket "$BACKUP_BUCKET" --key "${prefix}/${cipher}" \
+            --body "$cipher" --content-length "$cipher_bytes" \
+            --server-side-encryption AES256 --metadata "sha256=${local_sha}" \
+            --checksum-algorithm SHA256 --checksum-sha256 "$local_checksum" \
+            --expected-bucket-owner 992382684924 \
+            > /tmp/database-backup-put-response.json
           aws s3 cp artifact-manifest.json \
             "s3://${BACKUP_BUCKET}/${prefix}/artifact-manifest.json" \
             --only-show-errors --sse AES256 \
             --content-type application/json --checksum-algorithm SHA256
 
-          remote_checksum=$(aws s3api get-object-attributes \
+          aws s3api get-object-attributes \
             --bucket "$BACKUP_BUCKET" --key "${prefix}/${cipher}" \
-            --object-attributes Checksum \
-            --query 'Checksum.ChecksumSHA256' --output text)
-          test "$remote_checksum" = "$local_checksum"
+            --object-attributes Checksum,ObjectSize \
+            --expected-bucket-owner 992382684924 \
+            > /tmp/database-backup-object-attributes.json
+          python scripts/database_backup_contract.py verify-single-put \
+            --upload-contract s3-upload-contract.json \
+            --attributes /tmp/database-backup-object-attributes.json
           echo "Encrypted database backup stored at s3://${BACKUP_BUCKET}/${prefix}/"
+
+  record-alert:
+    name: Keep one durable backup alert
+    needs: dump
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TITLE: Production database backup is not current
+    steps:
+      - name: Open, reopen, update, or close the backup issue
+        env:
+          BACKUP_RESULT: ${{ needs.dump.result }}
+        run: |
+          set -euo pipefail
+          existing_json=$(gh issue list --repo "${GITHUB_REPOSITORY}" --state all \
+            --limit 1000 --json number,title,state \
+            --jq '[.[] | select(.title == env.TITLE)][0] // {}')
+          existing=$(jq -r '.number // empty' <<< "${existing_json}")
+          existing_state=$(jq -r '.state // empty' <<< "${existing_json}")
+          if [ "${BACKUP_RESULT}" = 'success' ]; then
+            if [ -n "${existing}" ] && [ "${existing_state}" = 'OPEN' ]; then
+              gh issue close "${existing}" --repo "${GITHUB_REPOSITORY}" \
+                --comment "The encrypted database backup passed in ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}. The independent freshness check remains authoritative for the current recovery point."
+            else
+              echo 'The backup passed and no workflow-failure issue is open.'
+            fi
+            exit 0
+          fi
+
+          printf '%s\n' \
+            'The scheduled production database backup did not complete.' \
+            '' \
+            "Run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" \
+            '' \
+            'No new recovery point is claimed. Review the failed step before any retry.' \
+            > database-backup-alert.md
+          if [ -n "${existing}" ]; then
+            if [ "${existing_state}" = 'CLOSED' ]; then
+              gh issue reopen "${existing}" --repo "${GITHUB_REPOSITORY}"
+            fi
+            gh issue edit "${existing}" --repo "${GITHUB_REPOSITORY}" \
+              --body-file database-backup-alert.md
+          else
+            gh issue create --repo "${GITHUB_REPOSITORY}" \
+              --title "${TITLE}" --body-file database-backup-alert.md
+          fi

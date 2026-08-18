@@ -7,8 +7,8 @@
     "Why this exists: on 2026-07-27 openadapt-flow 1.24.0 published and four",
     "sentences on docs.openadapt.ai -- including one on the security-review",
     "page -- kept asserting that the live runner reported 'the published Flow",
-    "1.23.0 identity'. The NUMBER was right (the managed runtime really does",
-    "pin 1.23.0); the word 'published' was what became false. Nothing could",
+    "1.23.0 identity'. The NUMBER was right at that time because the managed",
+    "runtime pinned 1.23.0; the word 'published' was what became false. Nothing",
     "detect that, because no machine-readable record said which numbers are",
     "supposed to track the current release and which are deliberately frozen.",
     "",
@@ -42,29 +42,29 @@
       "id": "hosted-runner-managed-runtime-pin",
       "kind": "pinned-deployment",
       "package": "openadapt-flow",
-      "version": "1.23.0",
-      "evidence": "openadapt-cloud runner/runtime-version.json pins openadapt_flow 1.23.0 (wheel sha256 b5d10dfc294479866d6dddd4c1a6afc9164414f0634703173b7e440dc0133bec); https://app.openadapt.ai/api/health/ready reports ready:true, mode:live.",
-      "verified_on": "2026-07-27",
+      "version": "1.31.0",
+      "evidence": "openadapt-cloud origin/main 4e0257a1299cc0869af3e3f664a6ebfa0b59db1 runner/runtime-version.json pins openadapt_flow 1.31.0 at release commit 2d225dea9a0ad29ca84ce1b037cc0ac671367e28 (wheel sha256 81133db1528ad1bb1f26e3fcb6aea61b0651db6d905cf2e4943e8383c1f3d29c; sdist sha256 cf1fc356d14d267df82be188de3e9a3575734f18f46ef91ac8075438cc731540). This records the configured artifact pin, not live deployment or hosted acceptance.",
+      "verified_on": "2026-08-18",
       "locations": [
         {
           "file": "docs/concepts/deployment-matrix.md",
-          "context": "report the pinned managed-runtime Flow 1.23.0 identity"
+          "context": "managed-runtime manifest pins Flow 1.31.0 at release"
         },
         {
           "file": "docs/guides/security-review.md",
-          "context": "report the\npinned managed-runtime Flow 1.23.0 identity"
+          "context": "managed-runtime manifest pins\nFlow 1.31.0 artifact identity"
         },
         {
           "file": "docs/guides/hosted.md",
-          "context": "report the pinned managed-runtime 1.23.0 identity"
+          "context": "managed-runtime manifest pins Flow 1.31.0 artifact identity"
         },
         {
           "file": "docs/guides/hosted.md",
-          "context": "report the pinned managed-runtime 1.23.0\nidentity"
+          "context": "managed-runtime manifest pins the Flow 1.31.0 artifact identity"
         },
         {
           "file": "docs/get-started/what-works-today.md",
-          "context": "reports the pinned managed-runtime 1.23.0 runner/compiler identity"
+          "context": "managed-runtime manifest pins the Flow 1.31.0 runner/compiler artifact identity"
         }
       ]
     },

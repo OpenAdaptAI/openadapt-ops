@@ -2,11 +2,12 @@ name: Production health alert
 
 # $0 pager for the hosted control plane. Probes the real dependency
 # probe (openadapt-cloud src/lib/readiness.ts — returns {"ready":true}
-# with HTTP 200, or 503 with per-component detail). When the endpoint
-# is unhealthy or unreachable after 3 attempts spread over ~2 minutes,
-# the run FAILS; GitHub emails the actor who last modified this
-# workflow file on a failed scheduled run. Optional Telegram alert
-# fires when the crier bot secrets exist in this repo.
+# with HTTP 200, or 503 with per-component detail). A local contract also
+# requires live mode, a fresh checked_at value, the complete dependency set,
+# active encrypted-writer identity, and no-store response headers. When the
+# endpoint is unhealthy, incomplete, stale, or unreachable after 3 attempts
+# spread over ~2 minutes, the run fails and a durable issue opens or updates.
+# Optional Telegram alert fires when the crier bot secrets exist in this repo.
 #
 # Cadence: every 30 minutes = 48 runs/day of a <1-minute job. The repo
 # is public, so Actions minutes are free; even metered this would be
@@ -38,30 +39,34 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
       - name: Probe app.openadapt.ai/api/health/ready (3 attempts over ~2 min)
         run: |
           set -u
           url='https://app.openadapt.ai/api/health/ready'
           attempts=3
           for i in $(seq 1 "$attempts"); do
-            if body=$(curl -sS -m 20 -w '\n%{http_code}' "$url" 2>&1); then
-              code=$(printf '%s\n' "$body" | tail -n1)
-              json=$(printf '%s\n' "$body" | sed '$d')
-              ready=$(printf '%s' "$json" | jq -r '.ready // false' 2>/dev/null || echo 'parse-error')
-              echo "attempt ${i}/${attempts}: http=${code} ready=${ready}"
-              if [ "$code" = '200' ] && [ "$ready" = 'true' ]; then
+            headers=$(mktemp)
+            body=$(mktemp)
+            if curl -sS -m 20 -D "$headers" -o "$body" "$url"; then
+              if python scripts/check_production_readiness.py \
+                --headers "$headers" --body "$body"; then
+                echo "attempt ${i}/${attempts}: the complete live readiness contract passed"
+                rm -f "$headers" "$body"
                 exit 0
               fi
               # The endpoint is public and returns metadata-only detail;
               # print which components are not ready to make the failure
               # email actionable.
-              printf '%s' "$json" | jq -r '.components[]? | select(.state != "ready") | "NOT READY: \(.name): \(.detail)"' 2>/dev/null || true
+              jq -r '.components[]? | select(.required == true and .state != "ready") | "NOT READY: \(.name): \(.detail)"' "$body" 2>/dev/null || true
             else
               echo "attempt ${i}/${attempts}: request failed (network error or timeout)"
             fi
+            rm -f "$headers" "$body"
             if [ "$i" -lt "$attempts" ]; then sleep 60; fi
           done
-          echo "::error::${url} is unhealthy or unreachable after ${attempts} attempts over ~2 minutes."
+          echo "::error::${url} did not prove the complete live readiness contract after ${attempts} attempts over ~2 minutes."
           exit 1
 
       - name: Telegram alert (optional — runs only when crier secrets exist)
@@ -78,5 +83,57 @@ jobs:
           fi
           curl -sS -m 20 -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
             --data-urlencode "chat_id=${TELEGRAM_OWNER_ID}" \
-            --data-urlencode "text=ALERT: app.openadapt.ai /api/health/ready is unhealthy or unreachable. Run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" \
+            --data-urlencode "text=ALERT: app.openadapt.ai did not prove the complete live readiness contract. Run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" \
             > /dev/null && echo 'Telegram alert sent.'
+
+  record-alert:
+    name: Keep one durable production health alert
+    needs: probe
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TITLE: Production health check is failing
+    steps:
+      - name: Open, reopen, update, or close the health issue
+        env:
+          PROBE_RESULT: ${{ needs.probe.result }}
+        run: |
+          set -euo pipefail
+          existing_json=$(gh issue list --repo "${GITHUB_REPOSITORY}" --state all \
+            --limit 1000 --json number,title,state \
+            --jq '[.[] | select(.title == env.TITLE)][0] // {}')
+          existing=$(jq -r '.number // empty' <<< "${existing_json}")
+          existing_state=$(jq -r '.state // empty' <<< "${existing_json}")
+          if [ "${PROBE_RESULT}" = 'success' ]; then
+            if [ -n "${existing}" ] && [ "${existing_state}" = 'OPEN' ]; then
+              gh issue close "${existing}" --repo "${GITHUB_REPOSITORY}" \
+                --comment "The complete live readiness contract passes in ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}."
+            else
+              echo 'The health contract passes and no alert issue is open.'
+            fi
+            exit 0
+          fi
+
+          printf '%s\n' \
+            'The scheduled production probe did not prove the complete live readiness contract.' \
+            '' \
+            "Run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" \
+            '' \
+            'The check requires live mode, a fresh response, all required dependencies, the human-decision delivery component, the encrypted writer, and no-store headers.' \
+            '' \
+            'Do not report the hosted service as ready until a later run passes and closes this issue.' \
+            > production-health-alert.md
+          if [ -n "${existing}" ]; then
+            if [ "${existing_state}" = 'CLOSED' ]; then
+              gh issue reopen "${existing}" --repo "${GITHUB_REPOSITORY}"
+            fi
+            gh issue edit "${existing}" --repo "${GITHUB_REPOSITORY}" \
+              --body-file production-health-alert.md
+          else
+            gh issue create --repo "${GITHUB_REPOSITORY}" \
+              --title "${TITLE}" --body-file production-health-alert.md
+          fi

@@ -38,7 +38,7 @@ switching, and sign-out.
 | Surface | Launch status | Boundary |
 |---|---|---|
 | Local browser record -> compile -> managed execute | **Beta / public offer** | Governed authoring and validation remain local; managed execution uses the qualified browser substrate. |
-| Hosted browser record -> compileable workflow | **Beta / bounded launch component** | The retained non-simulated provider qualification used `openadapt-flow` 1.8.0; the current live runner and compiler report the pinned managed-runtime 1.23.0 identity. This is a separate raw-observation boundary, not the reviewed-derivative upload lane. |
+| Hosted browser record -> compileable workflow | **Beta / bounded launch component** | The retained non-simulated provider qualification used `openadapt-flow` 1.8.0; the current managed-runtime manifest pins Flow 1.31.0 artifact identity. A runtime pin does not prove live deployment or hosted workflow acceptance. This is a separate raw-observation boundary, not the reviewed-derivative upload lane. |
 | Account, organization, onboarding | **Beta / public offer** | Checkout and sign-in bind the subscription to an isolated organization. |
 | Structural run history and reports | **Beta / public offer** | Safety depends on the workflow's configured identity, effect, and policy checks. Repair and validation remain local. |
 | Checkout, portal, entitlements, metering | **Beta / public offer** | Live Stripe Checkout, signed webhooks, entitlements, usage, and the billing portal form one managed subscription contract. |
@@ -64,11 +64,14 @@ demo. A qualified hosted browser session produced PNG frames, accepted and
 retained input evidence, assembled a native recording, created one compileable
 workflow idempotently, enforced its resource limits, and removed the ephemeral
 qualification data. That retained qualification used an `openadapt-flow` 1.8.0
-worker. The live runner and compiler report the pinned managed-runtime 1.23.0
-identity, and the public readiness endpoint verifies the configured live dependencies,
-including authentication, storage, callbacks, scheduling, retention, secret
-encryption, validation policy, and billing. Readiness is dependency evidence,
-not a customer workflow qualification or an SLA.
+worker. The managed-runtime manifest pins the Flow 1.31.0 artifact identity. A
+pin does not prove that the build is live or that a hosted workflow passed
+acceptance. The public readiness endpoint separately verifies the configured
+live dependencies, including authentication, storage, runner, compiler,
+runtime-validation trust, runtime boundary, bundle protection, recorder,
+callbacks, scheduling, human-decision Web Push, retention, security events,
+secret encryption, validation policy, and billing. Readiness is dependency
+evidence, not a customer workflow qualification or an SLA.
 
 The recorder accepts only public HTTPS DNS hosts and refuses credentials in the
 start URL, literal IP addresses, private or mixed DNS answers, and private
