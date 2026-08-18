@@ -63,7 +63,7 @@ def attributes() -> dict[str, object]:
     return {
         "ObjectSize": 100,
         "Checksum": {
-            "ChecksumSHA256": base64.b64encode(bytes.fromhex("a" * 64)).decode()
+            "ChecksumSHA256": base64.b64encode(bytes.fromhex("a" * 64)).decode(),
         },
         "StorageClass": "STANDARD",
     }
@@ -131,6 +131,12 @@ def test_unexpected_object_in_daily_prefix_is_rejected() -> None:
     ("change", "message"),
     [
         (lambda value: value["Checksum"].update(ChecksumSHA256="wrong"), "checksum"),
+        (
+            lambda value: value["Checksum"].update(
+                ChecksumSHA256=f'{value["Checksum"]["ChecksumSHA256"]}-2'
+            ),
+            "checksum",
+        ),
         (lambda value: value.update(ObjectSize=99), "size"),
     ],
 )

@@ -208,7 +208,9 @@ def verify_latest(
         not isinstance(checksum, dict)
         or checksum.get("ChecksumSHA256") != expected_checksum
     ):
-        raise FreshnessError("the remote ciphertext checksum does not match")
+        raise FreshnessError(
+            "the remote ciphertext full-object checksum does not match"
+        )
 
     return {
         "fresh": True,

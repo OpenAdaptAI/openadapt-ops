@@ -9,6 +9,7 @@ components, creates a redacted integrity manifest, and records restore evidence.
 from __future__ import annotations
 
 import argparse
+import base64
 import hashlib
 import json
 import re
@@ -18,10 +19,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
-
 CONTRACT_SCHEMA = "openadapt.database-backup-contract/v2"
 ARTIFACT_SCHEMA = "openadapt.database-backup-artifact/v2"
 RESTORE_EVIDENCE_SCHEMA = "openadapt.database-restore-evidence/v1"
+S3_UPLOAD_SCHEMA = "openadapt.database-backup-s3-upload/v1"
+S3_SINGLE_PUT_MAX_BYTES = 5 * 1024 * 1024 * 1024
 PROJECT_REF = re.compile(r"^[a-z0-9]{8,64}$")
 AGE_RECIPIENT = re.compile(r"^age1[0-9a-z]+$")
 REQUIRED_DUMPS = ("roles.sql", "schema.sql", "data.sql")
@@ -243,6 +245,120 @@ def verify_artifact(args: argparse.Namespace) -> None:
     print(json.dumps({"valid": True, "artifact_sha256": manifest["artifact_sha256"]}))
 
 
+def single_put_contract(
+    ciphertext: Path,
+    manifest_path: Path,
+    *,
+    maximum_bytes: int = S3_SINGLE_PUT_MAX_BYTES,
+) -> dict[str, object]:
+    """Bind one ciphertext to an S3-validated full-object SHA-256 checksum."""
+    if maximum_bytes <= 0:
+        raise ContractError("the S3 single-PutObject limit must be positive")
+    if not ciphertext.is_file():
+        raise ContractError("the encrypted archive is missing")
+    size = ciphertext.stat().st_size
+    if size <= 0:
+        raise ContractError("the encrypted archive is empty")
+    if size > maximum_bytes:
+        raise ContractError(
+            "the encrypted archive exceeds the 5 GiB single-PutObject launch limit"
+        )
+
+    manifest = read_manifest(manifest_path)
+    artifact = manifest["artifact"]
+    assert isinstance(artifact, dict)
+    expected = artifact.get("ciphertext_archive")
+    if not isinstance(expected, dict):
+        raise ContractError("the encrypted archive contract is missing")
+    digest = sha256_file(ciphertext)
+    if expected.get("bytes") != size or expected.get("sha256") != digest:
+        raise ContractError("the encrypted archive does not match the manifest")
+
+    return {
+        "schema": S3_UPLOAD_SCHEMA,
+        "bytes": size,
+        "sha256": digest,
+        "checksum_algorithm": "SHA256",
+        "checksum_type": "FULL_OBJECT",
+        "checksum_sha256": base64.b64encode(bytes.fromhex(digest)).decode(),
+        "maximum_bytes": maximum_bytes,
+    }
+
+
+def read_single_put_contract(path: Path) -> dict[str, object]:
+    value = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(value, dict) or value.get("schema") != S3_UPLOAD_SCHEMA:
+        raise ContractError("the S3 upload contract schema is invalid")
+    if value.get("checksum_algorithm") != "SHA256":
+        raise ContractError("the S3 upload checksum algorithm is invalid")
+    if value.get("checksum_type") != "FULL_OBJECT":
+        raise ContractError("the S3 upload checksum type is invalid")
+    size = value.get("bytes")
+    maximum = value.get("maximum_bytes")
+    digest = value.get("sha256")
+    encoded = value.get("checksum_sha256")
+    if (
+        not isinstance(size, int)
+        or isinstance(size, bool)
+        or size <= 0
+        or not isinstance(maximum, int)
+        or isinstance(maximum, bool)
+        or maximum != S3_SINGLE_PUT_MAX_BYTES
+        or size > maximum
+    ):
+        raise ContractError("the S3 upload size contract is invalid")
+    if not isinstance(digest, str) or not re.fullmatch(r"[0-9a-f]{64}", digest):
+        raise ContractError("the S3 upload SHA-256 is invalid")
+    if encoded != base64.b64encode(bytes.fromhex(digest)).decode():
+        raise ContractError("the S3 upload checksum encoding is invalid")
+    return value
+
+
+def prepare_single_put(args: argparse.Namespace) -> None:
+    value = single_put_contract(
+        Path(args.ciphertext_archive), Path(args.manifest)
+    )
+    output = Path(args.output)
+    output.write_text(
+        json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    print(
+        json.dumps(
+            {
+                "upload_contract": str(output),
+                "bytes": value["bytes"],
+                "checksum_type": value["checksum_type"],
+            },
+            sort_keys=True,
+        )
+    )
+
+
+def verify_single_put(args: argparse.Namespace) -> None:
+    contract = read_single_put_contract(Path(args.upload_contract))
+    attributes = json.loads(Path(args.attributes).read_text(encoding="utf-8"))
+    if not isinstance(attributes, dict):
+        raise ContractError("the S3 object attributes are invalid")
+    if attributes.get("ObjectSize") != contract["bytes"]:
+        raise ContractError("the S3 object size does not match the upload contract")
+    checksum = attributes.get("Checksum")
+    if not isinstance(checksum, dict):
+        raise ContractError("the S3 object checksum is missing")
+    if checksum.get("ChecksumSHA256") != contract["checksum_sha256"]:
+        raise ContractError("the S3 full-object checksum does not match")
+    print(
+        json.dumps(
+            {
+                "valid": True,
+                "bytes": contract["bytes"],
+                "checksum_type": "FULL_OBJECT",
+                "sha256": contract["sha256"],
+            },
+            sort_keys=True,
+        )
+    )
+
+
 def validate_restore_target(args: argparse.Namespace) -> None:
     source_ref = project_ref(args.source_project_ref, "production project reference")
     scratch_ref = project_ref(args.scratch_project_ref, "scratch project reference")
@@ -424,6 +540,17 @@ def parser() -> argparse.ArgumentParser:
     artifact.add_argument("--manifest", required=True)
     artifact.add_argument("--ciphertext-archive", required=True)
     artifact.set_defaults(run=verify_artifact)
+
+    upload = commands.add_parser("prepare-single-put")
+    upload.add_argument("--manifest", required=True)
+    upload.add_argument("--ciphertext-archive", required=True)
+    upload.add_argument("--output", required=True)
+    upload.set_defaults(run=prepare_single_put)
+
+    uploaded = commands.add_parser("verify-single-put")
+    uploaded.add_argument("--upload-contract", required=True)
+    uploaded.add_argument("--attributes", required=True)
+    uploaded.set_defaults(run=verify_single_put)
 
     target = commands.add_parser("validate-restore-target")
     target.add_argument("--source-project-ref", required=True)

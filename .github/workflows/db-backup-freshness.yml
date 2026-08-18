@@ -22,12 +22,15 @@ jobs:
     timeout-minutes: 10
     environment: production-backup-monitor
     permissions:
+      actions: read
       contents: read
       id-token: write
     env:
       AWS_REGION: us-east-1
       BACKUP_BUCKET: ${{ vars.AWS_BACKUP_BUCKET }}
       BACKUP_MONITOR_ROLE_ARN: ${{ vars.AWS_BACKUP_MONITOR_ROLE_ARN }}
+      EXPECTED_GITHUB_ENVIRONMENT: production-backup-monitor
+      GITHUB_REF_PROTECTED: ${{ github.ref_protected }}
     steps:
       - name: Validate the read-only monitor configuration
         run: |
@@ -39,8 +42,33 @@ jobs:
             echo "::error::The production-backup-monitor environment is missing: ${missing[*]}"
             exit 1
           fi
+          if [ "${GITHUB_REF}" != 'refs/heads/main' ]; then
+            echo "::error::The backup monitor must run from refs/heads/main, not ${GITHUB_REF}."
+            exit 1
+          fi
+          if [ "${GITHUB_REF_PROTECTED}" != 'true' ]; then
+            echo '::error::The backup monitor refuses an unprotected main branch.'
+            exit 1
+          fi
 
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Verify the exact GitHub environment gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api "repos/${GITHUB_REPOSITORY}/environments/${EXPECTED_GITHUB_ENVIRONMENT}" \
+            > /tmp/database-backup-environment.json
+          gh api "repos/${GITHUB_REPOSITORY}/environments/${EXPECTED_GITHUB_ENVIRONMENT}/deployment-branch-policies?per_page=100" \
+            > /tmp/database-backup-environment-policies.json
+          python scripts/check_github_environment_gate.py \
+            --environment-json /tmp/database-backup-environment.json \
+            --policies-json /tmp/database-backup-environment-policies.json \
+            --expected-environment "${EXPECTED_GITHUB_ENVIRONMENT}" \
+            --expected-branch main \
+            --actual-ref "${GITHUB_REF}" \
+            --ref-protected "${GITHUB_REF_PROTECTED}"
 
       - uses: aws-actions/configure-aws-credentials@e6de054238d6b7531b4efff3b6587d9aade6a06c # v6.2.3
         with:

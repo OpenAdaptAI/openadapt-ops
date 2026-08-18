@@ -11,8 +11,10 @@
 /ops/backup/ @abrichr
 /scripts/database_backup_contract.py @abrichr
 /scripts/check_database_backup_freshness.py @abrichr
+/scripts/check_github_environment_gate.py @abrichr
 /scripts/check_production_readiness.py @abrichr
 /scripts/run_database_restore_drill.sh @abrichr
 /tests/test_database_backup_contract.py @abrichr
 /tests/test_database_backup_freshness.py @abrichr
+/tests/test_github_environment_gate.py @abrichr
 /tests/test_production_readiness.py @abrichr

@@ -14,9 +14,13 @@ def read(path: str) -> str:
 def test_backup_configuration_fails_before_credentials_or_tool_install() -> None:
     workflow = read(".github/workflows/db-backup.yml")
     preflight = workflow.index("Validate the protected environment configuration")
+    environment_gate = workflow.index("Verify the exact GitHub environment gate")
     credentials = workflow.index("aws-actions/configure-aws-credentials")
     supabase = workflow.index("supabase/setup-cli")
-    assert preflight < credentials < supabase
+    assert preflight < environment_gate < credentials < supabase
+    assert "actions: read" in workflow
+    assert "GITHUB_REF_PROTECTED" in workflow
+    assert "check_github_environment_gate.py" in workflow
     for name in (
         "AWS_BACKUP_ROLE_ARN",
         "AWS_BACKUP_BUCKET",
@@ -24,6 +28,17 @@ def test_backup_configuration_fails_before_credentials_or_tool_install() -> None
         "SUPABASE_PROJECT_REF",
     ):
         assert f"missing+=({name})" in workflow
+
+
+def test_backup_uses_one_s3_validated_full_object_put() -> None:
+    workflow = read(".github/workflows/db-backup.yml")
+    prepare = workflow.index("prepare-single-put")
+    put = workflow.index("aws s3api put-object")
+    verify = workflow.index("verify-single-put")
+    assert prepare < put < verify
+    assert '--checksum-algorithm SHA256 --checksum-sha256 "$local_checksum"' in workflow
+    assert "--content-length \"$cipher_bytes\"" in workflow
+    assert 'aws s3 cp "$cipher"' not in workflow
 
 
 def test_backup_monitor_cannot_download_or_change_ciphertext() -> None:
@@ -43,6 +58,12 @@ def test_backup_monitor_cannot_download_or_change_ciphertext() -> None:
     assert "age --decrypt" not in workflow
     assert "get-object-attributes" in workflow
     assert "steps.select.outputs.ciphertext_key" in workflow
+    assert workflow.index("Verify the exact GitHub environment gate") < workflow.index(
+        "aws-actions/configure-aws-credentials"
+    )
+    assert "actions: read" in workflow
+    assert "GITHUB_REF_PROTECTED" in workflow
+    assert "check_github_environment_gate.py" in workflow
 
 
 def test_health_probe_uses_the_strict_contract_and_a_durable_issue() -> None:

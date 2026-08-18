@@ -29,8 +29,9 @@ the matching protected-environment configuration failure. As of that check:
 - no measured RTO exists;
 - provider PITR is not enabled;
 - the AWS stack is not deployed;
+- `main` has no repository ruleset or branch protection;
 - the `production-backup` GitHub environment has none of its four required
-  settings;
+  settings and has no deployment-branch restriction;
 - the `production-backup-monitor` GitHub environment is not configured;
 - no scratch Supabase project is configured; and
 - one local private `age` key exists, but its required second vault or offline
@@ -62,6 +63,30 @@ take separate logical snapshots. Do not run it during a schema migration. The
 complete Cloud drill pauses writes, exports and rechecks Storage, restores both
 boundaries, and produces the canonical retention receipt.
 
+## GitHub trust gate before AWS setup
+
+Create the external GitHub gates before the CloudFormation stack creates an
+OIDC role. The OIDC subject binds a role to an environment. The environment's
+deployment policy is the exact branch gate.
+
+1. Protect `main` with a repository ruleset. Require a pull request and the
+   applicable status checks. Add required code-owner review only when a second
+   authorized maintainer can approve the founder's pull request.
+2. Create the `production-backup` GitHub environment.
+3. Give it one custom deployment branch policy: the exact `main` branch. Do not
+   select every protected branch. Do not add a tag or wildcard policy.
+4. Create the `production-backup-monitor` GitHub environment.
+5. Give it the same single custom `main` branch policy.
+6. Do not require a manual environment approval. An approval wait would prevent
+   the scheduled jobs.
+
+Verify that `main` reports as protected. Verify that each environment reports
+`custom_branch_policies: true`, `protected_branches: false`, and one policy with
+the exact name `main`. Both workflows repeat this check after the environment
+admits the job and before they request AWS credentials. The job has read-only
+Actions permission for this API check. Do not deploy the AWS stack until this
+gate passes.
+
 ## One-time AWS setup
 
 The CloudFormation template creates:
@@ -80,6 +105,11 @@ The expected S3 Standard storage price is approximately USD 0.023 per GB each
 month, plus small request charges. For example, retaining 90 daily 100 MB
 backups is approximately 9 GB, or USD 0.21 each month before requests. The
 template does not create a paid KMS key and does not enable Supabase PITR.
+
+The backup workflow uses one S3 `PutObject` with a caller-supplied full-object
+SHA-256. S3 validates that checksum before it accepts the object. This launch
+path refuses an encrypted archive above 5 GiB before upload. Build and qualify a
+multipart contract before a production database can exceed that limit.
 
 An AWS principal with CloudFormation, IAM, and S3 administration rights must
 run:
@@ -107,25 +137,20 @@ aws cloudformation describe-stacks \
   --query 'Stacks[0].Outputs'
 ```
 
-## One-time GitHub setup
+## Complete the GitHub settings after AWS setup
 
-First protect the repository and both environments:
+The branch and environment gates already exist. Add the AWS outputs and the
+database identity only after the stack passes validation:
 
-1. Protect `main` with a repository ruleset. Require a pull request and code
-   owner review for the backup trust-boundary files in `.github/CODEOWNERS`.
-2. Create the `production-backup` GitHub environment.
-3. Restrict that environment to the protected `main` branch. Do not require a
-   manual deployment approval because it would prevent the daily schedule.
-4. Set environment variables from the CloudFormation outputs:
+1. Set `production-backup` environment variables from the CloudFormation
+   outputs:
    - `AWS_BACKUP_BUCKET`
    - `AWS_BACKUP_ROLE_ARN`
-5. Set environment secrets:
+2. Set `production-backup` environment secrets:
    - `SUPABASE_DB_URL`: the production direct or session-pooler PostgreSQL URL
    - `SUPABASE_PROJECT_REF`: the exact production project reference
-6. Create the `production-backup-monitor` GitHub environment.
-7. Restrict that environment to the protected `main` branch. Do not require a
-   manual deployment approval because it would prevent the hourly schedule.
-8. Set two environment variables from the CloudFormation outputs:
+3. Set `production-backup-monitor` environment variables from the
+   CloudFormation outputs:
    - `AWS_BACKUP_BUCKET`
    - `AWS_BACKUP_MONITOR_ROLE_ARN`
 
@@ -162,7 +187,9 @@ Require all of these results:
 - the workflow succeeds on the exact `main` commit;
 - S3 contains one ciphertext object and one redacted manifest below the same
   UTC stamp;
-- the stored SHA-256 checksum equals the local upload checksum; and
+- the stored SHA-256 checksum equals the local upload checksum;
+- S3 reports the exact caller-supplied full-object SHA-256 for the ciphertext;
+- the encrypted archive is no more than the enforced 5 GiB launch limit;
 - no GitHub Actions artifact exists for the run.
 - the separate read-only freshness workflow selects the same recovery point,
   validates the redacted manifest digest, matches the S3 object size and remote

@@ -1,3 +1,5 @@
+import base64
+import hashlib
 import importlib.util
 import io
 import json
@@ -6,7 +8,6 @@ from argparse import Namespace
 from pathlib import Path
 
 import pytest
-
 
 MODULE_PATH = Path(__file__).parents[1] / "scripts" / "database_backup_contract.py"
 SPEC = importlib.util.spec_from_file_location("database_backup_contract", MODULE_PATH)
@@ -116,6 +117,84 @@ def test_manifest_detects_ciphertext_tampering(tmp_path: Path) -> None:
         backup.verify_artifact(
             Namespace(manifest=str(manifest), ciphertext_archive=str(ciphertext))
         )
+
+
+def test_single_put_contract_keeps_full_sha256_above_multipart_threshold(
+    tmp_path: Path,
+) -> None:
+    _, _, contract = make_contract(tmp_path)
+    plaintext = tmp_path / "backup.tar.gz"
+    ciphertext = tmp_path / "backup.tar.gz.age"
+    plaintext.write_bytes(b"plain")
+    payload = b"x" * (8 * 1024 * 1024 + 1)
+    ciphertext.write_bytes(payload)
+    manifest = tmp_path / "artifact-manifest.json"
+    backup.create_manifest(
+        Namespace(
+            contract=str(contract),
+            plaintext_archive=str(plaintext),
+            ciphertext_archive=str(ciphertext),
+            repository_commit="a" * 40,
+            workflow_run_id="123",
+            output=str(manifest),
+        )
+    )
+
+    upload = backup.single_put_contract(ciphertext, manifest)
+    digest = hashlib.sha256(payload).hexdigest()
+    assert upload["bytes"] == len(payload)
+    assert upload["sha256"] == digest
+    assert upload["checksum_type"] == "FULL_OBJECT"
+    assert upload["checksum_sha256"] == base64.b64encode(
+        bytes.fromhex(digest)
+    ).decode()
+    upload_contract = tmp_path / "s3-upload-contract.json"
+    upload_contract.write_text(json.dumps(upload), encoding="utf-8")
+    attributes = tmp_path / "s3-object-attributes.json"
+    attributes.write_text(
+        json.dumps(
+            {
+                "ObjectSize": len(payload),
+                "Checksum": {
+                    "ChecksumSHA256": upload["checksum_sha256"],
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+    backup.verify_single_put(
+        Namespace(upload_contract=str(upload_contract), attributes=str(attributes))
+    )
+
+    value = json.loads(attributes.read_text())
+    value["Checksum"]["ChecksumSHA256"] = f'{upload["checksum_sha256"]}-2'
+    attributes.write_text(json.dumps(value), encoding="utf-8")
+    with pytest.raises(backup.ContractError, match="full-object"):
+        backup.verify_single_put(
+            Namespace(upload_contract=str(upload_contract), attributes=str(attributes))
+        )
+
+
+def test_single_put_contract_refuses_before_its_size_limit(tmp_path: Path) -> None:
+    _, _, contract = make_contract(tmp_path)
+    plaintext = tmp_path / "backup.tar.gz"
+    ciphertext = tmp_path / "backup.tar.gz.age"
+    plaintext.write_bytes(b"plain")
+    ciphertext.write_bytes(b"12345")
+    manifest = tmp_path / "artifact-manifest.json"
+    backup.create_manifest(
+        Namespace(
+            contract=str(contract),
+            plaintext_archive=str(plaintext),
+            ciphertext_archive=str(ciphertext),
+            repository_commit="a" * 40,
+            workflow_run_id="123",
+            output=str(manifest),
+        )
+    )
+
+    with pytest.raises(backup.ContractError, match="5 GiB"):
+        backup.single_put_contract(ciphertext, manifest, maximum_bytes=4)
 
 
 def test_safe_extraction_accepts_only_the_exact_regular_file_set(tmp_path: Path) -> None:

@@ -10,8 +10,8 @@ must pass qualification.
 | Check | Schedule | Proof | Durable signal |
 |---|---:|---|---|
 | Production health | Every 30 minutes | HTTP 200, `no-store`, fresh `checked_at`, live mode, active encrypted writer, and every required component | One GitHub issue and optional Telegram alert |
-| Database backup | Daily | Complete encrypted upload, redacted manifest, and matching S3 checksum | One GitHub issue |
-| Database backup freshness | Hourly | A complete S3 pair from the last 24 hours, a valid manifest digest, a matching object size, and a matching checksum | One GitHub issue |
+| Database backup | Daily | An encrypted archive no larger than 5 GiB, one S3 PutObject, a redacted manifest, and a matching S3-validated full-object SHA-256 | One GitHub issue |
+| Database backup freshness | Hourly | A complete S3 pair from the last 24 hours, a valid manifest digest, a matching object size, and the same full-object SHA-256 | One GitHub issue |
 | Default branch sweep | Daily | The newest applicable run for every owned repository | One GitHub issue |
 | Published version claims | Daily | Documentation claims against current package indexes | One GitHub issue |
 
@@ -24,19 +24,21 @@ proof.
 
 Complete these checks before a production promotion:
 
-1. Bind the deployment to the reviewed source commit and artifact digests.
-2. Run the complete local and hosted release gates for that exact commit.
-3. Fetch the public readiness endpoint without a cache.
-4. Run `scripts/check_production_readiness.py` against the response headers and
+1. Protect `main`. Give each backup environment one exact custom `main` branch
+   policy before an AWS OIDC role exists.
+2. Bind the deployment to the reviewed source commit and artifact digests.
+3. Run the complete local and hosted release gates for that exact commit.
+4. Fetch the public readiness endpoint without a cache.
+5. Run `scripts/check_production_readiness.py` against the response headers and
    body.
-5. Complete an authenticated synthetic transaction through submission,
+6. Complete an authenticated synthetic transaction through submission,
    idempotency, dispatch, callback, independent effect verification, receipt,
    and webhook delivery.
-6. Test a duplicate request and an uncertain dispatch. Do not dispatch the
+7. Test a duplicate request and an uncertain dispatch. Do not dispatch the
    action again during reconciliation.
-7. Test one human halt, notification, answer, fresh-state revalidation, and
+8. Test one human halt, notification, answer, fresh-state revalidation, and
    resume.
-8. Confirm a current database recovery point and a complete isolated recovery
+9. Confirm a current database recovery point and a complete isolated recovery
    drill for the database and private Storage boundary.
 
 The readiness endpoint proves configured dependencies. It does not prove a
@@ -95,19 +97,24 @@ red or absent.
 
 ## Founder configuration
 
-The code cannot supply these values or operating decisions:
+The code cannot supply these values or operating decisions. Complete them in
+this order:
 
-1. Deploy the reviewed backup CloudFormation stack in AWS account
+1. Protect `main` with a pull request and the applicable status checks.
+2. Create `production-backup` and `production-backup-monitor`. Give each
+   environment one exact custom `main` branch policy and no other deployment
+   policy.
+3. Deploy the reviewed backup CloudFormation stack in AWS account
    `992382684924`.
-2. Configure the four settings in the `production-backup` GitHub environment.
-3. Configure the two variables in the `production-backup-monitor` environment.
-4. Store a second copy of the private `age` key in a team vault or offline
+4. Configure the four settings in the `production-backup` GitHub environment.
+5. Configure the two variables in the `production-backup-monitor` environment.
+6. Store a second copy of the private `age` key in a team vault or offline
    medium.
-5. Create an isolated scratch Supabase project and complete the first recovery
+7. Create an isolated scratch Supabase project and complete the first recovery
    drill.
-6. Select the primary operator, the secondary operator, the support hours, and
+8. Select the primary operator, the secondary operator, the support hours, and
    the response targets for human halts.
-7. Configure an external monitor for the production health and backup freshness
+9. Configure an external monitor for the production health and backup freshness
    schedules.
-8. Complete the first genuine customer transaction when an authorized customer
+10. Complete the first genuine customer transaction when an authorized customer
    is available. Do not create a founder self-charge as evidence.
