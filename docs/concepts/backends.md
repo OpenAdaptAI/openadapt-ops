@@ -43,8 +43,9 @@ browser exposes a full structured layer:
   profile that has already completed sign-in, SSO, or 2FA. Flow refuses remote
   endpoints and ambiguous same-origin tabs. It does not navigate or close the
   external browser. It records viewport and monitor-scale transitions as new
-  per-event coordinate baselines. It refuses only an action that overlaps an
-  unverified transition.
+  per-event coordinate baselines. An idle transition rebaselines and continues.
+  An action that overlaps an unverified transition aborts the recording and
+  publishes no complete metadata.
 
 It shares the same bundle, resolution ladder, and identity gate as every other
 substrate; nothing about the safety model is specific to it.
