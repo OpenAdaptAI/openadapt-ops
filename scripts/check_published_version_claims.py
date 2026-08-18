@@ -4,7 +4,7 @@
 On 2026-07-27 ``openadapt-flow`` 1.24.0 published and four sentences on
 docs.openadapt.ai -- one of them on the security-review page -- still asserted
 that the live runner reported "the published Flow 1.23.0 identity". The number
-was correct (the managed runtime really is pinned to 1.23.0); the word
+was correct at that time because the managed runtime pinned 1.23.0; the word
 *published* was what became false. Nothing could detect that, because no
 machine-readable record said which numbers in these docs are supposed to track
 the current release and which are deliberately frozen.
