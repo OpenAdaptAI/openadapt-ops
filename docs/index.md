@@ -218,10 +218,11 @@ bounded runs ended after exhausting their action budget without writing a
 patient.
 
 All three environments used synthetic data on one local host and ran through
-the **Browser (Playwright)** substrate, whose reference path is **Beta**. The
-healthcare row is distinct from the shared-public-demo OpenEMR field result
-above. Frappe Lending and openIMIS are API-rich references, and neither is
-evidence for a legacy Windows/Citrix system.
+the **Browser (Playwright)** substrate. These results qualify only the named
+tasks and environments. The healthcare row is distinct from the
+shared-public-demo OpenEMR field result above. Frappe Lending and openIMIS are
+API-rich references, and neither is evidence for a legacy Windows/Citrix
+system.
 
 The public [aggregate report](https://github.com/OpenAdaptAI/openadapt-flow/tree/main/benchmark/agent_arm_verticals)
 retains the method, run counts, outcomes, failure taxonomy, and caveats. Raw
