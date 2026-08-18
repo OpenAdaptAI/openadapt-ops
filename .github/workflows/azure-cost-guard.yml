@@ -30,7 +30,7 @@ jobs:
           fi
 
       - if: ${{ steps.credentials.outputs.available == 'true' }}
-        uses: Azure/login@f5d393ae46f8fde4be8b75f32e3fc50e654ad0ca # v2
+        uses: Azure/login@f5d393ae46f8fde4be8b75f32e3fc50e654ad0ca # v3.0.1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
