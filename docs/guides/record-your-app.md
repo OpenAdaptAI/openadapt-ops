@@ -65,8 +65,9 @@ the viewport history and the exact before and after viewport for each event.
 Flow refuses a cross-origin navigation or an event from an iframe. It also
 refuses an action that overlaps a resize or monitor-scale transition. The last
 refusal is necessary because no exact pre-action frame exists in the new
-coordinate space. Stop interacting for a moment after a resize. Recording then
-continues automatically.
+coordinate space. An overlapping action aborts the recording and publishes no
+complete metadata. When you resize between actions, stop interacting until the
+new frame is stable. Recording then continues automatically.
 
 The custom Chrome extension in `openadapt-capture` is a development prototype.
 It is not this supported path and it is not a governed replay mechanism.

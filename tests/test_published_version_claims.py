@@ -30,6 +30,7 @@ from check_published_version_claims import (  # noqa: E402
     parse_changelog,
     scan_for_unregistered_claims,
 )
+from render_published_version_claims import render_version_claims  # noqa: E402
 
 CHANGELOG = REPO_ROOT / "docs" / "changelog.md"
 
@@ -249,6 +250,88 @@ def test_missing_claim_file_fails(tmp_path):
 
 
 # --------------------------------------------------------------------------
+# One source renders every active managed-runtime version
+# --------------------------------------------------------------------------
+
+
+def _rendered_registry(version="1.31.0"):
+    return {
+        "claims": [
+            {
+                "id": "managed-runtime",
+                "kind": "pinned-deployment",
+                "package": "openadapt-flow",
+                "version": version,
+                "rendered_locations": [
+                    {"file": "docs/a.md", "count": 1},
+                    {"file": "docs/b.md", "count": 2},
+                ],
+            }
+        ]
+    }
+
+
+def _marked(claim_id="managed-runtime", version="1.31.0"):
+    return (
+        f"<!-- version-claim:{claim_id} -->{version}"
+        f"<!-- /version-claim:{claim_id} -->"
+    )
+
+
+def test_one_registry_version_renders_every_registered_location(tmp_path):
+    registry = _rendered_registry(version="1.32.0")
+    _tree(
+        tmp_path,
+        {
+            "docs/a.md": f"Flow {_marked()} artifact\n",
+            "docs/b.md": f"runner {_marked()} and compiler {_marked()}\n",
+        },
+    )
+
+    errors, changed = render_version_claims(registry, root=tmp_path)
+
+    assert errors == []
+    assert {path.name for path in changed} == {"a.md", "b.md"}
+    assert "1.31.0" not in (tmp_path / "docs/a.md").read_text()
+    assert (tmp_path / "docs/a.md").read_text().count("1.32.0") == 1
+    assert (tmp_path / "docs/b.md").read_text().count("1.32.0") == 2
+
+
+def test_render_check_fails_when_a_generated_value_is_stale(tmp_path):
+    registry = _rendered_registry(version="1.32.0")
+    _tree(
+        tmp_path,
+        {
+            "docs/a.md": f"Flow {_marked()} artifact\n",
+            "docs/b.md": f"runner {_marked()} and compiler {_marked()}\n",
+        },
+    )
+
+    errors, changed = render_version_claims(registry, root=tmp_path, check=True)
+
+    assert changed == []
+    assert any("rendered version claims are stale" in error for error in errors)
+    assert "1.31.0" in (tmp_path / "docs/a.md").read_text()
+
+
+def test_render_check_fails_for_missing_or_extra_marker(tmp_path):
+    registry = _rendered_registry()
+    _tree(
+        tmp_path,
+        {
+            "docs/a.md": f"Flow {_marked()} artifact\n",
+            "docs/b.md": f"runner {_marked()}\n",
+            "docs/unregistered.md": f"Flow {_marked('other')}\n",
+        },
+    )
+
+    errors, _ = render_version_claims(registry, root=tmp_path, check=True)
+
+    assert any("docs/b.md has 1 rendered marker" in error for error in errors)
+    assert any("claim 'other'" in error for error in errors)
+
+
+# --------------------------------------------------------------------------
 # Changelog structure
 # --------------------------------------------------------------------------
 
@@ -288,6 +371,8 @@ def test_committed_docs_pass_the_offline_checks(registry):
     """Whatever else changes, the committed tree must be self-consistent."""
     report = Report()
     check_claim_locations(registry, report)
+    render_errors, _ = render_version_claims(registry, check=True)
+    report.errors.extend(render_errors)
     scan_for_unregistered_claims(registry, report)
     check_changelog_structure(registry, report)
 

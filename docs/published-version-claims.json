@@ -21,6 +21,9 @@
     "                     be reworded into one. Bump it only with evidence.",
     "  historical         A version some retained measurement was taken on.",
     "                     Frozen forever; bumping it would falsify the record.",
+    "  rendered_locations Pages whose marked version is generated from the",
+    "                     claim's one version field. Change that field once,",
+    "                     then run scripts/render_published_version_claims.py.",
     "",
     "Adding a 'published X.Y.Z' style sentence to docs/ without a matching",
     "pypi-latest entry here fails the check."
@@ -43,28 +46,24 @@
       "kind": "pinned-deployment",
       "package": "openadapt-flow",
       "version": "1.31.0",
-      "evidence": "openadapt-cloud origin/main 4e0257a1299cc0869af3e3f664a6ebfa0b59db1 runner/runtime-version.json pins openadapt_flow 1.31.0 at release commit 2d225dea9a0ad29ca84ce1b037cc0ac671367e28 (wheel sha256 81133db1528ad1bb1f26e3fcb6aea61b0651db6d905cf2e4943e8383c1f3d29c; sdist sha256 cf1fc356d14d267df82be188de3e9a3575734f18f46ef91ac8075438cc731540). This records the configured artifact pin, not live deployment or hosted acceptance.",
+      "evidence": "openadapt-cloud origin/main 4e0257a1299cc0869af3e3f664a6ebfa0b59db1 runner/runtime-version.json pins the openadapt_flow artifact at release commit 2d225dea9a0ad29ca84ce1b037cc0ac671367e28 (wheel sha256 81133db1528ad1bb1f26e3fcb6aea61b0651db6d905cf2e4943e8383c1f3d29c; sdist sha256 cf1fc356d14d267df82be188de3e9a3575734f18f46ef91ac8075438cc731540). The package version is the claim's version field. This records the configured artifact pin, not live deployment or hosted acceptance.",
       "verified_on": "2026-08-18",
-      "locations": [
+      "rendered_locations": [
         {
           "file": "docs/concepts/deployment-matrix.md",
-          "context": "managed-runtime manifest pins Flow 1.31.0 at release"
+          "count": 1
         },
         {
           "file": "docs/guides/security-review.md",
-          "context": "managed-runtime manifest pins\nFlow 1.31.0 artifact identity"
+          "count": 1
         },
         {
           "file": "docs/guides/hosted.md",
-          "context": "managed-runtime manifest pins Flow 1.31.0 artifact identity"
-        },
-        {
-          "file": "docs/guides/hosted.md",
-          "context": "managed-runtime manifest pins the Flow 1.31.0 artifact identity"
+          "count": 2
         },
         {
           "file": "docs/get-started/what-works-today.md",
-          "context": "managed-runtime manifest pins the Flow 1.31.0 runner/compiler artifact identity"
+          "count": 1
         }
       ]
     },

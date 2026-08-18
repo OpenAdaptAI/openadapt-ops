@@ -108,7 +108,7 @@ synthetic. A missing production dependency makes the affected operation
 unavailable rather than substituting a simulated success.
 
 The retained hosted-recorder qualification used a Flow 1.8.0 worker. The
-current Cloud managed-runtime manifest pins Flow 1.31.0 at release commit
+current Cloud managed-runtime manifest pins Flow <!-- version-claim:hosted-runner-managed-runtime-pin -->1.31.0<!-- /version-claim:hosted-runner-managed-runtime-pin --> at release commit
 `2d225dea9a0ad29ca84ce1b037cc0ac671367e28`. Its wheel SHA-256 is
 `81133db1528ad1bb1f26e3fcb6aea61b0651db6d905cf2e4943e8383c1f3d29c` and
 its source SHA-256 is
