@@ -21,7 +21,7 @@ def test_load_repos():
         "beta", "experimental", "research", "deprecated",
     }
     lifecycle_by_name = {r["name"]: r["lifecycle"] for r in repos}
-    assert lifecycle_by_name["openadapt-agent"] == "experimental"
+    assert lifecycle_by_name["openadapt-agent"] == "beta"
 
 
 def test_sync_renders_pages(tmp_path, mocker):

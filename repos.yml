@@ -46,7 +46,7 @@ repos:
   - name: openadapt-agent
     github: OpenAdaptAI/openadapt-agent
     category: core
-    lifecycle: experimental
+    lifecycle: beta
     changelog: true
 
   - name: openadapt-ml
