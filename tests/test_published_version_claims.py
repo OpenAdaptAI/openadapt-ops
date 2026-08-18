@@ -331,6 +331,24 @@ def test_render_check_fails_for_missing_or_extra_marker(tmp_path):
     assert any("claim 'other'" in error for error in errors)
 
 
+def test_render_refuses_malformed_marker_without_partial_writes(tmp_path):
+    registry = _rendered_registry(version="1.32.0")
+    malformed = "<!-- version-claim:managed-runtime -->1.31.0"
+    _tree(
+        tmp_path,
+        {
+            "docs/a.md": f"Flow {_marked()} artifact\n",
+            "docs/b.md": f"runner {_marked()} and compiler {malformed}\n",
+        },
+    )
+
+    errors, changed = render_version_claims(registry, root=tmp_path)
+
+    assert changed == []
+    assert any("incomplete or malformed" in error for error in errors)
+    assert "1.31.0" in (tmp_path / "docs/a.md").read_text()
+
+
 # --------------------------------------------------------------------------
 # Changelog structure
 # --------------------------------------------------------------------------
