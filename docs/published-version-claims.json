@@ -21,9 +21,10 @@
     "                     be reworded into one. Bump it only with evidence.",
     "  historical         A version some retained measurement was taken on.",
     "                     Frozen forever; bumping it would falsify the record.",
-    "  rendered_locations Pages whose marked version is generated from the",
-    "                     claim's one version field. Change that field once,",
-    "                     then run scripts/render_published_version_claims.py.",
+    "",
+    "rendered_locations:",
+    "  Pages whose marked version is generated from the claim's one version",
+    "  field. Change that field once, then run the deterministic renderer.",
     "",
     "Adding a 'published X.Y.Z' style sentence to docs/ without a matching",
     "pypi-latest entry here fails the check."
