@@ -30,7 +30,7 @@ MARKER = re.compile(
     r"<!-- /version-claim:(?P=id):(?P=field) -->"
 )
 CLAIM_COMMENT = re.compile(
-    r"<!--(?:(?!-->).)*version-claim:(?:(?!-->).)*-->",
+    r"<!--(?:(?!-->).)*version-claim(?:(?!-->).)*-->",
     re.DOTALL | re.IGNORECASE,
 )
 FIELD_PATTERNS = {

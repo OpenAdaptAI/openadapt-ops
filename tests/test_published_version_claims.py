@@ -418,6 +418,27 @@ def test_render_rejects_a_marker_with_an_invalid_identifier(tmp_path):
     assert any("incomplete or malformed" in error for error in errors)
 
 
+def test_render_rejects_a_marker_with_a_missing_colon(tmp_path):
+    registry = _rendered_registry(version="1.32.0")
+    invalid = (
+        "<!-- version-claim managed-runtime:version -->1.31.0"
+        "<!-- /version-claim managed-runtime:version -->"
+    )
+    _tree(
+        tmp_path,
+        {
+            "docs/a.md": f"Flow {_marked()} artifact\n",
+            "docs/b.md": f"runner {_marked()} and compiler {invalid}\n",
+        },
+    )
+
+    errors, changed = render_version_claims(registry, root=tmp_path)
+
+    assert changed == []
+    assert any("incomplete or malformed" in error for error in errors)
+    assert "1.31.0" in (tmp_path / "docs/a.md").read_text()
+
+
 # --------------------------------------------------------------------------
 # Changelog structure
 # --------------------------------------------------------------------------
