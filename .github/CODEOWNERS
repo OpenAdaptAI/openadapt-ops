@@ -1,4 +1,6 @@
-# Default code owners. Enforced via branch protection (required review).
+# Default code owners. This file routes review. Repository branch protection
+# must separately require a code-owner review before this becomes an enforced
+# merge gate.
 * @abrichr
 
 # Production backup and restore trust boundary.
