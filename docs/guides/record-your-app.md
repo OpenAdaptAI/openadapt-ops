@@ -8,9 +8,9 @@ target flags in place of `--url`.
 
 ## Record
 
-On the web substrate, `record --backend web --url` opens a headed browser on your app and
-watches what you do: clicks, typing, key presses, and scrolls. It writes the same
-recording format `compile` consumes.
+On the web substrate, `record --backend web --url` opens a headed browser on
+your app and watches what you do: clicks, typing, key presses, and scrolls. It
+writes the same recording format `compile` consumes.
 
 ```bash
 openadapt flow record --backend web --url https://your.app --out rec
@@ -22,6 +22,54 @@ the window to finish.
 !!! tip "Record headless for scripted or CI capture"
     Add `--headless` to run the browser without a window, for scripted recording
     in a pipeline.
+
+### Use an existing signed-in Chromium session
+
+Flow can attach the same Playwright recorder to one existing local Chromium
+tab. Use this mode when the browser profile has already completed sign-in, SSO,
+or 2FA.
+
+Start Chromium with a dedicated debugging profile. For example, on macOS:
+
+```bash
+"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
+  --remote-debugging-address=127.0.0.1 \
+  --remote-debugging-port=9222 \
+  --user-data-dir="./.openadapt-chrome-profile"
+```
+
+Open the application in that browser. Then run:
+
+```bash
+openadapt flow record --backend web --url https://your.app \
+  --browser-cdp-endpoint http://127.0.0.1:9222 --out rec
+```
+
+Flow selects the sole open tab on the `--url` origin. It refuses an ambiguous
+selection. If the browser has two or more tabs on that origin, add the exact
+current URL with `--browser-page-url`. Flow does not navigate or close the
+attached browser.
+
+The endpoint must be on localhost or a loopback IP address. The attached
+screenshots use the tab's actual CSS viewport, so retained frames and DOM input
+coordinates stay aligned on high-density displays. Password fields and fields
+declared with `--secret` keep the same source-time exclusion and frame-redaction
+contract as launch mode.
+
+Keep the selected tab on the declared application origin. You can resize the
+tab or move its window between monitors while no action is in progress. Flow
+observes viewport and device-scale changes. It waits for a stable CSS-pixel
+frame and binds later events to the new coordinate space. The recording keeps
+the viewport history and the exact before and after viewport for each event.
+
+Flow refuses a cross-origin navigation or an event from an iframe. It also
+refuses an action that overlaps a resize or monitor-scale transition. The last
+refusal is necessary because no exact pre-action frame exists in the new
+coordinate space. Stop interacting for a moment after a resize. Recording then
+continues automatically.
+
+The custom Chrome extension in `openadapt-capture` is a development prototype.
+It is not this supported path and it is not a governed replay mechanism.
 
 ## Compile and replay
 

@@ -59,6 +59,13 @@ matching Chromium build downloads lazily on the first web action. Native
 desktop, RDP, and Citrix commands neither import Playwright nor trigger a
 browser download.
 
+The recorder can also attach to a Chromium process that you started with a
+local remote-debugging port and a dedicated user-data directory. Pass
+`--browser-cdp-endpoint`; no environment variable enables this path. The
+endpoint is loopback-only, and Flow never stores it in recording metadata.
+The recorder stores the attached tab's viewport history. It rebaselines after
+an idle tab resize or monitor-scale change.
+
 | Variable | Purpose |
 |---|---|
 | `OPENADAPT_FLOW_NO_AUTO_INSTALL` | Disables automatic browser provisioning. Set it when you manage the browser yourself (e.g. you ran `playwright install chromium` ahead of time in a controlled image). |
