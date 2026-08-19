@@ -1,0 +1,75 @@
+name: Production lifecycle policy
+
+on:
+  schedule:
+    - cron: "37 8 * * *"
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - ".github/workflows/production-lifecycle-policy.yml"
+      - "docs/production-lifecycle.json"
+      - "docs/reference/production-lifecycle.md"
+      - "docs/schemas/production-lifecycle-public.schema.json"
+      - "mkdocs.yml"
+      - "production-lifecycle-source.json"
+      - "scripts/render_production_lifecycle.py"
+      - "tests/test_production_lifecycle_policy.py"
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/production-lifecycle-policy.yml"
+      - "docs/production-lifecycle.json"
+      - "docs/reference/production-lifecycle.md"
+      - "docs/schemas/production-lifecycle-public.schema.json"
+      - "mkdocs.yml"
+      - "production-lifecycle-source.json"
+      - "scripts/render_production_lifecycle.py"
+      - "tests/test_production_lifecycle_policy.py"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-lifecycle-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      - name: Check exact canonical Production lifecycle projection
+        run: python3 scripts/render_production_lifecycle.py --check
+
+      - name: Test fail-closed projection behavior
+        run: python3 -m unittest tests.test_production_lifecycle_policy
+
+  report-failure:
+    needs: validate
+    if: >-
+      ${{ always() && needs.validate.result == 'failure' &&
+          (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') }}
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: File or update lifecycle projection failure
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TITLE="Production lifecycle projection needs attention"
+          BODY="The exact-source Production lifecycle check failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+          The public projection must continue to fail closed. Fix the source pin or evidence before any consumer derives Production."
+          EXISTING=$(gh issue list --repo "${{ github.repository }}" --state open --search "in:title \"$TITLE\"" --json number --jq '.[0].number // empty')
+          if [ -n "$EXISTING" ]; then
+            gh issue comment "$EXISTING" --repo "${{ github.repository }}" --body "$BODY"
+          else
+            gh issue create --repo "${{ github.repository }}" --title "$TITLE" --body "$BODY"
+          fi

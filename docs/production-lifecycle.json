@@ -1,0 +1,201 @@
+{
+  "$schema": "schemas/production-lifecycle-public.schema.json",
+  "derivation": {
+    "expired_or_revoked_latest_behavior": "no_production",
+    "fallback_to_older_release": false,
+    "mode": "latest_signed_admission_at_read_time",
+    "static_production_state": false
+  },
+  "maximum_admission_days": 30,
+  "policy_revision": 1,
+  "schema_version": "openadapt.public-production-lifecycle/v1",
+  "source": {
+    "files": {
+      "admissions": {
+        "path": "production-lifecycle-admissions.json",
+        "sha256": "sha256:aa13f9abf9c70dacdb9b13fdf237c6b5f193011ce834ac7f616ff7441c3ecbd9",
+        "url": "https://raw.githubusercontent.com/OpenAdaptAI/.github/d60445bc8617adc4a27c20e6ce05681a95d83a2c/production-lifecycle-admissions.json"
+      },
+      "admissions_schema": {
+        "path": "schemas/production-lifecycle-admissions.schema.json",
+        "sha256": "sha256:a263f929549a4098244965f1e4bee73707c99173829771af2d79bedc081bdd81",
+        "url": "https://raw.githubusercontent.com/OpenAdaptAI/.github/d60445bc8617adc4a27c20e6ce05681a95d83a2c/schemas/production-lifecycle-admissions.schema.json"
+      },
+      "evidence_manifest_schema": {
+        "path": "schemas/production-lifecycle-evidence-manifest.schema.json",
+        "sha256": "sha256:4bb0aff068c38ea0a407e27fac68ca9f4a178983af4f560f9dac5ebf8c672376",
+        "url": "https://raw.githubusercontent.com/OpenAdaptAI/.github/d60445bc8617adc4a27c20e6ce05681a95d83a2c/schemas/production-lifecycle-evidence-manifest.schema.json"
+      },
+      "evidence_summary_schema": {
+        "path": "schemas/production-lifecycle-evidence-summary.schema.json",
+        "sha256": "sha256:01dd60e8e68391434a8bfd81a5c610f29b9d4a7ec2a36761622da141cdba7d58",
+        "url": "https://raw.githubusercontent.com/OpenAdaptAI/.github/d60445bc8617adc4a27c20e6ce05681a95d83a2c/schemas/production-lifecycle-evidence-summary.schema.json"
+      },
+      "lifecycle": {
+        "path": "repository-lifecycle.yml",
+        "sha256": "sha256:dc8af3941e3f865e2303ad075a0e7f4597d601c53f5795594cd4f9bcdc1f6420",
+        "url": "https://raw.githubusercontent.com/OpenAdaptAI/.github/d60445bc8617adc4a27c20e6ce05681a95d83a2c/repository-lifecycle.yml"
+      },
+      "policy": {
+        "path": "production-lifecycle-policy.json",
+        "sha256": "sha256:e1444a08ce6b16736168cce027ce9d48abb2e0e246fc0cd79c0772fa8e423e11",
+        "url": "https://raw.githubusercontent.com/OpenAdaptAI/.github/d60445bc8617adc4a27c20e6ce05681a95d83a2c/production-lifecycle-policy.json"
+      },
+      "policy_schema": {
+        "path": "schemas/production-lifecycle-policy.schema.json",
+        "sha256": "sha256:7ba6daadf2bd3b4382cebc958177e709272bb360fa0a0d231f648727ed34058c",
+        "url": "https://raw.githubusercontent.com/OpenAdaptAI/.github/d60445bc8617adc4a27c20e6ce05681a95d83a2c/schemas/production-lifecycle-policy.schema.json"
+      },
+      "validator": {
+        "path": "scripts/validate_production_lifecycle.py",
+        "sha256": "sha256:7f665f8c385d496aed21a580278c2af75666ea57a749ed1bb404622b383e0b5a",
+        "url": "https://raw.githubusercontent.com/OpenAdaptAI/.github/d60445bc8617adc4a27c20e6ce05681a95d83a2c/scripts/validate_production_lifecycle.py"
+      }
+    },
+    "repository": "OpenAdaptAI/.github",
+    "schema_version": "openadapt.production-lifecycle-source/v1",
+    "source_commit": "d60445bc8617adc4a27c20e6ce05681a95d83a2c"
+  },
+  "targets": [
+    {
+      "admission_history": [],
+      "artifact_authority_by_kind": {
+        "sdist": "pypi",
+        "wheel": "pypi"
+      },
+      "display_name": "OpenAdapt Agent",
+      "id": "agent",
+      "latest_admission": null,
+      "lifecycle_scope": "repository",
+      "lifecycle_subject": "openadapt-agent",
+      "package_index_project": "openadapt-agent",
+      "release_kind": "public_package",
+      "required_artifact_kinds": [
+        "sdist",
+        "wheel"
+      ],
+      "required_claim_scope": "qualified_agent_bridge_release",
+      "source_repository": "OpenAdaptAI/openadapt-agent"
+    },
+    {
+      "admission_history": [],
+      "artifact_authority_by_kind": {
+        "sdist": "pypi",
+        "wheel": "pypi"
+      },
+      "display_name": "OpenAdapt Capture",
+      "id": "capture",
+      "latest_admission": null,
+      "lifecycle_scope": "repository",
+      "lifecycle_subject": "openadapt-capture",
+      "package_index_project": "openadapt-capture",
+      "release_kind": "public_package",
+      "required_artifact_kinds": [
+        "sdist",
+        "wheel"
+      ],
+      "required_claim_scope": "qualified_native_recorder_release",
+      "source_repository": "OpenAdaptAI/openadapt-capture"
+    },
+    {
+      "admission_history": [],
+      "artifact_authority_by_kind": {},
+      "display_name": "OpenAdapt Cloud",
+      "id": "cloud",
+      "latest_admission": null,
+      "lifecycle_scope": "repository",
+      "lifecycle_subject": "openadapt-cloud",
+      "package_index_project": null,
+      "release_kind": "private_deployment",
+      "required_artifact_kinds": [],
+      "required_claim_scope": "qualified_workflow_control_plane_deployment",
+      "source_repository": "OpenAdaptAI/openadapt-cloud"
+    },
+    {
+      "admission_history": [],
+      "artifact_authority_by_kind": {
+        "linux-installer": "github_release",
+        "macos-installer": "github_release",
+        "sdist": "pypi",
+        "wheel": "pypi",
+        "windows-installer": "github_release"
+      },
+      "display_name": "OpenAdapt Desktop",
+      "id": "desktop",
+      "latest_admission": null,
+      "lifecycle_scope": "repository",
+      "lifecycle_subject": "openadapt-desktop",
+      "package_index_project": "openadapt-desktop",
+      "release_kind": "public_package",
+      "required_artifact_kinds": [
+        "linux-installer",
+        "macos-installer",
+        "sdist",
+        "wheel",
+        "windows-installer"
+      ],
+      "required_claim_scope": "qualified_native_workflow_desktop_release",
+      "source_repository": "OpenAdaptAI/openadapt-desktop"
+    },
+    {
+      "admission_history": [],
+      "artifact_authority_by_kind": {
+        "deployment-manifest": "managed_evidence",
+        "site-archive": "managed_evidence"
+      },
+      "display_name": "OpenAdapt Documentation",
+      "id": "docs",
+      "latest_admission": null,
+      "lifecycle_scope": "public_surface",
+      "lifecycle_subject": "docs.openadapt.ai",
+      "package_index_project": null,
+      "release_kind": "public_deployment",
+      "required_artifact_kinds": [
+        "deployment-manifest",
+        "site-archive"
+      ],
+      "required_claim_scope": "production_documentation_deployment",
+      "source_repository": "OpenAdaptAI/openadapt-ops"
+    },
+    {
+      "admission_history": [],
+      "artifact_authority_by_kind": {
+        "sdist": "pypi",
+        "wheel": "pypi"
+      },
+      "display_name": "OpenAdapt Flow",
+      "id": "flow",
+      "latest_admission": null,
+      "lifecycle_scope": "repository",
+      "lifecycle_subject": "openadapt-flow",
+      "package_index_project": "openadapt-flow",
+      "release_kind": "public_package",
+      "required_artifact_kinds": [
+        "sdist",
+        "wheel"
+      ],
+      "required_claim_scope": "qualified_workflow_runtime_release",
+      "source_repository": "OpenAdaptAI/openadapt-flow"
+    },
+    {
+      "admission_history": [],
+      "artifact_authority_by_kind": {
+        "sdist": "pypi",
+        "wheel": "pypi"
+      },
+      "display_name": "OpenAdapt",
+      "id": "openadapt",
+      "latest_admission": null,
+      "lifecycle_scope": "repository",
+      "lifecycle_subject": "OpenAdapt",
+      "package_index_project": "openadapt",
+      "release_kind": "public_package",
+      "required_artifact_kinds": [
+        "sdist",
+        "wheel"
+      ],
+      "required_claim_scope": "qualified_workflow_launcher_release",
+      "source_repository": "OpenAdaptAI/OpenAdapt"
+    }
+  ]
+}
