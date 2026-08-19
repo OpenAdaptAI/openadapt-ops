@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-08-19 21:44 UTC*
+> *Last updated: 2026-08-19 21:49 UTC*
 
 
 
@@ -60,6 +60,8 @@
 
 - [ci: bound the apt installs and prefer the canonical Ubuntu archive](https://github.com/OpenAdaptAI/openadapt-desktop/pull/117) (#117) — merged 
 
+- [fix: enforce governed Desktop egress boundaries](https://github.com/OpenAdaptAI/openadapt-desktop/pull/116) (#116) — merged 
+
 - [ci: bump the actions group across 1 directory with 5 updates](https://github.com/OpenAdaptAI/openadapt-desktop/pull/113) (#113) — merged 
 
 - [build: bump rustls from 0.23.42 to 0.23.43 in /src-tauri in the cargo-minor group across 1 directory](https://github.com/OpenAdaptAI/openadapt-desktop/pull/106) (#106) — merged 
@@ -83,6 +85,8 @@
 
 
 - [ci: bound the apt install and prefer the canonical Ubuntu archive](https://github.com/OpenAdaptAI/openadapt-evals/pull/289) (#289) — merged 
+
+- [ci: run pull-request checks on every base branch](https://github.com/OpenAdaptAI/openadapt-evals/pull/288) (#288) — merged 
 
 - [Publish Flow 1.31 evidence and enforce maturity boundaries](https://github.com/OpenAdaptAI/openadapt-evals/pull/286) (#286) — merged 
 
