@@ -1,12 +1,18 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-08-19 22:01 UTC*
+> *Last updated: 2026-08-19 22:18 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [fix(ci): repin the docs dispatch action and stop the recurring bump](https://github.com/OpenAdaptAI/OpenAdapt/pull/1098) (#1098) — merged 
+
+- [feat: define the current OpenAdapt platform BOM](https://github.com/OpenAdaptAI/OpenAdapt/pull/1097) (#1097) — merged 
+
+- [Fix launcher quickstart and align public product docs](https://github.com/OpenAdaptAI/OpenAdapt/pull/1096) (#1096) — merged 
 
 - [build(deps): bump astral-sh/setup-uv from 9.0.0 to 10.0.0](https://github.com/OpenAdaptAI/OpenAdapt/pull/1095) (#1095) — merged 
 
@@ -37,6 +43,8 @@
 
 - [ci: bound qualification and browser setup](https://github.com/OpenAdaptAI/openadapt-flow/pull/370) (#370) — merged 
 
+- [feat: add structured push result contract](https://github.com/OpenAdaptAI/openadapt-flow/pull/369) (#369) — merged 
+
 - [Fix recording targets and harden quickstart evidence](https://github.com/OpenAdaptAI/openadapt-flow/pull/367) (#367) — merged 
 
 - [ci: bump the actions group across 1 directory with 2 updates](https://github.com/OpenAdaptAI/openadapt-flow/pull/363) (#363) — merged 
@@ -57,6 +65,8 @@
 
 ## openadapt-desktop
 
+
+- [test(runner): make the lease-expiry test observe the clock, not race it](https://github.com/OpenAdaptAI/openadapt-desktop/pull/119) (#119) — merged 
 
 - [test: guard the POSIX 0600 assertions that cannot hold on Windows](https://github.com/OpenAdaptAI/openadapt-desktop/pull/118) (#118) — merged 
 
@@ -86,6 +96,8 @@
 ## openadapt-evals
 
 
+- [fix(evidence): expect private Cloud source visibility at signing](https://github.com/OpenAdaptAI/openadapt-evals/pull/292) (#292) — merged 
+
 - [fix(ci): publish with an action that accepts Metadata-Version 2.5](https://github.com/OpenAdaptAI/openadapt-evals/pull/291) (#291) — merged 
 
 - [ci: bound the apt install and prefer the canonical Ubuntu archive](https://github.com/OpenAdaptAI/openadapt-evals/pull/289) (#289) — merged 
@@ -108,6 +120,20 @@
 - [chore(deps): update CodeQL actions together](https://github.com/OpenAdaptAI/openadapt-capture/pull/75) (#75) — merged 
 
 - [chore(deps): bump pypa/gh-action-pypi-publish from 1.14.1 to 1.14.2](https://github.com/OpenAdaptAI/openadapt-capture/pull/67) (#67) — merged 
+
+
+
+## openadapt-privacy
+
+
+- [fix(ci): publish with an action that accepts Metadata-Version 2.5](https://github.com/OpenAdaptAI/openadapt-privacy/pull/14) (#14) — merged 
+
+
+
+## openadapt-types
+
+
+- [fix(ci): publish with an action that accepts Metadata-Version 2.5](https://github.com/OpenAdaptAI/openadapt-types/pull/26) (#26) — merged 
 
 
 
