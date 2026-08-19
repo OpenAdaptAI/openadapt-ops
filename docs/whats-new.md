@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-08-19 22:20 UTC*
+> *Last updated: 2026-08-19 22:41 UTC*
 
 
 
@@ -32,6 +32,8 @@
 
 ## openadapt-flow
 
+
+- [feat: enforce signed qualification admission before actuation](https://github.com/OpenAdaptAI/openadapt-flow/pull/376) (#376) — merged 
 
 - [ci: prefer the canonical Ubuntu archive for the apt installs](https://github.com/OpenAdaptAI/openadapt-flow/pull/375) (#375) — merged 
 
@@ -73,6 +75,8 @@
 - [ci: bound the apt installs and prefer the canonical Ubuntu archive](https://github.com/OpenAdaptAI/openadapt-desktop/pull/117) (#117) — merged 
 
 - [fix: enforce governed Desktop egress boundaries](https://github.com/OpenAdaptAI/openadapt-desktop/pull/116) (#116) — merged 
+
+- [fix: fail closed on untrusted native releases](https://github.com/OpenAdaptAI/openadapt-desktop/pull/115) (#115) — merged 
 
 - [ci: bump the actions group across 1 directory with 5 updates](https://github.com/OpenAdaptAI/openadapt-desktop/pull/113) (#113) — merged 
 
