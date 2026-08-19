@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-08-19 21:54 UTC*
+> *Last updated: 2026-08-19 21:59 UTC*
 
 
 
@@ -58,6 +58,8 @@
 ## openadapt-desktop
 
 
+- [test: guard the POSIX 0600 assertions that cannot hold on Windows](https://github.com/OpenAdaptAI/openadapt-desktop/pull/118) (#118) — merged 
+
 - [ci: bound the apt installs and prefer the canonical Ubuntu archive](https://github.com/OpenAdaptAI/openadapt-desktop/pull/117) (#117) — merged 
 
 - [fix: enforce governed Desktop egress boundaries](https://github.com/OpenAdaptAI/openadapt-desktop/pull/116) (#116) — merged 
@@ -83,6 +85,8 @@
 
 ## openadapt-evals
 
+
+- [fix(ci): publish with an action that accepts Metadata-Version 2.5](https://github.com/OpenAdaptAI/openadapt-evals/pull/291) (#291) — merged 
 
 - [ci: bound the apt install and prefer the canonical Ubuntu archive](https://github.com/OpenAdaptAI/openadapt-evals/pull/289) (#289) — merged 
 
