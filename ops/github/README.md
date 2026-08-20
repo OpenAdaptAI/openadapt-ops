@@ -19,6 +19,9 @@ The policy has these results:
 - A protected environment admits only the exact branch or tag pattern in the
   policy.
 - A required reviewer must approve each release environment use.
+- The lifecycle environments prevent self-review. The founder reviews a run
+  that the separate lifecycle App starts.
+- The lifecycle App has no `main` bypass and no Contents permission.
 
 GitHub documents the applicable [repository ruleset API](https://docs.github.com/en/rest/repos/rules),
 [environment API](https://docs.github.com/en/rest/deployments/environments), and
@@ -51,6 +54,16 @@ It admitted `desktop-v*` and `ffmpeg-runtime-v8.1.2-r1`. The target policy uses
 environment and the PyPI environment. The tool does not change the Ops backup
 environments.
 
+The organization did not have an `openadapt-lifecycle` App installation. The
+target policy keeps the App ID, bot actor ID, and installation ID unresolved.
+The plan and apply operations refuse this state. Do not create a lifecycle
+environment until the exact App installation exists.
+
+Ops `main` had no protection. The existing `production-backup` and
+`production-backup-monitor` environments had no protection rule, deployment
+branch policy, or reviewer. This policy records that finding. It does not
+change the two operational backup environments.
+
 ## Required check selection
 
 The policy requires only a check that starts on every pull request. GitHub can
@@ -59,10 +72,93 @@ not match. Such a workflow can then stop an unrelated pull request.
 
 The policy records a path-scoped check in `path_scoped_checks`. It does not make
 that check a global requirement. The target policy does require
-`build-and-e2e` in `openadapt-web` and `validate-profile` in `.github`. The tool
-refuses an apply while either workflow has pull request path filters. Keep each
-exact check name. Use a cheap internal path classifier when the expensive work
-does not apply.
+`build-and-e2e` in `openadapt-web`, `validate-profile` in `.github`, and
+`Validate Production lifecycle` in Ops. The tool refuses an apply while one of
+these workflows has pull request path filters. Keep each exact check name. Use
+a cheap internal path classifier when the expensive work does not apply.
+
+## Documentation and lifecycle environments
+
+Ops uses `github-pages` for the documentation deployment. It admits only
+`main`. The registered `.github/workflows/sync.yml` contract requires the
+`github-pages` environment, `pages: write`, and `id-token: write`.
+
+Documentation synchronization uses a separate `openadapt-docs` App. The App is
+not present. The policy keeps its App ID, bot actor ID, and installation ID
+unresolved. It has an exact Ops-only scope. It has Actions write, Metadata read,
+and Pull requests write. It has no Contents write and no ruleset bypass.
+
+The dispatch job enters `production-docs-deploy`. This environment admits only
+`main`, requires `abrichr`, and prevents self-review. `sync.yml` accepts only
+`workflow_dispatch` when both the actor and triggering actor are
+`openadapt-docs[bot]`. It binds the source repository,
+source `main` ref, source commit, `push` event, and idempotency value. It checks
+the source repository against the reviewed `repos.yml` allowlist. It verifies
+that the source commit is the current default-branch commit before an effect.
+The idempotency value is `docs-sync:` plus 64 lowercase hexadecimal characters.
+It uses the `OpenAdapt docs sync dispatch v1` domain and binds the closed
+repository, ref, commit, and event tuple. It does not accept
+`repository_dispatch` or the old `repo-updated` event. After approval, the
+workflow token can push only an automation branch. The docs App token creates
+the pull request. A later approved `main` push enters `github-pages` and deploys
+the site. The workflow must not push to `main` directly.
+
+The global environment default stays at `prevent_self_review: false`. The five
+lifecycle environments set an explicit override to `true`:
+
+- `.github` uses `production-lifecycle-activation` only from
+  `.github/workflows/production-lifecycle-activation.yml`.
+- `.github` uses `qualification-authority-state` only from
+  `.github/workflows/qualification-authority-state.yml`.
+- `.github` uses `qualification-revocation-state` only from
+  `.github/workflows/qualification-revocation-state.yml`.
+- Evals uses `production-lifecycle-evidence` only from
+  `.github/workflows/production-lifecycle-evidence.yml`.
+- Ops uses `production-lifecycle-projection` only from
+  `.github/workflows/production-lifecycle-projection.yml`.
+
+Each environment admits only `main`. The required reviewer is `abrichr`. The
+workflow actor and triggering actor must be `openadapt-lifecycle[bot]`. The
+policy verifies the exact App ID, bot actor ID, installation ID, and repository
+variables. The installation scope must contain only `.github`,
+`openadapt-evals`, and `openadapt-ops`.
+
+The two qualification workflows attest their exact candidate state and open a
+reviewable pull request. They cannot push to `main`. The Ops projection accepts
+only `production_lifecycle_ledger_changed` from exact `OpenAdaptAI/.github`
+`main`. It binds the current 40-character source commit, the exact admissions
+digest, the ledger-head digest, and the projection idempotency digest. Each
+digest uses `sha256:` plus 64 lowercase hexadecimal characters. The ledger head
+uses the `OpenAdapt production lifecycle ledger head v1\0` domain. Projection
+idempotency uses the `OpenAdapt production lifecycle projection idempotency
+v1\0` domain.
+
+The lifecycle App has only these repository permissions:
+
+- Actions: write
+- Metadata: read
+- Pull requests: write
+
+It has no Contents write permission. It has no ruleset bypass. After the
+founder approves the environment, the workflow `GITHUB_TOKEN` pushes the
+automation branch. The lifecycle App token creates the pull request. The
+normal pull request checks then run. A lifecycle workflow must not push to
+`main` directly.
+
+Actions write also permits the App to cancel or rerun workflow runs and delete
+workflow artifacts. The exact repository scope limits this authority. The
+policy inventories every workflow that accepts `workflow_dispatch` or
+`repository_dispatch` in the three repositories. Only the five lifecycle
+workflows can accept the lifecycle App actor. Each other manual path needs a
+`reject-lifecycle-app` predecessor with no permission. It checks both
+`github.actor` and `github.triggering_actor`. Each later job depends on that
+predecessor and repeats both identity refusals before GitHub allocates a job.
+A new or unguarded path blocks apply.
+
+Each dispatch path uses a workflow-and-event-specific concurrency group. It
+sets `cancel-in-progress` to `false`. A manual run cannot cancel a real run.
+Production evidence remains content-addressed outside mutable Actions
+artifacts.
 
 ## Release sequence
 
@@ -97,14 +193,21 @@ Create a live read-only plan:
 
 ```bash
 export OPENADAPT_RELEASE_APP_ID=123456
+export OPENADAPT_LIFECYCLE_APP_ID=234567
+export OPENADAPT_LIFECYCLE_ACTOR_ID=345678
+export OPENADAPT_LIFECYCLE_INSTALLATION_ID=456789
+export OPENADAPT_DOCS_APP_ID=567890
+export OPENADAPT_DOCS_ACTOR_ID=678901
+export OPENADAPT_DOCS_INSTALLATION_ID=789012
 uv run python scripts/manage_github_protection.py plan \
   --output /tmp/openadapt-github-protection-plan.json
 ```
 
 The GitHub CLI token needs repository read access and organization installation
 read access for the plan. It needs repository administration write access for
-an apply operation. The tool checks the app ID, installation scope, and the
-environment reviewer ID against GitHub.
+an apply operation. The tool checks all App identities, exact installation
+permissions and scopes, repository identity variables, and the environment
+reviewer ID against GitHub.
 
 Inspect the plan. Resolve every refusal. Wait until all pull request checks are
 complete. Then create a new plan. A plan expires after 15 minutes.
@@ -119,7 +222,8 @@ uv run python scripts/manage_github_protection.py apply \
 
 The apply operation checks every `main` commit again. It refuses a changed
 commit, a changed action list, an active pull request check, a missing release
-identity, or an invalid workflow contract.
+identity, a missing lifecycle identity, an unguarded dispatch workflow, or an
+invalid workflow contract. It also refuses a missing docs identity.
 
 The tool does not remove an extra environment deployment policy by default.
 Inspect the planned deletion. Then add `--prune-environment-policies` if the
