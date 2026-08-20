@@ -1,23 +1,21 @@
 ---
 description: >-
-  Install OpenAdapt and complete the five-minute record, compile, certify,
-  replay, repair, seal, and deploy journey from the unified CLI.
+  Install OpenAdapt, complete a verified local tutorial, and choose the next
+  guide for browser, desktop, RDP, Citrix, or production use.
 ---
 
 # Get started
 
-Start with one complete local result. Then choose the guide for your target
-surface. You do not need to understand the package layout first.
-
-This is the whole loop — record a demonstration once, compile it, and replay
-it deterministically:
+Start with one complete local result. You do not need to understand the package
+layout first. The tutorial records a demonstration, compiles it into a program,
+runs the program, and verifies the saved result.
 
 ![OpenAdapt records, compiles, and replays a demonstrated workflow](../assets/showcase/demo.gif)
 
 ## First success: two commands
 
-The fastest path needs no account, target application, API key, or
-operating-system automation permission:
+You need no account, target application, API key, or operating-system
+automation permission:
 
 ```bash
 python -m pip install --upgrade 'openadapt[browser]'
@@ -51,7 +49,7 @@ openadapt flow visualize openadapt-quickstart/bundle --out graph.html
 openadapt flow lint openadapt-quickstart/bundle
 ```
 
-You can stop here after your first run. Next, use one of these paths:
+After the first run, choose the path that matches your goal:
 
 | Goal | Next guide |
 |---|---|
@@ -94,11 +92,10 @@ openadapt flow replay openadapt-quickstart/bundle \
   --run-dir openadapt-quickstart-halt
 ```
 
-!!! success "The nonzero exit is the demonstration succeeding"
-    The command exits `1` **because the expected outcome is a
-    [halt](../reference/glossary.md#halt)** — the safety boundary refusing to
-    act on a screen state the compiled program has no branch for. If you see
-    `Replay HALTED`, the fail-closed gate worked; continue below. Open
+!!! note "Why this command exits 1"
+    The command expects a [halt](../reference/glossary.md#halt), so it exits
+    `1`. The compiled program has no approved branch for the changed screen
+    state and refuses to act. If you see `Replay HALTED`, open
     `openadapt-quickstart-halt/REPORT.md` to see the retained evidence. Do not
     retry a possibly dispatched write; reconcile it against an independent
     system of record first. Every outcome is defined in
@@ -155,10 +152,9 @@ openadapt flow run bundle-prod --config deployment.yaml --dry-run
 openadapt flow run bundle-prod --config deployment.yaml
 ```
 
-!!! success "If `certify` exits nonzero here, the gate is working"
-    A failing certification exits `2` and prints each violated requirement.
-    That is the point of the gate: an unsafe bundle is refused before it can
-    ship. Close the gaps it names (see
+!!! note "Why certification can exit 2"
+    A failed certification exits `2` and prints each violated requirement.
+    OpenAdapt refuses the bundle before deployment. Close the gaps it names (see
     [Write and enforce a policy](../guides/policy-and-certification.md)), then
     re-run `certify` and continue.
 
@@ -169,9 +165,9 @@ refuses symlinks and an existing destination, encrypts the workflow and template
 crops, verifies the result, and expires any certification inherited from the
 source. Key custody and rotation belong to the deployment.
 
-## Beyond one demonstration
+## After the tutorial
 
-Once the basic loop makes sense, the same $0 runtime carries more:
+The local runtime also supports these paths:
 
 - **[Induce a program](../guides/induce-a-program.md)** from several recordings
   (`induce`), and loop it over a data source with `replay --worklist`.

@@ -7,9 +7,9 @@ target once access is confirmed.**
 
 You bring one named workflow. We qualify the exact application, environment,
 identities, effects, failure cases, and deployment boundary, and you leave with
-a signed go/no-go decision backed by evidence. Not a generic automation
-strategy, not a proof-of-concept demo: a bounded engineering assessment of
-whether this workflow can run safely, what it costs, and what it returns.
+a signed go/no-go decision backed by evidence. The sprint is a bounded
+engineering assessment of whether this workflow can run safely, what it costs,
+and what it returns.
 
 The sprint qualifies **one** workflow in **one** application and **one**
 environment. Additional workflows, applications, or environments are separate
@@ -21,8 +21,8 @@ sprints or scoped extensions.
 - Complex native, RDP, and Citrix scopes: **typically $25,000 to $40,000**,
   reflecting per-environment identity, verification, and fixture work.
 - The sprint fee is due regardless of outcome. **"Do not automate" is a valid,
-  full-value result**: you paid for a defensible decision, and a well-evidenced
-  no saves you the far larger cost of a bad production deployment.
+  full-value result**. The report gives you a defensible decision before you
+  fund a production deployment.
 
 ## When the clock starts
 

@@ -21,7 +21,8 @@ How-to guides for real deployments. Each assumes you have
 
 -   [__Write and enforce a policy__](policy-and-certification.md)
 
-    Use `lint` and `certify` to make "runnable" distinct from "safe."
+    Use `lint` to find gaps and `certify` to refuse a bundle that violates the
+    selected policy.
 
 -   [__Qualify a workflow__](qualify-a-workflow.md)
 
@@ -44,8 +45,8 @@ How-to guides for real deployments. Each assumes you have
 
 -   [__Security and data handling__](security-and-data-handling.md)
 
-    The pilot-approval dossier: local-by-default data flow, PHI/PII posture,
-    secrets, verification and audit, and the IT-review FAQ.
+    Review the local data flow, PHI/PII boundary, secrets, verification,
+    audit evidence, and IT questions.
 
 -   [__Security and deployment review__](security-review.md)
 

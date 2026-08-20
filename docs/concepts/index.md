@@ -13,8 +13,8 @@ jump to what you need.
 
 -   [__The substrate model__](substrate-model.md)
 
-    Routing across browser, native Windows, native macOS, native Linux, RDP,
-    and Citrix/VDI; one runner contract, every substrate first-class.
+    How one runner contract routes work across browser, native Windows, native
+    macOS, native Linux, RDP, and Citrix/VDI.
 
 -   [__The deployment matrix__](deployment-matrix.md)
 
@@ -38,8 +38,7 @@ jump to what you need.
 
 -   [__The identity gate__](identity-gate.md)
 
-    Never click the wrong record. The identity ladder and why it refuses
-    rather than guesses.
+    How the identity ladder distinguishes records and refuses ambiguous input.
 
 -   [__Governed self-healing__](self-healing.md)
 
@@ -49,17 +48,17 @@ jump to what you need.
 -   [__The workflow-program IR__](workflow-ir.md)
 
     Typed parameters, guards, `wait_until`, loops, branches, and subflows. A
-    program, not a trajectory.
+    compiled workflow uses these elements to express the intended work.
 
 -   [__Multi-trace induction__](multi-trace-induction.md)
 
-    One demo is evidence, not a specification. How more traces recover the
-    intended program.
+    How several demonstrations provide enough evidence to recover a more
+    complete program.
 
 -   [__The halt-learn loop__](halt-learn-loop.md)
 
-    Halt, demonstrate the fix, induce it through a regression gate, and never
-    halt there again. Governed, $0, no free-form agent.
+    Demonstrate a correction, compile it, and pass it through regression and
+    promotion gates before the workflow uses it.
 
 -   [__Durable runtime__](durable-runtime.md)
 
@@ -74,10 +73,9 @@ jump to what you need.
 -   [__Backends: where it runs__](backends.md)
 
     Browser (Playwright), native Windows (UIA), native macOS, native Linux
-    (AT-SPI), RDP, and Citrix/VDI are all first-class substrates behind one
-    backend protocol. The same bundle, resolution ladder, identity gate, and
-    effect verification run on each; every workflow is qualified in its real
-    environment.
+    (AT-SPI), RDP, and Citrix/VDI use one backend protocol. Each surface uses
+    the same bundle, identity, result, and policy contracts. Each workflow is
+    qualified in its real environment.
 
 -   [__The on-prem VLM appliance__](vlm-appliance.md)
 

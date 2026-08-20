@@ -1,11 +1,11 @@
 # Commercial offers
 
-This section is the buyer-facing collateral for OpenAdapt's commercial
-offers. Every price and claim here matches the public
+This section explains how a buyer can qualify and deploy one workflow. Every
+price and claim matches the public
 [pricing page](https://openadapt.ai/pricing) and the
 [qualification evidence appendix](../get-started/what-works-today.md).
 
-## The offer ladder
+## Ways to work with OpenAdapt
 
 | Offer | Price | What it is |
 |---|---|---|
@@ -16,9 +16,9 @@ offers. Every price and claim here matches the public
 | Production | Typically $48,000 to $120,000/year | Annual scope covering the qualified workflow family, environment, runners, evidence, support, and requalification. |
 | OEM / embedding | Typically $75,000 to $150,000/year plus scoped integration | Embed verified execution in another product. See the [OpenAdapt Execute private-pilot guide](oem-brief.md). |
 
-The ladder is sequential by design: qualification before pilot, pilot before
-production. The sprint is paid even when the correct outcome is not to
-automate; a well-evidenced "do not automate" is a full-value deliverable.
+The Workflow Qualification Sprint comes first. A successful qualification can
+move to a supervised pilot and then to production. The sprint remains paid when
+the evidence supports a "do not automate" decision.
 
 ## Buyer and evaluation resources
 
