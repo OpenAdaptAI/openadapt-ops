@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-08-19 22:41 UTC*
+> *Last updated: 2026-08-20 01:12 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [build(deps): bump astral-sh/setup-uv from 10.0.0 to 10.0.1](https://github.com/OpenAdaptAI/OpenAdapt/pull/1101) (#1101) — merged 
 
 - [fix(ci): repin the docs dispatch action and stop the recurring bump](https://github.com/OpenAdaptAI/OpenAdapt/pull/1098) (#1098) — merged 
 
@@ -21,12 +23,6 @@
 - [build(deps-dev): bump hatchling from 1.31.0 to 1.32.0](https://github.com/OpenAdaptAI/OpenAdapt/pull/1093) (#1093) — merged 
 
 - [build(deps): bump github/codeql-action from 4.37.3 to 4.37.6](https://github.com/OpenAdaptAI/OpenAdapt/pull/1090) (#1090) — merged 
-
-- [build(deps): bump actions/attest from 4.2.0 to 4.2.1](https://github.com/OpenAdaptAI/OpenAdapt/pull/1080) (#1080) — merged 
-
-- [build(deps): bump peter-evans/repository-dispatch from 3 to 4](https://github.com/OpenAdaptAI/OpenAdapt/pull/1079) (#1079) — merged 
-
-- [build(deps): bump pypa/gh-action-pypi-publish from 1.14.1 to 1.14.2](https://github.com/OpenAdaptAI/OpenAdapt/pull/1078) (#1078) — merged 
 
 
 
@@ -49,6 +45,12 @@
 
 - [Fix recording targets and harden quickstart evidence](https://github.com/OpenAdaptAI/openadapt-flow/pull/367) (#367) — merged 
 
+- [fix: require Flow production release evidence](https://github.com/OpenAdaptAI/openadapt-flow/pull/366) (#366) — merged 
+
+- [Harden remote display qualification evidence](https://github.com/OpenAdaptAI/openadapt-flow/pull/365) (#365) — merged 
+
+- [feat(browser): attach recorder to existing sessions](https://github.com/OpenAdaptAI/openadapt-flow/pull/364) (#364) — merged 
+
 - [ci: bump the actions group across 1 directory with 2 updates](https://github.com/OpenAdaptAI/openadapt-flow/pull/363) (#363) — merged 
 
 - [feat(effects): exact-new-set guard closes the over-write false-pass gap](https://github.com/OpenAdaptAI/openadapt-flow/pull/362) (#362) — merged 
@@ -57,16 +59,20 @@
 
 - [docs(paper): record the four B1 decisions -- authorship+ORCID, CC BY 4.0, COI, workshop target](https://github.com/OpenAdaptAI/openadapt-flow/pull/358) (#358) — merged 
 
-- [feat(attest): opt-in post-run bridge to the openadapt-attest proof sidecar](https://github.com/OpenAdaptAI/openadapt-flow/pull/357) (#357) — merged 
-
-- [feat(tutorial): print next steps after a verified run](https://github.com/OpenAdaptAI/openadapt-flow/pull/354) (#354) — merged 
-
 - [build: bump ruff from 0.15.22 to 0.16.3 in the python-minor group across 1 directory](https://github.com/OpenAdaptAI/openadapt-flow/pull/353) (#353) — merged 
 
 
 
 ## openadapt-desktop
 
+
+- [test(release): state the O_NOFOLLOW contract per platform](https://github.com/OpenAdaptAI/openadapt-desktop/pull/123) (#123) — merged 
+
+- [fix(release): close the residual native release admission gaps](https://github.com/OpenAdaptAI/openadapt-desktop/pull/122) (#122) — merged 
+
+- [fix(ci): name the CI native checksum manifest exactly SHA256SUMS](https://github.com/OpenAdaptAI/openadapt-desktop/pull/121) (#121) — merged 
+
+- [fix(release): write the native version transform as exact UTF-8 LF bytes](https://github.com/OpenAdaptAI/openadapt-desktop/pull/120) (#120) — merged 
 
 - [test(runner): make the lease-expiry test observe the clock, not race it](https://github.com/OpenAdaptAI/openadapt-desktop/pull/119) (#119) — merged 
 
@@ -79,6 +85,8 @@
 - [fix: fail closed on untrusted native releases](https://github.com/OpenAdaptAI/openadapt-desktop/pull/115) (#115) — merged 
 
 - [ci: bump the actions group across 1 directory with 5 updates](https://github.com/OpenAdaptAI/openadapt-desktop/pull/113) (#113) — merged 
+
+- [feat(qualification): capture local institutional judgment cases](https://github.com/OpenAdaptAI/openadapt-desktop/pull/112) (#112) — merged 
 
 - [build: bump rustls from 0.23.42 to 0.23.43 in /src-tauri in the cargo-minor group across 1 directory](https://github.com/OpenAdaptAI/openadapt-desktop/pull/106) (#106) — merged 
 
