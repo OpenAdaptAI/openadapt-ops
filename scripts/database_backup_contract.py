@@ -21,7 +21,7 @@ from urllib.parse import unquote, urlsplit
 
 CONTRACT_SCHEMA = "openadapt.database-backup-contract/v2"
 ARTIFACT_SCHEMA = "openadapt.database-backup-artifact/v2"
-RESTORE_EVIDENCE_SCHEMA = "openadapt.database-restore-evidence/v1"
+RESTORE_EVIDENCE_SCHEMA = "openadapt.database-restore-evidence/v2"
 S3_UPLOAD_SCHEMA = "openadapt.database-backup-s3-upload/v1"
 S3_SINGLE_PUT_MAX_BYTES = 5 * 1024 * 1024 * 1024
 PROJECT_REF = re.compile(r"^[a-z0-9]{8,64}$")
@@ -34,6 +34,11 @@ UNSAFE_PSQL_COMMAND = re.compile(
     re.MULTILINE | re.IGNORECASE,
 )
 COPY_PROGRAM = re.compile(r"\bCOPY\b[^;]*\bPROGRAM\b", re.IGNORECASE | re.DOTALL)
+RESTRICT_MARKER = re.compile(
+    r"^-- \\(?P<operation>un)?restrict (?P<key>[A-Za-z0-9]+)\r?\n?$"
+)
+COPY_FROM_STDIN = re.compile(r"^COPY\s.+\sFROM\sstdin;\r?\n?$", re.IGNORECASE)
+SHA256 = re.compile(r"^[0-9a-f]{64}$")
 
 
 class ContractError(ValueError):
@@ -123,6 +128,49 @@ def dump_inventory(root: Path) -> list[dict[str, object]]:
     if not re.search(r"^COPY\s", data, re.MULTILINE | re.IGNORECASE):
         raise ContractError("data.sql contains no COPY statement")
     return result
+
+
+def comparison_sha256(path: Path) -> str:
+    """Hash a dump while normalizing only pg_dump's random guard key.
+
+    Patched PostgreSQL clients generate a fresh ``\\restrict`` key for every
+    plain-text dump. Supabase CLI comments those two guard commands instead of
+    removing them. A source dump and a correct scratch redump therefore differ
+    in those random keys. The restore check must ignore that non-data value,
+    but it must never rewrite a matching line inside COPY data.
+    """
+
+    digest = hashlib.sha256()
+    markers: list[tuple[str, str]] = []
+    in_copy = False
+    with path.open("r", encoding="utf-8", errors="strict", newline="") as stream:
+        for line in stream:
+            marker = RESTRICT_MARKER.fullmatch(line) if not in_copy else None
+            if marker is not None:
+                operation = "unrestrict" if marker.group("operation") else "restrict"
+                markers.append((operation, marker.group("key")))
+                digest.update(f"-- \\{operation} OPENADAPT_RANDOM_KEY\n".encode())
+                continue
+
+            digest.update(line.encode())
+            if not in_copy and COPY_FROM_STDIN.fullmatch(line):
+                in_copy = True
+            elif in_copy and line.rstrip("\r\n") == r"\.":
+                in_copy = False
+
+    if in_copy:
+        raise ContractError(f"the restored dump has an unterminated COPY block: {path.name}")
+    if markers:
+        if (
+            len(markers) != 2
+            or markers[0][0] != "restrict"
+            or markers[1][0] != "unrestrict"
+            or markers[0][1] != markers[1][1]
+        ):
+            raise ContractError(
+                f"the restored dump has an invalid pg_dump restriction guard: {path.name}"
+            )
+    return digest.hexdigest()
 
 
 def parse_time(value: str, name: str) -> datetime:
@@ -420,18 +468,24 @@ def extract_artifact(args: argparse.Namespace) -> None:
 def verify_restored_dumps(args: argparse.Namespace) -> None:
     source = {entry["name"]: entry for entry in dump_inventory(Path(args.source_dir))}
     restored: dict[str, dict[str, object]] = {}
+    comparison: dict[str, dict[str, str]] = {}
     for name in ("schema.sql", "data.sql"):
-        path = Path(args.restored_dir) / name
-        if not path.is_file() or path.stat().st_size <= 0:
+        source_path = Path(args.source_dir) / name
+        restored_path = Path(args.restored_dir) / name
+        if not restored_path.is_file() or restored_path.stat().st_size <= 0:
             raise ContractError(f"the restored dump is missing or empty: {name}")
         restored[name] = {
             "name": name,
-            "bytes": path.stat().st_size,
-            "sha256": sha256_file(path),
+            "bytes": restored_path.stat().st_size,
+            "sha256": sha256_file(restored_path),
+        }
+        comparison[name] = {
+            "source": comparison_sha256(source_path),
+            "restored": comparison_sha256(restored_path),
         }
     # Roles are target-specific. Schema and data must reproduce exactly.
     for name in ("schema.sql", "data.sql"):
-        if source[name]["sha256"] != restored[name]["sha256"]:
+        if comparison[name]["source"] != comparison[name]["restored"]:
             raise ContractError(f"the restored {name} does not match the backup")
     print(
         json.dumps(
@@ -439,6 +493,8 @@ def verify_restored_dumps(args: argparse.Namespace) -> None:
                 "valid": True,
                 "schema_sha256": source["schema.sql"]["sha256"],
                 "data_sha256": source["data.sql"]["sha256"],
+                "schema_comparison_sha256": comparison["schema.sql"]["source"],
+                "data_comparison_sha256": comparison["data.sql"]["source"],
             },
             sort_keys=True,
         )
@@ -475,6 +531,12 @@ def record_restore(args: argparse.Namespace) -> None:
     for name in ("schema", "data"):
         if verification.get(f"{name}_sha256") != expected_digests.get(f"{name}.sql"):
             raise ContractError("the restore verification does not match the backup contract")
+        comparison_digest = verification.get(f"{name}_comparison_sha256")
+        if (
+            not isinstance(comparison_digest, str)
+            or SHA256.fullmatch(comparison_digest) is None
+        ):
+            raise ContractError("the restore comparison digest is invalid")
     started = parse_time(args.started_at, "started-at")
     completed = parse_time(args.completed_at, "completed-at")
     if completed < started:
@@ -493,6 +555,8 @@ def record_restore(args: argparse.Namespace) -> None:
         "rto_seconds": int((completed - started).total_seconds()),
         "schema_sha256": verification["schema_sha256"],
         "data_sha256": verification["data_sha256"],
+        "schema_comparison_sha256": verification["schema_comparison_sha256"],
+        "data_comparison_sha256": verification["data_comparison_sha256"],
         "database_restored": True,
         "storage_restored": False,
     }

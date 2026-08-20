@@ -30,6 +30,7 @@ the matching protected-environment configuration failure. As of that check:
 - provider PITR is not enabled;
 - the AWS stack is not deployed;
 - `main` has no repository ruleset or branch protection;
+- no workflow-restricted production backup runner group or runner is confirmed;
 - the `production-backup` GitHub environment has none of its four required
   settings and has no deployment-branch restriction;
 - the `production-backup-monitor` GitHub environment is not configured;
@@ -77,7 +78,17 @@ deployment policy is the exact branch gate.
    select every protected branch. Do not add a tag or wildcard policy.
 4. Create the `production-backup-monitor` GitHub environment.
 5. Give it the same single custom `main` branch policy.
-6. Do not require a manual environment approval. An approval wait would prevent
+6. Create an organization runner group named `production-backup`. Permit only
+   this repository. Restrict it to
+   `OpenAdaptAI/openadapt-ops/.github/workflows/db-backup.yml@refs/heads/main`.
+   Do not put the runner in the default group and do not permit another
+   workflow to use the group.
+7. Register an ephemeral Linux runner inside the declared OpenAdapt production
+   boundary and put it only in the `production-backup` group. Use a clean
+   encrypted work volume for each job and remove the runner after the job.
+   Permit network access only to GitHub Actions, the exact production Supabase
+   database endpoints, and the private AWS backup target.
+8. Do not require a manual environment approval. An approval wait would prevent
    the scheduled jobs.
 
 Verify that `main` reports as protected. Verify that each environment reports
@@ -85,7 +96,10 @@ Verify that `main` reports as protected. Verify that each environment reports
 the exact name `main`. Both workflows repeat this check after the environment
 admits the job and before they request AWS credentials. The job has read-only
 Actions permission for this API check. Do not deploy the AWS stack until this
-gate passes.
+gate passes. Also verify that the runner group is restricted to the exact
+workflow and that the selected runner reports `self-hosted`. A self-hosted
+runner attached to this public repository without the exact workflow
+restriction is unsafe because pull-request code can target it.
 
 ## One-time AWS setup
 
@@ -110,6 +124,13 @@ The backup workflow uses one S3 `PutObject` with a caller-supplied full-object
 SHA-256. S3 validates that checksum before it accepts the object. This launch
 path refuses an encrypted archive above 5 GiB before upload. Build and qualify a
 multipart contract before a production database can exceed that limit.
+
+The writer, monitor, and restore paths read the live bucket controls before
+they use an object. They require AWS account `992382684924`, region
+`us-east-1`, complete public-access blocking, SSE-S3, versioning,
+bucket-owner-enforced ownership, the exact 90-day and 365-day lifecycle rules,
+TLS-only transport, and the exact encryption policy. A drifted target stops the
+operation before database access or recovery-point selection.
 
 An AWS principal with CloudFormation, IAM, and S3 administration rights must
 run:
@@ -161,6 +182,12 @@ database backup.
 The workflow validates that the URL belongs to the declared Supabase project.
 It also checks AWS account `992382684924`, complete S3 public-access blocking,
 and the committed `age` recipient before it reads the database.
+
+The dump job does not use a GitHub-hosted runner. The complete database exists
+in plaintext on the isolated backup runner until local `age` encryption. The
+cleanup trap removes the plaintext before the runner is destroyed. The
+freshness monitor can use a GitHub-hosted runner because it reads only the
+redacted manifest and S3 object metadata. It cannot read the ciphertext.
 
 The public recipient is in `ops/backup/age-recipients.txt`. Store its private
 key with mode `0600` on an encrypted trusted device. Make a second copy in a
@@ -231,7 +258,9 @@ The script:
 6. decrypts into a private temporary directory;
 7. extracts only four exact regular files and rejects unsafe archive members;
 8. restores with `ON_ERROR_STOP` in one transaction;
-9. dumps the scratch schema and data again and compares their digests;
+9. dumps the scratch schema and data again, normalizes only the matched random
+   PostgreSQL restriction guard outside `COPY` data, and compares their
+   digests;
 10. writes a new database-only evidence file without overwriting old evidence;
 11. uploads that metadata-only evidence below `drills/database-only/`; and
 12. removes all temporary plaintext.
@@ -239,6 +268,13 @@ The script:
 RTO starts before AWS role assumption and download. It ends after the scratch
 database redump and validation. RPO is measured from the backup recovery point
 to the same start time.
+
+Patched PostgreSQL clients create a new `\restrict` key for each plain-text
+dump. Supabase CLI comments that key, so two correct dumps have different raw
+digests. The verifier keeps the raw source digests in the evidence and uses a
+second comparison digest that replaces only one matched `restrict` and
+`unrestrict` pair outside `COPY` blocks. A guard-shaped database value remains
+data and a changed value still fails the drill.
 
 The script does not delete the scratch project. Review the evidence first.
 Then decommission the project through its authorized owner process.

@@ -81,14 +81,9 @@ jobs:
         id: select
         run: |
           set -euo pipefail
-          test "$(aws sts get-caller-identity --query Account --output text)" = '992382684924'
-          aws s3api get-public-access-block --bucket "$BACKUP_BUCKET" \
-            --query 'PublicAccessBlockConfiguration.[BlockPublicAcls,IgnorePublicAcls,BlockPublicPolicy,RestrictPublicBuckets]' \
-            --output text | grep -q $'True\tTrue\tTrue\tTrue'
-          test "$(aws s3api get-bucket-encryption --bucket "$BACKUP_BUCKET" \
-            --query 'ServerSideEncryptionConfiguration.Rules[0].ApplyServerSideEncryptionByDefault.SSEAlgorithm' \
-            --output text)" = 'AES256'
+          scripts/check_live_database_backup_target.sh "$BACKUP_BUCKET"
           aws s3api list-objects-v2 --bucket "$BACKUP_BUCKET" --prefix daily/ \
+            --expected-bucket-owner 992382684924 \
             > /tmp/database-backup-inventory.json
           python scripts/check_database_backup_freshness.py select \
             --inventory /tmp/database-backup-inventory.json \
@@ -101,10 +96,12 @@ jobs:
           set -euo pipefail
           aws s3api get-object --bucket "$BACKUP_BUCKET" \
             --key '${{ steps.select.outputs.manifest_key }}' \
+            --expected-bucket-owner 992382684924 \
             /tmp/database-backup-manifest.json > /dev/null
           aws s3api get-object-attributes --bucket "$BACKUP_BUCKET" \
             --key '${{ steps.select.outputs.ciphertext_key }}' \
             --object-attributes Checksum,ObjectSize,StorageClass \
+            --expected-bucket-owner 992382684924 \
             > /tmp/database-backup-attributes.json
           python scripts/check_database_backup_freshness.py verify \
             --selection /tmp/database-backup-selection.json \

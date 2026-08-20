@@ -121,7 +121,14 @@ Resources:
             Version: '2012-10-17'
             Statement:
               - Effect: Allow
-                Action: s3:GetBucketPublicAccessBlock
+                Action:
+                  - s3:GetBucketPublicAccessBlock
+                  - s3:GetEncryptionConfiguration
+                  - s3:GetBucketVersioning
+                  - s3:GetBucketOwnershipControls
+                  - s3:GetBucketLocation
+                  - s3:GetLifecycleConfiguration
+                  - s3:GetBucketPolicy
                 Resource: !GetAtt BackupBucket.Arn
               - Effect: Allow
                 Action:
@@ -154,6 +161,11 @@ Resources:
                 Action:
                   - s3:GetBucketPublicAccessBlock
                   - s3:GetEncryptionConfiguration
+                  - s3:GetBucketVersioning
+                  - s3:GetBucketOwnershipControls
+                  - s3:GetBucketLocation
+                  - s3:GetLifecycleConfiguration
+                  - s3:GetBucketPolicy
                 Resource: !GetAtt BackupBucket.Arn
               - Effect: Allow
                 Action: s3:ListBucket
@@ -185,7 +197,14 @@ Resources:
             Version: '2012-10-17'
             Statement:
               - Effect: Allow
-                Action: s3:GetBucketPublicAccessBlock
+                Action:
+                  - s3:GetBucketPublicAccessBlock
+                  - s3:GetEncryptionConfiguration
+                  - s3:GetBucketVersioning
+                  - s3:GetBucketOwnershipControls
+                  - s3:GetBucketLocation
+                  - s3:GetLifecycleConfiguration
+                  - s3:GetBucketPolicy
                 Resource: !GetAtt BackupBucket.Arn
               - Effect: Allow
                 Action: s3:GetObject

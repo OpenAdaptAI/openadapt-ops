@@ -323,6 +323,67 @@ def test_restore_target_can_never_be_production() -> None:
         )
 
 
+def test_restore_comparison_normalizes_only_pg_dump_guard_keys(tmp_path: Path) -> None:
+    source = tmp_path / "source"
+    restored = tmp_path / "restored"
+    write_dumps(source)
+    write_dumps(restored)
+    source_data = source / "data.sql"
+    restored_data = restored / "data.sql"
+    source_data.write_text(
+        "-- \\restrict Source123\n"
+        + source_data.read_text()
+        + "-- \\unrestrict Source123\n"
+    )
+    restored_data.write_text(
+        "-- \\restrict Restored456\n"
+        + restored_data.read_text()
+        + "-- \\unrestrict Restored456\n"
+    )
+
+    assert backup.comparison_sha256(source_data) == backup.comparison_sha256(
+        restored_data
+    )
+
+
+def test_restore_comparison_preserves_guard_shaped_copy_data(tmp_path: Path) -> None:
+    source = tmp_path / "source.sql"
+    restored = tmp_path / "restored.sql"
+    source.write_text(
+        "-- \\restrict Source123\n"
+        "COPY public.runs (value) FROM stdin;\n"
+        "-- \\restrict customer_value\n"
+        "\\.\n"
+        "-- \\unrestrict Source123\n"
+    )
+    restored.write_text(
+        "-- \\restrict Restored456\n"
+        "COPY public.runs (value) FROM stdin;\n"
+        "-- \\restrict changed_value\n"
+        "\\.\n"
+        "-- \\unrestrict Restored456\n"
+    )
+
+    assert backup.comparison_sha256(source) != backup.comparison_sha256(restored)
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        "-- \\restrict one\n",
+        "-- \\unrestrict one\n-- \\restrict one\n",
+        "-- \\restrict one\n-- \\unrestrict two\n",
+    ],
+)
+def test_restore_comparison_rejects_invalid_guard_pairs(
+    tmp_path: Path, value: str
+) -> None:
+    path = tmp_path / "data.sql"
+    path.write_text(value)
+    with pytest.raises(backup.ContractError, match="restriction guard"):
+        backup.comparison_sha256(path)
+
+
 def test_restore_evidence_is_bound_to_exact_backup_and_scratch(tmp_path: Path) -> None:
     dumps, _, contract = make_contract(tmp_path)
     restored = tmp_path / "restored"
@@ -335,6 +396,8 @@ def test_restore_evidence_is_bound_to_exact_backup_and_scratch(tmp_path: Path) -
                 "valid": True,
                 "schema_sha256": source["schema.sql"]["sha256"],
                 "data_sha256": source["data.sql"]["sha256"],
+                "schema_comparison_sha256": source["schema.sql"]["sha256"],
+                "data_comparison_sha256": source["data.sql"]["sha256"],
             }
         )
     )
@@ -369,6 +432,8 @@ def test_restore_evidence_is_bound_to_exact_backup_and_scratch(tmp_path: Path) -
     value = json.loads(evidence.read_text())
     assert value["database_restored"] is True
     assert value["storage_restored"] is False
+    assert value["schema_comparison_sha256"] == source["schema.sql"]["sha256"]
+    assert value["data_comparison_sha256"] == source["data.sql"]["sha256"]
     assert value["rto_seconds"] == 300
     assert value["rpo_seconds_at_start"] == 2220
 
@@ -378,6 +443,8 @@ def test_restore_evidence_is_bound_to_exact_backup_and_scratch(tmp_path: Path) -
                 "valid": True,
                 "schema_sha256": "0" * 64,
                 "data_sha256": source["data.sql"]["sha256"],
+                "schema_comparison_sha256": source["schema.sql"]["sha256"],
+                "data_comparison_sha256": source["data.sql"]["sha256"],
             }
         )
     )
@@ -401,6 +468,33 @@ def test_restore_evidence_is_bound_to_exact_backup_and_scratch(tmp_path: Path) -
                 "valid": True,
                 "schema_sha256": source["schema.sql"]["sha256"],
                 "data_sha256": source["data.sql"]["sha256"],
+                "schema_comparison_sha256": "not-a-digest",
+                "data_comparison_sha256": source["data.sql"]["sha256"],
+            }
+        )
+    )
+    with pytest.raises(backup.ContractError, match="comparison digest"):
+        backup.record_restore(
+            Namespace(
+                manifest=str(manifest),
+                contract=str(contract),
+                verification=str(verification),
+                source_project_ref=SOURCE_REF,
+                scratch_project_ref=SCRATCH_REF,
+                started_at="2026-08-08T08:00:00Z",
+                completed_at="2026-08-08T08:05:00Z",
+                output=str(tmp_path / "missing-comparison-evidence.json"),
+            )
+        )
+
+    verification.write_text(
+        json.dumps(
+            {
+                "valid": True,
+                "schema_sha256": source["schema.sql"]["sha256"],
+                "data_sha256": source["data.sql"]["sha256"],
+                "schema_comparison_sha256": source["schema.sql"]["sha256"],
+                "data_comparison_sha256": source["data.sql"]["sha256"],
             }
         )
     )
