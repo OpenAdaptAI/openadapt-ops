@@ -1,0 +1,512 @@
+{
+  "schema_version": 1,
+  "organization": "OpenAdaptAI",
+  "reviewed_at": "2026-08-20T00:00:00Z",
+  "review_source": "Exact origin/main refs plus GitHub pull-request workflow jobs",
+  "live_audit": {
+    "observed_at": "2026-08-20",
+    "repository_ruleset_counts": {
+      ".github": 0,
+      "OpenAdapt": 0,
+      "openadapt-capture": 0,
+      "openadapt-desktop": 0,
+      "openadapt-evals": 0,
+      "openadapt-flow": 0,
+      "openadapt-ops": 0,
+      "openadapt-web": 0
+    },
+    "main_protected": {
+      ".github": false,
+      "OpenAdapt": true,
+      "openadapt-capture": true,
+      "openadapt-desktop": false,
+      "openadapt-evals": true,
+      "openadapt-flow": true,
+      "openadapt-ops": false,
+      "openadapt-web": true
+    },
+    "classic_branch_protection_detail": "Not available without valid authenticated administration read access",
+    "release_environment_state": {
+      "OpenAdapt": "No release environment",
+      "openadapt-flow": "pypi exists with no protection rule and no deployment policy",
+      "openadapt-capture": "No release environment",
+      "openadapt-desktop": "native-release has reviewer 774615 and exact desktop-v* plus ffmpeg-runtime-v8.1.2-r1 tag policies",
+      "openadapt-evals": "pypi exists with no protection rule and no deployment policy",
+      "openadapt-ops": "No release environment; operational environments are outside this policy",
+      "openadapt-web": "No release environment",
+      ".github": "No release environment"
+    }
+  },
+  "github_actions_integration_id": 15368,
+  "main_rule_defaults": {
+    "required_approvals": 1,
+    "dismiss_stale_reviews": true,
+    "require_last_push_approval": true,
+    "require_review_thread_resolution": true,
+    "strict_status_checks": true,
+    "allowed_merge_methods": [
+      "squash",
+      "rebase",
+      "merge"
+    ]
+  },
+  "release_identity": {
+    "actor_type": "Integration",
+    "app_slug": "openadapt-release",
+    "actor_id": null,
+    "actor_id_environment": "OPENADAPT_RELEASE_APP_ID",
+    "bypass_mode": "always",
+    "required_repository_permissions": [
+      "Contents: write",
+      "Pull requests: write",
+      "Metadata: read"
+    ],
+    "purpose": "Create release tags only. This identity has no main-branch bypass."
+  },
+  "environment_reviewer": {
+    "type": "User",
+    "login": "abrichr",
+    "id": 774615
+  },
+  "environment_defaults": {
+    "wait_timer": 0,
+    "prevent_self_review": false
+  },
+  "repositories": [
+    {
+      "name": "OpenAdapt",
+      "visibility": "public",
+      "default_branch": "main",
+      "audited_main_sha": "42970fbb1246f77f8350254569e5ce55f9bb60ed",
+      "require_code_owner_review": true,
+      "required_checks": [
+        "Analyze (python)",
+        "check-source-boundary",
+        "dependency-review",
+        "gitleaks",
+        "run-ci (macos-latest, 3.12)",
+        "run-ci (ubuntu-latest, 3.10)",
+        "run-ci (ubuntu-latest, 3.11)",
+        "run-ci (ubuntu-latest, 3.12)",
+        "validate-platform-manifest"
+      ],
+      "path_scoped_checks": [
+        "guard",
+        "Prove the detectors fire and stay quiet"
+      ],
+      "release_tag_patterns": [
+        "refs/tags/v*"
+      ],
+      "release_environments": [
+        {
+          "name": "release-identity",
+          "deployment_policies": [
+            {
+              "type": "branch",
+              "name": "main"
+            }
+          ]
+        },
+        {
+          "name": "pypi",
+          "deployment_policies": [
+            {
+              "type": "tag",
+              "name": "v*"
+            }
+          ]
+        }
+      ],
+      "release_workflows": [
+        {
+          "path": ".github/workflows/release-and-publish.yml",
+          "required_patterns": [
+            "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?release-identity\\s*$",
+            "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?pypi\\s*$",
+            "(?m)^\\s*id-token:\\s*write\\s*$"
+          ],
+          "forbidden_patterns": [
+            "ADMIN_TOKEN"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "openadapt-flow",
+      "visibility": "public",
+      "default_branch": "main",
+      "audited_main_sha": "7da6571bdc38faca5b6b944ae8dbac6ec1d771cb",
+      "require_code_owner_review": true,
+      "required_checks": [
+        "docs-consistency",
+        "e2e-browser",
+        "effectbench-standalone",
+        "gate",
+        "interop-types",
+        "lint",
+        "linux-atspi-x11",
+        "mypy-strict-safety",
+        "phi-guard",
+        "python-compatibility",
+        "test",
+        "wheel",
+        "windows-mock"
+      ],
+      "path_scoped_checks": [
+        "citrix-workspace-standin",
+        "docker-rdp-vision-ladder"
+      ],
+      "release_tag_patterns": [
+        "refs/tags/v*"
+      ],
+      "release_environments": [
+        {
+          "name": "release-identity",
+          "deployment_policies": [
+            {
+              "type": "branch",
+              "name": "main"
+            }
+          ]
+        },
+        {
+          "name": "pypi",
+          "deployment_policies": [
+            {
+              "type": "tag",
+              "name": "v*"
+            }
+          ]
+        }
+      ],
+      "release_workflows": [
+        {
+          "path": ".github/workflows/release.yml",
+          "required_patterns": [
+            "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?release-identity\\s*$",
+            "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?pypi\\s*$",
+            "(?m)^\\s*id-token:\\s*write\\s*$"
+          ],
+          "forbidden_patterns": [
+            "ADMIN_TOKEN"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "openadapt-capture",
+      "visibility": "public",
+      "default_branch": "main",
+      "audited_main_sha": "61096788a623a4a302a69a363215dad81fb9008b",
+      "require_code_owner_review": true,
+      "required_checks": [
+        "Analyze (javascript-typescript)",
+        "Analyze (python)",
+        "dependency-review",
+        "gitleaks",
+        "lint",
+        "package-contract",
+        "test (3.10)",
+        "test (3.11)",
+        "test (3.12)"
+      ],
+      "path_scoped_checks": [
+        "control-contract (macos-latest)",
+        "control-contract (windows-latest)"
+      ],
+      "release_tag_patterns": [
+        "refs/tags/v*"
+      ],
+      "release_environments": [
+        {
+          "name": "release-identity",
+          "deployment_policies": [
+            {
+              "type": "branch",
+              "name": "main"
+            }
+          ]
+        },
+        {
+          "name": "pypi",
+          "deployment_policies": [
+            {
+              "type": "tag",
+              "name": "v*"
+            }
+          ]
+        }
+      ],
+      "release_workflows": [
+        {
+          "path": ".github/workflows/release.yml",
+          "required_patterns": [
+            "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?release-identity\\s*$",
+            "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?pypi\\s*$",
+            "(?m)^\\s*id-token:\\s*write\\s*$"
+          ],
+          "forbidden_patterns": [
+            "ADMIN_TOKEN"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "openadapt-desktop",
+      "visibility": "public",
+      "default_branch": "main",
+      "audited_main_sha": "f0f5d140698ff91ccabd391a835463afe9370e06",
+      "require_code_owner_review": false,
+      "required_checks": [
+        "Analyze (javascript-typescript)",
+        "Analyze (python)",
+        "Analyze (rust)",
+        "Frontend behavior and build",
+        "Python Engine Tests (ubuntu-latest, 3.11)",
+        "Python Engine Tests (ubuntu-latest, 3.12)",
+        "Python distribution",
+        "Python locked dependencies",
+        "Python locked dependencies (macOS Intel)",
+        "Python sidecar (ubuntu-22.04)",
+        "Qualification contract (bundled Flow)",
+        "Rust locked dependencies",
+        "Select artifact scope",
+        "gitleaks",
+        "npm locked dependencies"
+      ],
+      "path_scoped_checks": [
+        "Reject an unreserved or stale native version pull request"
+      ],
+      "release_tag_patterns": [
+        "refs/tags/v*",
+        "refs/tags/desktop-v*",
+        "refs/tags/ffmpeg-runtime-v*"
+      ],
+      "release_environments": [
+        {
+          "name": "release-identity",
+          "deployment_policies": [
+            {
+              "type": "branch",
+              "name": "main"
+            },
+            {
+              "type": "tag",
+              "name": "v*"
+            }
+          ]
+        },
+        {
+          "name": "pypi",
+          "deployment_policies": [
+            {
+              "type": "tag",
+              "name": "v*"
+            }
+          ]
+        },
+        {
+          "name": "native-release",
+          "deployment_policies": [
+            {
+              "type": "tag",
+              "name": "desktop-v*"
+            },
+            {
+              "type": "tag",
+              "name": "ffmpeg-runtime-v*"
+            }
+          ]
+        }
+      ],
+      "release_workflows": [
+        {
+          "path": ".github/workflows/release.yml",
+          "required_patterns": [
+            "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?release-identity\\s*$",
+            "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?pypi\\s*$",
+            "(?m)^\\s*id-token:\\s*write\\s*$"
+          ],
+          "forbidden_patterns": [
+            "ADMIN_TOKEN"
+          ]
+        },
+        {
+          "path": ".github/workflows/native-freshness.yml",
+          "required_patterns": [
+            "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?release-identity\\s*$"
+          ],
+          "forbidden_patterns": [
+            "ADMIN_TOKEN"
+          ]
+        },
+        {
+          "path": ".github/workflows/native-release.yml",
+          "required_patterns": [
+            "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?release-identity\\s*$",
+            "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?native-release\\s*$",
+            "(?m)^\\s*id-token:\\s*write\\s*$"
+          ],
+          "forbidden_patterns": [
+            "ADMIN_TOKEN"
+          ]
+        },
+        {
+          "path": ".github/workflows/ffmpeg-runtime.yml",
+          "required_patterns": [
+            "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?release-identity\\s*$",
+            "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?native-release\\s*$",
+            "(?m)^\\s*id-token:\\s*write\\s*$"
+          ],
+          "forbidden_patterns": [
+            "ADMIN_TOKEN"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "openadapt-evals",
+      "visibility": "public",
+      "default_branch": "main",
+      "audited_main_sha": "b7d4fe842f5a9ae9e4188df6087911b24a1706f2",
+      "require_code_owner_review": false,
+      "required_checks": [
+        "test"
+      ],
+      "path_scoped_checks": [
+        "freshness",
+        "headed-pixel-campaign"
+      ],
+      "release_tag_patterns": [
+        "refs/tags/v*"
+      ],
+      "release_environments": [
+        {
+          "name": "release-identity",
+          "deployment_policies": [
+            {
+              "type": "branch",
+              "name": "main"
+            }
+          ]
+        },
+        {
+          "name": "pypi",
+          "deployment_policies": [
+            {
+              "type": "tag",
+              "name": "v*"
+            }
+          ]
+        }
+      ],
+      "release_workflows": [
+        {
+          "path": ".github/workflows/release.yml",
+          "required_patterns": [
+            "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?release-identity\\s*$",
+            "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?pypi\\s*$",
+            "(?m)^\\s*id-token:\\s*write\\s*$"
+          ],
+          "forbidden_patterns": [
+            "ADMIN_TOKEN"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "openadapt-ops",
+      "local_repository_name": "openadapt-maintenance",
+      "visibility": "public",
+      "default_branch": "main",
+      "audited_main_sha": "dbc110cc5ccbeca900499ac52e298deb9c7b49de",
+      "require_code_owner_review": true,
+      "required_checks": [
+        "Analyze (python)",
+        "Validate canonical docs",
+        "dependency-review",
+        "gitleaks"
+      ],
+      "path_scoped_checks": [
+        "Compare documented versions to PyPI",
+        "Prove the classifier fires and stays quiet"
+      ],
+      "release_tag_patterns": [
+        "refs/tags/v*"
+      ],
+      "release_environments": [],
+      "release_workflows": []
+    },
+    {
+      "name": "openadapt-web",
+      "visibility": "public",
+      "default_branch": "main",
+      "audited_main_sha": "ba35b60125160b4b40a0871644709d8c7e29259f",
+      "require_code_owner_review": true,
+      "required_checks": [
+        "Analyze (javascript-typescript)",
+        "build-and-e2e",
+        "dependency-review",
+        "gitleaks"
+      ],
+      "path_scoped_checks": [],
+      "admission_gaps": [
+        "Make build-and-e2e report on every pull request. It can use a cheap internal path classifier for documentation-only changes."
+      ],
+      "admission_workflows": [
+        {
+          "path": ".github/workflows/ci.yml",
+          "required_patterns": [],
+          "forbidden_patterns": [
+            "(?m)^[ ]{4}paths(?:-ignore)?:\\s*$"
+          ]
+        }
+      ],
+      "release_tag_patterns": [
+        "refs/tags/v*"
+      ],
+      "release_environments": [],
+      "release_workflows": []
+    },
+    {
+      "name": ".github",
+      "visibility": "public",
+      "default_branch": "main",
+      "audited_main_sha": "d60445bc8617adc4a27c20e6ce05681a95d83a2c",
+      "require_code_owner_review": false,
+      "required_checks": [
+        "validate-profile"
+      ],
+      "path_scoped_checks": [],
+      "admission_gaps": [
+        "Make validate-profile report on every pull request. The check is small and needs no new matrix."
+      ],
+      "admission_workflows": [
+        {
+          "path": ".github/workflows/profile-consistency.yml",
+          "required_patterns": [],
+          "forbidden_patterns": [
+            "(?m)^[ ]{4}paths(?:-ignore)?:\\s*$"
+          ]
+        }
+      ],
+      "release_tag_patterns": [
+        "refs/tags/v*"
+      ],
+      "release_environments": [],
+      "release_workflows": []
+    }
+  ],
+  "plan_constraints": [
+    {
+      "repository": "openadapt-cloud",
+      "visibility": "private",
+      "mode": "audit-only",
+      "managed": false,
+      "current_plan": "GitHub Free organization",
+      "constraint": "GitHub artifact attestations for private repositories require GitHub Enterprise Cloud.",
+      "required_fallback": "Keep the existing signed Ed25519 evidence envelope and public verifier until the organization has GitHub Enterprise Cloud.",
+      "apply_rule": "This tool must never mutate openadapt-cloud."
+    }
+  ]
+}
