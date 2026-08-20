@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-08-20 01:26 UTC*
+> *Last updated: 2026-08-20 01:31 UTC*
 
 
 
@@ -128,6 +128,8 @@
 - [ci: bound the apt install and prefer the canonical Ubuntu archive](https://github.com/OpenAdaptAI/openadapt-capture/pull/81) (#81) — merged 
 
 - [ci: run pull-request checks on every base branch](https://github.com/OpenAdaptAI/openadapt-capture/pull/80) (#80) — merged 
+
+- [feat: add authenticated recorder control channel](https://github.com/OpenAdaptAI/openadapt-capture/pull/79) (#79) — merged 
 
 - [feat: qualify resilient native capture](https://github.com/OpenAdaptAI/openadapt-capture/pull/78) (#78) — merged 
 
