@@ -1,6 +1,7 @@
 """Validate the generated docs site."""
 
 import pathlib
+import re
 import subprocess
 import sys
 
@@ -43,6 +44,12 @@ REQUIRED_PUBLIC_PAGES = {
         "`openadapt-capture >=1.1.0`",
         "Production deployments should pin the exact versions",
     ),
+    "reference/production-lifecycle.md": (
+        "at least three trials per task per condition",
+        "silent-incorrect-success",
+        "over-halt",
+        "active signed admission",
+    ),
     "packages/openadapt.md": (
         "redirect_to: /ecosystem/",
         "pip install openadapt",
@@ -52,10 +59,17 @@ REQUIRED_PUBLIC_PAGES = {
 REQUIRED_NAV_PAGES = set(REQUIRED_PUBLIC_PAGES) - {"packages/openadapt.md"}
 
 STALE_PRELAUNCH_MARKERS = {
+    "Available for qualification",
     "Beta launch candidate",
     "full paid production lifecycle remains pending",
     "not a public availability statement",
 }
+
+STATIC_MATURITY_PATTERN = re.compile(
+    r"\b(?:beta|experimental)\b|\breference path\b|\bbrowser-only\b",
+    re.IGNORECASE,
+)
+HISTORICAL_DOC_PATHS = {"changelog.md", "whats-new.md"}
 
 
 def check_empty_pages(docs_dir=None):
@@ -151,6 +165,20 @@ def check_product_docs_contract(docs_dir=None, mkdocs_file=None):
         if marker in public_text:
             issues.append(f"Stale prelaunch copy: {marker}")
 
+    # Product maturity is a read-time result from the signed lifecycle record.
+    # A static label can remain after its evidence expires, so authored product
+    # pages must not carry one. Generated historical feeds are exact upstream
+    # release records and stay outside this current-state contract.
+    for path in docs_dir.rglob("*.md"):
+        relative = path.relative_to(docs_dir).as_posix()
+        if relative in HISTORICAL_DOC_PATHS or relative.startswith("packages/"):
+            continue
+        match = STATIC_MATURITY_PATTERN.search(path.read_text())
+        if match:
+            issues.append(
+                f"Static public maturity label in {relative}: {match.group(0)}"
+            )
+
     return issues
 
 
@@ -164,7 +192,9 @@ def run_mkdocs_build(strict=False):
     if strict:
         cmd.append("--strict")
     cmd.extend(["--site-dir", str(ROOT / "_site_check")])
-    result = subprocess.run(cmd, capture_output=True, text=True, cwd=str(ROOT))
+    result = subprocess.run(
+        cmd, capture_output=True, text=True, cwd=str(ROOT), check=False
+    )
     # Clean up
     site_dir = ROOT / "_site_check"
     if site_dir.exists():

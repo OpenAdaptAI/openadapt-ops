@@ -8,9 +8,9 @@ target flags in place of `--url`.
 
 ## Record
 
-On the web substrate, `record --backend web --url` opens a headed browser on your app and
-watches what you do: clicks, typing, key presses, and scrolls. It writes the same
-recording format `compile` consumes.
+On the web substrate, `record --backend web --url` opens a headed browser on
+your app and watches what you do: clicks, typing, key presses, and scrolls. It
+writes the same recording format `compile` consumes.
 
 ```bash
 openadapt flow record --backend web --url https://your.app --out rec
@@ -22,6 +22,100 @@ the window to finish.
 !!! tip "Record headless for scripted or CI capture"
     Add `--headless` to run the browser without a window, for scripted recording
     in a pipeline.
+
+### Use an existing signed-in Chromium session
+
+Flow can attach the same Playwright recorder to one existing local Chromium
+tab. Use this mode when the browser profile has already completed sign-in, SSO,
+or 2FA.
+
+Start Chromium with a dedicated debugging profile. Do not enable remote
+debugging on a sensitive general-purpose browser profile.
+
+=== "macOS"
+
+    ```bash
+    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
+      --remote-debugging-address=127.0.0.1 \
+      --remote-debugging-port=9222 \
+      --user-data-dir="$HOME/Library/Application Support/OpenAdapt/ChromeRecorderProfile"
+    ```
+
+=== "Linux"
+
+    ```bash
+    google-chrome \
+      --remote-debugging-address=127.0.0.1 \
+      --remote-debugging-port=9222 \
+      --user-data-dir="${XDG_DATA_HOME:-$HOME/.local/share}/openadapt/chrome-recorder-profile"
+    ```
+
+=== "Windows PowerShell"
+
+    ```powershell
+    & "$env:ProgramFiles\Google\Chrome\Application\chrome.exe" `
+      --remote-debugging-address=127.0.0.1 `
+      --remote-debugging-port=9222 `
+      --user-data-dir="$env:LOCALAPPDATA\OpenAdapt\ChromeRecorderProfile"
+    ```
+
+Open the application in that browser. Then run:
+
+```bash
+openadapt flow record --backend web --url https://your.app \
+  --browser-cdp-endpoint http://127.0.0.1:9222 --out rec
+```
+
+Flow selects the sole open tab on the `--url` origin. It refuses an ambiguous
+selection. If the browser has two or more tabs on that origin, add the exact
+current URL with `--browser-page-url`. Flow does not navigate or close the
+attached browser.
+
+The endpoint must be on localhost or a loopback IP address, with an explicit
+port and no credentials, query, or fragment. Attach mode cannot combine with
+`--headless`. The external browser owns its display mode.
+
+The declared app URL, each observed page URL, document titles, selectors,
+accessible names, row identity text, typed values, and screenshots can contain
+sensitive data. Flow treats the complete recording as sensitive. Diagnostic
+messages omit URL query and fragment values. Recorded URLs retain structural
+origin, path, and parameter names. Flow drops a parameter value when its name
+matches a declared secret field. It withholds a complete URL or title when it
+cannot prove that reporting the text is safe.
+
+Password fields and fields declared with `--secret` bind a private input
+session and capture-time screenshot mask. Literal secret values stay in the
+page closure. Flow reports captured page text exactly, or withholds it and
+records why. It never rewrites captured text or substitutes a placeholder.
+Selector, role, accessible-name, row-identity, and receiving-field evidence use
+the same exact-or-withheld rule. A withheld identity cannot silently disarm an
+identity check.
+
+The `--out` path must not exist. Flow records into a new temporary sibling and
+publishes the output atomically only after final capture and detach. A refusal
+removes the temporary output and does not change an existing recording.
+
+Keep the selected tab on the declared application origin. You can resize the
+tab or move its window between monitors while no action is in progress. Flow
+observes viewport and device-scale changes. It waits for a stable CSS-pixel
+frame and binds later events to the new coordinate space. The recording keeps
+the viewport history and the exact before and after viewport for each event.
+
+Flow refuses a cross-origin navigation, a selected-tab close, a new popup or
+tab, or an event whose exact top-level frame binding is unavailable. It also
+refuses an action that overlaps a resize or monitor-scale transition. The last
+refusal is necessary because no exact pre-action frame exists in the new
+coordinate space. An overlapping action aborts the recording and publishes no
+complete metadata. When you resize between actions, stop interacting until the
+new frame is stable. Recording then continues automatically.
+
+The Chrome extension code in `openadapt-capture` is not a second compiler or
+replay runtime. An extension acquisition path must use the shared Flow event
+and evidence schema, capture-time secret exclusion, authenticated
+browser/profile/tab/document/session identity, an acknowledged ordered event
+stream, and exact frame, event, and viewport binding before Flow can accept its
+recording. Direct extension replay does not replace Flow's identity, policy,
+fresh-frame, effect, and refusal gates.
 
 ## Compile and replay
 

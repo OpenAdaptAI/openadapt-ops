@@ -109,10 +109,12 @@ openadapt flow record --backend web --url https://your.app --out rec
 | Flag | Description |
 |---|---|
 | `--url` | URL of the app to record against. **Required for `--backend web`** (the default); other substrates target through the [backend selector](#backend) instead. |
+| `--browser-cdp-endpoint URL` | Attach the Playwright recorder to an already-running local Chromium browser. The endpoint must use localhost or a loopback IP address and an explicit port. Flow binds a tab on the `--url` origin and does not navigate or close the browser. An idle resize or monitor-scale change starts a new exact per-event viewport baseline. |
+| `--browser-page-url URL` | Exact current URL used when two or more open tabs match the `--url` origin. Requires `--browser-cdp-endpoint`. |
 | `--out` (required) | Recording output directory |
 | `--secret FIELD` | Mark a typed field (by name or id) as a **secret**: never persisted, injected at replay from `OPENADAPT_FLOW_SECRET_<FIELD>`. `input[type=password]` is always secret. Repeatable. |
 | `--param FIELD` | Record a typed field as a **parameter**: its demonstrated value becomes the default, overridable at replay with `--param`. Repeatable. |
-| `--headless` | Run the browser headless (scripted or CI recording) |
+| `--headless` | Run a browser launched by Flow headless (scripted or CI recording). It cannot be combined with `--browser-cdp-endpoint`; the attached browser controls its own display mode. |
 
 ## demo-record
 

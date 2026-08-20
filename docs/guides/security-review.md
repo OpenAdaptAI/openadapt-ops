@@ -125,14 +125,14 @@ release-signing authority, recovery drill, and maintenance window.
 
 ## Hosted service and substrate qualification
 
-Managed browser execution is a public Beta service with live Stripe Checkout,
+Managed browser execution is a public service with live Stripe Checkout,
 onboarding, organization isolation, browser runner orchestration, artifacts,
 reports, teaching, billing, and usage metering. Production explicitly selects
 live dependencies; a missing runner, storage, or billing dependency returns an
 operational failure and never substitutes mock success. Mock mode remains for
 development and is visibly synthetic. The retained non-simulated hosted-recorder
 qualification was run on Flow 1.8.0. The current managed-runtime manifest pins
-Flow 1.31.0 artifact identity; that pin does not prove live deployment or hosted
+Flow <!-- version-claim:hosted-runner-managed-runtime-pin:version -->1.31.0<!-- /version-claim:hosted-runner-managed-runtime-pin:version --> artifact identity; that pin does not prove live deployment or hosted
 workflow acceptance. The public readiness endpoint separately verifies live
 mode, authentication, database migrations, private storage, runner, compiler,
 runtime-validation trust, runtime boundary, bundle protection, recorder,
@@ -140,6 +140,10 @@ callbacks, scheduler, human-decision Web Push, retention policy, security
 events, secret encryption, runtime-validation allowlists, and live billing
 configuration. Readiness proves those dependencies and contracts are configured
 and reachable; it is not a customer workflow qualification or an SLA.
+
+**Current Cloud release admission:**
+<span data-openadapt-production-target="cloud" aria-live="polite">Production requires an active signed admission for this exact release or deployment.</span>
+[Review the admission contract](../reference/production-lifecycle.md)
 
 Windows UIA, native macOS, native Linux, RDP, and Citrix/VDI are first-class substrates,
 ordered as scoped deployments and qualified per workflow in their real

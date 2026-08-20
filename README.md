@@ -59,6 +59,19 @@ uv run mkdocs build --strict
 uv run python scripts/validate_docs.py
 ```
 
+The managed-runtime artifact tuple has one editable source:
+`docs/published-version-claims.json`. Change the claim's `version`, release
+commit, archive hashes, source-manifest evidence, and `verified_on` fields once,
+then render all marked pages:
+
+```bash
+uv run python scripts/render_published_version_claims.py
+uv run python scripts/render_published_version_claims.py --check
+```
+
+Do not edit the marked page values directly. The offline version-claim gate and
+the documentation deployment both fail when the committed render is stale.
+
 ## Tests
 
 ```bash

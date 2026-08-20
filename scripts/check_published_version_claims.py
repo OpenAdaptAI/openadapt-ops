@@ -16,15 +16,18 @@ Offline checks (run on every pull request; no network, cannot be flaky):
 1. Every registered claim location still exists and still contains its exact
    recorded context. A reword that turns a pinned or historical number back
    into a publication claim therefore cannot land silently.
-2. No authored page contains a "published X.Y.Z"-shaped sentence that is not
+2. Every generated claim marker matches the claim registry's structured
+   artifact tuple. A release changes that one record and runs the deterministic
+   renderer; a stale or unregistered output fails.
+3. No authored page contains a "published X.Y.Z"-shaped sentence that is not
    registered as ``pypi-latest``. This is the specific sentence shape that went
    wrong; adding another one now requires declaring that it must track PyPI.
-3. ``docs/changelog.md`` parses and every tracked repository has releases.
+4. ``docs/changelog.md`` parses and every tracked repository has releases.
 
 Network checks (run daily; PyPI is the authority):
 
-4. Every ``pypi-latest`` claim's version equals PyPI's newest release.
-5. The newest ``vX.Y.Z`` entry in each tracked section of ``docs/changelog.md``
+5. Every ``pypi-latest`` claim's version equals PyPI's newest release.
+6. The newest ``vX.Y.Z`` entry in each tracked section of ``docs/changelog.md``
    equals PyPI's newest release for that package. The changelog is the docs'
    always-live statement of "what the current release is", so it is guarded
    structurally rather than by phrase.
@@ -51,6 +54,8 @@ import sys
 import urllib.error
 import urllib.request
 from pathlib import Path
+
+from render_published_version_claims import render_version_claims
 
 ROOT = Path(__file__).resolve().parents[1]
 REGISTRY_PATH = ROOT / "docs" / "published-version-claims.json"
@@ -111,7 +116,8 @@ def check_claim_locations(registry: dict, report: Report, root: Path = ROOT) -> 
     """Every registered claim must still say what the registry says it says."""
     for claim in registry.get("claims", []):
         locations = claim.get("locations") or []
-        if not locations:
+        rendered_locations = claim.get("rendered_locations") or []
+        if not locations and not rendered_locations:
             report.error(
                 f"claim {claim.get('id')!r} registers no locations; a claim "
                 "nothing points at cannot be kept honest"
@@ -320,6 +326,9 @@ def main() -> int:
     report = Report()
 
     check_claim_locations(registry, report)
+    render_errors, _ = render_version_claims(registry, check=True)
+    for error in render_errors:
+        report.error(error)
     scan_for_unregistered_claims(registry, report)
     changelog_claims = check_changelog_structure(registry, report)
 

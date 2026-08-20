@@ -283,7 +283,7 @@ lives, not what is enforced.
 | **On-prem appliance** | A host inside your network, with a local queue, hash-chained audit log, optional LAN-only VLM box, and operator-pulled signed updates verified against a pinned vendor public key. | Nothing at run time; updates enter on removable media, signature-verified, with blue/green install and rollback. ([Deploy on-prem](deploy-on-prem.md), [ON_PREM.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/ON_PREM.md)) |
 | **Hosted control plane + local execution** | Governed authoring, validation, and repair remain local; the control plane manages accounts, workflow versions, run history, and billing. | Operator-approved sanitized derivatives, minimized halt descriptors, and hash-bound attestations, verified against published schemas. ([The hosted option](hosted.md)) |
 
-Hosted managed *browser* execution is a separate Beta launch-candidate lane
+Hosted managed *browser* execution is a separate managed boundary
 with its own declared boundary for public, non-regulated targets. See
 [Hosted browser execution](hosted.md) for its current status and scope.
 

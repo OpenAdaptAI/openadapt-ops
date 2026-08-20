@@ -3,11 +3,9 @@
 import pathlib
 import sys
 
-import pytest
-
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "scripts"))
 
-from sync_readmes import sync, load_repos, fetch_readme
+from sync_readmes import fetch_readme, load_repos, sync
 
 FIXTURES = pathlib.Path(__file__).parent / "fixtures"
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -16,12 +14,8 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 def test_load_repos():
     repos = load_repos()
     assert len(repos) > 0
-    assert all("name" in r and "github" in r and "lifecycle" in r for r in repos)
-    assert {r["lifecycle"] for r in repos} <= {
-        "beta", "experimental", "research", "deprecated",
-    }
-    lifecycle_by_name = {r["name"]: r["lifecycle"] for r in repos}
-    assert lifecycle_by_name["openadapt-agent"] == "experimental"
+    assert all("name" in r and "github" in r for r in repos)
+    assert all("lifecycle" not in r for r in repos)
 
 
 def test_sync_renders_pages(tmp_path, mocker):

@@ -33,8 +33,8 @@ configuration. Package topology is secondary: the canonical engine is
 
 -   [__Package and repository lifecycle__](../ecosystem/index.md)
 
-    The retained package index, with current product, experimental, research,
-    and deprecated repository roles.
+    The retained package index, with product, trust, interoperability,
+    evaluation, model-development, and historical roles.
 
 -   [__Documentation source of truth__](documentation-governance.md)
 

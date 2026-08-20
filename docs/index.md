@@ -19,6 +19,10 @@ model tier, records the repair, and halts instead of guessing when verification
 fails.
 </p>
 
+**Current product release admission:**
+<span data-openadapt-production-product aria-live="polite">Production requires active signed admissions for every required release and deployment, and execution accepts only active qualified workflow versions.</span>
+[How release admission works](reference/production-lifecycle.md)
+
 [Try it locally](get-started/index.md){ .md-button .md-button--primary }
 [Read the concepts](concepts/demonstration-compiler.md){ .md-button }
 [Evaluate a workflow](https://openadapt.ai/qualify){ .md-button }
@@ -174,9 +178,13 @@ the target outline nor the capsule is verification evidence.
 
 Cloud uses the same application, mode, and view choices, then adds an openIMIS
 deep dive with the compiled graph, contracts, six retained Standard-profile
-results, and byte-inventoried evidence links. **VERIFIED** means the complete
-declared contract passed; **HALTED** means the run stopped rather than claim an
-outcome it could not prove.
+results, and byte-inventoried evidence links. A transaction ends as
+`VERIFIED`, `HALTED_BEFORE_EFFECT`, `RECONCILIATION_REQUIRED`,
+`FAILED_PLATFORM`, `CANCELED`, `REJECTED_POLICY`, `COMPLETED_UNVERIFIED`, or
+`ROLLED_BACK`. Only `VERIFIED` is a successful production outcome.
+`RECONCILIATION_REQUIRED` means that an effect can have occurred and OpenAdapt
+cannot yet prove its final state. OpenAdapt does not retry that transaction
+blindly. See [Run outcomes and halt reasons](reference/run-outcomes.md).
 
 [Watch the shared real-application demo](https://openadapt.ai/how-it-works){ .md-button .md-button--primary }
 [Inspect the Cloud evidence deep dive](https://app.openadapt.ai/demo#footage){ .md-button }
@@ -218,10 +226,11 @@ bounded runs ended after exhausting their action budget without writing a
 patient.
 
 All three environments used synthetic data on one local host and ran through
-the **Browser (Playwright)** substrate, whose reference path is **Beta**. The
-healthcare row is distinct from the shared-public-demo OpenEMR field result
-above. Frappe Lending and openIMIS are API-rich references, and neither is
-evidence for a legacy Windows/Citrix system.
+the **Browser (Playwright)** substrate. These results qualify only the named
+tasks and environments. The healthcare row is distinct from the
+shared-public-demo OpenEMR field result above. Frappe Lending and openIMIS are
+API-rich references, and neither is evidence for a legacy Windows/Citrix
+system.
 
 The public [aggregate report](https://github.com/OpenAdaptAI/openadapt-flow/tree/main/benchmark/agent_arm_verticals)
 retains the method, run counts, outcomes, failure taxonomy, and caveats. Raw

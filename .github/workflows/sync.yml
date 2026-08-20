@@ -73,6 +73,9 @@ jobs:
       # The curated Concepts and Ecosystem sections replace it. Re-enable only
       # if a maintained, product-accurate architecture page is reintroduced.
 
+      - name: Validate published version claims
+        run: uv run python scripts/check_published_version_claims.py --offline
+
       - name: Run tests against generated source
         run: uv run pytest tests/ -q
 

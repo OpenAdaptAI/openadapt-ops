@@ -108,6 +108,12 @@ profiles require it explicitly.)
 Perform the task once. When you are done, press ++ctrl+c++ or close the browser
 window to finish. The recording is written to `rec/`.
 
+!!! tip "Keep an existing SSO or 2FA session"
+    Start a dedicated Chromium profile with a local remote-debugging port. Add
+    `--browser-cdp-endpoint http://127.0.0.1:9222` to attach the same recorder
+    to its one open same-origin tab. Flow does not navigate or close that
+    browser. See [Record your own app](../guides/record-your-app.md#use-an-existing-signed-in-chromium-session).
+
 !!! tip "Record a clean demonstration"
     Do the task the way you want it replayed: one clear path, no dead ends. The
     compiler treats your demonstration as evidence of intent, so a tidy run

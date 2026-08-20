@@ -8,14 +8,15 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "scripts
 from validate_docs import check_empty_pages, check_product_docs_contract
 
 
-def test_openadapt_agent_catalog_describes_active_v2_bridge():
+def test_product_catalog_binds_all_admitted_targets_to_live_state():
     root = pathlib.Path(__file__).resolve().parent.parent
     content = (root / "docs" / "ecosystem" / "index.md").read_text()
 
-    assert "openadapt-agent](https://github.com/OpenAdaptAI/openadapt-agent)" in content
-    assert "Active v2 bridge" in content
-    assert "repository itself is active" in content
-    assert "Superseded execution direction being folded into `openadapt-flow`" not in content
+    for target in ("agent", "capture", "cloud", "desktop", "docs", "flow", "openadapt"):
+        assert f'data-openadapt-production-target="{target}"' in content
+    assert "Production requires an active signed admission" in content
+    assert "**Beta**" not in content
+    assert "**Experimental**" not in content
 
 
 def test_check_empty_pages_finds_issues(tmp_path):
@@ -89,6 +90,11 @@ def _write_contract_docs(root):
             "`openadapt-flow >=1.22,<2` + `openadapt-capture >=1.1.0`\n\n"
             "Production deployments should pin the exact versions."
         ),
+        "reference/production-lifecycle.md": (
+            "# Production admission\n\nA qualified workflow requires an active signed "
+            "admission and at least three trials per task per condition. Report "
+            "each silent-incorrect-success and over-halt count."
+        ),
         "packages/openadapt.md": (
             "---\nredirect_to: /ecosystem/\n---\n\n"
             "# OpenAdapt package documentation moved\n\n"
@@ -147,6 +153,23 @@ def test_product_docs_contract_rejects_stale_prelaunch_copy(tmp_path):
     issues = check_product_docs_contract(docs_dir, mkdocs_file)
 
     assert any("Stale prelaunch copy" in issue for issue in issues)
+
+
+def test_product_docs_contract_rejects_static_maturity_copy(tmp_path):
+    docs_dir = tmp_path / "docs"
+    pages = _write_contract_docs(docs_dir)
+    hosted = docs_dir / "guides/hosted.md"
+    hosted.write_text(hosted.read_text() + "\nThe recorder is Experimental.\n")
+    mkdocs_file = tmp_path / "mkdocs.yml"
+    mkdocs_file.write_text(
+        "nav:\n  - Reference:\n"
+        + "".join(f"    - {path}\n" for path in pages)
+        + "    - Package and repository lifecycle: ecosystem/index.md\n"
+    )
+
+    issues = check_product_docs_contract(docs_dir, mkdocs_file)
+
+    assert any("Static public maturity label" in issue for issue in issues)
 
 
 def test_product_docs_contract_rejects_competing_install_identity(tmp_path):

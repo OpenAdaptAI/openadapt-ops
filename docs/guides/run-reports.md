@@ -29,10 +29,12 @@ For each step, the report records:
   verified against the system of record, with its verdict.
 - **Model calls**: any call to a grounding or state-verification model, so the $0
   property is observable, not assumed.
-- **Outcome**: success, or a halt naming the violated expectation. Every
-  terminal outcome (`VERIFIED`, `COMPLETED_UNVERIFIED`, `HALTED`, `FAILED`,
-  `ROLLED_BACK`), the transaction refinement, and every typed halt reason are
-  defined in [Run outcomes and halt reasons](../reference/run-outcomes.md).
+- **Outcome**: the exact terminal state and the violated expectation, when one
+  exists. A transaction ends as `VERIFIED`, `HALTED_BEFORE_EFFECT`,
+  `RECONCILIATION_REQUIRED`, `FAILED_PLATFORM`, `CANCELED`, `REJECTED_POLICY`,
+  `COMPLETED_UNVERIFIED`, or `ROLLED_BACK`. Only `VERIFIED` is a successful
+  production outcome. Every typed halt reason is defined in
+  [Run outcomes and halt reasons](../reference/run-outcomes.md).
 
 ## The identity-coverage line
 

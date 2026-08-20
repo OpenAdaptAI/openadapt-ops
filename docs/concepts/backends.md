@@ -28,8 +28,10 @@ the highest-fidelity signal each surface offers.
 
 ### Web: Playwright
 
-A headless Chromium driven by Playwright drives the web substrate, and every
-example in these docs uses it. It exposes a full structured layer:
+Playwright drives the web substrate. Flow can launch Chromium or attach to one
+existing signed-in local Chromium tab through a loopback CDP endpoint. Both
+entry modes use the same recorder, compiler format, and governed runtime. The
+browser exposes a full structured layer:
 
 - **Structural rung**: reads the DOM element under a point, so resolution and
   [identity](identity-gate.md) can use stable selectors and structured text
@@ -37,9 +39,24 @@ example in these docs uses it. It exposes a full structured layer:
 - **Structural postconditions**: URL change, title change, new-tab opened.
 - **CI-friendly**: no OS permissions, no display server; the whole record →
   compile → replay loop runs in a container.
+- **Existing-session recording**: attach mode preserves a dedicated browser
+  profile that has already completed sign-in, SSO, or 2FA. Flow refuses remote
+  endpoints and ambiguous same-origin tabs. It does not navigate or close the
+  external browser. It records viewport and monitor-scale transitions as new
+  per-event coordinate baselines. An idle transition rebaselines and continues.
+  An action that overlaps an unverified transition aborts the recording and
+  publishes no complete metadata.
 
 It shares the same bundle, resolution ladder, and identity gate as every other
 substrate; nothing about the safety model is specific to it.
+
+The Chrome extension code in `openadapt-capture` does not define a second
+compiler or direct replay path. An extension acquisition path must use Flow's
+shared event and evidence schema, capture-time secret exclusion, authenticated
+session identity, acknowledged ordered delivery, and exact event/frame/viewport
+binding before Flow accepts its recording. Source-time secret exclusion, DOM
+identity, field geometry, and exact event/frame binding stay inside the
+compiler contract.
 
 ### Desktop: Windows (UIA)
 
