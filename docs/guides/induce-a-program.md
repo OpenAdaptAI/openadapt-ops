@@ -27,7 +27,7 @@ openadapt flow induce rec-1 rec-2 rec-3 --out program --name my-program
 ```
 
 `induce` aligns the traces to recover the shared parameters, loops, and branches.
-It is deterministic and model-free at its core. The outcome is one of two explicit
+The process is deterministic and model-free. The outcome is one of two explicit
 results:
 
 - **CERTIFIED**: it writes a parameterized program bundle to `--out` and prints
