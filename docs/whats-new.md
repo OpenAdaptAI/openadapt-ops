@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-08-20 01:12 UTC*
+> *Last updated: 2026-08-20 01:20 UTC*
 
 
 
@@ -128,6 +128,8 @@
 - [ci: bound the apt install and prefer the canonical Ubuntu archive](https://github.com/OpenAdaptAI/openadapt-capture/pull/81) (#81) — merged 
 
 - [ci: run pull-request checks on every base branch](https://github.com/OpenAdaptAI/openadapt-capture/pull/80) (#80) — merged 
+
+- [docs: correct stale Capture recorder facts and mark the extension a prototype](https://github.com/OpenAdaptAI/openadapt-capture/pull/76) (#76) — merged 
 
 - [chore(deps): update CodeQL actions together](https://github.com/OpenAdaptAI/openadapt-capture/pull/75) (#75) — merged 
 
