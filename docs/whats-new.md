@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-08-20 01:31 UTC*
+> *Last updated: 2026-08-20 11:11 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [build(deps): bump both codeql-action pins to v4.37.7 together](https://github.com/OpenAdaptAI/OpenAdapt/pull/1103) (#1103) — merged 
 
 - [build(deps): bump astral-sh/setup-uv from 10.0.0 to 10.0.1](https://github.com/OpenAdaptAI/OpenAdapt/pull/1101) (#1101) — merged 
 
@@ -66,6 +68,8 @@
 ## openadapt-desktop
 
 
+- [ci: correct the stale version comment on the pypi-publish pin](https://github.com/OpenAdaptAI/openadapt-desktop/pull/124) (#124) — merged 
+
 - [test(release): state the O_NOFOLLOW contract per platform](https://github.com/OpenAdaptAI/openadapt-desktop/pull/123) (#123) — merged 
 
 - [fix(release): close the residual native release admission gaps](https://github.com/OpenAdaptAI/openadapt-desktop/pull/122) (#122) — merged 
@@ -102,6 +106,13 @@
 - [chore(deps): Bump pypa/gh-action-pypi-publish from 1.14.1 to 1.14.2](https://github.com/OpenAdaptAI/openadapt-agent/pull/27) (#27) — merged 
 
 - [feat(attended): give the bridge a brake, and say when a model pulled it](https://github.com/OpenAdaptAI/openadapt-agent/pull/22) (#22) — merged 
+
+
+
+## openadapt-ml
+
+
+- [ci: pin pypa/gh-action-pypi-publish to a commit SHA](https://github.com/OpenAdaptAI/openadapt-ml/pull/74) (#74) — merged 
 
 
 
@@ -152,6 +163,20 @@
 
 
 - [fix(ci): publish with an action that accepts Metadata-Version 2.5](https://github.com/OpenAdaptAI/openadapt-types/pull/26) (#26) — merged 
+
+
+
+## openadapt-grounding
+
+
+- [ci: pin pypa/gh-action-pypi-publish to a commit SHA](https://github.com/OpenAdaptAI/openadapt-grounding/pull/10) (#10) — merged 
+
+
+
+## openadapt-retrieval
+
+
+- [ci: pin pypa/gh-action-pypi-publish to a commit SHA](https://github.com/OpenAdaptAI/openadapt-retrieval/pull/10) (#10) — merged 
 
 
 
