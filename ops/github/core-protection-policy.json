@@ -32,10 +32,35 @@
       "openadapt-capture": "No release environment",
       "openadapt-desktop": "native-release has reviewer 774615 and exact desktop-v* plus ffmpeg-runtime-v8.1.2-r1 tag policies",
       "openadapt-evals": "pypi exists with no protection rule and no deployment policy",
-      "openadapt-ops": "No release environment; operational environments are outside this policy",
+      "openadapt-ops": "production-backup and production-backup-monitor exist without a protection rule, deployment branch policy, or reviewer; operational backup environments remain outside this policy",
       "openadapt-web": "No release environment",
       ".github": "No release environment"
     }
+  },
+  "dispatch_privilege_audit": {
+    "observed_at": "2026-08-20",
+    "openadapt_ops_main_protected": false,
+    "unprotected_operational_environments": {
+      "production-backup": {
+        "protection_rules": 0,
+        "deployment_branch_policy": null,
+        "required_reviewers": []
+      },
+      "production-backup-monitor": {
+        "protection_rules": 0,
+        "deployment_branch_policy": null,
+        "required_reviewers": []
+      }
+    },
+    "lifecycle_app_installation": "absent",
+    "docs_app_installation": "absent",
+    "required_non_lifecycle_dispatch_guard": "A no-permission reject-lifecycle-app predecessor plus actor and triggering_actor rejection on every effect job",
+    "required_dispatch_concurrency": "A workflow-and-event-specific concurrency group with cancel-in-progress false",
+    "mutable_actions_capabilities": [
+      "Cancel workflow runs",
+      "Rerun workflow runs",
+      "Delete workflow artifacts"
+    ]
   },
   "github_actions_integration_id": 15368,
   "main_rule_defaults": {
@@ -62,6 +87,95 @@
       "Metadata: read"
     ],
     "purpose": "Create release tags only. This identity has no main-branch bypass."
+  },
+  "lifecycle_identity": {
+    "app_slug": "openadapt-lifecycle",
+    "app_id": null,
+    "app_id_environment": "OPENADAPT_LIFECYCLE_APP_ID",
+    "actor_login": "openadapt-lifecycle[bot]",
+    "actor_id": null,
+    "actor_id_environment": "OPENADAPT_LIFECYCLE_ACTOR_ID",
+    "installation_id": null,
+    "installation_id_environment": "OPENADAPT_LIFECYCLE_INSTALLATION_ID",
+    "repository_scope": [
+      ".github",
+      "openadapt-evals",
+      "openadapt-ops"
+    ],
+    "required_repository_permissions": [
+      "Actions: write",
+      "Metadata: read",
+      "Pull requests: write"
+    ],
+    "forbidden_repository_permissions": [
+      "Contents: write"
+    ],
+    "ruleset_bypass": false,
+    "workflow_paths": {
+      ".github": [
+        ".github/workflows/production-lifecycle-activation.yml",
+        ".github/workflows/qualification-authority-state.yml",
+        ".github/workflows/qualification-revocation-state.yml"
+      ],
+      "openadapt-evals": [
+        ".github/workflows/production-lifecycle-evidence.yml"
+      ],
+      "openadapt-ops": [
+        ".github/workflows/production-lifecycle-projection.yml"
+      ]
+    },
+    "repository_variables": {
+      "app_id": "OPENADAPT_LIFECYCLE_APP_ID",
+      "actor_id": "OPENADAPT_LIFECYCLE_ACTOR_ID",
+      "installation_id": "OPENADAPT_LIFECYCLE_INSTALLATION_ID"
+    },
+    "actions_write_risk": {
+      "capabilities": [
+        "Dispatch repository workflows",
+        "Cancel or rerun workflow runs",
+        "Delete workflow artifacts"
+      ],
+      "mitigations": [
+        "Exact three-repository installation scope",
+        "No Contents write",
+        "No ruleset bypass",
+        "Founder-reviewed lifecycle environments",
+        "Every other dispatchable workflow rejects the App actor",
+        "Production evidence remains content-addressed outside mutable Actions artifacts"
+      ]
+    },
+    "purpose": "Dispatch only the five founder-reviewed lifecycle workflows and create their reviewable pull requests. The workflow GITHUB_TOKEN pushes the automation branch."
+  },
+  "docs_identity": {
+    "app_slug": "openadapt-docs",
+    "app_id": null,
+    "app_id_environment": "OPENADAPT_DOCS_APP_ID",
+    "actor_login": "openadapt-docs[bot]",
+    "actor_id": null,
+    "actor_id_environment": "OPENADAPT_DOCS_ACTOR_ID",
+    "installation_id": null,
+    "installation_id_environment": "OPENADAPT_DOCS_INSTALLATION_ID",
+    "repository_scope": [
+      "openadapt-ops"
+    ],
+    "required_repository_permissions": [
+      "Actions: write",
+      "Metadata: read",
+      "Pull requests: write"
+    ],
+    "forbidden_repository_permissions": [
+      "Contents: write"
+    ],
+    "ruleset_bypass": false,
+    "workflow_paths": {
+      "openadapt-ops": ".github/workflows/sync.yml"
+    },
+    "repository_variables": {
+      "app_id": "OPENADAPT_DOCS_APP_ID",
+      "actor_id": "OPENADAPT_DOCS_ACTOR_ID",
+      "installation_id": "OPENADAPT_DOCS_INSTALLATION_ID"
+    },
+    "purpose": "Dispatch only the founder-reviewed documentation synchronization workflow and create its reviewable pull request. The workflow GITHUB_TOKEN pushes the automation branch."
   },
   "environment_reviewer": {
     "type": "User",
@@ -400,6 +514,20 @@
           ]
         }
       ],
+      "lifecycle_environments": [
+        {
+          "name": "production-lifecycle-evidence",
+          "wait_timer": 0,
+          "prevent_self_review": true,
+          "deployment_policies": [
+            {
+              "type": "branch",
+              "name": "main"
+            }
+          ],
+          "exclusive_workflow": ".github/workflows/production-lifecycle-evidence.yml"
+        }
+      ],
       "release_workflows": [
         {
           "path": ".github/workflows/release.yml",
@@ -412,6 +540,46 @@
             "ADMIN_TOKEN"
           ]
         }
+      ],
+      "lifecycle_workflows": [
+        {
+          "path": ".github/workflows/production-lifecycle-evidence.yml",
+          "required_patterns": [
+            "(?m)^[ ]{2}workflow_dispatch:\\s*$",
+            "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?production-lifecycle-evidence\\s*$",
+            "github\\.repository\\s*==\\s*'OpenAdaptAI/openadapt-evals'",
+            "github\\.ref\\s*==\\s*'refs/heads/main'",
+            "github\\.event_name\\s*==\\s*'workflow_dispatch'",
+            "github\\.actor\\s*==\\s*'openadapt-lifecycle\\[bot\\]'",
+            "github\\.triggering_actor\\s*==\\s*'openadapt-lifecycle\\[bot\\]'",
+            "github\\.actor_id\\s*==\\s*vars\\.OPENADAPT_LIFECYCLE_ACTOR_ID",
+            "vars\\.OPENADAPT_LIFECYCLE_APP_ID",
+            "vars\\.OPENADAPT_LIFECYCLE_INSTALLATION_ID",
+            "secrets\\.OPENADAPT_LIFECYCLE_APP_PRIVATE_KEY",
+            "(?m)^\\s*contents:\\s*write\\s*$",
+            "github\\.token",
+            "gh\\s+pr\\s+create"
+          ],
+          "forbidden_patterns": [
+            "(?m)^[ ]{2}(?:pull_request|pull_request_target|push|release|schedule|repository_dispatch|workflow_call):\\s*$",
+            "git\\s+push[^\\n]*(?:refs/heads/)?main",
+            "permission-contents:\\s*write"
+          ]
+        }
+      ],
+      "dispatch_workflow_inventory": [
+        {
+          "path": ".github/workflows/production-lifecycle-evidence.yml",
+          "mode": "lifecycle-only"
+        },
+        {
+          "path": ".github/workflows/complex-visual.yml",
+          "mode": "reject-lifecycle-app"
+        },
+        {
+          "path": ".github/workflows/evidence-freshness.yml",
+          "mode": "reject-lifecycle-app"
+        }
       ]
     },
     {
@@ -419,10 +587,11 @@
       "local_repository_name": "openadapt-maintenance",
       "visibility": "public",
       "default_branch": "main",
-      "audited_main_sha": "dbc110cc5ccbeca900499ac52e298deb9c7b49de",
+      "audited_main_sha": "2b3fef3a6672fe7dd31312e2cba56608342bb4dd",
       "require_code_owner_review": true,
       "required_checks": [
         "Analyze (python)",
+        "Validate Production lifecycle",
         "Validate canonical docs",
         "dependency-review",
         "gitleaks"
@@ -431,11 +600,185 @@
         "Compare documented versions to PyPI",
         "Prove the classifier fires and stays quiet"
       ],
+      "admission_gaps": [
+        "production-backup and production-backup-monitor have no protection rule, deployment branch policy, or reviewer.",
+        "Every non-lifecycle manual workflow needs the no-permission lifecycle-App rejection predecessor and non-cancelling dispatch concurrency.",
+        "sync.yml must remove repository_dispatch and direct main push before the protected documentation workflow can apply."
+      ],
       "release_tag_patterns": [
         "refs/tags/v*"
       ],
-      "release_environments": [],
-      "release_workflows": []
+      "release_environments": [
+        {
+          "name": "github-pages",
+          "deployment_policies": [
+            {
+              "type": "branch",
+              "name": "main"
+            }
+          ],
+          "exclusive_workflow": ".github/workflows/sync.yml"
+        },
+        {
+          "name": "production-docs-deploy",
+          "wait_timer": 0,
+          "prevent_self_review": true,
+          "deployment_policies": [
+            {
+              "type": "branch",
+              "name": "main"
+            }
+          ],
+          "exclusive_workflow": ".github/workflows/sync.yml"
+        }
+      ],
+      "lifecycle_environments": [
+        {
+          "name": "production-lifecycle-projection",
+          "wait_timer": 0,
+          "prevent_self_review": true,
+          "deployment_policies": [
+            {
+              "type": "branch",
+              "name": "main"
+            }
+          ],
+          "exclusive_workflow": ".github/workflows/production-lifecycle-projection.yml"
+        }
+      ],
+      "release_workflows": [
+        {
+          "path": ".github/workflows/sync.yml",
+          "required_patterns": [
+            "(?m)^[ ]{2}workflow_dispatch:\\s*$",
+            "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?github-pages\\s*$",
+            "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?production-docs-deploy\\s*$",
+            "(?m)^\\s*pages:\\s*write\\s*$",
+            "(?m)^\\s*id-token:\\s*write\\s*$",
+            "github\\.repository\\s*==\\s*'OpenAdaptAI/openadapt-ops'",
+            "github\\.ref\\s*==\\s*'refs/heads/main'",
+            "github\\.event_name\\s*==\\s*'workflow_dispatch'",
+            "github\\.actor\\s*==\\s*'openadapt-docs\\[bot\\]'",
+            "github\\.triggering_actor\\s*==\\s*'openadapt-docs\\[bot\\]'",
+            "github\\.actor_id\\s*==\\s*vars\\.OPENADAPT_DOCS_ACTOR_ID",
+            "vars\\.OPENADAPT_DOCS_APP_ID",
+            "vars\\.OPENADAPT_DOCS_INSTALLATION_ID",
+            "secrets\\.OPENADAPT_DOCS_APP_PRIVATE_KEY",
+            "inputs\\.source_repository",
+            "OpenAdaptAI/openadapt-evals",
+            "repos\\.yml",
+            "inputs\\.source_ref",
+            "refs/heads/main",
+            "inputs\\.source_commit",
+            "gh\\s+api[^\\n]*commits/main",
+            "\\[0-9a-f\\]\\{40\\}",
+            "inputs\\.source_event\\s*==\\s*['\"]push['\"]",
+            "inputs\\.idempotency_key",
+            "OpenAdapt docs sync dispatch v1",
+            "docs-sync:",
+            "\\[0-9a-f\\]\\{64\\}",
+            "sha256",
+            "(?m)^\\s*contents:\\s*write\\s*$",
+            "github\\.token",
+            "gh\\s+pr\\s+create"
+          ],
+          "forbidden_patterns": [
+            "(?m)^[ ]{2}repository_dispatch:\\s*$",
+            "repo-updated",
+            "git\\s+push[^\\n]*(?:refs/heads/)?main",
+            "permission-contents:\\s*write"
+          ]
+        }
+      ],
+      "admission_workflows": [
+        {
+          "path": ".github/workflows/production-lifecycle-policy.yml",
+          "required_patterns": [
+            "(?m)^[ ]{2}pull_request:\\s*$",
+            "(?m)^[ ]{4}name:\\s*Validate Production lifecycle\\s*$"
+          ],
+          "forbidden_patterns": [
+            "(?m)^[ ]{4}paths(?:-ignore)?:\\s*$"
+          ]
+        }
+      ],
+      "lifecycle_workflows": [
+        {
+          "path": ".github/workflows/production-lifecycle-projection.yml",
+          "required_patterns": [
+            "(?m)^[ ]{2}workflow_dispatch:\\s*$",
+            "(?m)^[ ]{4}name:\\s*Project canonical Production lifecycle\\s*$",
+            "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?production-lifecycle-projection\\s*$",
+            "inputs\\.source_event\\s*==\\s*['\"]production_lifecycle_ledger_changed['\"]",
+            "inputs\\.source_repository\\s*==\\s*['\"]OpenAdaptAI/\\.github['\"]",
+            "inputs\\.source_ref\\s*==\\s*['\"]refs/heads/main['\"]",
+            "inputs\\.source_commit",
+            "gh\\s+api[^\\n]*commits/main",
+            "\\[0-9a-f\\]\\{40\\}",
+            "inputs\\.candidate_admissions_sha256",
+            "inputs\\.candidate_ledger_head_sha256",
+            "inputs\\.idempotency_key",
+            "sha256:\\[0-9a-f\\]\\{64\\}",
+            "OpenAdapt production lifecycle ledger head v1\\\\0",
+            "OpenAdapt production lifecycle projection idempotency v1\\\\0",
+            "github\\.repository\\s*==\\s*'OpenAdaptAI/openadapt-ops'",
+            "github\\.ref\\s*==\\s*'refs/heads/main'",
+            "github\\.event_name\\s*==\\s*'workflow_dispatch'",
+            "github\\.actor\\s*==\\s*'openadapt-lifecycle\\[bot\\]'",
+            "github\\.triggering_actor\\s*==\\s*'openadapt-lifecycle\\[bot\\]'",
+            "github\\.actor_id\\s*==\\s*vars\\.OPENADAPT_LIFECYCLE_ACTOR_ID",
+            "vars\\.OPENADAPT_LIFECYCLE_APP_ID",
+            "vars\\.OPENADAPT_LIFECYCLE_INSTALLATION_ID",
+            "secrets\\.OPENADAPT_LIFECYCLE_APP_PRIVATE_KEY",
+            "(?m)^\\s*contents:\\s*write\\s*$",
+            "github\\.token",
+            "gh\\s+pr\\s+create"
+          ],
+          "forbidden_patterns": [
+            "(?m)^[ ]{2}(?:pull_request|pull_request_target|push|release|schedule|repository_dispatch|workflow_call):\\s*$",
+            "git\\s+push[^\\n]*(?:refs/heads/)?main",
+            "permission-contents:\\s*write"
+          ]
+        }
+      ],
+      "dispatch_workflow_inventory": [
+        {
+          "path": ".github/workflows/production-lifecycle-projection.yml",
+          "mode": "lifecycle-only"
+        },
+        {
+          "path": ".github/workflows/azure-cost-guard.yml",
+          "mode": "reject-lifecycle-app"
+        },
+        {
+          "path": ".github/workflows/db-backup-freshness.yml",
+          "mode": "reject-lifecycle-app"
+        },
+        {
+          "path": ".github/workflows/db-backup.yml",
+          "mode": "reject-lifecycle-app"
+        },
+        {
+          "path": ".github/workflows/default-branch-sweep.yml",
+          "mode": "reject-lifecycle-app"
+        },
+        {
+          "path": ".github/workflows/prod-health-alert.yml",
+          "mode": "reject-lifecycle-app"
+        },
+        {
+          "path": ".github/workflows/production-lifecycle-policy.yml",
+          "mode": "reject-lifecycle-app"
+        },
+        {
+          "path": ".github/workflows/published-version-claims.yml",
+          "mode": "reject-lifecycle-app"
+        },
+        {
+          "path": ".github/workflows/sync.yml",
+          "mode": "docs-only"
+        }
+      ]
     },
     {
       "name": "openadapt-web",
@@ -479,12 +822,15 @@
       ],
       "path_scoped_checks": [],
       "admission_gaps": [
-        "Make validate-profile report on every pull request. The check is small and needs no new matrix."
+        "Make validate-profile report on every pull request and add the three App-only Profile governance workflows before apply."
       ],
       "admission_workflows": [
         {
           "path": ".github/workflows/profile-consistency.yml",
-          "required_patterns": [],
+          "required_patterns": [
+            "(?m)^[ ]{2}pull_request:\\s*$",
+            "(?m)^[ ]{2}validate-profile:\\s*$"
+          ],
           "forbidden_patterns": [
             "(?m)^[ ]{4}paths(?:-ignore)?:\\s*$"
           ]
@@ -494,7 +840,144 @@
         "refs/tags/v*"
       ],
       "release_environments": [],
-      "release_workflows": []
+      "lifecycle_environments": [
+        {
+          "name": "production-lifecycle-activation",
+          "wait_timer": 0,
+          "prevent_self_review": true,
+          "deployment_policies": [
+            {
+              "type": "branch",
+              "name": "main"
+            }
+          ],
+          "exclusive_workflow": ".github/workflows/production-lifecycle-activation.yml"
+        },
+        {
+          "name": "qualification-authority-state",
+          "wait_timer": 0,
+          "prevent_self_review": true,
+          "deployment_policies": [
+            {
+              "type": "branch",
+              "name": "main"
+            }
+          ],
+          "exclusive_workflow": ".github/workflows/qualification-authority-state.yml"
+        },
+        {
+          "name": "qualification-revocation-state",
+          "wait_timer": 0,
+          "prevent_self_review": true,
+          "deployment_policies": [
+            {
+              "type": "branch",
+              "name": "main"
+            }
+          ],
+          "exclusive_workflow": ".github/workflows/qualification-revocation-state.yml"
+        }
+      ],
+      "release_workflows": [],
+      "lifecycle_workflows": [
+        {
+          "path": ".github/workflows/production-lifecycle-activation.yml",
+          "required_patterns": [
+            "(?m)^[ ]{2}workflow_dispatch:\\s*$",
+            "(?m)^[ ]{4}name:\\s*Create Production lifecycle activation PR\\s*$",
+            "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?production-lifecycle-activation\\s*$",
+            "github\\.repository\\s*==\\s*'OpenAdaptAI/\\.github'",
+            "github\\.ref\\s*==\\s*'refs/heads/main'",
+            "github\\.event_name\\s*==\\s*'workflow_dispatch'",
+            "github\\.actor\\s*==\\s*'openadapt-lifecycle\\[bot\\]'",
+            "github\\.triggering_actor\\s*==\\s*'openadapt-lifecycle\\[bot\\]'",
+            "github\\.actor_id\\s*==\\s*vars\\.OPENADAPT_LIFECYCLE_ACTOR_ID",
+            "vars\\.OPENADAPT_LIFECYCLE_APP_ID",
+            "vars\\.OPENADAPT_LIFECYCLE_INSTALLATION_ID",
+            "secrets\\.OPENADAPT_LIFECYCLE_APP_PRIVATE_KEY",
+            "(?m)^\\s*contents:\\s*write\\s*$",
+            "github\\.token",
+            "gh\\s+pr\\s+create"
+          ],
+          "forbidden_patterns": [
+            "(?m)^[ ]{2}(?:pull_request|pull_request_target|push|release|schedule|repository_dispatch|workflow_call):\\s*$",
+            "git\\s+push[^\\n]*(?:refs/heads/)?main",
+            "permission-contents:\\s*write"
+          ]
+        },
+        {
+          "path": ".github/workflows/qualification-authority-state.yml",
+          "required_patterns": [
+            "(?m)^[ ]{2}workflow_dispatch:\\s*$",
+            "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?qualification-authority-state\\s*$",
+            "github\\.repository\\s*==\\s*'OpenAdaptAI/\\.github'",
+            "github\\.ref\\s*==\\s*'refs/heads/main'",
+            "github\\.event_name\\s*==\\s*'workflow_dispatch'",
+            "github\\.actor\\s*==\\s*'openadapt-lifecycle\\[bot\\]'",
+            "github\\.triggering_actor\\s*==\\s*'openadapt-lifecycle\\[bot\\]'",
+            "github\\.actor_id\\s*==\\s*vars\\.OPENADAPT_LIFECYCLE_ACTOR_ID",
+            "vars\\.OPENADAPT_LIFECYCLE_APP_ID",
+            "vars\\.OPENADAPT_LIFECYCLE_INSTALLATION_ID",
+            "secrets\\.OPENADAPT_LIFECYCLE_APP_PRIVATE_KEY",
+            "(?m)^\\s*attestations:\\s*write\\s*$",
+            "(?m)^\\s*contents:\\s*write\\s*$",
+            "(?m)^\\s*id-token:\\s*write\\s*$",
+            "actions/attest",
+            "github\\.token",
+            "gh\\s+pr\\s+create"
+          ],
+          "forbidden_patterns": [
+            "(?m)^[ ]{2}(?:pull_request|pull_request_target|push|release|schedule|repository_dispatch|workflow_call):\\s*$",
+            "git\\s+push[^\\n]*(?:refs/heads/)?main",
+            "permission-contents:\\s*write"
+          ]
+        },
+        {
+          "path": ".github/workflows/qualification-revocation-state.yml",
+          "required_patterns": [
+            "(?m)^[ ]{2}workflow_dispatch:\\s*$",
+            "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?qualification-revocation-state\\s*$",
+            "github\\.repository\\s*==\\s*'OpenAdaptAI/\\.github'",
+            "github\\.ref\\s*==\\s*'refs/heads/main'",
+            "github\\.event_name\\s*==\\s*'workflow_dispatch'",
+            "github\\.actor\\s*==\\s*'openadapt-lifecycle\\[bot\\]'",
+            "github\\.triggering_actor\\s*==\\s*'openadapt-lifecycle\\[bot\\]'",
+            "github\\.actor_id\\s*==\\s*vars\\.OPENADAPT_LIFECYCLE_ACTOR_ID",
+            "vars\\.OPENADAPT_LIFECYCLE_APP_ID",
+            "vars\\.OPENADAPT_LIFECYCLE_INSTALLATION_ID",
+            "secrets\\.OPENADAPT_LIFECYCLE_APP_PRIVATE_KEY",
+            "(?m)^\\s*attestations:\\s*write\\s*$",
+            "(?m)^\\s*contents:\\s*write\\s*$",
+            "(?m)^\\s*id-token:\\s*write\\s*$",
+            "actions/attest",
+            "github\\.token",
+            "gh\\s+pr\\s+create"
+          ],
+          "forbidden_patterns": [
+            "(?m)^[ ]{2}(?:pull_request|pull_request_target|push|release|schedule|repository_dispatch|workflow_call):\\s*$",
+            "git\\s+push[^\\n]*(?:refs/heads/)?main",
+            "permission-contents:\\s*write"
+          ]
+        }
+      ],
+      "dispatch_workflow_inventory": [
+        {
+          "path": ".github/workflows/production-lifecycle-activation.yml",
+          "mode": "lifecycle-only"
+        },
+        {
+          "path": ".github/workflows/qualification-authority-state.yml",
+          "mode": "lifecycle-only"
+        },
+        {
+          "path": ".github/workflows/qualification-revocation-state.yml",
+          "mode": "lifecycle-only"
+        },
+        {
+          "path": ".github/workflows/profile-consistency.yml",
+          "mode": "reject-lifecycle-app"
+        }
+      ]
     }
   ],
   "plan_constraints": [
