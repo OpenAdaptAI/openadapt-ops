@@ -20,7 +20,14 @@ def test_backup_configuration_fails_before_credentials_or_tool_install() -> None
     assert preflight < environment_gate < credentials < supabase
     assert "actions: read" in workflow
     assert "GITHUB_REF_PROTECTED" in workflow
+    assert "group: production-backup" in workflow
+    assert "labels: self-hosted" in workflow
+    assert "RUNNER_BOUNDARY: ${{ runner.environment }}" in workflow
+    assert '"${RUNNER_BOUNDARY}" != \'self-hosted\'' in workflow
     assert "check_github_environment_gate.py" in workflow
+    target = workflow.index("check_live_database_backup_target.sh")
+    dump = workflow.index("supabase db dump")
+    assert environment_gate < credentials < target < dump
     for name in (
         "AWS_BACKUP_ROLE_ARN",
         "AWS_BACKUP_BUCKET",
@@ -58,6 +65,8 @@ def test_backup_monitor_cannot_download_or_change_ciphertext() -> None:
     assert "age --decrypt" not in workflow
     assert "get-object-attributes" in workflow
     assert "steps.select.outputs.ciphertext_key" in workflow
+    assert "check_live_database_backup_target.sh" in workflow
+    assert "--expected-bucket-owner 992382684924" in workflow
     assert workflow.index("Verify the exact GitHub environment gate") < workflow.index(
         "aws-actions/configure-aws-credentials"
     )

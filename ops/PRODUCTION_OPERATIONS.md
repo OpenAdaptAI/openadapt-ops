@@ -104,17 +104,20 @@ this order:
 2. Create `production-backup` and `production-backup-monitor`. Give each
    environment one exact custom `main` branch policy and no other deployment
    policy.
-3. Deploy the reviewed backup CloudFormation stack in AWS account
+3. Create the workflow-restricted `production-backup` runner group and an
+   ephemeral runner inside the production data boundary. Put the runner only in
+   that group. Permit only the exact backup workflow on `refs/heads/main`.
+4. Deploy the reviewed backup CloudFormation stack in AWS account
    `992382684924`.
-4. Configure the four settings in the `production-backup` GitHub environment.
-5. Configure the two variables in the `production-backup-monitor` environment.
-6. Store a second copy of the private `age` key in a team vault or offline
+5. Configure the four settings in the `production-backup` GitHub environment.
+6. Configure the two variables in the `production-backup-monitor` environment.
+7. Store a second copy of the private `age` key in a team vault or offline
    medium.
-7. Create an isolated scratch Supabase project and complete the first recovery
+8. Create an isolated scratch Supabase project and complete the first recovery
    drill.
-8. Select the primary operator, the secondary operator, the support hours, and
+9. Select the primary operator, the secondary operator, the support hours, and
    the response targets for human halts.
-9. Configure an external monitor for the production health and backup freshness
+10. Configure an external monitor for the production health and backup freshness
    schedules.
-10. Complete the first genuine customer transaction when an authorized customer
+11. Complete the first genuine customer transaction when an authorized customer
    is available. Do not create a founder self-charge as evidence.

@@ -85,26 +85,22 @@ if [[ "$account" != '992382684924' ]]; then
   echo 'error: AWS_PROFILE does not resolve to OpenAdapt account 992382684924' >&2
   exit 2
 fi
-block=$(aws s3api get-public-access-block \
-  --bucket "$AWS_BACKUP_BUCKET" \
-  --query 'PublicAccessBlockConfiguration.[BlockPublicAcls,IgnorePublicAcls,BlockPublicPolicy,RestrictPublicBuckets]' \
-  --output text)
-if [[ "$block" != $'True\tTrue\tTrue\tTrue' ]]; then
-  echo 'error: backup bucket public-access blocking is incomplete' >&2
-  exit 2
-fi
+scripts/check_live_database_backup_target.sh "$AWS_BACKUP_BUCKET"
 
 cipher="db-backup-${BACKUP_STAMP}.tar.gz.age"
 plain="db-backup-${BACKUP_STAMP}.tar.gz"
 prefix="daily/${BACKUP_STAMP}"
 aws s3 cp \
-  "s3://${AWS_BACKUP_BUCKET}/${prefix}/${cipher}" "$root/$cipher" --only-show-errors
+  "s3://${AWS_BACKUP_BUCKET}/${prefix}/${cipher}" "$root/$cipher" \
+  --only-show-errors --expected-bucket-owner 992382684924
 aws s3 cp \
   "s3://${AWS_BACKUP_BUCKET}/${prefix}/artifact-manifest.json" \
-  "$root/artifact-manifest.json" --only-show-errors
+  "$root/artifact-manifest.json" --only-show-errors \
+  --expected-bucket-owner 992382684924
 
 remote_sha=$(aws s3api head-object \
   --bucket "$AWS_BACKUP_BUCKET" --key "${prefix}/${cipher}" \
+  --expected-bucket-owner 992382684924 \
   --query 'Metadata.sha256' --output text)
 local_sha=$(shasum -a 256 "$root/$cipher" | awk '{print $1}')
 if [[ "$remote_sha" != "$local_sha" ]]; then
@@ -150,6 +146,6 @@ chmod 600 "$output"
 aws s3 cp "$output" \
   "s3://${AWS_BACKUP_BUCKET}/drills/database-only/${BACKUP_STAMP}/$(basename "$output")" \
   --only-show-errors --sse AES256 --content-type application/json \
-  --checksum-algorithm SHA256
+  --checksum-algorithm SHA256 --expected-bucket-owner 992382684924
 echo "Database-only restore evidence: $output"
 echo 'Run the openadapt-cloud database-plus-Storage drill before recording the canonical retention receipt.'

@@ -22,7 +22,12 @@ concurrency:
 
 jobs:
   dump:
-    runs-on: ubuntu-latest
+    # The complete production database is plaintext until the local age step.
+    # Route this job only to the workflow-restricted production backup group.
+    # GitHub-hosted runners and the default self-hosted group are not permitted.
+    runs-on:
+      group: production-backup
+      labels: self-hosted
     timeout-minutes: 30
     environment: production-backup
     permissions:
@@ -39,6 +44,8 @@ jobs:
       GITHUB_REF_PROTECTED: ${{ github.ref_protected }}
     steps:
       - name: Validate the protected environment configuration
+        env:
+          RUNNER_BOUNDARY: ${{ runner.environment }}
         run: |
           set -euo pipefail
           missing=()
@@ -56,6 +63,10 @@ jobs:
           fi
           if [ "${GITHUB_REF_PROTECTED}" != 'true' ]; then
             echo '::error::The database backup refuses an unprotected main branch.'
+            exit 1
+          fi
+          if [ "${RUNNER_BOUNDARY}" != 'self-hosted' ]; then
+            echo '::error::The database backup requires its isolated self-hosted production boundary.'
             exit 1
           fi
           echo 'The four required production-backup settings are present.'
@@ -139,10 +150,7 @@ jobs:
             echo '::error::The production-backup environment needs AWS_BACKUP_BUCKET.'
             exit 1
           fi
-          test "$(aws sts get-caller-identity --query Account --output text)" = '992382684924'
-          aws s3api get-public-access-block --bucket "$BACKUP_BUCKET" \
-            --query 'PublicAccessBlockConfiguration.[BlockPublicAcls,IgnorePublicAcls,BlockPublicPolicy,RestrictPublicBuckets]' \
-            --output text | grep -q $'True\tTrue\tTrue\tTrue'
+          scripts/check_live_database_backup_target.sh "$BACKUP_BUCKET"
           python scripts/database_backup_contract.py validate-source \
             --db-url "$SUPABASE_DB_URL" \
             --project-ref "$SUPABASE_PROJECT_REF" \
@@ -221,7 +229,8 @@ jobs:
           aws s3 cp artifact-manifest.json \
             "s3://${BACKUP_BUCKET}/${prefix}/artifact-manifest.json" \
             --only-show-errors --sse AES256 \
-            --content-type application/json --checksum-algorithm SHA256
+            --content-type application/json --checksum-algorithm SHA256 \
+            --expected-bucket-owner 992382684924
 
           aws s3api get-object-attributes \
             --bucket "$BACKUP_BUCKET" --key "${prefix}/${cipher}" \
