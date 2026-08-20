@@ -1,12 +1,16 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-08-20 11:11 UTC*
+> *Last updated: 2026-08-20 16:29 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [docs: clarify verified automation positioning](https://github.com/OpenAdaptAI/OpenAdapt/pull/1107) (#1107) — merged 
+
+- [chore(release): reconcile Flow 1.32.0 platform manifest](https://github.com/OpenAdaptAI/OpenAdapt/pull/1104) (#1104) — merged 
 
 - [build(deps): bump both codeql-action pins to v4.37.7 together](https://github.com/OpenAdaptAI/OpenAdapt/pull/1103) (#1103) — merged 
 
@@ -30,6 +34,14 @@
 
 ## openadapt-flow
 
+
+- [ci: prevent stale-head releases](https://github.com/OpenAdaptAI/openadapt-flow/pull/380) (#380) — merged 
+
+- [chore(types): adopt PR #332 mypy cleanup](https://github.com/OpenAdaptAI/openadapt-flow/pull/379) (#379) — merged 
+
+- [docs(paper): state EffectBench's public scope, gated split, and gaming surface](https://github.com/OpenAdaptAI/openadapt-flow/pull/378) (#378) — merged 
+
+- [ci: correct the stale version comment on the pypi-publish pin](https://github.com/OpenAdaptAI/openadapt-flow/pull/377) (#377) — merged 
 
 - [feat: enforce signed qualification admission before actuation](https://github.com/OpenAdaptAI/openadapt-flow/pull/376) (#376) — merged 
 
@@ -68,6 +80,8 @@
 ## openadapt-desktop
 
 
+- [fix(release): publish native chain from reviewed main](https://github.com/OpenAdaptAI/openadapt-desktop/pull/125) (#125) — merged 
+
 - [ci: correct the stale version comment on the pypi-publish pin](https://github.com/OpenAdaptAI/openadapt-desktop/pull/124) (#124) — merged 
 
 - [test(release): state the O_NOFOLLOW contract per platform](https://github.com/OpenAdaptAI/openadapt-desktop/pull/123) (#123) — merged 
@@ -100,6 +114,8 @@
 
 ## openadapt-agent
 
+
+- [security: require cryptography 50.0.0](https://github.com/OpenAdaptAI/openadapt-agent/pull/30) (#30) — merged 
 
 - [docs: use the canonical launcher quickstart](https://github.com/OpenAdaptAI/openadapt-agent/pull/28) (#28) — merged 
 
