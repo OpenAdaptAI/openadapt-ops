@@ -1,0 +1,183 @@
+name: Workspace staleness sweep
+
+# One scheduled job that asks whether work is going stale anywhere we own --
+# on GitHub AND in the local workspace trees -- and files ONE issue.
+#
+# Why here, and why one: on 2026-08-21 the workspace's bin/oa-fresh found 32
+# local clones behind their origin carrying unpushed or uncommitted work, and
+# stale-tree misreads have produced four confident wrong findings this year.
+# oa-fresh answers the local question but is a local script nothing schedules;
+# no cross-repository detector watches for stranded remote branches at all. This
+# repository already files ONE issue per day from two other scheduled sweeps,
+# so this copies that pattern. See scripts/sweep_workspace_staleness.py for the
+# full rationale and the safety rules.
+#
+# WHAT THE HOSTED RUN CAN AND CANNOT SEE
+# --------------------------------------
+# The daily hosted run covers REMOTE strandings: branches that are not the
+# default branch, have no open pull request, and have gone quiet past
+# --stale-days. It cannot see local clones, so its issue says exactly that
+# instead of implying the workspace is fine. Local detection needs a
+# self-hosted runner attached to the workspace machine; anyone can get the full
+# report locally today with:
+#
+#   python scripts/sweep_workspace_staleness.py --local-root /Users/abrichr/oa/src
+#
+# SYNC MODE (manual dispatch only)
+# --------------------------------
+# The `sync` input fast-forwards clean default-branch clones under OA_SRC_ROOT,
+# using bin/oa-fresh's exact safety rule: never touches a dirty tree, a feature
+# branch, or a clone with local commits, and the only mutation attempted is
+# `git merge --ff-only`, which cannot lose work. A hosted runner has no
+# workspace, so sync refuses loudly there by design. When a self-hosted runner
+# is registered on the workspace machine, export OA_SRC_ROOT=/path/to/workspace
+# in its environment and change the sweep job's `runs-on` below from
+# `ubuntu-latest` to `[self-hosted]`; nothing else needs to change.
+#
+# COST: one ubuntu-latest runner, standard library only, no dependency install,
+# no lockfile, no cache. A few hundred API reads a day against a 1000/hour
+# token budget, with an explicit per_page on every call.
+
+on:
+  schedule:
+    # 07:41 UTC: offset from default-branch-sweep.yml at 07:11 and
+    # published-version-claims.yml at 06:41 so scheduled jobs do not overlap.
+    - cron: '41 7 * * *'
+  workflow_dispatch:
+    inputs:
+      sync:
+        description: >-
+          Fast-forward clean default-branch clones under OA_SRC_ROOT
+          (bin/oa-fresh safety rules). Refuses loudly on any runner where
+          OA_SRC_ROOT is not set.
+        type: boolean
+        default: false
+      stale_days:
+        description: 'Branches quiet longer than this many days count as stranded'
+        type: number
+        default: 14
+  pull_request:
+    paths:
+      - 'scripts/sweep_workspace_staleness.py'
+      - 'tests/test_sweep_workspace_staleness.py'
+      - '.github/workflows/workspace-staleness-sweep.yml'
+
+concurrency:
+  group: workspace-staleness-sweep-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  self-test:
+    # A detector nobody has seen fire is a detector nobody should trust. The
+    # offline classification tests also run in Docs CI; running them here keeps
+    # a change to the detector self-contained.
+    name: Prove the classifiers fire and stay quiet
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          enable-cache: true
+      - run: uv sync --locked --extra dev
+      - run: uv run pytest tests/test_sweep_workspace_staleness.py -q
+
+  sweep:
+    name: Sweep for stranded work
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      # The sync input mutates local trees by fast-forward, so it may ONLY run
+      # where those trees exist. A hosted runner has no OA_SRC_ROOT: fail
+      # loudly here instead of silently sweeping nothing and reporting success.
+      # The runner's own environment carries OA_SRC_ROOT, which the `env.`
+      # expression context cannot see -- hence a shell check, not an `if:`.
+      - name: Refuse sync without a workspace root
+        if: github.event_name == 'workflow_dispatch' && inputs.sync
+        run: |
+          if [ -z "${OA_SRC_ROOT:-}" ]; then
+            echo "::error::sync=true was requested but OA_SRC_ROOT is not set on this runner. Register a self-hosted runner on the workspace machine with OA_SRC_ROOT=/path/to/workspace, switch runs-on to [self-hosted], then dispatch again. Nothing was modified."
+            exit 2
+          fi
+
+      - name: Sweep
+        id: sweep
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          OA_SWEEP_TOKEN: ${{ secrets.OA_SWEEP_TOKEN }}
+        run: |
+          STALE_DAYS="${{ github.event_name == 'workflow_dispatch' && inputs.stale_days || 14 }}"
+          ARGS=(--markdown workspace-staleness-sweep.md \
+                --github-output "${GITHUB_OUTPUT}" \
+                --run-url "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" \
+                --stale-days "${STALE_DAYS}")
+          if [ -n "${OA_SRC_ROOT:-}" ]; then
+            ARGS+=(--local-root "${OA_SRC_ROOT}")
+            if [ "${{ github.event_name == 'workflow_dispatch' && inputs.sync || false }}" = "true" ]; then
+              ARGS+=(--sync)
+            fi
+          fi
+          python scripts/sweep_workspace_staleness.py "${ARGS[@]}"
+
+      # One issue for the whole organisation, rewritten in place. A new issue
+      # every day is the same as no issue: it stops being read. Editing a body
+      # does not notify, so a long-lived gap does not become a daily ping either.
+      - name: Open, reopen, or update the single sweep issue
+        if: steps.sweep.outputs.alert == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TITLE: "Workspace staleness sweep - stranded branches or stale trees found"
+        run: |
+          set -euo pipefail
+          # Compare the full title in jq rather than searching for it: a colon
+          # inside a GitHub search phrase is parsed as a qualifier.
+          EXISTING_JSON=$(gh issue list --repo "${GITHUB_REPOSITORY}" --state all \
+            --limit 1000 --json number,title,state \
+            --jq '[.[] | select(.title == env.TITLE)][0] // {}')
+          EXISTING=$(jq -r '.number // empty' <<< "${EXISTING_JSON}")
+          EXISTING_STATE=$(jq -r '.state // empty' <<< "${EXISTING_JSON}")
+          if [ -n "${EXISTING}" ]; then
+            if [ "${EXISTING_STATE}" = "CLOSED" ]; then
+              gh issue reopen "${EXISTING}" --repo "${GITHUB_REPOSITORY}"
+            fi
+            gh issue edit "${EXISTING}" --repo "${GITHUB_REPOSITORY}" \
+              --body-file workspace-staleness-sweep.md
+            echo "Updated issue #${EXISTING}."
+          else
+            gh issue create --repo "${GITHUB_REPOSITORY}" \
+              --title "${TITLE}" --body-file workspace-staleness-sweep.md
+          fi
+
+      # Silence when everything is current. Posting "all clear" daily is how an
+      # alert gets muted.
+      - name: Close the issue once everything is current
+        if: steps.sweep.outputs.clear == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TITLE: "Workspace staleness sweep - stranded branches or stale trees found"
+        run: |
+          set -euo pipefail
+          EXISTING=$(gh issue list --repo "${GITHUB_REPOSITORY}" --state open \
+            --limit 1000 --json number,title \
+            --jq '[.[] | select(.title == env.TITLE)][0].number // empty')
+          if [ -n "${EXISTING}" ]; then
+            gh issue close "${EXISTING}" --repo "${GITHUB_REPOSITORY}" \
+              --comment "No stranded branches and no stale trees as of ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}. Closing automatically."
+          else
+            echo "Nothing is stranded and no issue is open."
+          fi
