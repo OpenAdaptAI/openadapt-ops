@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-08-22 03:18 UTC*
+> *Last updated: 2026-08-22 22:02 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [feat(launcher): quickstart dir auto-suffix, engine flag passthrough, plain Python remedy](https://github.com/OpenAdaptAI/OpenAdapt/pull/1108) (#1108) — merged 
 
 - [docs: clarify verified automation positioning](https://github.com/OpenAdaptAI/OpenAdapt/pull/1107) (#1107) — merged 
 
@@ -34,6 +36,10 @@
 
 ## openadapt-flow
 
+
+- [feat: add installer-first onboarding and pre-download Linux browser checks](https://github.com/OpenAdaptAI/openadapt-flow/pull/387) (#387) — merged 
+
+- [feat: add the gate-standard local qualification campaign](https://github.com/OpenAdaptAI/openadapt-flow/pull/386) (#386) — merged 
 
 - [feat: require signed runtime authority for Production and campaign actuation](https://github.com/OpenAdaptAI/openadapt-flow/pull/385) (#385) — merged 
 
@@ -70,10 +76,6 @@
 - [Harden remote display qualification evidence](https://github.com/OpenAdaptAI/openadapt-flow/pull/365) (#365) — merged 
 
 - [feat(browser): attach recorder to existing sessions](https://github.com/OpenAdaptAI/openadapt-flow/pull/364) (#364) — merged 
-
-- [ci: bump the actions group across 1 directory with 2 updates](https://github.com/OpenAdaptAI/openadapt-flow/pull/363) (#363) — merged 
-
-- [build: bump ruff from 0.15.22 to 0.16.3 in the python-minor group across 1 directory](https://github.com/OpenAdaptAI/openadapt-flow/pull/353) (#353) — merged 
 
 
 
