@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-08-20 16:29 UTC*
+> *Last updated: 2026-08-22 03:16 UTC*
 
 
 
@@ -35,6 +35,12 @@
 ## openadapt-flow
 
 
+- [feat: require signed runtime authority for Production and campaign actuation](https://github.com/OpenAdaptAI/openadapt-flow/pull/385) (#385) — merged 
+
+- [fix: migrate an empty legacy pending-delivery table without data loss](https://github.com/OpenAdaptAI/openadapt-flow/pull/384) (#384) — merged 
+
+- [feat: bind production delivery to signed permits and receipts](https://github.com/OpenAdaptAI/openadapt-flow/pull/383) (#383) — merged 
+
 - [ci: prevent stale-head releases](https://github.com/OpenAdaptAI/openadapt-flow/pull/380) (#380) — merged 
 
 - [chore(types): adopt PR #332 mypy cleanup](https://github.com/OpenAdaptAI/openadapt-flow/pull/379) (#379) — merged 
@@ -66,12 +72,6 @@
 - [feat(browser): attach recorder to existing sessions](https://github.com/OpenAdaptAI/openadapt-flow/pull/364) (#364) — merged 
 
 - [ci: bump the actions group across 1 directory with 2 updates](https://github.com/OpenAdaptAI/openadapt-flow/pull/363) (#363) — merged 
-
-- [feat(effects): exact-new-set guard closes the over-write false-pass gap](https://github.com/OpenAdaptAI/openadapt-flow/pull/362) (#362) — merged 
-
-- [chore(deps): bump aiohttp to 3.14.3 and cryptography to 50.0.0 for security fixes](https://github.com/OpenAdaptAI/openadapt-flow/pull/361) (#361) — merged 
-
-- [docs(paper): record the four B1 decisions -- authorship+ORCID, CC BY 4.0, COI, workshop target](https://github.com/OpenAdaptAI/openadapt-flow/pull/358) (#358) — merged 
 
 - [build: bump ruff from 0.15.22 to 0.16.3 in the python-minor group across 1 directory](https://github.com/OpenAdaptAI/openadapt-flow/pull/353) (#353) — merged 
 
@@ -135,6 +135,8 @@
 ## openadapt-evals
 
 
+- [feat(evidence): publish the Flow 1.32.0 comparison; mark 1.31.0 superseded](https://github.com/OpenAdaptAI/openadapt-evals/pull/294) (#294) — merged 
+
 - [fix(evidence): expect private Cloud source visibility at signing](https://github.com/OpenAdaptAI/openadapt-evals/pull/292) (#292) — merged 
 
 - [fix(ci): publish with an action that accepts Metadata-Version 2.5](https://github.com/OpenAdaptAI/openadapt-evals/pull/291) (#291) — merged 
@@ -151,6 +153,12 @@
 
 ## openadapt-capture
 
+
+- [ci: require three counted live qualification trials per OS](https://github.com/OpenAdaptAI/openadapt-capture/pull/86) (#86) — merged 
+
+- [test: pin the writer shutdown-drain contract](https://github.com/OpenAdaptAI/openadapt-capture/pull/85) (#85) — merged 
+
+- [feat: bind each action to its exact retained screen frame](https://github.com/OpenAdaptAI/openadapt-capture/pull/84) (#84) — merged 
 
 - [ci: bound the apt install and prefer the canonical Ubuntu archive](https://github.com/OpenAdaptAI/openadapt-capture/pull/81) (#81) — merged 
 
