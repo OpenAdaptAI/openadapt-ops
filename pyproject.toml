@@ -23,6 +23,8 @@ llm = [
 dev = [
     "pytest>=9.0.3",
     "pytest-mock>=3.12",
+    # Used by scripts/crosspost_devto.py and scripts/metrics_weekly.py.
+    "httpx>=0.27",
 ]
 
 [tool.hatch.build.targets.wheel]

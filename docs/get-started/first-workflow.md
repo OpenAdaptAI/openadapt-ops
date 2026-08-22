@@ -15,17 +15,27 @@ and watch the run heal or halt under drift:
 
 ## Prerequisites and install
 
-- **Python 3.10-3.12.** The engine declares `requires-python >=3.10,<3.13`.
-  Check yours with `python --version` (on some systems `python3 --version`).
 - **macOS, Linux, or Windows.** This walkthrough selects the Playwright-driven
   browser capability, so it has no OS-specific steps. Its matching Chromium
   provisions automatically on the first web action; native, RDP, and Citrix
   paths do not install it.
-- **Use a virtual environment.** It keeps the install isolated and avoids the
-  stale-package problems a shared or Conda base environment causes.
 
-Install the CLI for your shell — the quoting around `openadapt[browser]`
-differs per shell, and getting it wrong is the most common first failure:
+**Recommended: install with uv.** The first command installs
+[uv](https://docs.astral.sh/uv/) if it is missing; the second provisions a
+suitable Python, installs OpenAdapt with browser support as a persistent
+`openadapt` command, and runs a short environment check:
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/OpenAdaptAI/openadapt-flow/main/scripts/install.sh | sh
+```
+
+**Manual path: pip in a virtual environment.** If you prefer to manage the
+environment yourself — or your team standardizes on pip — use the tabs below.
+The engine declares `requires-python >=3.10,<3.13`; check yours with
+`python --version` (on some systems `python3 --version`). The quoting around
+`openadapt[browser]` differs per shell, and getting it wrong is the most common
+first failure:
 
 === "macOS / Linux (bash, zsh)"
 
@@ -36,7 +46,9 @@ differs per shell, and getting it wrong is the most common first failure:
 
     The quotes matter: unquoted square brackets are glob characters in zsh
     (`no matches found`) and can misbehave in bash. Single or double quotes
-    both work here.
+    both work here. A virtual environment keeps the install isolated and
+    avoids the stale-package problems a shared or Conda base environment
+    causes.
 
 === "Windows PowerShell"
 
@@ -74,14 +86,6 @@ differs per shell, and getting it wrong is the most common first failure:
 
     The built-in driver uses X11; Wayland requires an operator-approved XDG
     portal session.
-
-Or use the installer script from the landing page, which installs
-[uv](https://docs.astral.sh/uv/) if needed and sets up a persistent
-`openadapt` command:
-
-```bash
-curl -fsSL https://openadapt.ai/install.sh | sh -s -- browser
-```
 
 !!! tip "No app to record against yet?"
     You do not need your own target to try the loop. The engine bundles
