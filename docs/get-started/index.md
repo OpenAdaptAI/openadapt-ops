@@ -12,15 +12,40 @@ runs the program, and verifies the saved result.
 
 ![OpenAdapt records, compiles, and replays a demonstrated workflow](../assets/showcase/demo.gif)
 
-## First success: two commands
+See it working before you install anything:
+
+- **[Hosted demo](https://app.openadapt.ai/demo)** — recorded demonstrations,
+  verified replays, and fail-safe halts on real footage.
+- **[Template gallery](https://openadapt.ai/templates)** — ready-to-adapt
+  workflow templates.
+- **[Blog](https://blog.openadapt.ai)** — guides, updates, and automation
+  recipes.
+
+## First success: install, then run
 
 You need no account, target application, API key, or operating-system
-automation permission:
+automation permission.
+
+**Recommended: install with uv.** The first command installs
+[uv](https://docs.astral.sh/uv/) if it is missing. The second installs
+OpenAdapt with browser support as a persistent `openadapt` command and runs a
+short environment check. Both are safe to re-run; they upgrade in place:
 
 ```bash
-python -m pip install --upgrade 'openadapt[browser]'
+curl -LsSf https://astral.sh/uv/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/OpenAdaptAI/openadapt-flow/main/scripts/install.sh | sh
+```
+
+**Manual path: pip.** If you prefer to manage your own environment, create a
+virtual environment, then run:
+
+```bash
+pip install 'openadapt[browser]'
 openadapt quickstart
 ```
+
+Shell-specific quoting notes are in
+[Your first workflow](first-workflow.md#prerequisites-and-install).
 
 The command records the bundled synthetic MockMed task, compiles its observed
 [effect contract](../reference/glossary.md#effect-contract), certifies it with
@@ -48,6 +73,10 @@ less openadapt-quickstart/run/REPORT.md
 openadapt flow visualize openadapt-quickstart/bundle --out graph.html
 openadapt flow lint openadapt-quickstart/bundle
 ```
+
+When you move from the tutorial to your own work, OpenAdapt qualifies each
+workflow against its real environment. Qualification means we test your
+workflow against real failures before it runs.
 
 After the first run, choose the path that matches your goal:
 

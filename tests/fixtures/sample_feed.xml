@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>OpenAdapt Blog</title>
+    <link>https://blog.openadapt.ai/</link>
+    <description>Recent content on OpenAdapt Blog</description>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 18 Aug 2026 00:00:00 +0000</lastBuildDate>
+    <item>
+      <title>The write audit</title>
+      <link>https://blog.openadapt.ai/posts/the-write-audit/</link>
+      <pubDate>Mon, 27 Jul 2026 00:00:00 +0000</pubDate>
+      <guid>https://blog.openadapt.ai/posts/the-write-audit/</guid>
+      <description>A vendor-neutral protocol for separating real writes from silent failures.</description>
+    </item>
+    <item>
+      <title>Compile once, govern every repair &amp; stay safe</title>
+      <link>https://blog.openadapt.ai/posts/2026-07-20-compile-once-govern-every-repair/</link>
+      <pubDate>Mon, 20 Jul 2026 00:00:00 +0000</pubDate>
+      <guid>https://blog.openadapt.ai/posts/2026-07-20-compile-once-govern-every-repair/</guid>
+      <description>&lt;p&gt;Compile one demonstration into a deterministic program.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title></title>
+      <link>https://blog.openadapt.ai/posts/broken-item-without-title/</link>
+      <pubDate>Sun, 19 Jul 2026 00:00:00 +0000</pubDate>
+    </item>
+  </channel>
+</rss>
