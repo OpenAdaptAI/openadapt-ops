@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-08-22 22:03 UTC*
+> *Last updated: 2026-08-22 23:36 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [docs: correct OpenEMR evidence row to 19/20 (safe halt)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1109) (#1109) — merged 
 
 - [feat(launcher): quickstart dir auto-suffix, engine flag passthrough, plain Python remedy](https://github.com/OpenAdaptAI/OpenAdapt/pull/1108) (#1108) — merged 
 
@@ -36,6 +38,8 @@
 
 ## openadapt-flow
 
+
+- [feat: scaffold-verifier + explain operator commands, outcome epilogues, run social card](https://github.com/OpenAdaptAI/openadapt-flow/pull/388) (#388) — merged 
 
 - [feat: add installer-first onboarding and pre-download Linux browser checks](https://github.com/OpenAdaptAI/openadapt-flow/pull/387) (#387) — merged 
 
@@ -74,8 +78,6 @@
 - [fix: require Flow production release evidence](https://github.com/OpenAdaptAI/openadapt-flow/pull/366) (#366) — merged 
 
 - [Harden remote display qualification evidence](https://github.com/OpenAdaptAI/openadapt-flow/pull/365) (#365) — merged 
-
-- [feat(browser): attach recorder to existing sessions](https://github.com/OpenAdaptAI/openadapt-flow/pull/364) (#364) — merged 
 
 
 
