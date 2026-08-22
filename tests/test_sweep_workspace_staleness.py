@@ -251,3 +251,37 @@ def test_render_reports_unreadable_private_repositories():
     body = render([ROW], ["OpenAdaptAI/private-one"], None, [], 14, "")
     assert "OpenAdaptAI/private-one" in body
     assert "OA_SWEEP_TOKEN" in body
+
+
+def _rows(count: int) -> list[dict]:
+    return [
+        dict(ROW, branch=f"feat/old-{index}", age_days=100 - index)
+        for index in range(count)
+    ]
+
+
+def test_render_caps_remote_table_and_counts_the_rest():
+    from sweep_workspace_staleness import MAX_REMOTE_ROWS
+
+    rows = _rows(MAX_REMOTE_ROWS + 7)
+    body = render(rows, [], None, [], 14, "")
+    assert f"{MAX_REMOTE_ROWS + 7} stranded branch(es) past the cutoff" in body
+    assert f"oldest {MAX_REMOTE_ROWS} shown" in body
+    assert "+7 older stranded branch(es)" in body
+    assert "+7 older stranded branch(es)" in body
+    # Exactly the cap is listed; nothing hidden leaks into the body.
+    assert body.count("feat/old-") == MAX_REMOTE_ROWS
+    assert "feat/old-40" not in body
+
+
+def test_render_body_never_exceeds_github_limit():
+    from sweep_workspace_staleness import MAX_BODY_CHARS
+
+    wide = [
+        dict(ROW, branch="feat/" + "x" * 400 + str(index), url="https://e.example")
+        for index in range(200)
+    ]
+    body = render(wide, [], None, [], 14, "https://run.example")
+    assert len(body) <= 65536
+    if len(body) > MAX_BODY_CHARS:
+        assert "[truncated at" in body

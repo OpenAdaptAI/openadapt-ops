@@ -71,6 +71,11 @@ ORG = "OpenAdaptAI"
 # Branch-name prefixes that are machinery, not someone's stranded work.
 IGNORED_BRANCH_PREFIXES = ("gh-readonly-queue/", "dependabot/", "l10n_")
 
+# GitHub rejects an issue body over 65536 characters; keep the table readable
+# long before that and guard the total as a last resort.
+MAX_REMOTE_ROWS = 40
+MAX_BODY_CHARS = 60000
+
 # Remote classification outcomes worth asserting in tests.
 DEFAULT = "default"
 OPEN_PR = "open-pr"
@@ -350,14 +355,30 @@ def render(
         "",
     ]
     if remote_rows:
+        ordered = sorted(remote_rows, key=lambda item: (-item["age_days"], item["repo"]))
+        shown = ordered[:MAX_REMOTE_ROWS]
+        lines.append(
+            f"{len(ordered)} stranded branch(es) past the cutoff"
+            + (f" (oldest {MAX_REMOTE_ROWS} shown)." if len(ordered) > MAX_REMOTE_ROWS else ".")
+        )
+        lines.append("")
         lines.append("| Repository | Stranded branch | Last commit | Age (days) |")
         lines.append("|---|---|---|---|")
-        for row in sorted(
-            remote_rows, key=lambda item: (-item["age_days"], item["repo"])
-        ):
+        for row in shown:
             lines.append(
                 f"| {row['repo']} | [{row['branch']}]({row['url']}) "
                 f"| {row['last_commit']} | {row['age_days']} |"
+            )
+        hidden = len(ordered) - len(shown)
+        if hidden:
+            per_repo: dict[str, int] = {}
+            for row in ordered[MAX_REMOTE_ROWS:]:
+                per_repo[row["repo"]] = per_repo.get(row["repo"], 0) + 1
+            summary = ", ".join(f"{name} ({count})" for name, count in sorted(per_repo.items()))
+            lines.append("")
+            lines.append(
+                f"+{hidden} older stranded branch(es) not listed: {summary}. "
+                "The full list is in the run log."
             )
         lines.append("")
         lines.append(
@@ -400,7 +421,17 @@ def render(
     if run_url:
         lines.append("")
         lines.append(f"Produced by run {run_url}.")
-    return "\n".join(lines)
+    body = "\n".join(lines)
+    # GitHub rejects issue bodies over 65536 characters; the first scheduled
+    # run died exactly there (2026-08-22, GraphQL "Body is too long"). The
+    # table cap above bounds the usual cause; this guard bounds every cause.
+    if len(body) > MAX_BODY_CHARS:
+        note = (
+            f"\n\n---\n[truncated at {MAX_BODY_CHARS} of {len(body)} characters "
+            "to fit the GitHub issue limit; full output is in the run log.]"
+        )
+        body = body[: MAX_BODY_CHARS - len(note)] + note
+    return body
 
 
 def main(argv: list[str] | None = None) -> int:
