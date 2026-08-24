@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-08-22 23:36 UTC*
+> *Last updated: 2026-08-24 09:51 UTC*
 
 
 
@@ -38,6 +38,8 @@
 
 ## openadapt-flow
 
+
+- [docs: reconcile the OpenEMR 19/20 correction with older 20/20 summaries](https://github.com/OpenAdaptAI/openadapt-flow/pull/389) (#389) — merged 
 
 - [feat: scaffold-verifier + explain operator commands, outcome epilogues, run social card](https://github.com/OpenAdaptAI/openadapt-flow/pull/388) (#388) — merged 
 
@@ -76,8 +78,6 @@
 - [Fix recording targets and harden quickstart evidence](https://github.com/OpenAdaptAI/openadapt-flow/pull/367) (#367) — merged 
 
 - [fix: require Flow production release evidence](https://github.com/OpenAdaptAI/openadapt-flow/pull/366) (#366) — merged 
-
-- [Harden remote display qualification evidence](https://github.com/OpenAdaptAI/openadapt-flow/pull/365) (#365) — merged 
 
 
 
