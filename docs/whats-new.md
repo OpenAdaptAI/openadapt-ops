@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-08-24 09:51 UTC*
+> *Last updated: 2026-08-24 22:39 UTC*
 
 
 
@@ -39,6 +39,14 @@
 ## openadapt-flow
 
 
+- [feat(record): declare the coordinate space on the capture path too](https://github.com/OpenAdaptAI/openadapt-flow/pull/396) (#396) — merged 
+
+- [test: fix a Python 3.10 permit parse and a Chromium CDP readiness race](https://github.com/OpenAdaptAI/openadapt-flow/pull/395) (#395) — merged 
+
+- [fix(record): double-click as one step, refuse native select, document coverage](https://github.com/OpenAdaptAI/openadapt-flow/pull/391) (#391) — merged 
+
+- [fix(record): compose iframe events into page space and emit frame_path](https://github.com/OpenAdaptAI/openadapt-flow/pull/390) (#390) — merged 
+
 - [docs: reconcile the OpenEMR 19/20 correction with older 20/20 summaries](https://github.com/OpenAdaptAI/openadapt-flow/pull/389) (#389) — merged 
 
 - [feat: scaffold-verifier + explain operator commands, outcome epilogues, run social card](https://github.com/OpenAdaptAI/openadapt-flow/pull/388) (#388) — merged 
@@ -70,14 +78,6 @@
 - [ci: bound the paper build and stop false private-source alarms](https://github.com/OpenAdaptAI/openadapt-flow/pull/373) (#373) — merged 
 
 - [fix: require passing evidence for supported claims](https://github.com/OpenAdaptAI/openadapt-flow/pull/371) (#371) — merged 
-
-- [ci: bound qualification and browser setup](https://github.com/OpenAdaptAI/openadapt-flow/pull/370) (#370) — merged 
-
-- [feat: add structured push result contract](https://github.com/OpenAdaptAI/openadapt-flow/pull/369) (#369) — merged 
-
-- [Fix recording targets and harden quickstart evidence](https://github.com/OpenAdaptAI/openadapt-flow/pull/367) (#367) — merged 
-
-- [fix: require Flow production release evidence](https://github.com/OpenAdaptAI/openadapt-flow/pull/366) (#366) — merged 
 
 
 
@@ -138,6 +138,8 @@
 
 ## openadapt-evals
 
+
+- [docs: public tagged copy of the Phase-2 certified-reward RL pre-registration](https://github.com/OpenAdaptAI/openadapt-evals/pull/295) (#295) — merged 
 
 - [feat(evidence): publish the Flow 1.32.0 comparison; mark 1.31.0 superseded](https://github.com/OpenAdaptAI/openadapt-evals/pull/294) (#294) — merged 
 
