@@ -60,6 +60,9 @@ image = (
     .uv_pip_install(
         f"vllm=={VLLM_VERSION}",
         "huggingface_hub[hf_transfer]",
+        # openai>=1.100 imports httpx_aiohttp, which needs aiohttp>=3.12
+        # (SocketTimeoutError). vllm pins an older aiohttp; pin ours newer.
+        "aiohttp>=3.12,<4",
     )
     .env({"HF_HUB_ENABLE_HF_TRANSFER": "1"})
 )
