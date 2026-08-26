@@ -36,9 +36,9 @@ steps with the reason.
 
 ## Emit for other agents
 
-A compiled bundle is not only a replay target. Emit it as an
+Other agents can invoke a compiled bundle as a tool. Emit it as an
 [Agent Skill](https://github.com/OpenAdaptAI/openadapt-flow) or a standalone MCP
-server so other agents can invoke the workflow as a tool:
+server:
 
 ```bash
 openadapt flow emit-skill bundle --out skills/
