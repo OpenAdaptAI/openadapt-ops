@@ -22,10 +22,13 @@ you explicitly push it to a [cloud workspace](connect-to-cloud.md).
 
 Get the installer from
 [openadapt.ai/download](https://openadapt.ai/download). The page detects your OS
-and architecture and offers the right build. Public Beta release
-`desktop-v0.15.0` ships the complete Windows, macOS, and Linux installer set with
+and architecture and offers the right build. Release `desktop-v0.15.0` ships
+the complete Windows, macOS, and Linux installer set with
 `SHA256SUMS`, a CycloneDX SBOM, per-platform metadata, and build-provenance
 attestations.
+
+**Current Desktop release admission:**
+<span data-openadapt-production-target="desktop" aria-live="polite">Not actively admitted.</span>
 
 | OS | Installer |
 |---|---|

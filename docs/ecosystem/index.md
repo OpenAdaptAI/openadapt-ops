@@ -1,67 +1,64 @@
-# Package and repository lifecycle
+# Product components and release admission
 
-OpenAdapt the product (the [demonstration compiler](../concepts/demonstration-compiler.md))
-is what most people need. Underneath it sits a set of open-source libraries and
-infrastructure the compiler and its research build on. This section is for
-contributors and integrators who use those pieces directly.
+OpenAdapt is one product. Install `openadapt` and use `openadapt flow …`. The
+public repositories below supply the product's launcher, compiler, recorder,
+desktop cockpit, agent bridge, and trust surfaces.
 
-!!! note "Product first"
-    If you want to compile and run a workflow, start with
-    [Get started](../get-started/index.md). The libraries below are the building
-    blocks behind OpenAdapt, not the way most users interact with it. Each links
-    to its source repository, where its own README is the source of truth.
+A release appears as **Production** only while the current canonical record
+contains a live, non-revoked admission for that exact release. The browser
+checks the record hash and each live artifact authority. It does not use an
+older admission when the newest one expires, is revoked, or loses an artifact.
 
-The end-user identity is deliberately singular: install `openadapt` and run
-`openadapt flow …`. The `openadapt-flow` repository is where contributors
-inspect and change the engine. See [Versions and compatibility](../reference/compatibility.md)
-for the tested package ranges.
+[Read the Production admission contract](../reference/production-lifecycle.md)
 
-## Lifecycle labels
+## Product components
 
-These labels describe the public role of a repository, not the quality of every
-module inside it:
+| Component | Current release admission | Public role |
+|---|---|---|
+| [OpenAdapt](https://github.com/OpenAdaptAI/OpenAdapt) | <span data-openadapt-production-target="openadapt" aria-live="polite">Not actively admitted.</span> | Installer, meta-package, and unified `openadapt flow` command. |
+| [OpenAdapt Flow](https://github.com/OpenAdaptAI/openadapt-flow) | <span data-openadapt-production-target="flow" aria-live="polite">Not actively admitted.</span> | Canonical demonstration compiler and governed runtime for Browser, native Windows, native macOS, native Linux, RDP, and Citrix/VDI. |
+| [OpenAdapt Cloud](https://app.openadapt.ai/) | <span data-openadapt-production-target="cloud" aria-live="polite">Not actively admitted.</span> | Managed control plane for organizations, exact-hash admission, browser runners, reports, billing, and usage. |
+| [OpenAdapt Desktop](https://github.com/OpenAdaptAI/openadapt-desktop) | <span data-openadapt-production-target="desktop" aria-live="polite">Not actively admitted.</span> | Windows, macOS, and Linux cockpit for recording, compilation, qualification, replay, and local review. |
+| [OpenAdapt Agent](https://github.com/OpenAdaptAI/openadapt-agent) | <span data-openadapt-production-target="agent" aria-live="polite">Not actively admitted.</span> | Governed bridge from MCP clients and Agent Skills to exact Flow bundles. |
+| [OpenAdapt Capture](https://github.com/OpenAdaptAI/openadapt-capture) | <span data-openadapt-production-target="capture" aria-live="polite">Not actively admitted.</span> | Canonical native recorder for screen, mouse, keyboard, timing, window scope, and media. Windows UIA evidence is emitted with the captured action. The shared observer protocol defines the macOS Accessibility and Linux AT-SPI integration boundary. RDP and Citrix remain pixel-observed at the remote boundary. |
+| OpenAdapt documentation | <span data-openadapt-production-target="docs" aria-live="polite">Not actively admitted.</span> | Version-bound product, operation, security, and qualification documentation at this site. |
 
-- **Beta**: an active product or component on the supported product path.
-- **Experimental**: an active integration whose contract is still being proven.
-- **Research**: evidence or model work, not required by deterministic replay.
-- **Deprecated**: retained for history or migration; no new integrations.
+Browser recording stays in Flow because DOM identity, field geometry,
+source-time secret masking, and Playwright execution use one browser session
+contract. Flow can launch Chromium or attach to one selected local tab. The
+Chrome extension code in the Capture repository does not define a second
+compiler or direct replay path. An extension acquisition path must satisfy the
+same authenticated event, evidence, masking, and frame-binding contract before
+Flow accepts its recording.
 
-## Product and optional components
+## Trust and interoperability libraries
 
 | Repository | Lifecycle | Public role |
 |---|---|---|
-| [OpenAdapt](https://github.com/OpenAdaptAI/OpenAdapt) | **Beta** | Installer/meta-package and unified `openadapt flow` dispatcher. |
-| [openadapt-flow](https://github.com/OpenAdaptAI/openadapt-flow) | **Beta** | Canonical compiler and governed runtime. Drives web, native Windows, native macOS, native Linux, RDP, and Citrix/VDI as first-class substrates behind one backend protocol. |
-| [OpenAdapt Cloud](https://app.openadapt.ai/) | **Beta** | Proprietary live control plane for the managed subscription: organizations, exact-hash admission, runner orchestration, reports, billing, and usage. |
-| [openadapt-desktop](https://github.com/OpenAdaptAI/openadapt-desktop) | **Beta** | Public `desktop-v0.15.0` provides Windows MSI/NSIS, macOS arm64/x64 DMG, and Linux AppImage/DEB installers. Every installer path is installed, launched, and uninstalled in the native release workflow; the release includes exact checksums, a CycloneDX SBOM, platform metadata, and build-provenance attestations. |
-| [openadapt-agent](https://github.com/OpenAdaptAI/openadapt-agent) | **Experimental** | Active v2 bridge that exposes governed Flow bundles to MCP clients and Agent Skills. The pre-v2 model-driven execution wrapper is the deprecated line; the repository itself is active. |
-| [openadapt-capture](https://github.com/OpenAdaptAI/openadapt-capture) | **Beta** | Canonical native screen, mouse, keyboard, timing, and window-scoped recorder behind Flow's Windows, macOS, Linux, RDP, and Citrix recording paths. Capture 1.1 retains Windows UIA evidence at action time; remote sessions remain externally black-box. Browser recording remains inside Flow's Playwright listener. |
-| [openadapt-privacy](https://github.com/OpenAdaptAI/openadapt-privacy) | **Experimental** | Optional PII/PHI scrubbing used on configured persist, log, and upload paths. |
-| [openadapt-types](https://github.com/OpenAdaptAI/openadapt-types) | **Experimental** | Shared interoperability schemas; contributor-facing, not an end-user product. |
+| [openadapt-privacy](https://github.com/OpenAdaptAI/openadapt-privacy) | **Experimental** | Optional PII/PHI sanitization for configured persistence, logs, and artifact egress. |
+| [openadapt-types](https://github.com/OpenAdaptAI/openadapt-types) | **Experimental** | Shared interoperability schemas for contributors and integrators. |
 
-## Research components
+## Evaluation and model development
 
 | Repository | Lifecycle | Public role |
 |---|---|---|
-| [openadapt-ml](https://github.com/OpenAdaptAI/openadapt-ml) | **Research** | VLM training, inference, and demonstration-conditioning work. Not required by the healthy compiler path. |
-| [openadapt-evals](https://github.com/OpenAdaptAI/openadapt-evals) | **Research** | GUI-agent and demonstration-conditioning evaluation infrastructure. |
-| [openadapt-grounding](https://github.com/OpenAdaptAI/openadapt-grounding) | **Research** | UI grounding experiments and model adapters. |
-| [openadapt-retrieval](https://github.com/OpenAdaptAI/openadapt-retrieval) | **Research** | Demonstration retrieval experiments. |
+| [openadapt-ml](https://github.com/OpenAdaptAI/openadapt-ml) | **Research** | Optional VLM training, inference, and demonstration-conditioning work. The healthy compiler path does not require it. |
+| [openadapt-evals](https://github.com/OpenAdaptAI/openadapt-evals) | **Research** | GUI workflow and demonstration-conditioning evaluation infrastructure. |
+| [openadapt-grounding](https://github.com/OpenAdaptAI/openadapt-grounding) | **Research** | UI grounding mechanisms and model adapters. |
+| [openadapt-retrieval](https://github.com/OpenAdaptAI/openadapt-retrieval) | **Research** | Demonstration retrieval mechanisms. |
 
 ## How the pieces fit
 
 ```mermaid
 flowchart LR
-    C[openadapt-capture<br/>optional recording] --> F[[openadapt-flow<br/>canonical compiler]]
+    C[openadapt-capture<br/>native recording] --> F[[openadapt-flow<br/>canonical compiler]]
+    B[Playwright browser<br/>recording] --> F
     F --> R[Deterministic<br/>replay bundle]
-    A[openadapt-agent<br/>MCP + Agent Skills bridge] --> F
-    ML[openadapt-ml<br/>grounding / identity models] -.optional on-prem appliance.-> F
-    E[openadapt-evals<br/>benchmarks] -.measures.-> F
+    A[openadapt-agent<br/>governed bridge] --> F
+    ML[optional models] -.resolve under drift.-> F
+    E[openadapt-evals] -.measures.-> F
 ```
 
-The compiler is the product. Capture feeds it native and remote demonstrations, the ML layer
-can supply optional on-prem models, Agent gives MCP clients and Agent Skills a
-governed route into Flow bundles, and evals measures adjacent research. This page
-intentionally does not expose internal developer tools as product components.
-See [Qualification evidence](../get-started/what-works-today.md) for integrated
-feature and backend coverage.
+See [Qualification evidence](../get-started/what-works-today.md) for bounded
+feature and backend results. Evidence for one task and environment does not
+extend to another workflow.

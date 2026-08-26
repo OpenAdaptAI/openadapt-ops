@@ -7,15 +7,39 @@ policy.
 
 ## Qualified workflow
 
-A qualified workflow is one exact compiled workflow version that passed its
-declared qualification contract on its bound execution environment. Its signed
-identity binds the workflow bundle, runtime release, dependency set,
-environment, input schema, policy, identity checks, effect checks, and
-verification rules.
+In this Production contract, a qualified workflow is one exact, sealed compiled
+workflow version with an active signed admission. It passed its declared
+acceptance cases on its bound execution environment. It is not a workflow
+category and it is not a manual allowlist entry. The admission binds the
+organization and workflow identity, bundle version and digest, admitted runtime
+release, dependency set, application and environment, input and action
+contracts, policy, identity checks, effect checks, verification rules, evidence
+authority, issue time, expiry time, and revocation state.
 
-A Production runtime accepts only an exact qualified workflow identity. It
-refuses an absent, expired, revoked, or mismatched qualification. A change to a
-workflow version or any bound input requires a new qualification.
+For example, qualification can cover one invoice-entry bundle against one
+declared application version, runner image, input schema, policy, and
+independent saved-record check. It does not automatically cover another
+application version, a changed bundle, or a different effect verifier.
+
+The evidence must name the task, environment, condition, oracle, and failure
+taxonomy. It must include at least three trials per task per condition. It must
+report explicit silent-incorrect-success and over-halt counts, including zero
+counts. It must also include at least three expected uncertain-delivery fault
+trials. Each fault trial must return `RECONCILIATION_REQUIRED` without a blind
+retry or replay dispatch. A target-specific acceptance policy can require more
+evidence.
+
+A Production run requires this exact qualified workflow identity. The run gate
+must refuse an absent, expired, revoked, or mismatched qualification. A change
+to a workflow version or any bound contract value, including the input schema,
+requires a new qualification. Live input values that satisfy the admitted
+schema do not each require requalification.
+
+Workflow qualification and product release admission are separate contracts.
+Workflow qualification proves the named business workflow in its environment.
+Release admission proves that an exact OpenAdapt component or deployment passed
+the target-specific product acceptance policy. A runtime can have a current
+Production admission and still refuse an unqualified customer workflow.
 
 ## Release admission
 
@@ -50,8 +74,22 @@ does not fall back to an older release.
 
 The machine-readable [Production lifecycle record](../production-lifecycle.json)
 contains the exact source commit, input hashes, policy, and admission history.
-It does not store a static `production: true` flag. A consumer must use the
+It doesn't store a static `production: true` flag. A consumer must use the
 pinned validator and derive the state at read time.
+
+The documentation build runs that pinned validator. It verifies the signed
+summary and its GitHub attestation before publishing the projection. At read
+time, the browser requires the current admissions file to match the projected
+digest. It then checks the signed summary, attestation bundle, retained
+manifest, and current artifact-authority metadata. A failed request removes the
+affected target from the active set.
+
+This site derives each target label from that exact current admission. It
+checks the current authority metadata for every admitted artifact and retained
+evidence object. The five public package versions must match their admitted
+PyPI releases. A record mismatch, expiry, revocation, artifact drift, or
+authority outage makes the affected target not actively admitted. The
+product-wide Production label appears only while all seven targets pass.
 
 Runnable does not mean admitted. An installation, release, or successful demo
 cannot create Production state without this complete evidence contract.

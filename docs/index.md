@@ -139,6 +139,10 @@ report determine its outcome.
 [Review qualification evidence](get-started/what-works-today.md){ .md-button }
 [Read the benchmark methods](https://github.com/OpenAdaptAI/openadapt-flow/tree/main/benchmark){ .md-button }
 
+**Product release admission:**
+<span data-openadapt-production-product aria-live="polite">Not actively admitted. Production requires a current verified admission for all seven product targets.</span>
+[Read the release admission contract](reference/production-lifecycle.md)
+
 ---
 
 ## Choose your next step
