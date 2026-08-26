@@ -2,13 +2,116 @@
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
+import yaml
+
 ROOT = Path(__file__).resolve().parent.parent
+
+REJECT_LIFECYCLE_WORKFLOWS = (
+    ".github/workflows/azure-cost-guard.yml",
+    ".github/workflows/db-backup-freshness.yml",
+    ".github/workflows/db-backup.yml",
+    ".github/workflows/default-branch-sweep.yml",
+    ".github/workflows/prod-health-alert.yml",
+    ".github/workflows/production-lifecycle-policy.yml",
+    ".github/workflows/published-version-claims.yml",
+    ".github/workflows/workspace-staleness-sweep.yml",
+)
 
 
 def read(path: str) -> str:
     return (ROOT / path).read_text(encoding="utf-8")
+
+
+def workflow(path: str) -> dict:
+    value = yaml.load(read(path), Loader=yaml.BaseLoader)
+    assert isinstance(value, dict)
+    return value
+
+
+def test_every_non_lifecycle_dispatch_refuses_the_lifecycle_app() -> None:
+    for path in REJECT_LIFECYCLE_WORKFLOWS:
+        value = workflow(path)
+        concurrency = value["concurrency"]
+        assert "github.workflow" in concurrency["group"], path
+        assert "github.event_name" in concurrency["group"], path
+        assert concurrency["cancel-in-progress"] == "false", path
+
+        jobs = value["jobs"]
+        guard = jobs["reject-lifecycle-app"]
+        assert guard["permissions"] == {}, path
+        guard_text = str(guard)
+        assert "github.actor" in guard_text, path
+        assert "github.triggering_actor" in guard_text, path
+        assert "openadapt-lifecycle[bot]" in guard_text, path
+        for name, job in jobs.items():
+            if name == "reject-lifecycle-app":
+                continue
+            needs = job.get("needs", [])
+            if isinstance(needs, str):
+                needs = [needs]
+            assert "reject-lifecycle-app" in needs, f"{path}:{name}"
+            condition = job.get("if", "")
+            assert re.search(
+                r"github\.actor\s*!=\s*'openadapt-lifecycle\[bot\]'", condition
+            ), f"{path}:{name}"
+            assert re.search(
+                r"github\.triggering_actor\s*!=\s*'openadapt-lifecycle\[bot\]'",
+                condition,
+            ), f"{path}:{name}"
+
+
+def test_dispatch_workflow_inventory_is_complete() -> None:
+    discovered = set()
+    for path in sorted((ROOT / ".github" / "workflows").glob("*.y*ml")):
+        content = path.read_text(encoding="utf-8")
+        if re.search(r"(?m)^  (?:workflow_dispatch|repository_dispatch):\s*$", content):
+            discovered.add(str(path.relative_to(ROOT)))
+    assert discovered == set(REJECT_LIFECYCLE_WORKFLOWS) | {
+        ".github/workflows/production-lifecycle-projection.yml",
+        ".github/workflows/sync.yml",
+    }
+
+
+def test_docs_sync_is_app_only_and_never_pushes_main() -> None:
+    content = read(".github/workflows/sync.yml")
+    assert "repository_dispatch:" not in content
+    assert "repo-updated" not in content
+    assert "git push origin HEAD:main" not in content
+    assert "github.actor == 'openadapt-docs[bot]'" in content
+    assert "github.triggering_actor == 'openadapt-docs[bot]'" in content
+    assert "github.actor_id == vars.OPENADAPT_DOCS_ACTOR_ID" in content
+    assert "vars.OPENADAPT_DOCS_APP_ID" in content
+    assert "vars.OPENADAPT_DOCS_INSTALLATION_ID" in content
+    assert "secrets.OPENADAPT_DOCS_APP_PRIVATE_KEY" in content
+    assert "environment: production-docs-deploy" in content
+    assert "name: github-pages" in content
+    assert "gh pr create" in content
+    assert "cancel-in-progress: false" in content
+
+
+def test_lifecycle_projection_is_app_only_and_never_pushes_main() -> None:
+    content = read(".github/workflows/production-lifecycle-projection.yml")
+    assert "github.actor == 'openadapt-lifecycle[bot]'" in content
+    assert "github.triggering_actor == 'openadapt-lifecycle[bot]'" in content
+    assert "github.actor_id == vars.OPENADAPT_LIFECYCLE_ACTOR_ID" in content
+    assert "vars.OPENADAPT_LIFECYCLE_APP_ID" in content
+    assert "vars.OPENADAPT_LIFECYCLE_INSTALLATION_ID" in content
+    assert "secrets.OPENADAPT_LIFECYCLE_APP_PRIVATE_KEY" in content
+    assert "environment: production-lifecycle-projection" in content
+    assert "production_lifecycle_ledger_changed" in content
+    assert "git push origin HEAD:main" not in content
+    assert "gh pr create" in content
+    assert "cancel-in-progress: false" in content
+
+
+def test_lifecycle_required_check_runs_on_every_pull_request() -> None:
+    content = read(".github/workflows/production-lifecycle-policy.yml")
+    pull_request = content.split("  pull_request:", 1)[1].split("  push:", 1)[0]
+    assert "paths:" not in pull_request
+    assert "paths-ignore:" not in pull_request
 
 
 def test_backup_configuration_fails_before_credentials_or_tool_install() -> None:

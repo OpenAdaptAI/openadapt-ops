@@ -17,11 +17,27 @@ permissions:
   contents: read
 
 concurrency:
-  group: production-db-backup
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
+  reject-lifecycle-app:
+    permissions: {}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Reject the lifecycle App
+        env:
+          ACTOR: ${{ github.actor }}
+          TRIGGERING_ACTOR: ${{ github.triggering_actor }}
+        run: |
+          test "$ACTOR" != 'openadapt-lifecycle[bot]'
+          test "$TRIGGERING_ACTOR" != 'openadapt-lifecycle[bot]'
+
   dump:
+    needs: reject-lifecycle-app
+    if: >-
+      github.actor != 'openadapt-lifecycle[bot]' &&
+      github.triggering_actor != 'openadapt-lifecycle[bot]'
     # The complete production database is plaintext until the local age step.
     # Route this job only to the workflow-restricted production backup group.
     # GitHub-hosted runners and the default self-hosted group are not permitted.
@@ -244,8 +260,11 @@ jobs:
 
   record-alert:
     name: Keep one durable backup alert
-    needs: dump
-    if: ${{ always() }}
+    needs: [reject-lifecycle-app, dump]
+    if: >-
+      always() &&
+      github.actor != 'openadapt-lifecycle[bot]' &&
+      github.triggering_actor != 'openadapt-lifecycle[bot]'
     runs-on: ubuntu-latest
     permissions:
       contents: read
