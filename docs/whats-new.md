@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-08-26 17:30 UTC*
+> *Last updated: 2026-08-26 17:32 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [Replace the legacy GitBook link](https://github.com/OpenAdaptAI/OpenAdapt/pull/1117) (#1117) — merged 
 
 - [Derive launcher lifecycle from signed admissions](https://github.com/OpenAdaptAI/OpenAdapt/pull/1116) (#1116) — merged 
 
