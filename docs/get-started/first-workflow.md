@@ -130,16 +130,17 @@ bundle before any replay.
 openadapt flow lint bundle --strict
 ```
 
-`lint` reports missing evidence, weak risk classification, unexpected writes,
-and steps that don't assert a result. It doesn't authorize replay.
+`lint` reports missing evidence, missing assertions, write-shaped or
+irreversible actions, and risks that may be under-classified. It doesn't decide
+whether a write belongs in the recorded task. Review every action yourself.
 
-!!! danger "Stop before replay when a safety contract is missing"
+!!! danger "Stop before replay when a required safety contract is missing"
     Do not replay if lint or your review finds any of these conditions:
 
     - an action writes data or its risk is unknown;
     - an action is consequential or irreversible;
-    - an identity or effect contract is missing;
-    - a policy contract is missing; or
+    - an action requires an identity, effect, or policy contract and that
+      contract is missing; or
     - the recording contains an unexpected application, page, or data source.
 
     Move the bundle to [workflow qualification](../guides/qualify-a-workflow.md).
