@@ -63,6 +63,11 @@ image = (
         # openai>=1.100 imports httpx_aiohttp, which needs aiohttp>=3.12
         # (SocketTimeoutError). vllm pins an older aiohttp; pin ours newer.
         "aiohttp>=3.12,<4",
+        # vllm 0.10.1.1 rejects Qwen2.5-VL's mrope rope_scaling when a
+        # newer transformers remaps it to the modern field set
+        # ("conflicts between rope_type=default and type=mrope").
+        # Pin the transformers line contemporary with this vllm.
+        "transformers>=4.55,<4.56",
     )
     .env({"HF_HUB_ENABLE_HF_TRANSFER": "1"})
 )
