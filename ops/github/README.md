@@ -1,8 +1,7 @@
 # Core GitHub protection policy
 
-This directory contains the reviewed target policy for eight public core
-repositories. The policy does not manage `openadapt-cloud`. It does not manage
-a foreign repository.
+This directory contains the reviewed target policy for nine public core
+repositories. It doesn't manage `openadapt-cloud` or a foreign repository.
 
 The policy has these results:
 
@@ -14,6 +13,8 @@ The policy has these results:
 - Each check in the policy comes from the GitHub Actions integration.
 - The branch must be current with `main` before GitHub admits it.
 - Only the `openadapt-release` GitHub App can create a release tag.
+- The release App selects only the nine public core repositories. It has no
+  access to private Cloud.
 - A second ruleset prevents all identities, including the release app, from
   changing or deleting that tag.
 - A protected environment admits only the exact branch or tag pattern in the
@@ -36,23 +37,26 @@ environments, and release workflow contracts.
 `scripts/manage_github_protection.py` validates, plans, applies, and verifies
 the policy. A plan and a verify operation use only GitHub `GET` requests.
 
-## Read-only audit on 2026-08-20
+## Read-only audit on 2026-08-26
 
-The public GitHub API reported zero repository rulesets in all eight
+The public GitHub API reported zero repository rulesets in all nine
 repositories. GitHub marked these `main` branches as protected: `OpenAdapt`,
-`openadapt-flow`, `openadapt-capture`, `openadapt-evals`, and `openadapt-web`.
-It marked `openadapt-desktop`, `openadapt-ops`, and `.github` as not protected.
+`openadapt-agent`, `openadapt-flow`, `openadapt-capture`, `openadapt-evals`,
+and `openadapt-web`. It marked `openadapt-desktop`, `openadapt-ops`, and
+`.github` as not protected.
 
-The public API did not expose the classic branch protection detail. The local
-GitHub CLI tokens were invalid. Therefore, this audit does not claim the exact
-classic protection settings for the five protected branches.
+An authenticated read returned the exact classic protection settings. Flow has
+thirteen strict required checks but no review rule. Capture has four strict
+checks. Evals has one non-strict check and permits force pushes. OpenAdapt,
+Agent, Capture, and Web require zero approvals and don't enforce administrators.
 
-Flow and Evals had an unprotected `pypi` environment. Capture and OpenAdapt had
-no release environment. Desktop had a protected `native-release` environment.
+Agent and Flow had an unprotected `pypi` environment. Evals had unprotected
+`pypi` and `testpypi` environments. Capture and OpenAdapt had no package release
+environment. Desktop had a protected `native-release` environment.
 It admitted `desktop-v*` and `ffmpeg-runtime-v8.1.2-r1`. The target policy uses
 `desktop-v*` and `ffmpeg-runtime-v*`. It also adds the release identity
-environment and the PyPI environment. The tool does not change the Ops backup
-environments.
+environment and the PyPI environment. Agent also gets a separate
+`mcp-registry` environment. The tool doesn't change the Ops backup environments.
 
 The organization did not have an `openadapt-lifecycle` App installation. The
 target policy keeps the App ID, bot actor ID, and installation ID unresolved.
@@ -172,6 +176,10 @@ Use this sequence for each package repository:
 6. The tag starts the publication workflow.
 7. The publication job enters `pypi` or `native-release`.
 8. The job uses OIDC to publish the exact tag bytes.
+
+Agent uses `mcp-registry` after its PyPI publication. Both publication jobs use
+OIDC. The Agent release workflow can't accept an API-token fallback or
+download an unpinned registry publisher.
 
 An event from `GITHUB_TOKEN` does not normally start another workflow. GitHub
 documents this behavior in the [GITHUB_TOKEN reference](https://docs.github.com/en/actions/concepts/security/github_token).

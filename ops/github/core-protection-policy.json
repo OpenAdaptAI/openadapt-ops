@@ -1,13 +1,14 @@
 {
   "schema_version": 1,
   "organization": "OpenAdaptAI",
-  "reviewed_at": "2026-08-20T00:00:00Z",
+  "reviewed_at": "2026-08-26T00:00:00Z",
   "review_source": "Exact origin/main refs plus GitHub pull-request workflow jobs",
   "live_audit": {
-    "observed_at": "2026-08-20",
+    "observed_at": "2026-08-26",
     "repository_ruleset_counts": {
       ".github": 0,
       "OpenAdapt": 0,
+      "openadapt-agent": 0,
       "openadapt-capture": 0,
       "openadapt-desktop": 0,
       "openadapt-evals": 0,
@@ -18,6 +19,7 @@
     "main_protected": {
       ".github": false,
       "OpenAdapt": true,
+      "openadapt-agent": true,
       "openadapt-capture": true,
       "openadapt-desktop": false,
       "openadapt-evals": true,
@@ -25,20 +27,21 @@
       "openadapt-ops": false,
       "openadapt-web": true
     },
-    "classic_branch_protection_detail": "Not available without valid authenticated administration read access",
+    "classic_branch_protection_detail": "Authenticated read: OpenAdapt, Agent, Capture, and Web require zero approvals and do not enforce administrators; Flow has thirteen strict checks and no review rule; Capture has four strict checks; Evals has one non-strict check and permits force pushes; Desktop, Ops, and Profile are unprotected.",
     "release_environment_state": {
-      "OpenAdapt": "No release environment",
+      "OpenAdapt": "No package release environment; github-pages admits an exact branch policy",
+      "openadapt-agent": "pypi exists with no protection rule and no deployment policy; release-identity and mcp-registry do not exist",
       "openadapt-flow": "pypi exists with no protection rule and no deployment policy",
-      "openadapt-capture": "No release environment",
+      "openadapt-capture": "No package release environment; production-qualification uses protected branches and one required reviewer",
       "openadapt-desktop": "native-release has reviewer 774615 and exact desktop-v* plus ffmpeg-runtime-v8.1.2-r1 tag policies",
-      "openadapt-evals": "pypi exists with no protection rule and no deployment policy",
-      "openadapt-ops": "production-backup and production-backup-monitor exist without a protection rule, deployment branch policy, or reviewer; operational backup environments remain outside this policy",
+      "openadapt-evals": "pypi and testpypi exist with no protection rule and no deployment policy",
+      "openadapt-ops": "github-pages admits an exact branch policy; production-backup and production-backup-monitor have no protection rule, deployment branch policy, or reviewer; operational backup environments remain outside this policy",
       "openadapt-web": "No release environment",
       ".github": "No release environment"
     }
   },
   "dispatch_privilege_audit": {
-    "observed_at": "2026-08-20",
+    "observed_at": "2026-08-26",
     "openadapt_ops_main_protected": false,
     "unprotected_operational_environments": {
       "production-backup": {
@@ -191,7 +194,7 @@
       "name": "OpenAdapt",
       "visibility": "public",
       "default_branch": "main",
-      "audited_main_sha": "42970fbb1246f77f8350254569e5ce55f9bb60ed",
+      "audited_main_sha": "e68fb332c0da9da0125e45e0aa9babfdf942595b",
       "require_code_owner_review": true,
       "required_checks": [
         "Analyze (python)",
@@ -246,10 +249,99 @@
       ]
     },
     {
+      "name": "openadapt-agent",
+      "visibility": "public",
+      "default_branch": "main",
+      "audited_main_sha": "be253dd558a95bfb457c18715d258854aba79f69",
+      "require_code_owner_review": true,
+      "required_checks": [
+        "Analyze (python)",
+        "dependency-review",
+        "gitleaks",
+        "test (3.10, floor)",
+        "test (3.11, current)",
+        "test (3.12, current)"
+      ],
+      "path_scoped_checks": [
+        "Build + validate (dry run, no publish)"
+      ],
+      "admission_gaps": [
+        "Move tag creation to a founder-reviewed main-branch job that uses the release App. Publish to PyPI and the MCP registry from separate protected tag environments. Remove the token fallbacks, the release-event trigger, and the unpinned registry publisher download."
+      ],
+      "release_tag_patterns": [
+        "refs/tags/v*"
+      ],
+      "release_environments": [
+        {
+          "name": "release-identity",
+          "deployment_policies": [
+            {
+              "type": "branch",
+              "name": "main"
+            }
+          ],
+          "exclusive_workflow": ".github/workflows/release.yml"
+        },
+        {
+          "name": "pypi",
+          "deployment_policies": [
+            {
+              "type": "tag",
+              "name": "v*"
+            }
+          ],
+          "exclusive_workflow": ".github/workflows/release.yml"
+        },
+        {
+          "name": "mcp-registry",
+          "deployment_policies": [
+            {
+              "type": "tag",
+              "name": "v*"
+            }
+          ],
+          "exclusive_workflow": ".github/workflows/release.yml"
+        }
+      ],
+      "release_workflows": [
+        {
+          "path": ".github/workflows/release.yml",
+          "required_patterns": [
+            "(?m)^[ ]{2}workflow_dispatch:\\s*$",
+            "(?m)^[ ]{2}push:\\s*$",
+            "tags:\\s*\\[?[\"']?v\\*[\"']?\\]?",
+            "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?release-identity\\s*$",
+            "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?pypi\\s*$",
+            "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?mcp-registry\\s*$",
+            "actions/create-github-app-token",
+            "vars\\.OPENADAPT_RELEASE_APP_ID",
+            "secrets\\.OPENADAPT_RELEASE_APP_PRIVATE_KEY",
+            "permission-contents:\\s*write",
+            "git\\s+tag",
+            "git\\s+push",
+            "(?m)^\\s*id-token:\\s*write\\s*$",
+            "pypa/gh-action-pypi-publish",
+            "mcp-publisher\\s+login\\s+github-oidc",
+            "scripts/check_release_artifacts\\.py",
+            "scripts/check_source_boundary\\.py\\s+--require-dist",
+            "scripts/verify_release_registries\\.py",
+            "production-admission-candidate\\.json"
+          ],
+          "forbidden_patterns": [
+            "ADMIN_TOKEN",
+            "(?m)^[ ]{2}release:\\s*$",
+            "PYPI_API_TOKEN",
+            "MCP_GITHUB_TOKEN",
+            "registry/releases/latest/download"
+          ]
+        }
+      ]
+    },
+    {
       "name": "openadapt-flow",
       "visibility": "public",
       "default_branch": "main",
-      "audited_main_sha": "7da6571bdc38faca5b6b944ae8dbac6ec1d771cb",
+      "audited_main_sha": "e17e2aa9ab367c11b2a64b2022f1cf45e62a729d",
       "require_code_owner_review": true,
       "required_checks": [
         "docs-consistency",
@@ -311,7 +403,7 @@
       "name": "openadapt-capture",
       "visibility": "public",
       "default_branch": "main",
-      "audited_main_sha": "61096788a623a4a302a69a363215dad81fb9008b",
+      "audited_main_sha": "d1f66151b72fe95967b6f8d2696ab93cf5b49721",
       "require_code_owner_review": true,
       "required_checks": [
         "Analyze (javascript-typescript)",
@@ -482,7 +574,7 @@
       "name": "openadapt-evals",
       "visibility": "public",
       "default_branch": "main",
-      "audited_main_sha": "b7d4fe842f5a9ae9e4188df6087911b24a1706f2",
+      "audited_main_sha": "aca85d431158ac517c969c5a146b38f1895c9ada",
       "require_code_owner_review": false,
       "required_checks": [
         "test"
@@ -587,7 +679,7 @@
       "local_repository_name": "openadapt-maintenance",
       "visibility": "public",
       "default_branch": "main",
-      "audited_main_sha": "2b3fef3a6672fe7dd31312e2cba56608342bb4dd",
+      "audited_main_sha": "91edc06ae38e879755d7faac786e60a0e2aacd4e",
       "require_code_owner_review": true,
       "required_checks": [
         "Analyze (python)",
@@ -784,7 +876,7 @@
       "name": "openadapt-web",
       "visibility": "public",
       "default_branch": "main",
-      "audited_main_sha": "ba35b60125160b4b40a0871644709d8c7e29259f",
+      "audited_main_sha": "0a23bd9af5ade15928e79cc4d8e0278e983d375c",
       "require_code_owner_review": true,
       "required_checks": [
         "Analyze (javascript-typescript)",
@@ -815,7 +907,7 @@
       "name": ".github",
       "visibility": "public",
       "default_branch": "main",
-      "audited_main_sha": "d60445bc8617adc4a27c20e6ce05681a95d83a2c",
+      "audited_main_sha": "efa5c2299273d94f56b428e7c60a3d96fe382c69",
       "require_code_owner_review": false,
       "required_checks": [
         "validate-profile"

@@ -43,6 +43,10 @@ class ReadOnlyFixtureGitHub:
         unguarded_dispatch_repo: str | None = None,
         unauthorized_environment_repo: str | None = None,
         cancelling_dispatch_repo: str | None = None,
+        release_app_all_repositories: bool = False,
+        release_app_permissions_mismatch: bool = False,
+        release_app_extra_repository: bool = False,
+        null_deployment_policy_repo: str | None = None,
     ) -> None:
         self.config = config
         self.active_repo = active_repo
@@ -53,6 +57,10 @@ class ReadOnlyFixtureGitHub:
         self.unguarded_dispatch_repo = unguarded_dispatch_repo
         self.unauthorized_environment_repo = unauthorized_environment_repo
         self.cancelling_dispatch_repo = cancelling_dispatch_repo
+        self.release_app_all_repositories = release_app_all_repositories
+        self.release_app_permissions_mismatch = release_app_permissions_mismatch
+        self.release_app_extra_repository = release_app_extra_repository
+        self.null_deployment_policy_repo = null_deployment_policy_repo
         self.writes: list[tuple[str, str, Mapping[str, Any]]] = []
         self.by_name = {repo["name"]: repo for repo in config["repositories"]}
 
@@ -80,7 +88,18 @@ class ReadOnlyFixtureGitHub:
                         "id": 551100,
                         "app_id": 991122,
                         "app_slug": "openadapt-release",
-                        "repository_selection": "all",
+                        "repository_selection": (
+                            "all" if self.release_app_all_repositories else "selected"
+                        ),
+                        "permissions": (
+                            {"contents": "write", "metadata": "read"}
+                            if self.release_app_permissions_mismatch
+                            else {
+                                "contents": "write",
+                                "metadata": "read",
+                                "pull_requests": "write",
+                            }
+                        ),
                     },
                     {
                         "id": 661100,
@@ -104,6 +123,16 @@ class ReadOnlyFixtureGitHub:
                             "pull_requests": "write",
                         },
                     },
+                ]
+            }
+        if path == "/user/installations/551100/repositories?per_page=100":
+            return {
+                "repositories": [
+                    {"name": name}
+                    for name in sorted(
+                        set(self.by_name)
+                        | ({"unexpected-public-repo"} if self.release_app_extra_repository else set())
+                    )
                 ]
             }
         if path == "/user/installations/661100/repositories?per_page=100":
@@ -153,6 +182,11 @@ class ReadOnlyFixtureGitHub:
             if parts[4] == "rulesets":
                 return []
             if parts[4] == "environments":
+                if name == self.null_deployment_policy_repo:
+                    return {
+                        "protection_rules": [],
+                        "deployment_branch_policy": None,
+                    }
                 return None
             if parts[4:6] == ["actions", "variables"]:
                 variable = parts[6]
@@ -441,6 +475,42 @@ class ReadOnlyFixtureGitHub:
             environment = repo["lifecycle_environments"][0]["name"]
             return f"on:\n  push:\njobs:\n  run:\n    environment: {environment}\n"
 
+        if repo_name == "openadapt-agent":
+            return (
+                "on:\n"
+                "  workflow_dispatch:\n"
+                "  push:\n"
+                "    tags: [\"v*\"]\n"
+                "permissions:\n"
+                "  contents: read\n"
+                "jobs:\n"
+                "  tag:\n"
+                "    environment: release-identity\n"
+                "    steps:\n"
+                "      - uses: actions/create-github-app-token@deadbeef\n"
+                "        with:\n"
+                "          app-id: ${{ vars.OPENADAPT_RELEASE_APP_ID }}\n"
+                "          private-key: ${{ secrets.OPENADAPT_RELEASE_APP_PRIVATE_KEY }}\n"
+                "          permission-contents: write\n"
+                "      - run: git tag v1.2.3 && git push origin v1.2.3\n"
+                "  pypi:\n"
+                "    environment: pypi\n"
+                "    permissions:\n"
+                "      id-token: write\n"
+                "    steps:\n"
+                "      - run: python scripts/check_release_artifacts.py dist\n"
+                "      - run: python scripts/check_source_boundary.py --require-dist\n"
+                "      - uses: pypa/gh-action-pypi-publish@deadbeef\n"
+                "  mcp:\n"
+                "    environment: mcp-registry\n"
+                "    permissions:\n"
+                "      id-token: write\n"
+                "    steps:\n"
+                "      - run: ./mcp-publisher login github-oidc\n"
+                "      - run: python scripts/verify_release_registries.py\n"
+                "      - run: test -f production-admission-candidate.json\n"
+            )
+
         workflow = (
             "on:\n"
             "  pull_request:\n"
@@ -485,6 +555,7 @@ def test_policy_has_only_the_reviewed_owned_repositories() -> None:
     assert {repo["name"] for repo in value["repositories"]} == {
         ".github",
         "OpenAdapt",
+        "openadapt-agent",
         "openadapt-capture",
         "openadapt-desktop",
         "openadapt-evals",
@@ -730,6 +801,53 @@ def test_plan_is_read_only_and_never_manages_private_cloud(
     }
     assert "openadapt-cloud" not in {repo["name"] for repo in plan["repositories"]}
     assert all(repo["actions"] for repo in plan["repositories"])
+
+
+@pytest.mark.parametrize(
+    ("fixture_kwargs", "expected_code"),
+    [
+        ({"release_app_all_repositories": True}, "release_identity_repository_scope"),
+        ({"release_app_extra_repository": True}, "release_identity_repository_scope"),
+        (
+            {"release_app_permissions_mismatch": True},
+            "release_identity_permissions_mismatch",
+        ),
+    ],
+)
+def test_release_identity_requires_exact_public_scope_and_permissions(
+    monkeypatch: pytest.MonkeyPatch,
+    fixture_kwargs: dict[str, bool],
+    expected_code: str,
+) -> None:
+    value = config()
+    monkeypatch.setenv("OPENADAPT_RELEASE_APP_ID", "991122")
+    plan = build_plan(ReadOnlyFixtureGitHub(value, **fixture_kwargs), value)
+
+    assert plan["safe_to_apply"] is False
+    assert expected_code in {item["code"] for item in plan["global_blockers"]}
+
+
+def test_unprotected_existing_environment_produces_a_plan_instead_of_crashing(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    value = config()
+    monkeypatch.setenv("OPENADAPT_RELEASE_APP_ID", "991122")
+    plan = build_plan(
+        ReadOnlyFixtureGitHub(
+            value,
+            null_deployment_policy_repo="openadapt-agent",
+        ),
+        value,
+    )
+
+    agent = next(
+        repo for repo in plan["repositories"] if repo["name"] == "openadapt-agent"
+    )
+    assert plan["safe_to_apply"] is True
+    assert any(
+        action["kind"] == "put_environment" and action["environment"] == "pypi"
+        for action in agent["actions"]
+    )
 
 
 def test_missing_lifecycle_app_keeps_plan_fail_closed(
