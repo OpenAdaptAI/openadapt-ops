@@ -13,6 +13,9 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 ARTIFACT_SCHEMA = "openadapt.database-backup-artifact/v2"
+SELECTION_SCHEMA = "openadapt.database-backup-selection/v2"
+CIPHERTEXT_STORAGE_CLASS = "GLACIER_IR"
+MANIFEST_STORAGE_CLASS = "STANDARD"
 STAMP = re.compile(r"^(\d{8}T\d{6}Z)$")
 MANIFEST_KEY = re.compile(r"^daily/(\d{8}T\d{6}Z)/artifact-manifest\.json$")
 CIPHERTEXT_KEY = re.compile(
@@ -86,6 +89,11 @@ def select_latest(
             raise FreshnessError(
                 f"the daily prefix contains an unexpected object: {key}"
             )
+        expected_storage_class = (
+            MANIFEST_STORAGE_CLASS if manifest_match else CIPHERTEXT_STORAGE_CLASS
+        )
+        if item.get("StorageClass") != expected_storage_class:
+            raise FreshnessError(f"the S3 object has the wrong storage class: {key}")
         if key in objects:
             raise FreshnessError(f"the S3 inventory contains a duplicate object: {key}")
         if not isinstance(item.get("Size"), int) or item["Size"] <= 0:
@@ -127,13 +135,15 @@ def select_latest(
             )
 
     return {
-        "schema": "openadapt.database-backup-selection/v1",
+        "schema": SELECTION_SCHEMA,
         "recovery_point_at": recovery_point.isoformat().replace("+00:00", "Z"),
         "age_seconds": max(0, int(age)),
         "manifest_key": manifest_key,
         "manifest_bytes": objects[manifest_key]["Size"],
+        "manifest_storage_class": objects[manifest_key]["StorageClass"],
         "ciphertext_key": ciphertext_key,
         "ciphertext_bytes": objects[ciphertext_key]["Size"],
+        "ciphertext_storage_class": objects[ciphertext_key]["StorageClass"],
     }
 
 
@@ -144,8 +154,12 @@ def verify_latest(
 ) -> dict[str, object]:
     if not all(isinstance(value, dict) for value in (selection, manifest, attributes)):
         raise FreshnessError("the backup verification input is not an object")
-    if selection.get("schema") != "openadapt.database-backup-selection/v1":
+    if selection.get("schema") != SELECTION_SCHEMA:
         raise FreshnessError("the backup selection schema is invalid")
+    if selection.get("manifest_storage_class") != MANIFEST_STORAGE_CLASS:
+        raise FreshnessError("the selected manifest storage class is invalid")
+    if selection.get("ciphertext_storage_class") != CIPHERTEXT_STORAGE_CLASS:
+        raise FreshnessError("the selected ciphertext storage class is invalid")
     manifest_key = selection.get("manifest_key")
     ciphertext_key = selection.get("ciphertext_key")
     if (
@@ -202,6 +216,8 @@ def verify_latest(
 
     if attributes.get("ObjectSize") != ciphertext_bytes:
         raise FreshnessError("the remote ciphertext size does not match the manifest")
+    if attributes.get("StorageClass") != CIPHERTEXT_STORAGE_CLASS:
+        raise FreshnessError("the remote ciphertext is not in GLACIER_IR")
     expected_checksum = base64.b64encode(bytes.fromhex(ciphertext_sha)).decode()
     checksum = attributes.get("Checksum")
     if (

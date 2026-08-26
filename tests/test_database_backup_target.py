@@ -8,7 +8,9 @@ from pathlib import Path
 import pytest
 
 MODULE_PATH = Path(__file__).parents[1] / "scripts" / "check_database_backup_target.py"
-SPEC = importlib.util.spec_from_file_location("check_database_backup_target", MODULE_PATH)
+SPEC = importlib.util.spec_from_file_location(
+    "check_database_backup_target", MODULE_PATH
+)
 assert SPEC and SPEC.loader
 target = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(target)
@@ -30,19 +32,13 @@ def documents(tmp_path: Path) -> Namespace:
         "encryption": {
             "ServerSideEncryptionConfiguration": {
                 "Rules": [
-                    {
-                        "ApplyServerSideEncryptionByDefault": {
-                            "SSEAlgorithm": "AES256"
-                        }
-                    }
+                    {"ApplyServerSideEncryptionByDefault": {"SSEAlgorithm": "AES256"}}
                 ]
             }
         },
         "versioning": {"Status": "Enabled"},
         "ownership": {
-            "OwnershipControls": {
-                "Rules": [{"ObjectOwnership": "BucketOwnerEnforced"}]
-            }
+            "OwnershipControls": {"Rules": [{"ObjectOwnership": "BucketOwnerEnforced"}]}
         },
         "location": {"LocationConstraint": None},
         "lifecycle": {
@@ -62,6 +58,13 @@ def documents(tmp_path: Path) -> Namespace:
                     "Expiration": {"Days": 365},
                     "NoncurrentVersionExpiration": {"NoncurrentDays": 7},
                 },
+                {
+                    "ID": "DeleteExpiredActivationState",
+                    "Status": "Enabled",
+                    "Filter": {"Prefix": "activation/"},
+                    "Expiration": {"Days": 365},
+                    "NoncurrentVersionExpiration": {"NoncurrentDays": 7},
+                },
             ]
         },
         "policy": {
@@ -75,9 +78,7 @@ def documents(tmp_path: Path) -> Namespace:
                             "Principal": "*",
                             "Action": "s3:*",
                             "Resource": [bucket_arn, f"{bucket_arn}/*"],
-                            "Condition": {
-                                "Bool": {"aws:SecureTransport": "false"}
-                            },
+                            "Condition": {"Bool": {"aws:SecureTransport": "false"}},
                         },
                         {
                             "Sid": "RequireSseS3",
@@ -100,6 +101,54 @@ def documents(tmp_path: Path) -> Namespace:
                             "Condition": {
                                 "StringNotEquals": {
                                     "s3:x-amz-server-side-encryption": "AES256"
+                                }
+                            },
+                        },
+                        {
+                            "Sid": "RequireSseS3ForActivationState",
+                            "Effect": "Deny",
+                            "Principal": "*",
+                            "Action": "s3:PutObject",
+                            "Resource": f"{bucket_arn}/activation/*",
+                            "Condition": {
+                                "StringNotEquals": {
+                                    "s3:x-amz-server-side-encryption": "AES256"
+                                }
+                            },
+                        },
+                        {
+                            "Sid": "RequireGlacierInstantRetrievalCiphertext",
+                            "Effect": "Deny",
+                            "Principal": "*",
+                            "Action": "s3:PutObject",
+                            "Resource": f"{bucket_arn}/daily/*/*.age",
+                            "Condition": {
+                                "StringNotEquals": {
+                                    "s3:x-amz-storage-class": "GLACIER_IR"
+                                }
+                            },
+                        },
+                        {
+                            "Sid": "RequireStandardManifest",
+                            "Effect": "Deny",
+                            "Principal": "*",
+                            "Action": "s3:PutObject",
+                            "Resource": f"{bucket_arn}/daily/*/artifact-manifest.json",
+                            "Condition": {
+                                "StringNotEquals": {
+                                    "s3:x-amz-storage-class": "STANDARD"
+                                }
+                            },
+                        },
+                        {
+                            "Sid": "RequireStandardActivationState",
+                            "Effect": "Deny",
+                            "Principal": "*",
+                            "Action": "s3:PutObject",
+                            "Resource": f"{bucket_arn}/activation/*",
+                            "Condition": {
+                                "StringNotEquals": {
+                                    "s3:x-amz-storage-class": "STANDARD"
                                 }
                             },
                         },
@@ -126,6 +175,17 @@ def change(args: Namespace, name: str, update) -> None:
 def weaken_tls_policy(value: dict[str, object]) -> None:
     policy = json.loads(value["Policy"])
     policy["Statement"][0]["Condition"]["Bool"]["aws:SecureTransport"] = "true"
+    value["Policy"] = json.dumps(policy)
+
+
+def weaken_ciphertext_storage_policy(value: dict[str, object]) -> None:
+    policy = json.loads(value["Policy"])
+    statement = next(
+        item
+        for item in policy["Statement"]
+        if item["Sid"] == "RequireGlacierInstantRetrievalCiphertext"
+    )
+    statement["Condition"]["StringNotEquals"]["s3:x-amz-storage-class"] = "STANDARD"
     value["Policy"] = json.dumps(policy)
 
 
@@ -176,6 +236,11 @@ def test_exact_live_bucket_contract_passes(tmp_path: Path) -> None:
             "policy",
             weaken_tls_policy,
             "TLS-only",
+        ),
+        (
+            "policy",
+            weaken_ciphertext_storage_policy,
+            "RequireGlacierInstantRetrievalCiphertext",
         ),
     ],
 )

@@ -77,7 +77,7 @@ def rule_prefix(rule: dict[str, object]) -> object:
 
 def require_exact_lifecycle(value: dict[str, object]) -> None:
     rules = value.get("Rules")
-    if not isinstance(rules, list) or len(rules) != 2:
+    if not isinstance(rules, list) or len(rules) != 3:
         raise TargetError("the backup bucket lifecycle rule set is not exact")
     by_id = {
         rule.get("ID"): rule
@@ -87,6 +87,7 @@ def require_exact_lifecycle(value: dict[str, object]) -> None:
     expected = {
         "DeleteExpiredBackups": ("daily/", 90),
         "DeleteExpiredDrillEvidence": ("drills/", 365),
+        "DeleteExpiredActivationState": ("activation/", 365),
     }
     if set(by_id) != set(expected):
         raise TargetError("the backup bucket lifecycle rule identities are not exact")
@@ -104,7 +105,7 @@ def require_exact_lifecycle(value: dict[str, object]) -> None:
             if abort != {"DaysAfterInitiation": 1}:
                 raise TargetError("the daily backup multipart cleanup is invalid")
         elif abort is not None:
-            raise TargetError("the drill evidence lifecycle has an unexpected cleanup")
+            raise TargetError(f"the lifecycle has an unexpected cleanup: {rule_id}")
 
 
 def actions(statement: dict[str, object]) -> set[str]:
@@ -136,7 +137,7 @@ def policy_document(value: dict[str, object]) -> dict[str, object]:
 
 def require_exact_policy(value: dict[str, object], bucket: str) -> None:
     statements = policy_document(value).get("Statement")
-    if not isinstance(statements, list) or len(statements) != 3:
+    if not isinstance(statements, list) or len(statements) != 7:
         raise TargetError("the backup bucket policy statement set is not exact")
     by_sid = {
         statement.get("Sid"): statement
@@ -147,6 +148,10 @@ def require_exact_policy(value: dict[str, object], bucket: str) -> None:
         "DenyInsecureTransport",
         "RequireSseS3",
         "RequireSseS3ForDrillEvidence",
+        "RequireGlacierInstantRetrievalCiphertext",
+        "RequireStandardManifest",
+        "RequireSseS3ForActivationState",
+        "RequireStandardActivationState",
     }
     if set(by_sid) != expected_ids:
         raise TargetError("the backup bucket policy identities are not exact")
@@ -165,6 +170,7 @@ def require_exact_policy(value: dict[str, object], bucket: str) -> None:
     for sid, prefix in (
         ("RequireSseS3", "daily"),
         ("RequireSseS3ForDrillEvidence", "drills"),
+        ("RequireSseS3ForActivationState", "activation"),
     ):
         statement = by_sid[sid]
         if (
@@ -173,13 +179,41 @@ def require_exact_policy(value: dict[str, object], bucket: str) -> None:
             or actions(statement) != {"s3:PutObject"}
             or resources(statement) != {f"{bucket_arn}/{prefix}/*"}
             or statement.get("Condition")
+            != {"StringNotEquals": {"s3:x-amz-server-side-encryption": "AES256"}}
+        ):
+            raise TargetError(f"the backup bucket encryption policy is invalid: {sid}")
+
+    for sid, resource, storage_class in (
+        (
+            "RequireGlacierInstantRetrievalCiphertext",
+            f"{bucket_arn}/daily/*/*.age",
+            "GLACIER_IR",
+        ),
+        (
+            "RequireStandardManifest",
+            f"{bucket_arn}/daily/*/artifact-manifest.json",
+            "STANDARD",
+        ),
+        (
+            "RequireStandardActivationState",
+            f"{bucket_arn}/activation/*",
+            "STANDARD",
+        ),
+    ):
+        statement = by_sid[sid]
+        if (
+            statement.get("Effect") != "Deny"
+            or statement.get("Principal") != "*"
+            or actions(statement) != {"s3:PutObject"}
+            or resources(statement) != {resource}
+            or statement.get("Condition")
             != {
                 "StringNotEquals": {
-                    "s3:x-amz-server-side-encryption": "AES256"
+                    "s3:x-amz-storage-class": storage_class,
                 }
             }
         ):
-            raise TargetError(f"the backup bucket encryption policy is invalid: {sid}")
+            raise TargetError(f"the backup bucket storage policy is invalid: {sid}")
 
 
 def validate(args: argparse.Namespace) -> dict[str, object]:

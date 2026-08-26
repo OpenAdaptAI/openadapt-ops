@@ -18,6 +18,7 @@ concurrency:
 
 jobs:
   verify:
+    if: vars.DATABASE_BACKUP_SCHEDULE_ENABLED == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     environment: production-backup-monitor
@@ -111,7 +112,7 @@ jobs:
   record-alert:
     name: Keep one durable backup freshness alert
     needs: verify
-    if: ${{ always() }}
+    if: ${{ always() && needs.verify.result != 'skipped' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
