@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-08-26 21:59 UTC*
+> *Last updated: 2026-08-26 22:08 UTC*
 
 
 
@@ -49,6 +49,8 @@
 ## openadapt-flow
 
 
+- [docs(readme): restructure for scan-ability, relocate depth into docs/](https://github.com/OpenAdaptAI/openadapt-flow/pull/411) (#411) — merged 
+
 - [docs(readme): launch-funnel pass with evidence table, comparison, and FAQ](https://github.com/OpenAdaptAI/openadapt-flow/pull/410) (#410) — merged 
 
 - [Persist egress posture before durable resume](https://github.com/OpenAdaptAI/openadapt-flow/pull/408) (#408) — merged 
@@ -86,8 +88,6 @@
 - [fix: migrate an empty legacy pending-delivery table without data loss](https://github.com/OpenAdaptAI/openadapt-flow/pull/384) (#384) — merged 
 
 - [feat: bind production delivery to signed permits and receipts](https://github.com/OpenAdaptAI/openadapt-flow/pull/383) (#383) — merged 
-
-- [ci: prevent stale-head releases](https://github.com/OpenAdaptAI/openadapt-flow/pull/380) (#380) — merged 
 
 
 
