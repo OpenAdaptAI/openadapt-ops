@@ -1,12 +1,16 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-08-26 14:36 UTC*
+> *Last updated: 2026-08-26 16:26 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [docs: lead with the verified base-package quickstart](https://github.com/OpenAdaptAI/OpenAdapt/pull/1115) (#1115) — merged 
+
+- [fix(ci): use the complete lifecycle action pin](https://github.com/OpenAdaptAI/OpenAdapt/pull/1114) (#1114) — merged 
 
 - [fix: keep release compatible with GitPython 3.1.60](https://github.com/OpenAdaptAI/OpenAdapt/pull/1113) (#1113) — merged 
 
@@ -34,6 +38,8 @@
 
 ## openadapt-flow
 
+
+- [docs(paper): add the three-tree paper map](https://github.com/OpenAdaptAI/openadapt-flow/pull/399) (#399) — merged 
 
 - [ci: deselect the platform-neutral qualification campaign on macOS](https://github.com/OpenAdaptAI/openadapt-flow/pull/397) (#397) — merged 
 
@@ -72,8 +78,6 @@
 - [ci: prefer the canonical Ubuntu archive for the apt installs](https://github.com/OpenAdaptAI/openadapt-flow/pull/375) (#375) — merged 
 
 - [ci: prefer the canonical Ubuntu archive for the paper TeX install](https://github.com/OpenAdaptAI/openadapt-flow/pull/374) (#374) — merged 
-
-- [ci: bound the paper build and stop false private-source alarms](https://github.com/OpenAdaptAI/openadapt-flow/pull/373) (#373) — merged 
 
 
 
