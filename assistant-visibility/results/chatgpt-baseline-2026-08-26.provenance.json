@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "audit_id": "chatgpt-baseline-2026-08-26",
+  "collector": {
+    "assistant": "ChatGPT",
+    "surface": "ChatGPT logged-out, unpersonalized web experience",
+    "model_label": "not shown by the product",
+    "transport": "interactive web UI; no API"
+  },
+  "capture": {
+    "started_at": "2026-08-26T16:56:37.387Z",
+    "completed_at": "2026-08-26T17:06:11.341Z",
+    "fresh_logged_out_chat_per_trial": true,
+    "standard_mode": "The collector did not select the Web search control.",
+    "web_search_mode": "The collector selected the Web search control before sending the prompt.",
+    "completion_check": "The first standard trial was extracted after a fixed wait and a DOM inspection. The other standard trials required two seconds of stable visible text. Web search trials required three seconds."
+  },
+  "prompt_set": {
+    "path": "../prompts.json",
+    "sha256": "cd0053a2bd76c6fe24ae66772886e77c9248910aa00ed5e334237cfbcf280628"
+  },
+  "raw_response_bundle": {
+    "path": "chatgpt-baseline-2026-08-26.json",
+    "sha256": "05b338d80df35382984ae88aa7b16f7533722cbc6c63d1cf863a39bba5574fec",
+    "recorded_in_commit": "72f22c4b285696f443d599b8dd08a7f7b4c4c88f"
+  },
+  "privacy_boundary": {
+    "customer_data_in_prompts": false,
+    "openadapt_named_in_prompts": false,
+    "account_data_collected": false,
+    "conversation_history_collected": false
+  },
+  "observed_results": {
+    "expected_response_cells": 72,
+    "captured_response_cells": 72,
+    "missing_response_cells": 0,
+    "duplicate_response_cells": 0,
+    "empty_response_cells": 0,
+    "displayed_error_responses": 0,
+    "openadapt_mentions": 0,
+    "openadapt_citations": 0,
+    "openadapt_mean_position": null,
+    "responses_with_any_citation": 70,
+    "captured_citation_urls": 421,
+    "flagged_stale_openadapt_claims": 0
+  },
+  "limits": [
+    "The scorer labels any OpenAdapt mention as a recommendation. A later nonzero result needs a manual sentiment review.",
+    "The position score compares first mentions against a fixed list of named automation tools, not every tool in an answer.",
+    "Standard mode means the collector did not select Web search. ChatGPT still attached sources to 34 of 36 standard answers.",
+    "The visible DOM export includes source cards and ads. Neither contained an OpenAdapt mention or citation in this snapshot.",
+    "Most trials ran in concurrent groups of five or six guest tabs. This can affect response latency and service-side traffic treatment.",
+    "The collector used visible text stability, not a product-provided completion signal.",
+    "The product showed no model label, so this record cannot identify the exact model or model version.",
+    "This is one assistant surface on one date. It is a directional baseline, not a general ranking."
+  ]
+}

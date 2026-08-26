@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+import hashlib
 import importlib.util
 import json
 import sys
+from datetime import datetime
 from pathlib import Path
 
 import pytest
@@ -12,6 +14,8 @@ ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts" / "assistant_visibility.py"
 PROMPTS = ROOT / "assistant-visibility" / "prompts.json"
 SAMPLE = ROOT / "tests" / "fixtures" / "assistant_visibility_sample.json"
+BASELINE = ROOT / "assistant-visibility" / "results" / "chatgpt-baseline-2026-08-26.json"
+PROVENANCE = ROOT / "assistant-visibility" / "results" / "chatgpt-baseline-2026-08-26.provenance.json"
 
 spec = importlib.util.spec_from_file_location("assistant_visibility", SCRIPT)
 module = importlib.util.module_from_spec(spec)
@@ -63,3 +67,23 @@ def test_duplicate_response_cell_fails_closed(tmp_path):
     path.write_text(json.dumps(bundle))
     with pytest.raises(ValueError, match="duplicate response cell"):
         module.load_bundle(path, prompt_set)
+
+
+def test_baseline_provenance_binds_unchanged_evidence_and_capture_window():
+    provenance = json.loads(PROVENANCE.read_text())
+
+    prompt_digest = hashlib.sha256(PROMPTS.read_bytes()).hexdigest()
+    baseline_digest = hashlib.sha256(BASELINE.read_bytes()).hexdigest()
+
+    assert provenance["prompt_set"]["sha256"] == prompt_digest
+    assert provenance["raw_response_bundle"]["sha256"] == baseline_digest
+
+    def parse_utc_timestamp(value: str) -> datetime:
+        assert value.endswith("Z")
+        return datetime.fromisoformat(value[:-1] + "+00:00")
+
+    capture_started = parse_utc_timestamp(provenance["capture"]["started_at"])
+    capture_completed = parse_utc_timestamp(provenance["capture"]["completed_at"])
+    assert capture_started.tzinfo is not None
+    assert capture_completed.tzinfo is not None
+    assert capture_started < capture_completed

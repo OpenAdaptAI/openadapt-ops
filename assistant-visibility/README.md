@@ -30,6 +30,10 @@ The scorer doesn't call an assistant or an analytics provider. This keeps the ex
 
 Use an empty citation list when the answer has no citations. Don't include account data, conversation history, or user content outside the audit prompt and answer.
 
+## Provenance sidecar
+
+Each published snapshot needs a `.provenance.json` sidecar. Bind the prompt set and raw response bundle by SHA-256. Record the capture window, UI modes, model label, privacy boundary, and completion check. Keep the raw response bundle unchanged when you add provenance later.
+
 ## Score the export
 
 ```bash
