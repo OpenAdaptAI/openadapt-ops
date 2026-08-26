@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-08-26 17:55 UTC*
+> *Last updated: 2026-08-26 18:05 UTC*
 
 
 
@@ -87,6 +87,8 @@
 
 ## openadapt-desktop
 
+
+- [ci: derive Desktop Production from central admission](https://github.com/OpenAdaptAI/openadapt-desktop/pull/126) (#126) — merged 
 
 - [fix(release): publish native chain from reviewed main](https://github.com/OpenAdaptAI/openadapt-desktop/pull/125) (#125) — merged 
 
