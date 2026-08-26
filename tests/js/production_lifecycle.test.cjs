@@ -216,6 +216,9 @@ function source(admissionsDigest) {
   const paths = {
     admissions: "production-lifecycle-admissions.json",
     admissions_schema: "schemas/production-lifecycle-admissions.schema.json",
+    evidence_registry: "evidence-registry.json",
+    evidence_registry_schema: "schemas/evidence-registry.schema.json",
+    evidence_registry_validator: "scripts/validate_evidence_registry.py",
     evidence_manifest_schema:
       "schemas/production-lifecycle-evidence-manifest.schema.json",
     evidence_summary_schema:
@@ -456,6 +459,18 @@ test("a live-record digest mismatch fails closed", async () => {
 
   assert.equal(await lifecycle.load(fetchFixture(fixture, { bytes: changed }), NOW), null);
   assert.equal(await lifecycle.load(fetchFixture(fixture, { unavailable: true }), NOW), null);
+});
+
+test("a projection without the complete evidence-registry source fails closed", () => {
+  for (const key of [
+    "evidence_registry",
+    "evidence_registry_schema",
+    "evidence_registry_validator",
+  ]) {
+    const fixture = makeFixture();
+    delete fixture.projection.source.files[key];
+    assert.equal(lifecycle.validateProjection(fixture.projection), null, key);
+  }
 });
 
 test("every live authority request is uncached", async () => {

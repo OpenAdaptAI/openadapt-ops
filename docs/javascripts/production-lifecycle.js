@@ -52,6 +52,9 @@
   const EXPECTED_SOURCE_FILES = Object.freeze({
     admissions: "production-lifecycle-admissions.json",
     admissions_schema: "schemas/production-lifecycle-admissions.schema.json",
+    evidence_registry: "evidence-registry.json",
+    evidence_registry_schema: "schemas/evidence-registry.schema.json",
+    evidence_registry_validator: "scripts/validate_evidence_registry.py",
     evidence_manifest_schema:
       "schemas/production-lifecycle-evidence-manifest.schema.json",
     evidence_summary_schema:
