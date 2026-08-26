@@ -5,9 +5,11 @@ repository is the source of truth for the public product documentation at
 [docs.openadapt.ai](https://docs.openadapt.ai), and it holds the tooling that
 builds, validates, and publishes that site.
 
-> **Lifecycle: Internal.** This repository is publishing and operations
-> infrastructure, not an end-user package. It was formerly named
-> `openadapt-maintenance` and is now `OpenAdaptAI/openadapt-ops`.
+> **Lifecycle: Support.** This public repository provides current documentation
+> and operations tooling. It isn't an end-user package. The `docs` product
+> target gets its Production state from the separate release admission. This
+> repository was formerly named `openadapt-maintenance` and is now
+> `OpenAdaptAI/openadapt-ops`.
 
 > **Source of truth:** This repository's `docs/` tree and `mkdocs.yml` own
 > `docs.openadapt.ai`. `OpenAdapt/docs`, `OpenAdapt/mkdocs.yml`, and
