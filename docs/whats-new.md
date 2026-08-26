@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-08-26 20:15 UTC*
+> *Last updated: 2026-08-26 21:59 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [chore(release): reconcile platform manifest substrate projection](https://github.com/OpenAdaptAI/OpenAdapt/pull/1121) (#1121) — merged 
 
 - [chore: ignore every .env variant, not one at a time](https://github.com/OpenAdaptAI/OpenAdapt/pull/1119) (#1119) — merged 
 
@@ -47,6 +49,12 @@
 ## openadapt-flow
 
 
+- [docs(readme): launch-funnel pass with evidence table, comparison, and FAQ](https://github.com/OpenAdaptAI/openadapt-flow/pull/410) (#410) — merged 
+
+- [Persist egress posture before durable resume](https://github.com/OpenAdaptAI/openadapt-flow/pull/408) (#408) — merged 
+
+- [fix(cli): preserve model tiers on resume](https://github.com/OpenAdaptAI/openadapt-flow/pull/404) (#404) — merged 
+
 - [ci: require release App tag publication](https://github.com/OpenAdaptAI/openadapt-flow/pull/403) (#403) — merged 
 
 - [docs: derive Flow product state from admissions](https://github.com/OpenAdaptAI/openadapt-flow/pull/401) (#401) — merged 
@@ -81,16 +89,12 @@
 
 - [ci: prevent stale-head releases](https://github.com/OpenAdaptAI/openadapt-flow/pull/380) (#380) — merged 
 
-- [chore(types): adopt PR #332 mypy cleanup](https://github.com/OpenAdaptAI/openadapt-flow/pull/379) (#379) — merged 
-
-- [docs(paper): state EffectBench's public scope, gated split, and gaming surface](https://github.com/OpenAdaptAI/openadapt-flow/pull/378) (#378) — merged 
-
-- [ci: correct the stale version comment on the pypi-publish pin](https://github.com/OpenAdaptAI/openadapt-flow/pull/377) (#377) — merged 
-
 
 
 ## openadapt-desktop
 
+
+- [chore: ignore every .env variant, not one at a time](https://github.com/OpenAdaptAI/openadapt-desktop/pull/134) (#134) — merged 
 
 - [Scope Desktop secret scans to the tested change](https://github.com/OpenAdaptAI/openadapt-desktop/pull/133) (#133) — merged 
 
@@ -127,6 +131,8 @@
 ## openadapt-agent
 
 
+- [chore: ignore every .env variant, not one at a time](https://github.com/OpenAdaptAI/openadapt-agent/pull/35) (#35) — merged 
+
 - [Derive Agent state from release admission](https://github.com/OpenAdaptAI/openadapt-agent/pull/33) (#33) — merged 
 
 - [security: require cryptography 50.0.0](https://github.com/OpenAdaptAI/openadapt-agent/pull/30) (#30) — merged 
@@ -145,11 +151,29 @@
 ## openadapt-evals
 
 
+- [feat(ci): add the authorized importer workflow and fix the proposal bot](https://github.com/OpenAdaptAI/openadapt-evals/pull/309) (#309) — merged 
+
+- [feat(evidence): implement the private-export contract mechanism](https://github.com/OpenAdaptAI/openadapt-evals/pull/308) (#308) — merged 
+
+- [chore: ignore every .env variant, not one at a time](https://github.com/OpenAdaptAI/openadapt-evals/pull/307) (#307) — merged 
+
+- [chore(release): prepare 0.94.0](https://github.com/OpenAdaptAI/openadapt-evals/pull/306) (#306) — merged 
+
+- [fix(evidence): bind retained evidence to the reviewed signing route](https://github.com/OpenAdaptAI/openadapt-evals/pull/305) (#305) — merged 
+
+- [docs(evidence): draft the private-export contract](https://github.com/OpenAdaptAI/openadapt-evals/pull/304) (#304) — merged 
+
+- [chore(release): prepare 0.93.0](https://github.com/OpenAdaptAI/openadapt-evals/pull/302) (#302) — merged 
+
+- [feat(ci): propose the next release as a reviewable pull request](https://github.com/OpenAdaptAI/openadapt-evals/pull/301) (#301) — merged 
+
 - [feat(evidence): bind Cloud acceptance to the public Sigstore instance](https://github.com/OpenAdaptAI/openadapt-evals/pull/300) (#300) — merged 
 
 - [fix(evidence): accept the timestamp format GitHub CLI actually emits](https://github.com/OpenAdaptAI/openadapt-evals/pull/299) (#299) — merged 
 
 - [feat(evidence): publish the Flow 1.33.0 comparison; supersede 1.32.0](https://github.com/OpenAdaptAI/openadapt-evals/pull/297) (#297) — merged 
+
+- [ci: protect release and lifecycle workflows](https://github.com/OpenAdaptAI/openadapt-evals/pull/296) (#296) — merged 
 
 - [docs: public tagged copy of the Phase-2 certified-reward RL pre-registration](https://github.com/OpenAdaptAI/openadapt-evals/pull/295) (#295) — merged 
 
@@ -166,8 +190,6 @@
 - [ci: run pull-request checks on every base branch](https://github.com/OpenAdaptAI/openadapt-evals/pull/288) (#288) — merged 
 
 - [Verify retained production acceptance evidence](https://github.com/OpenAdaptAI/openadapt-evals/pull/287) (#287) — merged 
-
-- [Publish Flow 1.31 evidence and enforce maturity boundaries](https://github.com/OpenAdaptAI/openadapt-evals/pull/286) (#286) — merged 
 
 
 
@@ -201,12 +223,16 @@
 ## openadapt-privacy
 
 
+- [chore: ignore every .env variant, not one at a time](https://github.com/OpenAdaptAI/openadapt-privacy/pull/16) (#16) — merged 
+
 - [fix(ci): publish with an action that accepts Metadata-Version 2.5](https://github.com/OpenAdaptAI/openadapt-privacy/pull/14) (#14) — merged 
 
 
 
 ## openadapt-types
 
+
+- [chore: ignore every .env variant, not one at a time](https://github.com/OpenAdaptAI/openadapt-types/pull/28) (#28) — merged 
 
 - [fix(ci): publish with an action that accepts Metadata-Version 2.5](https://github.com/OpenAdaptAI/openadapt-types/pull/26) (#26) — merged 
 
