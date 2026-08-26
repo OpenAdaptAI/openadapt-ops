@@ -30,9 +30,22 @@ replay_native_arial_seed1.png` (1120x1858) from the openadapt-flow repo.
 
 | fixture | intent | verdict | point | latency_s | est_cost_usd |
 |---|---|---|---|---|---|
-| _(pending deploy)_ | | | | | |
+| record_seed1.png | Click Open in the row for patient Halloran, Karen (MRN MG584224) | hit | (2069, 197) | 26.75 | 0.0155 |
+| record_seed1.png | Click Open in the row for patient Delgado, Edward (MRN MG901312) | hit | (2068, 1470) | 1.33 | 0.0077 |
+| record_seed1.png | Click Open in the row for patient Kowalski, Maria (MRN RC571054) | hit | (2086, 3294) | 1.37 | 0.0078 |
+| replay_native_arial_seed1.png | Click Open in the row for patient Ferreira, Susan (MRN PT994939) | miss | (806, 107) | 2.09 | 0.0080 |
+| replay_native_arial_seed1.png | Click Open in the row for patient Whitfield, Philip (MRN PT560165) | miss | (879, 2345) | 1.01 | 0.0076 |
 
-Summary: _(hit / miss / abstain counts, median latency, cost per request)_
+Summary: 5 requests: 3 hit / 2 miss / 0 abstain; latency median 1.37 s
+(min 1.01 s, max 26.75 s incl. one cold engine warm-up); burst GPU cost
+incl. one 120 s idle window ~$0.0466 ($0.0093/request).
+
+Run record 2026-08-25 (deploy of #143+#144 image pins, founder-minted
+`qwen-endpoint-token`): unauthed /models and /chat/completions return
+401 as required; authed smoke through the real flow client completed
+end to end. The two misses are on the alternate-font replay fixture
+and are recorded as measurement, not tuned away, per the interpretation
+notes above.
 
 Interpretation notes, fixed in advance:
 
