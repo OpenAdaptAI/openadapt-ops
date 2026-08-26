@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-08-26 17:37 UTC*
+> *Last updated: 2026-08-26 17:55 UTC*
 
 
 
@@ -117,6 +117,8 @@
 ## openadapt-agent
 
 
+- [Derive Agent state from release admission](https://github.com/OpenAdaptAI/openadapt-agent/pull/33) (#33) — merged 
+
 - [security: require cryptography 50.0.0](https://github.com/OpenAdaptAI/openadapt-agent/pull/30) (#30) — merged 
 
 
@@ -151,6 +153,8 @@
 
 ## openadapt-capture
 
+
+- [Derive Capture state from release admission](https://github.com/OpenAdaptAI/openadapt-capture/pull/91) (#91) — merged 
 
 - [ci: require three counted live qualification trials per OS](https://github.com/OpenAdaptAI/openadapt-capture/pull/86) (#86) — merged 
 
