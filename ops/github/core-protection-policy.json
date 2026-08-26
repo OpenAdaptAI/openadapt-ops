@@ -96,6 +96,26 @@
       "openadapt-evals",
       "openadapt-flow"
     ],
+    "token_repository_bindings": {
+      "OpenAdapt": [
+        "OpenAdapt"
+      ],
+      "openadapt-agent": [
+        "openadapt-agent"
+      ],
+      "openadapt-capture": [
+        "openadapt-capture"
+      ],
+      "openadapt-desktop": [
+        "openadapt-desktop"
+      ],
+      "openadapt-evals": [
+        "openadapt-evals"
+      ],
+      "openadapt-flow": [
+        "openadapt-flow"
+      ]
+    },
     "repository_variables": {
       "app_id": "OPENADAPT_RELEASE_APP_ID"
     },
@@ -142,6 +162,19 @@
       "openadapt-evals",
       "openadapt-ops"
     ],
+    "token_repository_bindings": {
+      ".github": [
+        ".github"
+      ],
+      "openadapt-evals": [
+        "openadapt-evals"
+      ],
+      "openadapt-ops": [
+        ".github",
+        "openadapt-evals",
+        "openadapt-ops"
+      ]
+    },
     "required_repository_permissions": [
       "Actions: write",
       "Metadata: read",
@@ -212,6 +245,11 @@
     "repository_scope": [
       "openadapt-ops"
     ],
+    "token_repository_bindings": {
+      "openadapt-ops": [
+        "openadapt-ops"
+      ]
+    },
     "required_repository_permissions": [
       "Actions: write",
       "Metadata: read",
@@ -252,7 +290,7 @@
       "name": "OpenAdapt",
       "visibility": "public",
       "default_branch": "main",
-      "audited_main_sha": "3098d46064c8d3e3fa1a515588487cdb724500e8",
+      "audited_main_sha": "f7f10f3c88e892ad880372c617c787b7bed01d9c",
       "require_code_owner_review": true,
       "required_checks": [
         "Analyze (python)",
@@ -297,6 +335,10 @@
       "release_workflows": [
         {
           "path": ".github/workflows/release-and-publish.yml",
+          "required_effects": [
+            "tag-push",
+            "github-release"
+          ],
           "required_patterns": [
             "(?m)^[ ]{2}workflow_dispatch:\\s*$",
             "(?m)^[ ]{2}push:\\s*$",
@@ -319,7 +361,7 @@
             "scripts/check_source_boundary\\.py",
             "scripts/verify_release_artifacts\\.py",
             "scripts/validate_platform_manifest\\.py",
-            "GH_TOKEN:\\s*\\$\\{\\{\\s*steps\\.release_app\\.outputs\\.token\\s*\\}\\}",
+            "GH_TOKEN:\\s*\\$\\{\\{\\s*steps\\.release-app\\.outputs\\.token\\s*\\}\\}",
             "gh\\s+release\\s+(?:create|edit|upload)"
           ],
           "forbidden_patterns": [
@@ -392,6 +434,9 @@
       "release_workflows": [
         {
           "path": ".github/workflows/release.yml",
+          "required_effects": [
+            "tag-push"
+          ],
           "required_patterns": [
             "(?m)^[ ]{2}workflow_dispatch:\\s*$",
             "(?m)^[ ]{2}push:\\s*$",
@@ -431,7 +476,7 @@
       "name": "openadapt-flow",
       "visibility": "public",
       "default_branch": "main",
-      "audited_main_sha": "fa49a5de54a749ebf00621b0e4d38a2b439bb058",
+      "audited_main_sha": "ba127f3a3637a794355a2fef2b381383e5d0be40",
       "require_code_owner_review": true,
       "required_checks": [
         "docs-consistency",
@@ -480,6 +525,9 @@
       "release_workflows": [
         {
           "path": ".github/workflows/release.yml",
+          "required_effects": [
+            "tag-push"
+          ],
           "required_patterns": [
             "(?m)^[ ]{2}workflow_dispatch:\\s*$",
             "(?m)^[ ]{2}push:\\s*$",
@@ -517,7 +565,7 @@
       "name": "openadapt-capture",
       "visibility": "public",
       "default_branch": "main",
-      "audited_main_sha": "681683e73be13ce75ee3e8c720cd8ce7fbd7c76a",
+      "audited_main_sha": "5ed28e6c63e70cdedf32c760f0272841adb1063b",
       "require_code_owner_review": true,
       "required_checks": [
         "Analyze (javascript-typescript)",
@@ -562,6 +610,9 @@
       "release_workflows": [
         {
           "path": ".github/workflows/release.yml",
+          "required_effects": [
+            "tag-push"
+          ],
           "required_patterns": [
             "(?m)^[ ]{2}workflow_dispatch:\\s*$",
             "(?m)^[ ]{2}push:\\s*$",
@@ -596,7 +647,7 @@
       "name": "openadapt-desktop",
       "visibility": "public",
       "default_branch": "main",
-      "audited_main_sha": "a73c3faf90f5d0b766ea7156a057bd6240d1c2bb",
+      "audited_main_sha": "a363865c4d375786628063a04f83d74f2b413f2c",
       "require_code_owner_review": false,
       "required_checks": [
         "Analyze (javascript-typescript)",
@@ -662,6 +713,10 @@
       "release_workflows": [
         {
           "path": ".github/workflows/release.yml",
+          "required_effects": [
+            "tag-push",
+            "github-release"
+          ],
           "required_patterns": [
             "(?m)^[ ]{2}workflow_dispatch:\\s*$",
             "(?m)^[ ]{2}push:\\s*$",
@@ -696,6 +751,7 @@
         },
         {
           "path": ".github/workflows/native-freshness.yml",
+          "required_effects": [],
           "required_patterns": [
             "(?m)^[ ]{2}workflow_dispatch:\\s*$",
             "(?m)^[ ]{2}release:\\s*$",
@@ -715,6 +771,10 @@
         },
         {
           "path": ".github/workflows/native-release.yml",
+          "required_effects": [
+            "tag-push",
+            "github-release"
+          ],
           "required_patterns": [
             "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?release-identity\\s*$",
             "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?native-release\\s*$",
@@ -750,6 +810,10 @@
         },
         {
           "path": ".github/workflows/ffmpeg-runtime.yml",
+          "required_effects": [
+            "tag-push",
+            "github-release"
+          ],
           "required_patterns": [
             "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?release-identity\\s*$",
             "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?native-release\\s*$",
@@ -786,7 +850,7 @@
       "name": "openadapt-evals",
       "visibility": "public",
       "default_branch": "main",
-      "audited_main_sha": "55d16ed04561b0b78c63176cac90b73dbc0cdfad",
+      "audited_main_sha": "ef55e01ebe08382c9a05675d491dfbc297ed6d5e",
       "require_code_owner_review": false,
       "required_checks": [
         "test"
@@ -838,6 +902,10 @@
       "release_workflows": [
         {
           "path": ".github/workflows/release.yml",
+          "required_effects": [
+            "tag-push",
+            "github-release"
+          ],
           "required_patterns": [
             "(?m)^[ ]{2}workflow_dispatch:\\s*$",
             "(?m)^[ ]{2}push:\\s*$",
@@ -858,7 +926,9 @@
             "pypa/gh-action-pypi-publish",
             "skip-existing:\\s*true",
             "scripts/verify_release_lock\\.py",
-            "scripts/check_source_boundary\\.py\\s+--require-dist"
+            "scripts/check_source_boundary\\.py\\s+--require-dist",
+            "GH_TOKEN:\\s*\\$\\{\\{\\s*steps\\.release-app\\.outputs\\.token\\s*\\}\\}",
+            "gh\\s+release\\s+(?:create|edit|upload)"
           ],
           "forbidden_patterns": [
             "ADMIN_TOKEN",
@@ -919,7 +989,7 @@
       "local_repository_name": "openadapt-maintenance",
       "visibility": "public",
       "default_branch": "main",
-      "audited_main_sha": "789345539c5a76a9fc1de21b79bb7189c266f870",
+      "audited_main_sha": "b0327de8019db6a925104148a094f6f0756b90d2",
       "require_code_owner_review": true,
       "required_checks": [
         "Analyze (python)",
@@ -984,6 +1054,7 @@
       "release_workflows": [
         {
           "path": ".github/workflows/sync.yml",
+          "required_effects": [],
           "required_patterns": [
             "(?m)^[ ]{2}workflow_dispatch:\\s*$",
             "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?github-pages\\s*$",
@@ -1128,7 +1199,7 @@
       "name": "openadapt-web",
       "visibility": "public",
       "default_branch": "main",
-      "audited_main_sha": "0f2c1dff2441d4bac5eb12a9e48b5d05d651f64b",
+      "audited_main_sha": "ab823011683b8aff035ce5edb62e50f6ef990e1b",
       "require_code_owner_review": true,
       "required_checks": [
         "Analyze (javascript-typescript)",
