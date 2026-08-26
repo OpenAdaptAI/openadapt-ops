@@ -40,6 +40,21 @@ def test_sync_checks_for_an_empty_diff_before_it_opens_a_pull_request() -> None:
     assert 'echo "changed=false" >> "$GITHUB_OUTPUT"' in WORKFLOW
 
 
+def test_sync_ignores_a_diff_that_is_only_the_generation_clock() -> None:
+    assert r"""git diff --staged --quiet -I'^> \*Last updated: '""" in WORKFLOW
+
+
+def test_sync_publishes_recorded_source_then_fails_on_a_missing_pull_request() -> None:
+    push = WORKFLOW.index('git push --force origin "HEAD:refs/heads/${BRANCH}"')
+    deploy = WORKFLOW.index("actions/deploy-pages")
+    gate = WORKFLOW.index("Confirm the generated source is queued for main")
+    assert push < deploy < gate
+    assert (
+        "if: ${{ steps.docs_pr.outputs.changed == 'true'"
+        " && steps.docs_pr.outputs.pr_url == '' }}"
+    ) in WORKFLOW
+
+
 def test_sync_pull_request_title_does_not_skip_the_merge_build() -> None:
     # The squash commit takes the pull request title. `[skip ci]` in that title
     # would stop the push-triggered build that deploys the merged source.
