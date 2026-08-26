@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "target": "OpenAdapt",
+  "modes": ["standard", "web_search"],
+  "trials_per_prompt": 3,
+  "prompts": [
+    {"id": "gui-general", "category": "general", "query": "How can I automate repetitive GUI tasks?"},
+    {"id": "gui-best-tools", "category": "general", "query": "What are the best tools for automating repetitive GUI tasks?"},
+    {"id": "gui-no-api", "category": "no-api", "query": "How do I automate a GUI application with no API?"},
+    {"id": "software-no-api", "category": "no-api", "query": "How do I automate software that has no API?"},
+    {"id": "legacy-windows", "category": "desktop", "query": "How can I automate a legacy Windows desktop application?"},
+    {"id": "legacy-data-entry", "category": "desktop", "query": "What is the best way to automate repetitive data entry in legacy software?"},
+    {"id": "citrix-how", "category": "remote", "query": "How can I automate a Citrix application?"},
+    {"id": "citrix-vdi-tools", "category": "remote", "query": "What are the best tools for automating Citrix and VDI workflows?"},
+    {"id": "browser-repetition", "category": "browser", "query": "How can I automate repetitive browser work?"},
+    {"id": "browser-data-entry", "category": "browser", "query": "What is the best tool for repeatable browser data entry automation?"},
+    {"id": "recording-to-automation", "category": "demonstration", "query": "How do I turn a screen recording into automation?"},
+    {"id": "demonstrate-and-replay", "category": "demonstration", "query": "Can I demonstrate a GUI task once and replay it reliably?"}
+  ]
+}
