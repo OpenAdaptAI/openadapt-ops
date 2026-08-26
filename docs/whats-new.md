@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-08-26 18:05 UTC*
+> *Last updated: 2026-08-26 18:51 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [ci: bind launcher releases to the release app](https://github.com/OpenAdaptAI/OpenAdapt/pull/1118) (#1118) — merged 
 
 - [Replace the legacy GitBook link](https://github.com/OpenAdaptAI/OpenAdapt/pull/1117) (#1117) — merged 
 
@@ -42,6 +44,8 @@
 
 ## openadapt-flow
 
+
+- [docs: derive Flow product state from admissions](https://github.com/OpenAdaptAI/openadapt-flow/pull/401) (#401) — merged 
 
 - [test: fail a run that leaves tracked repository files dirty](https://github.com/OpenAdaptAI/openadapt-flow/pull/400) (#400) — merged 
 
@@ -80,8 +84,6 @@
 - [ci: correct the stale version comment on the pypi-publish pin](https://github.com/OpenAdaptAI/openadapt-flow/pull/377) (#377) — merged 
 
 - [feat: enforce signed qualification admission before actuation](https://github.com/OpenAdaptAI/openadapt-flow/pull/376) (#376) — merged 
-
-- [ci: prefer the canonical Ubuntu archive for the apt installs](https://github.com/OpenAdaptAI/openadapt-flow/pull/375) (#375) — merged 
 
 
 
@@ -135,6 +137,8 @@
 ## openadapt-evals
 
 
+- [feat(evidence): publish the Flow 1.33.0 comparison; supersede 1.32.0](https://github.com/OpenAdaptAI/openadapt-evals/pull/297) (#297) — merged 
+
 - [docs: public tagged copy of the Phase-2 certified-reward RL pre-registration](https://github.com/OpenAdaptAI/openadapt-evals/pull/295) (#295) — merged 
 
 - [feat(evidence): publish the Flow 1.32.0 comparison; mark 1.31.0 superseded](https://github.com/OpenAdaptAI/openadapt-evals/pull/294) (#294) — merged 
@@ -155,6 +159,8 @@
 
 ## openadapt-capture
 
+
+- [ci: require release App tag publication](https://github.com/OpenAdaptAI/openadapt-capture/pull/92) (#92) — merged 
 
 - [Derive Capture state from release admission](https://github.com/OpenAdaptAI/openadapt-capture/pull/91) (#91) — merged 
 
