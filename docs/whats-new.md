@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-08-26 14:24 UTC*
+> *Last updated: 2026-08-26 14:36 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [fix: keep release compatible with GitPython 3.1.60](https://github.com/OpenAdaptAI/OpenAdapt/pull/1113) (#1113) — merged 
 
 - [Make the plain launcher install support quickstart](https://github.com/OpenAdaptAI/OpenAdapt/pull/1111) (#1111) — merged 
 
