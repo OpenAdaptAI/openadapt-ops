@@ -138,7 +138,8 @@ and steps that don't assert a result. It doesn't authorize replay.
 
     - an action writes data or its risk is unknown;
     - an action is consequential or irreversible;
-    - an identity, effect, or policy contract is missing; or
+    - an identity or effect contract is missing;
+    - a policy contract is missing; or
     - the recording contains an unexpected application, page, or data source.
 
     Move the bundle to [workflow qualification](../guides/qualify-a-workflow.md).
