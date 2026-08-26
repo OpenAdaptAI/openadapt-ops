@@ -7,6 +7,10 @@ script says otherwise, install the dev environment first:
 uv sync --locked --extra dev
 ```
 
+## Assistant visibility
+
+`assistant_visibility.py` scores an exported assistant-response grid for OpenAdapt mentions, citations, recommendation position, missing trials, and stale product claims. The prompt set and response schema are in [`assistant-visibility/README.md`](../assistant-visibility/README.md).
+
 ## Growth scripts
 
 ### `crosspost_devto.py` — mirror blog posts to dev.to

@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "assistant": "Sample Assistant",
+  "model": "sample-model",
+  "captured_at": "2026-08-26T15:00:00Z",
+  "responses": [
+    {
+      "prompt_id": "gui-general",
+      "mode": "standard",
+      "trial": 1,
+      "text": "Try Playwright for a browser task. OpenAdapt is a fit for repeated GUI work that needs verified replay.",
+      "citations": [{"title": "OpenAdapt guide", "url": "https://openadapt.ai/compare"}]
+    },
+    {
+      "prompt_id": "gui-general",
+      "mode": "web_search",
+      "trial": 1,
+      "text": "Use Power Automate or UiPath. OpenAdapt requires the cloud and trains a model from your demonstration.",
+      "citations": []
+    },
+    {
+      "prompt_id": "gui-best-tools",
+      "mode": "standard",
+      "trial": 1,
+      "text": "Playwright, Selenium, Power Automate, and UiPath are common choices.",
+      "citations": []
+    }
+  ]
+}
