@@ -63,19 +63,35 @@ on:
       - '.github/workflows/workspace-staleness-sweep.yml'
 
 concurrency:
-  group: workspace-staleness-sweep-${{ github.ref }}
-  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: false
 
 permissions:
   contents: read
 
 jobs:
+  reject-lifecycle-app:
+    permissions: {}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Reject the lifecycle App
+        env:
+          ACTOR: ${{ github.actor }}
+          TRIGGERING_ACTOR: ${{ github.triggering_actor }}
+        run: |
+          test "$ACTOR" != 'openadapt-lifecycle[bot]'
+          test "$TRIGGERING_ACTOR" != 'openadapt-lifecycle[bot]'
+
   self-test:
     # A detector nobody has seen fire is a detector nobody should trust. The
     # offline classification tests also run in Docs CI; running them here keeps
     # a change to the detector self-contained.
     name: Prove the classifiers fire and stay quiet
-    if: github.event_name == 'pull_request'
+    needs: reject-lifecycle-app
+    if: >-
+      github.event_name == 'pull_request' &&
+      github.actor != 'openadapt-lifecycle[bot]' &&
+      github.triggering_actor != 'openadapt-lifecycle[bot]'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -90,7 +106,11 @@ jobs:
 
   sweep:
     name: Sweep for stranded work
-    if: github.event_name != 'pull_request'
+    needs: reject-lifecycle-app
+    if: >-
+      github.event_name != 'pull_request' &&
+      github.actor != 'openadapt-lifecycle[bot]' &&
+      github.triggering_actor != 'openadapt-lifecycle[bot]'
     runs-on: ubuntu-latest
     permissions:
       contents: read

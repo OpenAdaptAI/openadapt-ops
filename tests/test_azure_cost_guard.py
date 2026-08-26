@@ -105,8 +105,10 @@ def test_scheduled_guard_uses_step_level_secret_gate():
     workflow = yaml.safe_load(
         (REPO_ROOT / ".github/workflows/azure-cost-guard.yml").read_text(encoding="utf-8")
     )
-    steps = workflow["jobs"]["report"]["steps"]
-    assert "if" not in workflow["jobs"]["report"]
+    report = workflow["jobs"]["report"]
+    steps = report["steps"]
+    assert "github.actor != 'openadapt-lifecycle[bot]'" in report["if"]
+    assert "github.triggering_actor != 'openadapt-lifecycle[bot]'" in report["if"]
     credentials = next(step for step in steps if step.get("id") == "credentials")
     assert credentials["env"]["AZURE_CREDENTIALS"] == "${{ secrets.AZURE_CREDENTIALS }}"
     login = next(step for step in steps if "Azure/login@" in step.get("uses", ""))

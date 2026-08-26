@@ -5,15 +5,6 @@ on:
     - cron: "37 8 * * *"
   workflow_dispatch:
   pull_request:
-    paths:
-      - ".github/workflows/production-lifecycle-policy.yml"
-      - "docs/production-lifecycle.json"
-      - "docs/reference/production-lifecycle.md"
-      - "docs/schemas/production-lifecycle-public.schema.json"
-      - "mkdocs.yml"
-      - "production-lifecycle-source.json"
-      - "scripts/render_production_lifecycle.py"
-      - "tests/test_production_lifecycle_policy.py"
   push:
     branches: [main]
     paths:
@@ -30,11 +21,27 @@ permissions:
   contents: read
 
 concurrency:
-  group: production-lifecycle-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
+  reject-lifecycle-app:
+    permissions: {}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Reject the lifecycle App
+        env:
+          ACTOR: ${{ github.actor }}
+          TRIGGERING_ACTOR: ${{ github.triggering_actor }}
+        run: |
+          test "$ACTOR" != 'openadapt-lifecycle[bot]'
+          test "$TRIGGERING_ACTOR" != 'openadapt-lifecycle[bot]'
+
   validate:
+    needs: reject-lifecycle-app
+    if: >-
+      github.actor != 'openadapt-lifecycle[bot]' &&
+      github.triggering_actor != 'openadapt-lifecycle[bot]'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -51,10 +58,12 @@ jobs:
         run: python3 -m unittest tests.test_production_lifecycle_policy
 
   report-failure:
-    needs: validate
+    needs: [reject-lifecycle-app, validate]
     if: >-
       ${{ always() && needs.validate.result == 'failure' &&
-          (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') }}
+          (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') &&
+          github.actor != 'openadapt-lifecycle[bot]' &&
+          github.triggering_actor != 'openadapt-lifecycle[bot]' }}
     runs-on: ubuntu-latest
     permissions:
       issues: write

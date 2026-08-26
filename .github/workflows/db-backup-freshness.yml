@@ -13,11 +13,27 @@ permissions:
   contents: read
 
 concurrency:
-  group: production-db-backup-freshness
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
+  reject-lifecycle-app:
+    permissions: {}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Reject the lifecycle App
+        env:
+          ACTOR: ${{ github.actor }}
+          TRIGGERING_ACTOR: ${{ github.triggering_actor }}
+        run: |
+          test "$ACTOR" != 'openadapt-lifecycle[bot]'
+          test "$TRIGGERING_ACTOR" != 'openadapt-lifecycle[bot]'
+
   verify:
+    needs: reject-lifecycle-app
+    if: >-
+      github.actor != 'openadapt-lifecycle[bot]' &&
+      github.triggering_actor != 'openadapt-lifecycle[bot]'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     environment: production-backup-monitor
@@ -110,8 +126,11 @@ jobs:
 
   record-alert:
     name: Keep one durable backup freshness alert
-    needs: verify
-    if: ${{ always() }}
+    needs: [reject-lifecycle-app, verify]
+    if: >-
+      always() &&
+      github.actor != 'openadapt-lifecycle[bot]' &&
+      github.triggering_actor != 'openadapt-lifecycle[bot]'
     runs-on: ubuntu-latest
     permissions:
       contents: read

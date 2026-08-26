@@ -1,0 +1,190 @@
+name: Production lifecycle projection
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_event:
+        description: Canonical lifecycle source event
+        required: true
+        type: string
+      source_repository:
+        description: Canonical lifecycle repository
+        required: true
+        type: string
+      source_ref:
+        description: Canonical lifecycle ref
+        required: true
+        type: string
+      source_commit:
+        description: Exact canonical lifecycle commit
+        required: true
+        type: string
+      candidate_admissions_sha256:
+        description: Exact admissions digest
+        required: true
+        type: string
+      candidate_ledger_head_sha256:
+        description: Exact bound lifecycle ledger head
+        required: true
+        type: string
+      idempotency_key:
+        description: Exact projection idempotency key
+        required: true
+        type: string
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  authorize-lifecycle-app:
+    permissions: {}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Refuse any identity other than the lifecycle App
+        env:
+          ACTOR: ${{ github.actor }}
+          ACTOR_ID: ${{ github.actor_id }}
+          EXPECTED_ACTOR_ID: ${{ vars.OPENADAPT_LIFECYCLE_ACTOR_ID }}
+          EVENT_NAME: ${{ github.event_name }}
+          REF: ${{ github.ref }}
+          REPOSITORY: ${{ github.repository }}
+          TRIGGERING_ACTOR: ${{ github.triggering_actor }}
+        run: |
+          set -euo pipefail
+          test "$REPOSITORY" = 'OpenAdaptAI/openadapt-ops'
+          test "$REF" = 'refs/heads/main'
+          test "$EVENT_NAME" = 'workflow_dispatch'
+          test "$ACTOR" = 'openadapt-lifecycle[bot]'
+          test "$TRIGGERING_ACTOR" = 'openadapt-lifecycle[bot]'
+          test -n "$EXPECTED_ACTOR_ID"
+          test "$ACTOR_ID" = "$EXPECTED_ACTOR_ID"
+
+  project-lifecycle:
+    name: Project canonical Production lifecycle
+    needs: authorize-lifecycle-app
+    if: >-
+      github.repository == 'OpenAdaptAI/openadapt-ops' &&
+      github.ref == 'refs/heads/main' &&
+      github.event_name == 'workflow_dispatch' &&
+      github.actor == 'openadapt-lifecycle[bot]' &&
+      github.triggering_actor == 'openadapt-lifecycle[bot]' &&
+      github.actor_id == vars.OPENADAPT_LIFECYCLE_ACTOR_ID &&
+      inputs.source_event == 'production_lifecycle_ledger_changed' &&
+      inputs.source_repository == 'OpenAdaptAI/.github' &&
+      inputs.source_ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: production-lifecycle-projection
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Create an exact lifecycle App installation token
+        id: lifecycle-app
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          app-id: ${{ vars.OPENADAPT_LIFECYCLE_APP_ID }}
+          private-key: ${{ secrets.OPENADAPT_LIFECYCLE_APP_PRIVATE_KEY }}
+          owner: OpenAdaptAI
+          repositories: |
+            .github
+            openadapt-evals
+            openadapt-ops
+          permission-actions: write
+          permission-metadata: read
+          permission-pull-requests: write
+
+      - name: Verify the exact lifecycle App installation
+        env:
+          EXPECTED_APP_ID: ${{ vars.OPENADAPT_LIFECYCLE_APP_ID }}
+          EXPECTED_INSTALLATION_ID: ${{ vars.OPENADAPT_LIFECYCLE_INSTALLATION_ID }}
+          GH_TOKEN: ${{ steps.lifecycle-app.outputs.token }}
+        run: |
+          set -euo pipefail
+          test -n "$EXPECTED_APP_ID"
+          test -n "$EXPECTED_INSTALLATION_ID"
+          actual_app_id=$(gh api /installation --jq '.app_id | tostring')
+          actual_installation_id=$(gh api /installation --jq '.id | tostring')
+          test "$actual_app_id" = "$EXPECTED_APP_ID"
+          test "$actual_installation_id" = "$EXPECTED_INSTALLATION_ID"
+
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12'
+
+      - name: Verify the exact source commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_COMMIT: ${{ inputs.source_commit }}
+        run: |
+          set -euo pipefail
+          test "${SOURCE_COMMIT}" != ''
+          test "${SOURCE_COMMIT}" = "$(gh api repos/OpenAdaptAI/.github/commits/main --jq .sha)"
+
+      - name: Prepare and render the exact lifecycle projection
+        env:
+          CANDIDATE_ADMISSIONS_SHA256: ${{ inputs.candidate_admissions_sha256 }}
+          CANDIDATE_LEDGER_HEAD_SHA256: ${{ inputs.candidate_ledger_head_sha256 }}
+          IDEMPOTENCY_KEY: ${{ inputs.idempotency_key }}
+          SOURCE_COMMIT: ${{ inputs.source_commit }}
+          SOURCE_EVENT: ${{ inputs.source_event }}
+          SOURCE_REF: ${{ inputs.source_ref }}
+          SOURCE_REPOSITORY: ${{ inputs.source_repository }}
+        run: |
+          set -euo pipefail
+          python scripts/prepare_production_lifecycle_projection.py \
+            --source-commit "$SOURCE_COMMIT" \
+            --source-repository "$SOURCE_REPOSITORY" \
+            --source-ref "$SOURCE_REF" \
+            --source-event "$SOURCE_EVENT" \
+            --candidate-admissions-sha256 "$CANDIDATE_ADMISSIONS_SHA256" \
+            --candidate-ledger-head-sha256 "$CANDIDATE_LEDGER_HEAD_SHA256" \
+            --idempotency-key "$IDEMPOTENCY_KEY" \
+            --output production-lifecycle-source.json
+          python scripts/render_production_lifecycle.py
+          python scripts/render_production_lifecycle.py --check
+          python -m unittest tests.test_production_lifecycle_policy
+
+      - name: Commit the projection to an automation branch
+        id: commit
+        env:
+          IDEMPOTENCY_KEY: ${{ inputs.idempotency_key }}
+          SOURCE_COMMIT: ${{ inputs.source_commit }}
+        run: |
+          set -euo pipefail
+          branch="automation/production-lifecycle-${SOURCE_COMMIT:0:16}"
+          git switch -c "$branch"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add production-lifecycle-source.json docs/production-lifecycle.json
+          if git diff --staged --quiet; then
+            echo 'changed=false' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git commit -m "docs: project lifecycle ${SOURCE_COMMIT:0:12}" \
+            -m "${IDEMPOTENCY_KEY}"
+          git push origin "HEAD:refs/heads/${branch}"
+          echo "branch=${branch}" >> "$GITHUB_OUTPUT"
+          echo 'changed=true' >> "$GITHUB_OUTPUT"
+
+      - name: Open the projection PR
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          BRANCH: ${{ steps.commit.outputs.branch }}
+          GH_TOKEN: ${{ steps.lifecycle-app.outputs.token }}
+          SOURCE_COMMIT: ${{ inputs.source_commit }}
+        run: |
+          set -euo pipefail
+          existing=$(gh pr list --head "$BRANCH" --state open --json url --jq '.[0].url // empty')
+          if [ -n "$existing" ]; then
+            echo "The lifecycle projection PR already exists: $existing"
+            exit 0
+          fi
+          gh pr create --base main --head "$BRANCH" \
+            --title "docs: project lifecycle ${SOURCE_COMMIT:0:12}" \
+            --body "Projects the exact canonical lifecycle source at OpenAdaptAI/.github@${SOURCE_COMMIT}."

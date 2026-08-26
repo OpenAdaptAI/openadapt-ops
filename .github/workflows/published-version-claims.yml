@@ -22,15 +22,31 @@ on:
       - '.github/workflows/published-version-claims.yml'
 
 concurrency:
-  group: published-version-claims-${{ github.ref }}
-  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: false
 
 permissions:
   contents: read
 
 jobs:
+  reject-lifecycle-app:
+    permissions: {}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Reject the lifecycle App
+        env:
+          ACTOR: ${{ github.actor }}
+          TRIGGERING_ACTOR: ${{ github.triggering_actor }}
+        run: |
+          test "$ACTOR" != 'openadapt-lifecycle[bot]'
+          test "$TRIGGERING_ACTOR" != 'openadapt-lifecycle[bot]'
+
   check:
     name: Compare documented versions to PyPI
+    needs: reject-lifecycle-app
+    if: >-
+      github.actor != 'openadapt-lifecycle[bot]' &&
+      github.triggering_actor != 'openadapt-lifecycle[bot]'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -46,11 +62,13 @@ jobs:
   report-drift:
     # A red scheduled run in a repository nobody has open is not a signal.
     # Give the drift an owner and a paper trail instead of a stale red dot.
-    needs: check
+    needs: [reject-lifecycle-app, check]
     if: >-
       ${{ always() && needs.check.result == 'failure' &&
           (github.event_name == 'schedule' ||
-           github.event_name == 'workflow_dispatch') }}
+           github.event_name == 'workflow_dispatch') &&
+          github.actor != 'openadapt-lifecycle[bot]' &&
+          github.triggering_actor != 'openadapt-lifecycle[bot]' }}
     runs-on: ubuntu-latest
     permissions:
       issues: write
