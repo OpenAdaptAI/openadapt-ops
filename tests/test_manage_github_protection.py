@@ -59,6 +59,7 @@ class ReadOnlyFixtureGitHub:
         admin_bypass_environment: tuple[str, str] | None = None,
         omitted_admin_bypass_environment: tuple[str, str] | None = None,
         main_drift_repo: str | None = None,
+        advance_main_during_plan_repo: str | None = None,
         workflow_overrides: Mapping[tuple[str, str], str] | None = None,
     ) -> None:
         self.config = config
@@ -84,8 +85,11 @@ class ReadOnlyFixtureGitHub:
         self.admin_bypass_environment = admin_bypass_environment
         self.omitted_admin_bypass_environment = omitted_admin_bypass_environment
         self.main_drift_repo = main_drift_repo
+        self.advance_main_during_plan_repo = advance_main_during_plan_repo
         self.workflow_overrides = dict(workflow_overrides or {})
         self.writes: list[tuple[str, str, Mapping[str, Any]]] = []
+        self.gets: list[str] = []
+        self.main_reads: dict[str, int] = {}
         self.by_name = {repo["name"]: repo for repo in config["repositories"]}
         self.repository_ids = {
             repo["name"]: 1000 + index
@@ -93,6 +97,7 @@ class ReadOnlyFixtureGitHub:
         }
 
     def get(self, path: str, *, optional: bool = False) -> Any:
+        self.gets.append(path)
         if path == "/apps/openadapt-release":
             return {"id": 991122, "slug": "openadapt-release"}
         if path == "/apps/openadapt-lifecycle":
@@ -213,10 +218,15 @@ class ReadOnlyFixtureGitHub:
                     "default_branch": "main",
                 }
             if parts[4] == "commits" and parts[5] == "main":
+                self.main_reads[name] = self.main_reads.get(name, 0) + 1
                 return {
                     "sha": (
                         "f" * 40
                         if name == self.main_drift_repo
+                        or (
+                            name == self.advance_main_during_plan_repo
+                            and self.main_reads[name] > 1
+                        )
                         else repo["audited_main_sha"]
                     )
                 }
@@ -448,12 +458,22 @@ class ReadOnlyFixtureGitHub:
             job_id, job_name = job_names[path]
             projection_inputs = ""
             projection_conditions = ""
+            lifecycle_token_repositories = (
+                "          repositories: |\n"
+                "            .github\n"
+                "            openadapt-evals\n"
+                "            openadapt-ops\n"
+                if repo_name == "openadapt-ops"
+                else f"          repositories: {repo_name}\n"
+            )
             projection_steps = (
                 "      - uses: actions/create-github-app-token@deadbeef\n"
                 "        id: lifecycle-app\n"
                 "        with:\n"
                 "          app-id: ${{ vars.OPENADAPT_LIFECYCLE_APP_ID }}\n"
                 "          private-key: ${{ secrets.OPENADAPT_LIFECYCLE_APP_PRIVATE_KEY }}\n"
+                "          owner: OpenAdaptAI\n"
+                f"{lifecycle_token_repositories}"
                 "          permission-actions: write\n"
                 "          permission-metadata: read\n"
                 "          permission-pull-requests: write\n"
@@ -573,6 +593,8 @@ class ReadOnlyFixtureGitHub:
                 "        with:\n"
                 "          app-id: ${{ vars.OPENADAPT_DOCS_APP_ID }}\n"
                 "          private-key: ${{ secrets.OPENADAPT_DOCS_APP_PRIVATE_KEY }}\n"
+                "          owner: OpenAdaptAI\n"
+                "          repositories: openadapt-ops\n"
                 "          permission-actions: write\n"
                 "          permission-metadata: read\n"
                 "          permission-pull-requests: write\n"
@@ -625,11 +647,11 @@ class ReadOnlyFixtureGitHub:
                         "      - env:\n"
                         "          ACTOR: ${{ github.actor }}\n"
                         "          TRIGGERING_ACTOR: ${{ github.triggering_actor }}\n"
-                        "        run: >-\n"
-                        "          test \"$ACTOR\" != 'openadapt-lifecycle[bot]' -a\n"
-                        "          \"$TRIGGERING_ACTOR\" != 'openadapt-lifecycle[bot]' -a\n"
-                        "          \"$ACTOR\" != 'openadapt-docs[bot]' -a\n"
-                        "          \"$TRIGGERING_ACTOR\" != 'openadapt-docs[bot]'\n"
+                        "        run: |\n"
+                        "          test \"$ACTOR\" != 'openadapt-lifecycle[bot]'\n"
+                        "          test \"$TRIGGERING_ACTOR\" != 'openadapt-lifecycle[bot]'\n"
+                        "          test \"$ACTOR\" != 'openadapt-docs[bot]'\n"
+                        "          test \"$TRIGGERING_ACTOR\" != 'openadapt-docs[bot]'\n"
                         if guarded
                         else ""
                     )
@@ -655,12 +677,17 @@ class ReadOnlyFixtureGitHub:
                     "        with:\n"
                     "          app-id: ${{ vars.OPENADAPT_RELEASE_APP_ID }}\n"
                     "          private-key: ${{ secrets.OPENADAPT_RELEASE_APP_PRIVATE_KEY }}\n"
+                    "          owner: OpenAdaptAI\n"
+                    "          repositories: openadapt-evals\n"
                     "          permission-contents: write\n"
                     "      - run: test OpenAdaptAI/openadapt-evals = OpenAdaptAI/openadapt-evals && test refs/heads/main = refs/heads/main\n"
                     "      - run: python scripts/verify_release_lock.py\n"
-                    "      - env:\n"
-                    "          APP_TOKEN: ${{ steps.release_app.outputs.token }}\n"
-                    '        run: git tag -a v1.2.3 -m release && git push origin "refs/tags/v1.2.3"\n'
+                    "      - uses: actions/checkout@deadbeef\n"
+                    "        with:\n"
+                    "          token: ${{ steps.release_app.outputs.token }}\n"
+                    "      - run: |\n"
+                    "          git tag -a v1.2.3 -m release\n"
+                    '          git push origin "refs/tags/v1.2.3"\n'
                     "  publish-pypi:\n"
                     "    needs: authorize-release-tag\n"
                     "    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') && github.actor == 'openadapt-release[bot]'\n"
@@ -673,6 +700,17 @@ class ReadOnlyFixtureGitHub:
                     "      - uses: pypa/gh-action-pypi-publish@deadbeef\n"
                     "        with:\n"
                     "          skip-existing: true\n"
+                    "      - uses: actions/create-github-app-token@deadbeef\n"
+                    "        id: release-app\n"
+                    "        with:\n"
+                    "          app-id: ${{ vars.OPENADAPT_RELEASE_APP_ID }}\n"
+                    "          private-key: ${{ secrets.OPENADAPT_RELEASE_APP_PRIVATE_KEY }}\n"
+                    "          owner: OpenAdaptAI\n"
+                    "          repositories: openadapt-evals\n"
+                    "          permission-contents: write\n"
+                    "      - env:\n"
+                    "          GH_TOKEN: ${{ steps.release-app.outputs.token }}\n"
+                    "        run: gh release create v1.2.3\n"
                 )
             extra = ""
             if path == ".github/workflows/profile-consistency.yml":
@@ -720,11 +758,11 @@ class ReadOnlyFixtureGitHub:
                     "      - env:\n"
                     "          ACTOR: ${{ github.actor }}\n"
                     "          TRIGGERING_ACTOR: ${{ github.triggering_actor }}\n"
-                    "        run: >-\n"
-                    "          test \"$ACTOR\" != 'openadapt-lifecycle[bot]' -a\n"
-                    "          \"$TRIGGERING_ACTOR\" != 'openadapt-lifecycle[bot]' -a\n"
-                    "          \"$ACTOR\" != 'openadapt-docs[bot]' -a\n"
-                    "          \"$TRIGGERING_ACTOR\" != 'openadapt-docs[bot]'\n"
+                    "        run: |\n"
+                    "          test \"$ACTOR\" != 'openadapt-lifecycle[bot]'\n"
+                    "          test \"$TRIGGERING_ACTOR\" != 'openadapt-lifecycle[bot]'\n"
+                    "          test \"$ACTOR\" != 'openadapt-docs[bot]'\n"
+                    "          test \"$TRIGGERING_ACTOR\" != 'openadapt-docs[bot]'\n"
                     if guarded
                     else ""
                 )
@@ -766,16 +804,21 @@ class ReadOnlyFixtureGitHub:
                 "    environment: release-identity\n"
                 "    steps:\n"
                 "      - uses: actions/create-github-app-token@deadbeef\n"
-                "        id: release_app\n"
+                "        id: release-app\n"
                 "        with:\n"
                 "          app-id: ${{ vars.OPENADAPT_RELEASE_APP_ID }}\n"
                 "          private-key: ${{ secrets.OPENADAPT_RELEASE_APP_PRIVATE_KEY }}\n"
+                "          owner: OpenAdaptAI\n"
+                "          repositories: OpenAdapt\n"
                 "          permission-contents: write\n"
                 "      - run: test refs/heads/main = refs/heads/main && test OpenAdaptAI/OpenAdapt = OpenAdaptAI/OpenAdapt\n"
                 "      - run: test \"$GITHUB_ACTOR\" = 'openadapt-release[bot]'\n"
-                "      - env:\n"
-                "          APP_TOKEN: ${{ steps.release_app.outputs.token }}\n"
-                '        run: git tag -a v1.2.3 -m release && git push origin "refs/tags/v1.2.3"\n'
+                "      - uses: actions/checkout@deadbeef\n"
+                "        with:\n"
+                "          token: ${{ steps.release-app.outputs.token }}\n"
+                "      - run: |\n"
+                "          git tag -a v1.2.3 -m release\n"
+                '          git push origin "refs/tags/v1.2.3"\n'
                 "  build-and-attest:\n"
                 "    permissions:\n"
                 "      id-token: write\n"
@@ -789,13 +832,15 @@ class ReadOnlyFixtureGitHub:
                 "    steps:\n"
                 "      - uses: pypa/gh-action-pypi-publish@deadbeef\n"
                 "      - uses: actions/create-github-app-token@deadbeef\n"
-                "        id: release_app\n"
+                "        id: release-app\n"
                 "        with:\n"
                 "          app-id: ${{ vars.OPENADAPT_RELEASE_APP_ID }}\n"
                 "          private-key: ${{ secrets.OPENADAPT_RELEASE_APP_PRIVATE_KEY }}\n"
+                "          owner: OpenAdaptAI\n"
+                "          repositories: OpenAdapt\n"
                 "          permission-contents: write\n"
                 "      - env:\n"
-                "          GH_TOKEN: ${{ steps.release_app.outputs.token }}\n"
+                "          GH_TOKEN: ${{ steps.release-app.outputs.token }}\n"
                 "        run: gh release create v1.2.3\n"
                 "  verify-publication:\n"
                 "    steps:\n"
@@ -819,11 +864,16 @@ class ReadOnlyFixtureGitHub:
                 "        with:\n"
                 "          app-id: ${{ vars.OPENADAPT_RELEASE_APP_ID }}\n"
                 "          private-key: ${{ secrets.OPENADAPT_RELEASE_APP_PRIVATE_KEY }}\n"
+                "          owner: OpenAdaptAI\n"
+                "          repositories: openadapt-agent\n"
                 "          permission-contents: write\n"
                 "      - run: test \"$GITHUB_ACTOR\" = 'openadapt-release[bot]'\n"
-                "      - env:\n"
-                "          APP_TOKEN: ${{ steps.release_app.outputs.token }}\n"
-                "        run: git tag v1.2.3 && git push origin v1.2.3\n"
+                "      - uses: actions/checkout@deadbeef\n"
+                "        with:\n"
+                "          token: ${{ steps.release_app.outputs.token }}\n"
+                "      - run: |\n"
+                "          git tag v1.2.3\n"
+                "          git push origin v1.2.3\n"
                 "  pypi:\n"
                 "    environment: pypi\n"
                 "    permissions:\n"
@@ -883,11 +933,16 @@ class ReadOnlyFixtureGitHub:
                 "        with:\n"
                 "          app-id: ${{ vars.OPENADAPT_RELEASE_APP_ID }}\n"
                 "          private-key: ${{ secrets.OPENADAPT_RELEASE_APP_PRIVATE_KEY }}\n"
+                "          owner: OpenAdaptAI\n"
+                f"          repositories: {repo_name}\n"
                 "          permission-contents: write\n"
                 "      - run: test refs/heads/main = refs/heads/main\n"
-                "      - env:\n"
-                "          APP_TOKEN: ${{ steps.release_app.outputs.token }}\n"
-                '        run: git tag --annotate v1.2.3 -m release && git push origin "refs/tags/v1.2.3"\n'
+                "      - uses: actions/checkout@deadbeef\n"
+                "        with:\n"
+                "          token: ${{ steps.release_app.outputs.token }}\n"
+                "      - run: |\n"
+                "          git tag --annotate v1.2.3 -m release\n"
+                '          git push origin "refs/tags/v1.2.3"\n'
                 "  publish:\n"
                 "    environment: pypi\n"
                 "    permissions:\n"
@@ -921,12 +976,17 @@ class ReadOnlyFixtureGitHub:
                 "        with:\n"
                 "          app-id: ${{ vars.OPENADAPT_RELEASE_APP_ID }}\n"
                 "          private-key: ${{ secrets.OPENADAPT_RELEASE_APP_PRIVATE_KEY }}\n"
+                "          owner: OpenAdaptAI\n"
+                "          repositories: openadapt-desktop\n"
                 "          permission-contents: write\n"
                 "      - run: test OpenAdaptAI/openadapt-desktop = OpenAdaptAI/openadapt-desktop && test refs/heads/main = refs/heads/main\n"
                 "      - run: python scripts/verify_release_lock.py\n"
-                "      - env:\n"
-                "          APP_TOKEN: ${{ steps.release_app.outputs.token }}\n"
-                '        run: git tag -a v1.2.3 -m release && git push origin "refs/tags/v1.2.3"\n'
+                "      - uses: actions/checkout@deadbeef\n"
+                "        with:\n"
+                "          token: ${{ steps.release_app.outputs.token }}\n"
+                "      - run: |\n"
+                "          git tag -a v1.2.3 -m release\n"
+                '          git push origin "refs/tags/v1.2.3"\n'
                 "  publish:\n"
                 "    if: github.actor == 'openadapt-release[bot]'\n"
                 "    environment: pypi\n"
@@ -943,6 +1003,8 @@ class ReadOnlyFixtureGitHub:
                 "        with:\n"
                 "          app-id: ${{ vars.OPENADAPT_RELEASE_APP_ID }}\n"
                 "          private-key: ${{ secrets.OPENADAPT_RELEASE_APP_PRIVATE_KEY }}\n"
+                "          owner: OpenAdaptAI\n"
+                "          repositories: openadapt-desktop\n"
                 "          permission-contents: write\n"
                 "      - env:\n"
                 "          GH_TOKEN: ${{ steps.release_app.outputs.token }}\n"
@@ -992,10 +1054,15 @@ class ReadOnlyFixtureGitHub:
                 "        with:\n"
                 "          app-id: ${{ vars.OPENADAPT_RELEASE_APP_ID }}\n"
                 "          private-key: ${{ secrets.OPENADAPT_RELEASE_APP_PRIVATE_KEY }}\n"
+                "          owner: OpenAdaptAI\n"
+                "          repositories: openadapt-desktop\n"
                 "          permission-contents: write\n"
-                "      - env:\n"
-                "          APP_TOKEN: ${{ steps.release_app.outputs.token }}\n"
-                '        run: git tag --annotate desktop-v1.2.3 -m release && git push origin "refs/tags/desktop-v1.2.3"\n'
+                "      - uses: actions/checkout@deadbeef\n"
+                "        with:\n"
+                "          token: ${{ steps.release_app.outputs.token }}\n"
+                "      - run: |\n"
+                "          git tag --annotate desktop-v1.2.3 -m release\n"
+                '          git push origin "refs/tags/desktop-v1.2.3"\n'
                 "  recover-published-native:\n"
                 "    steps:\n"
                 "      - run: echo state=absent state=partial state=complete\n"
@@ -1011,6 +1078,8 @@ class ReadOnlyFixtureGitHub:
                 "        with:\n"
                 "          app-id: ${{ vars.OPENADAPT_RELEASE_APP_ID }}\n"
                 "          private-key: ${{ secrets.OPENADAPT_RELEASE_APP_PRIVATE_KEY }}\n"
+                "          owner: OpenAdaptAI\n"
+                "          repositories: openadapt-desktop\n"
                 "          permission-contents: write\n"
                 "      - env:\n"
                 "          GH_TOKEN: ${{ steps.release_app.outputs.token }}\n"
@@ -1044,10 +1113,15 @@ class ReadOnlyFixtureGitHub:
                 "        with:\n"
                 "          app-id: ${{ vars.OPENADAPT_RELEASE_APP_ID }}\n"
                 "          private-key: ${{ secrets.OPENADAPT_RELEASE_APP_PRIVATE_KEY }}\n"
+                "          owner: OpenAdaptAI\n"
+                "          repositories: openadapt-desktop\n"
                 "          permission-contents: write\n"
-                "      - env:\n"
-                "          APP_TOKEN: ${{ steps.release_app.outputs.token }}\n"
-                '        run: git tag --annotate ffmpeg-runtime-v1.2.3-r1 -m release && git push origin "refs/tags/ffmpeg-runtime-v1.2.3-r1"\n'
+                "      - uses: actions/checkout@deadbeef\n"
+                "        with:\n"
+                "          token: ${{ steps.release_app.outputs.token }}\n"
+                "      - run: |\n"
+                "          git tag --annotate ffmpeg-runtime-v1.2.3-r1 -m release\n"
+                '          git push origin "refs/tags/ffmpeg-runtime-v1.2.3-r1"\n'
                 "  publish:\n"
                 "    environment: native-release\n"
                 "    permissions:\n"
@@ -1059,6 +1133,8 @@ class ReadOnlyFixtureGitHub:
                 "        with:\n"
                 "          app-id: ${{ vars.OPENADAPT_RELEASE_APP_ID }}\n"
                 "          private-key: ${{ secrets.OPENADAPT_RELEASE_APP_PRIVATE_KEY }}\n"
+                "          owner: OpenAdaptAI\n"
+                "          repositories: openadapt-desktop\n"
                 "          permission-contents: write\n"
                 "      - env:\n"
                 "          GH_TOKEN: ${{ steps.release_app.outputs.token }}\n"
@@ -1612,6 +1688,37 @@ def test_audited_main_drift_is_a_blocker(monkeypatch: pytest.MonkeyPatch) -> Non
     assert "audit_snapshot_advanced" not in {item["code"] for item in flow["warnings"]}
 
 
+def test_plan_reads_workflows_by_audited_sha_and_detects_mid_audit_advance(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    value = config()
+    monkeypatch.setenv("OPENADAPT_RELEASE_APP_ID", "991122")
+    github = ReadOnlyFixtureGitHub(
+        value, advance_main_during_plan_repo="openadapt-flow"
+    )
+    plan = build_plan(github, value)
+    flow_policy = next(
+        repo for repo in value["repositories"] if repo["name"] == "openadapt-flow"
+    )
+    flow = next(
+        repo for repo in plan["repositories"] if repo["name"] == "openadapt-flow"
+    )
+
+    assert "audited_main_changed_during_plan" in {
+        item["code"] for item in flow["blockers"]
+    }
+    assert any(
+        path.endswith(f"?ref={flow_policy['audited_main_sha']}")
+        and "/openadapt-flow/contents/.github/workflows/" in path
+        for path in github.gets
+    )
+    assert not any(
+        "/openadapt-flow/contents/.github/workflows/" in path
+        and path.endswith("?ref=main")
+        for path in github.gets
+    )
+
+
 def test_unprotected_existing_environment_produces_a_safe_repair_action(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -1785,6 +1892,172 @@ def test_non_authorized_dispatch_rejects_each_privileged_app_actor(
     }
 
 
+def test_non_authorized_dispatch_rejects_bypassed_job_condition(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    value = config()
+    monkeypatch.setenv("OPENADAPT_RELEASE_APP_ID", "991122")
+    path = ".github/workflows/complex-visual.yml"
+    fixture = ReadOnlyFixtureGitHub(value)
+    source = fixture._workflow_content("openadapt-evals", path).replace(
+        "      github.triggering_actor != 'openadapt-docs[bot]'\n",
+        "      github.triggering_actor != 'openadapt-docs[bot]' || true\n",
+        1,
+    )
+    plan = build_plan(
+        ReadOnlyFixtureGitHub(
+            value, workflow_overrides={("openadapt-evals", path): source}
+        ),
+        value,
+    )
+    evals = next(
+        repo for repo in plan["repositories"] if repo["name"] == "openadapt-evals"
+    )
+
+    assert "dispatch_workflow_accepts_privileged_app" in {
+        item["code"] for item in evals["blockers"]
+    }
+
+
+def test_non_authorized_dispatch_rejects_bypassed_shell_guard(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    value = config()
+    monkeypatch.setenv("OPENADAPT_RELEASE_APP_ID", "991122")
+    path = ".github/workflows/complex-visual.yml"
+    fixture = ReadOnlyFixtureGitHub(value)
+    original = fixture._workflow_content("openadapt-evals", path)
+    source = original.replace(
+        "          test \"$TRIGGERING_ACTOR\" != 'openadapt-docs[bot]'\n",
+        "          test \"$TRIGGERING_ACTOR\" != 'openadapt-docs[bot]' || true\n",
+        1,
+    )
+    assert source != original
+    plan = build_plan(
+        ReadOnlyFixtureGitHub(
+            value, workflow_overrides={("openadapt-evals", path): source}
+        ),
+        value,
+    )
+    evals = next(
+        repo for repo in plan["repositories"] if repo["name"] == "openadapt-evals"
+    )
+
+    assert "dispatch_workflow_accepts_privileged_app" in {
+        item["code"] for item in evals["blockers"]
+    }
+
+
+def test_non_authorized_dispatch_rejects_echo_only_shell_guard(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    value = config()
+    monkeypatch.setenv("OPENADAPT_RELEASE_APP_ID", "991122")
+    path = ".github/workflows/complex-visual.yml"
+    fixture = ReadOnlyFixtureGitHub(value)
+    source = fixture._workflow_content("openadapt-evals", path).replace(
+        '        run: |\n          test "$ACTOR"',
+        '        run: |\n          echo test "$ACTOR"',
+        1,
+    )
+    plan = build_plan(
+        ReadOnlyFixtureGitHub(
+            value, workflow_overrides={("openadapt-evals", path): source}
+        ),
+        value,
+    )
+    evals = next(
+        repo for repo in plan["repositories"] if repo["name"] == "openadapt-evals"
+    )
+
+    assert "dispatch_workflow_accepts_privileged_app" in {
+        item["code"] for item in evals["blockers"]
+    }
+
+
+def test_non_authorized_dispatch_rejects_test_with_true_alternative(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    value = config()
+    monkeypatch.setenv("OPENADAPT_RELEASE_APP_ID", "991122")
+    path = ".github/workflows/complex-visual.yml"
+    fixture = ReadOnlyFixtureGitHub(value)
+    source = fixture._workflow_content("openadapt-evals", path).replace(
+        "          test \"$ACTOR\" != 'openadapt-lifecycle[bot]'\n",
+        "          test \"$ACTOR\" != 'openadapt-lifecycle[bot]' -o 1 = 1\n",
+        1,
+    )
+    plan = build_plan(
+        ReadOnlyFixtureGitHub(
+            value, workflow_overrides={("openadapt-evals", path): source}
+        ),
+        value,
+    )
+    evals = next(
+        repo for repo in plan["repositories"] if repo["name"] == "openadapt-evals"
+    )
+
+    assert "dispatch_workflow_accepts_privileged_app" in {
+        item["code"] for item in evals["blockers"]
+    }
+
+
+def test_non_authorized_dispatch_rejects_quoted_condition_spoof(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    value = config()
+    monkeypatch.setenv("OPENADAPT_RELEASE_APP_ID", "991122")
+    path = ".github/workflows/complex-visual.yml"
+    fixture = ReadOnlyFixtureGitHub(value)
+    source = fixture._workflow_content("openadapt-evals", path).replace(
+        "      github.actor != 'openadapt-lifecycle[bot]' &&\n",
+        "      contains(\"github.actor != 'openadapt-lifecycle[bot]'\", 'github') &&\n",
+        1,
+    )
+    plan = build_plan(
+        ReadOnlyFixtureGitHub(
+            value, workflow_overrides={("openadapt-evals", path): source}
+        ),
+        value,
+    )
+    evals = next(
+        repo for repo in plan["repositories"] if repo["name"] == "openadapt-evals"
+    )
+
+    assert "dispatch_workflow_accepts_privileged_app" in {
+        item["code"] for item in evals["blockers"]
+    }
+
+
+def test_tag_only_exemption_rejects_quoted_condition_spoof(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    value = config()
+    monkeypatch.setenv("OPENADAPT_RELEASE_APP_ID", "991122")
+    path = ".github/workflows/release.yml"
+    fixture = ReadOnlyFixtureGitHub(value)
+    original = fixture._workflow_content("openadapt-evals", path)
+    source = original.replace(
+        "    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')\n",
+        "    if: contains(\"github.event_name == 'push' refs/tags/\", 'github')\n",
+        1,
+    )
+    assert source != original
+    plan = build_plan(
+        ReadOnlyFixtureGitHub(
+            value, workflow_overrides={("openadapt-evals", path): source}
+        ),
+        value,
+    )
+    evals = next(
+        repo for repo in plan["repositories"] if repo["name"] == "openadapt-evals"
+    )
+
+    assert "dispatch_workflow_accepts_privileged_app" in {
+        item["code"] for item in evals["blockers"]
+    }
+
+
 @pytest.mark.parametrize(
     ("repository", "path", "token_reference", "expected_code"),
     [
@@ -1822,6 +2095,31 @@ def test_authorized_dispatch_effect_must_use_its_same_job_app_token(
     target = next(repo for repo in plan["repositories"] if repo["name"] == repository)
 
     assert expected_code in {item["code"] for item in target["blockers"]}
+
+
+def test_authorized_dispatch_rejects_quoted_condition_spoof(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    value = config()
+    monkeypatch.setenv("OPENADAPT_RELEASE_APP_ID", "991122")
+    path = ".github/workflows/sync.yml"
+    fixture = ReadOnlyFixtureGitHub(value)
+    source = fixture._workflow_content("openadapt-ops", path).replace(
+        "      github.repository == 'OpenAdaptAI/openadapt-ops' &&\n",
+        "      contains(\"github.repository == 'OpenAdaptAI/openadapt-ops'\", 'github') &&\n",
+        1,
+    )
+    plan = build_plan(
+        ReadOnlyFixtureGitHub(
+            value, workflow_overrides={("openadapt-ops", path): source}
+        ),
+        value,
+    )
+    ops = next(repo for repo in plan["repositories"] if repo["name"] == "openadapt-ops")
+
+    assert "docs-only_workflow_semantic_contract" in {
+        item["code"] for item in ops["blockers"]
+    }
 
 
 @pytest.mark.parametrize(
@@ -1865,7 +2163,7 @@ def test_launcher_github_release_requires_same_job_release_app_output(
     fixture = ReadOnlyFixtureGitHub(value)
     source = fixture._workflow_content("OpenAdapt", path)
     prefix, publish = source.split("  publish-pypi:\n", 1)
-    publish = publish.replace("id: release_app", "id: unrelated_app", 1)
+    publish = publish.replace("id: release-app", "id: unrelated-app", 1)
     plan = build_plan(
         ReadOnlyFixtureGitHub(
             value,
@@ -1892,8 +2190,15 @@ def test_release_tag_push_requires_same_job_release_app_output(
     path = ".github/workflows/release-and-publish.yml"
     fixture = ReadOnlyFixtureGitHub(value)
     source = fixture._workflow_content("OpenAdapt", path).replace(
-        "APP_TOKEN: ${{ steps.release_app.outputs.token }}",
-        "APP_TOKEN: ${{ github.token }}",
+        "      - uses: actions/checkout@deadbeef\n"
+        "        with:\n"
+        "          token: ${{ steps.release-app.outputs.token }}\n",
+        "      - env:\n"
+        "          APP_TOKEN: ${{ steps.release-app.outputs.token }}\n"
+        "        run: echo App token is present\n"
+        "      - uses: actions/checkout@deadbeef\n"
+        "        with:\n"
+        "          token: ${{ github.token }}\n",
         1,
     )
     plan = build_plan(
@@ -1905,6 +2210,450 @@ def test_release_tag_push_requires_same_job_release_app_output(
     )
 
     assert "release_tag_app_token_not_bound" in {
+        item["code"] for item in launcher["blockers"]
+    }
+
+
+def test_release_tag_push_accepts_explicit_app_authenticated_git_binding(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    value = config()
+    monkeypatch.setenv("OPENADAPT_RELEASE_APP_ID", "991122")
+    path = ".github/workflows/release-and-publish.yml"
+    fixture = ReadOnlyFixtureGitHub(value)
+    source = fixture._workflow_content("OpenAdapt", path).replace(
+        "      - uses: actions/checkout@deadbeef\n"
+        "        with:\n"
+        "          token: ${{ steps.release-app.outputs.token }}\n"
+        "      - run: |\n"
+        "          git tag -a v1.2.3 -m release\n"
+        '          git push origin "refs/tags/v1.2.3"\n',
+        "      - uses: actions/checkout@deadbeef\n"
+        "        with:\n"
+        "          persist-credentials: false\n"
+        "          token: ${{ steps.release-app.outputs.token }}\n"
+        "      - env:\n"
+        "          APP_TOKEN: ${{ steps.release-app.outputs.token }}\n"
+        "        run: |\n"
+        "          set -euo pipefail\n"
+        "          git tag -a v1.2.3 -m release\n"
+        "          auth=$(printf 'x-access-token:%s' \"${APP_TOKEN}\" | base64 | tr -d '\\n')\n"
+        "          export GIT_CONFIG_COUNT=1\n"
+        "          export GIT_CONFIG_KEY_0=http.https://github.com/.extraheader\n"
+        '          export GIT_CONFIG_VALUE_0="AUTHORIZATION: basic ${auth}"\n'
+        "          git push origin refs/tags/v1.2.3\n",
+        1,
+    )
+    plan = build_plan(
+        ReadOnlyFixtureGitHub(value, workflow_overrides={("OpenAdapt", path): source}),
+        value,
+    )
+    launcher = next(
+        repo for repo in plan["repositories"] if repo["name"] == "OpenAdapt"
+    )
+
+    assert "release_tag_app_token_not_bound" not in {
+        item["code"] for item in launcher["blockers"]
+    }
+
+
+def test_release_tag_push_rejects_decorative_auth_text(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    value = config()
+    monkeypatch.setenv("OPENADAPT_RELEASE_APP_ID", "991122")
+    path = ".github/workflows/release-and-publish.yml"
+    fixture = ReadOnlyFixtureGitHub(value)
+    source = fixture._workflow_content("OpenAdapt", path).replace(
+        "      - uses: actions/checkout@deadbeef\n"
+        "        with:\n"
+        "          token: ${{ steps.release-app.outputs.token }}\n"
+        "      - run: |\n"
+        "          git tag -a v1.2.3 -m release\n"
+        '          git push origin "refs/tags/v1.2.3"\n',
+        "      - uses: actions/checkout@deadbeef\n"
+        "        with:\n"
+        "          persist-credentials: false\n"
+        "      - env:\n"
+        "          APP_TOKEN: ${{ steps.release-app.outputs.token }}\n"
+        "        run: |\n"
+        "          set -euo pipefail\n"
+        "          echo 'x-access-token AUTHORIZATION:' \"${APP_TOKEN}\"\n"
+        "          git tag -a v1.2.3 -m release\n"
+        "          git push origin refs/tags/v1.2.3\n",
+        1,
+    )
+    plan = build_plan(
+        ReadOnlyFixtureGitHub(value, workflow_overrides={("OpenAdapt", path): source}),
+        value,
+    )
+    launcher = next(
+        repo for repo in plan["repositories"] if repo["name"] == "OpenAdapt"
+    )
+
+    assert "release_tag_app_token_not_bound" in {
+        item["code"] for item in launcher["blockers"]
+    }
+
+
+def test_release_tag_push_rejects_reassigned_app_token(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    value = config()
+    monkeypatch.setenv("OPENADAPT_RELEASE_APP_ID", "991122")
+    path = ".github/workflows/release-and-publish.yml"
+    fixture = ReadOnlyFixtureGitHub(value)
+    source = fixture._workflow_content("OpenAdapt", path).replace(
+        "      - uses: actions/checkout@deadbeef\n"
+        "        with:\n"
+        "          token: ${{ steps.release-app.outputs.token }}\n"
+        "      - run: |\n"
+        "          git tag -a v1.2.3 -m release\n"
+        '          git push origin "refs/tags/v1.2.3"\n',
+        "      - uses: actions/checkout@deadbeef\n"
+        "        with:\n"
+        "          persist-credentials: false\n"
+        "      - env:\n"
+        "          APP_TOKEN: ${{ steps.release-app.outputs.token }}\n"
+        "          DEFAULT_TOKEN: ${{ github.token }}\n"
+        "        run: |\n"
+        "          set -euo pipefail\n"
+        '          APP_TOKEN="$DEFAULT_TOKEN"\n'
+        "          auth=$(printf 'x-access-token:%s' \"$APP_TOKEN\" | base64)\n"
+        "          export GIT_CONFIG_COUNT=1\n"
+        "          export GIT_CONFIG_KEY_0=http.https://github.com/.extraheader\n"
+        '          export GIT_CONFIG_VALUE_0="AUTHORIZATION: basic ${auth}"\n'
+        "          git tag -a v1.2.3 -m release\n"
+        "          git push origin refs/tags/v1.2.3\n",
+        1,
+    )
+    plan = build_plan(
+        ReadOnlyFixtureGitHub(value, workflow_overrides={("OpenAdapt", path): source}),
+        value,
+    )
+    launcher = next(
+        repo for repo in plan["repositories"] if repo["name"] == "OpenAdapt"
+    )
+
+    assert "release_tag_app_token_not_bound" in {
+        item["code"] for item in launcher["blockers"]
+    }
+
+
+def test_release_tag_push_rejects_checkout_credential_replacement(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    value = config()
+    monkeypatch.setenv("OPENADAPT_RELEASE_APP_ID", "991122")
+    path = ".github/workflows/release-and-publish.yml"
+    fixture = ReadOnlyFixtureGitHub(value)
+    source = fixture._workflow_content("OpenAdapt", path).replace(
+        "      - run: |\n"
+        "          git tag -a v1.2.3 -m release\n"
+        '          git push origin "refs/tags/v1.2.3"\n',
+        "      - env:\n"
+        "          DEFAULT_TOKEN: ${{ github.token }}\n"
+        "        run: |\n"
+        "          set -euo pipefail\n"
+        '          git remote set-url origin "https://x-access-token:${DEFAULT_TOKEN}@github.com/OpenAdaptAI/OpenAdapt.git"\n'
+        "          git tag -a v1.2.3 -m release\n"
+        "          git push origin refs/tags/v1.2.3\n",
+        1,
+    )
+    plan = build_plan(
+        ReadOnlyFixtureGitHub(value, workflow_overrides={("OpenAdapt", path): source}),
+        value,
+    )
+    launcher = next(
+        repo for repo in plan["repositories"] if repo["name"] == "OpenAdapt"
+    )
+
+    assert "release_tag_app_token_not_bound" in {
+        item["code"] for item in launcher["blockers"]
+    }
+
+
+def test_release_tag_push_rejects_intervening_credential_replacement(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    value = config()
+    monkeypatch.setenv("OPENADAPT_RELEASE_APP_ID", "991122")
+    path = ".github/workflows/release-and-publish.yml"
+    fixture = ReadOnlyFixtureGitHub(value)
+    source = fixture._workflow_content("OpenAdapt", path).replace(
+        "      - run: |\n"
+        "          git tag -a v1.2.3 -m release\n"
+        '          git push origin "refs/tags/v1.2.3"\n',
+        "      - env:\n"
+        "          DEFAULT_TOKEN: ${{ github.token }}\n"
+        '        run: git remote set-url origin "https://x-access-token:${DEFAULT_TOKEN}@github.com/OpenAdaptAI/OpenAdapt.git"\n'
+        "      - run: |\n"
+        "          git tag -a v1.2.3 -m release\n"
+        '          git push origin "refs/tags/v1.2.3"\n',
+        1,
+    )
+    plan = build_plan(
+        ReadOnlyFixtureGitHub(value, workflow_overrides={("OpenAdapt", path): source}),
+        value,
+    )
+    launcher = next(
+        repo for repo in plan["repositories"] if repo["name"] == "OpenAdapt"
+    )
+
+    assert "release_tag_app_token_not_bound" in {
+        item["code"] for item in launcher["blockers"]
+    }
+
+
+def test_release_workflow_rejects_effect_named_but_not_run(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    value = config()
+    monkeypatch.setenv("OPENADAPT_RELEASE_APP_ID", "991122")
+    path = ".github/workflows/release-and-publish.yml"
+    fixture = ReadOnlyFixtureGitHub(value)
+    source = fixture._workflow_content("OpenAdapt", path).replace(
+        "        run: gh release create v1.2.3\n",
+        "        name: gh release create v1.2.3\n"
+        "        run: echo gh release create v1.2.3\n",
+        1,
+    )
+    plan = build_plan(
+        ReadOnlyFixtureGitHub(value, workflow_overrides={("OpenAdapt", path): source}),
+        value,
+    )
+    launcher = next(
+        repo for repo in plan["repositories"] if repo["name"] == "OpenAdapt"
+    )
+
+    assert "github_release_effect_missing" in {
+        item["code"] for item in launcher["blockers"]
+    }
+
+
+def test_release_workflow_rejects_echoed_tag_commands(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    value = config()
+    monkeypatch.setenv("OPENADAPT_RELEASE_APP_ID", "991122")
+    path = ".github/workflows/release-and-publish.yml"
+    fixture = ReadOnlyFixtureGitHub(value)
+    original = fixture._workflow_content("OpenAdapt", path)
+    source = original.replace(
+        "          git tag -a v1.2.3 -m release\n"
+        '          git push origin "refs/tags/v1.2.3"\n',
+        "          echo git tag -a v1.2.3 -m release\n"
+        '          echo git push origin "refs/tags/v1.2.3"\n',
+        1,
+    )
+    assert source != original
+    plan = build_plan(
+        ReadOnlyFixtureGitHub(value, workflow_overrides={("OpenAdapt", path): source}),
+        value,
+    )
+    launcher = next(
+        repo for repo in plan["repositories"] if repo["name"] == "OpenAdapt"
+    )
+
+    assert "release_tag_effect_missing" in {
+        item["code"] for item in launcher["blockers"]
+    }
+
+
+def test_release_workflow_rejects_ignored_tag_push_failure(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    value = config()
+    monkeypatch.setenv("OPENADAPT_RELEASE_APP_ID", "991122")
+    path = ".github/workflows/release-and-publish.yml"
+    fixture = ReadOnlyFixtureGitHub(value)
+    original = fixture._workflow_content("OpenAdapt", path)
+    source = original.replace(
+        '          git push origin "refs/tags/v1.2.3"\n',
+        '          git push origin "refs/tags/v1.2.3" || true\n',
+        1,
+    )
+    assert source != original
+    plan = build_plan(
+        ReadOnlyFixtureGitHub(value, workflow_overrides={("OpenAdapt", path): source}),
+        value,
+    )
+    launcher = next(
+        repo for repo in plan["repositories"] if repo["name"] == "OpenAdapt"
+    )
+
+    assert "release_tag_effect_missing" in {
+        item["code"] for item in launcher["blockers"]
+    }
+
+
+def test_release_workflow_rejects_continued_ignored_tag_push_failure(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    value = config()
+    monkeypatch.setenv("OPENADAPT_RELEASE_APP_ID", "991122")
+    path = ".github/workflows/release-and-publish.yml"
+    fixture = ReadOnlyFixtureGitHub(value)
+    original = fixture._workflow_content("OpenAdapt", path)
+    source = original.replace(
+        '          git push origin "refs/tags/v1.2.3"\n',
+        ('          git push origin "refs/tags/v1.2.3" \\\\\n          || true\n'),
+        1,
+    )
+    assert source != original
+    plan = build_plan(
+        ReadOnlyFixtureGitHub(value, workflow_overrides={("OpenAdapt", path): source}),
+        value,
+    )
+    launcher = next(
+        repo for repo in plan["repositories"] if repo["name"] == "OpenAdapt"
+    )
+
+    assert "release_tag_effect_missing" in {
+        item["code"] for item in launcher["blockers"]
+    }
+
+
+def test_release_workflow_rejects_ignored_github_release_failure(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    value = config()
+    monkeypatch.setenv("OPENADAPT_RELEASE_APP_ID", "991122")
+    path = ".github/workflows/release-and-publish.yml"
+    fixture = ReadOnlyFixtureGitHub(value)
+    original = fixture._workflow_content("OpenAdapt", path)
+    source = original.replace(
+        "        run: gh release create v1.2.3\n",
+        "        run: gh release create v1.2.3 || true\n",
+        1,
+    )
+    assert source != original
+    plan = build_plan(
+        ReadOnlyFixtureGitHub(value, workflow_overrides={("OpenAdapt", path): source}),
+        value,
+    )
+    launcher = next(
+        repo for repo in plan["repositories"] if repo["name"] == "OpenAdapt"
+    )
+
+    assert "github_release_effect_missing" in {
+        item["code"] for item in launcher["blockers"]
+    }
+
+
+def test_release_workflow_rejects_continued_ignored_github_release_failure(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    value = config()
+    monkeypatch.setenv("OPENADAPT_RELEASE_APP_ID", "991122")
+    path = ".github/workflows/release-and-publish.yml"
+    fixture = ReadOnlyFixtureGitHub(value)
+    original = fixture._workflow_content("OpenAdapt", path)
+    source = original.replace(
+        "        run: gh release create v1.2.3\n",
+        (
+            "        run: |\n"
+            "          gh release create v1.2.3 \\\\\n"
+            "          || true\n"
+        ),
+        1,
+    )
+    assert source != original
+    plan = build_plan(
+        ReadOnlyFixtureGitHub(value, workflow_overrides={("OpenAdapt", path): source}),
+        value,
+    )
+    launcher = next(
+        repo for repo in plan["repositories"] if repo["name"] == "OpenAdapt"
+    )
+
+    assert "github_release_effect_missing" in {
+        item["code"] for item in launcher["blockers"]
+    }
+
+
+def test_github_release_rejects_compound_token_expression(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    value = config()
+    monkeypatch.setenv("OPENADAPT_RELEASE_APP_ID", "991122")
+    path = ".github/workflows/release-and-publish.yml"
+    fixture = ReadOnlyFixtureGitHub(value)
+    source = fixture._workflow_content("OpenAdapt", path).replace(
+        "          GH_TOKEN: ${{ steps.release-app.outputs.token }}\n",
+        "          GH_TOKEN: ${{ steps.release-app.outputs.token || github.token }}\n",
+        1,
+    )
+    plan = build_plan(
+        ReadOnlyFixtureGitHub(value, workflow_overrides={("OpenAdapt", path): source}),
+        value,
+    )
+    launcher = next(
+        repo for repo in plan["repositories"] if repo["name"] == "OpenAdapt"
+    )
+
+    assert "github_release_app_token_not_bound" in {
+        item["code"] for item in launcher["blockers"]
+    }
+
+
+def test_release_app_token_requires_exact_repository_scope(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    value = config()
+    monkeypatch.setenv("OPENADAPT_RELEASE_APP_ID", "991122")
+    path = ".github/workflows/release-and-publish.yml"
+    fixture = ReadOnlyFixtureGitHub(value)
+    source = fixture._workflow_content("OpenAdapt", path).replace(
+        "          repositories: OpenAdapt\n", "", 1
+    )
+    plan = build_plan(
+        ReadOnlyFixtureGitHub(value, workflow_overrides={("OpenAdapt", path): source}),
+        value,
+    )
+    launcher = next(
+        repo for repo in plan["repositories"] if repo["name"] == "OpenAdapt"
+    )
+
+    assert "release_effect_app_token_missing" in {
+        item["code"] for item in launcher["blockers"]
+    }
+
+
+@pytest.mark.parametrize(
+    ("old", "new"),
+    [
+        (
+            "          owner: OpenAdaptAI\n",
+            "          owner: ${{ github.repository_owner && 'OtherOwner' }}\n",
+        ),
+        (
+            "          repositories: OpenAdapt\n",
+            "          repositories: ${{ github.event.repository.name && 'openadapt-ops' }}\n",
+        ),
+        (
+            "          app-id: ${{ vars.OPENADAPT_RELEASE_APP_ID }}\n",
+            "          app-id: ${{ vars.OPENADAPT_RELEASE_APP_ID || vars.OTHER_APP_ID }}\n",
+        ),
+    ],
+)
+def test_release_app_token_rejects_compound_scope_expressions(
+    monkeypatch: pytest.MonkeyPatch, old: str, new: str
+) -> None:
+    value = config()
+    monkeypatch.setenv("OPENADAPT_RELEASE_APP_ID", "991122")
+    path = ".github/workflows/release-and-publish.yml"
+    fixture = ReadOnlyFixtureGitHub(value)
+    source = fixture._workflow_content("OpenAdapt", path).replace(old, new, 1)
+    plan = build_plan(
+        ReadOnlyFixtureGitHub(value, workflow_overrides={("OpenAdapt", path): source}),
+        value,
+    )
+    launcher = next(
+        repo for repo in plan["repositories"] if repo["name"] == "OpenAdapt"
+    )
+
+    assert "release_effect_app_token_missing" in {
         item["code"] for item in launcher["blockers"]
     }
 
@@ -1981,6 +2730,38 @@ def test_apply_refuses_unconfirmed_environment_policy_deletion() -> None:
     }
     github = ReadOnlyFixtureGitHub(config())
     with pytest.raises(PolicyError, match="--prune-environment-policies"):
+        _apply_actions(github, plan, prune_environment_policies=False)
+    assert github.writes == []
+
+
+def test_apply_rechecks_every_main_before_first_mutation() -> None:
+    value = config()
+    audited = next(
+        repo["audited_main_sha"]
+        for repo in value["repositories"]
+        if repo["name"] == "OpenAdapt"
+    )
+    plan = {
+        "organization": "OpenAdaptAI",
+        "repositories": [
+            {
+                "name": "OpenAdapt",
+                "default_branch": "main",
+                "main_sha": audited,
+                "requires_environment_policy_prune": False,
+                "actions": [
+                    {
+                        "kind": "create_ruleset",
+                        "name": "test",
+                        "payload": {"name": "test"},
+                    }
+                ],
+            }
+        ],
+    }
+    github = ReadOnlyFixtureGitHub(value, main_drift_repo="OpenAdapt")
+
+    with pytest.raises(PolicyError, match="changed after preflight"):
         _apply_actions(github, plan, prune_environment_policies=False)
     assert github.writes == []
 

@@ -65,6 +65,22 @@ EXPECTED_PRIVATE_KEY_BINDINGS = {
     },
     "openadapt-docs": {"openadapt-ops": ["production-docs-deploy"]},
 }
+EXPECTED_TOKEN_REPOSITORY_BINDINGS = {
+    "openadapt-release": {
+        "OpenAdapt": ["OpenAdapt"],
+        "openadapt-agent": ["openadapt-agent"],
+        "openadapt-capture": ["openadapt-capture"],
+        "openadapt-desktop": ["openadapt-desktop"],
+        "openadapt-evals": ["openadapt-evals"],
+        "openadapt-flow": ["openadapt-flow"],
+    },
+    "openadapt-lifecycle": {
+        ".github": [".github"],
+        "openadapt-evals": ["openadapt-evals"],
+        "openadapt-ops": [".github", "openadapt-evals", "openadapt-ops"],
+    },
+    "openadapt-docs": {"openadapt-ops": ["openadapt-ops"]},
+}
 
 
 class PolicyError(RuntimeError):
@@ -285,6 +301,11 @@ def validate_config(config: Mapping[str, Any]) -> None:
         != (EXPECTED_PRIVATE_KEY_BINDINGS["openadapt-release"])
     ):
         raise PolicyError("release_identity private-key bindings are not exact")
+    if (
+        release_identity.get("token_repository_bindings")
+        != EXPECTED_TOKEN_REPOSITORY_BINDINGS["openadapt-release"]
+    ):
+        raise PolicyError("release_identity token repository bindings are not exact")
 
     lifecycle_identity = config.get("lifecycle_identity")
     if not isinstance(lifecycle_identity, Mapping):
@@ -362,6 +383,11 @@ def validate_config(config: Mapping[str, Any]) -> None:
         != (EXPECTED_PRIVATE_KEY_BINDINGS["openadapt-lifecycle"])
     ):
         raise PolicyError("lifecycle_identity private-key bindings are not exact")
+    if (
+        lifecycle_identity.get("token_repository_bindings")
+        != EXPECTED_TOKEN_REPOSITORY_BINDINGS["openadapt-lifecycle"]
+    ):
+        raise PolicyError("lifecycle_identity token repository bindings are not exact")
     actions_write_risk = lifecycle_identity.get("actions_write_risk")
     if not isinstance(actions_write_risk, Mapping):
         raise PolicyError("lifecycle_identity must record the Actions write risk")
@@ -417,6 +443,11 @@ def validate_config(config: Mapping[str, Any]) -> None:
         != (EXPECTED_PRIVATE_KEY_BINDINGS["openadapt-docs"])
     ):
         raise PolicyError("docs_identity private-key bindings are not exact")
+    if (
+        docs_identity.get("token_repository_bindings")
+        != EXPECTED_TOKEN_REPOSITORY_BINDINGS["openadapt-docs"]
+    ):
+        raise PolicyError("docs_identity token repository bindings are not exact")
     for field in ("app_id", "actor_id", "installation_id"):
         value = docs_identity.get(field)
         if value is not None and (not isinstance(value, int) or value <= 0):
@@ -526,6 +557,15 @@ def validate_config(config: Mapping[str, Any]) -> None:
         workflows = _require_list(
             repo.get("release_workflows"), f"{name}.release_workflows"
         )
+        for workflow in workflows:
+            effects = _require_list(
+                workflow.get("required_effects"),
+                f"{name}.{workflow.get('path')}.required_effects",
+            )
+            if any(
+                effect not in {"tag-push", "github-release"} for effect in effects
+            ) or len(effects) != len(set(effects)):
+                raise PolicyError(f"{name}: release workflow effects are invalid")
         requires_release_identity = any(
             "release-identity" in pattern
             for workflow in workflows
@@ -1147,11 +1187,12 @@ def _normalize_environment(value: Mapping[str, Any]) -> dict[str, Any]:
 
 
 def _workflow_text(
-    client: GitHubClient, owner: str, repo: str, path: str
+    client: GitHubClient, owner: str, repo: str, path: str, ref: str
 ) -> str | None:
     encoded_path = quote(path, safe="/")
     response = client.get(
-        f"/repos/{owner}/{repo}/contents/{encoded_path}?ref=main", optional=True
+        f"/repos/{owner}/{repo}/contents/{encoded_path}?ref={quote(ref, safe='')}",
+        optional=True,
     )
     if not isinstance(response, Mapping) or response.get("type") != "file":
         return None
@@ -1240,8 +1281,17 @@ def _references_expression(value: Any, reference: str) -> bool:
     return isinstance(value, str) and reference in re.sub(r"\s+", "", value)
 
 
+def _is_exact_expression(value: Any, reference: str) -> bool:
+    return (
+        isinstance(value, str) and re.sub(r"\s+", "", value) == f"${{{{{reference}}}}}"
+    )
+
+
 def _matching_app_token_step_ids(
-    job: Mapping[str, Any], identity: Mapping[str, Any]
+    job: Mapping[str, Any],
+    identity: Mapping[str, Any],
+    owner: str,
+    repository_name: str,
 ) -> set[str]:
     required_permissions = {
         permission.split(":", 1)[0].strip().lower().replace(" ", "-"): permission.split(
@@ -1254,6 +1304,7 @@ def _matching_app_token_step_ids(
     }
     app_id_name = identity["repository_variables"]["app_id"]
     private_key_name = identity["private_key_secret"]
+    expected_repositories = set(identity["token_repository_bindings"][repository_name])
     matching: set[str] = set()
     for step in _job_steps(job):
         uses = step.get("uses")
@@ -1267,11 +1318,29 @@ def _matching_app_token_step_ids(
             or not step_id
         ):
             continue
-        if not _references_expression(inputs.get("app-id"), f"vars.{app_id_name}"):
+        if not _is_exact_expression(inputs.get("app-id"), f"vars.{app_id_name}"):
             continue
-        if not _references_expression(
+        if not _is_exact_expression(
             inputs.get("private-key"), f"secrets.{private_key_name}"
         ):
+            continue
+        token_owner = inputs.get("owner")
+        if token_owner != owner and not _is_exact_expression(
+            token_owner, "github.repository_owner"
+        ):
+            continue
+        repositories_input = inputs.get("repositories")
+        if expected_repositories == {repository_name} and _is_exact_expression(
+            repositories_input, "github.event.repository.name"
+        ):
+            token_repositories = {repository_name}
+        elif isinstance(repositories_input, str) and "${{" not in repositories_input:
+            token_repositories = {
+                item for item in re.split(r"[\s,]+", repositories_input.strip()) if item
+            }
+        else:
+            continue
+        if token_repositories != expected_repositories:
             continue
         if any(
             inputs.get(f"permission-{name}") != level
@@ -1294,11 +1363,152 @@ def _step_uses_token(step: Mapping[str, Any], references: set[str]) -> bool:
     )
 
 
+def _shell_command_match(run: str, command_pattern: str) -> re.Match[str] | None:
+    match = re.search(rf"(?m)^[ \t]*{command_pattern}", run)
+    if match is None:
+        return None
+    line_end = run.find("\n", match.start())
+    line = run[match.start() :] if line_end == -1 else run[match.start() : line_end]
+    # A line continuation can move a fail-open operator to a later physical line.
+    # Required release effects stay on one physical line so the complete command
+    # is available to this validator.
+    if re.search(r"\\\s*(?:#.*)?$", line):
+        return None
+    if re.search(r"\|\||;|(?<!\\)\|(?!\|)|&\s*(?:#.*)?$", line):
+        return None
+    return match
+
+
+def _checkout_persists_app_token(step: Mapping[str, Any], references: set[str]) -> bool:
+    uses = step.get("uses")
+    inputs = step.get("with")
+    if (
+        not isinstance(uses, str)
+        or not uses.startswith("actions/checkout@")
+        or not isinstance(inputs, Mapping)
+    ):
+        return False
+    if not any(
+        _is_exact_expression(inputs.get("token"), reference) for reference in references
+    ):
+        return False
+    persist_credentials = inputs.get("persist-credentials", True)
+    return (
+        persist_credentials is not False and str(persist_credentials).lower() != "false"
+    )
+
+
+def _push_step_binds_app_token(step: Mapping[str, Any], references: set[str]) -> bool:
+    run = step.get("run")
+    environment = step.get("env")
+    if not isinstance(run, str) or not isinstance(environment, Mapping):
+        return False
+    token_names = {
+        name
+        for name, value in environment.items()
+        if isinstance(name, str)
+        and any(_is_exact_expression(value, reference) for reference in references)
+    }
+    if not token_names:
+        return False
+    push = _shell_command_match(run, r"git\s+push\b")
+    if push is None:
+        return False
+    binding = run[: push.start()]
+    if re.search(r"(?m)^\s*set\s+-euo\s+pipefail\s*$", binding) is None:
+        return False
+    key_indexes = set(
+        re.findall(
+            r"GIT_CONFIG_KEY_([0-9]+)=['\"]?http\.https://github\.com/\.extraheader",
+            binding,
+        )
+    )
+    if not key_indexes:
+        return False
+    for token_name in token_names:
+        if re.search(
+            rf"(?m)^\s*(?:(?:export|readonly)\s+)?{re.escape(token_name)}\s*=",
+            binding,
+        ):
+            continue
+        token_reference = rf'["\']?\$\{{?{re.escape(token_name)}\}}?["\']?'
+        assignment = re.search(
+            rf"(?m)^\s*([A-Za-z_][A-Za-z0-9_]*)=\$\(\s*printf\s+"
+            rf"['\"]x-access-token:%s['\"]\s+{token_reference}\s*\|"
+            rf"[^;\n]*\bbase64\b[^;\n]*\)\s*$",
+            binding,
+        )
+        if assignment is None:
+            continue
+        auth_variable = assignment.group(1)
+        for index in key_indexes:
+            if re.search(
+                rf"GIT_CONFIG_VALUE_{index}=['\"]?AUTHORIZATION:\s*basic\s+"
+                rf"\$\{{?{re.escape(auth_variable)}\}}?",
+                binding,
+                flags=re.IGNORECASE,
+            ):
+                return True
+    return False
+
+
+def _step_mutates_git_auth(step: Mapping[str, Any]) -> bool:
+    run = step.get("run")
+    return (
+        isinstance(run, str)
+        and re.search(
+            r"\bgit\s+remote\s+(?:add|remove|rename|set-url)\b|"
+            r"\bgit\s+config\b[^\n]*(?:extraheader|credential\.helper)|"
+            r"\bGIT_CONFIG_(?:COUNT|KEY_[0-9]+|VALUE_[0-9]+)\b|"
+            r"\bunset\b[^\n]*(?:TOKEN|AUTH|GIT_CONFIG)",
+            run,
+            flags=re.IGNORECASE,
+        )
+        is not None
+    )
+
+
+def _tag_pushes_use_app_token(job: Mapping[str, Any], token_step_ids: set[str]) -> bool:
+    available_references: set[str] = set()
+    persisted_app_credential = False
+    saw_push = False
+    for step in _job_steps(job):
+        step_id = step.get("id")
+        if isinstance(step_id, str) and step_id in token_step_ids:
+            available_references.add(f"steps.{step_id}.outputs.token")
+
+        uses = step.get("uses")
+        if isinstance(uses, str) and uses.startswith("actions/checkout@"):
+            persisted_app_credential = _checkout_persists_app_token(
+                step, available_references
+            )
+        elif persisted_app_credential and isinstance(uses, str):
+            persisted_app_credential = False
+
+        run = step.get("run")
+        mutates_persisted_auth = _step_mutates_git_auth(step)
+        if (
+            not isinstance(run, str)
+            or _shell_command_match(run, r"git\s+push\b") is None
+        ):
+            if persisted_app_credential and mutates_persisted_auth:
+                persisted_app_credential = False
+            continue
+        saw_push = True
+        direct_binding = _push_step_binds_app_token(step, available_references)
+        if (
+            not persisted_app_credential or mutates_persisted_auth
+        ) and not direct_binding:
+            return False
+    return saw_push
+
+
 def _release_workflow_semantic_blockers(
     client: GitHubClient,
     owner: str,
     repo: Mapping[str, Any],
     identity: Mapping[str, Any],
+    ref: str,
 ) -> list[dict[str, str]]:
     if repo["name"] not in identity["repository_scope"]:
         return []
@@ -1308,7 +1518,10 @@ def _release_workflow_semantic_blockers(
     blockers: list[dict[str, str]] = []
     for workflow in repo.get("release_workflows", []):
         path = workflow["path"]
-        content = _workflow_text(client, owner, repo["name"], path)
+        required_effects = set(workflow["required_effects"])
+        requires_tag_effect = "tag-push" in required_effects
+        requires_release_effect = "github-release" in required_effects
+        content = _workflow_text(client, owner, repo["name"], path, ref)
         if content is None:
             continue
         try:
@@ -1316,22 +1529,30 @@ def _release_workflow_semantic_blockers(
         except PolicyError:
             continue
         jobs = document.get("jobs", {})
+        saw_tag_effect = False
+        saw_release_effect = False
         for job_name, job in jobs.items():
             if not isinstance(job_name, str) or not isinstance(job, Mapping):
                 continue
-            job_text = "\n".join(_all_strings(job))
+            run_steps = [
+                step["run"]
+                for step in _job_steps(job)
+                if isinstance(step.get("run"), str)
+            ]
             has_tag_effect = bool(
-                re.search(r"\bgit\s+tag\b", job_text)
-                and re.search(r"\bgit\s+push\b", job_text)
+                any(_shell_command_match(run, r"git\s+tag\b") for run in run_steps)
+                and any(_shell_command_match(run, r"git\s+push\b") for run in run_steps)
             )
             release_steps = [
                 step
                 for step in _job_steps(job)
-                if re.search(
-                    r"\bgh\s+release\s+(?:create|edit|upload)\b",
-                    "\n".join(_all_strings(step)),
+                if isinstance(step.get("run"), str)
+                if _shell_command_match(
+                    step["run"], r"gh\s+release\s+(?:create|edit|upload)\b"
                 )
             ]
+            saw_tag_effect = saw_tag_effect or has_tag_effect
+            saw_release_effect = saw_release_effect or bool(release_steps)
             if not has_tag_effect and not release_steps:
                 continue
             environment = _job_environment(job)
@@ -1345,7 +1566,9 @@ def _release_workflow_semantic_blockers(
                         ),
                     }
                 )
-            token_step_ids = _matching_app_token_step_ids(job, identity)
+            token_step_ids = _matching_app_token_step_ids(
+                job, identity, owner, repo["name"]
+            )
             token_references = _token_references(token_step_ids)
             if not token_step_ids:
                 blockers.append(
@@ -1358,11 +1581,7 @@ def _release_workflow_semantic_blockers(
                     }
                 )
                 continue
-            if has_tag_effect and not any(
-                _references_expression(value, reference)
-                for value in _all_strings(job)
-                for reference in token_references
-            ):
+            if has_tag_effect and not _tag_pushes_use_app_token(job, token_step_ids):
                 blockers.append(
                     {
                         "code": "release_tag_app_token_not_bound",
@@ -1380,7 +1599,7 @@ def _release_workflow_semantic_blockers(
                     else None
                 )
                 if not any(
-                    _references_expression(gh_token, reference)
+                    _is_exact_expression(gh_token, reference)
                     for reference in token_references
                 ):
                     blockers.append(
@@ -1393,6 +1612,26 @@ def _release_workflow_semantic_blockers(
                             ),
                         }
                     )
+        if requires_tag_effect and not saw_tag_effect:
+            blockers.append(
+                {
+                    "code": "release_tag_effect_missing",
+                    "message": (
+                        f"{repo['name']}:{path}: no run step creates and pushes the "
+                        "release tag."
+                    ),
+                }
+            )
+        if requires_release_effect and not saw_release_effect:
+            blockers.append(
+                {
+                    "code": "github_release_effect_missing",
+                    "message": (
+                        f"{repo['name']}:{path}: no run step creates, edits, or uploads "
+                        "the GitHub Release."
+                    ),
+                }
+            )
     return blockers
 
 
@@ -1402,11 +1641,12 @@ def _workflow_contract_blockers(
     repo: Mapping[str, Any],
     contract_field: str,
     code_prefix: str,
+    ref: str,
 ) -> list[dict[str, str]]:
     blockers: list[dict[str, str]] = []
     for workflow in repo.get(contract_field, []):
         path = workflow["path"]
-        content = _workflow_text(client, owner, repo["name"], path)
+        content = _workflow_text(client, owner, repo["name"], path, ref)
         if content is None:
             blockers.append(
                 {
@@ -1662,6 +1902,7 @@ def _exclusive_environment_blockers(
     client: GitHubClient,
     owner: str,
     repo: Mapping[str, Any],
+    ref: str,
 ) -> list[dict[str, str]]:
     environments = repo.get("lifecycle_environments", []) + [
         item
@@ -1670,7 +1911,9 @@ def _exclusive_environment_blockers(
     ]
     if not environments:
         return []
-    tree = client.get(f"/repos/{owner}/{repo['name']}/git/trees/main?recursive=1")
+    tree = client.get(
+        f"/repos/{owner}/{repo['name']}/git/trees/{quote(ref, safe='')}?recursive=1"
+    )
     if not isinstance(tree, Mapping) or tree.get("truncated"):
         raise GitHubError(
             f"{owner}/{repo['name']}: complete workflow tree is not available"
@@ -1684,7 +1927,7 @@ def _exclusive_environment_blockers(
         and item["path"].endswith((".yml", ".yaml"))
     )
     content_by_path = {
-        path: _workflow_text(client, owner, repo["name"], path)
+        path: _workflow_text(client, owner, repo["name"], path, ref)
         for path in workflow_paths
     }
     blockers: list[dict[str, str]] = []
@@ -1709,26 +1952,60 @@ def _exclusive_environment_blockers(
     return blockers
 
 
+def _conjunctive_clauses(expression: str) -> list[str]:
+    normalized = expression.strip()
+    if normalized.startswith("${{") and normalized.endswith("}}"):
+        normalized = normalized[3:-2].strip()
+    if re.search(r"\|\||\bor\b", normalized, flags=re.IGNORECASE):
+        return []
+    return [part.strip() for part in normalized.split("&&")]
+
+
+def _has_exact_clause(clauses: Iterable[str], pattern: str) -> bool:
+    return any(re.fullmatch(pattern, clause) is not None for clause in clauses)
+
+
 def _actor_rejection_failures(expression: str) -> list[str]:
     failures: list[str] = []
+    clauses = _conjunctive_clauses(expression)
+    if not clauses:
+        failures.append("non-conjunctive-condition")
     for actor_login in ("openadapt-lifecycle[bot]", "openadapt-docs[bot]"):
         escaped = re.escape(actor_login)
         for field in ("actor", "triggering_actor"):
-            if (
-                re.search(rf"github\.{field}\s*!=\s*['\"]{escaped}['\"]", expression)
-                is None
+            if not _has_exact_clause(
+                clauses, rf"github\.{field}\s*!=\s*['\"]{escaped}['\"]"
             ):
                 failures.append(f"{field}:{actor_login}")
     return failures
 
 
 def _guard_actor_rejection_failures(guard: Mapping[str, Any]) -> list[str]:
-    direct = _actor_rejection_failures("\n".join(_all_strings(guard)))
+    direct = _actor_rejection_failures(str(guard.get("if", "")))
     unresolved = set(direct)
     for step in _job_steps(guard):
         environment = step.get("env", {})
         run = step.get("run")
         if not isinstance(environment, Mapping) or not isinstance(run, str):
+            continue
+        if re.search(r"\|\||\bor\b|;\s*true\b", run, flags=re.IGNORECASE):
+            unresolved.add("non-conjunctive-condition")
+        run_lines = [line.strip() for line in run.splitlines() if line.strip()]
+        test_commands: list[tuple[str, str]] = []
+        invalid_command = False
+        for line in run_lines:
+            if line == "set -euo pipefail":
+                continue
+            match = re.fullmatch(
+                r"test\s+['\"]?\$\{?([A-Za-z_][A-Za-z0-9_]*)\}?['\"]?\s*"
+                r"!=\s*['\"]([^'\"]+)['\"]",
+                line,
+            )
+            if match is None:
+                invalid_command = True
+                break
+            test_commands.append((match.group(1), match.group(2)))
+        if invalid_command or not test_commands:
             continue
         for variable_name, value in environment.items():
             if not isinstance(variable_name, str) or not isinstance(value, str):
@@ -1744,10 +2021,7 @@ def _guard_actor_rejection_failures(guard: Mapping[str, Any]) -> list[str]:
             if field is None:
                 continue
             for actor_login in ("openadapt-lifecycle[bot]", "openadapt-docs[bot]"):
-                if re.search(
-                    rf"\$\{{?{re.escape(variable_name)}\}}?\"?\s*!=\s*['\"]{re.escape(actor_login)}['\"]",
-                    run,
-                ):
+                if (variable_name, actor_login) in test_commands:
                     unresolved.discard(f"{field}:{actor_login}")
     return sorted(unresolved)
 
@@ -1772,13 +2046,12 @@ def _job_actor_rejection_failures(document: Mapping[str, Any]) -> list[str]:
             failures.append("<invalid job>")
             continue
         expression = str(job.get("if", ""))
-        tag_only = (
-            re.search(r"github\.event_name\s*==\s*['\"]push['\"]", expression)
-            is not None
-            and "refs/tags/" in expression
-            and "workflow_dispatch" not in expression
-            and "repository_dispatch" not in expression
-            and "||" not in expression
+        clauses = _conjunctive_clauses(expression)
+        tag_only = _has_exact_clause(
+            clauses, r"github\.event_name\s*==\s*['\"]push['\"]"
+        ) and _has_exact_clause(
+            clauses,
+            r"startsWith\(\s*github\.ref\s*,\s*['\"]refs/tags/[^'\"]*['\"]\s*\)",
         )
         if tag_only:
             continue
@@ -1834,6 +2107,9 @@ def _authorized_dispatch_semantic_failures(
     failures: list[str] = []
     for job_name, job in candidates:
         expression = str(job.get("if", ""))
+        clauses = _conjunctive_clauses(expression)
+        if not clauses:
+            failures.append(f"{job_name}:non-conjunctive-condition")
         required_conditions = {
             "repository": rf"github\.repository\s*==\s*['\"]{re.escape(owner)}/{re.escape(repo['name'])}['\"]",
             "ref": r"github\.ref\s*==\s*['\"]refs/heads/main['\"]",
@@ -1843,11 +2119,13 @@ def _authorized_dispatch_semantic_failures(
             "actor_id": rf"github\.actor_id\s*==\s*vars\.{re.escape(actor_id_variable)}",
         }
         for label, pattern in required_conditions.items():
-            if re.search(pattern, expression) is None:
+            if not _has_exact_clause(clauses, pattern):
                 failures.append(f"{job_name}:{label}")
         if _job_environment(job) != expected_environment:
             failures.append(f"{job_name}:environment")
-        token_step_ids = _matching_app_token_step_ids(job, identity)
+        token_step_ids = _matching_app_token_step_ids(
+            job, identity, owner, repo["name"]
+        )
         if not token_step_ids:
             failures.append(f"{job_name}:app-token")
             continue
@@ -1864,7 +2142,7 @@ def _authorized_dispatch_semantic_failures(
                     else None
                 )
                 if not any(
-                    _references_expression(gh_token, reference)
+                    _is_exact_expression(gh_token, reference)
                     for reference in token_references
                 ):
                     failures.append(f"{job_name}:effect-token")
@@ -1881,6 +2159,7 @@ def _dispatch_workflow_blockers(
     repo: Mapping[str, Any],
     lifecycle_identity: Mapping[str, Any],
     docs_identity: Mapping[str, Any],
+    ref: str,
 ) -> list[dict[str, str]]:
     inventory = {
         item["path"]: item["mode"]
@@ -1888,7 +2167,9 @@ def _dispatch_workflow_blockers(
     }
     if not inventory:
         return []
-    tree = client.get(f"/repos/{owner}/{repo['name']}/git/trees/main?recursive=1")
+    tree = client.get(
+        f"/repos/{owner}/{repo['name']}/git/trees/{quote(ref, safe='')}?recursive=1"
+    )
     if not isinstance(tree, Mapping) or tree.get("truncated"):
         raise GitHubError(
             f"{owner}/{repo['name']}: complete dispatch workflow tree is not available"
@@ -1903,7 +2184,7 @@ def _dispatch_workflow_blockers(
     )
     blockers: list[dict[str, str]] = []
     for path in workflow_paths:
-        content = _workflow_text(client, owner, repo["name"], path)
+        content = _workflow_text(client, owner, repo["name"], path, ref)
         if content is None:
             continue
         try:
@@ -2159,6 +2440,11 @@ def build_plan(client: GitHubClient, config: Mapping[str, Any]) -> dict[str, Any
             )
         commit = client.get(f"/repos/{owner}/{name}/commits/{repo['default_branch']}")
         main_sha = commit.get("sha")
+        if (
+            not isinstance(main_sha, str)
+            or re.fullmatch(r"[0-9a-f]{40}", main_sha) is None
+        ):
+            raise GitHubError(f"{name}: default branch did not resolve to a commit SHA")
         if main_sha != repo["audited_main_sha"]:
             blockers.append(
                 {
@@ -2190,22 +2476,22 @@ def build_plan(client: GitHubClient, config: Mapping[str, Any]) -> dict[str, Any
 
         blockers.extend(
             _workflow_contract_blockers(
-                client, owner, repo, "release_workflows", "release"
+                client, owner, repo, "release_workflows", "release", main_sha
             )
         )
         blockers.extend(
             _workflow_contract_blockers(
-                client, owner, repo, "admission_workflows", "admission"
+                client, owner, repo, "admission_workflows", "admission", main_sha
             )
         )
         blockers.extend(
             _workflow_contract_blockers(
-                client, owner, repo, "lifecycle_workflows", "lifecycle"
+                client, owner, repo, "lifecycle_workflows", "lifecycle", main_sha
             )
         )
         blockers.extend(
             _release_workflow_semantic_blockers(
-                client, owner, repo, config["release_identity"]
+                client, owner, repo, config["release_identity"], main_sha
             )
         )
         blockers.extend(
@@ -2249,7 +2535,7 @@ def build_plan(client: GitHubClient, config: Mapping[str, Any]) -> dict[str, Any
                     metadata.get("id"),
                 )
             )
-        blockers.extend(_exclusive_environment_blockers(client, owner, repo))
+        blockers.extend(_exclusive_environment_blockers(client, owner, repo, main_sha))
         blockers.extend(
             _dispatch_workflow_blockers(
                 client,
@@ -2257,6 +2543,7 @@ def build_plan(client: GitHubClient, config: Mapping[str, Any]) -> dict[str, Any
                 repo,
                 config["lifecycle_identity"],
                 config["docs_identity"],
+                main_sha,
             )
         )
         current_rulesets = _list_rulesets(client, owner, name)
@@ -2286,9 +2573,24 @@ def build_plan(client: GitHubClient, config: Mapping[str, Any]) -> dict[str, Any
         )
         blockers.extend(environment_blockers)
         actions.extend(environment_actions)
+        final_commit = client.get(
+            f"/repos/{owner}/{name}/commits/{repo['default_branch']}"
+        )
+        final_main_sha = final_commit.get("sha")
+        if final_main_sha != main_sha:
+            blockers.append(
+                {
+                    "code": "audited_main_changed_during_plan",
+                    "message": (
+                        f"{name}: {repo['default_branch']} changed from {main_sha} "
+                        f"to {final_main_sha} during the audit. Create a new plan."
+                    ),
+                }
+            )
         repositories.append(
             {
                 "name": name,
+                "default_branch": repo["default_branch"],
                 "main_sha": main_sha,
                 "audited_main_sha": repo["audited_main_sha"],
                 "open_pull_requests": pulls,
@@ -2390,6 +2692,14 @@ def _apply_actions(
             "the plan removes environment policies; inspect it and add "
             "--prune-environment-policies"
         )
+    for repo in plan["repositories"]:
+        name = repo["name"]
+        branch = repo.get("default_branch", "main")
+        current = client.get(f"/repos/{owner}/{name}/commits/{branch}")
+        if current.get("sha") != repo.get("main_sha"):
+            raise PolicyError(
+                f"{name}: {branch} changed after preflight; no protection mutation was sent"
+            )
     for repo in plan["repositories"]:
         name = repo["name"]
         for action in repo["actions"]:

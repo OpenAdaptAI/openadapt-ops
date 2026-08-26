@@ -172,6 +172,11 @@ audit checks the actor, protected environment, App inputs, token output, and
 sensitive effect in the same job. A matching string elsewhere in the file
 isn't enough.
 
+Each App-token step names `OpenAdaptAI` and the exact repositories that its job
+needs. A Release token names only its current package repository. A lifecycle
+or Docs token names only its reviewed workflow scope. An omitted repository
+list would grant the token its full installation scope, so the plan refuses it.
+
 Each dispatch path uses a workflow-and-event-specific concurrency group. It
 sets `cancel-in-progress` to `false`. A manual run cannot cancel a real run.
 Production evidence remains content-addressed outside mutable Actions
@@ -221,8 +226,12 @@ Use this sequence for each package repository:
 Any job that creates, edits, or uploads a GitHub Release must create the
 Release App token in that job. Its `GH_TOKEN` must reference that exact step's
 output. The same job rule prevents a workflow from passing because an unrelated
-job contains the right App strings. Launcher remains a plan refusal until its
-release workflow follows this contract on `main`.
+job contains the right App strings. Evals and every other package follow the
+same matching GitHub Release rule.
+
+A tag push must use the App token through an authenticated checkout credential
+or an explicit authenticated Git binding in the push step. An unused token
+variable doesn't authorize a push.
 
 Agent uses `mcp-registry` after its PyPI publication. Both publication jobs use
 OIDC. The Agent release workflow can't accept an API-token fallback or
@@ -276,6 +285,10 @@ complete. If an audited `main` SHA changed, review the exact current workflows
 and update the policy SHA before you create another plan. Drift is a refusal,
 not a warning. A plan expires after 15 minutes.
 
+The audit reads each workflow and complete workflow tree by that recorded
+commit SHA. It reads the branch again after those checks. A branch change
+during the audit refuses the plan.
+
 Apply that exact plan:
 
 ```bash
@@ -284,10 +297,11 @@ uv run python scripts/manage_github_protection.py apply \
   --confirm "APPLY OpenAdaptAI CORE PROTECTION"
 ```
 
-The apply operation checks every `main` commit again. It refuses a changed
-commit, a changed action list, an active pull request check, a missing release
-identity, a missing lifecycle identity, an unguarded dispatch workflow, or an
-invalid workflow contract. It also refuses a missing docs identity.
+The apply operation checks every `main` commit again immediately before the
+first mutation. It refuses a changed commit, a changed action list, an active
+pull request check, a missing release identity, a missing lifecycle identity,
+an unguarded dispatch workflow, or an invalid workflow contract. It also
+refuses a missing docs identity.
 
 The tool does not remove an extra environment deployment policy by default.
 Inspect the planned deletion. Then add `--prune-environment-policies` if the
