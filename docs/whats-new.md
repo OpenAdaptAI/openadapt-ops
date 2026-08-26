@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-08-26 19:27 UTC*
+> *Last updated: 2026-08-26 19:58 UTC*
 
 
 
@@ -45,6 +45,8 @@
 ## openadapt-flow
 
 
+- [ci: require release App tag publication](https://github.com/OpenAdaptAI/openadapt-flow/pull/403) (#403) — merged 
+
 - [docs: derive Flow product state from admissions](https://github.com/OpenAdaptAI/openadapt-flow/pull/401) (#401) — merged 
 
 - [test: fail a run that leaves tracked repository files dirty](https://github.com/OpenAdaptAI/openadapt-flow/pull/400) (#400) — merged 
@@ -83,12 +85,12 @@
 
 - [ci: correct the stale version comment on the pypi-publish pin](https://github.com/OpenAdaptAI/openadapt-flow/pull/377) (#377) — merged 
 
-- [feat: enforce signed qualification admission before actuation](https://github.com/OpenAdaptAI/openadapt-flow/pull/376) (#376) — merged 
-
 
 
 ## openadapt-desktop
 
+
+- [Scope Desktop secret scans to the tested change](https://github.com/OpenAdaptAI/openadapt-desktop/pull/133) (#133) — merged 
 
 - [Bind production admission to tag attestations](https://github.com/OpenAdaptAI/openadapt-desktop/pull/132) (#132) — merged 
 
@@ -138,6 +140,8 @@
 
 ## openadapt-evals
 
+
+- [feat(evidence): bind Cloud acceptance to the public Sigstore instance](https://github.com/OpenAdaptAI/openadapt-evals/pull/300) (#300) — merged 
 
 - [fix(evidence): accept the timestamp format GitHub CLI actually emits](https://github.com/OpenAdaptAI/openadapt-evals/pull/299) (#299) — merged 
 
