@@ -31,11 +31,27 @@ permissions:
   contents: read
 
 concurrency:
-  group: prod-health
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
+  reject-lifecycle-app:
+    permissions: {}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Reject the lifecycle App
+        env:
+          ACTOR: ${{ github.actor }}
+          TRIGGERING_ACTOR: ${{ github.triggering_actor }}
+        run: |
+          test "$ACTOR" != 'openadapt-lifecycle[bot]'
+          test "$TRIGGERING_ACTOR" != 'openadapt-lifecycle[bot]'
+
   probe:
+    needs: reject-lifecycle-app
+    if: >-
+      github.actor != 'openadapt-lifecycle[bot]' &&
+      github.triggering_actor != 'openadapt-lifecycle[bot]'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -88,8 +104,11 @@ jobs:
 
   record-alert:
     name: Keep one durable production health alert
-    needs: probe
-    if: ${{ always() }}
+    needs: [reject-lifecycle-app, probe]
+    if: >-
+      always() &&
+      github.actor != 'openadapt-lifecycle[bot]' &&
+      github.triggering_actor != 'openadapt-lifecycle[bot]'
     runs-on: ubuntu-latest
     permissions:
       contents: read

@@ -1,43 +1,208 @@
 name: Sync Documentation
 
 on:
-  # Same-repo docs merges publish directly, with no dispatch round-trip.
-  # A push that only touches this repo's docs sources builds and deploys the
-  # site as-is; the cross-repo content-sync steps below are skipped on push.
   push:
     branches: [main]
     paths:
       - 'docs/**'
       - 'mkdocs.yml'
       - '.github/workflows/sync.yml'
-  # Cross-repo content sync: sub-repos dispatch repo-updated (see trigger.yml)
-  # when their README/changelog changes so their pages re-sync here.
-  repository_dispatch:
-    types: [repo-updated]
-  schedule:
-    - cron: '0 9 * * 1'  # Every Monday 9 AM UTC
   workflow_dispatch:
     inputs:
-      repo:
-        description: 'Repo to update (or "all" for full rebuild)'
-        default: 'all'
+      source_repository:
+        description: Exact allowlisted repository whose main branch changed
+        required: true
+        type: string
+      source_ref:
+        description: Exact source ref
+        required: true
+        type: string
+      source_commit:
+        description: Exact 40-character source commit
+        required: true
+        type: string
+      source_event:
+        description: Exact source event
+        required: true
+        type: string
+      idempotency_key:
+        description: Bound docs-sync idempotency key
+        required: true
+        type: string
 
-permissions:
-  contents: write
-  pages: write
-  id-token: write
+permissions: {}
 
 concurrency:
-  group: docs-deploy
-  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
-  sync-and-deploy:
-    if: github.ref == 'refs/heads/main'
+  authorize-docs-app:
+    if: github.event_name == 'workflow_dispatch'
+    permissions: {}
     runs-on: ubuntu-latest
+    steps:
+      - name: Refuse any identity other than the Docs App
+        env:
+          ACTOR: ${{ github.actor }}
+          ACTOR_ID: ${{ github.actor_id }}
+          EXPECTED_ACTOR_ID: ${{ vars.OPENADAPT_DOCS_ACTOR_ID }}
+          EVENT_NAME: ${{ github.event_name }}
+          REF: ${{ github.ref }}
+          REPOSITORY: ${{ github.repository }}
+          TRIGGERING_ACTOR: ${{ github.triggering_actor }}
+        run: |
+          set -euo pipefail
+          test "$REPOSITORY" = 'OpenAdaptAI/openadapt-ops'
+          test "$REF" = 'refs/heads/main'
+          test "$EVENT_NAME" = 'workflow_dispatch'
+          test "$ACTOR" = 'openadapt-docs[bot]'
+          test "$TRIGGERING_ACTOR" = 'openadapt-docs[bot]'
+          test -n "$EXPECTED_ACTOR_ID"
+          test "$ACTOR_ID" = "$EXPECTED_ACTOR_ID"
+
+  sync-docs:
+    name: Create a documentation sync PR
+    needs: authorize-docs-app
+    if: >-
+      github.repository == 'OpenAdaptAI/openadapt-ops' &&
+      github.ref == 'refs/heads/main' &&
+      github.event_name == 'workflow_dispatch' &&
+      github.actor == 'openadapt-docs[bot]' &&
+      github.triggering_actor == 'openadapt-docs[bot]' &&
+      github.actor_id == vars.OPENADAPT_DOCS_ACTOR_ID
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production-docs-deploy
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Create an exact Docs App installation token
+        id: docs-app
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          app-id: ${{ vars.OPENADAPT_DOCS_APP_ID }}
+          private-key: ${{ secrets.OPENADAPT_DOCS_APP_PRIVATE_KEY }}
+          owner: OpenAdaptAI
+          repositories: openadapt-ops
+          permission-actions: write
+          permission-metadata: read
+          permission-pull-requests: write
+
+      - name: Verify the exact Docs App installation
+        env:
+          EXPECTED_APP_ID: ${{ vars.OPENADAPT_DOCS_APP_ID }}
+          EXPECTED_INSTALLATION_ID: ${{ vars.OPENADAPT_DOCS_INSTALLATION_ID }}
+          GH_TOKEN: ${{ steps.docs-app.outputs.token }}
+        run: |
+          set -euo pipefail
+          test -n "$EXPECTED_APP_ID"
+          test -n "$EXPECTED_INSTALLATION_ID"
+          actual_app_id=$(gh api /installation --jq '.app_id | tostring')
+          actual_installation_id=$(gh api /installation --jq '.id | tostring')
+          test "$actual_app_id" = "$EXPECTED_APP_ID"
+          test "$actual_installation_id" = "$EXPECTED_INSTALLATION_ID"
+
+      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync --locked --extra llm --extra dev
+
+      - name: Verify the exact source and idempotency contract
+        env:
+          GH_TOKEN: ${{ github.token }}
+          IDEMPOTENCY_KEY: ${{ inputs.idempotency_key }}
+          SOURCE_COMMIT: ${{ inputs.source_commit }}
+          SOURCE_EVENT: ${{ inputs.source_event }}
+          SOURCE_REF: ${{ inputs.source_ref }}
+          SOURCE_REPOSITORY: ${{ inputs.source_repository }}
+        run: |
+          set -euo pipefail
+          uv run python scripts/validate_docs_sync.py \
+            --repositories repos.yml \
+            --source-repository "$SOURCE_REPOSITORY" \
+            --source-ref "$SOURCE_REF" \
+            --source-commit "$SOURCE_COMMIT" \
+            --source-event "$SOURCE_EVENT" \
+            --idempotency-key "$IDEMPOTENCY_KEY"
+          current_commit=$(gh api "repos/${SOURCE_REPOSITORY}/commits/main" --jq .sha)
+          test "$current_commit" = "$SOURCE_COMMIT"
+
+      - name: Generate the reviewable documentation source
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          uv run python scripts/sync_readmes.py
+          uv run python scripts/aggregate_changelog.py
+          uv run python scripts/generate_whats_new.py
+
+      - name: Verify the generated source
+        run: |
+          uv run pytest tests/ -q
+          uv run python scripts/validate_docs.py
+          uv run mkdocs build --strict
+
+      - name: Commit the generated source to an automation branch
+        id: commit
+        env:
+          IDEMPOTENCY_KEY: ${{ inputs.idempotency_key }}
+          SOURCE_COMMIT: ${{ inputs.source_commit }}
+        run: |
+          set -euo pipefail
+          branch="automation/docs-sync-${SOURCE_COMMIT:0:16}"
+          git switch -c "$branch"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/
+          if git diff --staged --quiet; then
+            echo 'changed=false' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git commit -m "docs: sync ${SOURCE_COMMIT:0:12}" \
+            -m "${IDEMPOTENCY_KEY}"
+          git push origin "HEAD:refs/heads/${branch}"
+          echo "branch=${branch}" >> "$GITHUB_OUTPUT"
+          echo 'changed=true' >> "$GITHUB_OUTPUT"
+
+      - name: Open the documentation sync PR
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          BRANCH: ${{ steps.commit.outputs.branch }}
+          GH_TOKEN: ${{ steps.docs-app.outputs.token }}
+          SOURCE_COMMIT: ${{ inputs.source_commit }}
+          SOURCE_REPOSITORY: ${{ inputs.source_repository }}
+        run: |
+          set -euo pipefail
+          existing=$(gh pr list --head "$BRANCH" --state open --json url --jq '.[0].url // empty')
+          if [ -n "$existing" ]; then
+            echo "The documentation sync PR already exists: $existing"
+            exit 0
+          fi
+          gh pr create --base main --head "$BRANCH" \
+            --title "docs: sync ${SOURCE_REPOSITORY}@${SOURCE_COMMIT:0:12}" \
+            --body "Generated from the exact reviewed source commit ${SOURCE_REPOSITORY}@${SOURCE_COMMIT}."
+
+  deploy-pages:
+    name: Deploy the reviewed documentation
+    if: >-
+      github.repository == 'OpenAdaptAI/openadapt-ops' &&
+      github.ref == 'refs/heads/main' &&
+      github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
     environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -48,71 +213,11 @@ jobs:
       - name: Install dependencies
         run: uv sync --locked --extra llm --extra dev
 
-      # Cross-repo content sync (pulls from OTHER repos): runs on
-      # repository_dispatch / schedule / workflow_dispatch, but is skipped on a
-      # same-repo push, which just builds and deploys this repo's docs as-is.
-      - name: Sync READMEs
-        if: ${{ success() && github.event_name != 'push' }}
-        run: uv run python scripts/sync_readmes.py
-
-      - name: Aggregate changelogs
-        if: ${{ success() && github.event_name != 'push' }}
-        run: uv run python scripts/aggregate_changelog.py
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Generate What's New
-        if: ${{ success() && github.event_name != 'push' }}
-        run: uv run python scripts/generate_whats_new.py
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # The auto-generated architecture overview mirrored each repo README and
-      # deep-linked to per-package pages that the docs site no longer publishes.
-      # The curated Concepts and Ecosystem sections replace it. Re-enable only
-      # if a maintained, product-accurate architecture page is reintroduced.
-
-      - name: Run tests against generated source
-        run: uv run pytest tests/ -q
-
-      - name: Validate
-        run: uv run python scripts/validate_docs.py
-
-      - name: Build MkDocs site
-        run: uv run mkdocs build --strict
-
-      # Persist exactly the generated source that passed the gates before
-      # publishing it. A protected-branch rejection therefore blocks deploy.
-      # Skipped on push: no cross-repo sync ran, so there is nothing new to
-      # persist and no second commit to push back to main.
-      - name: Commit updated docs source
-        if: ${{ success() && github.event_name != 'push' }}
+      - name: Verify the reviewed documentation
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/
-          if git diff --staged --quiet; then
-            echo "Generated documentation is already current."
-            exit 0
-          fi
-          git commit -m "docs: auto-sync documentation [skip ci]"
-
-          # A cancelled dispatch can finish its push while the replacement is
-          # already running. Rebase the exact generated commit onto that newer
-          # main and retry the compare-and-swap push instead of losing the
-          # replacement run to a harmless non-fast-forward race.
-          for attempt in 1 2 3; do
-            git fetch origin main
-            git rebase origin/main
-            if git push origin HEAD:main; then
-              exit 0
-            fi
-            if [ "$attempt" -eq 3 ]; then
-              echo "Docs main advanced during all three bounded push attempts." >&2
-              exit 1
-            fi
-          done
+          uv run pytest tests/ -q
+          uv run python scripts/validate_docs.py
+          uv run mkdocs build --strict
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
