@@ -62,6 +62,15 @@ REQUIRED_PUBLIC_PAGES = {
 
 REQUIRED_NAV_PAGES = set(REQUIRED_PUBLIC_PAGES) - {"packages/openadapt.md"}
 
+FIRST_WORKFLOW_CONTRACT = {
+    "first_workflow_scope": "read_only",
+    "first_write_admission": "qualification_required",
+}
+FIRST_WORKFLOW_FORBIDDEN_FLAGS = (
+    "--break-it",
+    "--simulate-rejected-write",
+)
+
 STALE_PRELAUNCH_MARKERS = {
     "Available for qualification",
     "Beta launch candidate",
@@ -107,6 +116,20 @@ def check_empty_pages(docs_dir=None):
     return issues
 
 
+def _frontmatter(content):
+    """Return a page's YAML frontmatter, or an empty mapping when invalid."""
+    if not content.startswith("---\n"):
+        return {}
+    end = content.find("\n---\n", 4)
+    if end == -1:
+        return {}
+    try:
+        metadata = yaml.safe_load(content[4:end]) or {}
+    except yaml.YAMLError:
+        return {}
+    return metadata if isinstance(metadata, dict) else {}
+
+
 def check_product_docs_contract(docs_dir=None, mkdocs_file=None):
     """Keep sync/deploy from erasing product truth or restoring package-first IA."""
     docs_dir = pathlib.Path(docs_dir or DOCS_DIR)
@@ -122,6 +145,26 @@ def check_product_docs_contract(docs_dir=None, mkdocs_file=None):
         for marker in markers:
             if marker not in content:
                 issues.append(f"Missing product marker in {relative_path}: {marker}")
+
+    first_workflow = docs_dir / "get-started" / "first-workflow.md"
+    if not first_workflow.is_file():
+        issues.append("Missing required product page: get-started/first-workflow.md")
+    else:
+        first_workflow_text = first_workflow.read_text()
+        first_workflow_metadata = _frontmatter(first_workflow_text)
+        for field, expected in FIRST_WORKFLOW_CONTRACT.items():
+            actual = first_workflow_metadata.get(field)
+            if actual != expected:
+                issues.append(
+                    "First-workflow safety contract requires "
+                    f"{field}: {expected}; found: {actual}"
+                )
+        for flag in FIRST_WORKFLOW_FORBIDDEN_FLAGS:
+            if flag in first_workflow_text:
+                issues.append(
+                    "Failure-demo flag is forbidden in first-workflow "
+                    f"onboarding: {flag}"
+                )
 
     if not mkdocs_file.exists():
         issues.append(f"Missing MkDocs config: {mkdocs_file}")

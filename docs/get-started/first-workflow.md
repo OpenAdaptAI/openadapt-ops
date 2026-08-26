@@ -1,24 +1,30 @@
+---
+description: >-
+  Record, inspect, and supervise one read-only workflow before you qualify any
+  write.
+first_workflow_scope: read_only
+first_write_admission: qualification_required
+---
+
 # Your first workflow
 
-This walks through compiling a workflow on **your own** web app: record what you
-do, compile it, replay it, and read the report. It takes about five minutes and
-makes zero model calls. Web is the quickest
-[substrate](../reference/glossary.md#substrate) to start on; the same
-record, compile, replay loop drives native Windows, macOS, or Linux applications
-and RDP or Citrix sessions by choosing a
-[backend](../reference/cli.md#backend).
+Choose one small real task that doesn't change business data. A read-only lookup
+against test data works well. Open a known test record, then stop when a field
+shows the expected value. Don't start with a task that saves, submits, creates,
+or deletes data.
 
-Here is the loop you are about to run — record once, replay deterministically,
-and watch the run heal or halt under drift:
+This walkthrough uses a Playwright-driven browser. The same record, compile,
+lint, and supervised replay loop works with native Windows, macOS, or Linux
+applications and RDP or Citrix sessions when you choose a different
+[backend](../reference/cli.md#backend).
 
 ![Record, compile, and replay a workflow with OpenAdapt](../assets/showcase/demo.gif)
 
-## Prerequisites and install
+## Install OpenAdapt
 
-- **macOS, Linux, or Windows.** This walkthrough selects the Playwright-driven
-  browser capability, so it has no OS-specific steps. Its matching Chromium
-  provisions automatically on the first web action; native, RDP, and Citrix
-  paths do not install it.
+This browser walkthrough runs on each desktop platform in the tabs below. It
+has no OS-specific steps. Its matching Chromium provisions automatically on the
+first web action. Native, RDP, and Citrix paths don't install it.
 
 **Recommended: install with pip in a virtual environment.** The base package
 includes the browser driver used by this walkthrough. The engine requires
@@ -71,35 +77,38 @@ For an isolated command-line installation, run
 `curl -fsSL https://openadapt.ai/install.sh | sh`. It installs the same base
 package with [uv](https://docs.astral.sh/uv/).
 
-!!! tip "No app to record against yet?"
-    You do not need your own target to try the loop. The engine bundles
-    **MockMed**, a synthetic demo clinic app (fake data only):
-    `openadapt flow demo-record --out rec` serves it locally and records the
-    canonical triage demo, and `openadapt flow replay bundle` with no `--url`
-    serves it again as the replay target. It is a local development fixture,
-    not a production workflow or product outcome — but it is a real, running
-    web app, so every step below works against it unchanged.
+### Optional installation check
 
-## 1. Record
+Run `openadapt quickstart` if you want to check the installation before you
+touch your own application. It records, compiles, certifies, and verifies a
+bundled synthetic workflow. A healthy run ends in `VERIFIED`. That result
+applies only to the bundled task, application, and local system of record. It
+doesn't qualify your workflow.
 
-`record --backend web --url` opens a headed browser pointed at your app and
-watches what you do: real clicks, typing, key presses, and scrolls. It writes
-the same recording format that `compile` consumes.
+## 1. Record a read-only task
+
+Before recording, confirm that the application contains test data and that the
+task needs no write. If the task unexpectedly requires a write, stop and choose
+a different first workflow.
+
+`record --backend web --url` opens a headed browser and watches your clicks,
+typing, key presses, and scrolling. It writes the recording format that
+`compile` consumes.
 
 ```bash
 openadapt flow record --backend web --url https://your.app --out rec
 ```
 
-(Omitting `--backend` defaults to `web` with a printed notice; production
+(Omitting `--backend` defaults to `web` with a printed notice. Production
 profiles require it explicitly.)
 
-Perform the task once. When you are done, press ++ctrl+c++ or close the browser
-window to finish. The recording is written to `rec/`.
+Perform the task once with a known test record. When the expected result is
+visible, press ++ctrl+c++ or close the browser window. OpenAdapt writes the
+recording to `rec/`.
 
-!!! tip "Record a clean demonstration"
-    Do the task the way you want it replayed: one clear path, no dead ends. The
-    compiler treats your demonstration as evidence of intent, so a tidy run
-    compiles into a tidy workflow.
+!!! tip "Keep the demonstration clean"
+    Take one direct path and leave out exploratory clicks. The compiler treats
+    the recording as evidence of intent.
 
 ## 2. Compile
 
@@ -107,61 +116,88 @@ window to finish. The recording is written to `rec/`.
 openadapt flow compile rec --out bundle --name my-task
 ```
 
-Compilation turns the recording into a **workflow bundle**: an ordered list of
-steps, each carrying the evidence needed to re-find its target (a template crop,
-an OCR label, geometry landmarks — the
-[capability ladder](../reference/glossary.md#capability-ladder)) and
-postconditions derived from what the demo actually changed on screen.
-Write-shaped clicks (save, submit, create, delete) are auto-classified as
-irreversible so they refuse to act on a low-confidence match.
+Compilation turns the recording into a **workflow bundle**. Each step carries
+evidence that OpenAdapt can use to find the target again, such as a DOM
+identity, template crop, OCR label, or geometry landmark. See the
+[capability ladder](../reference/glossary.md#capability-ladder). The compiler
+also derives screen postconditions from the recorded change.
 
-## 3. Lint
+OpenAdapt classifies write-shaped clicks such as save, submit, create, and
+delete as irreversible. Treat that classification as a stop signal. Review the
+bundle before any replay.
 
-```bash
-openadapt flow lint bundle
-```
-
-`lint` reports coverage gaps before you trust the bundle: clicks that act with
-no [identity check](../reference/glossary.md#identity-gate), steps that assert
-nothing, writes that may be under-classified. Each finding carries a severity.
-It is advice, not a gate. See
-[Write and enforce a policy](../guides/policy-and-certification.md) for the
-`certify` gate that refuses an unsafe bundle outright.
-
-!!! success "A nonzero exit here is expected, not broken"
-    `lint` exits `1` when any finding reaches `error` severity — an unarmed or
-    vacuous **irreversible** step. That is the safety boundary working: it is
-    telling you a write-shaped click would act without a wrong-record guard.
-    Review the findings, then continue to step 4; replay still runs, and the
-    [`certify` gate](../guides/policy-and-certification.md) is where a failing
-    bundle is actually refused. All exit codes are listed in
-    [Run outcomes and halt reasons](../reference/run-outcomes.md#cli-exit-codes).
-
-## 4. Replay
+## 3. Lint and review
 
 ```bash
-openadapt flow replay bundle --url https://your.app
+openadapt flow lint bundle --strict
 ```
 
-Recorded parameter values are the defaults; override any of them with
-`--param key=value`. The run is deterministic and local. On the healthy path it
-makes zero model calls and finishes in seconds. `replay` exits `0` on success
-and `1` on a [halt](../reference/glossary.md#halt) — a halt is the fail-closed
-refusal to guess, not a crash.
+`lint` reports missing evidence, missing assertions, write-shaped or
+irreversible actions, and risks that may be under-classified. It doesn't decide
+whether a write belongs in the recorded task. Review every action yourself.
 
-## 5. Read the report
+!!! danger "Stop before replay when a required safety contract is missing"
+    Do not replay if lint or your review finds any of these conditions:
 
-Each replay writes a timestamped run directory under `runs/` containing an
-illustrated `REPORT.md` and a machine-readable `report.json`. The report tells
-you, per step, which rung of the resolution ladder resolved the target, whether
-the identity check was armed and what it verified, which postconditions passed,
-and any heals that were applied. See [What you get](what-you-get.md) and
-[Read and audit run reports](../guides/run-reports.md). Every outcome and halt
-reason the report can show is defined in
-[Run outcomes and halt reasons](../reference/run-outcomes.md).
+    - an action writes data or its risk is unknown;
+    - an action is consequential or irreversible;
+    - an action requires an identity, effect, or policy contract and that
+      contract is missing; or
+    - the recording contains an unexpected application, page, or data source.
+
+    Move the bundle to [workflow qualification](../guides/qualify-a-workflow.md).
+    Set the action risks, add the required contracts, run the qualification
+    cases, and certify the exact version. Then run lint again.
+
+Continue only after strict lint and your manual review are clean. The recorded
+task must remain read-only and non-consequential.
+
+## 4. Replay under supervision
+
+Keep the browser in view for the entire run. Use the same test environment and
+stay ready to stop if OpenAdapt opens the wrong record, leaves the expected
+path, changes test data, or reaches a screen that wasn't in the demonstration.
+
+```bash
+openadapt flow replay bundle \
+  --url https://your.app \
+  --headed \
+  --run-dir runs/first-workflow
+```
+
+Confirm that the expected value appears on screen. Don't use this first replay
+for a real write. A completed replay is evidence for this supervised run; it
+doesn't certify the workflow or make it safe for unattended use.
+
+## 5. Inspect the report
+
+Open `runs/first-workflow/REPORT.md`. The machine-readable report is beside it
+at `runs/first-workflow/report.json`.
+
+Check that the report shows:
+
+- only the expected test application and data;
+- no write or consequential action;
+- the visible result you checked during replay; and
+- the target evidence, postconditions, halt, or heal for every step.
+
+If the report disagrees with what you saw, stop. Keep the report and recording,
+then fix or re-record the workflow before another replay. See
+[Read and audit run reports](../guides/run-reports.md) for the evidence fields
+and [Run outcomes and halt reasons](../reference/run-outcomes.md) for every
+terminal outcome.
+
+## Before you automate a write
+
+[Qualify the workflow](../guides/qualify-a-workflow.md) before a real write or
+any unattended run. Bind the exact application and environment, review every
+action risk, add identity and independent effect contracts, exercise the
+required success and fault cases, and certify the exact workflow version under
+its policy. Use the governed `run` path only after those checks pass.
 
 ## What is next
 
-- Parameterize a value and inject a secret: [Parameters and secrets](../guides/parameters-and-secrets.md)
-- Understand why a step healed or halted: [Governed self-healing](../concepts/self-healing.md)
-- Gate a bundle behind a safety policy: [Policy and certify](../concepts/policy-and-certify.md)
+- Build the full qualification project: [Qualify a workflow](../guides/qualify-a-workflow.md)
+- Enforce a workload policy: [Write and enforce a policy](../guides/policy-and-certification.md)
+- Audit the evidence from a run: [Read and audit run reports](../guides/run-reports.md)
+- Add governed inputs: [Parameters and secrets](../guides/parameters-and-secrets.md)
