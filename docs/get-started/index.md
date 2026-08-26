@@ -80,7 +80,7 @@ After the first run, choose the path that matches your goal:
 
 | Goal | Next guide |
 |---|---|
-| Record one real browser workflow | [Your first workflow](first-workflow.md) |
+| Record one real, read-only browser workflow | [Your first workflow](first-workflow.md) |
 | Use the Desktop application | [Install Desktop](../desktop/install.md) |
 | Use native desktop, RDP, or Citrix | [Install a different execution surface](#install-a-different-execution-surface) |
 | Prepare a qualified production run | [Move from demo to deployment](#move-from-demo-to-deployment) |
@@ -212,8 +212,8 @@ The local runtime also supports these paths:
 
 -   [__Your first workflow__](first-workflow.md)
 
-    Record, compile, and replay on your own app step by step, and read the
-    run report.
+    Record a read-only task with test data, review it, supervise its first
+    replay, and inspect the report.
 
 -   [__What you get__](what-you-get.md)
 
