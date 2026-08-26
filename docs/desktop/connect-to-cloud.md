@@ -6,8 +6,13 @@ description: >-
 
 # Connect the desktop app to a cloud workspace
 
-OpenAdapt Desktop is a **Beta supporting surface**. The local loop (record, compile, replay, teach) works offline and needs no
-account. A **cloud workspace** (`app.openadapt.ai`) adds an org-wide dashboard:
+OpenAdapt Desktop supplies the local record, compile, replay, and teach loop.
+It works offline and needs no account.
+
+**Current Desktop release admission:**
+<span data-openadapt-production-target="desktop" aria-live="polite">Not actively admitted.</span>
+
+A **cloud workspace** (`app.openadapt.ai`) adds an org-wide dashboard:
 pushed workflows are visible and runs needing attention are triaged. This page
 covers the path: sign in → mint an ingest token → connect the desktop app → push
 a recording → see it in the dashboard.

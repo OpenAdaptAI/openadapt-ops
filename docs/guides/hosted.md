@@ -35,14 +35,18 @@ switching, and sign-out.
 
 ## What the subscription includes
 
-| Surface | Launch status | Boundary |
+**Current Cloud release admission:**
+<span data-openadapt-production-target="cloud" aria-live="polite">Not actively admitted.</span>
+[Review the admission contract](../reference/production-lifecycle.md)
+
+| Surface | Availability | Boundary |
 |---|---|---|
-| Local browser record -> compile -> managed execute | **Beta / public offer** | Governed authoring and validation remain local; managed execution uses the qualified browser substrate. |
-| Hosted browser record -> compileable workflow | **Beta / bounded launch component** | The retained non-simulated provider qualification used `openadapt-flow` 1.8.0; the current managed-runtime manifest pins Flow 1.31.0 artifact identity. A runtime pin does not prove live deployment or hosted workflow acceptance. This is a separate raw-observation boundary, not the reviewed-derivative upload lane. |
-| Account, organization, onboarding | **Beta / public offer** | Checkout and sign-in bind the subscription to an isolated organization. |
-| Structural run history and reports | **Beta / public offer** | Safety depends on the workflow's configured identity, effect, and policy checks. Repair and validation remain local. |
-| Checkout, portal, entitlements, metering | **Beta / public offer** | Live Stripe Checkout, signed webhooks, entitlements, usage, and the billing portal form one managed subscription contract. |
-| Self-hosted browser execution | **Beta** | No hosted account required. |
+| Local browser record -> compile -> managed execute | **Included in the managed subscription** | Governed authoring and validation remain local; managed execution uses the qualified browser substrate. |
+| Hosted browser record -> compileable workflow | **Available for approved sessions** | The retained non-simulated provider qualification used `openadapt-flow` 1.8.0; the current managed-runtime manifest pins Flow 1.31.0 artifact identity. A runtime pin does not prove live deployment or hosted workflow acceptance. This is a separate raw-observation boundary, not the reviewed-derivative upload lane. |
+| Account, organization, onboarding | **Included in the managed subscription** | Checkout and sign-in bind the subscription to an isolated organization. |
+| Structural run history and reports | **Included in the managed subscription** | Safety depends on the workflow's configured identity, effect, and policy checks. Repair and validation remain local. |
+| Checkout, portal, entitlements, metering | **Included in the managed subscription** | Live Stripe Checkout, signed webhooks, entitlements, usage, and the billing portal form one managed subscription contract. |
+| Self-hosted browser execution | **Available locally** | No hosted account required. |
 | Windows UIA | **Supported / scoped deployment** | The exact in-tree WinForms matrix passed 3/3 with an independent SQLite oracle and 3/3 stale/ambiguity refusals. Windows subscriptions and deployments are ordered separately from the public browser offer and qualified per workflow. |
 | Native macOS | **Supported / scoped deployment** | One macOS 15.7.3 arm64 host produced 3/3 exact-byte TextEdit effects plus a two-window ambiguity refusal. Native macOS subscriptions and deployments are ordered separately from the public browser offer and qualified per workflow. |
 | Native Linux | **Supported / scoped deployment** | The required Ubuntu 24.04 X11/AT-SPI current-main lane completed 3/3 exact-file effects and refused 3/3 ambiguous plus 3/3 stale targets, with zero silent incorrect successes, over-halts, interventions, or model calls. Native Linux deployments run locally or in a customer-controlled boundary and are qualified per workflow. |

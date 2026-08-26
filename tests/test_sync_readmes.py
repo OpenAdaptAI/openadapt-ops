@@ -16,12 +16,33 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 def test_load_repos():
     repos = load_repos()
     assert len(repos) > 0
-    assert all("name" in r and "github" in r and "lifecycle" in r for r in repos)
-    assert {r["lifecycle"] for r in repos} <= {
-        "beta", "experimental", "research", "deprecated",
+    assert all("name" in r and "github" in r for r in repos)
+
+    production_targets = {
+        "OpenAdapt",
+        "openadapt-flow",
+        "openadapt-cloud",
+        "openadapt-desktop",
+        "openadapt-agent",
+        "openadapt-capture",
     }
-    lifecycle_by_name = {r["name"]: r["lifecycle"] for r in repos}
-    assert lifecycle_by_name["openadapt-agent"] == "experimental"
+    target_repos = [repo for repo in repos if repo["name"] in production_targets]
+    assert {repo["name"] for repo in target_repos} == production_targets
+    assert all("lifecycle" not in repo for repo in target_repos)
+
+    supporting_repos = [repo for repo in repos if repo["name"] not in production_targets]
+    assert all("lifecycle" in repo for repo in supporting_repos)
+    assert {repo["lifecycle"] for repo in supporting_repos} <= {
+        "archived",
+        "beta",
+        "deprecated",
+        "experimental",
+        "labs",
+        "research",
+        "support",
+    }
+    lifecycle_by_name = {r["name"]: r["lifecycle"] for r in supporting_repos}
+    assert lifecycle_by_name["openadapt-privacy"] == "experimental"
 
 
 def test_sync_renders_pages(tmp_path, mocker):

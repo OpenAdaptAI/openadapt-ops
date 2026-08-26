@@ -125,7 +125,7 @@ release-signing authority, recovery drill, and maintenance window.
 
 ## Hosted service and substrate qualification
 
-Managed browser execution is a public Beta service with live Stripe Checkout,
+Managed browser execution is a public service with live Stripe Checkout,
 onboarding, organization isolation, browser runner orchestration, artifacts,
 reports, teaching, billing, and usage metering. Production explicitly selects
 live dependencies; a missing runner, storage, or billing dependency returns an
@@ -140,6 +140,10 @@ callbacks, scheduler, human-decision Web Push, retention policy, security
 events, secret encryption, runtime-validation allowlists, and live billing
 configuration. Readiness proves those dependencies and contracts are configured
 and reachable; it is not a customer workflow qualification or an SLA.
+
+**Current Cloud release admission:**
+<span data-openadapt-production-target="cloud" aria-live="polite">Not actively admitted.</span>
+[Review the admission contract](../reference/production-lifecycle.md)
 
 Windows UIA, native macOS, native Linux, RDP, and Citrix/VDI are first-class substrates,
 ordered as scoped deployments and qualified per workflow in their real

@@ -1,6 +1,7 @@
 """Validate the generated docs site."""
 
 import pathlib
+import re
 import subprocess
 import sys
 
@@ -11,6 +12,8 @@ DOCS_DIR = ROOT / "docs"
 MKDOCS_FILE = ROOT / "mkdocs.yml"
 
 REQUIRED_PUBLIC_PAGES = {
+    "index.md": ("data-openadapt-production-product",),
+    "ecosystem/index.md": ("data-openadapt-production-target",),
     "get-started/what-works-today.md": (
         "Qualification evidence",
         "Integrated product matrix",
@@ -43,6 +46,14 @@ REQUIRED_PUBLIC_PAGES = {
         "`openadapt-capture >=1.1.0`",
         "Production deployments should pin the exact versions",
     ),
+    "reference/production-lifecycle.md": (
+        "at least three trials per task per condition",
+        "silent-incorrect-success",
+        "over-halt",
+        "active signed admission",
+        "RECONCILIATION_REQUIRED",
+        "without a blind",
+    ),
     "packages/openadapt.md": (
         "redirect_to: /ecosystem/",
         "pip install openadapt",
@@ -52,9 +63,36 @@ REQUIRED_PUBLIC_PAGES = {
 REQUIRED_NAV_PAGES = set(REQUIRED_PUBLIC_PAGES) - {"packages/openadapt.md"}
 
 STALE_PRELAUNCH_MARKERS = {
+    "Available for qualification",
     "Beta launch candidate",
     "full paid production lifecycle remains pending",
     "not a public availability statement",
+}
+
+STATIC_MATURITY_PATTERN = re.compile(
+    r"\b(?:beta|experimental|early access|exploratory)\b"
+    r"|\breference path\b|\bbrowser-only\b",
+    re.IGNORECASE,
+)
+TARGET_STATE_DOC_PATHS = {
+    "concepts/deployment-matrix.md",
+    "desktop/connect-to-cloud.md",
+    "desktop/install.md",
+    "get-started/what-works-today.md",
+    "guides/hosted.md",
+    "guides/security-and-data-handling.md",
+    "guides/security-review.md",
+    "index.md",
+    "reference/production-lifecycle.md",
+}
+PRODUCTION_TARGET_IDS = {
+    "agent",
+    "capture",
+    "cloud",
+    "desktop",
+    "docs",
+    "flow",
+    "openadapt",
 }
 
 
@@ -151,6 +189,43 @@ def check_product_docs_contract(docs_dir=None, mkdocs_file=None):
         if marker in public_text:
             issues.append(f"Stale prelaunch copy: {marker}")
 
+    # The seven product targets derive their state at read time. Supporting
+    # repositories still need an explicit Support/Beta/Experimental/Research
+    # state, so this guard applies only to current target-state pages.
+    for relative in sorted(TARGET_STATE_DOC_PATHS):
+        path = docs_dir / relative
+        if not path.is_file():
+            continue
+        match = STATIC_MATURITY_PATTERN.search(path.read_text())
+        if match:
+            issues.append(
+                f"Static product-target maturity label in {relative}: {match.group(0)}"
+            )
+
+    ecosystem = docs_dir / "ecosystem/index.md"
+    if ecosystem.is_file():
+        ecosystem_text = ecosystem.read_text()
+        target_ids = re.findall(
+            r'data-openadapt-production-target="([a-z-]+)"',
+            ecosystem_text,
+        )
+        if len(target_ids) != len(PRODUCTION_TARGET_IDS) or set(target_ids) != (
+            PRODUCTION_TARGET_IDS
+        ):
+            issues.append(
+                "Product component table must bind each of the seven targets "
+                "to one admission-derived state cell"
+            )
+        for line in ecosystem_text.splitlines():
+            if "data-openadapt-production-target=" not in line:
+                continue
+            match = STATIC_MATURITY_PATTERN.search(line)
+            if match:
+                issues.append(
+                    "Static product-target maturity label in ecosystem/index.md: "
+                    f"{match.group(0)}"
+                )
+
     return issues
 
 
@@ -164,7 +239,9 @@ def run_mkdocs_build(strict=False):
     if strict:
         cmd.append("--strict")
     cmd.extend(["--site-dir", str(ROOT / "_site_check")])
-    result = subprocess.run(cmd, capture_output=True, text=True, cwd=str(ROOT))
+    result = subprocess.run(
+        cmd, capture_output=True, text=True, cwd=str(ROOT), check=False
+    )
     # Clean up
     site_dir = ROOT / "_site_check"
     if site_dir.exists():
