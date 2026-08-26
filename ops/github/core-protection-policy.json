@@ -86,10 +86,47 @@
     "bypass_mode": "always",
     "required_repository_permissions": [
       "Contents: write",
-      "Pull requests: write",
       "Metadata: read"
     ],
-    "purpose": "Create release tags only. This identity has no main-branch bypass."
+    "repository_scope": [
+      "OpenAdapt",
+      "openadapt-agent",
+      "openadapt-capture",
+      "openadapt-desktop",
+      "openadapt-evals",
+      "openadapt-flow"
+    ],
+    "repository_variables": {
+      "app_id": "OPENADAPT_RELEASE_APP_ID"
+    },
+    "private_key_secret": "OPENADAPT_RELEASE_APP_PRIVATE_KEY",
+    "private_key_environment_bindings": {
+      "OpenAdapt": [
+        "release-identity",
+        "pypi"
+      ],
+      "openadapt-agent": [
+        "release-identity"
+      ],
+      "openadapt-capture": [
+        "release-identity",
+        "pypi"
+      ],
+      "openadapt-desktop": [
+        "release-identity",
+        "pypi",
+        "native-release"
+      ],
+      "openadapt-evals": [
+        "release-identity",
+        "pypi"
+      ],
+      "openadapt-flow": [
+        "release-identity",
+        "pypi"
+      ]
+    },
+    "purpose": "Create package release tags and matching GitHub Releases. Registered workflows must not use it to push a branch, and it has no main-branch bypass."
   },
   "lifecycle_identity": {
     "app_slug": "openadapt-lifecycle",
@@ -131,6 +168,20 @@
       "app_id": "OPENADAPT_LIFECYCLE_APP_ID",
       "actor_id": "OPENADAPT_LIFECYCLE_ACTOR_ID",
       "installation_id": "OPENADAPT_LIFECYCLE_INSTALLATION_ID"
+    },
+    "private_key_secret": "OPENADAPT_LIFECYCLE_APP_PRIVATE_KEY",
+    "private_key_environment_bindings": {
+      ".github": [
+        "production-lifecycle-activation",
+        "qualification-authority-state",
+        "qualification-revocation-state"
+      ],
+      "openadapt-evals": [
+        "production-lifecycle-evidence"
+      ],
+      "openadapt-ops": [
+        "production-lifecycle-projection"
+      ]
     },
     "actions_write_risk": {
       "capabilities": [
@@ -178,6 +229,12 @@
       "actor_id": "OPENADAPT_DOCS_ACTOR_ID",
       "installation_id": "OPENADAPT_DOCS_INSTALLATION_ID"
     },
+    "private_key_secret": "OPENADAPT_DOCS_APP_PRIVATE_KEY",
+    "private_key_environment_bindings": {
+      "openadapt-ops": [
+        "production-docs-deploy"
+      ]
+    },
     "purpose": "Dispatch only the founder-reviewed documentation synchronization workflow and create its reviewable pull request. The workflow GITHUB_TOKEN pushes the automation branch."
   },
   "environment_reviewer": {
@@ -187,14 +244,15 @@
   },
   "environment_defaults": {
     "wait_timer": 0,
-    "prevent_self_review": false
+    "prevent_self_review": false,
+    "can_admins_bypass": false
   },
   "repositories": [
     {
       "name": "OpenAdapt",
       "visibility": "public",
       "default_branch": "main",
-      "audited_main_sha": "2aa387f005022e6e8ba451bed98c4d06de5d5114",
+      "audited_main_sha": "3098d46064c8d3e3fa1a515588487cdb724500e8",
       "require_code_owner_review": true,
       "required_checks": [
         "Analyze (python)",
@@ -217,6 +275,7 @@
       "release_environments": [
         {
           "name": "release-identity",
+          "can_admins_bypass": false,
           "deployment_policies": [
             {
               "type": "branch",
@@ -226,6 +285,7 @@
         },
         {
           "name": "pypi",
+          "can_admins_bypass": false,
           "deployment_policies": [
             {
               "type": "tag",
@@ -238,12 +298,35 @@
         {
           "path": ".github/workflows/release-and-publish.yml",
           "required_patterns": [
+            "(?m)^[ ]{2}workflow_dispatch:\\s*$",
+            "(?m)^[ ]{2}push:\\s*$",
+            "(?m)^[ ]{4}tags:\\s*$",
+            "[\"']v\\*[\"']",
             "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?release-identity\\s*$",
+            "actions/create-github-app-token",
+            "vars\\.OPENADAPT_RELEASE_APP_ID",
+            "secrets\\.OPENADAPT_RELEASE_APP_PRIVATE_KEY",
+            "permission-contents:\\s*write",
+            "refs/heads/main",
+            "OpenAdaptAI/OpenAdapt",
+            "git\\s+tag\\s+-a",
+            "git\\s+push\\s+origin\\s+[\"']refs/tags/",
+            "GITHUB_ACTOR",
+            "openadapt-release\\[bot\\]",
             "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?pypi\\s*$",
-            "(?m)^\\s*id-token:\\s*write\\s*$"
+            "(?m)^\\s*id-token:\\s*write\\s*$",
+            "pypa/gh-action-pypi-publish",
+            "scripts/check_source_boundary\\.py",
+            "scripts/verify_release_artifacts\\.py",
+            "scripts/validate_platform_manifest\\.py",
+            "GH_TOKEN:\\s*\\$\\{\\{\\s*steps\\.release_app\\.outputs\\.token\\s*\\}\\}",
+            "gh\\s+release\\s+(?:create|edit|upload)"
           ],
           "forbidden_patterns": [
-            "ADMIN_TOKEN"
+            "ADMIN_TOKEN",
+            "PYPI_TOKEN",
+            "permission-pull-requests:\\s*write",
+            "git\\s+push[^\\n]*refs/heads/"
           ]
         }
       ]
@@ -252,7 +335,7 @@
       "name": "openadapt-agent",
       "visibility": "public",
       "default_branch": "main",
-      "audited_main_sha": "be253dd558a95bfb457c18715d258854aba79f69",
+      "audited_main_sha": "c27b29a5f3c3fe3a14a91566405d01648ef1eb36",
       "require_code_owner_review": true,
       "required_checks": [
         "Analyze (python)",
@@ -274,6 +357,7 @@
       "release_environments": [
         {
           "name": "release-identity",
+          "can_admins_bypass": false,
           "deployment_policies": [
             {
               "type": "branch",
@@ -284,6 +368,7 @@
         },
         {
           "name": "pypi",
+          "can_admins_bypass": false,
           "deployment_policies": [
             {
               "type": "tag",
@@ -294,6 +379,7 @@
         },
         {
           "name": "mcp-registry",
+          "can_admins_bypass": false,
           "deployment_policies": [
             {
               "type": "tag",
@@ -325,14 +411,18 @@
             "scripts/check_release_artifacts\\.py",
             "scripts/check_source_boundary\\.py\\s+--require-dist",
             "scripts/verify_release_registries\\.py",
-            "production-admission-candidate\\.json"
+            "production-admission-candidate\\.json",
+            "GITHUB_ACTOR",
+            "openadapt-release\\[bot\\]"
           ],
           "forbidden_patterns": [
             "ADMIN_TOKEN",
             "(?m)^[ ]{2}release:\\s*$",
             "PYPI_API_TOKEN",
             "MCP_GITHUB_TOKEN",
-            "registry/releases/latest/download"
+            "registry/releases/latest/download",
+            "permission-pull-requests:\\s*write",
+            "git\\s+push[^\\n]*refs/heads/"
           ]
         }
       ]
@@ -341,7 +431,7 @@
       "name": "openadapt-flow",
       "visibility": "public",
       "default_branch": "main",
-      "audited_main_sha": "defb0e19167ffc8331c20035cafe71291691f83a",
+      "audited_main_sha": "fa49a5de54a749ebf00621b0e4d38a2b439bb058",
       "require_code_owner_review": true,
       "required_checks": [
         "docs-consistency",
@@ -368,6 +458,7 @@
       "release_environments": [
         {
           "name": "release-identity",
+          "can_admins_bypass": false,
           "deployment_policies": [
             {
               "type": "branch",
@@ -377,6 +468,7 @@
         },
         {
           "name": "pypi",
+          "can_admins_bypass": false,
           "deployment_policies": [
             {
               "type": "tag",
@@ -389,12 +481,34 @@
         {
           "path": ".github/workflows/release.yml",
           "required_patterns": [
+            "(?m)^[ ]{2}workflow_dispatch:\\s*$",
+            "(?m)^[ ]{2}push:\\s*$",
+            "tags:\\s*\\[?[\"']?v\\*[\"']?\\]?",
             "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?release-identity\\s*$",
             "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?pypi\\s*$",
-            "(?m)^\\s*id-token:\\s*write\\s*$"
+            "group:\\s*engine-release-\\$\\{\\{\\s*github\\.ref\\s*\\}\\}",
+            "cancel-in-progress:\\s*false",
+            "Refuse an invalid engine release dispatch",
+            "(?m)^\\s*permissions:\\s*\\{\\}\\s*$",
+            "actions/create-github-app-token",
+            "vars\\.OPENADAPT_RELEASE_APP_ID",
+            "secrets\\.OPENADAPT_RELEASE_APP_PRIVATE_KEY",
+            "permission-contents:\\s*write",
+            "refs/heads/main",
+            "git\\s+tag\\s+--annotate",
+            "git\\s+push\\s+origin\\s+[\"']refs/tags/",
+            "GITHUB_ACTOR",
+            "openadapt-release\\[bot\\]",
+            "(?m)^\\s*id-token:\\s*write\\s*$",
+            "pypa/gh-action-pypi-publish",
+            "scripts/check_release_consistency\\.py\\s+--require-dist",
+            "scripts/verify_release_publication\\.py"
           ],
           "forbidden_patterns": [
-            "ADMIN_TOKEN"
+            "ADMIN_TOKEN",
+            "PYPI_TOKEN",
+            "permission-pull-requests:\\s*write",
+            "git\\s+push[^\\n]*refs/heads/"
           ]
         }
       ]
@@ -403,7 +517,7 @@
       "name": "openadapt-capture",
       "visibility": "public",
       "default_branch": "main",
-      "audited_main_sha": "d1f66151b72fe95967b6f8d2696ab93cf5b49721",
+      "audited_main_sha": "681683e73be13ce75ee3e8c720cd8ce7fbd7c76a",
       "require_code_owner_review": true,
       "required_checks": [
         "Analyze (javascript-typescript)",
@@ -426,6 +540,7 @@
       "release_environments": [
         {
           "name": "release-identity",
+          "can_admins_bypass": false,
           "deployment_policies": [
             {
               "type": "branch",
@@ -435,6 +550,7 @@
         },
         {
           "name": "pypi",
+          "can_admins_bypass": false,
           "deployment_policies": [
             {
               "type": "tag",
@@ -447,12 +563,31 @@
         {
           "path": ".github/workflows/release.yml",
           "required_patterns": [
+            "(?m)^[ ]{2}workflow_dispatch:\\s*$",
+            "(?m)^[ ]{2}push:\\s*$",
+            "tags:\\s*\\[?[\"']?v\\*[\"']?\\]?",
             "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?release-identity\\s*$",
             "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?pypi\\s*$",
-            "(?m)^\\s*id-token:\\s*write\\s*$"
+            "actions/create-github-app-token",
+            "vars\\.OPENADAPT_RELEASE_APP_ID",
+            "secrets\\.OPENADAPT_RELEASE_APP_PRIVATE_KEY",
+            "permission-contents:\\s*write",
+            "refs/heads/main",
+            "git\\s+tag\\s+--annotate",
+            "git\\s+push\\s+origin\\s+[\"']refs/tags/",
+            "GITHUB_ACTOR",
+            "openadapt-release\\[bot\\]",
+            "(?m)^\\s*id-token:\\s*write\\s*$",
+            "pypa/gh-action-pypi-publish",
+            "scripts/verify_distribution\\.py",
+            "scripts/check_source_boundary\\.py\\s+--require-dist",
+            "scripts/verify_release_publication\\.py"
           ],
           "forbidden_patterns": [
-            "ADMIN_TOKEN"
+            "ADMIN_TOKEN",
+            "PYPI_TOKEN",
+            "permission-pull-requests:\\s*write",
+            "git\\s+push[^\\n]*refs/heads/"
           ]
         }
       ]
@@ -461,7 +596,7 @@
       "name": "openadapt-desktop",
       "visibility": "public",
       "default_branch": "main",
-      "audited_main_sha": "f0f5d140698ff91ccabd391a835463afe9370e06",
+      "audited_main_sha": "a73c3faf90f5d0b766ea7156a057bd6240d1c2bb",
       "require_code_owner_review": false,
       "required_checks": [
         "Analyze (javascript-typescript)",
@@ -491,19 +626,17 @@
       "release_environments": [
         {
           "name": "release-identity",
+          "can_admins_bypass": false,
           "deployment_policies": [
             {
               "type": "branch",
               "name": "main"
-            },
-            {
-              "type": "tag",
-              "name": "v*"
             }
           ]
         },
         {
           "name": "pypi",
+          "can_admins_bypass": false,
           "deployment_policies": [
             {
               "type": "tag",
@@ -513,6 +646,7 @@
         },
         {
           "name": "native-release",
+          "can_admins_bypass": false,
           "deployment_policies": [
             {
               "type": "tag",
@@ -529,21 +663,54 @@
         {
           "path": ".github/workflows/release.yml",
           "required_patterns": [
+            "(?m)^[ ]{2}workflow_dispatch:\\s*$",
+            "(?m)^[ ]{2}push:\\s*$",
+            "(?m)^[ ]{4}tags:\\s*$",
+            "[\"']v\\*[\"']",
             "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?release-identity\\s*$",
             "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?pypi\\s*$",
-            "(?m)^\\s*id-token:\\s*write\\s*$"
+            "actions/create-github-app-token",
+            "vars\\.OPENADAPT_RELEASE_APP_ID",
+            "secrets\\.OPENADAPT_RELEASE_APP_PRIVATE_KEY",
+            "permission-contents:\\s*write",
+            "OpenAdaptAI/openadapt-desktop",
+            "refs/heads/main",
+            "git\\s+tag\\s+-a",
+            "git\\s+push\\s+origin\\s+[\"']refs/tags/",
+            "github\\.actor\\s*==\\s*['\"]openadapt-release\\[bot\\]['\"]",
+            "GITHUB_ACTOR",
+            "(?m)^\\s*id-token:\\s*write\\s*$",
+            "pypa/gh-action-pypi-publish",
+            "skip-existing:\\s*true",
+            "scripts/verify_release_lock\\.py",
+            "scripts/check_source_boundary\\.py\\s+--require-dist",
+            "gh\\s+release\\s+create"
           ],
           "forbidden_patterns": [
-            "ADMIN_TOKEN"
+            "ADMIN_TOKEN",
+            "PYPI_TOKEN",
+            "permission-pull-requests:\\s*write",
+            "python-semantic-release",
+            "git\\s+push[^\\n]*refs/heads/"
           ]
         },
         {
           "path": ".github/workflows/native-freshness.yml",
           "required_patterns": [
-            "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?release-identity\\s*$"
+            "(?m)^[ ]{2}workflow_dispatch:\\s*$",
+            "(?m)^[ ]{2}release:\\s*$",
+            "group:\\s*native-freshness-check",
+            "cancel-in-progress:\\s*false",
+            "(?m)^permissions:\\s*\\n[ ]{2}contents:\\s*read\\s*$",
+            "refs/heads/main"
           ],
           "forbidden_patterns": [
-            "ADMIN_TOKEN"
+            "ADMIN_TOKEN",
+            "OPENADAPT_RELEASE_APP_PRIVATE_KEY",
+            "(?m)^\\s*contents:\\s*write\\s*$",
+            "git\\s+push",
+            "gh\\s+pr\\s+create",
+            "environment:\\s*release-identity"
           ]
         },
         {
@@ -551,10 +718,34 @@
           "required_patterns": [
             "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?release-identity\\s*$",
             "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?native-release\\s*$",
-            "(?m)^\\s*id-token:\\s*write\\s*$"
+            "(?m)^\\s*id-token:\\s*write\\s*$",
+            "(?m)^[ ]{2}workflow_dispatch:\\s*$",
+            "desktop-v\\*",
+            "group:\\s*native-release",
+            "cancel-in-progress:\\s*false",
+            "Refuse an invalid native release dispatch",
+            "(?m)^\\s*permissions:\\s*\\{\\}\\s*$",
+            "actions/create-github-app-token",
+            "vars\\.OPENADAPT_RELEASE_APP_ID",
+            "secrets\\.OPENADAPT_RELEASE_APP_PRIVATE_KEY",
+            "permission-contents:\\s*write",
+            "git\\s+tag\\s+--annotate",
+            "git\\s+push\\s+origin\\s+[\"']refs/tags/",
+            "GITHUB_ACTOR",
+            "openadapt-release\\[bot\\]",
+            "recover-published-native",
+            "state=absent",
+            "state=partial",
+            "state=complete",
+            "GH_TOKEN:\\s*\\$\\{\\{\\s*steps\\.release_app\\.outputs\\.token\\s*\\}\\}",
+            "gh\\s+release\\s+create",
+            "actions/attest"
           ],
           "forbidden_patterns": [
-            "ADMIN_TOKEN"
+            "ADMIN_TOKEN",
+            "PYPI_TOKEN",
+            "permission-pull-requests:\\s*write",
+            "git\\s+push[^\\n]*refs/heads/"
           ]
         },
         {
@@ -562,10 +753,31 @@
           "required_patterns": [
             "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?release-identity\\s*$",
             "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?native-release\\s*$",
-            "(?m)^\\s*id-token:\\s*write\\s*$"
+            "(?m)^\\s*id-token:\\s*write\\s*$",
+            "(?m)^[ ]{2}workflow_dispatch:\\s*$",
+            "ffmpeg-runtime-v\\*",
+            "group:\\s*ffmpeg-runtime-\\$\\{\\{\\s*github\\.ref\\s*\\}\\}",
+            "cancel-in-progress:\\s*false",
+            "Refuse an invalid managed-runtime dispatch",
+            "(?m)^\\s*permissions:\\s*\\{\\}\\s*$",
+            "actions/create-github-app-token",
+            "vars\\.OPENADAPT_RELEASE_APP_ID",
+            "secrets\\.OPENADAPT_RELEASE_APP_PRIVATE_KEY",
+            "permission-contents:\\s*write",
+            "git\\s+tag\\s+--annotate",
+            "git\\s+push\\s+origin\\s+[\"']refs/tags/",
+            "GITHUB_ACTOR",
+            "openadapt-release\\[bot\\]",
+            "SOURCE_SIGNATURE_SHA256",
+            "SIGNING_KEY_SHA256",
+            "GH_TOKEN:\\s*\\$\\{\\{\\s*steps\\.release_app\\.outputs\\.token\\s*\\}\\}",
+            "gh\\s+release\\s+create"
           ],
           "forbidden_patterns": [
-            "ADMIN_TOKEN"
+            "ADMIN_TOKEN",
+            "PYPI_TOKEN",
+            "permission-pull-requests:\\s*write",
+            "git\\s+push[^\\n]*refs/heads/"
           ]
         }
       ]
@@ -574,7 +786,7 @@
       "name": "openadapt-evals",
       "visibility": "public",
       "default_branch": "main",
-      "audited_main_sha": "aca85d431158ac517c969c5a146b38f1895c9ada",
+      "audited_main_sha": "55d16ed04561b0b78c63176cac90b73dbc0cdfad",
       "require_code_owner_review": false,
       "required_checks": [
         "test"
@@ -589,6 +801,7 @@
       "release_environments": [
         {
           "name": "release-identity",
+          "can_admins_bypass": false,
           "deployment_policies": [
             {
               "type": "branch",
@@ -598,6 +811,7 @@
         },
         {
           "name": "pypi",
+          "can_admins_bypass": false,
           "deployment_policies": [
             {
               "type": "tag",
@@ -609,6 +823,7 @@
       "lifecycle_environments": [
         {
           "name": "production-lifecycle-evidence",
+          "can_admins_bypass": false,
           "wait_timer": 0,
           "prevent_self_review": true,
           "deployment_policies": [
@@ -624,12 +839,33 @@
         {
           "path": ".github/workflows/release.yml",
           "required_patterns": [
+            "(?m)^[ ]{2}workflow_dispatch:\\s*$",
+            "(?m)^[ ]{2}push:\\s*$",
+            "(?m)^[ ]{4}tags:\\s*$",
+            "[\"']v\\*[\"']",
             "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?release-identity\\s*$",
             "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?pypi\\s*$",
-            "(?m)^\\s*id-token:\\s*write\\s*$"
+            "actions/create-github-app-token",
+            "vars\\.OPENADAPT_RELEASE_APP_ID",
+            "secrets\\.OPENADAPT_RELEASE_APP_PRIVATE_KEY",
+            "permission-contents:\\s*write",
+            "OpenAdaptAI/openadapt-evals",
+            "refs/heads/main",
+            "git\\s+tag\\s+-a",
+            "git\\s+push\\s+origin\\s+[\"']refs/tags/",
+            "github\\.actor\\s*==\\s*['\"]openadapt-release\\[bot\\]['\"]",
+            "(?m)^\\s*id-token:\\s*write\\s*$",
+            "pypa/gh-action-pypi-publish",
+            "skip-existing:\\s*true",
+            "scripts/verify_release_lock\\.py",
+            "scripts/check_source_boundary\\.py\\s+--require-dist"
           ],
           "forbidden_patterns": [
-            "ADMIN_TOKEN"
+            "ADMIN_TOKEN",
+            "PYPI_TOKEN",
+            "permission-pull-requests:\\s*write",
+            "python-semantic-release",
+            "git\\s+push[^\\n]*refs/heads/"
           ]
         }
       ],
@@ -661,6 +897,10 @@
       ],
       "dispatch_workflow_inventory": [
         {
+          "path": ".github/workflows/release.yml",
+          "mode": "reject-lifecycle-app"
+        },
+        {
           "path": ".github/workflows/production-lifecycle-evidence.yml",
           "mode": "lifecycle-only"
         },
@@ -679,7 +919,7 @@
       "local_repository_name": "openadapt-maintenance",
       "visibility": "public",
       "default_branch": "main",
-      "audited_main_sha": "0fb2db9ea46ce69fa3dae415dc1c3f7b8f9f117a",
+      "audited_main_sha": "789345539c5a76a9fc1de21b79bb7189c266f870",
       "require_code_owner_review": true,
       "required_checks": [
         "Analyze (python)",
@@ -703,6 +943,7 @@
       "release_environments": [
         {
           "name": "github-pages",
+          "can_admins_bypass": false,
           "deployment_policies": [
             {
               "type": "branch",
@@ -713,6 +954,7 @@
         },
         {
           "name": "production-docs-deploy",
+          "can_admins_bypass": false,
           "wait_timer": 0,
           "prevent_self_review": true,
           "deployment_policies": [
@@ -727,6 +969,7 @@
       "lifecycle_environments": [
         {
           "name": "production-lifecycle-projection",
+          "can_admins_bypass": false,
           "wait_timer": 0,
           "prevent_self_review": true,
           "deployment_policies": [
@@ -756,27 +999,29 @@
             "vars\\.OPENADAPT_DOCS_APP_ID",
             "vars\\.OPENADAPT_DOCS_INSTALLATION_ID",
             "secrets\\.OPENADAPT_DOCS_APP_PRIVATE_KEY",
+            "actions/create-github-app-token",
+            "permission-actions:\\s*write",
+            "permission-metadata:\\s*read",
+            "permission-pull-requests:\\s*write",
+            "steps\\.docs-app\\.outputs\\.token",
             "inputs\\.source_repository",
-            "OpenAdaptAI/openadapt-evals",
+            "scripts/validate_docs_sync\\.py",
             "repos\\.yml",
             "inputs\\.source_ref",
             "refs/heads/main",
             "inputs\\.source_commit",
             "gh\\s+api[^\\n]*commits/main",
-            "\\[0-9a-f\\]\\{40\\}",
-            "inputs\\.source_event\\s*==\\s*['\"]push['\"]",
+            "inputs\\.source_event",
             "inputs\\.idempotency_key",
-            "OpenAdapt docs sync dispatch v1",
-            "docs-sync:",
-            "\\[0-9a-f\\]\\{64\\}",
-            "sha256",
             "(?m)^\\s*contents:\\s*write\\s*$",
             "github\\.token",
+            "git\\s+push\\s+origin\\s+[\"]HEAD:refs/heads/",
             "gh\\s+pr\\s+create"
           ],
           "forbidden_patterns": [
             "(?m)^[ ]{2}repository_dispatch:\\s*$",
             "repo-updated",
+            "DOCS_(?:PAT|DISPATCH_TOKEN)",
             "git\\s+push[^\\n]*(?:refs/heads/)?main",
             "permission-contents:\\s*write"
           ]
@@ -806,13 +1051,10 @@
             "inputs\\.source_ref\\s*==\\s*['\"]refs/heads/main['\"]",
             "inputs\\.source_commit",
             "gh\\s+api[^\\n]*commits/main",
-            "\\[0-9a-f\\]\\{40\\}",
             "inputs\\.candidate_admissions_sha256",
             "inputs\\.candidate_ledger_head_sha256",
             "inputs\\.idempotency_key",
-            "sha256:\\[0-9a-f\\]\\{64\\}",
-            "OpenAdapt production lifecycle ledger head v1\\\\0",
-            "OpenAdapt production lifecycle projection idempotency v1\\\\0",
+            "scripts/prepare_production_lifecycle_projection\\.py",
             "github\\.repository\\s*==\\s*'OpenAdaptAI/openadapt-ops'",
             "github\\.ref\\s*==\\s*'refs/heads/main'",
             "github\\.event_name\\s*==\\s*'workflow_dispatch'",
@@ -822,8 +1064,14 @@
             "vars\\.OPENADAPT_LIFECYCLE_APP_ID",
             "vars\\.OPENADAPT_LIFECYCLE_INSTALLATION_ID",
             "secrets\\.OPENADAPT_LIFECYCLE_APP_PRIVATE_KEY",
+            "actions/create-github-app-token",
+            "permission-actions:\\s*write",
+            "permission-metadata:\\s*read",
+            "permission-pull-requests:\\s*write",
+            "steps\\.lifecycle-app\\.outputs\\.token",
             "(?m)^\\s*contents:\\s*write\\s*$",
             "github\\.token",
+            "git\\s+push\\s+origin\\s+[\"]HEAD:refs/heads/",
             "gh\\s+pr\\s+create"
           ],
           "forbidden_patterns": [
@@ -869,6 +1117,10 @@
         {
           "path": ".github/workflows/sync.yml",
           "mode": "docs-only"
+        },
+        {
+          "path": ".github/workflows/workspace-staleness-sweep.yml",
+          "mode": "reject-lifecycle-app"
         }
       ]
     },
@@ -876,7 +1128,7 @@
       "name": "openadapt-web",
       "visibility": "public",
       "default_branch": "main",
-      "audited_main_sha": "0a23bd9af5ade15928e79cc4d8e0278e983d375c",
+      "audited_main_sha": "0f2c1dff2441d4bac5eb12a9e48b5d05d651f64b",
       "require_code_owner_review": true,
       "required_checks": [
         "Analyze (javascript-typescript)",
@@ -907,7 +1159,7 @@
       "name": ".github",
       "visibility": "public",
       "default_branch": "main",
-      "audited_main_sha": "4d2a82657d837a3ab87f08e4702456233636e5ff",
+      "audited_main_sha": "7e1a3c742455598c236318ce5a70ed27a36f1816",
       "require_code_owner_review": false,
       "required_checks": [
         "validate-profile"
@@ -935,6 +1187,7 @@
       "lifecycle_environments": [
         {
           "name": "production-lifecycle-activation",
+          "can_admins_bypass": false,
           "wait_timer": 0,
           "prevent_self_review": true,
           "deployment_policies": [
@@ -947,6 +1200,7 @@
         },
         {
           "name": "qualification-authority-state",
+          "can_admins_bypass": false,
           "wait_timer": 0,
           "prevent_self_review": true,
           "deployment_policies": [
@@ -959,6 +1213,7 @@
         },
         {
           "name": "qualification-revocation-state",
+          "can_admins_bypass": false,
           "wait_timer": 0,
           "prevent_self_review": true,
           "deployment_policies": [
