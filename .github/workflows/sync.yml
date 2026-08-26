@@ -84,11 +84,12 @@ jobs:
         run: uv run mkdocs build --strict
 
       # Persist exactly the generated source that passed the gates before
-      # publishing it. `main` accepts changes only through a pull request, so
-      # the generated commit goes to the workflow-owned branch
-      # `docs/auto-sync`, and an auto-merging pull request carries it to
-      # `main`. The branch push is the persistence step and it gates deploy:
-      # published content is always content that is recorded on that branch.
+      # publishing it. This workflow never pushes to `main`: the generated
+      # commit goes to the workflow-owned branch `docs/auto-sync`, and an
+      # auto-merging pull request carries it to `main`. Publishing therefore
+      # works whether or not `main` requires a pull request. The branch push is
+      # the persistence step and it gates deploy: published content is always
+      # content that is recorded on that branch.
       #
       # Skipped on push: no cross-repo sync ran, so there is nothing new to
       # persist and no second commit to record.
