@@ -7,15 +7,6 @@ on:
   pull_request:
   push:
     branches: [main]
-    paths:
-      - ".github/workflows/production-lifecycle-policy.yml"
-      - "docs/production-lifecycle.json"
-      - "docs/reference/production-lifecycle.md"
-      - "docs/schemas/production-lifecycle-public.schema.json"
-      - "mkdocs.yml"
-      - "production-lifecycle-source.json"
-      - "scripts/render_production_lifecycle.py"
-      - "tests/test_production_lifecycle_policy.py"
 
 permissions:
   contents: read
@@ -38,6 +29,7 @@ jobs:
           test "$TRIGGERING_ACTOR" != 'openadapt-lifecycle[bot]'
 
   validate:
+    name: Validate Production lifecycle
     needs: reject-lifecycle-app
     if: >-
       github.actor != 'openadapt-lifecycle[bot]' &&
