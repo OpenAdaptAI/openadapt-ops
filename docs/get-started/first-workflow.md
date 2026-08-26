@@ -11,12 +11,6 @@ against test data works well. Open a known test record, then stop when a field
 shows the expected value. Don't start with a task that saves, submits, creates,
 or deletes data.
 
-For a visual first workflow, we recommend
-[OpenAdapt Desktop](../desktop/install.md). It uses the same compiler and
-runtime as the commands on this page. Its install guide lists the current
-release-admission, signing, checksum, and permission details. Follow the CLI
-path below if you prefer a terminal.
-
 This walkthrough uses a Playwright-driven browser. The same record, compile,
 lint, and supervised replay loop works with native Windows, macOS, or Linux
 applications and RDP or Citrix sessions when you choose a different
