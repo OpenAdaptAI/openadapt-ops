@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-08-26 18:54 UTC*
+> *Last updated: 2026-08-26 19:27 UTC*
 
 
 
@@ -90,6 +90,8 @@
 ## openadapt-desktop
 
 
+- [Bind production admission to tag attestations](https://github.com/OpenAdaptAI/openadapt-desktop/pull/132) (#132) — merged 
+
 - [ci: derive Desktop Production from central admission](https://github.com/OpenAdaptAI/openadapt-desktop/pull/126) (#126) — merged 
 
 - [fix(release): publish native chain from reviewed main](https://github.com/OpenAdaptAI/openadapt-desktop/pull/125) (#125) — merged 
@@ -136,6 +138,8 @@
 
 ## openadapt-evals
 
+
+- [fix(evidence): accept the timestamp format GitHub CLI actually emits](https://github.com/OpenAdaptAI/openadapt-evals/pull/299) (#299) — merged 
 
 - [feat(evidence): publish the Flow 1.33.0 comparison; supersede 1.32.0](https://github.com/OpenAdaptAI/openadapt-evals/pull/297) (#297) — merged 
 
