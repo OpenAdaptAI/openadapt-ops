@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-08-26 19:58 UTC*
+> *Last updated: 2026-08-26 20:15 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [chore: ignore every .env variant, not one at a time](https://github.com/OpenAdaptAI/OpenAdapt/pull/1119) (#1119) — merged 
 
 - [ci: bind launcher releases to the release app](https://github.com/OpenAdaptAI/OpenAdapt/pull/1118) (#1118) — merged 
 
@@ -134,6 +136,8 @@
 ## openadapt-ml
 
 
+- [chore: ignore every .env variant, not one at a time](https://github.com/OpenAdaptAI/openadapt-ml/pull/75) (#75) — merged 
+
 - [ci: pin pypa/gh-action-pypi-publish to a commit SHA](https://github.com/OpenAdaptAI/openadapt-ml/pull/74) (#74) — merged 
 
 
@@ -169,6 +173,8 @@
 
 ## openadapt-capture
 
+
+- [chore: ignore every .env variant, not one at a time](https://github.com/OpenAdaptAI/openadapt-capture/pull/93) (#93) — merged 
 
 - [ci: require release App tag publication](https://github.com/OpenAdaptAI/openadapt-capture/pull/92) (#92) — merged 
 
