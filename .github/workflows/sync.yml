@@ -84,16 +84,15 @@ jobs:
         run: uv run mkdocs build --strict
 
       # Persist exactly the generated source that passed the gates before
-      # publishing it. `main` is protected and takes changes only through a
-      # pull request, so the generated commit goes to the workflow-owned
-      # branch `docs/auto-sync` and lands through an auto-merging PR. Deploy
-      # runs only after that PR exists, so published content is always content
-      # that is queued for `main`. A failure to record the source therefore
-      # still blocks deploy.
+      # publishing it. `main` accepts changes only through a pull request, so
+      # the generated commit goes to the workflow-owned branch
+      # `docs/auto-sync`, and an auto-merging pull request carries it to
+      # `main`. The branch push is the persistence step and it gates deploy:
+      # published content is always content that is recorded on that branch.
       #
       # Skipped on push: no cross-repo sync ran, so there is nothing new to
       # persist and no second commit to record.
-      - name: Open a PR with the updated docs source
+      - name: Record the generated docs source and open a PR for it
         id: docs_pr
         if: ${{ success() && github.event_name != 'push' }}
         env:
@@ -104,9 +103,13 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add docs/
-          if git diff --staged --quiet; then
+          # The What's New digest stamps the minute it was generated, and every
+          # sub-repo push dispatches this workflow. Treating that clock as a
+          # change would open a pull request many times a day that carries no
+          # new documentation, so ignore it and keep the empty-diff no-op.
+          if git diff --staged --quiet -I'^> \*Last updated: '; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
-            echo "Generated documentation is already current."
+            echo "Generated documentation carries no new content."
             exit 0
           fi
           git commit -m "docs: auto-sync generated documentation"
@@ -133,22 +136,30 @@ jobs:
           `scripts/`.
           BODY
 
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
           PR_URL=$(gh pr list --head "${BRANCH}" --base main --state open \
             --json url --jq '.[0].url // empty')
           if [ -z "${PR_URL}" ]; then
-            PR_URL=$(gh pr create \
+            gh pr create \
               --base main \
               --head "${BRANCH}" \
               --title "docs: auto-sync generated documentation" \
-              --body-file /tmp/docs-auto-sync-body.md)
+              --body-file /tmp/docs-auto-sync-body.md \
+              || echo "::warning::gh pr create failed for ${BRANCH}."
+            PR_URL=$(gh pr list --head "${BRANCH}" --base main --state open \
+              --json url --jq '.[0].url // empty')
           fi
-          if [ -z "${PR_URL}" ]; then
-            echo "::error::Could not open the docs auto-sync PR."
-            exit 1
-          fi
-
-          echo "changed=true" >> "$GITHUB_OUTPUT"
           echo "pr_url=${PR_URL}" >> "$GITHUB_OUTPUT"
+
+          # The generated source is already on the branch, so the deploy below
+          # still publishes content that is recorded. Report the missing pull
+          # request as a warning here and fail the run after the deploy, so a
+          # broken queue is loud without also taking the site offline.
+          if [ -z "${PR_URL}" ]; then
+            echo "::warning::${BRANCH} holds the generated source, but no pull request carries it to main."
+            exit 0
+          fi
           echo "Docs auto-sync PR: ${PR_URL}"
 
           # A repository without auto-merge, or a token that may not enable it,
@@ -165,3 +176,16 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deploy
         uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
+
+      # New content that reaches the site but never reaches `main` leaves the
+      # published site ahead of its own source, and the next same-repo docs
+      # push would rebuild without it. Fail the run so the gap is visible.
+      - name: Confirm the generated source is queued for main
+        if: ${{ steps.docs_pr.outputs.changed == 'true' && steps.docs_pr.outputs.pr_url == '' }}
+        env:
+          BRANCH: docs/auto-sync
+        run: |
+          echo "::error::The generated docs source sits on ${BRANCH} with no pull request to main."
+          echo "GitHub Actions may not create pull requests in this repository."
+          echo "Enable Settings > Actions > General > Allow GitHub Actions to create and approve pull requests."
+          exit 1
