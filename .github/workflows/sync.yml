@@ -24,6 +24,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
   pages: write
   id-token: write
 
@@ -83,36 +84,78 @@ jobs:
         run: uv run mkdocs build --strict
 
       # Persist exactly the generated source that passed the gates before
-      # publishing it. A protected-branch rejection therefore blocks deploy.
+      # publishing it. `main` is protected and takes changes only through a
+      # pull request, so the generated commit goes to the workflow-owned
+      # branch `docs/auto-sync` and lands through an auto-merging PR. Deploy
+      # runs only after that PR exists, so published content is always content
+      # that is queued for `main`. A failure to record the source therefore
+      # still blocks deploy.
+      #
       # Skipped on push: no cross-repo sync ran, so there is nothing new to
-      # persist and no second commit to push back to main.
-      - name: Commit updated docs source
+      # persist and no second commit to record.
+      - name: Open a PR with the updated docs source
+        id: docs_pr
         if: ${{ success() && github.event_name != 'push' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: docs/auto-sync
         run: |
+          set -uo pipefail
           git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add docs/
           if git diff --staged --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
             echo "Generated documentation is already current."
             exit 0
           fi
-          git commit -m "docs: auto-sync documentation [skip ci]"
+          git commit -m "docs: auto-sync generated documentation"
 
-          # A cancelled dispatch can finish its push while the replacement is
-          # already running. Rebase the exact generated commit onto that newer
-          # main and retry the compare-and-swap push instead of losing the
-          # replacement run to a harmless non-fast-forward race.
-          for attempt in 1 2 3; do
-            git fetch origin main
-            git rebase origin/main
-            if git push origin HEAD:main; then
-              exit 0
-            fi
-            if [ "$attempt" -eq 3 ]; then
-              echo "Docs main advanced during all three bounded push attempts." >&2
-              exit 1
-            fi
-          done
+          # The concurrency group serialises this workflow, and nothing else
+          # writes this branch, so overwriting it rebases the pending sync onto
+          # current main instead of stacking stale generated commits.
+          git push --force origin "HEAD:refs/heads/${BRANCH}"
+
+          cat > /tmp/docs-auto-sync-body.md <<'BODY'
+          Automated. Only the `Sync Documentation` workflow writes this branch.
+
+          It carries the regenerated `docs/` source: the synced READMEs, the
+          aggregated changelog, and the What's New page. The run that opened it
+          already ran the test suite, `scripts/validate_docs.py`, and a strict
+          MkDocs build against exactly this content.
+
+          Auto-merge (squash) is requested, so it lands once the required checks
+          pass. If those checks never report, close and reopen this PR once:
+          GitHub does not start a workflow for an event raised by the Actions
+          token, and reopening it by hand does.
+
+          Nothing here is hand-edited. To change it, change the generator under
+          `scripts/`.
+          BODY
+
+          PR_URL=$(gh pr list --head "${BRANCH}" --base main --state open \
+            --json url --jq '.[0].url // empty')
+          if [ -z "${PR_URL}" ]; then
+            PR_URL=$(gh pr create \
+              --base main \
+              --head "${BRANCH}" \
+              --title "docs: auto-sync generated documentation" \
+              --body-file /tmp/docs-auto-sync-body.md)
+          fi
+          if [ -z "${PR_URL}" ]; then
+            echo "::error::Could not open the docs auto-sync PR."
+            exit 1
+          fi
+
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+          echo "pr_url=${PR_URL}" >> "$GITHUB_OUTPUT"
+          echo "Docs auto-sync PR: ${PR_URL}"
+
+          # A repository without auto-merge, or a token that may not enable it,
+          # must not fail the sync: the PR still exists for a person to merge.
+          if ! gh pr merge --squash --auto "${PR_URL}"; then
+            echo "::warning::Auto-merge is not enabled on ${PR_URL}; merge it by hand."
+          fi
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
