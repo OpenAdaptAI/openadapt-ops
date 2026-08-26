@@ -20,56 +20,36 @@ and watch the run heal or halt under drift:
   provisions automatically on the first web action; native, RDP, and Citrix
   paths do not install it.
 
-**Recommended: install with uv.** The first command installs
-[uv](https://docs.astral.sh/uv/) if it is missing; the second provisions a
-suitable Python, installs OpenAdapt with browser support as a persistent
-`openadapt` command, and runs a short environment check:
+**Recommended: install with pip in a virtual environment.** The base package
+includes the browser driver used by this walkthrough. The engine requires
+Python 3.10–3.12; check yours with `python --version` or
+`python3 --version`.
 
-```bash
-curl -LsSf https://astral.sh/uv/install.sh | sh
-curl -fsSL https://raw.githubusercontent.com/OpenAdaptAI/openadapt-flow/main/scripts/install.sh | sh
-```
-
-**Manual path: pip in a virtual environment.** If you prefer to manage the
-environment yourself — or your team standardizes on pip — use the tabs below.
-The engine declares `requires-python >=3.10,<3.13`; check yours with
-`python --version` (on some systems `python3 --version`). The quoting around
-`openadapt[browser]` differs per shell, and getting it wrong is the most common
-first failure:
+Use the tab for your shell:
 
 === "macOS / Linux (bash, zsh)"
 
     ```bash
     python3 -m venv .venv && source .venv/bin/activate
-    pip install 'openadapt[browser]'
+    python -m pip install --upgrade openadapt
     ```
 
-    The quotes matter: unquoted square brackets are glob characters in zsh
-    (`no matches found`) and can misbehave in bash. Single or double quotes
-    both work here. A virtual environment keeps the install isolated and
-    avoids the stale-package problems a shared or Conda base environment
-    causes.
+    A virtual environment keeps the install isolated and avoids stale-package
+    problems from a shared or Conda base environment.
 
 === "Windows PowerShell"
 
     ```powershell
     py -m venv .venv; .\.venv\Scripts\Activate.ps1
-    pip install "openadapt[browser]"
+    python -m pip install --upgrade openadapt
     ```
-
-    PowerShell accepts single or double quotes; double quotes are shown for
-    consistency with cmd.exe.
 
 === "Windows cmd.exe"
 
     ```bat
     py -m venv .venv && .venv\Scripts\activate.bat
-    pip install "openadapt[browser]"
+    python -m pip install --upgrade openadapt
     ```
-
-    Use **double** quotes. cmd.exe passes single quotes through literally, so
-    `pip install 'openadapt[browser]'` fails with an *Invalid requirement*
-    error that starts with `'openadapt`.
 
 === "Linux native desktop (AT-SPI)"
 
@@ -81,11 +61,15 @@ first failure:
     sudo apt-get install \
       gcc pkg-config python3-dev libcairo2-dev libgirepository-2.0-dev \
       gir1.2-atspi-2.0 libatspi2.0-0
-    pip install 'openadapt[linux]'
+    pip install 'openadapt[capture,linux]'
     ```
 
     The built-in driver uses X11; Wayland requires an operator-approved XDG
     portal session.
+
+For an isolated command-line installation, run
+`curl -fsSL https://openadapt.ai/install.sh | sh`. It installs the same base
+package with [uv](https://docs.astral.sh/uv/).
 
 !!! tip "No app to record against yet?"
     You do not need your own target to try the loop. The engine bundles
