@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-08-26 18:51 UTC*
+> *Last updated: 2026-08-26 18:54 UTC*
 
 
 
@@ -142,6 +142,8 @@
 - [docs: public tagged copy of the Phase-2 certified-reward RL pre-registration](https://github.com/OpenAdaptAI/openadapt-evals/pull/295) (#295) — merged 
 
 - [feat(evidence): publish the Flow 1.32.0 comparison; mark 1.31.0 superseded](https://github.com/OpenAdaptAI/openadapt-evals/pull/294) (#294) — merged 
+
+- [fix(evidence): verify private Cloud attestations on GitHub's instance](https://github.com/OpenAdaptAI/openadapt-evals/pull/293) (#293) — merged 
 
 - [fix(evidence): expect private Cloud source visibility at signing](https://github.com/OpenAdaptAI/openadapt-evals/pull/292) (#292) — merged 
 
