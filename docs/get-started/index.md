@@ -26,26 +26,24 @@ See it working before you install anything:
 You need no account, target application, API key, or operating-system
 automation permission.
 
-**Recommended: install with uv.** The first command installs
-[uv](https://docs.astral.sh/uv/) if it is missing. The second installs
-OpenAdapt with browser support as a persistent `openadapt` command and runs a
-short environment check. Both are safe to re-run; they upgrade in place:
+**Recommended: install with pip.** Use an active Python 3.10–3.12 virtual
+environment when your system manages Python packages. The base package includes
+the browser driver used by the tutorial:
 
 ```bash
-curl -LsSf https://astral.sh/uv/install.sh | sh
-curl -fsSL https://raw.githubusercontent.com/OpenAdaptAI/openadapt-flow/main/scripts/install.sh | sh
-```
-
-**Manual path: pip.** If you prefer to manage your own environment, create a
-virtual environment, then run:
-
-```bash
-pip install 'openadapt[browser]'
+python -m pip install --upgrade openadapt
 openadapt quickstart
 ```
 
-Shell-specific quoting notes are in
-[Your first workflow](first-workflow.md#prerequisites-and-install).
+**Isolated CLI alternative.** The public installer creates and maintains an
+isolated environment with [uv](https://docs.astral.sh/uv/):
+
+```bash
+curl -fsSL https://openadapt.ai/install.sh | sh
+```
+
+Both paths install the same `openadapt` command. You need no package extra for
+the browser tutorial.
 
 The command records the bundled synthetic MockMed task, compiles its observed
 [effect contract](../reference/glossary.md#effect-contract), certifies it with
@@ -132,8 +130,9 @@ openadapt flow replay openadapt-quickstart/bundle \
 
 ## Install a different execution surface
 
-The browser extra is only for the browser tutorial. It does not form part of
-the lightweight base runtime for native desktop, RDP, or Citrix workflows.
+The base package includes the browser driver. Its matching Chromium build
+downloads only when a browser action starts. Native desktop, RDP, and Citrix
+workflows do not start or download Chromium.
 
 For native or remote-only work, install the selected driver:
 
@@ -143,8 +142,8 @@ pip install 'openadapt[capture,windows]'  # example: native Windows
 pip install 'openadapt[capture,rdp]'      # example: network RDP
 ```
 
-Neither path installs or downloads Chromium. The public command remains
-`openadapt flow <verb>` for every surface. The standalone
+The selected native or remote extras do not download Chromium. The public
+command remains `openadapt flow <verb>` for every surface. The standalone
 [`openadapt-flow`](https://github.com/OpenAdaptAI/openadapt-flow) package is for
 engine contributors. It is not a second end-user path.
 
