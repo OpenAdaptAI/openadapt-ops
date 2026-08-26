@@ -29,6 +29,7 @@ PLAN_MAX_AGE_SECONDS = 900
 EXPECTED_REPOSITORIES = {
     ".github",
     "OpenAdapt",
+    "openadapt-agent",
     "openadapt-capture",
     "openadapt-desktop",
     "openadapt-evals",
@@ -189,7 +190,7 @@ def validate_config(config: Mapping[str, Any]) -> None:
         values = live_audit.get(field)
         if not isinstance(values, Mapping) or set(values) != EXPECTED_REPOSITORIES:
             raise PolicyError(
-                f"live_audit.{field} must cover the eight core repositories"
+                f"live_audit.{field} must cover the nine core repositories"
             )
     dispatch_audit = config.get("dispatch_privilege_audit")
     if not isinstance(dispatch_audit, Mapping):
@@ -211,6 +212,22 @@ def validate_config(config: Mapping[str, Any]) -> None:
     environment_defaults = config.get("environment_defaults")
     if environment_defaults != {"wait_timer": 0, "prevent_self_review": False}:
         raise PolicyError("environment_defaults must define the reviewed release gate")
+
+    release_identity = config.get("release_identity")
+    if not isinstance(release_identity, Mapping):
+        raise PolicyError("release_identity must be an object")
+    if (
+        release_identity.get("actor_type") != "Integration"
+        or release_identity.get("app_slug") != "openadapt-release"
+        or release_identity.get("bypass_mode") != "always"
+    ):
+        raise PolicyError("release_identity is not exact")
+    if release_identity.get("required_repository_permissions") != [
+        "Contents: write",
+        "Pull requests: write",
+        "Metadata: read",
+    ]:
+        raise PolicyError("release_identity repository permissions are not exact")
 
     lifecycle_identity = config.get("lifecycle_identity")
     if not isinstance(lifecycle_identity, Mapping):
@@ -338,7 +355,7 @@ def validate_config(config: Mapping[str, Any]) -> None:
     names = [repo.get("name") for repo in repositories if isinstance(repo, Mapping)]
     if set(names) != EXPECTED_REPOSITORIES or len(names) != len(EXPECTED_REPOSITORIES):
         raise PolicyError(
-            "repositories must contain exactly the eight reviewed OpenAdapt core repositories"
+            "repositories must contain exactly the nine reviewed OpenAdapt core repositories"
         )
 
     for repo in repositories:
@@ -584,25 +601,52 @@ def _resolve_release_actor(
             }
         )
         return None
-    if installation.get("repository_selection") != "all":
-        repository_response = client.get(
-            f"/user/installations/{installation['id']}/repositories?per_page=100"
+    expected_permissions = {
+        item.split(":", 1)[0].strip().lower().replace(" ", "_"): item.split(
+            ":", 1
+        )[1]
+        .strip()
+        .lower()
+        for item in identity["required_repository_permissions"]
+    }
+    if installation.get("permissions") != expected_permissions:
+        blockers.append(
+            {
+                "code": "release_identity_permissions_mismatch",
+                "message": (
+                    f"GitHub App {slug!r} does not have the exact reviewed permissions."
+                ),
+            }
         )
-        installed_names = {
-            item.get("name") for item in repository_response.get("repositories", [])
-        }
-        missing = EXPECTED_REPOSITORIES.difference(installed_names)
-        if missing:
-            blockers.append(
-                {
-                    "code": "release_identity_repository_scope",
-                    "message": (
-                        f"GitHub App {slug!r} is not installed on: "
-                        f"{', '.join(sorted(missing))}."
-                    ),
-                }
-            )
-            return None
+        return None
+    if installation.get("repository_selection") != "selected":
+        blockers.append(
+            {
+                "code": "release_identity_repository_scope",
+                "message": (
+                    f"GitHub App {slug!r} must select only the nine public core "
+                    "repositories."
+                ),
+            }
+        )
+        return None
+    repository_response = client.get(
+        f"/user/installations/{installation['id']}/repositories?per_page=100"
+    )
+    installed_names = {
+        item.get("name") for item in repository_response.get("repositories", [])
+    }
+    if installed_names != EXPECTED_REPOSITORIES:
+        blockers.append(
+            {
+                "code": "release_identity_repository_scope",
+                "message": (
+                    f"GitHub App {slug!r} repository scope must be exactly: "
+                    f"{', '.join(sorted(EXPECTED_REPOSITORIES))}."
+                ),
+            }
+        )
+        return None
     return ReleaseActor(actor_id=actor_id, app_slug=slug)
 
 
@@ -1405,9 +1449,14 @@ def _environment_actions(
                 }
             )
         current_policies: list[Mapping[str, Any]] = []
-        if isinstance(current, Mapping) and current.get(
-            "deployment_branch_policy", {}
-        ).get("custom_branch_policies"):
+        current_deployment_policy = (
+            current.get("deployment_branch_policy")
+            if isinstance(current, Mapping)
+            else None
+        )
+        if isinstance(
+            current_deployment_policy, Mapping
+        ) and current_deployment_policy.get("custom_branch_policies"):
             response = client.get(
                 f"/repos/{owner}/{repo['name']}/environments/{encoded}/deployment-branch-policies?per_page=100"
             )
