@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-08-26 16:28 UTC*
+> *Last updated: 2026-08-26 17:30 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [Derive launcher lifecycle from signed admissions](https://github.com/OpenAdaptAI/OpenAdapt/pull/1116) (#1116) — merged 
 
 - [docs: lead with the verified base-package quickstart](https://github.com/OpenAdaptAI/OpenAdapt/pull/1115) (#1115) — merged 
 
@@ -38,6 +40,8 @@
 
 ## openadapt-flow
 
+
+- [test: fail a run that leaves tracked repository files dirty](https://github.com/OpenAdaptAI/openadapt-flow/pull/400) (#400) — merged 
 
 - [docs(paper): add the three-tree paper map](https://github.com/OpenAdaptAI/openadapt-flow/pull/399) (#399) — merged 
 
@@ -76,8 +80,6 @@
 - [feat: enforce signed qualification admission before actuation](https://github.com/OpenAdaptAI/openadapt-flow/pull/376) (#376) — merged 
 
 - [ci: prefer the canonical Ubuntu archive for the apt installs](https://github.com/OpenAdaptAI/openadapt-flow/pull/375) (#375) — merged 
-
-- [ci: prefer the canonical Ubuntu archive for the paper TeX install](https://github.com/OpenAdaptAI/openadapt-flow/pull/374) (#374) — merged 
 
 
 
