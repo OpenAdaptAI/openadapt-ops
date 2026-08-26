@@ -37,6 +37,9 @@ MAX_SOURCE_BYTES = 2 * 1024 * 1024
 EXPECTED_FILE_KEYS = {
     "admissions",
     "admissions_schema",
+    "evidence_registry",
+    "evidence_registry_schema",
+    "evidence_registry_validator",
     "evidence_manifest_schema",
     "evidence_summary_schema",
     "lifecycle",
@@ -47,6 +50,9 @@ EXPECTED_FILE_KEYS = {
 EXPECTED_PATHS = {
     "admissions": "production-lifecycle-admissions.json",
     "admissions_schema": "schemas/production-lifecycle-admissions.schema.json",
+    "evidence_registry": "evidence-registry.json",
+    "evidence_registry_schema": "schemas/evidence-registry.schema.json",
+    "evidence_registry_validator": "scripts/validate_evidence_registry.py",
     "evidence_manifest_schema": (
         "schemas/production-lifecycle-evidence-manifest.schema.json"
     ),

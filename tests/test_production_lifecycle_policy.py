@@ -120,8 +120,9 @@ class ProductionLifecycleProjectionTests(unittest.TestCase):
             output["$schema"], "schemas/production-lifecycle-public.schema.json"
         )
         self.assertTrue(
-            (ROOT / "docs" / "schemas" / "production-lifecycle-public.schema.json")
-            .is_file()
+            (
+                ROOT / "docs" / "schemas" / "production-lifecycle-public.schema.json"
+            ).is_file()
         )
         self.assertFalse(output["derivation"]["static_production_state"])
         source = json.loads(
@@ -144,6 +145,22 @@ class ProductionLifecycleProjectionTests(unittest.TestCase):
             path.write_text(json.dumps(source))
             with self.assertRaisesRegex(MODULE.RenderError, "exact commit"):
                 MODULE.load_source(path)
+
+    def test_source_requires_the_complete_evidence_registry_contract(self) -> None:
+        for key in (
+            "evidence_registry",
+            "evidence_registry_schema",
+            "evidence_registry_validator",
+        ):
+            with self.subTest(key=key), tempfile.TemporaryDirectory() as directory:
+                source = _source()
+                source["files"].pop(key)
+                path = Path(directory) / "source.json"
+                path.write_text(json.dumps(source))
+                with self.assertRaisesRegex(
+                    MODULE.RenderError, "inventory is not exact"
+                ):
+                    MODULE.load_source(path)
 
 
 if __name__ == "__main__":

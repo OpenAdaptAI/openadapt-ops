@@ -31,6 +31,9 @@
           "required": [
             "admissions",
             "admissions_schema",
+            "evidence_registry",
+            "evidence_registry_schema",
+            "evidence_registry_validator",
             "evidence_manifest_schema",
             "evidence_summary_schema",
             "lifecycle",
