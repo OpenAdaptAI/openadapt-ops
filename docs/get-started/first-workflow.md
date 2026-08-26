@@ -2,6 +2,8 @@
 description: >-
   Record, inspect, and supervise one read-only workflow before you qualify any
   write.
+first_workflow_scope: read_only
+first_write_admission: qualification_required
 ---
 
 # Your first workflow

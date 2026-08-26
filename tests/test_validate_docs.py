@@ -3,6 +3,8 @@
 import pathlib
 import sys
 
+import pytest
+
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "scripts"))
 
 from validate_docs import check_empty_pages, check_product_docs_contract
@@ -78,6 +80,10 @@ def _write_contract_docs(root):
             "`openadapt flow`."
         ),
         "get-started/first-workflow.md": (
+            "---\n"
+            "first_workflow_scope: read_only\n"
+            "first_write_admission: qualification_required\n"
+            "---\n\n"
             "# Your first workflow\n\nInstall with `pip install openadapt` and "
             "record a bounded workflow."
         ),
@@ -140,6 +146,71 @@ def test_product_docs_contract_passes_for_product_first_nav(tmp_path):
     )
 
     assert check_product_docs_contract(docs_dir, mkdocs_file) == []
+
+
+@pytest.mark.parametrize(
+    ("field", "bad_value"),
+    (
+        ("first_workflow_scope", "read_write"),
+        ("first_write_admission", "replay_allowed"),
+    ),
+)
+def test_product_docs_contract_rejects_wrong_first_workflow_contract(
+    tmp_path, field, bad_value
+):
+    docs_dir = tmp_path / "docs"
+    pages = _write_contract_docs(docs_dir)
+    first_workflow = docs_dir / "get-started/first-workflow.md"
+    content = first_workflow.read_text()
+    expected = {
+        "first_workflow_scope": "read_only",
+        "first_write_admission": "qualification_required",
+    }[field]
+    first_workflow.write_text(
+        content.replace(f"{field}: {expected}", f"{field}: {bad_value}")
+    )
+    mkdocs_file = tmp_path / "mkdocs.yml"
+    mkdocs_file.write_text(
+        "nav:\n  - Reference:\n"
+        + "".join(f"    - {path}\n" for path in pages)
+        + "    - Package and repository lifecycle: ecosystem/index.md\n"
+    )
+
+    issues = check_product_docs_contract(docs_dir, mkdocs_file)
+
+    assert any(
+        "First-workflow safety contract requires" in issue and field in issue
+        for issue in issues
+    )
+
+
+@pytest.mark.parametrize(
+    "flag",
+    ("--break-it", "--simulate-rejected-write"),
+)
+def test_product_docs_contract_rejects_failure_demo_in_first_workflow(
+    tmp_path, flag
+):
+    docs_dir = tmp_path / "docs"
+    pages = _write_contract_docs(docs_dir)
+    first_workflow = docs_dir / "get-started/first-workflow.md"
+    first_workflow.write_text(
+        first_workflow.read_text() + f"\n`openadapt quickstart {flag}`\n"
+    )
+    mkdocs_file = tmp_path / "mkdocs.yml"
+    mkdocs_file.write_text(
+        "nav:\n  - Reference:\n"
+        + "".join(f"    - {path}\n" for path in pages)
+        + "    - Package and repository lifecycle: ecosystem/index.md\n"
+    )
+
+    issues = check_product_docs_contract(docs_dir, mkdocs_file)
+
+    assert any(
+        "Failure-demo flag is forbidden in first-workflow onboarding" in issue
+        and flag in issue
+        for issue in issues
+    )
 
 
 def test_product_docs_contract_rejects_missing_page_and_package_first_nav(tmp_path):
