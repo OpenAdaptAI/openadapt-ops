@@ -12,14 +12,18 @@ The policy has these results:
   person must approve the last push. All review threads must be complete.
 - Each check in the policy comes from the GitHub Actions integration.
 - The branch must be current with `main` before GitHub admits it.
-- Only the `openadapt-release` GitHub App can create a release tag.
-- The release App selects only the nine public core repositories. It has no
+- Only the `openadapt-release` GitHub App can create a release tag and its
+  matching GitHub Release.
+- The release App selects only the six public package repositories. It has
+  Contents write and Metadata read. It can't open pull requests and has no
   access to private Cloud.
 - A second ruleset prevents all identities, including the release app, from
   changing or deleting that tag.
 - A protected environment admits only the exact branch or tag pattern in the
   policy.
 - A required reviewer must approve each release environment use.
+- Administrators can't bypass any managed environment. GitHub exposes this
+  control in the environment settings page, but not in the REST update API.
 - The lifecycle environments prevent self-review. The founder reviews a run
   that the separate lifecycle App starts.
 - The lifecycle App has no `main` bypass and no Contents permission.
@@ -153,11 +157,20 @@ Actions write also permits the App to cancel or rerun workflow runs and delete
 workflow artifacts. The exact repository scope limits this authority. The
 policy inventories every workflow that accepts `workflow_dispatch` or
 `repository_dispatch` in the three repositories. Only the five lifecycle
-workflows can accept the lifecycle App actor. Each other manual path needs a
-`reject-lifecycle-app` predecessor with no permission. It checks both
-`github.actor` and `github.triggering_actor`. Each later job depends on that
-predecessor and repeats both identity refusals before GitHub allocates a job.
-A new or unguarded path blocks apply.
+workflows can accept the lifecycle App actor. Only the Docs sync job can accept
+the Docs App actor. Each other manual path needs a `reject-lifecycle-app`
+predecessor with no permission. Despite its historical name, that predecessor
+rejects both `openadapt-lifecycle[bot]` and `openadapt-docs[bot]`. It checks
+`github.actor` and `github.triggering_actor` for each App. Each later job
+depends on that predecessor and repeats all four identity refusals before
+GitHub allocates a job. A new or unguarded path blocks apply.
+
+The workflow audit parses YAML. It recognizes mapping, scalar, and flow-list
+trigger forms, including `workflow_dispatch: {}` and `repository_dispatch`.
+Malformed YAML blocks the plan. For an authorized lifecycle or Docs path, the
+audit checks the actor, protected environment, App inputs, token output, and
+sensitive effect in the same job. A matching string elsewhere in the file
+isn't enough.
 
 Each dispatch path uses a workflow-and-event-specific concurrency group. It
 sets `cancel-in-progress` to `false`. A manual run cannot cancel a real run.
@@ -166,28 +179,68 @@ artifacts.
 
 ## Release sequence
 
+The plan also checks the runtime configuration for each App. Every package
+repository needs an `OPENADAPT_RELEASE_APP_ID` variable with the reviewed App
+ID. A private key must not exist as a repository secret or a repository
+variable. It can exist only as an environment secret in an exact binding. For
+the Release App, Launcher uses `release-identity` and `pypi`; Agent uses
+`release-identity`; Capture, Evals, and Flow use `release-identity` and `pypi`;
+Desktop uses `release-identity`, `pypi`, and `native-release`. For the
+Lifecycle App, Profile uses its three lifecycle environments; Evals uses
+`production-lifecycle-evidence`; Ops uses `production-lifecycle-projection`.
+For the Docs App, Ops uses `production-docs-deploy`.
+
+Evals does not hold the Docs App key. The target Evals dispatcher does not use
+that identity. Ops owns the protected Docs sync job.
+
+The plan reads secret and variable metadata from every repository environment.
+It never requests a secret value. A missing key, an extra environment copy, or
+a variable that shadows a private-key name blocks apply.
+
+Every managed environment sets `can_admins_bypass` to `false`. If an
+environment is absent, the field is missing, or GitHub reports `true`, the plan
+does not offer a REST repair. Open the repository's **Settings > Environments**
+page, create the named environment if needed, and clear **Allow administrators
+to bypass configured protection rules**. Run a new plan after that one-time UI
+change.
+
 Use this sequence for each package repository:
 
-1. A workflow on exact `main` enters the `release-identity` environment.
-2. The workflow gets a short-lived `openadapt-release` App token.
-3. The app opens a version pull request. It does not push to `main`.
-4. The normal `main` rules admit the version pull request.
-5. An approved workflow uses the app to create the exact release tag.
-6. The tag starts the publication workflow.
-7. The publication job enters `pypi` or `native-release`.
-8. The job uses OIDC to publish the exact tag bytes.
+1. A maintainer merges the reviewed version, changelog, lock, and candidate
+   files through the normal `main` rules.
+2. A manual run from that exact current `main` commit enters
+   `release-identity`.
+3. The workflow gets a short-lived `openadapt-release` App token.
+4. The App creates one annotated release tag. It can't push a branch or open a
+   pull request.
+5. The tag run checks the original App actor and the exact protected-main
+   commit before publication.
+6. The publication job enters `pypi`, `mcp-registry`, or `native-release` and
+   uses OIDC to publish the checked bytes.
+
+Any job that creates, edits, or uploads a GitHub Release must create the
+Release App token in that job. Its `GH_TOKEN` must reference that exact step's
+output. The same job rule prevents a workflow from passing because an unrelated
+job contains the right App strings. Launcher remains a plan refusal until its
+release workflow follows this contract on `main`.
 
 Agent uses `mcp-registry` after its PyPI publication. Both publication jobs use
 OIDC. The Agent release workflow can't accept an API-token fallback or
 download an unpinned registry publisher.
 
+A person with repository write access can rerun the exact tag workflow for
+recovery. [GitHub keeps the original actor, ref, and commit on a
+rerun](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/re-run-workflows-and-jobs).
+The workflow refuses a different tag or artifact identity.
+
 An event from `GITHUB_TOKEN` does not normally start another workflow. GitHub
 documents this behavior in the [GITHUB_TOKEN reference](https://docs.github.com/en/actions/concepts/security/github_token).
-Use the release App token for the release pull request and tag events.
+Use the release App token only for the annotated tag and matching GitHub
+Release. Never use it to push a branch or open a pull request.
 
-The current package release workflows still refer to `ADMIN_TOKEN`, or they do
-not use both protected environments. The plan reports this state as a refusal.
-Migrate these workflows before an apply operation.
+A package release workflow that still refers to `ADMIN_TOKEN`, or that skips a
+required protected environment, remains a plan refusal. Migrate every such
+workflow before an apply operation.
 
 ## Commands
 
@@ -214,11 +267,14 @@ uv run python scripts/manage_github_protection.py plan \
 The GitHub CLI token needs repository read access and organization installation
 read access for the plan. It needs repository administration write access for
 an apply operation. The tool checks all App identities, exact installation
-permissions and scopes, repository identity variables, and the environment
-reviewer ID against GitHub.
+permissions and scopes, repository identity variables, environment secret and
+variable names, administrator-bypass state, and the environment reviewer ID
+against GitHub.
 
 Inspect the plan. Resolve every refusal. Wait until all pull request checks are
-complete. Then create a new plan. A plan expires after 15 minutes.
+complete. If an audited `main` SHA changed, review the exact current workflows
+and update the policy SHA before you create another plan. Drift is a refusal,
+not a warning. A plan expires after 15 minutes.
 
 Apply that exact plan:
 
