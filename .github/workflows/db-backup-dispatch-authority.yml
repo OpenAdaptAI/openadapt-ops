@@ -38,8 +38,8 @@ jobs:
       AWS_REGION: us-east-1
       BACKUP_DISPATCH_AUTHORITY_ENABLED: ${{ vars.OPENADAPT_BACKUP_DISPATCH_AUTHORITY_ENABLED }}
       CLOUD_BACKUP_CONTINUATION_HMAC_KEY: ${{ secrets.CLOUD_BACKUP_CONTINUATION_HMAC_KEY }}
-      CLOUD_BACKUP_DISPATCH_CLAIM_TOKEN: ${{ secrets.CLOUD_BACKUP_DISPATCH_CLAIM_TOKEN }}
-      CLOUD_BACKUP_DISPATCH_RESOLUTION_TOKEN: ${{ secrets.CLOUD_BACKUP_DISPATCH_RESOLUTION_TOKEN }}
+      OPS_BACKUP_DISPATCH_CLAIM_TOKEN: ${{ secrets.OPS_BACKUP_DISPATCH_CLAIM_TOKEN }}
+      OPS_BACKUP_DISPATCH_RESOLUTION_TOKEN: ${{ secrets.OPS_BACKUP_DISPATCH_RESOLUTION_TOKEN }}
       GITHUB_REF_PROTECTED: ${{ github.ref_protected }}
       GITHUB_REPOSITORY_ID_EXACT: ${{ github.repository_id }}
       GITHUB_WORKFLOW_REF_EXACT: ${{ github.workflow_ref }}
@@ -62,8 +62,8 @@ jobs:
           test -n "${DISPATCH_PAYLOAD_JSON}"
           test -n "${AWS_BACKUP_CONTROL_BUCKET}"
           test -n "${AWS_BACKUP_CONTROL_ROLE_ARN}"
-          test -n "${CLOUD_BACKUP_DISPATCH_CLAIM_TOKEN}"
-          test -n "${CLOUD_BACKUP_DISPATCH_RESOLUTION_TOKEN}"
+          test -n "${OPS_BACKUP_DISPATCH_CLAIM_TOKEN}"
+          test -n "${OPS_BACKUP_DISPATCH_RESOLUTION_TOKEN}"
           test -n "${PAYMENT_SIGNAL_HMAC_KEY}"
           test -n "${CLOUD_BACKUP_CONTINUATION_HMAC_KEY}"
 
@@ -173,7 +173,7 @@ jobs:
           status_code=$(curl --silent --show-error \
             --output /tmp/dispatch-status.json \
             --write-out '%{http_code}' \
-            --header "Authorization: Bearer ${CLOUD_BACKUP_DISPATCH_RESOLUTION_TOKEN}" \
+            --header "Authorization: Bearer ${OPS_BACKUP_DISPATCH_RESOLUTION_TOKEN}" \
             --header 'Accept: application/json' \
             "https://cloud.openadapt.ai/api/internal/backup/dispatch-reconciliation/status?resolution_id=${resolution_id}")
           curl_result=$?
@@ -199,7 +199,7 @@ jobs:
             --output /tmp/dispatch-claim-receipt.json \
             --write-out '%{http_code}' \
             --request POST \
-            --header "Authorization: Bearer ${CLOUD_BACKUP_DISPATCH_CLAIM_TOKEN}" \
+            --header "Authorization: Bearer ${OPS_BACKUP_DISPATCH_CLAIM_TOKEN}" \
             --header 'Content-Type: application/json' \
             --header "Idempotency-Key: ${idempotency_key}" \
             --data-binary @/tmp/dispatch-claim.json \
