@@ -12,6 +12,8 @@ required=(
   AWS_BACKUP_BUCKET
   AWS_RESTORE_ROLE_ARN
   BACKUP_STAMP
+  BACKUP_CIPHERTEXT_VERSION_ID
+  BACKUP_MANIFEST_VERSION_ID
   PRODUCTION_PROJECT_REF
   SCRATCH_DB_URL
   SCRATCH_PROJECT_REF
@@ -69,16 +71,25 @@ python scripts/database_backup_contract.py validate-restore-target \
   --scratch-project-ref "$SCRATCH_PROJECT_REF" \
   --scratch-db-url "$SCRATCH_DB_URL"
 
-read -r AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN < <(
-  AWS_PROFILE="${AWS_PROFILE:-openadapt}" aws sts assume-role \
-    --role-arn "$AWS_RESTORE_ROLE_ARN" \
-    --role-session-name "openadapt-db-restore-${BACKUP_STAMP}" \
-    --duration-seconds 3600 \
-    --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' \
-    --output text
-)
-export AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN
-unset AWS_PROFILE
+if [[ "${RESTORE_ROLE_SESSION_READY:-false}" == 'true' ]]; then
+  caller_arn=$(aws sts get-caller-identity --query Arn --output text)
+  role_name=${AWS_RESTORE_ROLE_ARN##*/}
+  if [[ ! "$caller_arn" =~ ^arn:aws:sts::992382684924:assumed-role/${role_name}/[A-Za-z0-9+=,.@_-]+$ ]]; then
+    echo 'error: the ambient session is not the exact configured restore role' >&2
+    exit 2
+  fi
+else
+  read -r AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN < <(
+    AWS_PROFILE="${AWS_PROFILE:-openadapt}" aws sts assume-role \
+      --role-arn "$AWS_RESTORE_ROLE_ARN" \
+      --role-session-name "openadapt-db-restore-${BACKUP_STAMP}" \
+      --duration-seconds 3600 \
+      --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' \
+      --output text
+  )
+  export AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN
+  unset AWS_PROFILE
+fi
 
 account=$(aws sts get-caller-identity --query Account --output text)
 if [[ "$account" != '992382684924' ]]; then
@@ -90,16 +101,35 @@ scripts/check_live_database_backup_target.sh "$AWS_BACKUP_BUCKET"
 cipher="db-backup-${BACKUP_STAMP}.tar.gz.age"
 plain="db-backup-${BACKUP_STAMP}.tar.gz"
 prefix="daily/${BACKUP_STAMP}"
-aws s3 cp \
-  "s3://${AWS_BACKUP_BUCKET}/${prefix}/${cipher}" "$root/$cipher" \
-  --only-show-errors --expected-bucket-owner 992382684924
-aws s3 cp \
-  "s3://${AWS_BACKUP_BUCKET}/${prefix}/artifact-manifest.json" \
-  "$root/artifact-manifest.json" --only-show-errors \
-  --expected-bucket-owner 992382684924
+aws s3api get-object-attributes \
+  --bucket "$AWS_BACKUP_BUCKET" \
+  --key "${prefix}/artifact-manifest.json" \
+  --version-id "$BACKUP_MANIFEST_VERSION_ID" \
+  --object-attributes ObjectSize,StorageClass \
+  --expected-bucket-owner 992382684924 \
+  > "$root/manifest-attributes.json"
+aws s3api get-object-attributes \
+  --bucket "$AWS_BACKUP_BUCKET" --key "${prefix}/${cipher}" \
+  --version-id "$BACKUP_CIPHERTEXT_VERSION_ID" \
+  --object-attributes ObjectSize,StorageClass \
+  --expected-bucket-owner 992382684924 \
+  > "$root/ciphertext-attributes.json"
+python scripts/database_backup_contract.py verify-storage-classes \
+  --manifest-attributes "$root/manifest-attributes.json" \
+  --ciphertext-attributes "$root/ciphertext-attributes.json"
+aws s3api get-object --bucket "$AWS_BACKUP_BUCKET" \
+  --key "${prefix}/${cipher}" \
+  --version-id "$BACKUP_CIPHERTEXT_VERSION_ID" \
+  --expected-bucket-owner 992382684924 "$root/$cipher" > /dev/null
+aws s3api get-object --bucket "$AWS_BACKUP_BUCKET" \
+  --key "${prefix}/artifact-manifest.json" \
+  --version-id "$BACKUP_MANIFEST_VERSION_ID" \
+  --expected-bucket-owner 992382684924 \
+  "$root/artifact-manifest.json" > /dev/null
 
 remote_sha=$(aws s3api head-object \
   --bucket "$AWS_BACKUP_BUCKET" --key "${prefix}/${cipher}" \
+  --version-id "$BACKUP_CIPHERTEXT_VERSION_ID" \
   --expected-bucket-owner 992382684924 \
   --query 'Metadata.sha256' --output text)
 local_sha=$(shasum -a 256 "$root/$cipher" | awk '{print $1}')
@@ -118,19 +148,42 @@ python scripts/database_backup_contract.py extract-artifact \
   --manifest "$root/artifact-manifest.json" \
   --output-dir "$root/recovered"
 
-PGDATABASE="$SCRATCH_DB_URL" psql \
-  --single-transaction --variable ON_ERROR_STOP=1 \
-  --file "$root/recovered/roles.sql" \
-  --file "$root/recovered/schema.sql" \
-  --command 'SET session_replication_role = replica' \
-  --file "$root/recovered/data.sql"
-supabase db dump --db-url "$SCRATCH_DB_URL" -f "$root/redump/schema.sql"
-supabase db dump --db-url "$SCRATCH_DB_URL" -f "$root/redump/data.sql" \
-  --use-copy --data-only \
-  -x 'storage.buckets_vectors' -x 'storage.vector_indexes'
-python scripts/database_backup_contract.py verify-restored-dumps \
-  --source-dir "$root/recovered" --restored-dir "$root/redump" \
-  > "$root/verification.json"
+precheck_result=0
+set +e
+supabase db dump --db-url "$SCRATCH_DB_URL" -f "$root/redump/schema.sql" \
+  || precheck_result=$?
+if [[ "$precheck_result" -eq 0 ]]; then
+  supabase db dump --db-url "$SCRATCH_DB_URL" -f "$root/redump/data.sql" \
+    --use-copy --data-only \
+    -x 'storage.buckets_vectors' -x 'storage.vector_indexes' \
+    || precheck_result=$?
+fi
+if [[ "$precheck_result" -eq 0 ]]; then
+  python scripts/database_backup_contract.py verify-restored-dumps \
+    --source-dir "$root/recovered" --restored-dir "$root/redump" \
+    > "$root/verification.json" || precheck_result=$?
+fi
+set -e
+
+if [[ "$precheck_result" -eq 0 ]]; then
+  echo 'The scratch database already matches the exact backup. Restore actuation is skipped.'
+else
+  rm -f "$root/redump/schema.sql" "$root/redump/data.sql" \
+    "$root/verification.json"
+  PGDATABASE="$SCRATCH_DB_URL" psql \
+    --single-transaction --variable ON_ERROR_STOP=1 \
+    --file "$root/recovered/roles.sql" \
+    --file "$root/recovered/schema.sql" \
+    --command 'SET session_replication_role = replica' \
+    --file "$root/recovered/data.sql"
+  supabase db dump --db-url "$SCRATCH_DB_URL" -f "$root/redump/schema.sql"
+  supabase db dump --db-url "$SCRATCH_DB_URL" -f "$root/redump/data.sql" \
+    --use-copy --data-only \
+    -x 'storage.buckets_vectors' -x 'storage.vector_indexes'
+  python scripts/database_backup_contract.py verify-restored-dumps \
+    --source-dir "$root/recovered" --restored-dir "$root/redump" \
+    > "$root/verification.json"
+fi
 completed_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 
 output=${RESTORE_EVIDENCE_OUTPUT:-restore-evidence-${BACKUP_STAMP}.json}
@@ -141,11 +194,18 @@ python scripts/database_backup_contract.py record-restore \
   --source-project-ref "$PRODUCTION_PROJECT_REF" \
   --scratch-project-ref "$SCRATCH_PROJECT_REF" \
   --started-at "$started_at" --completed-at "$completed_at" \
+  --aws-account-id 992382684924 --aws-region "${AWS_REGION:-us-east-1}" \
+  --bucket-name "$AWS_BACKUP_BUCKET" \
+  --ciphertext-key "${prefix}/${cipher}" \
+  --ciphertext-version-id "$BACKUP_CIPHERTEXT_VERSION_ID" \
+  --manifest-key "${prefix}/artifact-manifest.json" \
+  --manifest-version-id "$BACKUP_MANIFEST_VERSION_ID" \
   --output "$output"
 chmod 600 "$output"
 aws s3 cp "$output" \
   "s3://${AWS_BACKUP_BUCKET}/drills/database-only/${BACKUP_STAMP}/$(basename "$output")" \
-  --only-show-errors --sse AES256 --content-type application/json \
+  --only-show-errors --sse AES256 --storage-class STANDARD \
+  --content-type application/json \
   --checksum-algorithm SHA256 --expected-bucket-owner 992382684924
 echo "Database-only restore evidence: $output"
 echo 'Run the openadapt-cloud database-plus-Storage drill before recording the canonical retention receipt.'

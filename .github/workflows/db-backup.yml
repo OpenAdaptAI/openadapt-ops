@@ -1,17 +1,30 @@
 name: Production DB logical backup
 
-# Daily, off-provider logical recovery point. The database URL is a protected
+# Off-provider logical recovery point. The database URL is a protected
 # production-backup environment secret. Only age ciphertext and a redacted
 # integrity manifest enter the private, public-access-blocked S3 bucket.
-# Maximum RPO: 24 hours. Retention: 90 days. This does not cover Storage
-# objects and does not replace provider PITR. The launch path uses one
+# Retention: 90 days. This does not cover Storage objects or replace provider
+# PITR. The initial paid activation calls this workflow after the authority
+# claims the exact dispatch. A later change will add the 12-hour schedule after
+# its asymmetric lease and prior-lease store are complete. The launch path uses one
 # S3 PutObject with a service-validated full-object SHA-256 and refuses an
 # encrypted archive above the 5 GiB PutObject limit before upload.
 
 on:
-  workflow_dispatch:
-  schedule:
-    - cron: '23 7 * * *'
+  workflow_call:
+    inputs:
+      activation_request_b64:
+        description: Signed first-payment activation request.
+        required: true
+        type: string
+      dispatch_claim_sha256:
+        description: Exact successful dispatch-authority claim digest.
+        required: true
+        type: string
+      recovery_point_stamp:
+        description: Deterministic UTC stamp for the first paid-customer backup.
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -37,7 +50,8 @@ jobs:
     needs: reject-lifecycle-app
     if: >-
       github.actor != 'openadapt-lifecycle[bot]' &&
-      github.triggering_actor != 'openadapt-lifecycle[bot]'
+      github.triggering_actor != 'openadapt-lifecycle[bot]' &&
+      inputs.activation_request_b64 != ''
     # The complete production database is plaintext until the local age step.
     # Route this job only to the workflow-restricted production backup group.
     # GitHub-hosted runners and the default self-hosted group are not permitted.
@@ -58,6 +72,11 @@ jobs:
       SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
       EXPECTED_GITHUB_ENVIRONMENT: production-backup
       GITHUB_REF_PROTECTED: ${{ github.ref_protected }}
+      ACTIVATION_REQUEST_B64: ${{ inputs.activation_request_b64 }}
+      DISPATCH_CLAIM_SHA256: ${{ inputs.dispatch_claim_sha256 }}
+      ACTIVATION_RECOVERY_POINT_STAMP: ${{ inputs.recovery_point_stamp }}
+      PAYMENT_SIGNAL_HMAC_KEY: ${{ secrets.PAYMENT_SIGNAL_HMAC_KEY }}
+      OPS_ACTIVATION_STATE_HMAC_KEY: ${{ secrets.OPS_ACTIVATION_STATE_HMAC_KEY }}
     steps:
       - name: Validate the protected environment configuration
         env:
@@ -69,6 +88,10 @@ jobs:
           [ -n "${BACKUP_BUCKET}" ] || missing+=(AWS_BACKUP_BUCKET)
           [ -n "${SUPABASE_DB_URL}" ] || missing+=(SUPABASE_DB_URL)
           [ -n "${SUPABASE_PROJECT_REF}" ] || missing+=(SUPABASE_PROJECT_REF)
+          [[ "${DISPATCH_CLAIM_SHA256}" =~ ^[0-9a-f]{64}$ ]] || {
+            echo '::error::The exact successful dispatch-authority claim is missing.'
+            exit 1
+          }
           if [ "${#missing[@]}" -ne 0 ]; then
             echo "::error::The production-backup environment is missing: ${missing[*]}"
             exit 1
@@ -106,6 +129,32 @@ jobs:
             --actual-ref "${GITHUB_REF}" \
             --ref-protected "${GITHUB_REF_PROTECTED}"
 
+      - name: Verify the claimed paid activation request
+        run: |
+          set -euo pipefail
+          umask 077
+          [ -n "${PAYMENT_SIGNAL_HMAC_KEY}" ] || {
+            echo '::error::The paid-customer activation signing key is missing.'
+            exit 1
+          }
+          [[ "${ACTIVATION_RECOVERY_POINT_STAMP}" =~ ^[0-9]{8}T[0-9]{6}Z$ ]] || {
+            echo '::error::The activation recovery-point stamp is invalid.'
+            exit 1
+          }
+          printf '%s' "${ACTIVATION_REQUEST_B64}" | base64 --decode \
+            > /tmp/database-backup-activation-request.json
+          python scripts/database_backup_activation.py verify-claimed-request \
+            --request /tmp/database-backup-activation-request.json \
+            --authority-claim-sha256 "${DISPATCH_CLAIM_SHA256}" \
+            --hmac-key-env PAYMENT_SIGNAL_HMAC_KEY \
+            --output /tmp/database-backup-verified-request.json
+          jq -e --arg stamp "${ACTIVATION_RECOVERY_POINT_STAMP}" \
+            '.recovery_point_stamp == $stamp' \
+            /tmp/database-backup-verified-request.json > /dev/null || {
+              echo '::error::The workflow stamp does not match the signed activation request.'
+              exit 1
+            }
+
       - uses: aws-actions/configure-aws-credentials@e6de054238d6b7531b4efff3b6587d9aade6a06c # v6.2.3
         with:
           aws-region: ${{ env.AWS_REGION }}
@@ -113,11 +162,253 @@ jobs:
           allowed-account-ids: '992382684924'
           role-session-name: openadapt-db-backup-${{ github.run_id }}
 
+      - name: Claim or resume the durable signed activation state
+        id: activation
+        run: |
+          set -euo pipefail
+          umask 077
+          [ -n "${OPS_ACTIVATION_STATE_HMAC_KEY}" ] || {
+            echo '::error::The Ops activation-state signing key is missing.'
+            exit 1
+          }
+          activation_id=$(jq -r '.request.activation_id' \
+            /tmp/database-backup-activation-request.json)
+          prefix="activation/${activation_id}"
+          get_optional_activation_object() {
+            local key=$1
+            local destination=$2
+            local error_file=/tmp/database-backup-activation-read-error.txt
+            set +e
+            aws s3api get-object --bucket "${BACKUP_BUCKET}" --key "${key}" \
+              --expected-bucket-owner 992382684924 "${destination}" \
+              > /dev/null 2> "${error_file}"
+            local result=$?
+            set -e
+            if [ "${result}" -eq 0 ]; then
+              rm -f "${error_file}"
+              return 0
+            fi
+            rm -f "${destination}"
+            if grep -Eq '\((NoSuchKey|NotFound|404)\)' "${error_file}"; then
+              rm -f "${error_file}"
+              return 1
+            fi
+            echo "::error::S3 did not prove whether activation state exists: ${key}"
+            sed 's/^/::error::/' "${error_file}"
+            exit 1
+          }
+          state_args=()
+          for stage in ready restore backup pending-backup; do
+            path="/tmp/database-backup-${stage}-signed-state.json"
+            if get_optional_activation_object \
+              "${prefix}/${stage}-state.json" "${path}"; then
+              state_args+=(--signed-state "${path}")
+            fi
+          done
+          if [ "${#state_args[@]}" -eq 0 ]; then
+            python scripts/database_backup_activation.py begin \
+              --request /tmp/database-backup-activation-request.json \
+              --hmac-key-env PAYMENT_SIGNAL_HMAC_KEY \
+              --output /tmp/database-backup-activation-state.json
+            python scripts/database_backup_activation.py sign-state \
+              --state /tmp/database-backup-activation-state.json \
+              --hmac-key-env OPS_ACTIVATION_STATE_HMAC_KEY \
+              --output /tmp/database-backup-pending-signed-state.json
+            pending_checksum=$(openssl dgst -sha256 -binary \
+              /tmp/database-backup-pending-signed-state.json | base64)
+            set +e
+            aws s3api put-object --bucket "${BACKUP_BUCKET}" \
+              --key "${prefix}/pending-backup-state.json" \
+              --body /tmp/database-backup-pending-signed-state.json \
+              --if-none-match '*' --storage-class STANDARD \
+              --server-side-encryption AES256 --checksum-algorithm SHA256 \
+              --checksum-sha256 "${pending_checksum}" \
+              --expected-bucket-owner 992382684924 > /dev/null
+            claim_result=$?
+            set -e
+            if [ "${claim_result}" -ne 0 ]; then
+              aws s3api get-object --bucket "${BACKUP_BUCKET}" \
+                --key "${prefix}/pending-backup-state.json" \
+                --expected-bucket-owner 992382684924 \
+                /tmp/database-backup-retained-pending-state.json > /dev/null
+              state_args+=(--signed-state /tmp/database-backup-retained-pending-state.json)
+            else
+              state_args+=(--signed-state /tmp/database-backup-pending-signed-state.json)
+            fi
+          fi
+          printf '%s' "${ACTIVATION_REQUEST_B64}" | base64 --decode \
+            > /tmp/database-backup-resume-request.json
+          python scripts/database_backup_activation.py resume \
+            --request /tmp/database-backup-resume-request.json \
+            "${state_args[@]}" \
+            --request-hmac-key-env PAYMENT_SIGNAL_HMAC_KEY \
+            --state-hmac-key-env OPS_ACTIVATION_STATE_HMAC_KEY \
+            --output /tmp/database-backup-resumed-state.json
+          stage=$(jq -r '.state.stage' /tmp/database-backup-resumed-state.json)
+          if [ "${stage}" = 'PENDING_BACKUP' ]; then
+            echo 'needs_backup=true' >> "${GITHUB_OUTPUT}"
+          else
+            echo 'needs_backup=false' >> "${GITHUB_OUTPUT}"
+            echo "The signed activation resumes from ${stage}; no second backup will run."
+          fi
+
+      - name: Reconcile an interrupted first-backup upload
+        id: reconcile
+        if: steps.activation.outputs.needs_backup == 'true'
+        run: |
+          set -euo pipefail
+          umask 077
+          stamp="${ACTIVATION_RECOVERY_POINT_STAMP}"
+          prefix="daily/${stamp}"
+          cipher="db-backup-${stamp}.tar.gz.age"
+
+          get_optional_head() {
+            local key=$1
+            local output=$2
+            local error_file=/tmp/database-backup-head-error.txt
+            set +e
+            aws s3api head-object --bucket "${BACKUP_BUCKET}" --key "${key}" \
+              --checksum-mode ENABLED --expected-bucket-owner 992382684924 \
+              > "${output}" 2> "${error_file}"
+            local result=$?
+            set -e
+            if [ "${result}" -eq 0 ]; then
+              rm -f "${error_file}"
+              return 0
+            fi
+            rm -f "${output}"
+            if grep -Eq '\((NoSuchKey|NotFound|404)\)' "${error_file}"; then
+              rm -f "${error_file}"
+              return 1
+            fi
+            echo "::error::S3 did not prove whether the recovery object exists: ${key}"
+            sed 's/^/::error::/' "${error_file}"
+            exit 1
+          }
+
+          if ! get_optional_head "${prefix}/${cipher}" \
+            /tmp/database-backup-recovered-cipher-head.json; then
+            if get_optional_head "${prefix}/artifact-manifest.json" \
+              /tmp/database-backup-orphan-manifest-head.json; then
+              echo '::error::The activation has a manifest without its ciphertext.'
+              exit 1
+            fi
+            echo 'recovered=false' >> "${GITHUB_OUTPUT}"
+            exit 0
+          fi
+
+          manifest_b64=$(jq -er '.Metadata["artifact-manifest-base64"]' \
+            /tmp/database-backup-recovered-cipher-head.json) || {
+              echo '::error::The retained ciphertext has no recovery manifest metadata.'
+              exit 1
+            }
+          printf '%s' "${manifest_b64}" | base64 --decode \
+            > /tmp/database-backup-recovered-manifest.json
+          python scripts/database_backup_contract.py recover-single-put \
+            --manifest /tmp/database-backup-recovered-manifest.json \
+            --ciphertext-head /tmp/database-backup-recovered-cipher-head.json \
+            --output /tmp/database-backup-recovered-upload-contract.json
+
+          jq '{VersionId}' /tmp/database-backup-recovered-cipher-head.json \
+            > /tmp/database-backup-recovered-cipher-response.json
+          if get_optional_head "${prefix}/artifact-manifest.json" \
+            /tmp/database-backup-recovered-manifest-head.json; then
+            jq '{VersionId}' /tmp/database-backup-recovered-manifest-head.json \
+              > /tmp/database-backup-recovered-manifest-response.json
+          else
+            manifest_bytes=$(wc -c \
+              < /tmp/database-backup-recovered-manifest.json | tr -d ' ')
+            manifest_checksum=$(openssl dgst -sha256 -binary \
+              /tmp/database-backup-recovered-manifest.json | base64)
+            aws s3api put-object --bucket "${BACKUP_BUCKET}" \
+              --key "${prefix}/artifact-manifest.json" \
+              --body /tmp/database-backup-recovered-manifest.json \
+              --content-length "${manifest_bytes}" --if-none-match '*' \
+              --storage-class STANDARD --server-side-encryption AES256 \
+              --content-type application/json --checksum-algorithm SHA256 \
+              --checksum-sha256 "${manifest_checksum}" \
+              --expected-bucket-owner 992382684924 \
+              > /tmp/database-backup-recovered-manifest-response.json
+          fi
+
+          cipher_version=$(jq -er '.VersionId' \
+            /tmp/database-backup-recovered-cipher-response.json)
+          manifest_version=$(jq -er '.VersionId' \
+            /tmp/database-backup-recovered-manifest-response.json)
+          aws s3api get-object-attributes --bucket "${BACKUP_BUCKET}" \
+            --key "${prefix}/${cipher}" --version-id "${cipher_version}" \
+            --object-attributes Checksum,ObjectSize,StorageClass \
+            --expected-bucket-owner 992382684924 \
+            > /tmp/database-backup-recovered-cipher-attributes.json
+          aws s3api get-object-attributes --bucket "${BACKUP_BUCKET}" \
+            --key "${prefix}/artifact-manifest.json" \
+            --version-id "${manifest_version}" \
+            --object-attributes Checksum,ObjectSize,StorageClass \
+            --expected-bucket-owner 992382684924 \
+            > /tmp/database-backup-recovered-manifest-attributes.json
+          repository_commit=$(jq -er '.artifact.repository_commit' \
+            /tmp/database-backup-recovered-manifest.json)
+          workflow_run_id=$(jq -er '.artifact.workflow_run_id' \
+            /tmp/database-backup-recovered-manifest.json)
+          python scripts/database_backup_contract.py verify-uploaded-pair \
+            --bucket "${BACKUP_BUCKET}" --recovery-point-stamp "${stamp}" \
+            --repository-commit "${repository_commit}" \
+            --workflow-run-id "${workflow_run_id}" \
+            --manifest /tmp/database-backup-recovered-manifest.json \
+            --upload-contract /tmp/database-backup-recovered-upload-contract.json \
+            --ciphertext-response /tmp/database-backup-recovered-cipher-response.json \
+            --ciphertext-attributes /tmp/database-backup-recovered-cipher-attributes.json \
+            --manifest-response /tmp/database-backup-recovered-manifest-response.json \
+            --manifest-attributes /tmp/database-backup-recovered-manifest-attributes.json \
+            --output /tmp/database-backup-recovered-evidence.json
+
+          activation_id=$(jq -r '.state.activation_id' \
+            /tmp/database-backup-resumed-state.json)
+          python scripts/database_backup_activation.py record-backup \
+            --state /tmp/database-backup-resumed-state.json \
+            --evidence /tmp/database-backup-recovered-evidence.json \
+            --output /tmp/database-backup-recovered-state.json
+          python scripts/database_backup_activation.py sign-state \
+            --state /tmp/database-backup-recovered-state.json \
+            --hmac-key-env OPS_ACTIVATION_STATE_HMAC_KEY \
+            --output /tmp/database-backup-recovered-signed-state.json
+          state_checksum=$(openssl dgst -sha256 -binary \
+            /tmp/database-backup-recovered-signed-state.json | base64)
+          set +e
+          aws s3api put-object --bucket "${BACKUP_BUCKET}" \
+            --key "activation/${activation_id}/backup-state.json" \
+            --body /tmp/database-backup-recovered-signed-state.json \
+            --if-none-match '*' --storage-class STANDARD \
+            --server-side-encryption AES256 --checksum-algorithm SHA256 \
+            --checksum-sha256 "${state_checksum}" \
+            --expected-bucket-owner 992382684924 > /dev/null
+          state_result=$?
+          set -e
+          if [ "${state_result}" -ne 0 ]; then
+            aws s3api get-object --bucket "${BACKUP_BUCKET}" \
+              --key "activation/${activation_id}/backup-state.json" \
+              --expected-bucket-owner 992382684924 \
+              /tmp/database-backup-retained-backup-state.json > /dev/null
+            cmp -s /tmp/database-backup-recovered-signed-state.json \
+              /tmp/database-backup-retained-backup-state.json || {
+                echo '::error::The recovered backup conflicts with retained activation state.'
+                exit 1
+              }
+          fi
+          echo 'recovered=true' >> "${GITHUB_OUTPUT}"
+          echo 'The interrupted first-backup upload was reconciled without a second dump.'
+
       - uses: supabase/setup-cli@46f7f98c7f948ad727d22c1e67fab04c223a0520 # v3.0.0
+        if: >-
+          steps.activation.outputs.needs_backup == 'true' &&
+          steps.reconcile.outputs.recovered != 'true'
         with:
           version: 2.75.0
 
       - name: Install age
+        if: >-
+          steps.activation.outputs.needs_backup == 'true' &&
+          steps.reconcile.outputs.recovered != 'true'
         # The dump, encrypt, and upload step is the recovery point and needs the
         # job budget. Without a step bound, one hung apt call consumes all 30
         # minutes and no backup is taken. `age` is a single small package, so 5
@@ -156,6 +447,9 @@ jobs:
           sudo apt-get install -y -qq age
 
       - name: Validate the exact source, private target, and recipient
+        if: >-
+          steps.activation.outputs.needs_backup == 'true' &&
+          steps.reconcile.outputs.recovered != 'true'
         run: |
           set -euo pipefail
           if [ -z "$SUPABASE_DB_URL" ] || [ -z "$SUPABASE_PROJECT_REF" ]; then
@@ -173,6 +467,10 @@ jobs:
             --recipients ops/backup/age-recipients.txt
 
       - name: Dump, validate, encrypt, and upload
+        id: upload
+        if: >-
+          steps.activation.outputs.needs_backup == 'true' &&
+          steps.reconcile.outputs.recovered != 'true'
         run: |
           set -euo pipefail
           umask 077
@@ -186,11 +484,14 @@ jobs:
             rm -f artifact-manifest.json
             rm -f s3-upload-contract.json /tmp/database-backup-object-attributes.json
             rm -f /tmp/database-backup-put-response.json
+            rm -f /tmp/database-backup-manifest-put-response.json
+            rm -f /tmp/database-backup-manifest-attributes.json
+            rm -f backup-evidence.json
           }
           trap cleanup EXIT
 
-          stamp=$(date -u +%Y%m%dT%H%M%SZ)
-          created_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          stamp=${ACTIVATION_RECOVERY_POINT_STAMP:-$(date -u +%Y%m%dT%H%M%SZ)}
+          created_at="${stamp:0:4}-${stamp:4:2}-${stamp:6:2}T${stamp:9:2}:${stamp:11:2}:${stamp:13:2}Z"
           plain="db-backup-${stamp}.tar.gz"
           cipher="${plain}.age"
           prefix="daily/${stamp}"
@@ -233,30 +534,153 @@ jobs:
             --ciphertext-archive "$cipher" \
             --output s3-upload-contract.json
           cipher_bytes=$(jq -r '.bytes' s3-upload-contract.json)
+          cipher_gib=$(jq -r '.encrypted_archive_gib' s3-upload-contract.json)
           local_sha=$(jq -r '.sha256' s3-upload-contract.json)
           local_checksum=$(jq -r '.checksum_sha256' s3-upload-contract.json)
+          manifest_b64=$(base64 < artifact-manifest.json | tr -d '\n')
+          if [ "${#manifest_b64}" -gt 1700 ]; then
+            echo '::error::The recovery manifest exceeds the safe S3 metadata bound.'
+            exit 1
+          fi
           aws s3api put-object \
             --bucket "$BACKUP_BUCKET" --key "${prefix}/${cipher}" \
             --body "$cipher" --content-length "$cipher_bytes" \
-            --server-side-encryption AES256 --metadata "sha256=${local_sha}" \
+            --if-none-match '*' \
+            --storage-class GLACIER_IR \
+            --server-side-encryption AES256 \
+            --metadata "sha256=${local_sha},artifact-manifest-base64=${manifest_b64}" \
             --checksum-algorithm SHA256 --checksum-sha256 "$local_checksum" \
             --expected-bucket-owner 992382684924 \
             > /tmp/database-backup-put-response.json
-          aws s3 cp artifact-manifest.json \
-            "s3://${BACKUP_BUCKET}/${prefix}/artifact-manifest.json" \
-            --only-show-errors --sse AES256 \
-            --content-type application/json --checksum-algorithm SHA256 \
-            --expected-bucket-owner 992382684924
+          manifest_bytes=$(wc -c < artifact-manifest.json | tr -d ' ')
+          manifest_checksum=$(openssl dgst -sha256 -binary artifact-manifest.json | base64)
+          aws s3api put-object \
+            --bucket "$BACKUP_BUCKET" \
+            --key "${prefix}/artifact-manifest.json" \
+            --body artifact-manifest.json --content-length "$manifest_bytes" \
+            --if-none-match '*' --storage-class STANDARD \
+            --server-side-encryption AES256 --content-type application/json \
+            --checksum-algorithm SHA256 --checksum-sha256 "$manifest_checksum" \
+            --expected-bucket-owner 992382684924 \
+            > /tmp/database-backup-manifest-put-response.json
+
+          cipher_version=$(jq -r '.VersionId // empty' /tmp/database-backup-put-response.json)
+          manifest_version=$(jq -r '.VersionId // empty' /tmp/database-backup-manifest-put-response.json)
+          [ -n "$cipher_version" ] && [ -n "$manifest_version" ] || {
+            echo '::error::S3 did not return both immutable backup version IDs.'
+            exit 1
+          }
 
           aws s3api get-object-attributes \
             --bucket "$BACKUP_BUCKET" --key "${prefix}/${cipher}" \
-            --object-attributes Checksum,ObjectSize \
+            --version-id "$cipher_version" \
+            --object-attributes Checksum,ObjectSize,StorageClass \
             --expected-bucket-owner 992382684924 \
             > /tmp/database-backup-object-attributes.json
-          python scripts/database_backup_contract.py verify-single-put \
+          aws s3api get-object-attributes \
+            --bucket "$BACKUP_BUCKET" \
+            --key "${prefix}/artifact-manifest.json" \
+            --version-id "$manifest_version" \
+            --object-attributes Checksum,ObjectSize,StorageClass \
+            --expected-bucket-owner 992382684924 \
+            > /tmp/database-backup-manifest-attributes.json
+          python scripts/database_backup_contract.py verify-uploaded-pair \
+            --bucket "$BACKUP_BUCKET" --recovery-point-stamp "$stamp" \
+            --repository-commit "$GITHUB_SHA" --workflow-run-id "$GITHUB_RUN_ID" \
+            --manifest artifact-manifest.json \
             --upload-contract s3-upload-contract.json \
-            --attributes /tmp/database-backup-object-attributes.json
+            --ciphertext-response /tmp/database-backup-put-response.json \
+            --ciphertext-attributes /tmp/database-backup-object-attributes.json \
+            --manifest-response /tmp/database-backup-manifest-put-response.json \
+            --manifest-attributes /tmp/database-backup-manifest-attributes.json \
+            --output backup-evidence.json
+          if [ -n "${ACTIVATION_REQUEST_B64}" ]; then
+            activation_id=$(jq -r '.state.activation_id' /tmp/database-backup-resumed-state.json)
+            python scripts/database_backup_activation.py record-backup \
+              --state /tmp/database-backup-resumed-state.json \
+              --evidence backup-evidence.json \
+              --output /tmp/database-backup-after-backup-state.json
+            python scripts/database_backup_activation.py sign-state \
+              --state /tmp/database-backup-after-backup-state.json \
+              --hmac-key-env OPS_ACTIVATION_STATE_HMAC_KEY \
+              --output /tmp/database-backup-after-backup-signed-state.json
+            state_checksum=$(openssl dgst -sha256 -binary \
+              /tmp/database-backup-after-backup-signed-state.json | base64)
+            set +e
+            aws s3api put-object --bucket "${BACKUP_BUCKET}" \
+              --key "activation/${activation_id}/backup-state.json" \
+              --body /tmp/database-backup-after-backup-signed-state.json \
+              --if-none-match '*' --storage-class STANDARD \
+              --server-side-encryption AES256 --checksum-algorithm SHA256 \
+              --checksum-sha256 "${state_checksum}" \
+              --expected-bucket-owner 992382684924 > /dev/null
+            state_result=$?
+            set -e
+            if [ "${state_result}" -ne 0 ]; then
+              aws s3api get-object --bucket "${BACKUP_BUCKET}" \
+                --key "activation/${activation_id}/backup-state.json" \
+                --expected-bucket-owner 992382684924 \
+                /tmp/database-backup-retained-backup-state.json > /dev/null
+              cmp -s /tmp/database-backup-after-backup-signed-state.json \
+                /tmp/database-backup-retained-backup-state.json || {
+                  echo '::error::The retained first-backup state conflicts.'
+                  exit 1
+                }
+            fi
+          fi
+          # shellcheck disable=SC2016
+          {
+            echo '### Production database backup'
+            echo
+            echo "- Encrypted archive: ${cipher_bytes} bytes (${cipher_gib} GiB)"
+            echo '- Storage class: `GLACIER_IR`'
+            echo '- Retention: 90 days'
+          } >> "$GITHUB_STEP_SUMMARY"
           echo "Encrypted database backup stored at s3://${BACKUP_BUCKET}/${prefix}/"
+
+      - name: Remove transient backup material
+        if: always()
+        run: |
+          set -euo pipefail
+          stamp="${ACTIVATION_RECOVERY_POINT_STAMP}"
+          find dump -type f -delete 2>/dev/null || true
+          find dump -depth -type d -empty -delete 2>/dev/null || true
+          rm -f "db-backup-${stamp}.tar.gz" "db-backup-${stamp}.tar.gz.age"
+          rm -f artifact-manifest.json backup-evidence.json s3-upload-contract.json
+          rm -f /tmp/database-backup-environment.json
+          rm -f /tmp/database-backup-environment-policies.json
+          rm -f /tmp/database-backup-activation-request.json
+          rm -f /tmp/database-backup-verified-request.json
+          rm -f /tmp/database-backup-activation-state.json
+          rm -f /tmp/database-backup-pending-signed-state.json
+          rm -f /tmp/database-backup-retained-pending-state.json
+          rm -f /tmp/database-backup-resume-request.json
+          rm -f /tmp/database-backup-resumed-state.json
+          rm -f /tmp/database-backup-activation-read-error.txt
+          rm -f /tmp/database-backup-head-error.txt
+          rm -f /tmp/database-backup-ready-signed-state.json
+          rm -f /tmp/database-backup-restore-signed-state.json
+          rm -f /tmp/database-backup-backup-signed-state.json
+          rm -f /tmp/database-backup-pending-backup-signed-state.json
+          rm -f /tmp/database-backup-recovered-cipher-head.json
+          rm -f /tmp/database-backup-orphan-manifest-head.json
+          rm -f /tmp/database-backup-recovered-manifest.json
+          rm -f /tmp/database-backup-recovered-upload-contract.json
+          rm -f /tmp/database-backup-recovered-cipher-response.json
+          rm -f /tmp/database-backup-recovered-manifest-head.json
+          rm -f /tmp/database-backup-recovered-manifest-response.json
+          rm -f /tmp/database-backup-recovered-cipher-attributes.json
+          rm -f /tmp/database-backup-recovered-manifest-attributes.json
+          rm -f /tmp/database-backup-recovered-evidence.json
+          rm -f /tmp/database-backup-recovered-state.json
+          rm -f /tmp/database-backup-recovered-signed-state.json
+          rm -f /tmp/database-backup-retained-backup-state.json
+          rm -f /tmp/database-backup-put-response.json
+          rm -f /tmp/database-backup-manifest-put-response.json
+          rm -f /tmp/database-backup-object-attributes.json
+          rm -f /tmp/database-backup-manifest-attributes.json
+          rm -f /tmp/database-backup-after-backup-state.json
+          rm -f /tmp/database-backup-after-backup-signed-state.json
 
   record-alert:
     name: Keep one durable backup alert
@@ -264,7 +688,8 @@ jobs:
     if: >-
       always() &&
       github.actor != 'openadapt-lifecycle[bot]' &&
-      github.triggering_actor != 'openadapt-lifecycle[bot]'
+      github.triggering_actor != 'openadapt-lifecycle[bot]' &&
+      needs.dump.result != 'skipped'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -294,7 +719,7 @@ jobs:
           fi
 
           printf '%s\n' \
-            'The scheduled production database backup did not complete.' \
+            'The initial paid-customer database backup did not complete.' \
             '' \
             "Run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" \
             '' \

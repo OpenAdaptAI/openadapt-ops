@@ -1,0 +1,24 @@
+{
+  "request": {
+    "activation_id": "act_11111111111111111111111111111111",
+    "amount_total_minor": 50000,
+    "audience": "OpenAdaptAI/openadapt-ops:database-backup-activation",
+    "currency": "usd",
+    "expires_at": "2026-08-26T12:15:00Z",
+    "first_verified_payment": true,
+    "issued_at": "2026-08-26T12:00:00Z",
+    "issuer": "openadapt-cloud",
+    "offer_contract": "openadapt-cloud-managed-browser-v1",
+    "organization_id_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+    "payment_event_id_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+    "payment_status": "paid",
+    "recovery_point_stamp": "20260826T120100Z",
+    "verified_payment_at": "2026-08-26T11:59:00Z"
+  },
+  "schema": "openadapt.database-backup-activation-request/v1",
+  "signature": {
+    "algorithm": "HMAC-SHA256",
+    "key_id": "cloud-payment-signal-hmac-2026-01",
+    "value": "87410c874340021bf908d48b7a02a511f1ca9ad57f1587e2eecdcb852f4dec3c"
+  }
+}

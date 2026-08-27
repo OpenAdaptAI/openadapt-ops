@@ -22,8 +22,10 @@ from urllib.parse import unquote, urlsplit
 CONTRACT_SCHEMA = "openadapt.database-backup-contract/v2"
 ARTIFACT_SCHEMA = "openadapt.database-backup-artifact/v2"
 RESTORE_EVIDENCE_SCHEMA = "openadapt.database-restore-evidence/v2"
-S3_UPLOAD_SCHEMA = "openadapt.database-backup-s3-upload/v1"
+S3_UPLOAD_SCHEMA = "openadapt.database-backup-s3-upload/v2"
 S3_SINGLE_PUT_MAX_BYTES = 5 * 1024 * 1024 * 1024
+CIPHERTEXT_STORAGE_CLASS = "GLACIER_IR"
+MANIFEST_STORAGE_CLASS = "STANDARD"
 PROJECT_REF = re.compile(r"^[a-z0-9]{8,64}$")
 AGE_RECIPIENT = re.compile(r"^age1[0-9a-z]+$")
 REQUIRED_DUMPS = ("roles.sql", "schema.sql", "data.sql")
@@ -39,6 +41,11 @@ RESTRICT_MARKER = re.compile(
 )
 COPY_FROM_STDIN = re.compile(r"^COPY\s.+\sFROM\sstdin;\r?\n?$", re.IGNORECASE)
 SHA256 = re.compile(r"^[0-9a-f]{64}$")
+VERSION_ID = re.compile(r"^[^\s/]{1,1024}$")
+RECOVERY_POINT_STAMP = re.compile(r"^\d{8}T\d{6}Z$")
+BACKUP_BUCKET = "openadapt-production-db-backups-992382684924"
+AWS_ACCOUNT_ID = "992382684924"
+AWS_REGION = "us-east-1"
 
 
 class ContractError(ValueError):
@@ -59,6 +66,11 @@ def sha256_text(value: str) -> str:
 
 def stable_json(value: object) -> str:
     return json.dumps(value, sort_keys=True, separators=(",", ":"))
+
+
+def gibibytes(value: int) -> str:
+    """Return a stable, human-readable GiB measurement while bytes stay authoritative."""
+    return f"{value / (1024**3):.9f}"
 
 
 def project_ref(value: str, name: str) -> str:
@@ -101,7 +113,9 @@ def recipients(path: Path) -> list[str]:
         if line.strip() and not line.lstrip().startswith("#")
     ]
     if not values or any(not AGE_RECIPIENT.fullmatch(value) for value in values):
-        raise ContractError("the recipient file must contain only age public recipients")
+        raise ContractError(
+            "the recipient file must contain only age public recipients"
+        )
     if len(values) != len(set(values)):
         raise ContractError("the recipient file contains a duplicate recipient")
     return sorted(values)
@@ -122,7 +136,9 @@ def dump_inventory(root: Path) -> list[dict[str, object]]:
     for name in REQUIRED_DUMPS:
         sql = (root / name).read_text(encoding="utf-8", errors="replace")
         if UNSAFE_PSQL_COMMAND.search(sql) or COPY_PROGRAM.search(sql):
-            raise ContractError(f"database dump contains an unsafe local command: {name}")
+            raise ContractError(
+                f"database dump contains an unsafe local command: {name}"
+            )
     if not re.search(r"^CREATE\s", schema, re.MULTILINE | re.IGNORECASE):
         raise ContractError("schema.sql contains no CREATE statement")
     if not re.search(r"^COPY\s", data, re.MULTILINE | re.IGNORECASE):
@@ -159,17 +175,18 @@ def comparison_sha256(path: Path) -> str:
                 in_copy = False
 
     if in_copy:
-        raise ContractError(f"the restored dump has an unterminated COPY block: {path.name}")
-    if markers:
-        if (
-            len(markers) != 2
-            or markers[0][0] != "restrict"
-            or markers[1][0] != "unrestrict"
-            or markers[0][1] != markers[1][1]
-        ):
-            raise ContractError(
-                f"the restored dump has an invalid pg_dump restriction guard: {path.name}"
-            )
+        raise ContractError(
+            f"the restored dump has an unterminated COPY block: {path.name}"
+        )
+    if markers and (
+        len(markers) != 2
+        or markers[0][0] != "restrict"
+        or markers[1][0] != "unrestrict"
+        or markers[0][1] != markers[1][1]
+    ):
+        raise ContractError(
+            f"the restored dump has an invalid pg_dump restriction guard: {path.name}"
+        )
     return digest.hexdigest()
 
 
@@ -245,8 +262,14 @@ def create_contract(args: argparse.Namespace) -> None:
         "contract_sha256": sha256_text(stable_json(contract)),
     }
     output = Path(args.output)
-    output.write_text(json.dumps(envelope, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    print(json.dumps({"contract": str(output), "contract_sha256": envelope["contract_sha256"]}))
+    output.write_text(
+        json.dumps(envelope, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    print(
+        json.dumps(
+            {"contract": str(output), "contract_sha256": envelope["contract_sha256"]}
+        )
+    )
 
 
 def create_manifest(args: argparse.Namespace) -> None:
@@ -276,8 +299,14 @@ def create_manifest(args: argparse.Namespace) -> None:
         "artifact_sha256": sha256_text(stable_json(artifact)),
     }
     output = Path(args.output)
-    output.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    print(json.dumps({"manifest": str(output), "artifact_sha256": manifest["artifact_sha256"]}))
+    output.write_text(
+        json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    print(
+        json.dumps(
+            {"manifest": str(output), "artifact_sha256": manifest["artifact_sha256"]}
+        )
+    )
 
 
 def verify_artifact(args: argparse.Namespace) -> None:
@@ -288,7 +317,9 @@ def verify_artifact(args: argparse.Namespace) -> None:
     expected = artifact.get("ciphertext_archive")
     if not isinstance(expected, dict):
         raise ContractError("the encrypted archive contract is missing")
-    if expected.get("bytes") != ciphertext.stat().st_size or expected.get("sha256") != sha256_file(ciphertext):
+    if expected.get("bytes") != ciphertext.stat().st_size or expected.get(
+        "sha256"
+    ) != sha256_file(ciphertext):
         raise ContractError("the encrypted archive does not match the manifest")
     print(json.dumps({"valid": True, "artifact_sha256": manifest["artifact_sha256"]}))
 
@@ -312,25 +343,90 @@ def single_put_contract(
             "the encrypted archive exceeds the 5 GiB single-PutObject launch limit"
         )
 
+    contract = single_put_contract_from_manifest(
+        manifest_path, maximum_bytes=maximum_bytes
+    )
+    digest = sha256_file(ciphertext)
+    if contract["bytes"] != size or contract["sha256"] != digest:
+        raise ContractError("the encrypted archive does not match the manifest")
+    return contract
+
+
+def single_put_contract_from_manifest(
+    manifest_path: Path,
+    *,
+    maximum_bytes: int = S3_SINGLE_PUT_MAX_BYTES,
+) -> dict[str, object]:
+    """Rebuild the exact upload contract from a retained redacted manifest."""
+    if maximum_bytes <= 0:
+        raise ContractError("the S3 single-PutObject limit must be positive")
     manifest = read_manifest(manifest_path)
     artifact = manifest["artifact"]
     assert isinstance(artifact, dict)
     expected = artifact.get("ciphertext_archive")
     if not isinstance(expected, dict):
         raise ContractError("the encrypted archive contract is missing")
-    digest = sha256_file(ciphertext)
-    if expected.get("bytes") != size or expected.get("sha256") != digest:
-        raise ContractError("the encrypted archive does not match the manifest")
+    size = expected.get("bytes")
+    digest = expected.get("sha256")
+    if (
+        not isinstance(size, int)
+        or isinstance(size, bool)
+        or size <= 0
+        or size > maximum_bytes
+    ):
+        raise ContractError("the encrypted archive size in the manifest is invalid")
+    if not isinstance(digest, str) or SHA256.fullmatch(digest) is None:
+        raise ContractError("the encrypted archive digest in the manifest is invalid")
 
     return {
         "schema": S3_UPLOAD_SCHEMA,
         "bytes": size,
+        "encrypted_archive_gib": gibibytes(size),
+        "storage_class": CIPHERTEXT_STORAGE_CLASS,
         "sha256": digest,
         "checksum_algorithm": "SHA256",
         "checksum_type": "FULL_OBJECT",
         "checksum_sha256": base64.b64encode(bytes.fromhex(digest)).decode(),
         "maximum_bytes": maximum_bytes,
     }
+
+
+def recover_single_put(args: argparse.Namespace) -> None:
+    """Verify a completed ciphertext PutObject and rebuild its local contract."""
+    manifest_path = Path(args.manifest)
+    contract = single_put_contract_from_manifest(manifest_path)
+    head = json.loads(Path(args.ciphertext_head).read_text(encoding="utf-8"))
+    if not isinstance(head, dict):
+        raise ContractError("the retained ciphertext head response is invalid")
+    require_version_id(head.get("VersionId"), "ciphertext")
+    if head.get("ContentLength") != contract["bytes"]:
+        raise ContractError("the retained ciphertext size does not match")
+    if head.get("StorageClass") != CIPHERTEXT_STORAGE_CLASS:
+        raise ContractError("the retained ciphertext is not in GLACIER_IR")
+    if head.get("ServerSideEncryption") != "AES256":
+        raise ContractError("the retained ciphertext is not encrypted with SSE-S3")
+    if head.get("ChecksumSHA256") != contract["checksum_sha256"]:
+        raise ContractError("the retained ciphertext checksum does not match")
+    metadata = head.get("Metadata")
+    if not isinstance(metadata, dict) or metadata.get("sha256") != contract["sha256"]:
+        raise ContractError("the retained ciphertext digest metadata does not match")
+    manifest_b64 = base64.b64encode(manifest_path.read_bytes()).decode()
+    if metadata.get("artifact-manifest-base64") != manifest_b64:
+        raise ContractError("the retained ciphertext manifest metadata does not match")
+    output = Path(args.output)
+    output.write_text(
+        json.dumps(contract, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    print(
+        json.dumps(
+            {
+                "recovered": True,
+                "ciphertext_version_id": head["VersionId"],
+                "upload_contract": str(output),
+            },
+            sort_keys=True,
+        )
+    )
 
 
 def read_single_put_contract(path: Path) -> dict[str, object]:
@@ -359,13 +455,15 @@ def read_single_put_contract(path: Path) -> dict[str, object]:
         raise ContractError("the S3 upload SHA-256 is invalid")
     if encoded != base64.b64encode(bytes.fromhex(digest)).decode():
         raise ContractError("the S3 upload checksum encoding is invalid")
+    if value.get("storage_class") != CIPHERTEXT_STORAGE_CLASS:
+        raise ContractError("the S3 upload storage class is invalid")
+    if value.get("encrypted_archive_gib") != gibibytes(size):
+        raise ContractError("the encrypted archive GiB measurement is invalid")
     return value
 
 
 def prepare_single_put(args: argparse.Namespace) -> None:
-    value = single_put_contract(
-        Path(args.ciphertext_archive), Path(args.manifest)
-    )
+    value = single_put_contract(Path(args.ciphertext_archive), Path(args.manifest))
     output = Path(args.output)
     output.write_text(
         json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8"
@@ -375,6 +473,8 @@ def prepare_single_put(args: argparse.Namespace) -> None:
             {
                 "upload_contract": str(output),
                 "bytes": value["bytes"],
+                "encrypted_archive_gib": value["encrypted_archive_gib"],
+                "storage_class": value["storage_class"],
                 "checksum_type": value["checksum_type"],
             },
             sort_keys=True,
@@ -389,6 +489,8 @@ def verify_single_put(args: argparse.Namespace) -> None:
         raise ContractError("the S3 object attributes are invalid")
     if attributes.get("ObjectSize") != contract["bytes"]:
         raise ContractError("the S3 object size does not match the upload contract")
+    if attributes.get("StorageClass") != CIPHERTEXT_STORAGE_CLASS:
+        raise ContractError("the encrypted archive is not in GLACIER_IR")
     checksum = attributes.get("Checksum")
     if not isinstance(checksum, dict):
         raise ContractError("the S3 object checksum is missing")
@@ -399,8 +501,160 @@ def verify_single_put(args: argparse.Namespace) -> None:
             {
                 "valid": True,
                 "bytes": contract["bytes"],
+                "encrypted_archive_gib": contract["encrypted_archive_gib"],
+                "storage_class": contract["storage_class"],
                 "checksum_type": "FULL_OBJECT",
                 "sha256": contract["sha256"],
+            },
+            sort_keys=True,
+        )
+    )
+
+
+def require_version_id(value: object, name: str) -> str:
+    if not isinstance(value, str) or VERSION_ID.fullmatch(value) is None:
+        raise ContractError(f"the {name} S3 version ID is invalid")
+    return value
+
+
+def uploaded_pair_evidence(args: argparse.Namespace) -> dict[str, object]:
+    """Verify and bind the exact immutable S3 versions of one backup pair."""
+    if args.bucket != BACKUP_BUCKET:
+        raise ContractError("the S3 backup bucket is invalid")
+    if RECOVERY_POINT_STAMP.fullmatch(args.recovery_point_stamp) is None:
+        raise ContractError("the recovery point stamp is invalid")
+    if re.fullmatch(r"[0-9a-f]{40}", args.repository_commit) is None:
+        raise ContractError("the backup repository commit is invalid")
+    if re.fullmatch(r"[1-9][0-9]*", args.workflow_run_id) is None:
+        raise ContractError("the backup workflow run ID is invalid")
+
+    contract = read_single_put_contract(Path(args.upload_contract))
+    manifest_path = Path(args.manifest)
+    manifest = read_manifest(manifest_path)
+    artifact = manifest["artifact"]
+    assert isinstance(artifact, dict)
+    if artifact.get("repository_commit") != args.repository_commit:
+        raise ContractError("the artifact commit does not match the current backup")
+    if artifact.get("workflow_run_id") != args.workflow_run_id:
+        raise ContractError("the artifact run ID does not match the current backup")
+
+    responses: dict[str, dict[str, object]] = {}
+    attributes: dict[str, dict[str, object]] = {}
+    for name, response_path, attributes_path in (
+        ("ciphertext", args.ciphertext_response, args.ciphertext_attributes),
+        ("manifest", args.manifest_response, args.manifest_attributes),
+    ):
+        response = json.loads(Path(response_path).read_text(encoding="utf-8"))
+        remote = json.loads(Path(attributes_path).read_text(encoding="utf-8"))
+        if not isinstance(response, dict) or not isinstance(remote, dict):
+            raise ContractError(f"the {name} S3 verification response is invalid")
+        version_id = require_version_id(response.get("VersionId"), name)
+        if remote.get("VersionId") != version_id:
+            raise ContractError(f"the {name} S3 version changed during verification")
+        responses[name] = response
+        attributes[name] = remote
+
+    cipher = attributes["ciphertext"]
+    if cipher.get("ObjectSize") != contract["bytes"]:
+        raise ContractError("the S3 object size does not match the upload contract")
+    if cipher.get("StorageClass") != CIPHERTEXT_STORAGE_CLASS:
+        raise ContractError("the encrypted archive is not in GLACIER_IR")
+    cipher_checksums = cipher.get("Checksum")
+    if not isinstance(cipher_checksums, dict) or cipher_checksums.get(
+        "ChecksumSHA256"
+    ) != contract.get("checksum_sha256"):
+        raise ContractError("the S3 full-object checksum does not match")
+
+    manifest_bytes = manifest_path.stat().st_size
+    manifest_sha = sha256_file(manifest_path)
+    manifest_checksum = base64.b64encode(bytes.fromhex(manifest_sha)).decode()
+    manifest_remote = attributes["manifest"]
+    manifest_checksums = manifest_remote.get("Checksum")
+    if manifest_remote.get("ObjectSize") != manifest_bytes:
+        raise ContractError("the S3 manifest size does not match the local manifest")
+    if manifest_remote.get("StorageClass") != MANIFEST_STORAGE_CLASS:
+        raise ContractError("the artifact manifest is not in STANDARD")
+    if (
+        not isinstance(manifest_checksums, dict)
+        or manifest_checksums.get("ChecksumSHA256") != manifest_checksum
+    ):
+        raise ContractError("the S3 manifest checksum does not match")
+
+    stamp = args.recovery_point_stamp
+    cipher_key = f"daily/{stamp}/db-backup-{stamp}.tar.gz.age"
+    manifest_key = f"daily/{stamp}/artifact-manifest.json"
+    return {
+        "artifact_sha256": manifest["artifact_sha256"],
+        "aws_account_id": AWS_ACCOUNT_ID,
+        "aws_region": AWS_REGION,
+        "backup_contract_sha256": artifact["backup_contract_sha256"],
+        "bucket_name": args.bucket,
+        "ciphertext_bytes": contract["bytes"],
+        "ciphertext_checksum_sha256": contract["checksum_sha256"],
+        "ciphertext_gib": contract["encrypted_archive_gib"],
+        "ciphertext_key": cipher_key,
+        "ciphertext_sha256": contract["sha256"],
+        "ciphertext_storage_class": CIPHERTEXT_STORAGE_CLASS,
+        "ciphertext_version_id": responses["ciphertext"]["VersionId"],
+        "manifest_checksum_sha256": manifest_checksum,
+        "manifest_key": manifest_key,
+        "manifest_sha256": manifest_sha,
+        "manifest_storage_class": MANIFEST_STORAGE_CLASS,
+        "manifest_version_id": responses["manifest"]["VersionId"],
+        "recovery_point_stamp": stamp,
+        "repository_commit": args.repository_commit,
+        "workflow_run_id": args.workflow_run_id,
+    }
+
+
+def verify_uploaded_pair(args: argparse.Namespace) -> None:
+    evidence = uploaded_pair_evidence(args)
+    output = Path(args.output)
+    output.write_text(
+        json.dumps(evidence, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    print(
+        json.dumps(
+            {
+                "valid": True,
+                "evidence": str(output),
+                "ciphertext_version_id": evidence["ciphertext_version_id"],
+                "manifest_version_id": evidence["manifest_version_id"],
+            },
+            sort_keys=True,
+        )
+    )
+
+
+def verify_storage_classes(args: argparse.Namespace) -> None:
+    values = (
+        (
+            json.loads(Path(args.manifest_attributes).read_text(encoding="utf-8")),
+            "artifact manifest",
+            MANIFEST_STORAGE_CLASS,
+        ),
+        (
+            json.loads(Path(args.ciphertext_attributes).read_text(encoding="utf-8")),
+            "encrypted archive",
+            CIPHERTEXT_STORAGE_CLASS,
+        ),
+    )
+    for attributes, name, expected_class in values:
+        if not isinstance(attributes, dict):
+            raise ContractError(f"the {name} S3 attributes are invalid")
+        size = attributes.get("ObjectSize")
+        if not isinstance(size, int) or isinstance(size, bool) or size <= 0:
+            raise ContractError(f"the {name} S3 object size is invalid")
+        if attributes.get("StorageClass") != expected_class:
+            raise ContractError(
+                f"the {name} is not in the required {expected_class} storage class"
+            )
+    print(
+        json.dumps(
+            {
+                "valid": True,
+                "manifest_storage_class": MANIFEST_STORAGE_CLASS,
+                "ciphertext_storage_class": CIPHERTEXT_STORAGE_CLASS,
             },
             sort_keys=True,
         )
@@ -424,10 +678,9 @@ def extract_artifact(args: argparse.Namespace) -> None:
     expected_archive = artifact.get("plaintext_archive")
     if not isinstance(expected_archive, dict):
         raise ContractError("the plaintext archive contract is missing")
-    if (
-        expected_archive.get("bytes") != archive.stat().st_size
-        or expected_archive.get("sha256") != sha256_file(archive)
-    ):
+    if expected_archive.get("bytes") != archive.stat().st_size or expected_archive.get(
+        "sha256"
+    ) != sha256_file(archive):
         raise ContractError("the decrypted archive does not match the manifest")
     output = Path(args.output_dir)
     if output.exists() and any(output.iterdir()):
@@ -515,7 +768,9 @@ def record_restore(args: argparse.Namespace) -> None:
     if artifact.get("backup_contract_sha256") != contract.get("contract_sha256"):
         raise ContractError("the artifact and backup contract do not match")
     if payload.get("source_project_ref_sha256") != sha256_text(source_ref):
-        raise ContractError("the backup does not belong to the declared production project")
+        raise ContractError(
+            "the backup does not belong to the declared production project"
+        )
 
     verification = json.loads(Path(args.verification).read_text(encoding="utf-8"))
     if verification.get("valid") is not True:
@@ -530,7 +785,9 @@ def record_restore(args: argparse.Namespace) -> None:
     }
     for name in ("schema", "data"):
         if verification.get(f"{name}_sha256") != expected_digests.get(f"{name}.sql"):
-            raise ContractError("the restore verification does not match the backup contract")
+            raise ContractError(
+                "the restore verification does not match the backup contract"
+            )
         comparison_digest = verification.get(f"{name}_comparison_sha256")
         if (
             not isinstance(comparison_digest, str)
@@ -542,10 +799,32 @@ def record_restore(args: argparse.Namespace) -> None:
     if completed < started:
         raise ContractError("the restore completion time precedes the start time")
     recovery_point = parse_time(str(payload.get("created_at")), "backup recovery point")
+    stamp = recovery_point.strftime("%Y%m%dT%H%M%SZ")
+    expected_ciphertext_key = f"daily/{stamp}/db-backup-{stamp}.tar.gz.age"
+    expected_manifest_key = f"daily/{stamp}/artifact-manifest.json"
+    if args.aws_account_id != AWS_ACCOUNT_ID:
+        raise ContractError("the restore evidence AWS account is invalid")
+    if args.aws_region != AWS_REGION:
+        raise ContractError("the restore evidence AWS region is invalid")
+    if args.bucket_name != BACKUP_BUCKET:
+        raise ContractError("the restore evidence bucket is invalid")
+    if args.ciphertext_key != expected_ciphertext_key:
+        raise ContractError("the restore evidence ciphertext key is invalid")
+    if args.manifest_key != expected_manifest_key:
+        raise ContractError("the restore evidence manifest key is invalid")
+    ciphertext_version_id = require_version_id(args.ciphertext_version_id, "ciphertext")
+    manifest_version_id = require_version_id(args.manifest_version_id, "manifest")
     receipt = {
         "schema": RESTORE_EVIDENCE_SCHEMA,
         "backup_contract_sha256": contract["contract_sha256"],
         "artifact_sha256": manifest["artifact_sha256"],
+        "aws_account_id": args.aws_account_id,
+        "aws_region": args.aws_region,
+        "bucket_name": args.bucket_name,
+        "ciphertext_key": args.ciphertext_key,
+        "ciphertext_version_id": ciphertext_version_id,
+        "manifest_key": args.manifest_key,
+        "manifest_version_id": manifest_version_id,
         "source_project_ref_sha256": sha256_text(source_ref),
         "scratch_project_ref_sha256": sha256_text(scratch_ref),
         "recovery_point_at": recovery_point.isoformat().replace("+00:00", "Z"),
@@ -611,10 +890,35 @@ def parser() -> argparse.ArgumentParser:
     upload.add_argument("--output", required=True)
     upload.set_defaults(run=prepare_single_put)
 
+    recover_upload = commands.add_parser("recover-single-put")
+    recover_upload.add_argument("--manifest", required=True)
+    recover_upload.add_argument("--ciphertext-head", required=True)
+    recover_upload.add_argument("--output", required=True)
+    recover_upload.set_defaults(run=recover_single_put)
+
     uploaded = commands.add_parser("verify-single-put")
     uploaded.add_argument("--upload-contract", required=True)
     uploaded.add_argument("--attributes", required=True)
     uploaded.set_defaults(run=verify_single_put)
+
+    pair = commands.add_parser("verify-uploaded-pair")
+    pair.add_argument("--bucket", required=True)
+    pair.add_argument("--recovery-point-stamp", required=True)
+    pair.add_argument("--repository-commit", required=True)
+    pair.add_argument("--workflow-run-id", required=True)
+    pair.add_argument("--manifest", required=True)
+    pair.add_argument("--upload-contract", required=True)
+    pair.add_argument("--ciphertext-response", required=True)
+    pair.add_argument("--ciphertext-attributes", required=True)
+    pair.add_argument("--manifest-response", required=True)
+    pair.add_argument("--manifest-attributes", required=True)
+    pair.add_argument("--output", required=True)
+    pair.set_defaults(run=verify_uploaded_pair)
+
+    stored = commands.add_parser("verify-storage-classes")
+    stored.add_argument("--manifest-attributes", required=True)
+    stored.add_argument("--ciphertext-attributes", required=True)
+    stored.set_defaults(run=verify_storage_classes)
 
     target = commands.add_parser("validate-restore-target")
     target.add_argument("--source-project-ref", required=True)
@@ -641,6 +945,13 @@ def parser() -> argparse.ArgumentParser:
     receipt.add_argument("--scratch-project-ref", required=True)
     receipt.add_argument("--started-at", required=True)
     receipt.add_argument("--completed-at", required=True)
+    receipt.add_argument("--aws-account-id", required=True)
+    receipt.add_argument("--aws-region", required=True)
+    receipt.add_argument("--bucket-name", required=True)
+    receipt.add_argument("--ciphertext-key", required=True)
+    receipt.add_argument("--ciphertext-version-id", required=True)
+    receipt.add_argument("--manifest-key", required=True)
+    receipt.add_argument("--manifest-version-id", required=True)
     receipt.add_argument("--output", required=True)
     receipt.set_defaults(run=record_restore)
     return root
