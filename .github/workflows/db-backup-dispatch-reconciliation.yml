@@ -32,14 +32,14 @@ jobs:
       github.triggering_actor != 'openadapt-lifecycle[bot]'
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    environment: production-backup-control
+    environment: production-backup-dispatch-reconciliation
     permissions:
       contents: read
       id-token: write
     env:
       AWS_ACCOUNT_ID: '992382684924'
       AWS_BACKUP_CONTROL_BUCKET: ${{ vars.AWS_BACKUP_CONTROL_BUCKET }}
-      AWS_BACKUP_CONTROL_ROLE_ARN: ${{ vars.AWS_BACKUP_CONTROL_ROLE_ARN }}
+      AWS_BACKUP_DISPATCH_RECONCILIATION_ROLE_ARN: ${{ vars.AWS_BACKUP_DISPATCH_RECONCILIATION_ROLE_ARN }}
       AWS_REGION: us-east-1
       BACKUP_CONTROL_APP_ID: ${{ vars.OPENADAPT_BACKUP_CONTROL_APP_ID }}
       BACKUP_CONTROL_APP_SLUG: ${{ vars.OPENADAPT_BACKUP_CONTROL_APP_SLUG }}
@@ -57,7 +57,7 @@ jobs:
           test "${GITHUB_REF}" = 'refs/heads/main'
           test "${GITHUB_REF_PROTECTED}" = 'true'
           test -n "${AWS_BACKUP_CONTROL_BUCKET}"
-          test -n "${AWS_BACKUP_CONTROL_ROLE_ARN}"
+          test -n "${AWS_BACKUP_DISPATCH_RECONCILIATION_ROLE_ARN}"
           test -n "${BACKUP_CONTROL_APP_ID}"
           test -n "${BACKUP_CONTROL_APP_SLUG}"
           test -n "${BACKUP_CONTROL_INSTALLATION_ID}"
@@ -84,7 +84,7 @@ jobs:
       - uses: aws-actions/configure-aws-credentials@e6de054238d6b7531b4efff3b6587d9aade6a06c # v6.2.3
         with:
           aws-region: ${{ env.AWS_REGION }}
-          role-to-assume: ${{ env.AWS_BACKUP_CONTROL_ROLE_ARN }}
+          role-to-assume: ${{ env.AWS_BACKUP_DISPATCH_RECONCILIATION_ROLE_ARN }}
           allowed-account-ids: ${{ env.AWS_ACCOUNT_ID }}
           role-session-name: openadapt-backup-absence-${{ github.run_id }}
 

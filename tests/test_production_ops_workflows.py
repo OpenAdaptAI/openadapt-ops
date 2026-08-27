@@ -200,9 +200,12 @@ def test_backup_absence_authority_queries_inventory_and_kms_without_caller_proof
     content = read(".github/workflows/db-backup-dispatch-reconciliation.yml")
     value = workflow(".github/workflows/db-backup-dispatch-reconciliation.yml")
     job = value["jobs"]["reconcile"]
-    assert job["environment"] == "production-backup-control"
+    assert job["environment"] == "production-backup-dispatch-reconciliation"
     assert job["permissions"] == {"contents": "read", "id-token": "write"}
     assert "OPENADAPT_BACKUP_DISPATCH_AUTHORITY_ENABLED" in content
+    assert "AWS_BACKUP_DISPATCH_RECONCILIATION_ROLE_ARN" in content
+    assert "AWS_BACKUP_DISPATCH_INGRESS_ROLE_ARN" not in content
+    assert "OPS_BACKUP_DISPATCH_CLAIM_TOKEN" not in content
     assert "permission-actions: read" in content
     assert "permission-metadata: read" in content
     assert "persist-credentials: false" in content
