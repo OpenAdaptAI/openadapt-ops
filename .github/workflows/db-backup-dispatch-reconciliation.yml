@@ -44,7 +44,7 @@ jobs:
       BACKUP_CONTROL_APP_ID: ${{ vars.OPENADAPT_BACKUP_CONTROL_APP_ID }}
       BACKUP_CONTROL_APP_SLUG: ${{ vars.OPENADAPT_BACKUP_CONTROL_APP_SLUG }}
       BACKUP_CONTROL_INSTALLATION_ID: ${{ vars.OPENADAPT_BACKUP_CONTROL_INSTALLATION_ID }}
-      CLOUD_BACKUP_DISPATCH_RESOLUTION_TOKEN: ${{ secrets.CLOUD_BACKUP_DISPATCH_RESOLUTION_TOKEN }}
+      OPS_BACKUP_DISPATCH_RESOLUTION_TOKEN: ${{ secrets.OPS_BACKUP_DISPATCH_RESOLUTION_TOKEN }}
       EXPECTED_PUBLIC_KEY_SHA256: ${{ vars.OPENADAPT_BACKUP_DISPATCH_RESOLUTION_PUBLIC_KEY_SHA256 }}
       GITHUB_REF_PROTECTED: ${{ github.ref_protected }}
       KMS_KEY_ARN: ${{ vars.OPENADAPT_BACKUP_DISPATCH_RESOLUTION_KMS_KEY_ARN }}
@@ -61,7 +61,7 @@ jobs:
           test -n "${BACKUP_CONTROL_APP_ID}"
           test -n "${BACKUP_CONTROL_APP_SLUG}"
           test -n "${BACKUP_CONTROL_INSTALLATION_ID}"
-          test -n "${CLOUD_BACKUP_DISPATCH_RESOLUTION_TOKEN}"
+          test -n "${OPS_BACKUP_DISPATCH_RESOLUTION_TOKEN}"
           test "${EXPECTED_PUBLIC_KEY_SHA256}" != ''
           test -n "${KMS_KEY_ARN}"
           test "${REVOKED_RESOLUTION_KEY_IDS}" != ''
@@ -117,7 +117,7 @@ jobs:
         run: |
           set -euo pipefail
           curl --silent --show-error --fail-with-body \
-            --header "Authorization: Bearer ${CLOUD_BACKUP_DISPATCH_RESOLUTION_TOKEN}" \
+            --header "Authorization: Bearer ${OPS_BACKUP_DISPATCH_RESOLUTION_TOKEN}" \
             --header 'Accept: application/json' \
             --output /tmp/dispatch-reconciliation-queue.json \
             'https://cloud.openadapt.ai/api/internal/backup/dispatch-reconciliation/pending?limit=50'
@@ -236,7 +236,7 @@ jobs:
               --output /tmp/dispatch-reissue.json \
               --write-out '%{http_code}' \
               --request POST \
-              --header "Authorization: Bearer ${CLOUD_BACKUP_DISPATCH_RESOLUTION_TOKEN}" \
+              --header "Authorization: Bearer ${OPS_BACKUP_DISPATCH_RESOLUTION_TOKEN}" \
               --header 'Content-Type: application/json' \
               --header "Idempotency-Key: ${resolution_id}" \
               --data-binary @/tmp/dispatch-resolution.json \
@@ -254,7 +254,7 @@ jobs:
             status_code=$(curl --silent --show-error \
               --output /tmp/dispatch-status.json \
               --write-out '%{http_code}' \
-              --header "Authorization: Bearer ${CLOUD_BACKUP_DISPATCH_RESOLUTION_TOKEN}" \
+              --header "Authorization: Bearer ${OPS_BACKUP_DISPATCH_RESOLUTION_TOKEN}" \
               --header 'Accept: application/json' \
               "https://cloud.openadapt.ai/api/internal/backup/dispatch-reconciliation/status?resolution_id=${resolution_id}")
             curl_result=$?
