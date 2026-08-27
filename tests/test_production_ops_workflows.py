@@ -164,6 +164,7 @@ def test_backup_dispatch_authority_retains_and_claims_before_any_effect() -> Non
     content = read(".github/workflows/db-backup-dispatch-authority.yml")
     value = workflow(".github/workflows/db-backup-dispatch-authority.yml")
     assert "workflow_call" in value["on"]
+    assert set(value["on"]["workflow_call"]) == {"outputs"}
     assert "repository_dispatch" not in value["on"]
     job = value["jobs"]["claim"]
     assert job["environment"] == "production-backup-control"
@@ -180,6 +181,12 @@ def test_backup_dispatch_authority_retains_and_claims_before_any_effect() -> Non
     assert retain < ledger < locator < status < claim < receipt
     assert "dispatch-run-locators/github/" in content
     assert "dispatch-attempt/claim" in content
+    assert "github.workflow_ref" in content
+    assert "OpenAdaptAI/openadapt-ops/.github/workflows/db-backup-activate.yml@refs/heads/main" in content
+    assert "github.event.action" in content
+    assert "toJSON(github.event.client_payload)" in content
+    assert "inputs.dispatch_payload_json" not in content
+    assert "inputs.event_name" not in content
     assert "activation_request_b64=" not in content
     assert "first-backup" not in content
     assert "restore" not in content

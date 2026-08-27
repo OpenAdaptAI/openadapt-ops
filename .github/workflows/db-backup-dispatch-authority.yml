@@ -2,15 +2,6 @@ name: Production backup dispatch ingress authority
 
 on:
   workflow_call:
-    inputs:
-      event_name:
-        description: Exact Cloud dispatch event name
-        required: true
-        type: string
-      dispatch_payload_json:
-        description: Exact repository_dispatch client payload JSON
-        required: true
-        type: string
     outputs:
       claim_sha256:
         description: Digest of the exact Cloud-retained claim
@@ -51,18 +42,21 @@ jobs:
       CLOUD_BACKUP_DISPATCH_RESOLUTION_TOKEN: ${{ secrets.CLOUD_BACKUP_DISPATCH_RESOLUTION_TOKEN }}
       GITHUB_REF_PROTECTED: ${{ github.ref_protected }}
       GITHUB_REPOSITORY_ID_EXACT: ${{ github.repository_id }}
+      GITHUB_WORKFLOW_REF_EXACT: ${{ github.workflow_ref }}
       PAYMENT_SIGNAL_HMAC_KEY: ${{ secrets.PAYMENT_SIGNAL_HMAC_KEY }}
     steps:
       - name: Refuse an unprotected or incomplete caller
         env:
-          DISPATCH_PAYLOAD_JSON: ${{ inputs.dispatch_payload_json }}
-          EVENT_NAME: ${{ inputs.event_name }}
+          DISPATCH_PAYLOAD_JSON: ${{ toJSON(github.event.client_payload) }}
+          EVENT_NAME: ${{ github.event.action }}
         run: |
           set -euo pipefail
           test "${GITHUB_REPOSITORY}" = 'OpenAdaptAI/openadapt-ops'
           test "${BACKUP_DISPATCH_AUTHORITY_ENABLED}" = 'true'
           test "${GITHUB_REF}" = 'refs/heads/main'
           test "${GITHUB_REF_PROTECTED}" = 'true'
+          test "${GITHUB_EVENT_NAME}" = 'repository_dispatch'
+          test "${GITHUB_WORKFLOW_REF_EXACT}" = 'OpenAdaptAI/openadapt-ops/.github/workflows/db-backup-activate.yml@refs/heads/main'
           test "${EVENT_NAME}" = 'verified_first_payment' || \
             test "${EVENT_NAME}" = 'database_backup_renewal'
           test -n "${DISPATCH_PAYLOAD_JSON}"
@@ -86,8 +80,8 @@ jobs:
 
       - name: Retain the exact authenticated ingress identity
         env:
-          DISPATCH_PAYLOAD_JSON: ${{ inputs.dispatch_payload_json }}
-          EVENT_NAME: ${{ inputs.event_name }}
+          DISPATCH_PAYLOAD_JSON: ${{ toJSON(github.event.client_payload) }}
+          EVENT_NAME: ${{ github.event.action }}
         run: |
           set -euo pipefail
           umask 077
