@@ -71,6 +71,13 @@ def test_lifecycle_signer_is_asymmetric_and_purpose_bound() -> None:
     assert signer["commitment_output_bytes"] == 32
     assert "Prehashed(SHA-256)" in signer["offline_verification"]
     assert signer["mixed_message_types_permitted"] is False
+    assert signer["signature_fields"] == [
+        "algorithm",
+        "commitment_scheme",
+        "key_id",
+        "message_type",
+        "value",
+    ]
     assert "commitment_scheme" in signer["registry_entry_fields"]
     assert signer["cloud_has_kms_sign"] is False
     assert signer["cloud_has_private_key"] is False
@@ -127,6 +134,7 @@ def test_raw_digest_and_mixed_mode_confusion_is_forbidden() -> None:
     assert len(raw_message) > 4096
     assert len(commitment) == 32
     assert raw_message != commitment
+    assert hashlib.sha256(commitment).digest() != commitment
     assert signer["message_type"] == "DIGEST"
     assert "commitment_scheme" in signer["registry_entry_fields"]
     assert signer["mixed_message_types_permitted"] is False

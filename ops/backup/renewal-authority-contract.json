@@ -41,6 +41,13 @@
     "offline_verification": "Verify the exact 32-byte commitment with P-256 ECDSA using Prehashed(SHA-256), the pinned SPKI public key, and the canonical DER signature.",
     "mixed_message_types_permitted": false,
     "signature_encoding": "canonical ASN.1 DER ECDSA, padded standard base64",
+    "signature_fields": [
+      "algorithm",
+      "commitment_scheme",
+      "key_id",
+      "message_type",
+      "value"
+    ],
     "registry_schema": "openadapt.database-backup-lifecycle-signer-registry/v1",
     "registry_fields": [
       "schema_version",
