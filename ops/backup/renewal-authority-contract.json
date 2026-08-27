@@ -79,6 +79,67 @@
     "cloud_has_kms_sign": false,
     "cloud_has_private_key": false
   },
+  "cloud_outcome_signer": {
+    "owner": "OpenAdaptAI/openadapt-cloud",
+    "kms_account_id": "992382684924",
+    "kms_region": "us-east-1",
+    "kms_key_alias": "alias/openadapt-cloud-production-backup-outcome",
+    "key_id": "cloud-backup-outcome-kms-p256-2026-01",
+    "algorithm": "AWS-KMS-ECDSA-SHA256",
+    "key_spec": "ECC_NIST_P256",
+    "key_usage": "SIGN_VERIFY",
+    "signing_algorithm": "ECDSA_SHA_256",
+    "message_type": "DIGEST",
+    "commitment_scheme": "SHA256_DOMAIN_NUL_CANONICAL_JSON_LF_V1",
+    "commitment_preimage": "exact purpose domain UTF-8 bytes ending NUL || canonical result payload UTF-8 bytes || exactly one LF byte",
+    "commitment_output_bytes": 32,
+    "signature_encoding": "canonical ASN.1 DER ECDSA, padded standard base64",
+    "signature_fields": [
+      "algorithm",
+      "commitment_scheme",
+      "key_id",
+      "message_type",
+      "value"
+    ],
+    "registry_schema": "openadapt.cloud-backup-outcome-signer-registry/v1",
+    "registry_fields": [
+      "schema_version",
+      "signers"
+    ],
+    "registry_signers_key": "cloud-backup-outcome-kms-p256-2026-01",
+    "registry_entry_fields": [
+      "algorithm",
+      "aws_account_id",
+      "aws_region",
+      "commitment_scheme",
+      "expires_at",
+      "key_spec",
+      "key_usage",
+      "kms_key_alias",
+      "message_type",
+      "not_before",
+      "public_key_spki_der_b64",
+      "public_key_spki_sha256",
+      "purposes",
+      "signing_algorithm"
+    ],
+    "purposes": [
+      "initial-readiness-ack-v3",
+      "renewal-terminal-result-v1",
+      "schedule-lease-application-result-v1"
+    ],
+    "revocation_schema": "openadapt.cloud-backup-outcome-key-revocations/v1",
+    "revocation_fields": [
+      "registry_sha256",
+      "revoked_key_ids",
+      "schema_version"
+    ],
+    "issuance_rule": "Cloud alone signs after the exact database CAS or retention effect. It retains the exact signed outcome before it returns it as verified.",
+    "verification_rule": "Ops verifies the purpose, domain, exact closed signature fields, SPKI fingerprint, registry validity, and revocation state at the result time and current verification time.",
+    "cloud_has_kms_sign": true,
+    "ops_has_kms_sign": false,
+    "ops_has_private_key": false
+  },
   "canonical_json": {
     "encoding": "UTF-8",
     "object_keys": "lexicographic",
@@ -166,6 +227,8 @@
       "schema": "openadapt.database-backup-cloud-readiness-ack/v3",
       "payload_name": "ack",
       "digest_name": "ack_sha256",
+      "signature_purpose": "initial-readiness-ack-v3",
+      "domain_utf8_nul": "OpenAdapt Cloud database backup readiness ack v3\u0000",
       "envelope_fields": [
         "ack",
         "ack_sha256",
@@ -439,6 +502,8 @@
     },
     "callback_result": {
       "schema": "openadapt.cloud-backup-schedule-lease-application-result/v1",
+      "signature_purpose": "schedule-lease-application-result-v1",
+      "domain_utf8_nul": "OpenAdapt Cloud backup schedule lease application result v1\u0000",
       "envelope_fields": [
         "result",
         "result_sha256",
@@ -556,6 +621,8 @@
     },
     "renewal_terminal_result": {
       "schema": "openadapt.cloud-backup-renewal-terminal-result/v1",
+      "signature_purpose": "renewal-terminal-result-v1",
+      "domain_utf8_nul": "OpenAdapt Cloud backup renewal terminal result v1\u0000",
       "envelope_fields": [
         "result",
         "result_sha256",
@@ -737,7 +804,12 @@
     "signature-lf-omitted-refused",
     "signature-lf-doubled-refused",
     "signature-payload-tamper-refused",
-    "mixed-message-type-registry-refused"
+    "mixed-message-type-registry-refused",
+    "cloud-outcome-before-cas-refused",
+    "cloud-outcome-cross-purpose-signature-refused",
+    "cloud-outcome-mixed-message-type-refused",
+    "cloud-outcome-revoked-key-refused",
+    "cloud-outcome-wrong-spki-refused"
   ],
   "activation_dependencies": [
     "The peer receiver calls the accepted dispatch authority before every initial or renewal effect.",

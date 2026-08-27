@@ -132,6 +132,74 @@ def test_raw_digest_and_mixed_mode_confusion_is_forbidden() -> None:
     assert signer["mixed_message_types_permitted"] is False
 
 
+def test_cloud_outcome_signer_is_separate_asymmetric_and_verify_only_in_ops() -> None:
+    signer = contract()["cloud_outcome_signer"]
+    assert signer["owner"] == "OpenAdaptAI/openadapt-cloud"
+    assert signer["kms_key_alias"] == (
+        "alias/openadapt-cloud-production-backup-outcome"
+    )
+    assert signer["key_id"] == "cloud-backup-outcome-kms-p256-2026-01"
+    assert signer["algorithm"] == "AWS-KMS-ECDSA-SHA256"
+    assert signer["key_spec"] == "ECC_NIST_P256"
+    assert signer["signing_algorithm"] == "ECDSA_SHA_256"
+    assert signer["message_type"] == "DIGEST"
+    assert signer["commitment_scheme"] == (
+        "SHA256_DOMAIN_NUL_CANONICAL_JSON_LF_V1"
+    )
+    assert signer["signature_fields"] == [
+        "algorithm",
+        "commitment_scheme",
+        "key_id",
+        "message_type",
+        "value",
+    ]
+    assert signer["registry_schema"] == (
+        "openadapt.cloud-backup-outcome-signer-registry/v1"
+    )
+    assert signer["revocation_schema"] == (
+        "openadapt.cloud-backup-outcome-key-revocations/v1"
+    )
+    assert signer["cloud_has_kms_sign"] is True
+    assert signer["ops_has_kms_sign"] is False
+    assert signer["ops_has_private_key"] is False
+    assert "after the exact database CAS or retention effect" in signer[
+        "issuance_rule"
+    ]
+    assert "HMAC" not in json.dumps(signer)
+
+
+def test_cloud_outcome_purposes_have_distinct_exact_domains() -> None:
+    value = contract()
+    signer = value["cloud_outcome_signer"]
+    expected = {
+        "initial_readiness_ack": (
+            "initial-readiness-ack-v3",
+            "OpenAdapt Cloud database backup readiness ack v3\0",
+        ),
+        "renewal_terminal_result": (
+            "renewal-terminal-result-v1",
+            "OpenAdapt Cloud backup renewal terminal result v1\0",
+        ),
+        "callback_result": (
+            "schedule-lease-application-result-v1",
+            "OpenAdapt Cloud backup schedule lease application result v1\0",
+        ),
+    }
+    domains = []
+    purposes = []
+    for object_name, (purpose, domain) in expected.items():
+        item = value["objects"][object_name]
+        assert item["signature_purpose"] == purpose
+        assert item["domain_utf8_nul"] == domain
+        assert domain.endswith("\0")
+        purposes.append(purpose)
+        domains.append(domain)
+    assert sorted(purposes) == signer["purposes"]
+    assert len(domains) == len(set(domains))
+    payload = {"result_state": "APPLIED"}
+    assert len({signature_commitment(domain, payload) for domain in domains}) == 3
+
+
 def test_every_signed_object_has_a_distinct_nul_domain() -> None:
     objects = contract()["objects"]
     assert isinstance(objects, dict)
@@ -428,6 +496,11 @@ def test_cross_repo_vectors_cover_loss_races_replay_and_signer_failure() -> None
         "signature-lf-doubled-refused",
         "signature-payload-tamper-refused",
         "mixed-message-type-registry-refused",
+        "cloud-outcome-before-cas-refused",
+        "cloud-outcome-cross-purpose-signature-refused",
+        "cloud-outcome-mixed-message-type-refused",
+        "cloud-outcome-revoked-key-refused",
+        "cloud-outcome-wrong-spki-refused",
     } <= vectors
 
 
