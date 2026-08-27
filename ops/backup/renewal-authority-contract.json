@@ -68,6 +68,7 @@
       "not_before",
       "public_key_spki_der_b64",
       "public_key_spki_sha256",
+      "purpose_workflow_bindings",
       "purposes",
       "signature_canonicalization",
       "signing_algorithm"
@@ -79,6 +80,43 @@
       "renewal-terminal-v1",
       "schedule-lease-v2"
     ],
+    "purpose_workflow_bindings": {
+      "initial-readiness-v2": {
+        "authority_environment": "production-backup-renewal-authority",
+        "authority_repository": "OpenAdaptAI/openadapt-ops",
+        "authority_repository_id": "1172011294",
+        "authority_workflow_path": ".github/workflows/db-backup-lifecycle-authority.yml",
+        "authority_workflow_ref": "refs/heads/main"
+      },
+      "renewal-effect-permit-v1": {
+        "authority_environment": "production-backup-renewal-authority",
+        "authority_repository": "OpenAdaptAI/openadapt-ops",
+        "authority_repository_id": "1172011294",
+        "authority_workflow_path": ".github/workflows/db-backup-lifecycle-authority.yml",
+        "authority_workflow_ref": "refs/heads/main"
+      },
+      "renewal-readiness-v2": {
+        "authority_environment": "production-backup-renewal-authority",
+        "authority_repository": "OpenAdaptAI/openadapt-ops",
+        "authority_repository_id": "1172011294",
+        "authority_workflow_path": ".github/workflows/db-backup-lifecycle-authority.yml",
+        "authority_workflow_ref": "refs/heads/main"
+      },
+      "renewal-terminal-v1": {
+        "authority_environment": "production-backup-renewal-authority",
+        "authority_repository": "OpenAdaptAI/openadapt-ops",
+        "authority_repository_id": "1172011294",
+        "authority_workflow_path": ".github/workflows/db-backup-lifecycle-authority.yml",
+        "authority_workflow_ref": "refs/heads/main"
+      },
+      "schedule-lease-v2": {
+        "authority_environment": "production-backup-renewal-authority",
+        "authority_repository": "OpenAdaptAI/openadapt-ops",
+        "authority_repository_id": "1172011294",
+        "authority_workflow_path": ".github/workflows/db-backup-lifecycle-authority.yml",
+        "authority_workflow_ref": "refs/heads/main"
+      }
+    },
     "revocation_schema": "openadapt.database-backup-lifecycle-key-revocations/v1",
     "revocation_fields": [
       "registry_sha256",
@@ -87,6 +125,44 @@
     ],
     "cloud_has_kms_sign": false,
     "cloud_has_private_key": false
+  },
+  "workflow_authority": {
+    "repository": "OpenAdaptAI/openadapt-ops",
+    "repository_id": "1172011294",
+    "workflow_path": ".github/workflows/db-backup-lifecycle-authority.yml",
+    "workflow_ref": "refs/heads/main",
+    "protected_environment": "production-backup-renewal-authority",
+    "trigger": "workflow_call only",
+    "exact_caller": "OpenAdaptAI/openadapt-ops/.github/workflows/db-backup-activate.yml@refs/heads/main",
+    "payload_fields": [
+      "authority_environment",
+      "authority_repository",
+      "authority_repository_id",
+      "authority_run_attempt",
+      "authority_run_id",
+      "authority_source_commit",
+      "authority_workflow_path",
+      "authority_workflow_ref"
+    ],
+    "fixed_values": {
+      "authority_environment": "production-backup-renewal-authority",
+      "authority_repository": "OpenAdaptAI/openadapt-ops",
+      "authority_repository_id": "1172011294",
+      "authority_workflow_path": ".github/workflows/db-backup-lifecycle-authority.yml",
+      "authority_workflow_ref": "refs/heads/main"
+    },
+    "dynamic_value_rules": {
+      "authority_run_attempt": "positive decimal JSON string",
+      "authority_run_id": "positive decimal JSON string",
+      "authority_source_commit": "exact lowercase 40-hex merged Ops source commit"
+    },
+    "cloud_build_constants": [
+      "ACCEPTED_OPS_BACKUP_LIFECYCLE_CONTRACT_SHA256",
+      "ACCEPTED_OPS_BACKUP_LIFECYCLE_SOURCE_COMMIT"
+    ],
+    "cloud_build_rule": "Both constants are checked-in, empty, and fail closed until the exact merged Ops contract bytes and source commit exist. The admitted Cloud build sets both once and has no environment override.",
+    "dispatch_claim_rule": "The retained dispatch claim caller workflow revision must equal ACCEPTED_OPS_BACKUP_LIFECYCLE_SOURCE_COMMIT before the RECEIVED CAS. Every later signed lifecycle payload must bind the same accepted source commit and exact authority context.",
+    "substitution_rule": "A purpose, workflow, repository, environment, run, attempt, source commit, or contract-version substitution fails before a database effect or signed result."
   },
   "cloud_outcome_signer": {
     "owner": "OpenAdaptAI/openadapt-cloud",
@@ -239,6 +315,14 @@
         "activation_id",
         "attempt_number",
         "audience",
+        "authority_environment",
+        "authority_repository",
+        "authority_repository_id",
+        "authority_run_attempt",
+        "authority_run_id",
+        "authority_source_commit",
+        "authority_workflow_path",
+        "authority_workflow_ref",
         "backup",
         "claim_receipt_sha256",
         "claim_sha256",
@@ -316,6 +400,14 @@
         "activation_id",
         "attempt_number",
         "audience",
+        "authority_environment",
+        "authority_repository",
+        "authority_repository_id",
+        "authority_run_attempt",
+        "authority_run_id",
+        "authority_source_commit",
+        "authority_workflow_path",
+        "authority_workflow_ref",
         "backup_object_prefix",
         "claim_receipt_sha256",
         "claim_sha256",
@@ -335,8 +427,7 @@
         "recovery_point_stamp",
         "requested_lease_sequence",
         "revocation_state_sha256",
-        "signer_registry_sha256",
-        "workflow_revision"
+        "signer_registry_sha256"
       ],
       "fixed_values": {
         "audience": "OpenAdaptAI/openadapt-ops:database-backup-renewal-recovery",
@@ -385,6 +476,14 @@
         "activation_id",
         "attempt_number",
         "audience",
+        "authority_environment",
+        "authority_repository",
+        "authority_repository_id",
+        "authority_run_attempt",
+        "authority_run_id",
+        "authority_source_commit",
+        "authority_workflow_path",
+        "authority_workflow_ref",
         "backup",
         "claim_receipt_sha256",
         "claim_sha256",
@@ -442,6 +541,14 @@
         "activation_id",
         "attempt_number",
         "audience",
+        "authority_environment",
+        "authority_repository",
+        "authority_repository_id",
+        "authority_run_attempt",
+        "authority_run_id",
+        "authority_source_commit",
+        "authority_workflow_path",
+        "authority_workflow_ref",
         "callback_idempotency_key",
         "claim_receipt_sha256",
         "claim_sha256",
@@ -594,6 +701,14 @@
         "activation_id",
         "attempt_number",
         "audience",
+        "authority_environment",
+        "authority_repository",
+        "authority_repository_id",
+        "authority_run_attempt",
+        "authority_run_id",
+        "authority_source_commit",
+        "authority_workflow_path",
+        "authority_workflow_ref",
         "callback_post_started",
         "claim_receipt_sha256",
         "claim_sha256",
@@ -616,8 +731,7 @@
         "revocation_state_sha256",
         "signer_registry_sha256",
         "terminal_idempotency_key",
-        "uncertain_external_effect",
-        "workflow_revision"
+        "uncertain_external_effect"
       ],
       "fixed_values": {
         "audience": "openadapt-cloud:database-backup-renewal-terminal",
@@ -858,12 +972,21 @@
     "p256-negative-integer-refused",
     "p256-zero-r-s-refused",
     "p256-out-of-range-r-s-refused",
-    "p256-trailing-byte-refused"
+    "p256-trailing-byte-refused",
+    "authority-purpose-workflow-substitution-refused",
+    "authority-stale-source-commit-refused",
+    "authority-wrong-repository-refused",
+    "authority-wrong-run-attempt-refused",
+    "authority-wrong-environment-refused",
+    "authority-mixed-contract-version-refused",
+    "dispatch-claim-caller-revision-mismatch-refused"
   ],
   "activation_dependencies": [
     "The peer receiver calls the accepted dispatch authority before every initial or renewal effect.",
     "Cloud migration 0074 implements the atomic claim versus NOT_RECEIVED row transition and retains dispatch_attempted_at.",
     "Cloud implements the asymmetric v2 verifiers, current-lease CAS, callback result, and status route.",
+    "The Ops trust policy pins the exact caller and reusable authority workflow hashes at the merged source commit.",
+    "The admitted Cloud build pins the exact merged Ops source commit and renewal authority contract digest without an environment override.",
     "Ops and Cloud share byte-identical fixed vectors for every required vector name.",
     "The dedicated KMS key, registry, revocation object, OIDC role, environments, and distinct bearer are created only at final cutover."
   ]

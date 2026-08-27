@@ -267,6 +267,56 @@ def test_every_signed_object_has_a_distinct_nul_domain() -> None:
     assert len(domains) == len(set(domains))
 
 
+def test_every_ops_lifecycle_payload_binds_exact_workflow_authority() -> None:
+    value = contract()
+    authority = value["workflow_authority"]
+    expected_fields = set(authority["payload_fields"])
+    assert authority["fixed_values"] == {
+        "authority_environment": "production-backup-renewal-authority",
+        "authority_repository": "OpenAdaptAI/openadapt-ops",
+        "authority_repository_id": "1172011294",
+        "authority_workflow_path": (
+            ".github/workflows/db-backup-lifecycle-authority.yml"
+        ),
+        "authority_workflow_ref": "refs/heads/main",
+    }
+    assert authority["cloud_build_constants"] == [
+        "ACCEPTED_OPS_BACKUP_LIFECYCLE_CONTRACT_SHA256",
+        "ACCEPTED_OPS_BACKUP_LIFECYCLE_SOURCE_COMMIT",
+    ]
+    for name in (
+        "initial_readiness",
+        "renewal_effect_permit",
+        "renewal_readiness",
+        "renewal_terminal",
+        "schedule_lease",
+    ):
+        fields = set(value["objects"][name]["payload_fields"])
+        assert expected_fields <= fields
+        assert "workflow_revision" not in fields
+
+
+def test_signer_registry_closes_each_purpose_to_one_workflow() -> None:
+    value = contract()
+    signer = value["signer"]
+    assert "purpose_workflow_bindings" in signer["registry_entry_fields"]
+    bindings = signer["purpose_workflow_bindings"]
+    assert sorted(bindings) == signer["purposes"]
+    expected = {
+        "authority_environment": "production-backup-renewal-authority",
+        "authority_repository": "OpenAdaptAI/openadapt-ops",
+        "authority_repository_id": "1172011294",
+        "authority_workflow_path": (
+            ".github/workflows/db-backup-lifecycle-authority.yml"
+        ),
+        "authority_workflow_ref": "refs/heads/main",
+    }
+    assert all(binding == expected for binding in bindings.values())
+    rule = value["workflow_authority"]["substitution_rule"]
+    for identity in ("purpose", "workflow", "repository", "environment", "run"):
+        assert identity in rule
+
+
 def test_initial_readiness_binds_authenticated_claim_not_only_dispatch() -> None:
     item = contract()["objects"]["initial_readiness"]
     assert item["schema"] == "openadapt.database-backup-readiness-receipt/v2"
@@ -340,7 +390,7 @@ def test_renewal_permit_is_signed_before_one_exact_recovery_effect() -> None:
         "prior_lease_sha256",
         "prior_pointer_sha256",
         "requested_lease_sequence",
-        "workflow_revision",
+        "authority_source_commit",
     } <= fields
 
 
@@ -552,6 +602,13 @@ def test_cross_repo_vectors_cover_loss_races_replay_and_signer_failure() -> None
         "p256-zero-r-s-refused",
         "p256-out-of-range-r-s-refused",
         "p256-trailing-byte-refused",
+        "authority-purpose-workflow-substitution-refused",
+        "authority-stale-source-commit-refused",
+        "authority-wrong-repository-refused",
+        "authority-wrong-run-attempt-refused",
+        "authority-wrong-environment-refused",
+        "authority-mixed-contract-version-refused",
+        "dispatch-claim-caller-revision-mismatch-refused",
     } <= vectors
 
 
@@ -559,4 +616,6 @@ def test_activation_dependencies_keep_live_authority_out_of_contract_pr() -> Non
     dependencies = " ".join(contract()["activation_dependencies"])
     assert "Cloud migration 0074" in dependencies
     assert "byte-identical fixed vectors" in dependencies
+    assert "pins the exact caller and reusable authority workflow hashes" in dependencies
+    assert "pins the exact merged Ops source commit" in dependencies
     assert "created only at final cutover" in dependencies
