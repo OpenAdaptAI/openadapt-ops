@@ -35,6 +35,7 @@
     "signing_algorithm": "ECDSA_SHA_256",
     "message_type": "DIGEST",
     "commitment_scheme": "SHA256_DOMAIN_NUL_CANONICAL_JSON_LF_V1",
+    "signature_canonicalization": "P256_LOW_S_DER_V1",
     "commitment_preimage": "exact purpose domain UTF-8 bytes ending NUL || canonical payload UTF-8 bytes || exactly one LF byte",
     "commitment_output_bytes": 32,
     "kms_sign_input": "Pass the exact 32-byte SHA-256 commitment with MessageType DIGEST and SigningAlgorithm ECDSA_SHA_256.",
@@ -68,6 +69,7 @@
       "public_key_spki_der_b64",
       "public_key_spki_sha256",
       "purposes",
+      "signature_canonicalization",
       "signing_algorithm"
     ],
     "purposes": [
@@ -98,6 +100,7 @@
     "signing_algorithm": "ECDSA_SHA_256",
     "message_type": "DIGEST",
     "commitment_scheme": "SHA256_DOMAIN_NUL_CANONICAL_JSON_LF_V1",
+    "signature_canonicalization": "P256_LOW_S_DER_V1",
     "commitment_preimage": "exact purpose domain UTF-8 bytes ending NUL || canonical result payload UTF-8 bytes || exactly one LF byte",
     "commitment_output_bytes": 32,
     "signature_encoding": "canonical ASN.1 DER ECDSA, padded standard base64",
@@ -128,6 +131,7 @@
       "public_key_spki_der_b64",
       "public_key_spki_sha256",
       "purposes",
+      "signature_canonicalization",
       "signing_algorithm"
     ],
     "purposes": [
@@ -146,6 +150,37 @@
     "cloud_has_kms_sign": true,
     "ops_has_kms_sign": false,
     "ops_has_private_key": false
+  },
+  "p256_signature_canonicalization": {
+    "scheme": "P256_LOW_S_DER_V1",
+    "curve_order_hex": "FFFFFFFF00000000FFFFFFFFFFFFFFFFBCE6FAADA7179E84F3B9CAC2FC632551",
+    "low_s_max_hex": "7FFFFFFF800000007FFFFFFFFFFFFFFFDE737D56D38BCF4279DCE5617E3192A8",
+    "normalization_rule": "Parse strict minimal ASN.1 DER, require 1 <= r,s < curve order, set s = min(s, curve order - s), re-encode minimal ASN.1 DER, then encode as padded standard base64.",
+    "envelope_digest_rule": "Compute and retain a full signed-envelope digest only after P256_LOW_S_DER_V1 normalization.",
+    "verifier_rejections": [
+      "high-S",
+      "negative integer",
+      "non-minimal DER",
+      "out-of-range r or s",
+      "trailing byte",
+      "zero r or s"
+    ],
+    "fixed_vectors": {
+      "alternate_s_normalization": {
+        "r_hex": "01",
+        "kms_high_s_hex": "FFFFFFFF00000000FFFFFFFFFFFFFFFFBCE6FAADA7179E84F3B9CAC2FC632550",
+        "kms_high_s_der_hex": "3026020101022100FFFFFFFF00000000FFFFFFFFFFFFFFFFBCE6FAADA7179E84F3B9CAC2FC632550",
+        "normalized_s_hex": "01",
+        "normalized_der_hex": "3006020101020101",
+        "normalized_der_b64": "MAYCAQECAQE="
+      },
+      "reject_non_minimal_r_der_hex": "300702020001020101",
+      "reject_negative_r_der_hex": "3006020180020101",
+      "reject_zero_r_der_hex": "3006020100020101",
+      "reject_r_equal_order_der_hex": "3026022100FFFFFFFF00000000FFFFFFFFFFFFFFFFBCE6FAADA7179E84F3B9CAC2FC632551020101",
+      "reject_s_equal_order_der_hex": "3026020101022100FFFFFFFF00000000FFFFFFFFFFFFFFFFBCE6FAADA7179E84F3B9CAC2FC632551",
+      "reject_trailing_byte_der_hex": "300602010102010100"
+    }
   },
   "canonical_json": {
     "encoding": "UTF-8",
@@ -816,7 +851,14 @@
     "cloud-outcome-cross-purpose-signature-refused",
     "cloud-outcome-mixed-message-type-refused",
     "cloud-outcome-revoked-key-refused",
-    "cloud-outcome-wrong-spki-refused"
+    "cloud-outcome-wrong-spki-refused",
+    "p256-alternate-s-normalized-before-envelope-digest",
+    "p256-high-s-verifier-refused",
+    "p256-non-minimal-der-refused",
+    "p256-negative-integer-refused",
+    "p256-zero-r-s-refused",
+    "p256-out-of-range-r-s-refused",
+    "p256-trailing-byte-refused"
   ],
   "activation_dependencies": [
     "The peer receiver calls the accepted dispatch authority before every initial or renewal effect.",

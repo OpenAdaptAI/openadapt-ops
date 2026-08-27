@@ -67,6 +67,7 @@ def test_lifecycle_signer_is_asymmetric_and_purpose_bound() -> None:
     assert signer["commitment_scheme"] == (
         "SHA256_DOMAIN_NUL_CANONICAL_JSON_LF_V1"
     )
+    assert signer["signature_canonicalization"] == "P256_LOW_S_DER_V1"
     assert signer["commitment_preimage"].endswith("exactly one LF byte")
     assert signer["commitment_output_bytes"] == 32
     assert "Prehashed(SHA-256)" in signer["offline_verification"]
@@ -79,6 +80,7 @@ def test_lifecycle_signer_is_asymmetric_and_purpose_bound() -> None:
         "value",
     ]
     assert "commitment_scheme" in signer["registry_entry_fields"]
+    assert "signature_canonicalization" in signer["registry_entry_fields"]
     assert signer["cloud_has_kms_sign"] is False
     assert signer["cloud_has_private_key"] is False
     assert signer["purposes"] == [
@@ -154,6 +156,7 @@ def test_cloud_outcome_signer_is_separate_asymmetric_and_verify_only_in_ops() ->
     assert signer["commitment_scheme"] == (
         "SHA256_DOMAIN_NUL_CANONICAL_JSON_LF_V1"
     )
+    assert signer["signature_canonicalization"] == "P256_LOW_S_DER_V1"
     assert signer["signature_fields"] == [
         "algorithm",
         "commitment_scheme",
@@ -170,6 +173,7 @@ def test_cloud_outcome_signer_is_separate_asymmetric_and_verify_only_in_ops() ->
     assert signer["cloud_has_kms_sign"] is True
     assert signer["ops_has_kms_sign"] is False
     assert signer["ops_has_private_key"] is False
+    assert "signature_canonicalization" in signer["registry_entry_fields"]
     assert "after the exact database CAS or retention effect" in signer[
         "issuance_rule"
     ]
@@ -206,6 +210,38 @@ def test_cloud_outcome_purposes_have_distinct_exact_domains() -> None:
     assert len(domains) == len(set(domains))
     payload = {"result_state": "APPLIED"}
     assert len({signature_commitment(domain, payload) for domain in domains}) == 3
+
+
+def test_p256_signatures_normalize_alternate_s_before_envelope_identity() -> None:
+    value = contract()["p256_signature_canonicalization"]
+    order = int(value["curve_order_hex"], 16)
+    low_s_max = int(value["low_s_max_hex"], 16)
+    assert low_s_max == order // 2
+    vector = value["fixed_vectors"]["alternate_s_normalization"]
+    high_s = int(vector["kms_high_s_hex"], 16)
+    normalized_s = min(high_s, order - high_s)
+    assert normalized_s == int(vector["normalized_s_hex"], 16) == 1
+    assert normalized_s <= low_s_max
+    assert vector["normalized_der_hex"] == "3006020101020101"
+    assert vector["normalized_der_b64"] == "MAYCAQECAQE="
+    assert "only after" in value["envelope_digest_rule"]
+
+
+def test_p256_strict_der_boundaries_are_fixed_cross_language_vectors() -> None:
+    value = contract()["p256_signature_canonicalization"]
+    vectors = value["fixed_vectors"]
+    assert vectors["reject_non_minimal_r_der_hex"] == "300702020001020101"
+    assert vectors["reject_negative_r_der_hex"] == "3006020180020101"
+    assert vectors["reject_zero_r_der_hex"] == "3006020100020101"
+    assert vectors["reject_trailing_byte_der_hex"] == "300602010102010100"
+    assert set(value["verifier_rejections"]) == {
+        "high-S",
+        "negative integer",
+        "non-minimal DER",
+        "out-of-range r or s",
+        "trailing byte",
+        "zero r or s",
+    }
 
 
 def test_every_signed_object_has_a_distinct_nul_domain() -> None:
@@ -509,6 +545,13 @@ def test_cross_repo_vectors_cover_loss_races_replay_and_signer_failure() -> None
         "cloud-outcome-mixed-message-type-refused",
         "cloud-outcome-revoked-key-refused",
         "cloud-outcome-wrong-spki-refused",
+        "p256-alternate-s-normalized-before-envelope-digest",
+        "p256-high-s-verifier-refused",
+        "p256-non-minimal-der-refused",
+        "p256-negative-integer-refused",
+        "p256-zero-r-s-refused",
+        "p256-out-of-range-r-s-refused",
+        "p256-trailing-byte-refused",
     } <= vectors
 
 
