@@ -36,17 +36,18 @@ jobs:
       - name: Reject the lifecycle App
         env:
           ACTOR: ${{ github.actor }}
+          EVENT_NAME: ${{ github.event_name }}
           TRIGGERING_ACTOR: ${{ github.triggering_actor }}
         run: |
+          if [ "$EVENT_NAME" = 'pull_request' ]; then
+            exit 0
+          fi
           test "$ACTOR" != 'openadapt-lifecycle[bot]'
           test "$TRIGGERING_ACTOR" != 'openadapt-lifecycle[bot]'
 
   check:
     name: Compare documented versions to PyPI
     needs: reject-lifecycle-app
-    if: >-
-      github.actor != 'openadapt-lifecycle[bot]' &&
-      github.triggering_actor != 'openadapt-lifecycle[bot]'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
