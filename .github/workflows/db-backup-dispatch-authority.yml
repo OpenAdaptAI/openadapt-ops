@@ -23,7 +23,7 @@ jobs:
   claim:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    environment: production-backup-control
+    environment: production-backup-dispatch-ingress
     permissions:
       contents: read
       id-token: write
@@ -34,7 +34,7 @@ jobs:
     env:
       AWS_ACCOUNT_ID: '992382684924'
       AWS_BACKUP_CONTROL_BUCKET: ${{ vars.AWS_BACKUP_CONTROL_BUCKET }}
-      AWS_BACKUP_CONTROL_ROLE_ARN: ${{ vars.AWS_BACKUP_CONTROL_ROLE_ARN }}
+      AWS_BACKUP_DISPATCH_INGRESS_ROLE_ARN: ${{ vars.AWS_BACKUP_DISPATCH_INGRESS_ROLE_ARN }}
       AWS_REGION: us-east-1
       BACKUP_DISPATCH_AUTHORITY_ENABLED: ${{ vars.OPENADAPT_BACKUP_DISPATCH_AUTHORITY_ENABLED }}
       CLOUD_BACKUP_CONTINUATION_HMAC_KEY: ${{ secrets.CLOUD_BACKUP_CONTINUATION_HMAC_KEY }}
@@ -61,7 +61,7 @@ jobs:
             test "${EVENT_NAME}" = 'database_backup_renewal'
           test -n "${DISPATCH_PAYLOAD_JSON}"
           test -n "${AWS_BACKUP_CONTROL_BUCKET}"
-          test -n "${AWS_BACKUP_CONTROL_ROLE_ARN}"
+          test -n "${AWS_BACKUP_DISPATCH_INGRESS_ROLE_ARN}"
           test -n "${OPS_BACKUP_DISPATCH_CLAIM_TOKEN}"
           test -n "${OPS_BACKUP_DISPATCH_RESOLUTION_TOKEN}"
           test -n "${PAYMENT_SIGNAL_HMAC_KEY}"
@@ -74,7 +74,7 @@ jobs:
       - uses: aws-actions/configure-aws-credentials@e6de054238d6b7531b4efff3b6587d9aade6a06c # v6.2.3
         with:
           aws-region: ${{ env.AWS_REGION }}
-          role-to-assume: ${{ env.AWS_BACKUP_CONTROL_ROLE_ARN }}
+          role-to-assume: ${{ env.AWS_BACKUP_DISPATCH_INGRESS_ROLE_ARN }}
           allowed-account-ids: ${{ env.AWS_ACCOUNT_ID }}
           role-session-name: openadapt-backup-dispatch-${{ github.run_id }}
 

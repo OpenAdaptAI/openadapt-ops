@@ -167,10 +167,14 @@ def test_backup_dispatch_authority_retains_and_claims_before_any_effect() -> Non
     assert set(value["on"]["workflow_call"]) == {"outputs"}
     assert "repository_dispatch" not in value["on"]
     job = value["jobs"]["claim"]
-    assert job["environment"] == "production-backup-control"
+    assert job["environment"] == "production-backup-dispatch-ingress"
     assert job["permissions"] == {"contents": "read", "id-token": "write"}
     assert value["concurrency"]["group"] == "production-backup-dispatch-authority"
     assert "persist-credentials: false" in content
+    assert "AWS_BACKUP_DISPATCH_INGRESS_ROLE_ARN" in content
+    assert "AWS_BACKUP_DISPATCH_RECONCILIATION_ROLE_ARN" not in content
+    assert "aws kms sign" not in content
+    assert "KMS_KEY_ARN" not in content
     assert "--if-none-match '*'" in content
     retain = content.index("retain-ingress")
     ledger = content.index("put-object", retain)
