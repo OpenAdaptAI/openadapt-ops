@@ -1,0 +1,198 @@
+name: Production backup dispatch ingress authority
+
+on:
+  workflow_call:
+    inputs:
+      event_name:
+        description: Exact Cloud dispatch event name
+        required: true
+        type: string
+      dispatch_payload_json:
+        description: Exact repository_dispatch client payload JSON
+        required: true
+        type: string
+    outputs:
+      claim_sha256:
+        description: Digest of the exact Cloud-retained claim
+        value: ${{ jobs.claim.outputs.claim_sha256 }}
+      claim_receipt_sha256:
+        description: Digest of the exact Cloud claim receipt
+        value: ${{ jobs.claim.outputs.claim_receipt_sha256 }}
+      dispatch_attempt_id_sha256:
+        description: Exact claimed dispatch attempt digest
+        value: ${{ jobs.claim.outputs.dispatch_attempt_id_sha256 }}
+
+permissions: {}
+
+concurrency:
+  group: production-backup-dispatch-authority
+  cancel-in-progress: false
+
+jobs:
+  claim:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: production-backup-control
+    permissions:
+      contents: read
+      id-token: write
+    outputs:
+      claim_sha256: ${{ steps.receipt.outputs.claim_sha256 }}
+      claim_receipt_sha256: ${{ steps.receipt.outputs.claim_receipt_sha256 }}
+      dispatch_attempt_id_sha256: ${{ steps.receipt.outputs.dispatch_attempt_id_sha256 }}
+    env:
+      AWS_ACCOUNT_ID: '992382684924'
+      AWS_BACKUP_CONTROL_BUCKET: ${{ vars.AWS_BACKUP_CONTROL_BUCKET }}
+      AWS_BACKUP_CONTROL_ROLE_ARN: ${{ vars.AWS_BACKUP_CONTROL_ROLE_ARN }}
+      AWS_REGION: us-east-1
+      BACKUP_DISPATCH_AUTHORITY_ENABLED: ${{ vars.OPENADAPT_BACKUP_DISPATCH_AUTHORITY_ENABLED }}
+      CLOUD_BACKUP_CONTINUATION_HMAC_KEY: ${{ secrets.CLOUD_BACKUP_CONTINUATION_HMAC_KEY }}
+      CLOUD_BACKUP_DISPATCH_CLAIM_TOKEN: ${{ secrets.CLOUD_BACKUP_DISPATCH_CLAIM_TOKEN }}
+      CLOUD_BACKUP_DISPATCH_RESOLUTION_TOKEN: ${{ secrets.CLOUD_BACKUP_DISPATCH_RESOLUTION_TOKEN }}
+      GITHUB_REF_PROTECTED: ${{ github.ref_protected }}
+      GITHUB_REPOSITORY_ID_EXACT: ${{ github.repository_id }}
+      PAYMENT_SIGNAL_HMAC_KEY: ${{ secrets.PAYMENT_SIGNAL_HMAC_KEY }}
+    steps:
+      - name: Refuse an unprotected or incomplete caller
+        env:
+          DISPATCH_PAYLOAD_JSON: ${{ inputs.dispatch_payload_json }}
+          EVENT_NAME: ${{ inputs.event_name }}
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REPOSITORY}" = 'OpenAdaptAI/openadapt-ops'
+          test "${BACKUP_DISPATCH_AUTHORITY_ENABLED}" = 'true'
+          test "${GITHUB_REF}" = 'refs/heads/main'
+          test "${GITHUB_REF_PROTECTED}" = 'true'
+          test "${EVENT_NAME}" = 'verified_first_payment' || \
+            test "${EVENT_NAME}" = 'database_backup_renewal'
+          test -n "${DISPATCH_PAYLOAD_JSON}"
+          test -n "${AWS_BACKUP_CONTROL_BUCKET}"
+          test -n "${AWS_BACKUP_CONTROL_ROLE_ARN}"
+          test -n "${CLOUD_BACKUP_DISPATCH_CLAIM_TOKEN}"
+          test -n "${CLOUD_BACKUP_DISPATCH_RESOLUTION_TOKEN}"
+          test -n "${PAYMENT_SIGNAL_HMAC_KEY}"
+          test -n "${CLOUD_BACKUP_CONTINUATION_HMAC_KEY}"
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: aws-actions/configure-aws-credentials@e6de054238d6b7531b4efff3b6587d9aade6a06c # v6.2.3
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: ${{ env.AWS_BACKUP_CONTROL_ROLE_ARN }}
+          allowed-account-ids: ${{ env.AWS_ACCOUNT_ID }}
+          role-session-name: openadapt-backup-dispatch-${{ github.run_id }}
+
+      - name: Retain the exact authenticated ingress identity
+        env:
+          DISPATCH_PAYLOAD_JSON: ${{ inputs.dispatch_payload_json }}
+          EVENT_NAME: ${{ inputs.event_name }}
+        run: |
+          set -euo pipefail
+          umask 077
+          printf '%s' "${DISPATCH_PAYLOAD_JSON}" > /tmp/dispatch-payload.json
+          received_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          if [ "${EVENT_NAME}" = 'verified_first_payment' ]; then
+            signing_key_env=PAYMENT_SIGNAL_HMAC_KEY
+          else
+            signing_key_env=CLOUD_BACKUP_CONTINUATION_HMAC_KEY
+          fi
+          python scripts/database_backup_dispatch_reconciliation.py retain-ingress \
+            --event-name "${EVENT_NAME}" \
+            --payload /tmp/dispatch-payload.json \
+            --github-repository "${GITHUB_REPOSITORY}" \
+            --github-repository-id "${GITHUB_REPOSITORY_ID_EXACT}" \
+            --github-run-id "${GITHUB_RUN_ID}" \
+            --github-run-attempt "${GITHUB_RUN_ATTEMPT}" \
+            --received-at "${received_at}" \
+            --workflow-revision "${GITHUB_SHA}" \
+            --dispatch-signing-key-env "${signing_key_env}" \
+            --output /tmp/dispatch-ingress.json
+          rm -f /tmp/dispatch-payload.json
+
+      - name: Put the ingress ledger once or verify byte-identical replay
+        run: |
+          set -euo pipefail
+          digest=$(jq -r '.dispatch_attempt_id_sha256' /tmp/dispatch-ingress.json)
+          key="dispatch-ingress/sha256/${digest:0:2}/${digest}.json"
+          checksum=$(openssl dgst -sha256 -binary /tmp/dispatch-ingress.json | base64)
+          set +e
+          aws s3api put-object \
+            --bucket "${AWS_BACKUP_CONTROL_BUCKET}" \
+            --key "${key}" \
+            --body /tmp/dispatch-ingress.json \
+            --if-none-match '*' \
+            --server-side-encryption AES256 \
+            --checksum-algorithm SHA256 \
+            --checksum-sha256 "${checksum}" \
+            --expected-bucket-owner "${AWS_ACCOUNT_ID}" \
+            > /tmp/dispatch-ledger-put.json
+          put_result=$?
+          set -e
+          if [ "${put_result}" -ne 0 ]; then
+            aws s3api get-object \
+              --bucket "${AWS_BACKUP_CONTROL_BUCKET}" \
+              --key "${key}" \
+              --expected-bucket-owner "${AWS_ACCOUNT_ID}" \
+              /tmp/dispatch-ingress-existing.json > /dev/null
+            cmp -s /tmp/dispatch-ingress.json /tmp/dispatch-ingress-existing.json
+          fi
+
+      - name: Refuse a delayed attempt after a retained NOT_RECEIVED decision
+        run: |
+          set -euo pipefail
+          resolution_id=$(jq -r '.resolution_id' /tmp/dispatch-ingress.json)
+          set +e
+          status_code=$(curl --silent --show-error \
+            --output /tmp/dispatch-status.json \
+            --write-out '%{http_code}' \
+            --header "Authorization: Bearer ${CLOUD_BACKUP_DISPATCH_RESOLUTION_TOKEN}" \
+            --header 'Accept: application/json' \
+            "https://cloud.openadapt.ai/api/internal/backup/dispatch-reconciliation/status?resolution_id=${resolution_id}")
+          curl_result=$?
+          set -e
+          test "${curl_result}" -eq 0
+          python scripts/database_backup_dispatch_reconciliation.py assert-unresolved \
+            --candidate /tmp/dispatch-ingress.json \
+            --response /tmp/dispatch-status.json \
+            --http-status "${status_code}"
+
+      - name: Win the atomic Cloud attempt claim before any effect
+        id: receipt
+        run: |
+          set -euo pipefail
+          python scripts/database_backup_dispatch_reconciliation.py build-claim \
+            --ingress /tmp/dispatch-ingress.json \
+            --output /tmp/dispatch-claim-request.json
+          jq -c '.envelope' /tmp/dispatch-claim-request.json \
+            > /tmp/dispatch-claim.json
+          idempotency_key=$(jq -r '.idempotency_key' /tmp/dispatch-claim-request.json)
+          set +e
+          claim_status=$(curl --silent --show-error \
+            --output /tmp/dispatch-claim-receipt.json \
+            --write-out '%{http_code}' \
+            --request POST \
+            --header "Authorization: Bearer ${CLOUD_BACKUP_DISPATCH_CLAIM_TOKEN}" \
+            --header 'Content-Type: application/json' \
+            --header "Idempotency-Key: ${idempotency_key}" \
+            --data-binary @/tmp/dispatch-claim.json \
+            'https://cloud.openadapt.ai/api/internal/backup/dispatch-attempt/claim')
+          curl_result=$?
+          set -e
+          test "${curl_result}" -eq 0
+          python scripts/database_backup_dispatch_reconciliation.py verify-claim-receipt \
+            --claim-request /tmp/dispatch-claim-request.json \
+            --response /tmp/dispatch-claim-receipt.json \
+            --http-status "${claim_status}" \
+            --output /tmp/dispatch-claim-result.json
+          {
+            echo "claim_sha256=$(jq -r '.claim_sha256' /tmp/dispatch-claim-result.json)"
+            echo "claim_receipt_sha256=$(jq -r '.claim_receipt_sha256' /tmp/dispatch-claim-result.json)"
+            echo "dispatch_attempt_id_sha256=$(jq -r '.dispatch_attempt_id_sha256' /tmp/dispatch-claim-result.json)"
+          } >> "${GITHUB_OUTPUT}"
+
+      - name: Remove transient dispatch material
+        if: always()
+        run: |
+          rm -f /tmp/dispatch-*.json

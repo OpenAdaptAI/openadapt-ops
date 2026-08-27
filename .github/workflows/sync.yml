@@ -33,8 +33,24 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  reject-lifecycle-app:
+    permissions: {}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Reject lifecycle authority on the documentation workflow
+        env:
+          ACTOR: ${{ github.actor }}
+          TRIGGERING_ACTOR: ${{ github.triggering_actor }}
+        run: |
+          test "$ACTOR" != 'openadapt-lifecycle[bot]'
+          test "$TRIGGERING_ACTOR" != 'openadapt-lifecycle[bot]'
+
   sync-and-deploy:
-    if: github.ref == 'refs/heads/main'
+    needs: reject-lifecycle-app
+    if: >-
+      github.ref == 'refs/heads/main' &&
+      github.actor != 'openadapt-lifecycle[bot]' &&
+      github.triggering_actor != 'openadapt-lifecycle[bot]'
     runs-on: ubuntu-latest
     environment:
       name: github-pages

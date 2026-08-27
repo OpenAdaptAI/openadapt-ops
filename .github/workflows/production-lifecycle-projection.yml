@@ -93,7 +93,9 @@ jobs:
           test "${GITHUB_REF}" = 'refs/heads/main'
           test "${GITHUB_REF_PROTECTED}" = 'true'
           test "${GITHUB_SHA}" = "$(gh api repos/OpenAdaptAI/openadapt-ops/commits/main --jq .sha)"
-          test "${NEW_COMMIT}" = "$(gh api repos/OpenAdaptAI/.github/commits/main --jq .sha)"
+          main_commit=$(gh api repos/OpenAdaptAI/.github/commits/main --jq .sha)
+          relation=$(gh api "repos/OpenAdaptAI/.github/compare/${NEW_COMMIT}...${main_commit}" --jq .status)
+          test "$relation" = 'ahead' || test "$relation" = 'identical'
 
       - name: Build the closed canonical feed update
         env:
@@ -124,14 +126,9 @@ jobs:
           app-id: ${{ vars.OPENADAPT_LIFECYCLE_APP_ID }}
           private-key: ${{ secrets.OPENADAPT_LIFECYCLE_APP_PRIVATE_KEY }}
           owner: OpenAdaptAI
-          repositories: |
-            .github
-            openadapt-evals
-            openadapt-ops
+          repositories: .github
           permission-actions: write
-          permission-contents: write
           permission-metadata: read
-          permission-pull-requests: write
 
       - name: Verify the exact lifecycle App installation
         env:

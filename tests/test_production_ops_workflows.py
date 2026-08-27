@@ -13,6 +13,7 @@ REJECT_LIFECYCLE_WORKFLOWS = (
     ".github/workflows/action-pin-sweep.yml",
     ".github/workflows/azure-cost-guard.yml",
     ".github/workflows/db-backup-freshness.yml",
+    ".github/workflows/db-backup-dispatch-reconciliation.yml",
     ".github/workflows/db-backup.yml",
     ".github/workflows/default-branch-sweep.yml",
     ".github/workflows/prod-health-alert.yml",
@@ -36,8 +37,13 @@ def test_every_non_lifecycle_dispatch_refuses_the_lifecycle_app() -> None:
     for path in REJECT_LIFECYCLE_WORKFLOWS:
         value = workflow(path)
         concurrency = value["concurrency"]
-        assert "github.workflow" in concurrency["group"], path
-        assert "github.event_name" in concurrency["group"], path
+        if path == ".github/workflows/db-backup.yml":
+            assert concurrency["group"] == "production-db-backup"
+        elif path == ".github/workflows/db-backup-dispatch-reconciliation.yml":
+            assert concurrency["group"] == "production-backup-dispatch-authority"
+        else:
+            assert "github.workflow" in concurrency["group"], path
+            assert "github.event_name" in concurrency["group"], path
         assert concurrency["cancel-in-progress"] == "false", path
 
         jobs = value["jobs"]
@@ -83,10 +89,26 @@ def test_lifecycle_feed_source_is_app_only_and_dispatches_one_closed_json() -> N
     assert "--repo OpenAdaptAI/.github" in content
     assert "--ref main" in content
     assert "permission-actions: write" in content
-    assert "permission-contents: write" in content
+    assert "permission-contents: write" not in content
+    assert "permission-pull-requests: write" not in content
+    assert "openadapt-evals" not in content
     assert "git push origin HEAD:main" not in content
     assert "gh pr create" not in content
     assert "cancel-in-progress: false" in content
+
+
+def test_docs_sync_rejects_lifecycle_authority_before_pages_or_oidc() -> None:
+    value = workflow(".github/workflows/sync.yml")
+    guard = value["jobs"]["reject-lifecycle-app"]
+    assert guard["permissions"] == {}
+    assert "openadapt-lifecycle[bot]" in str(guard)
+    deploy = value["jobs"]["sync-and-deploy"]
+    assert deploy["needs"] == "reject-lifecycle-app"
+    assert "github.actor" in deploy["if"]
+    assert "github.triggering_actor" in deploy["if"]
+    content = read(".github/workflows/sync.yml")
+    assert "pages: write" in content
+    assert "id-token: write" in content
 
 
 def test_app_authored_pull_request_validation_does_not_deadlock() -> None:
@@ -136,6 +158,79 @@ def test_backup_configuration_fails_before_credentials_or_tool_install() -> None
         "SUPABASE_PROJECT_REF",
     ):
         assert f"missing+=({name})" in workflow
+
+
+def test_backup_dispatch_authority_retains_and_claims_before_any_effect() -> None:
+    content = read(".github/workflows/db-backup-dispatch-authority.yml")
+    value = workflow(".github/workflows/db-backup-dispatch-authority.yml")
+    assert "workflow_call" in value["on"]
+    assert "repository_dispatch" not in value["on"]
+    job = value["jobs"]["claim"]
+    assert job["environment"] == "production-backup-control"
+    assert job["permissions"] == {"contents": "read", "id-token": "write"}
+    assert value["concurrency"]["group"] == "production-backup-dispatch-authority"
+    assert "persist-credentials: false" in content
+    assert "--if-none-match '*'" in content
+    retain = content.index("retain-ingress")
+    ledger = content.index("put-object", retain)
+    status = content.index("assert-unresolved", ledger)
+    claim = content.index("build-claim", status)
+    receipt = content.index("verify-claim-receipt", claim)
+    assert retain < ledger < status < claim < receipt
+    assert "dispatch-attempt/claim" in content
+    assert "activation_request_b64=" not in content
+    assert "first-backup" not in content
+    assert "restore" not in content
+
+
+def test_backup_absence_authority_queries_inventory_and_kms_without_caller_proof() -> None:
+    content = read(".github/workflows/db-backup-dispatch-reconciliation.yml")
+    value = workflow(".github/workflows/db-backup-dispatch-reconciliation.yml")
+    job = value["jobs"]["reconcile"]
+    assert job["environment"] == "production-backup-control"
+    assert job["permissions"] == {"contents": "read", "id-token": "write"}
+    assert "OPENADAPT_BACKUP_DISPATCH_AUTHORITY_ENABLED" in content
+    assert "permission-actions: read" in content
+    assert "permission-metadata: read" in content
+    assert "persist-credentials: false" in content
+    assert "prepare-not-received" in content
+    assert "--github-token-env BACKUP_CONTROL_GITHUB_TOKEN" in content
+    assert "--github-runs" not in content
+    assert "--if-none-match '*'" in content
+    assert "aws kms sign" in content
+    assert "ECDSA_SHA_256" in content
+    assert "aws kms get-public-key" in content
+    assert "ECC_NIST_P256" in content
+    assert "SIGN_VERIFY" in content
+    assert "alias/openadapt-production-backup-dispatch-resolution" in content
+    assert "OPENADAPT_BACKUP_DISPATCH_RESOLUTION_PUBLIC_KEY_SHA256" in content
+    assert "OPENADAPT_BACKUP_DISPATCH_RESOLUTION_REVOKED_KEY_IDS" in content
+    assert "verify-reissue-receipt" in content
+    assert "verify-resolution-status" in content
+    assert "Idempotency-Key: ${resolution_id}" in content
+
+
+def test_backup_control_credentials_are_scoped_to_the_two_authority_workflows() -> None:
+    references: dict[str, set[str]] = {
+        "CLOUD_BACKUP_DISPATCH_CLAIM_TOKEN": set(),
+        "CLOUD_BACKUP_DISPATCH_RESOLUTION_TOKEN": set(),
+        "OPENADAPT_BACKUP_CONTROL_APP_PRIVATE_KEY": set(),
+    }
+    for path in sorted((ROOT / ".github" / "workflows").glob("*.y*ml")):
+        content = path.read_text(encoding="utf-8")
+        for name, paths in references.items():
+            if name in content:
+                paths.add(str(path.relative_to(ROOT)))
+    assert references["CLOUD_BACKUP_DISPATCH_CLAIM_TOKEN"] == {
+        ".github/workflows/db-backup-dispatch-authority.yml"
+    }
+    assert references["CLOUD_BACKUP_DISPATCH_RESOLUTION_TOKEN"] == {
+        ".github/workflows/db-backup-dispatch-authority.yml",
+        ".github/workflows/db-backup-dispatch-reconciliation.yml",
+    }
+    assert references["OPENADAPT_BACKUP_CONTROL_APP_PRIVATE_KEY"] == {
+        ".github/workflows/db-backup-dispatch-reconciliation.yml"
+    }
 
 
 def test_backup_uses_one_s3_validated_full_object_put() -> None:

@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import base64
+import hashlib
+import hmac
 import importlib.util
 import json
 import subprocess
@@ -21,8 +23,14 @@ ACTIVATION_ID = "act_2d49200bcccc6d2b70a392991a6390325d1ab2e7e0c16c81dfc63d1673e
 ENVELOPE_DIGEST = "b31d46c369c8a754dba069033a900b46d64009138834b06d4ece5eede827602f"
 ATTEMPT_DIGEST = "76c5e382d0045c0bc1ba849090f947b7076d2cbd04e56d35820fdf7e8d9dec6e"
 RESOLUTION_ID = (
-    "resolution_fada2d1a0ce8d86df505b2df27f89b49145e3ea9ea3798133d9a6fc1f108b4e4"
+    "resolution_fee98ae0e1c9ac366ebfb2fb67fbe549b48a43190033503d9e77a7b1745e8ecf"
 )
+SIGNING_KEY = "cloud-payment-signal-fixture-key-0123456789abcdef"
+WORKFLOW_REVISION = "a" * 40
+
+
+def encoded(value: object) -> str:
+    return base64.b64encode(MODULE.canonical_json(value)).decode()
 
 
 def ingress_payload() -> tuple[dict[str, object], dict[str, object]]:
@@ -31,14 +39,45 @@ def ingress_payload() -> tuple[dict[str, object], dict[str, object]]:
         "request": {"activation_id": ACTIVATION_ID},
         "signature": {"algorithm": "fixture", "key_id": "fixture", "value": "fixture"},
     }
-    digest = MODULE._sha256(MODULE.canonical_json(envelope))
+    envelope_digest = MODULE._sha256(MODULE.canonical_json(envelope))
+    attempt_identity = {
+        "activation_id": ACTIVATION_ID,
+        "attempt_number": 1,
+        "dispatch_envelope_sha256": envelope_digest,
+        "dispatch_kind": "INITIAL_ACTIVATION",
+    }
+    attempt_digest = MODULE._sha256(MODULE.canonical_json(attempt_identity))
+    attempt = {
+        "activation_id": ACTIVATION_ID,
+        "attempt_number": 1,
+        "audience": MODULE.ATTEMPT_AUDIENCE,
+        "dispatch_attempt_id_sha256": attempt_digest,
+        "dispatch_envelope_sha256": envelope_digest,
+        "dispatch_kind": "INITIAL_ACTIVATION",
+        "issuer": MODULE.ATTEMPT_ISSUER,
+        "lease_event_id": None,
+        "offer_contract": MODULE.OFFER_CONTRACT,
+    }
+    attempt_bytes = MODULE.canonical_json(attempt)
+    attempt_envelope = {
+        "schema": MODULE.ATTEMPT_SCHEMA,
+        "attempt": attempt,
+        "attempt_sha256": MODULE._sha256(attempt_bytes),
+        "signature": {
+            "algorithm": "HMAC-SHA256",
+            "key_id": MODULE.INITIAL_ATTEMPT_KEY_ID,
+            "value": hmac.new(
+                SIGNING_KEY.encode(), attempt_bytes, hashlib.sha256
+            ).hexdigest(),
+        },
+    }
     payload = {
         "schema": MODULE.INITIAL_SCHEMA,
-        "dispatch_attempt_id_sha256": ATTEMPT_DIGEST,
-        "dispatch_envelope_sha256": digest,
-        "activation_request_b64": base64.b64encode(
-            json.dumps(envelope, indent=2).encode()
-        ).decode(),
+        "attempt_number": 1,
+        "dispatch_attempt_id_sha256": attempt_digest,
+        "dispatch_envelope_sha256": envelope_digest,
+        "dispatch_attempt_b64": encoded(attempt_envelope),
+        "activation_request_b64": encoded(envelope),
     }
     return payload, envelope
 
@@ -48,6 +87,7 @@ def candidate() -> dict[str, object]:
         "resolution_id": RESOLUTION_ID,
         "dispatch_kind": "INITIAL_ACTIVATION",
         "activation_id": ACTIVATION_ID,
+        "attempt_number": 1,
         "organization_id_sha256": "1" * 64,
         "dispatch_attempt_id_sha256": ATTEMPT_DIGEST,
         "dispatch_envelope_sha256": ENVELOPE_DIGEST,
@@ -59,73 +99,130 @@ def candidate() -> dict[str, object]:
     }
 
 
+def empty_inventory(*, observed_at: str = "2026-08-27T16:05:00Z") -> dict[str, object]:
+    empty = {"total_count": 0, "workflow_runs": []}
+    return MODULE.observe_github_run_inventory(
+        reconciliation_required_at="2026-08-27T16:00:00Z",
+        observed_at=observed_at,
+        repository={
+            "full_name": MODULE.INVENTORY_REPOSITORY,
+            "id": MODULE.INVENTORY_REPOSITORY_ID,
+        },
+        workflow={
+            "id": "90210",
+            "path": MODULE.INVENTORY_WORKFLOW_PATH,
+            "state": "active",
+        },
+        principal={
+            "app_id": "555",
+            "app_slug": "openadapt-backup-control",
+            "installation_id": "777",
+            "target_id": MODULE.INVENTORY_OWNER_ID,
+            "target_type": "Organization",
+        },
+        fetch_page=lambda *_: empty,
+    )
+
+
 def prepare() -> dict[str, object]:
     return MODULE.prepare_not_received_resolution(
         candidate(),
         expected_attempt_sha256=ATTEMPT_DIGEST,
         expected_envelope_sha256=ENVELOPE_DIGEST,
-        issued_at="2026-08-27T16:01:00Z",
+        issued_at="2026-08-27T16:05:00Z",
         ingress_ledger_object=None,
-        github_runs=[],
+        github_inventory=empty_inventory(),
     )
 
 
-def test_normal_ingress_retains_exact_attempt_envelope_and_run_identity() -> None:
-    payload, _ = ingress_payload()
-    retained = MODULE.retain_ingress(
+def retain(payload: dict[str, object]) -> dict[str, object]:
+    return MODULE.retain_ingress(
         MODULE.INITIAL_EVENT,
         payload,
-        github_repository="OpenAdaptAI/openadapt-ops",
+        github_repository=MODULE.INVENTORY_REPOSITORY,
+        github_repository_id=MODULE.INVENTORY_REPOSITORY_ID,
         github_run_id="123456",
         github_run_attempt=1,
+        received_at="2026-08-27T15:59:59Z",
+        workflow_revision=WORKFLOW_REVISION,
+        dispatch_signing_key=SIGNING_KEY,
     )
-    assert retained["dispatch_attempt_id_sha256"] == ATTEMPT_DIGEST
+
+
+def inventory_scope() -> dict[str, object]:
+    return {
+        "reconciliation_required_at": "2026-08-27T16:00:00Z",
+        "observed_at": "2026-08-27T16:05:00Z",
+        "repository": {
+            "full_name": MODULE.INVENTORY_REPOSITORY,
+            "id": MODULE.INVENTORY_REPOSITORY_ID,
+        },
+        "workflow": {
+            "id": "90210",
+            "path": MODULE.INVENTORY_WORKFLOW_PATH,
+            "state": "active",
+        },
+        "principal": {
+            "app_id": "555",
+            "app_slug": "openadapt-backup-control",
+            "installation_id": "777",
+            "target_id": MODULE.INVENTORY_OWNER_ID,
+            "target_type": "Organization",
+        },
+    }
+
+
+def test_normal_ingress_retains_digests_and_exact_run_identity_without_envelope() -> None:
+    payload, _ = ingress_payload()
+    retained = retain(payload)
+    assert retained["dispatch_attempt_id_sha256"] == payload["dispatch_attempt_id_sha256"]
     assert retained["dispatch_envelope_sha256"] == payload["dispatch_envelope_sha256"]
+    assert retained["attempt_number"] == 1
+    assert retained["github_repository_id"] == MODULE.INVENTORY_REPOSITORY_ID
     assert retained["github_run_id"] == "123456"
-    assert MODULE.ingress_ledger_key(retained).endswith(f"/{ATTEMPT_DIGEST}.json")
+    assert retained["workflow_revision"] == WORKFLOW_REVISION
+    assert "activation_request_b64" not in retained
+    assert "dispatch_attempt_b64" not in retained
+    assert MODULE.ingress_ledger_key(retained).endswith(
+        f"/{payload['dispatch_attempt_id_sha256']}.json"
+    )
 
 
 def test_ingress_ledger_is_no_overwrite_idempotent_and_conflict_hard() -> None:
     payload, _ = ingress_payload()
-    retained = MODULE.retain_ingress(
-        MODULE.INITIAL_EVENT,
-        payload,
-        github_repository="OpenAdaptAI/openadapt-ops",
-        github_run_id="123456",
-        github_run_attempt=1,
-    )
+    retained = retain(payload)
     assert MODULE.classify_ingress_write(retained, None) == "CREATE"
-    assert (
-        MODULE.classify_ingress_write(retained, MODULE.canonical_json(retained))
-        == "IDEMPOTENT"
-    )
+    assert MODULE.classify_ingress_write(
+        retained, MODULE.canonical_json(retained)
+    ) == "IDEMPOTENT"
     with pytest.raises(MODULE.DispatchContractError, match="conflicting bytes"):
         MODULE.classify_ingress_write(retained, b"{}")
 
 
-def test_ingress_rejects_missing_or_mismatched_dispatch_identity() -> None:
+def test_ingress_rejects_mismatched_attempt_digest_and_invalid_signature() -> None:
     payload, _ = ingress_payload()
-    payload["dispatch_envelope_sha256"] = "0" * 64
-    with pytest.raises(MODULE.DispatchContractError, match="does not match"):
-        MODULE.retain_ingress(
-            MODULE.INITIAL_EVENT,
-            payload,
-            github_repository="OpenAdaptAI/openadapt-ops",
-            github_run_id="123456",
-            github_run_attempt=1,
-        )
+    payload["dispatch_attempt_id_sha256"] = "0" * 64
+    with pytest.raises(MODULE.DispatchContractError, match="attempt digest"):
+        retain(payload)
+    payload, _ = ingress_payload()
+    attempt = json.loads(base64.b64decode(str(payload["dispatch_attempt_b64"])))
+    attempt["signature"]["value"] = "0" * 64
+    payload["dispatch_attempt_b64"] = encoded(attempt)
+    with pytest.raises(MODULE.DispatchContractError, match="signature"):
+        retain(payload)
 
 
 def test_shared_lost_before_github_vector_builds_exact_five_minute_resolution() -> None:
     prepared = prepare()
     resolution = prepared["resolution"]
-    assert len(resolution) == 15
+    assert len(resolution) == 16
     assert resolution["resolution_id"] == RESOLUTION_ID
+    assert resolution["attempt_number"] == 1
     assert resolution["resolution_state"] == "NOT_RECEIVED"
     assert resolution["dispatch_attempt_id_sha256"] == ATTEMPT_DIGEST
     assert resolution["dispatch_envelope_sha256"] == ENVELOPE_DIGEST
-    assert resolution["issued_at"] == "2026-08-27T16:01:00Z"
-    assert resolution["expires_at"] == "2026-08-27T16:06:00Z"
+    assert resolution["issued_at"] == "2026-08-27T16:05:00Z"
+    assert resolution["expires_at"] == "2026-08-27T16:10:00Z"
     canonical = base64.b64decode(prepared["canonical_resolution_b64"])
     assert MODULE._sha256(canonical) == prepared["resolution_sha256"]
 
@@ -134,30 +231,161 @@ def test_no_resolution_is_prepared_when_absence_is_uncertain() -> None:
     kwargs = {
         "expected_attempt_sha256": ATTEMPT_DIGEST,
         "expected_envelope_sha256": ENVELOPE_DIGEST,
-        "issued_at": "2026-08-27T16:01:00Z",
+        "issued_at": "2026-08-27T16:05:00Z",
     }
     with pytest.raises(MODULE.DispatchContractError, match="ingress ledger"):
         MODULE.prepare_not_received_resolution(
-            candidate(), ingress_ledger_object=b"present", github_runs=[], **kwargs
+            candidate(),
+            ingress_ledger_object=b"present",
+            github_inventory=empty_inventory(),
+            **kwargs,
         )
-    with pytest.raises(MODULE.DispatchContractError, match="can match"):
+    evidence = empty_inventory()
+    evidence["runs"] = [{"id": "9"}]
+    unsigned = dict(evidence)
+    unsigned.pop("evidence_sha256")
+    evidence["evidence_sha256"] = MODULE._sha256(MODULE.canonical_json(unsigned))
+    with pytest.raises(MODULE.DispatchContractError, match="incomplete|can match"):
         MODULE.prepare_not_received_resolution(
             candidate(),
             ingress_ledger_object=None,
-            github_runs=[
-                {
-                    "id": 9,
-                    "event": "repository_dispatch",
-                    "created_at": "2026-08-27T15:59:59Z",
-                }
-            ],
+            github_inventory=evidence,
             **kwargs,
         )
 
 
-def test_local_p256_fixture_signs_the_exact_canonical_resolution(
-    tmp_path: Path,
-) -> None:
+def test_inventory_requires_complete_stable_pagination_and_minimum_window() -> None:
+    with pytest.raises(MODULE.DispatchContractError, match="too short"):
+        empty_inventory(observed_at="2026-08-27T16:04:59Z")
+
+    run = {
+        "id": "1",
+        "event": MODULE.INVENTORY_EVENT,
+        "head_branch": "main",
+        "head_sha": "a" * 40,
+        "workflow_id": "90210",
+        "created_at": "2026-08-27T16:01:00Z",
+        "run_started_at": "2026-08-27T16:01:01Z",
+        "status": "completed",
+        "conclusion": "success",
+    }
+    pages = iter(
+        [
+            {"total_count": 101, "workflow_runs": [run] * 100},
+            {"total_count": 101, "workflow_runs": []},
+        ]
+    )
+    with pytest.raises(MODULE.DispatchContractError, match="pagination ended"):
+        MODULE.observe_github_run_inventory(
+            **inventory_scope(), fetch_page=lambda *_: next(pages)
+        )
+
+
+def test_inventory_rejects_ambiguous_run_and_changed_high_water() -> None:
+    malformed = {"total_count": 1, "workflow_runs": [{"id": "1"}]}
+    with pytest.raises(MODULE.DispatchContractError, match="ambiguous"):
+        MODULE.observe_github_run_inventory(
+            **inventory_scope(), fetch_page=lambda *_: malformed
+        )
+
+    empty_then_changed = iter(
+        [
+            {"total_count": 0, "workflow_runs": []},
+            {"total_count": 1, "workflow_runs": []},
+        ]
+    )
+    with pytest.raises(MODULE.DispatchContractError, match="high-water total changed"):
+        MODULE.observe_github_run_inventory(
+            **inventory_scope(), fetch_page=lambda *_: next(empty_then_changed)
+        )
+
+
+def test_delayed_attempt_cannot_continue_after_not_received_resolution() -> None:
+    MODULE.assert_cloud_attempt_unresolved(
+        candidate(),
+        http_status=404,
+        response={"error": "ACTIVATION_NOT_FOUND", "message": "Not retained."},
+    )
+    status = {
+        "schema": MODULE.STATUS_SCHEMA,
+        "resolution_id": RESOLUTION_ID,
+        "dispatch_kind": "INITIAL_ACTIVATION",
+        "reissue_state": "QUEUED",
+        "replacement_payload_sha256": "d" * 64,
+        "replacement_dispatch_envelope_sha256": "e" * 64,
+        "attempt_count": 0,
+        "consumed_at": "2026-08-27T16:05:01Z",
+        "delivered_at": None,
+    }
+    with pytest.raises(MODULE.DispatchContractError, match="already resolved"):
+        MODULE.assert_cloud_attempt_unresolved(
+            candidate(), http_status=200, response=status
+        )
+    with pytest.raises(MODULE.DispatchContractError, match="uncertain"):
+        MODULE.assert_cloud_attempt_unresolved(
+            candidate(),
+            http_status=500,
+            response={"error": "INTERNAL_ERROR", "message": "Unavailable."},
+        )
+
+
+def test_claim_wins_and_resolution_wins_are_mutually_exclusive() -> None:
+    payload, _ = ingress_payload()
+    claim_request = MODULE.build_dispatch_claim(retain(payload))
+    claim_receipt = {
+        "schema": MODULE.CLAIM_RECEIPT_SCHEMA,
+        "dispatch_attempt_id_sha256": payload["dispatch_attempt_id_sha256"],
+        "attempt_state": "RECEIVED",
+        "claim_sha256": claim_request["claim_sha256"],
+        "received_at": "2026-08-27T16:00:01Z",
+    }
+    claim_result = MODULE.verify_dispatch_claim_receipt(
+        claim_request, http_status=200, response=claim_receipt
+    )
+    assert claim_result["claim_sha256"] == claim_request["claim_sha256"]
+
+    with pytest.raises(MODULE.DispatchContractError, match="lost the atomic"):
+        MODULE.verify_resolution_reissue_receipt(
+            {
+                "schema": MODULE.RESOLUTION_SCHEMA,
+                "resolution": prepare()["resolution"],
+                "resolution_sha256": prepare()["resolution_sha256"],
+                "signature": {
+                    "algorithm": MODULE.SIGNATURE_ALGORITHM,
+                    "key_id": MODULE.SIGNATURE_KEY_ID,
+                    "value": "fixture",
+                },
+            },
+            http_status=409,
+            response={
+                "error": "DISPATCH_ATTEMPT_ALREADY_RECEIVED",
+                "message": "The original attempt was received.",
+            },
+        )
+
+    with pytest.raises(MODULE.DispatchContractError, match="did not win"):
+        MODULE.verify_dispatch_claim_receipt(
+            claim_request,
+            http_status=409,
+            response={
+                "error": "DISPATCH_ATTEMPT_ALREADY_RESOLVED",
+                "message": "The original attempt was resolved.",
+            },
+        )
+
+
+def test_queue_is_closed_and_recomputes_attempt_and_resolution_id() -> None:
+    queue = {
+        "schema": "openadapt.cloud-backup-dispatch-reconciliation-queue/v1",
+        "candidates": [candidate()],
+    }
+    assert MODULE.validate_candidate_queue(queue) == [candidate()]
+    queue["candidates"][0]["attempt_number"] = 2
+    with pytest.raises(MODULE.DispatchContractError, match="attempt digest"):
+        MODULE.validate_candidate_queue(queue)
+
+
+def test_local_p256_fixture_signs_the_exact_canonical_resolution(tmp_path: Path) -> None:
     private_key = tmp_path / "fixture-private.pem"
     public_key = tmp_path / "fixture-public.pem"
     message = tmp_path / "resolution.json"
@@ -232,5 +460,9 @@ def test_shared_hmac_signature_is_rejected() -> None:
     with pytest.raises(MODULE.DispatchContractError, match="algorithm is not exact"):
         MODULE.sign_prepared_resolution(
             prepare(),
-            lambda _: {"algorithm": "HMAC-SHA256", "key_id": "shared", "value": "AA=="},
+            lambda _: {
+                "algorithm": "HMAC-SHA256",
+                "key_id": "shared",
+                "value": "AA==",
+            },
         )
