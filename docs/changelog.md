@@ -57,6 +57,8 @@
 
 ## openadapt-evals
 
+- **[v0.94.0](https://github.com/OpenAdaptAI/openadapt-evals/releases/tag/v0.94.0)** (2026-08-26)
+  What's Changed
 - **[v0.93.0](https://github.com/OpenAdaptAI/openadapt-evals/releases/tag/v0.93.0)** (2026-08-26)
   What's Changed
 - **[v0.92.0](https://github.com/OpenAdaptAI/openadapt-evals/releases/tag/v0.92.0)** (2026-08-22)
@@ -65,8 +67,6 @@
   Bug Fixes
 - **[v0.91.1](https://github.com/OpenAdaptAI/openadapt-evals/releases/tag/v0.91.1)** (2026-08-19)
   Bug Fixes
-- **[v0.91.0](https://github.com/OpenAdaptAI/openadapt-evals/releases/tag/v0.91.0)** (2026-08-19)
-  Chores
 
 ## openadapt-capture
 
