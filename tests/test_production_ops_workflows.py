@@ -191,8 +191,8 @@ def test_backup_dispatch_authority_retains_and_claims_before_any_effect() -> Non
 
 def test_backup_control_credentials_are_scoped_to_the_ingress_authority() -> None:
     references: dict[str, set[str]] = {
-        "CLOUD_BACKUP_DISPATCH_CLAIM_TOKEN": set(),
-        "CLOUD_BACKUP_DISPATCH_RESOLUTION_TOKEN": set(),
+        "OPS_BACKUP_DISPATCH_CLAIM_TOKEN": set(),
+        "OPS_BACKUP_DISPATCH_RESOLUTION_TOKEN": set(),
         "OPENADAPT_BACKUP_CONTROL_APP_PRIVATE_KEY": set(),
     }
     for path in sorted((ROOT / ".github" / "workflows").glob("*.y*ml")):
@@ -200,10 +200,10 @@ def test_backup_control_credentials_are_scoped_to_the_ingress_authority() -> Non
         for name, paths in references.items():
             if name in content:
                 paths.add(str(path.relative_to(ROOT)))
-    assert references["CLOUD_BACKUP_DISPATCH_CLAIM_TOKEN"] == {
+    assert references["OPS_BACKUP_DISPATCH_CLAIM_TOKEN"] == {
         ".github/workflows/db-backup-dispatch-authority.yml"
     }
-    assert references["CLOUD_BACKUP_DISPATCH_RESOLUTION_TOKEN"] == {
+    assert references["OPS_BACKUP_DISPATCH_RESOLUTION_TOKEN"] == {
         ".github/workflows/db-backup-dispatch-authority.yml",
     }
     assert references["OPENADAPT_BACKUP_CONTROL_APP_PRIVATE_KEY"] == set()
