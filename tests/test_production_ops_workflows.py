@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import re
 from pathlib import Path
 
@@ -211,6 +212,59 @@ def test_backup_control_credentials_are_scoped_to_the_ingress_authority() -> Non
         ".github/workflows/db-backup-dispatch-authority.yml",
     }
     assert references["OPENADAPT_BACKUP_CONTROL_APP_PRIVATE_KEY"] == set()
+
+
+def test_backup_dispatch_authority_policy_separates_ingress_from_signing() -> None:
+    policy = json.loads(read("ops/backup/dispatch-authority-policy.json"))
+    assert set(policy) == {
+        "schema_version",
+        "repository",
+        "repository_id",
+        "aws_account_id",
+        "aws_region",
+        "ingress",
+        "reconciliation",
+    }
+    assert policy["schema_version"] == (
+        "openadapt.production-backup-dispatch-authority-policy/v1"
+    )
+    ingress = policy["ingress"]
+    reconciliation = policy["reconciliation"]
+    assert ingress["environment"] == "production-backup-dispatch-ingress"
+    assert ingress["oidc_subject"] == (
+        "repo:OpenAdaptAI/openadapt-ops:environment:production-backup-dispatch-ingress"
+    )
+    assert ingress["role_variable"] == "AWS_BACKUP_DISPATCH_INGRESS_ROLE_ARN"
+    assert ingress["denied_aws_actions"] == ["kms:Sign"]
+    assert "kms:Sign" not in ingress["allowed_aws_actions"]
+    assert ingress["cloud_bearer_secrets"] == [
+        "OPS_BACKUP_DISPATCH_CLAIM_TOKEN",
+        "OPS_BACKUP_DISPATCH_RESOLUTION_TOKEN",
+    ]
+    assert reconciliation["environment"] == (
+        "production-backup-dispatch-reconciliation"
+    )
+    assert reconciliation["oidc_subject"] == (
+        "repo:OpenAdaptAI/openadapt-ops:environment:production-backup-dispatch-reconciliation"
+    )
+    assert reconciliation["role_variable"] == (
+        "AWS_BACKUP_DISPATCH_RECONCILIATION_ROLE_ARN"
+    )
+    assert reconciliation["cloud_bearer_secrets"] == [
+        "OPS_BACKUP_DISPATCH_RESOLUTION_TOKEN"
+    ]
+    assert reconciliation["forbidden_secrets"] == [
+        "OPS_BACKUP_DISPATCH_CLAIM_TOKEN"
+    ]
+    assert reconciliation["kms"] == {
+        "account_id": "992382684924",
+        "region": "us-east-1",
+        "alias": "alias/openadapt-production-backup-dispatch-resolution",
+        "key_spec": "ECC_NIST_P256",
+        "key_usage": "SIGN_VERIFY",
+        "signing_algorithm": "ECDSA_SHA_256",
+        "message_type": "RAW",
+    }
 
 
 def test_backup_uses_one_s3_validated_full_object_put() -> None:
