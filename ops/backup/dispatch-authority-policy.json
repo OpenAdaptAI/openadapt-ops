@@ -1,0 +1,59 @@
+{
+  "schema_version": "openadapt.production-backup-dispatch-authority-policy/v1",
+  "repository": "OpenAdaptAI/openadapt-ops",
+  "repository_id": "1172011294",
+  "aws_account_id": "992382684924",
+  "aws_region": "us-east-1",
+  "ingress": {
+    "environment": "production-backup-dispatch-ingress",
+    "oidc_subject": "repo:OpenAdaptAI/openadapt-ops:environment:production-backup-dispatch-ingress",
+    "role_variable": "AWS_BACKUP_DISPATCH_INGRESS_ROLE_ARN",
+    "allowed_aws_actions": [
+      "s3:GetObject",
+      "s3:PutObject"
+    ],
+    "denied_aws_actions": [
+      "kms:Sign"
+    ],
+    "cloud_bearer_secrets": [
+      "OPS_BACKUP_DISPATCH_CLAIM_TOKEN",
+      "OPS_BACKUP_DISPATCH_RESOLUTION_TOKEN"
+    ],
+    "attempt_verifier_secrets": [
+      "CLOUD_BACKUP_CONTINUATION_HMAC_KEY",
+      "PAYMENT_SIGNAL_HMAC_KEY"
+    ],
+    "forbidden_secrets": [
+      "OPENADAPT_BACKUP_CONTROL_APP_PRIVATE_KEY"
+    ]
+  },
+  "reconciliation": {
+    "environment": "production-backup-dispatch-reconciliation",
+    "oidc_subject": "repo:OpenAdaptAI/openadapt-ops:environment:production-backup-dispatch-reconciliation",
+    "role_variable": "AWS_BACKUP_DISPATCH_RECONCILIATION_ROLE_ARN",
+    "allowed_aws_actions": [
+      "kms:DescribeKey",
+      "kms:GetPublicKey",
+      "kms:ListAliases",
+      "kms:Sign",
+      "s3:GetObject",
+      "s3:PutObject"
+    ],
+    "cloud_bearer_secrets": [
+      "OPS_BACKUP_DISPATCH_RESOLUTION_TOKEN"
+    ],
+    "github_app_private_key_secret": "OPENADAPT_BACKUP_CONTROL_APP_PRIVATE_KEY",
+    "forbidden_secrets": [
+      "OPS_BACKUP_DISPATCH_CLAIM_TOKEN"
+    ],
+    "kms": {
+      "account_id": "992382684924",
+      "region": "us-east-1",
+      "alias": "alias/openadapt-production-backup-dispatch-resolution",
+      "key_spec": "ECC_NIST_P256",
+      "key_usage": "SIGN_VERIFY",
+      "signing_algorithm": "ECDSA_SHA_256",
+      "message_type": "RAW"
+    }
+  }
+}
