@@ -16,6 +16,30 @@ program-graph-cli.png
   visualizer) for the OpenEMR showcase bundle, headless-Chrome capture of the
   self-contained page. Used on concepts/program-visualizer.md.
 
+program-state-live-relation.png
+  The public synthetic Program State Console in openadapt-web at the final
+  event of its exact retained trace. It compares synthetic recorded and current
+  frames. Used on concepts/program-visualizer.md. SHA-256:
+  676f0e57c4a19a490d4c9ee9bfccaecfb44dfe99d83febf24fc4f00c2fc1ae13.
+
+program-workbench-cloud.png
+  The public-safe Program map in openadapt-cloud local mock mode. The graph
+  contains exact emitted edges and generic synthetic labels. Used on
+  concepts/program-visualizer.md. SHA-256:
+  0f77308464f618efcb04814b411eb322af779699d33298ea9f0e57f7edab6d6e.
+
+program-workbench-cli.png
+  A public-synthetic openadapt-flow HTML export for a loop program. The page is
+  self-contained and was captured in a local browser. Used on
+  concepts/program-visualizer.md. SHA-256:
+  aa5ff1e1455b0444f234f398e3f645490b974c3b48c5e38156fd041964fec4d2.
+
+program-workbench-desktop.png
+  The development-only OpenAdapt Desktop preview that renders the production
+  qualification workbench with a public synthetic graph. It has no bound live
+  trace. Used on concepts/program-visualizer.md. SHA-256:
+  8a097cb29e9a048a08c01c31ffc00f66449d19f841bb268c5f225e21c7507a15.
+
 workflow-catalog.png
   The workflow catalog and step-level halt map in the OpenAdapt Cloud
   workspace, headless-Chrome capture in local mock mode. Used on

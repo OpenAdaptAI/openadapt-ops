@@ -687,6 +687,7 @@ See [Visualize a compiled program](../concepts/program-visualizer.md).
 
 ```bash
 openadapt flow visualize bundle -o graph.html     # self-contained page
+openadapt flow visualize bundle --profile remote-safe -o review.html
 openadapt flow visualize bundle --format mermaid  # flowchart source, to stdout
 openadapt flow visualize bundle --format json      # the shared graph spec
 ```
@@ -695,6 +696,7 @@ openadapt flow visualize bundle --format json      # the shared graph spec
 |---|---|
 | `bundle` (positional) | Workflow bundle directory |
 | `--format {html,mermaid,json}` | `html` (default): a self-contained, offline-openable page. `mermaid`: flowchart source for Markdown and docs. `json`: the shared program-graph spec every surface renders. |
+| `--profile {operator-local,remote-safe,public-synthetic,sanitized-derivative}` | Select the fields allowed in the output. Non-local profiles keep topology and remove recorded values, target text, selectors, URLs, guard text, and local provenance. A projection does not sanitize the source bundle. |
 | `-o`, `--out FILE` | Write to a file instead of stdout (parent directories are created) |
 
 Reading is offline and side-effect-free: `visualize` never runs the workflow, so
