@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 
@@ -11,6 +12,22 @@ def contract() -> dict[str, object]:
     value = json.loads(CONTRACT_PATH.read_text(encoding="utf-8"))
     assert isinstance(value, dict)
     return value
+
+
+def canonical_payload_bytes(value: object) -> bytes:
+    return (
+        json.dumps(
+            value,
+            ensure_ascii=False,
+            separators=(",", ":"),
+            sort_keys=True,
+        ).encode("utf-8")
+        + b"\n"
+    )
+
+
+def signature_commitment(domain: str, value: object) -> bytes:
+    return hashlib.sha256(domain.encode("utf-8") + canonical_payload_bytes(value)).digest()
 
 
 def test_contract_is_unreachable_policy_until_cross_repo_activation() -> None:
@@ -46,7 +63,15 @@ def test_lifecycle_signer_is_asymmetric_and_purpose_bound() -> None:
     assert signer["key_spec"] == "ECC_NIST_P256"
     assert signer["key_usage"] == "SIGN_VERIFY"
     assert signer["signing_algorithm"] == "ECDSA_SHA_256"
-    assert signer["message_type"] == "RAW"
+    assert signer["message_type"] == "DIGEST"
+    assert signer["commitment_scheme"] == (
+        "SHA256_DOMAIN_NUL_CANONICAL_JSON_LF_V1"
+    )
+    assert signer["commitment_preimage"].endswith("exactly one LF byte")
+    assert signer["commitment_output_bytes"] == 32
+    assert "Prehashed(SHA-256)" in signer["offline_verification"]
+    assert signer["mixed_message_types_permitted"] is False
+    assert "commitment_scheme" in signer["registry_entry_fields"]
     assert signer["cloud_has_kms_sign"] is False
     assert signer["cloud_has_private_key"] is False
     assert signer["purposes"] == [
@@ -57,6 +82,54 @@ def test_lifecycle_signer_is_asymmetric_and_purpose_bound() -> None:
         "schedule-lease-v2",
     ]
     assert "HMAC" not in json.dumps(signer)
+
+
+def test_large_schedule_lease_uses_one_digest_commitment() -> None:
+    signer = contract()["signer"]
+    domain = contract()["objects"]["schedule_lease"]["domain_utf8_nul"]
+    payload = {
+        "activation_id": "act_" + "a" * 64,
+        "readiness_receipt": {"evidence": "x" * 8192},
+    }
+    encoded = canonical_payload_bytes(payload)
+    assert len(encoded) > 4096
+    commitment = signature_commitment(domain, payload)
+    assert len(commitment) == signer["commitment_output_bytes"] == 32
+    assert signer["message_type"] == "DIGEST"
+    assert signer["mixed_message_types_permitted"] is False
+
+
+def test_signature_commitment_binds_domain_lf_purpose_and_payload() -> None:
+    objects = contract()["objects"]
+    domain = objects["schedule_lease"]["domain_utf8_nul"]
+    other_domain = objects["renewal_readiness"]["domain_utf8_nul"]
+    payload = {"lease_sequence": 1, "state": "ISSUED"}
+    expected = signature_commitment(domain, payload)
+    canonical_without_lf = canonical_payload_bytes(payload)[:-1]
+    assert expected != hashlib.sha256(
+        domain.encode("utf-8") + canonical_without_lf
+    ).digest()
+    assert expected != hashlib.sha256(
+        domain.encode("utf-8") + canonical_without_lf + b"\n\n"
+    ).digest()
+    assert expected != signature_commitment(other_domain, payload)
+    assert expected != signature_commitment(
+        domain, {"lease_sequence": 2, "state": "ISSUED"}
+    )
+
+
+def test_raw_digest_and_mixed_mode_confusion_is_forbidden() -> None:
+    signer = contract()["signer"]
+    domain = contract()["objects"]["schedule_lease"]["domain_utf8_nul"]
+    payload = {"nested": "x" * 8192}
+    raw_message = domain.encode("utf-8") + canonical_payload_bytes(payload)
+    commitment = signature_commitment(domain, payload)
+    assert len(raw_message) > 4096
+    assert len(commitment) == 32
+    assert raw_message != commitment
+    assert signer["message_type"] == "DIGEST"
+    assert "commitment_scheme" in signer["registry_entry_fields"]
+    assert signer["mixed_message_types_permitted"] is False
 
 
 def test_every_signed_object_has_a_distinct_nul_domain() -> None:
@@ -348,6 +421,13 @@ def test_cross_repo_vectors_cover_loss_races_replay_and_signer_failure() -> None
         "pointer-cas-conflict",
         "revoked-lifecycle-key",
         "wrong-purpose-domain-signature",
+        "schedule-lease-over-4096-digest-signed",
+        "raw-message-mode-refused",
+        "digest-rehash-mode-refused",
+        "signature-lf-omitted-refused",
+        "signature-lf-doubled-refused",
+        "signature-payload-tamper-refused",
+        "mixed-message-type-registry-refused",
     } <= vectors
 
 

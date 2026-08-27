@@ -33,7 +33,13 @@
     "key_spec": "ECC_NIST_P256",
     "key_usage": "SIGN_VERIFY",
     "signing_algorithm": "ECDSA_SHA_256",
-    "message_type": "RAW",
+    "message_type": "DIGEST",
+    "commitment_scheme": "SHA256_DOMAIN_NUL_CANONICAL_JSON_LF_V1",
+    "commitment_preimage": "exact purpose domain UTF-8 bytes ending NUL || canonical payload UTF-8 bytes || exactly one LF byte",
+    "commitment_output_bytes": 32,
+    "kms_sign_input": "Pass the exact 32-byte SHA-256 commitment with MessageType DIGEST and SigningAlgorithm ECDSA_SHA_256.",
+    "offline_verification": "Verify the exact 32-byte commitment with P-256 ECDSA using Prehashed(SHA-256), the pinned SPKI public key, and the canonical DER signature.",
+    "mixed_message_types_permitted": false,
     "signature_encoding": "canonical ASN.1 DER ECDSA, padded standard base64",
     "registry_schema": "openadapt.database-backup-lifecycle-signer-registry/v1",
     "registry_fields": [
@@ -45,6 +51,7 @@
       "algorithm",
       "aws_account_id",
       "aws_region",
+      "commitment_scheme",
       "expires_at",
       "key_spec",
       "key_usage",
@@ -723,7 +730,14 @@
     "revoked-lifecycle-key",
     "expired-registry",
     "invalid-der-signature",
-    "wrong-purpose-domain-signature"
+    "wrong-purpose-domain-signature",
+    "schedule-lease-over-4096-digest-signed",
+    "raw-message-mode-refused",
+    "digest-rehash-mode-refused",
+    "signature-lf-omitted-refused",
+    "signature-lf-doubled-refused",
+    "signature-payload-tamper-refused",
+    "mixed-message-type-registry-refused"
   ],
   "activation_dependencies": [
     "The peer receiver calls the accepted dispatch authority before every initial or renewal effect.",
