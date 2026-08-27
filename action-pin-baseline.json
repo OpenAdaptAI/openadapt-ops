@@ -1,0 +1,378 @@
+{
+  "schema_version": 1,
+  "note": "Reviewed backlog of GitHub Actions that are not pinned to a commit SHA. The sweep alerts on anything absent from this file, so adding a row here is an explicit decision to accept that reference for now. Regenerate with: python scripts/sweep_action_pins.py --write-baseline",
+  "accepted": [
+    {
+      "id": "OmniMCP|ci.yml|actions/checkout@v4",
+      "tier": "tag"
+    },
+    {
+      "id": "OmniMCP|ci.yml|actions/setup-python@v5",
+      "tier": "tag"
+    },
+    {
+      "id": "OpenAdapt|main.yml|actions/checkout@v7",
+      "tier": "tag"
+    },
+    {
+      "id": "OpenAdapt|main.yml|actions/setup-python@v7",
+      "tier": "tag"
+    },
+    {
+      "id": "PydanticPrompt|ci.yml|actions/checkout@v4",
+      "tier": "tag"
+    },
+    {
+      "id": "PydanticPrompt|ci.yml|actions/setup-python@v5",
+      "tier": "tag"
+    },
+    {
+      "id": "PydanticPrompt|ci.yml|codecov/codecov-action@v3",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-attest-bench|ci.yml|actions/checkout@v4",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-attest-bench|ci.yml|actions/setup-python@v5",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-attest|ci.yml|actions/checkout@v4",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-attest|ci.yml|actions/setup-python@v5",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-blog|deploy.yml|actions/checkout@v7",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-blog|deploy.yml|actions/deploy-pages@v5",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-blog|deploy.yml|actions/upload-pages-artifact@v5",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-blog|deploy.yml|peaceiris/actions-hugo@v3",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-blog|draft-post.yml|actions/checkout@v7",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-blog|draft-post.yml|actions/setup-python@v7",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-blog|draft-post.yml|peaceiris/actions-hugo@v3",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-capture|control-contract.yml|actions/checkout@v7",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-capture|control-contract.yml|astral-sh/setup-uv@v7",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-capture|test.yml|actions/checkout@v7",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-capture|test.yml|astral-sh/setup-uv@v7",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-consilium|notify-docs.yml|peter-evans/repository-dispatch@v3",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-consilium|release.yml|actions/checkout@v4",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-consilium|release.yml|actions/setup-python@v5",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-consilium|release.yml|astral-sh/setup-uv@v4",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-consilium|release.yml|python-semantic-release/publish-action@v9.15.2",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-consilium|release.yml|python-semantic-release/python-semantic-release@v9.15.2",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-consilium|test.yml|actions/checkout@v4",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-consilium|test.yml|actions/setup-python@v5",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-consilium|test.yml|astral-sh/setup-uv@v4",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-crier|notify-docs.yml|peter-evans/repository-dispatch@v3",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-grounding|release.yml|actions/checkout@v4",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-grounding|release.yml|actions/setup-python@v5",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-grounding|release.yml|astral-sh/setup-uv@v4",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-grounding|release.yml|python-semantic-release/publish-action@v9.15.2",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-grounding|release.yml|python-semantic-release/python-semantic-release@v9.15.2",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-herald|notify-docs.yml|peter-evans/repository-dispatch@v3",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-herald|release-announce.yml|actions/checkout@v4",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-herald|release-announce.yml|actions/setup-python@v5",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-herald|release-announce.yml|astral-sh/setup-uv@v4",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-herald|test.yml|actions/checkout@v4",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-herald|test.yml|actions/setup-python@v5",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-herald|test.yml|astral-sh/setup-uv@v4",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-internal|qualification-evidence-store.yml|actions/checkout@v7",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-internal|qualification-evidence-store.yml|actions/setup-python@v7",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-internal|source-policy-sync.yml|actions/checkout@v7",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-internal|source-policy-sync.yml|actions/setup-python@v7",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-ml|notify-docs.yml|peter-evans/repository-dispatch@v3",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-ml|release.yml|actions/checkout@v4",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-ml|release.yml|actions/setup-python@v5",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-ml|release.yml|astral-sh/setup-uv@v4",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-ml|release.yml|python-semantic-release/publish-action@v9.15.2",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-ml|release.yml|python-semantic-release/python-semantic-release@v9.15.2",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-ml|test.yml|actions/checkout@v4",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-ml|test.yml|astral-sh/setup-uv@v4",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-presenter|motion.yml|actions/checkout@v4",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-presenter|motion.yml|actions/setup-python@v5",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-retrieval|release.yml|actions/checkout@v4",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-retrieval|release.yml|actions/setup-python@v5",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-retrieval|release.yml|astral-sh/setup-uv@v4",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-retrieval|release.yml|python-semantic-release/publish-action@v9.15.2",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-retrieval|release.yml|python-semantic-release/python-semantic-release@v9.15.2",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-telemetry|release.yml|actions/checkout@v4",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-telemetry|release.yml|actions/setup-python@v5",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-telemetry|release.yml|astral-sh/setup-uv@v4",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-telemetry|release.yml|python-semantic-release/publish-action@v9.15.2",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-telemetry|release.yml|python-semantic-release/python-semantic-release@v9.15.2",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-telemetry|test.yml|actions/checkout@v4",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-telemetry|test.yml|actions/setup-python@v5",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-telemetry|test.yml|astral-sh/setup-uv@v4",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-verifier|test.yml|actions/checkout@v4",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-verifier|test.yml|actions/setup-python@v5",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-viewer|release.yml|actions/checkout@v4",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-viewer|release.yml|actions/setup-python@v5",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-viewer|release.yml|astral-sh/setup-uv@v4",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-viewer|release.yml|python-semantic-release/publish-action@v9.15.2",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-viewer|release.yml|python-semantic-release/python-semantic-release@v9.15.2",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-viewer|screenshots.yml|actions/checkout@v4",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-viewer|screenshots.yml|actions/github-script@v7",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-viewer|screenshots.yml|actions/upload-artifact@v4",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-viewer|screenshots.yml|astral-sh/setup-uv@v4",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-viewer|screenshots.yml|peter-evans/create-pull-request@v6",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-viewer|test.yml|actions/checkout@v4",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-viewer|test.yml|astral-sh/setup-uv@v4",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-wright|ci.yml|actions/cache@v4",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-wright|ci.yml|actions/checkout@v4",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-wright|ci.yml|actions/setup-node@v4",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-wright|ci.yml|pnpm/action-setup@v4",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-wright|deploy.yml|actions/checkout@v4",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-wright|deploy.yml|superfly/flyctl-actions/setup-flyctl@master",
+      "tier": "branch"
+    },
+    {
+      "id": "openadapt-wright|notify-docs.yml|peter-evans/repository-dispatch@v3",
+      "tier": "tag"
+    },
+    {
+      "id": "openadapt-wright|verify-fly-credential.yml|superfly/flyctl-actions/setup-flyctl@master",
+      "tier": "branch"
+    }
+  ]
+}
