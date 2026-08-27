@@ -39,18 +39,35 @@ on:
       - '.github/workflows/action-pin-sweep.yml'
 
 concurrency:
-  group: action-pin-sweep-${{ github.ref }}
-  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: false
 
 permissions:
   contents: read
 
 jobs:
+  reject-lifecycle-app:
+    permissions: {}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Reject the lifecycle App
+        env:
+          ACTOR: ${{ github.actor }}
+          EVENT_NAME: ${{ github.event_name }}
+          TRIGGERING_ACTOR: ${{ github.triggering_actor }}
+        run: |
+          if [ "$EVENT_NAME" = 'pull_request' ]; then
+            exit 0
+          fi
+          test "$ACTOR" != 'openadapt-lifecycle[bot]'
+          test "$TRIGGERING_ACTOR" != 'openadapt-lifecycle[bot]'
+
   self-test:
     # A detector nobody has seen fire is a detector nobody should trust. These
     # tests prove it fires on the exact reference that stranded openadapt-evals
     # 0.91.0 on PyPI, and stays quiet on an accepted backlog entry.
     name: Prove the detector fires and stays quiet
+    needs: reject-lifecycle-app
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
@@ -66,7 +83,11 @@ jobs:
 
   sweep:
     name: Sweep every repository we own for an unpinned action
-    if: github.event_name != 'pull_request'
+    needs: reject-lifecycle-app
+    if: >-
+      github.event_name != 'pull_request' &&
+      github.actor != 'openadapt-lifecycle[bot]' &&
+      github.triggering_actor != 'openadapt-lifecycle[bot]'
     runs-on: ubuntu-latest
     permissions:
       contents: read

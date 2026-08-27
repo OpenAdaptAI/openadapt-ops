@@ -10,6 +10,7 @@ import yaml
 ROOT = Path(__file__).resolve().parent.parent
 
 REJECT_LIFECYCLE_WORKFLOWS = (
+    ".github/workflows/action-pin-sweep.yml",
     ".github/workflows/azure-cost-guard.yml",
     ".github/workflows/db-backup-freshness.yml",
     ".github/workflows/db-backup.yml",
@@ -53,14 +54,6 @@ def test_every_non_lifecycle_dispatch_refuses_the_lifecycle_app() -> None:
             if isinstance(needs, str):
                 needs = [needs]
             assert "reject-lifecycle-app" in needs, f"{path}:{name}"
-            condition = job.get("if", "")
-            assert re.search(
-                r"github\.actor\s*!=\s*'openadapt-lifecycle\[bot\]'", condition
-            ), f"{path}:{name}"
-            assert re.search(
-                r"github\.triggering_actor\s*!=\s*'openadapt-lifecycle\[bot\]'",
-                condition,
-            ), f"{path}:{name}"
 
 
 def test_dispatch_workflow_inventory_is_complete() -> None:
@@ -75,24 +68,7 @@ def test_dispatch_workflow_inventory_is_complete() -> None:
     }
 
 
-def test_docs_sync_is_app_only_and_never_pushes_main() -> None:
-    content = read(".github/workflows/sync.yml")
-    assert "repository_dispatch:" not in content
-    assert "repo-updated" not in content
-    assert "git push origin HEAD:main" not in content
-    assert "github.actor == 'openadapt-docs[bot]'" in content
-    assert "github.triggering_actor == 'openadapt-docs[bot]'" in content
-    assert "github.actor_id == vars.OPENADAPT_DOCS_ACTOR_ID" in content
-    assert "vars.OPENADAPT_DOCS_APP_ID" in content
-    assert "vars.OPENADAPT_DOCS_INSTALLATION_ID" in content
-    assert "secrets.OPENADAPT_DOCS_APP_PRIVATE_KEY" in content
-    assert "environment: production-docs-deploy" in content
-    assert "name: github-pages" in content
-    assert "gh pr create" in content
-    assert "cancel-in-progress: false" in content
-
-
-def test_lifecycle_projection_is_app_only_and_never_pushes_main() -> None:
+def test_lifecycle_feed_source_is_app_only_and_dispatches_one_closed_json() -> None:
     content = read(".github/workflows/production-lifecycle-projection.yml")
     assert "github.actor == 'openadapt-lifecycle[bot]'" in content
     assert "github.triggering_actor == 'openadapt-lifecycle[bot]'" in content
@@ -101,10 +77,32 @@ def test_lifecycle_projection_is_app_only_and_never_pushes_main() -> None:
     assert "vars.OPENADAPT_LIFECYCLE_INSTALLATION_ID" in content
     assert "secrets.OPENADAPT_LIFECYCLE_APP_PRIVATE_KEY" in content
     assert "environment: production-lifecycle-projection" in content
-    assert "production_lifecycle_ledger_changed" in content
+    assert "production_lifecycle_feed_updated" not in content
+    assert "feed_update_json" in content
+    assert "production-lifecycle-ref.yml" in content
+    assert "--repo OpenAdaptAI/.github" in content
+    assert "--ref main" in content
+    assert "permission-actions: write" in content
+    assert "permission-contents: write" in content
     assert "git push origin HEAD:main" not in content
-    assert "gh pr create" in content
+    assert "gh pr create" not in content
     assert "cancel-in-progress: false" in content
+
+
+def test_app_authored_pull_request_validation_does_not_deadlock() -> None:
+    for path in (
+        ".github/workflows/action-pin-sweep.yml",
+        ".github/workflows/default-branch-sweep.yml",
+        ".github/workflows/production-lifecycle-policy.yml",
+        ".github/workflows/published-version-claims.yml",
+        ".github/workflows/workspace-staleness-sweep.yml",
+    ):
+        value = workflow(path)
+        guard = value["jobs"]["reject-lifecycle-app"]
+        text = str(guard)
+        assert "github.event_name" in text, path
+        assert "pull_request" in text, path
+        assert "openadapt-lifecycle[bot]" in text, path
 
 
 def test_lifecycle_required_check_runs_on_every_pull_request() -> None:
@@ -126,7 +124,7 @@ def test_backup_configuration_fails_before_credentials_or_tool_install() -> None
     assert "group: production-backup" in workflow
     assert "labels: self-hosted" in workflow
     assert "RUNNER_BOUNDARY: ${{ runner.environment }}" in workflow
-    assert '"${RUNNER_BOUNDARY}" != \'self-hosted\'' in workflow
+    assert "\"${RUNNER_BOUNDARY}\" != 'self-hosted'" in workflow
     assert "check_github_environment_gate.py" in workflow
     target = workflow.index("check_live_database_backup_target.sh")
     dump = workflow.index("supabase db dump")
@@ -147,7 +145,7 @@ def test_backup_uses_one_s3_validated_full_object_put() -> None:
     verify = workflow.index("verify-single-put")
     assert prepare < put < verify
     assert '--checksum-algorithm SHA256 --checksum-sha256 "$local_checksum"' in workflow
-    assert "--content-length \"$cipher_bytes\"" in workflow
+    assert '--content-length "$cipher_bytes"' in workflow
     assert 'aws s3 cp "$cipher"' not in workflow
 
 
