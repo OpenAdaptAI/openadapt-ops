@@ -139,6 +139,38 @@ jobs:
             cmp -s /tmp/dispatch-ingress.json /tmp/dispatch-ingress-existing.json
           fi
 
+      - name: Retain the digest-only global GitHub run locator
+        run: |
+          set -euo pipefail
+          python scripts/database_backup_dispatch_reconciliation.py build-run-locator \
+            --ingress /tmp/dispatch-ingress.json \
+            --output /tmp/dispatch-run-locator.json
+          run_id=$(jq -r '.github_run_id' /tmp/dispatch-run-locator.json)
+          run_attempt=$(jq -r '.github_run_attempt' /tmp/dispatch-run-locator.json)
+          key="dispatch-run-locators/github/${GITHUB_REPOSITORY_ID_EXACT}/${run_id}/${run_attempt}.json"
+          checksum=$(openssl dgst -sha256 -binary /tmp/dispatch-run-locator.json | base64)
+          set +e
+          aws s3api put-object \
+            --bucket "${AWS_BACKUP_CONTROL_BUCKET}" \
+            --key "${key}" \
+            --body /tmp/dispatch-run-locator.json \
+            --if-none-match '*' \
+            --server-side-encryption AES256 \
+            --checksum-algorithm SHA256 \
+            --checksum-sha256 "${checksum}" \
+            --expected-bucket-owner "${AWS_ACCOUNT_ID}" \
+            > /tmp/dispatch-run-locator-put.json
+          put_result=$?
+          set -e
+          if [ "${put_result}" -ne 0 ]; then
+            aws s3api get-object \
+              --bucket "${AWS_BACKUP_CONTROL_BUCKET}" \
+              --key "${key}" \
+              --expected-bucket-owner "${AWS_ACCOUNT_ID}" \
+              /tmp/dispatch-run-locator-existing.json > /dev/null
+            cmp -s /tmp/dispatch-run-locator.json /tmp/dispatch-run-locator-existing.json
+          fi
+
       - name: Refuse a delayed attempt after a retained NOT_RECEIVED decision
         run: |
           set -euo pipefail

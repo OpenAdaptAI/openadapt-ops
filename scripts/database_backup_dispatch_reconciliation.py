@@ -10,6 +10,8 @@ import hmac
 import json
 import os
 import re
+import subprocess
+import tempfile
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -42,16 +44,18 @@ KMS_ALIAS = "alias/openadapt-production-backup-dispatch-resolution"
 KMS_KEY_SPEC = "ECC_NIST_P256"
 KMS_KEY_USAGE = "SIGN_VERIFY"
 KMS_SIGNING_ALGORITHM = "ECDSA_SHA_256"
-INVENTORY_SCHEMA = "openadapt.ops-backup-github-run-inventory/v1"
+INVENTORY_SCHEMA = "openadapt.ops-backup-github-run-inventory/v2"
+RUN_LOCATOR_SCHEMA = "openadapt.ops-backup-dispatch-run-locator/v1"
 INVENTORY_PRINCIPAL_LOGIN = "github-actions[bot]"
 INVENTORY_PRINCIPAL_ID = "41898282"
 INVENTORY_REPOSITORY = "OpenAdaptAI/openadapt-ops"
 INVENTORY_REPOSITORY_ID = "1172011294"
 INVENTORY_OWNER_ID = "132681217"
-INVENTORY_WORKFLOW_PATH = ".github/workflows/db-backup-dispatch-reconciliation.yml"
+INVENTORY_WORKFLOW_PATH = ".github/workflows/db-backup-activate.yml"
 INVENTORY_EVENT = "repository_dispatch"
 INVENTORY_REF = "refs/heads/main"
 MINIMUM_OBSERVATION_SECONDS = 300
+GITHUB_CREATED_AT_SKEW_SECONDS = 60
 INVENTORY_PAGE_SIZE = 100
 HEX64 = re.compile(r"^[0-9a-f]{64}$")
 ACTIVATION_ID = re.compile(r"^act_[0-9a-f]{64}$")
@@ -69,6 +73,7 @@ CANDIDATE_FIELDS = {
     "prior_lease_sha256",
     "requested_lease_sequence",
     "last_error_code",
+    "dispatch_attempted_at",
     "reconciliation_required_at",
 }
 INGRESS_FIELDS = {
@@ -100,6 +105,19 @@ STATUS_FIELDS = {
     "attempt_count",
     "consumed_at",
     "delivered_at",
+}
+RUN_LOCATOR_FIELDS = {
+    "schema",
+    "event_name",
+    "github_repository",
+    "github_repository_id",
+    "github_run_id",
+    "github_run_attempt",
+    "workflow_revision",
+    "dispatch_attempt_id_sha256",
+    "dispatch_envelope_sha256",
+    "ingress_ledger_key",
+    "ingress_ledger_sha256",
 }
 
 
@@ -174,9 +192,18 @@ def validate_candidate_queue(value: Mapping[str, Any]) -> list[dict[str, Any]]:
         expected_resolution_id = resolution_id(candidate)
         if candidate.get("resolution_id") != expected_resolution_id:
             raise DispatchContractError("a Cloud candidate resolution ID does not match")
-        if not isinstance(candidate.get("reconciliation_required_at"), str):
-            raise DispatchContractError("a Cloud candidate reconciliation time is missing")
-        _timestamp(candidate["reconciliation_required_at"])
+        dispatch_attempted_at = candidate.get("dispatch_attempted_at")
+        reconciliation_required_at = candidate.get("reconciliation_required_at")
+        if not isinstance(dispatch_attempted_at, str) or not isinstance(
+            reconciliation_required_at, str
+        ):
+            raise DispatchContractError("a Cloud candidate dispatch time is missing")
+        attempted = _timestamp(dispatch_attempted_at)
+        reconciliation_required = _timestamp(reconciliation_required_at)
+        if attempted > reconciliation_required:
+            raise DispatchContractError(
+                "a Cloud candidate reconciliation precedes its dispatch attempt"
+            )
         last_error = candidate.get("last_error_code")
         if last_error is not None and (
             not isinstance(last_error, str)
@@ -201,6 +228,16 @@ def canonical_json(value: Mapping[str, Any]) -> bytes:
     return json.dumps(
         value, sort_keys=True, separators=(",", ":"), ensure_ascii=False
     ).encode("utf-8")
+
+
+def _parse_canonical_object(raw: bytes, label: str) -> Mapping[str, Any]:
+    try:
+        value = json.loads(raw)
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise DispatchContractError(f"the {label} is not valid JSON") from exc
+    if not isinstance(value, Mapping) or canonical_json(value) != raw:
+        raise DispatchContractError(f"the {label} is not exact canonical JSON")
+    return value
 
 
 def _sha256(value: bytes) -> str:
@@ -486,6 +523,42 @@ def classify_ingress_write(
     if existing_bytes == expected:
         return "IDEMPOTENT"
     raise DispatchContractError("the dispatch ingress ledger key has conflicting bytes")
+
+
+def build_dispatch_run_locator(ingress: Mapping[str, Any]) -> dict[str, Any]:
+    if set(ingress) != INGRESS_FIELDS or ingress.get("schema") != (
+        "openadapt.ops-backup-dispatch-ingress/v1"
+    ):
+        raise DispatchContractError("the retained dispatch ingress is not exact")
+    build_dispatch_claim(ingress)
+    ingress_bytes = canonical_json(ingress)
+    return {
+        "schema": RUN_LOCATOR_SCHEMA,
+        "event_name": ingress["event_name"],
+        "github_repository": ingress["github_repository"],
+        "github_repository_id": ingress["github_repository_id"],
+        "github_run_id": ingress["github_run_id"],
+        "github_run_attempt": ingress["github_run_attempt"],
+        "workflow_revision": ingress["workflow_revision"],
+        "dispatch_attempt_id_sha256": ingress["dispatch_attempt_id_sha256"],
+        "dispatch_envelope_sha256": ingress["dispatch_envelope_sha256"],
+        "ingress_ledger_key": ingress_ledger_key(ingress),
+        "ingress_ledger_sha256": _sha256(ingress_bytes),
+    }
+
+
+def run_locator_key(run_id: str, run_attempt: int) -> str:
+    if (
+        re.fullmatch(r"[1-9][0-9]{0,19}", run_id) is None
+        or not isinstance(run_attempt, int)
+        or isinstance(run_attempt, bool)
+        or run_attempt < 1
+    ):
+        raise DispatchContractError("the GitHub run locator identity is malformed")
+    return (
+        "dispatch-run-locators/github/"
+        f"{INVENTORY_REPOSITORY_ID}/{run_id}/{run_attempt}.json"
+    )
 
 
 def resolution_id(candidate: Mapping[str, Any]) -> str:
@@ -780,7 +853,7 @@ def _page_digest(value: Mapping[str, Any]) -> str:
 
 def observe_github_run_inventory(
     *,
-    reconciliation_required_at: str,
+    dispatch_attempted_at: str,
     observed_at: str,
     repository: Mapping[str, Any],
     workflow: Mapping[str, Any],
@@ -789,9 +862,9 @@ def observe_github_run_inventory(
 ) -> dict[str, Any]:
     """Fetch every run in the bounded window and prove a stable high-water mark."""
 
-    required = _timestamp(reconciliation_required_at)
+    attempted = _timestamp(dispatch_attempted_at)
     observed = _timestamp(observed_at)
-    if (observed - required).total_seconds() < MINIMUM_OBSERVATION_SECONDS:
+    if (observed - attempted).total_seconds() < MINIMUM_OBSERVATION_SECONDS:
         raise DispatchContractError("the GitHub observation window is too short")
     if repository != {
         "full_name": INVENTORY_REPOSITORY,
@@ -823,7 +896,9 @@ def observe_github_run_inventory(
         or principal.get("target_type") != "Organization"
     ):
         raise DispatchContractError("the GitHub inventory principal is not exact")
-    range_start = _iso(required - timedelta(seconds=MINIMUM_OBSERVATION_SECONDS))
+    range_start = _iso(
+        attempted - timedelta(seconds=GITHUB_CREATED_AT_SKEW_SECONDS)
+    )
     range_end = _iso(observed)
     pages: list[dict[str, Any]] = []
     runs: list[Mapping[str, Any]] = []
@@ -856,6 +931,7 @@ def observe_github_run_inventory(
         for run in values:
             if not isinstance(run, Mapping) or set(run) != {
                 "id",
+                "run_attempt",
                 "event",
                 "head_branch",
                 "head_sha",
@@ -869,6 +945,9 @@ def observe_github_run_inventory(
             if (
                 not isinstance(run.get("id"), str)
                 or not run["id"].isdigit()
+                or not isinstance(run.get("run_attempt"), int)
+                or isinstance(run.get("run_attempt"), bool)
+                or run["run_attempt"] < 1
                 or run.get("event") != INVENTORY_EVENT
                 or run.get("head_branch") != "main"
                 or run.get("workflow_id") != workflow["id"]
@@ -956,9 +1035,12 @@ def observe_github_run_inventory(
         "event": INVENTORY_EVENT,
         "ref": INVENTORY_REF,
         "authenticated_principal": dict(principal),
+        "dispatch_attempted_at": _iso(attempted),
         "range_start": range_start,
         "range_end": range_end,
-        "minimum_observation_seconds": MINIMUM_OBSERVATION_SECONDS,
+        "observation_completed_at": _iso(observed),
+        "eventual_consistency_delay_seconds": MINIMUM_OBSERVATION_SECONDS,
+        "github_created_at_skew_seconds": GITHUB_CREATED_AT_SKEW_SECONDS,
         "pages": pages,
         "total_count": total_count,
         "initial_high_water_run_id": initial_high_water,
@@ -998,7 +1080,7 @@ def _github_json(token: str, path: str) -> Mapping[str, Any]:
 
 def fetch_authoritative_github_inventory(
     *,
-    reconciliation_required_at: str,
+    dispatch_attempted_at: str,
     observed_at: str,
     token: str,
     expected_app_id: str,
@@ -1072,6 +1154,7 @@ def fetch_authoritative_github_inventory(
             normalized.append(
                 {
                     "id": str(raw_run.get("id", "")),
+                    "run_attempt": raw_run.get("run_attempt"),
                     "event": raw_run.get("event"),
                     "head_branch": raw_run.get("head_branch"),
                     "head_sha": raw_run.get("head_sha"),
@@ -1088,7 +1171,7 @@ def fetch_authoritative_github_inventory(
         }
 
     return observe_github_run_inventory(
-        reconciliation_required_at=reconciliation_required_at,
+        dispatch_attempted_at=dispatch_attempted_at,
         observed_at=observed_at,
         repository=repository,
         workflow=workflow,
@@ -1097,15 +1180,164 @@ def fetch_authoritative_github_inventory(
     )
 
 
+def account_github_run_inventory(
+    inventory: Mapping[str, Any],
+    *,
+    fetch_object: Callable[[str], bytes],
+) -> dict[str, Any]:
+    unsigned = dict(inventory)
+    evidence_digest = unsigned.pop("evidence_sha256", None)
+    if evidence_digest != _sha256(canonical_json(unsigned)):
+        raise DispatchContractError("the GitHub inventory digest does not match")
+    if "run_accounts" in unsigned:
+        raise DispatchContractError("the GitHub inventory was already accounted")
+    runs = unsigned.get("runs")
+    if not isinstance(runs, list):
+        raise DispatchContractError("the GitHub inventory run list is malformed")
+    accounts: list[dict[str, Any]] = []
+    for run in runs:
+        if not isinstance(run, Mapping):
+            raise DispatchContractError("a GitHub run cannot be accounted")
+        run_id = run.get("id")
+        run_attempt = run.get("run_attempt")
+        if not isinstance(run_id, str) or not isinstance(run_attempt, int):
+            raise DispatchContractError("a GitHub run locator identity is malformed")
+        locator_key = run_locator_key(run_id, run_attempt)
+        locator_bytes = fetch_object(locator_key)
+        locator = _parse_canonical_object(locator_bytes, "GitHub run locator")
+        if set(locator) != RUN_LOCATOR_FIELDS or locator.get("schema") != (
+            RUN_LOCATOR_SCHEMA
+        ):
+            raise DispatchContractError("a GitHub run locator is not closed")
+        if (
+            locator.get("github_repository") != INVENTORY_REPOSITORY
+            or locator.get("github_repository_id") != INVENTORY_REPOSITORY_ID
+            or locator.get("github_run_id") != run_id
+            or locator.get("github_run_attempt") != run_attempt
+            or locator.get("workflow_revision") != run.get("head_sha")
+            or locator.get("event_name") not in {INITIAL_EVENT, RENEWAL_EVENT}
+        ):
+            raise DispatchContractError("a GitHub run locator identity does not match")
+        for field in (
+            "dispatch_attempt_id_sha256",
+            "dispatch_envelope_sha256",
+            "ingress_ledger_sha256",
+        ):
+            digest = locator.get(field)
+            if not isinstance(digest, str) or HEX64.fullmatch(digest) is None:
+                raise DispatchContractError("a GitHub run locator digest is malformed")
+        expected_ingress_key = (
+            "dispatch-ingress/sha256/"
+            f"{locator['dispatch_attempt_id_sha256'][:2]}/"
+            f"{locator['dispatch_attempt_id_sha256']}.json"
+        )
+        if locator.get("ingress_ledger_key") != expected_ingress_key:
+            raise DispatchContractError("a GitHub run locator ledger key is not exact")
+        ingress_bytes = fetch_object(expected_ingress_key)
+        if _sha256(ingress_bytes) != locator["ingress_ledger_sha256"]:
+            raise DispatchContractError("a retained ingress ledger digest does not match")
+        ingress = _parse_canonical_object(ingress_bytes, "retained ingress ledger")
+        if build_dispatch_run_locator(ingress) != locator:
+            raise DispatchContractError("a GitHub run locator is not backed by its ingress")
+        accounts.append(
+            {
+                "github_run_id": run_id,
+                "github_run_attempt": run_attempt,
+                "locator_key": locator_key,
+                "locator_sha256": _sha256(locator_bytes),
+                "dispatch_attempt_id_sha256": locator[
+                    "dispatch_attempt_id_sha256"
+                ],
+                "dispatch_envelope_sha256": locator["dispatch_envelope_sha256"],
+                "ingress_ledger_key": expected_ingress_key,
+                "ingress_ledger_sha256": locator["ingress_ledger_sha256"],
+            }
+        )
+    accounted = {**unsigned, "run_accounts": accounts}
+    return {
+        **accounted,
+        "evidence_sha256": _sha256(canonical_json(accounted)),
+    }
+
+
+def fetch_s3_object(
+    key: str,
+    *,
+    bucket: str,
+    expected_owner: str,
+) -> bytes:
+    if not bucket or expected_owner != KMS_ACCOUNT_ID or not key:
+        raise DispatchContractError("the S3 backup-control authority is not exact")
+    with tempfile.TemporaryDirectory(prefix="openadapt-backup-control-") as directory:
+        target = Path(directory) / "object.json"
+        result = subprocess.run(
+            [
+                "aws",
+                "s3api",
+                "get-object",
+                "--bucket",
+                bucket,
+                "--key",
+                key,
+                "--expected-bucket-owner",
+                expected_owner,
+                str(target),
+            ],
+            check=False,
+            capture_output=True,
+        )
+        if result.returncode != 0 or not target.is_file():
+            raise DispatchContractError(
+                "an authoritative S3 run-locator object is absent or unreadable"
+            )
+        return target.read_bytes()
+
+
+def assert_s3_object_absent(
+    key: str,
+    *,
+    bucket: str,
+    expected_owner: str,
+) -> None:
+    if not bucket or expected_owner != KMS_ACCOUNT_ID or not key:
+        raise DispatchContractError("the S3 backup-control authority is not exact")
+    result = subprocess.run(
+        [
+            "aws",
+            "s3api",
+            "head-object",
+            "--bucket",
+            bucket,
+            "--key",
+            key,
+            "--expected-bucket-owner",
+            expected_owner,
+        ],
+        check=False,
+        capture_output=True,
+    )
+    if result.returncode == 0:
+        raise DispatchContractError("the dispatch attempt exists in the ingress ledger")
+    error = result.stderr.decode("utf-8", errors="replace")
+    if "An error occurred (404)" not in error and "(NoSuchKey)" not in error:
+        raise DispatchContractError("the S3 ingress-ledger state is uncertain")
+
+
 def _assert_github_run_absence(
-    evidence: Mapping[str, Any], *, reconciliation_required_at: str, issued_at: str
+    evidence: Mapping[str, Any],
+    *,
+    dispatch_attempted_at: str,
+    issued_at: str,
+    missing_attempt_sha256: str,
 ) -> None:
     expected_fields = {
         "schema", "repository", "repository_id", "workflow_path", "workflow_id",
-        "event", "ref", "authenticated_principal", "range_start", "range_end",
-        "minimum_observation_seconds", "pages", "total_count",
+        "event", "ref", "authenticated_principal", "dispatch_attempted_at",
+        "range_start", "range_end", "observation_completed_at",
+        "eventual_consistency_delay_seconds", "github_created_at_skew_seconds",
+        "pages", "total_count",
         "initial_high_water_run_id", "final_high_water_run_id",
-        "final_page_one_sha256", "runs", "evidence_sha256",
+        "final_page_one_sha256", "runs", "run_accounts", "evidence_sha256",
     }
     if set(evidence) != expected_fields or evidence.get("schema") != INVENTORY_SCHEMA:
         raise DispatchContractError("the GitHub run inventory evidence is not exact")
@@ -1113,9 +1345,9 @@ def _assert_github_run_absence(
     digest = unsigned.pop("evidence_sha256")
     if digest != _sha256(canonical_json(unsigned)):
         raise DispatchContractError("the GitHub run inventory digest does not match")
-    required = _timestamp(reconciliation_required_at)
+    attempted = _timestamp(dispatch_attempted_at)
     issued = _timestamp(issued_at)
-    expected_start = required - timedelta(seconds=MINIMUM_OBSERVATION_SECONDS)
+    expected_start = attempted - timedelta(seconds=GITHUB_CREATED_AT_SKEW_SECONDS)
     if (
         evidence.get("repository") != INVENTORY_REPOSITORY
         or evidence.get("repository_id") != INVENTORY_REPOSITORY_ID
@@ -1124,6 +1356,7 @@ def _assert_github_run_absence(
         or not evidence["workflow_id"].isdigit()
         or evidence.get("event") != INVENTORY_EVENT
         or evidence.get("ref") != INVENTORY_REF
+        or _timestamp(str(evidence.get("dispatch_attempted_at"))) != attempted
         or _timestamp(str(evidence.get("range_start"))) != expected_start
     ):
         raise DispatchContractError("the GitHub run inventory scope is not exact")
@@ -1146,22 +1379,72 @@ def _assert_github_run_absence(
         or principal.get("target_type") != "Organization"
     ):
         raise DispatchContractError("the GitHub inventory principal is not exact")
-    if _timestamp(str(evidence.get("range_end"))) != issued:
+    if (
+        _timestamp(str(evidence.get("range_end"))) != issued
+        or _timestamp(str(evidence.get("observation_completed_at"))) != issued
+    ):
         raise DispatchContractError("the inventory high-water time is not the issue time")
-    if (issued - required).total_seconds() < MINIMUM_OBSERVATION_SECONDS:
+    if (issued - attempted).total_seconds() < MINIMUM_OBSERVATION_SECONDS:
         raise DispatchContractError("the inventory observation window is too short")
-    if evidence.get("minimum_observation_seconds") != MINIMUM_OBSERVATION_SECONDS:
+    if (
+        evidence.get("eventual_consistency_delay_seconds")
+        != MINIMUM_OBSERVATION_SECONDS
+        or evidence.get("github_created_at_skew_seconds")
+        != GITHUB_CREATED_AT_SKEW_SECONDS
+    ):
         raise DispatchContractError("the inventory minimum observation is not exact")
     runs = evidence.get("runs")
     if not isinstance(runs, list) or evidence.get("total_count") != len(runs):
         raise DispatchContractError("the GitHub run inventory is incomplete")
-    if runs:
-        raise DispatchContractError("a GitHub run can match the missing delivery")
+    accounts = evidence.get("run_accounts")
+    if not isinstance(accounts, list) or len(accounts) != len(runs):
+        raise DispatchContractError("the GitHub run inventory is not fully accounted")
+    account_fields = {
+        "github_run_id",
+        "github_run_attempt",
+        "locator_key",
+        "locator_sha256",
+        "dispatch_attempt_id_sha256",
+        "dispatch_envelope_sha256",
+        "ingress_ledger_key",
+        "ingress_ledger_sha256",
+    }
+    for run, account in zip(runs, accounts, strict=True):
+        if not isinstance(run, Mapping) or not isinstance(account, Mapping) or set(
+            account
+        ) != account_fields:
+            raise DispatchContractError("a GitHub run account is not closed")
+        if (
+            account.get("github_run_id") != run.get("id")
+            or account.get("github_run_attempt") != run.get("run_attempt")
+            or account.get("locator_key")
+            != run_locator_key(str(run.get("id")), run.get("run_attempt"))
+        ):
+            raise DispatchContractError("a GitHub run account identity does not match")
+        for field in (
+            "locator_sha256",
+            "dispatch_attempt_id_sha256",
+            "dispatch_envelope_sha256",
+            "ingress_ledger_sha256",
+        ):
+            value = account.get(field)
+            if not isinstance(value, str) or HEX64.fullmatch(value) is None:
+                raise DispatchContractError("a GitHub run account digest is malformed")
+        expected_ingress_key = (
+            "dispatch-ingress/sha256/"
+            f"{account['dispatch_attempt_id_sha256'][:2]}/"
+            f"{account['dispatch_attempt_id_sha256']}.json"
+        )
+        if account.get("ingress_ledger_key") != expected_ingress_key:
+            raise DispatchContractError("a GitHub run account ledger key is not exact")
+        if account["dispatch_attempt_id_sha256"] == missing_attempt_sha256:
+            raise DispatchContractError(
+                "the missing dispatch attempt has an accounted GitHub run"
+            )
     empty_response = {"total_count": 0, "workflow_runs": []}
     empty_digest = _page_digest(empty_response)
-    if (
-        evidence.get("total_count") != 0
-        or evidence.get("pages")
+    if evidence.get("total_count") == 0 and (
+        evidence.get("pages")
         != [
             {
                 "page": 1,
@@ -1202,13 +1485,21 @@ def prepare_not_received_resolution(
         raise DispatchContractError("the candidate dispatch envelope does not match")
     if ingress_ledger_object is not None:
         raise DispatchContractError("the dispatch attempt exists in the ingress ledger")
+    dispatch_attempted_at = candidate.get("dispatch_attempted_at")
     reconciliation_required_at = candidate.get("reconciliation_required_at")
-    if not isinstance(reconciliation_required_at, str):
-        raise DispatchContractError("the reconciliation time is missing")
+    if not isinstance(dispatch_attempted_at, str) or not isinstance(
+        reconciliation_required_at, str
+    ):
+        raise DispatchContractError("the candidate dispatch times are missing")
+    if _timestamp(dispatch_attempted_at) > _timestamp(reconciliation_required_at):
+        raise DispatchContractError(
+            "the candidate reconciliation precedes its dispatch attempt"
+        )
     _assert_github_run_absence(
         github_inventory,
-        reconciliation_required_at=reconciliation_required_at,
+        dispatch_attempted_at=dispatch_attempted_at,
         issued_at=issued_at,
+        missing_attempt_sha256=expected_attempt_sha256,
     )
     activation_id = candidate.get("activation_id")
     if (
@@ -1401,6 +1692,11 @@ def main() -> int:
     ingress.add_argument("--received-at", required=True)
     ingress.add_argument("--workflow-revision", required=True)
     ingress.add_argument("--dispatch-signing-key-env", required=True)
+
+    locator = subparsers.add_parser("build-run-locator")
+    locator.add_argument("--ingress", type=Path, required=True)
+    locator.add_argument("--output", type=Path, required=True)
+
     resolve = subparsers.add_parser("prepare-not-received")
     resolve.add_argument("--candidate", type=Path, required=True)
     resolve.add_argument("--expected-attempt-sha256", required=True)
@@ -1409,7 +1705,8 @@ def main() -> int:
     resolve.add_argument("--expected-app-id", required=True)
     resolve.add_argument("--expected-app-slug", required=True)
     resolve.add_argument("--expected-installation-id", required=True)
-    resolve.add_argument("--ingress-ledger-object", type=Path)
+    resolve.add_argument("--s3-bucket", required=True)
+    resolve.add_argument("--s3-expected-owner", required=True)
     resolve.add_argument("--output", type=Path, required=True)
 
     claim = subparsers.add_parser("build-claim")
@@ -1469,33 +1766,58 @@ def main() -> int:
         )
         args.output.write_bytes(canonical_json(output))
         return 0
+
+    if args.command == "build-run-locator":
+        ingress_value = json.loads(args.ingress.read_text())
+        if not isinstance(ingress_value, Mapping):
+            raise DispatchContractError("the retained ingress is not an object")
+        args.output.write_bytes(
+            canonical_json(build_dispatch_run_locator(ingress_value))
+        )
+        return 0
+
     if args.command == "prepare-not-received":
         value = json.loads(args.candidate.read_text())
         if not isinstance(value, Mapping):
             raise DispatchContractError("the input file is not an object")
-        reconciliation_required_at = value.get("reconciliation_required_at")
-        if not isinstance(reconciliation_required_at, str):
-            raise DispatchContractError("the reconciliation time is missing")
+        dispatch_attempted_at = value.get("dispatch_attempted_at")
+        if not isinstance(dispatch_attempted_at, str):
+            raise DispatchContractError("the dispatch attempt time is missing")
+        if HEX64.fullmatch(args.expected_attempt_sha256) is None:
+            raise DispatchContractError("the expected dispatch attempt digest is malformed")
         issued_at = _iso(datetime.now(timezone.utc))
         inventory = fetch_authoritative_github_inventory(
-            reconciliation_required_at=reconciliation_required_at,
+            dispatch_attempted_at=dispatch_attempted_at,
             observed_at=issued_at,
             token=os.environ.get(args.github_token_env, ""),
             expected_app_id=args.expected_app_id,
             expected_app_slug=args.expected_app_slug,
             expected_installation_id=args.expected_installation_id,
         )
-        existing = (
-            args.ingress_ledger_object.read_bytes()
-            if args.ingress_ledger_object is not None
-            else None
+        inventory = account_github_run_inventory(
+            inventory,
+            fetch_object=lambda key: fetch_s3_object(
+                key,
+                bucket=args.s3_bucket,
+                expected_owner=args.s3_expected_owner,
+            ),
+        )
+        candidate_key = (
+            "dispatch-ingress/sha256/"
+            f"{args.expected_attempt_sha256[:2]}/"
+            f"{args.expected_attempt_sha256}.json"
+        )
+        assert_s3_object_absent(
+            candidate_key,
+            bucket=args.s3_bucket,
+            expected_owner=args.s3_expected_owner,
         )
         output = prepare_not_received_resolution(
             value,
             expected_attempt_sha256=args.expected_attempt_sha256,
             expected_envelope_sha256=args.expected_envelope_sha256,
             issued_at=issued_at,
-            ingress_ledger_object=existing,
+            ingress_ledger_object=None,
             github_inventory=inventory,
         )
         args.output.write_text(json.dumps(output, indent=2, sort_keys=True) + "\n")

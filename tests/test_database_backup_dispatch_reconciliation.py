@@ -95,14 +95,15 @@ def candidate() -> dict[str, object]:
         "prior_lease_sha256": None,
         "requested_lease_sequence": None,
         "last_error_code": "DISPATCH_NOT_CONFIRMED",
+        "dispatch_attempted_at": "2026-08-27T16:00:00Z",
         "reconciliation_required_at": "2026-08-27T16:00:00Z",
     }
 
 
 def empty_inventory(*, observed_at: str = "2026-08-27T16:05:00Z") -> dict[str, object]:
     empty = {"total_count": 0, "workflow_runs": []}
-    return MODULE.observe_github_run_inventory(
-        reconciliation_required_at="2026-08-27T16:00:00Z",
+    inventory = MODULE.observe_github_run_inventory(
+        dispatch_attempted_at="2026-08-27T16:00:00Z",
         observed_at=observed_at,
         repository={
             "full_name": MODULE.INVENTORY_REPOSITORY,
@@ -121,6 +122,10 @@ def empty_inventory(*, observed_at: str = "2026-08-27T16:05:00Z") -> dict[str, o
             "target_type": "Organization",
         },
         fetch_page=lambda *_: empty,
+    )
+    return MODULE.account_github_run_inventory(
+        inventory,
+        fetch_object=lambda _: pytest.fail("an empty inventory fetched a locator"),
     )
 
 
@@ -151,7 +156,7 @@ def retain(payload: dict[str, object]) -> dict[str, object]:
 
 def inventory_scope() -> dict[str, object]:
     return {
-        "reconciliation_required_at": "2026-08-27T16:00:00Z",
+        "dispatch_attempted_at": "2026-08-27T16:00:00Z",
         "observed_at": "2026-08-27T16:05:00Z",
         "repository": {
             "full_name": MODULE.INVENTORY_REPOSITORY,
@@ -172,6 +177,11 @@ def inventory_scope() -> dict[str, object]:
     }
 
 
+def test_absence_inventory_targets_the_repository_dispatch_activation_workflow() -> None:
+    assert MODULE.INVENTORY_WORKFLOW_PATH == ".github/workflows/db-backup-activate.yml"
+    assert MODULE.INVENTORY_EVENT == "repository_dispatch"
+
+
 def test_normal_ingress_retains_digests_and_exact_run_identity_without_envelope() -> None:
     payload, _ = ingress_payload()
     retained = retain(payload)
@@ -186,6 +196,15 @@ def test_normal_ingress_retains_digests_and_exact_run_identity_without_envelope(
     assert MODULE.ingress_ledger_key(retained).endswith(
         f"/{payload['dispatch_attempt_id_sha256']}.json"
     )
+    locator = MODULE.build_dispatch_run_locator(retained)
+    assert set(locator) == MODULE.RUN_LOCATOR_FIELDS
+    assert locator["dispatch_attempt_id_sha256"] == payload[
+        "dispatch_attempt_id_sha256"
+    ]
+    assert locator["ingress_ledger_sha256"] == MODULE._sha256(
+        MODULE.canonical_json(retained)
+    )
+    assert MODULE.run_locator_key("123456", 1).endswith("/123456/1.json")
 
 
 def test_ingress_ledger_is_no_overwrite_idempotent_and_conflict_hard() -> None:
@@ -255,11 +274,18 @@ def test_no_resolution_is_prepared_when_absence_is_uncertain() -> None:
 
 
 def test_inventory_requires_complete_stable_pagination_and_minimum_window() -> None:
+    evidence = empty_inventory()
+    assert evidence["dispatch_attempted_at"] == "2026-08-27T16:00:00Z"
+    assert evidence["range_start"] == "2026-08-27T15:59:00Z"
+    assert evidence["observation_completed_at"] == "2026-08-27T16:05:00Z"
+    assert evidence["eventual_consistency_delay_seconds"] == 300
+    assert evidence["github_created_at_skew_seconds"] == 60
     with pytest.raises(MODULE.DispatchContractError, match="too short"):
         empty_inventory(observed_at="2026-08-27T16:04:59Z")
 
     run = {
         "id": "1",
+        "run_attempt": 1,
         "event": MODULE.INVENTORY_EVENT,
         "head_branch": "main",
         "head_sha": "a" * 40,
@@ -297,6 +323,50 @@ def test_inventory_rejects_ambiguous_run_and_changed_high_water() -> None:
     with pytest.raises(MODULE.DispatchContractError, match="high-water total changed"):
         MODULE.observe_github_run_inventory(
             **inventory_scope(), fetch_page=lambda *_: next(empty_then_changed)
+        )
+
+
+def test_inventory_requires_a_backed_global_locator_for_every_run() -> None:
+    payload, _ = ingress_payload()
+    retained = retain(payload)
+    locator = MODULE.build_dispatch_run_locator(retained)
+    run = {
+        "id": retained["github_run_id"],
+        "run_attempt": retained["github_run_attempt"],
+        "event": MODULE.INVENTORY_EVENT,
+        "head_branch": "main",
+        "head_sha": retained["workflow_revision"],
+        "workflow_id": "90210",
+        "created_at": "2026-08-27T16:01:00Z",
+        "run_started_at": "2026-08-27T16:01:01Z",
+        "status": "completed",
+        "conclusion": "success",
+    }
+    page = {"total_count": 1, "workflow_runs": [run]}
+    observed = MODULE.observe_github_run_inventory(
+        **inventory_scope(), fetch_page=lambda *_: page
+    )
+    objects = {
+        MODULE.run_locator_key(
+            str(retained["github_run_id"]), int(retained["github_run_attempt"])
+        ): MODULE.canonical_json(locator),
+        MODULE.ingress_ledger_key(retained): MODULE.canonical_json(retained),
+    }
+    accounted = MODULE.account_github_run_inventory(
+        observed, fetch_object=lambda key: objects[key]
+    )
+    assert len(accounted["run_accounts"]) == 1
+    MODULE.prepare_not_received_resolution(
+        candidate(),
+        expected_attempt_sha256=ATTEMPT_DIGEST,
+        expected_envelope_sha256=ENVELOPE_DIGEST,
+        issued_at="2026-08-27T16:05:00Z",
+        ingress_ledger_object=None,
+        github_inventory=accounted,
+    )
+    with pytest.raises((KeyError, MODULE.DispatchContractError)):
+        MODULE.account_github_run_inventory(
+            observed, fetch_object=lambda key: {}[key]
         )
 
 

@@ -191,6 +191,8 @@ jobs:
               --expected-app-id "${BACKUP_CONTROL_APP_ID}" \
               --expected-app-slug "${BACKUP_CONTROL_APP_SLUG}" \
               --expected-installation-id "${BACKUP_CONTROL_INSTALLATION_ID}" \
+              --s3-bucket "${AWS_BACKUP_CONTROL_BUCKET}" \
+              --s3-expected-owner "${AWS_ACCOUNT_ID}" \
               --output /tmp/dispatch-prepared.json
 
             resolution_id=$(jq -r '.resolution.resolution_id' /tmp/dispatch-prepared.json)
@@ -199,6 +201,20 @@ jobs:
             put_exact_object /tmp/dispatch-prepared.json "${evidence_key}"
             jq -r '.canonical_resolution_b64' /tmp/dispatch-prepared.json \
               | base64 --decode > /tmp/dispatch-resolution-message.json
+
+            set +e
+            aws s3api head-object \
+              --bucket "${AWS_BACKUP_CONTROL_BUCKET}" \
+              --key "${ingress_key}" \
+              --expected-bucket-owner "${AWS_ACCOUNT_ID}" \
+              > /tmp/dispatch-ingress-recheck.json \
+              2> /tmp/dispatch-ingress-recheck-error.txt
+            ingress_recheck_result=$?
+            set -e
+            if [ "${ingress_recheck_result}" -eq 0 ]; then
+              continue
+            fi
+            grep -Fq 'An error occurred (404)' /tmp/dispatch-ingress-recheck-error.txt
 
             aws kms sign \
               --key-id "${KMS_KEY_ARN}" \

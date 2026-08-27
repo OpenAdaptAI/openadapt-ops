@@ -173,10 +173,12 @@ def test_backup_dispatch_authority_retains_and_claims_before_any_effect() -> Non
     assert "--if-none-match '*'" in content
     retain = content.index("retain-ingress")
     ledger = content.index("put-object", retain)
-    status = content.index("assert-unresolved", ledger)
+    locator = content.index("build-run-locator", ledger)
+    status = content.index("assert-unresolved", locator)
     claim = content.index("build-claim", status)
     receipt = content.index("verify-claim-receipt", claim)
-    assert retain < ledger < status < claim < receipt
+    assert retain < ledger < locator < status < claim < receipt
+    assert "dispatch-run-locators/github/" in content
     assert "dispatch-attempt/claim" in content
     assert "activation_request_b64=" not in content
     assert "first-backup" not in content
@@ -194,6 +196,8 @@ def test_backup_absence_authority_queries_inventory_and_kms_without_caller_proof
     assert "permission-metadata: read" in content
     assert "persist-credentials: false" in content
     assert "prepare-not-received" in content
+    assert "--s3-bucket \"${AWS_BACKUP_CONTROL_BUCKET}\"" in content
+    assert "--s3-expected-owner \"${AWS_ACCOUNT_ID}\"" in content
     assert "--github-token-env BACKUP_CONTROL_GITHUB_TOKEN" in content
     assert "--github-runs" not in content
     assert "--if-none-match '*'" in content
@@ -208,6 +212,9 @@ def test_backup_absence_authority_queries_inventory_and_kms_without_caller_proof
     assert "verify-reissue-receipt" in content
     assert "verify-resolution-status" in content
     assert "Idempotency-Key: ${resolution_id}" in content
+    assert content.index("head-object", content.index("prepare-not-received")) < content.index(
+        "aws kms sign"
+    )
 
 
 def test_backup_control_credentials_are_scoped_to_the_two_authority_workflows() -> None:
