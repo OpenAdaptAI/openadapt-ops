@@ -1,0 +1,735 @@
+{
+  "schema_version": "openadapt.production-backup-renewal-authority-contract/v1",
+  "status": "contract-only-unreachable",
+  "repository": "OpenAdaptAI/openadapt-ops",
+  "repository_id": "1172011294",
+  "aws": {
+    "account_id": "992382684924",
+    "region": "us-east-1"
+  },
+  "dispatch_precondition": {
+    "github_http_204_state": "GITHUB_ACCEPTED",
+    "required_claim_state": "RECEIVED",
+    "claim_receipt_schema": "openadapt.cloud-backup-dispatch-claim-receipt/v1",
+    "forbidden_pre_effect_states": [
+      "GITHUB_ACCEPTED",
+      "PENDING_DELIVERY",
+      "NOT_RECEIVED",
+      "SUPERSEDED"
+    ],
+    "minimum_not_received_observation_seconds": 300,
+    "github_created_at_skew_seconds": 60,
+    "successor_attempt_increment": 1
+  },
+  "signer": {
+    "protected_environment": "production-backup-renewal-authority",
+    "role_variable": "AWS_BACKUP_RENEWAL_AUTHORITY_ROLE_ARN",
+    "oidc_subject": "repo:OpenAdaptAI/openadapt-ops:environment:production-backup-renewal-authority",
+    "kms_account_id": "992382684924",
+    "kms_region": "us-east-1",
+    "kms_key_alias": "alias/openadapt-production-backup-lifecycle-authority",
+    "key_id": "ops-backup-lifecycle-kms-p256-2026-01",
+    "algorithm": "AWS-KMS-ECDSA-SHA256",
+    "key_spec": "ECC_NIST_P256",
+    "key_usage": "SIGN_VERIFY",
+    "signing_algorithm": "ECDSA_SHA_256",
+    "message_type": "RAW",
+    "signature_encoding": "canonical ASN.1 DER ECDSA, padded standard base64",
+    "registry_schema": "openadapt.database-backup-lifecycle-signer-registry/v1",
+    "registry_fields": [
+      "schema_version",
+      "signers"
+    ],
+    "registry_signers_key": "ops-backup-lifecycle-kms-p256-2026-01",
+    "registry_entry_fields": [
+      "algorithm",
+      "aws_account_id",
+      "aws_region",
+      "expires_at",
+      "key_spec",
+      "key_usage",
+      "kms_key_alias",
+      "message_type",
+      "not_before",
+      "public_key_spki_der_b64",
+      "public_key_spki_sha256",
+      "purposes",
+      "signing_algorithm"
+    ],
+    "purposes": [
+      "initial-readiness-v2",
+      "renewal-effect-permit-v1",
+      "renewal-readiness-v2",
+      "renewal-terminal-v1",
+      "schedule-lease-v2"
+    ],
+    "revocation_schema": "openadapt.database-backup-lifecycle-key-revocations/v1",
+    "revocation_fields": [
+      "registry_sha256",
+      "revoked_key_ids",
+      "schema_version"
+    ],
+    "cloud_has_kms_sign": false,
+    "cloud_has_private_key": false
+  },
+  "canonical_json": {
+    "encoding": "UTF-8",
+    "object_keys": "lexicographic",
+    "array_order": "retained",
+    "insignificant_whitespace": false,
+    "ascii_escaping": false,
+    "sha256_format": "64 lowercase hexadecimal characters"
+  },
+  "digest_relations": {
+    "claim_sha256": "Plain SHA-256 of canonical JSON of the exact inner claim payload.",
+    "claim_receipt_sha256": "Plain SHA-256 of canonical JSON of the full closed Cloud claim receipt object.",
+    "dispatch_envelope_sha256": "Plain SHA-256 of canonical JSON of the complete signed dispatch envelope.",
+    "permit_sha256": "Plain SHA-256 of canonical JSON of the renewal effect permit payload.",
+    "renewal_effect_permit_sha256": "Plain SHA-256 of canonical JSON of the full signed renewal effect permit envelope.",
+    "backup_sha256": "Plain SHA-256 of canonical JSON of the exact backup evidence object.",
+    "restore_sha256": "Plain SHA-256 of canonical JSON of the exact restore evidence object.",
+    "recovery_result_sha256": "Plain SHA-256 of canonical JSON of the full recovery result object including schema.",
+    "prior_pointer_sha256": "Plain SHA-256 of canonical JSON of the full immediately re-read prior current-issued pointer object; null only for sequence 0.",
+    "readiness_receipt_sha256": "The exact receipt_sha256 field inside the independently signed readiness envelope.",
+    "lease_sha256": "Plain SHA-256 of canonical JSON of the exact schedule lease payload.",
+    "schedule_lease_sha256": "Plain SHA-256 of canonical JSON of the full signed schedule lease envelope.",
+    "callback_result_sha256": "Plain SHA-256 of canonical JSON of the full signed Cloud callback result envelope."
+  },
+  "wire_bytes": {
+    "encoding": "UTF-8",
+    "body": "canonical JSON followed by exactly one LF byte",
+    "request_digest_header": "X-OpenAdapt-Request-SHA256",
+    "response_digest_header": "X-OpenAdapt-Response-SHA256",
+    "send_method": "Write exact bytes once and send the file with curl --data-binary.",
+    "cloud_atomic_storage": "Cloud stores request BYTEA, request digest, ack BYTEA, and ack digest in one transaction.",
+    "forbidden_request_encodings": [
+      "byte-order mark",
+      "carriage-return line feed",
+      "double trailing line feed",
+      "invalid UTF-8",
+      "noncanonical JSON",
+      "zero trailing line feed"
+    ],
+    "idempotency_conflict": "The same semantic JSON with different raw bytes conflicts even when parsed objects are equal.",
+    "status_rule": "POST and status GET must return the byte-identical retained raw response and its matching raw-byte digest header."
+  },
+  "objects": {
+    "initial_readiness": {
+      "schema": "openadapt.database-backup-readiness-receipt/v2",
+      "payload_name": "receipt",
+      "digest_name": "receipt_sha256",
+      "domain_utf8_nul": "OpenAdapt database backup initial readiness v2\u0000",
+      "envelope_fields": [
+        "receipt",
+        "receipt_sha256",
+        "schema",
+        "signature"
+      ],
+      "payload_fields": [
+        "activation_id",
+        "attempt_number",
+        "audience",
+        "backup",
+        "claim_receipt_sha256",
+        "claim_sha256",
+        "dispatch_attempt_id_sha256",
+        "dispatch_envelope_sha256",
+        "expires_at",
+        "issued_at",
+        "issuer",
+        "offer_contract",
+        "organization_id_sha256",
+        "payment_event_id_sha256",
+        "readiness_state",
+        "recovery_scope",
+        "request_sha256",
+        "restore",
+        "revocation_state_sha256",
+        "signer_registry_sha256"
+      ],
+      "fixed_values": {
+        "audience": "openadapt-cloud:database-backup-readiness",
+        "issuer": "openadapt-ops",
+        "offer_contract": "openadapt-cloud-managed-browser-v1",
+        "readiness_state": "DATABASE_RECOVERY_READY",
+        "recovery_scope": "database_only"
+      }
+    },
+    "initial_readiness_ack": {
+      "schema": "openadapt.database-backup-cloud-readiness-ack/v3",
+      "payload_name": "ack",
+      "digest_name": "ack_sha256",
+      "envelope_fields": [
+        "ack",
+        "ack_sha256",
+        "schema",
+        "signature"
+      ],
+      "payload_fields": [
+        "activation_id",
+        "applied_at",
+        "audience",
+        "claim_receipt_sha256",
+        "cloud_revision_sha256",
+        "dispatch_attempt_id_sha256",
+        "idempotency_key",
+        "issuer",
+        "new_state",
+        "organization_id_sha256",
+        "prior_state",
+        "readiness_receipt_sha256",
+        "readiness_request_bytes_sha256"
+      ],
+      "fixed_values": {
+        "audience": "OpenAdaptAI/openadapt-ops:database-backup-schedule",
+        "issuer": "openadapt-cloud",
+        "new_state": "PENDING_SCHEDULE",
+        "prior_state": "PENDING_RECOVERY"
+      }
+    },
+    "renewal_effect_permit": {
+      "schema": "openadapt.database-backup-renewal-effect-permit/v1",
+      "payload_name": "permit",
+      "digest_name": "permit_sha256",
+      "domain_utf8_nul": "OpenAdapt database backup renewal effect permit v1\u0000",
+      "idempotency_domain_utf8_nul": "OpenAdapt database backup renewal effect idempotency v1\u0000",
+      "idempotency_prefix": "renewal_effect_",
+      "envelope_fields": [
+        "permit",
+        "permit_sha256",
+        "schema",
+        "signature"
+      ],
+      "payload_fields": [
+        "activation_id",
+        "attempt_number",
+        "audience",
+        "backup_object_prefix",
+        "claim_receipt_sha256",
+        "claim_sha256",
+        "continuation_assertion_sha256",
+        "dispatch_attempt_id_sha256",
+        "dispatch_envelope_sha256",
+        "expires_at",
+        "idempotency_key",
+        "issued_at",
+        "issuer",
+        "lease_event_id",
+        "not_before",
+        "offer_contract",
+        "organization_id_sha256",
+        "prior_lease_sha256",
+        "prior_pointer_sha256",
+        "recovery_point_stamp",
+        "requested_lease_sequence",
+        "revocation_state_sha256",
+        "signer_registry_sha256",
+        "workflow_revision"
+      ],
+      "fixed_values": {
+        "audience": "OpenAdaptAI/openadapt-ops:database-backup-renewal-recovery",
+        "issuer": "openadapt-ops",
+        "offer_contract": "openadapt-cloud-managed-browser-v1"
+      },
+      "validity_seconds": 900,
+      "recovery_point_stamp_source": "the canonical UTC-second continuation assertion issued_at",
+      "backup_object_prefix_template": "renewals/<lease_event_id>/<recovery_point_stamp>"
+    },
+    "recovery_result": {
+      "schema": "openadapt.database-backup-renewal-recovery-result/v1",
+      "fields": [
+        "activation_id",
+        "backup",
+        "backup_sha256",
+        "completed_at",
+        "effect_permit_sha256",
+        "lease_event_id",
+        "recovery_point_stamp",
+        "requested_lease_sequence",
+        "restore",
+        "restore_sha256",
+        "schema",
+        "started_at",
+        "terminal_state"
+      ],
+      "terminal_states": [
+        "VERIFIED",
+        "FAILED",
+        "RECONCILIATION_REQUIRED"
+      ]
+    },
+    "renewal_readiness": {
+      "schema": "openadapt.database-backup-renewal-readiness-receipt/v2",
+      "payload_name": "receipt",
+      "digest_name": "receipt_sha256",
+      "domain_utf8_nul": "OpenAdapt database backup renewal readiness v2\u0000",
+      "envelope_fields": [
+        "receipt",
+        "receipt_sha256",
+        "schema",
+        "signature"
+      ],
+      "payload_fields": [
+        "activation_id",
+        "attempt_number",
+        "audience",
+        "backup",
+        "claim_receipt_sha256",
+        "claim_sha256",
+        "continuation_assertion_sha256",
+        "dispatch_attempt_id_sha256",
+        "dispatch_envelope_sha256",
+        "expires_at",
+        "issued_at",
+        "issuer",
+        "lease_event_id",
+        "offer_contract",
+        "organization_id_sha256",
+        "payment_event_id_sha256",
+        "prior_lease_sha256",
+        "readiness_state",
+        "recovery_result_sha256",
+        "recovery_scope",
+        "renewal_effect_permit_sha256",
+        "requested_lease_sequence",
+        "restore",
+        "revocation_state_sha256",
+        "signer_registry_sha256"
+      ],
+      "fixed_values": {
+        "audience": "openadapt-cloud:database-backup-renewal-readiness",
+        "issuer": "openadapt-ops",
+        "offer_contract": "openadapt-cloud-managed-browser-v1",
+        "readiness_state": "DATABASE_RECOVERY_READY",
+        "recovery_scope": "database_only"
+      },
+      "validity_seconds": 7776000
+    },
+    "schedule_lease": {
+      "schema": "openadapt.database-backup-schedule-lease/v2",
+      "payload_name": "lease",
+      "digest_name": "lease_sha256",
+      "domain_utf8_nul": "OpenAdapt database backup schedule lease v2\u0000",
+      "callback_idempotency_domain_utf8_nul": "OpenAdapt database backup schedule lease application idempotency v1\u0000",
+      "callback_idempotency_prefix": "lease_apply_",
+      "callback_idempotency_preimage_fields": [
+        "activation_id",
+        "dispatch_attempt_id_sha256",
+        "lease_event_id",
+        "lease_sequence",
+        "prior_lease_sha256",
+        "readiness_receipt_sha256"
+      ],
+      "envelope_fields": [
+        "lease",
+        "lease_sha256",
+        "schema",
+        "signature"
+      ],
+      "payload_fields": [
+        "activation_id",
+        "attempt_number",
+        "audience",
+        "callback_idempotency_key",
+        "claim_receipt_sha256",
+        "claim_sha256",
+        "cloud_readiness_ack",
+        "continuation_assertion",
+        "continuation_policy",
+        "dispatch_attempt_id_sha256",
+        "dispatch_envelope_sha256",
+        "expires_at",
+        "issued_at",
+        "issuer",
+        "lease_event_id",
+        "lease_sequence",
+        "offer_contract",
+        "organization_id_sha256",
+        "prior_lease_sha256",
+        "prior_pointer_sha256",
+        "readiness_receipt",
+        "readiness_receipt_sha256",
+        "recovery_result_sha256",
+        "renewal_due_at",
+        "requested_cadence_seconds",
+        "revocation_state_sha256",
+        "signer_registry_sha256"
+      ],
+      "fixed_values": {
+        "audience": "openadapt-cloud:database-backup-schedule-lease",
+        "continuation_policy": "continue_until_signed_zero_customer_deactivation",
+        "issuer": "openadapt-ops",
+        "offer_contract": "openadapt-cloud-managed-browser-v1",
+        "requested_cadence_seconds": 43200
+      },
+      "validity_seconds": 7776000,
+      "renewal_due_seconds": 5184000
+    },
+    "current_pointer": {
+      "schema": "openadapt.database-backup-current-issued-schedule-lease-pointer/v1",
+      "update_idempotency_domain_utf8_nul": "OpenAdapt database backup current lease pointer update idempotency v1\u0000",
+      "update_idempotency_prefix": "lease_pointer_",
+      "update_idempotency_preimage_fields": [
+        "activation_id",
+        "lease_event_id",
+        "lease_sequence",
+        "prior_pointer_sha256",
+        "schedule_lease_sha256"
+      ],
+      "fields": [
+        "activation_id",
+        "lease_event_id",
+        "lease_sequence",
+        "pointer_revision",
+        "pointer_state",
+        "prior_lease_sha256",
+        "prior_pointer_sha256",
+        "revocation_state_sha256",
+        "schedule_lease_object_key",
+        "schedule_lease_sha256",
+        "schema",
+        "signer_registry_sha256",
+        "update_idempotency_key",
+        "updated_at"
+      ],
+      "fixed_values": {
+        "pointer_state": "ISSUED"
+      },
+      "authorization_rule": "The pointer alone never means that Cloud applied or activated the lease."
+    },
+    "callback_application": {
+      "schema": "openadapt.database-backup-schedule-lease-application/v1",
+      "fields": [
+        "application",
+        "application_sha256",
+        "schema"
+      ],
+      "application_fields": [
+        "activation_id",
+        "callback_idempotency_key",
+        "claim_receipt_sha256",
+        "dispatch_attempt_id_sha256",
+        "lease_event_id",
+        "lease_sequence",
+        "prior_pointer",
+        "prior_lease_sha256",
+        "recovery_result",
+        "renewal_effect_permit",
+        "schedule_lease",
+        "schedule_lease_sha256"
+      ],
+      "idempotency_domain_utf8_nul": "OpenAdapt database backup schedule lease application idempotency v1\u0000",
+      "idempotency_prefix": "lease_apply_",
+      "idempotency_preimage_fields": [
+        "activation_id",
+        "dispatch_attempt_id_sha256",
+        "lease_event_id",
+        "lease_sequence",
+        "prior_lease_sha256",
+        "readiness_receipt_sha256"
+      ],
+      "idempotency_relation": "The application callback_idempotency_key must equal the signed schedule lease callback_idempotency_key. It is not derived from schedule_lease_sha256."
+    },
+    "callback_result": {
+      "schema": "openadapt.cloud-backup-schedule-lease-application-result/v1",
+      "envelope_fields": [
+        "result",
+        "result_sha256",
+        "schema",
+        "signature"
+      ],
+      "result_fields": [
+        "activation_id",
+        "applied_at",
+        "audience",
+        "callback_idempotency_key",
+        "claim_receipt_sha256",
+        "cloud_revision_sha256",
+        "dispatch_attempt_id_sha256",
+        "issuer",
+        "lease_event_id",
+        "lease_sequence",
+        "new_state",
+        "organization_id_sha256",
+        "prior_lease_sha256",
+        "prior_state",
+        "result_state",
+        "schedule_lease_sha256"
+      ],
+      "fixed_values": {
+        "audience": "OpenAdaptAI/openadapt-ops:database-backup-schedule-lease-result",
+        "issuer": "openadapt-cloud",
+        "new_state": "ACTIVE",
+        "result_state": "APPLIED"
+      }
+    },
+    "renewal_terminal": {
+      "schema": "openadapt.database-backup-renewal-terminal/v1",
+      "payload_name": "terminal",
+      "digest_name": "terminal_sha256",
+      "domain_utf8_nul": "OpenAdapt database backup renewal terminal v1\u0000",
+      "idempotency_domain_utf8_nul": "OpenAdapt database backup renewal terminal idempotency v1\u0000",
+      "idempotency_prefix": "renewal_terminal_",
+      "envelope_fields": [
+        "schema",
+        "signature",
+        "terminal",
+        "terminal_sha256"
+      ],
+      "payload_fields": [
+        "activation_id",
+        "attempt_number",
+        "audience",
+        "callback_post_started",
+        "claim_receipt_sha256",
+        "claim_sha256",
+        "continuation_assertion_sha256",
+        "dispatch_attempt_id_sha256",
+        "dispatch_envelope_sha256",
+        "effect_permit_sha256",
+        "effect_started",
+        "expires_at",
+        "failure_code",
+        "issued_at",
+        "issuer",
+        "last_confirmed_stage",
+        "lease_event_id",
+        "operator_action_required",
+        "outcome",
+        "prior_lease_sha256",
+        "recovery_result_sha256",
+        "requested_lease_sequence",
+        "revocation_state_sha256",
+        "signer_registry_sha256",
+        "terminal_idempotency_key",
+        "uncertain_external_effect",
+        "workflow_revision"
+      ],
+      "fixed_values": {
+        "audience": "openadapt-cloud:database-backup-renewal-terminal",
+        "issuer": "openadapt-ops"
+      },
+      "validity_seconds": 900,
+      "outcomes": [
+        "FAILED",
+        "RECONCILIATION_REQUIRED"
+      ],
+      "last_confirmed_stages": [
+        "BACKUP_VERIFIED",
+        "CALLBACK_STARTED",
+        "CALLBACK_VERIFIED",
+        "CLAIMED",
+        "LEASE_SIGNED",
+        "PERMIT_RETAINED",
+        "POINTER_ADVANCED",
+        "READINESS_SIGNED",
+        "RESTORE_VERIFIED"
+      ],
+      "failed_codes": [
+        "BACKUP_DEFINITIVE_FAILURE",
+        "CLOUD_CALLBACK_REFUSED",
+        "CONTINUATION_REFUSED",
+        "EFFECT_PERMIT_REFUSED",
+        "LEASE_SIGNING_REFUSED",
+        "PRIOR_LEASE_REFUSED",
+        "READINESS_SIGNING_REFUSED",
+        "RESTORE_DEFINITIVE_FAILURE",
+        "SEQUENCE_REFUSED"
+      ],
+      "reconciliation_required_codes": [
+        "AUTHORITY_STATE_UNCERTAIN",
+        "BACKUP_STATE_UNCERTAIN",
+        "CALLBACK_RESULT_CONFLICT",
+        "CALLBACK_STATE_UNCERTAIN",
+        "CURRENT_POINTER_CAS_CONFLICT",
+        "CURRENT_POINTER_STATE_UNCERTAIN",
+        "EVIDENCE_STATE_CONFLICT",
+        "RESTORE_STATE_UNCERTAIN"
+      ]
+    },
+    "renewal_terminal_result": {
+      "schema": "openadapt.cloud-backup-renewal-terminal-result/v1",
+      "envelope_fields": [
+        "result",
+        "result_sha256",
+        "schema",
+        "signature"
+      ],
+      "result_fields": [
+        "activation_id",
+        "audience",
+        "closed_at",
+        "cloud_revision_sha256",
+        "dispatch_attempt_id_sha256",
+        "failure_code",
+        "issuer",
+        "lease_event_id",
+        "outcome",
+        "prior_lease_sha256",
+        "requested_lease_sequence",
+        "result_state",
+        "terminal_envelope_sha256",
+        "terminal_idempotency_key"
+      ],
+      "fixed_values": {
+        "audience": "OpenAdaptAI/openadapt-ops:database-backup-renewal-terminal-result",
+        "issuer": "openadapt-cloud",
+        "result_state": "RETAINED"
+      }
+    }
+  },
+  "reusable_recovery_workflow": {
+    "path": ".github/workflows/db-backup-renewal-recovery.yml",
+    "trigger": "workflow_call only",
+    "exact_caller": "OpenAdaptAI/openadapt-ops/.github/workflows/db-backup-activate.yml@refs/heads/main",
+    "protected_ref": "refs/heads/main",
+    "inputs": {
+      "claim_receipt_sha256": "required string, lowercase hex64",
+      "claim_sha256": "required string, lowercase hex64",
+      "dispatch_attempt_id_sha256": "required string, lowercase hex64",
+      "renewal_effect_permit_b64": "required string, canonical signed permit envelope",
+      "renewal_effect_permit_sha256": "required string, lowercase hex64"
+    },
+    "outputs": {
+      "backup_evidence_sha256": "lowercase hex64",
+      "lease_event_id": "lease_<64 lowercase hex>",
+      "recovery_point_stamp": "YYYYMMDDTHHMMSSZ",
+      "recovery_result_sha256": "lowercase hex64",
+      "recovery_state": "VERIFIED, FAILED, or RECONCILIATION_REQUIRED",
+      "requested_lease_sequence": "integer >= 1 encoded as a decimal string",
+      "restore_evidence_sha256": "lowercase hex64"
+    },
+    "forbidden_inputs": [
+      "arbitrary_s3_key",
+      "backup_object_prefix",
+      "database_url",
+      "lease_sequence",
+      "recovery_point_stamp"
+    ],
+    "success_rule": "Only a retained VERIFIED recovery result can produce renewal readiness."
+  },
+  "ledger": {
+    "bucket_owner": "992382684924",
+    "immutable_write": "S3 PutObject with If-None-Match *; exact bytes are idempotent and conflicting bytes fail",
+    "paths": {
+      "callback_attempt": "backup-renewal/activations/<activation_id>/events/<lease_event_id>/callback-started.json",
+      "callback_result": "backup-renewal/activations/<activation_id>/callback-results/sha256/<first2>/<sha256>.json",
+      "current_pointer": "backup-renewal/activations/<activation_id>/schedule-leases/current.json",
+      "effect_permit": "backup-renewal/activations/<activation_id>/effect-permits/sha256/<first2>/<sha256>.json",
+      "recovery_result": "backup-renewal/activations/<activation_id>/recovery-results/sha256/<first2>/<sha256>.json",
+      "renewal_readiness": "backup-renewal/activations/<activation_id>/readiness/sha256/<first2>/<sha256>.json",
+      "schedule_lease": "backup-renewal/activations/<activation_id>/schedule-leases/sha256/<first2>/<sha256>.json"
+    },
+    "current_pointer_cas": {
+      "initial": "If-None-Match *",
+      "renewal": "If-Match the immediately re-read current pointer ETag",
+      "required_old_digest_field": "prior_pointer_sha256",
+      "postcondition": "Read and verify byte-identical current pointer bytes and the new S3 VersionId.",
+      "exact_replay": "The exact desired pointer is idempotent.",
+      "conflict": "A different pointer at the expected revision is RECONCILIATION_REQUIRED and no overwrite occurs."
+    },
+    "ordering": [
+      "validate authenticated RECEIVED claim",
+      "read and validate current pointer and exact prior lease",
+      "append the exact signed renewal effect permit",
+      "run or resume the exact backup and restore effect",
+      "append VERIFIED recovery result",
+      "append signed renewal readiness",
+      "append signed schedule lease",
+      "CAS the current-issued pointer",
+      "post-read the exact current-issued pointer",
+      "preflight callback status GET",
+      "append callback-started before POST",
+      "perform one callback POST",
+      "verify the exact retained callback result with status GET",
+      "append callback result"
+    ]
+  },
+  "callback": {
+    "initial_readiness": {
+      "token_secret": "OPS_BACKUP_READINESS_TOKEN",
+      "post_path": "/api/internal/backup/readiness",
+      "status_get_path": "/api/internal/backup/readiness/status?idempotency_key=<activation_id>",
+      "idempotency_header": "Idempotency-Key: <activation_id>",
+      "request_body": "the full signed initial readiness v2 envelope as canonical JSON plus exactly one LF",
+      "request_digest": "SHA-256 of exact request raw bytes",
+      "response_body": "the full signed initial readiness ack v3 envelope as canonical JSON plus exactly one LF",
+      "response_digest": "SHA-256 of exact response raw bytes",
+      "same_semantics_different_bytes_http": 409,
+      "same_semantics_different_bytes_error": "READINESS_REQUEST_BYTES_CONFLICT",
+      "invalid_bytes_http": 400,
+      "invalid_bytes_error": "READINESS_REQUEST_BYTES_INVALID"
+    },
+    "token_secret": "OPS_BACKUP_SCHEDULE_LEASE_TOKEN",
+    "post_path": "/api/internal/backup/schedule-lease",
+    "status_get_path": "/api/internal/backup/schedule-lease/status?idempotency_key=<callback_idempotency_key>",
+    "idempotency_header": "Idempotency-Key: <callback_idempotency_key>",
+    "preflight_404_error": "LEASE_APPLICATION_NOT_FOUND",
+    "post_success_http": 200,
+    "status_success_http": 200,
+    "conflict_http": 409,
+    "terminal_post_path": "/api/internal/backup/schedule-lease/terminal",
+    "terminal_status_get_path": "/api/internal/backup/schedule-lease/terminal/status?idempotency_key=<terminal_idempotency_key>",
+    "rules": [
+      "A status 200 must return the exact retained callback result bytes.",
+      "A pre-POST status 404 permits one POST only after callback-started is retained.",
+      "A transport error, invalid response, non-200 result, or post-POST status uncertainty is RECONCILIATION_REQUIRED.",
+      "A retained callback-started object forbids every automatic second POST.",
+      "The current-issued pointer CAS and post-read must verify before callback-started is retained.",
+      "A signed terminal POST is automatic only when callback_post_started is false.",
+      "After a schedule-lease POST starts, uncertainty permits read-only status checks but no automatic terminal POST."
+    ]
+  },
+  "terminal_semantics": {
+    "VERIFIED": "Exact recovery, readiness, lease, current-issued-pointer CAS, and Cloud result all verify.",
+    "FAILED": "A definitive failure occurred before an external effect could be uncertain; the Cloud active lease does not advance.",
+    "RECONCILIATION_REQUIRED": "An external effect, callback, or pointer outcome is uncertain; no blind retry and no automatic Cloud active-lease advance request.",
+    "only_verified_authorizes_customer_operation": true
+  },
+  "retention": {
+    "encrypted_backup_and_manifest_days": 90,
+    "control_evidence_days": 2557,
+    "scratch_restore": "Delete after the retained restore evidence verifies or the run enters a terminal state.",
+    "control_evidence_delete_permission": false,
+    "current_pointer_bucket_versioning_required": true
+  },
+  "required_cross_repository_vectors": [
+    "initial-claimed-readiness-v2",
+    "initial-readiness-exact-one-lf",
+    "initial-readiness-zero-lf-refused",
+    "initial-readiness-double-lf-refused",
+    "initial-readiness-crlf-refused",
+    "initial-readiness-semantic-same-byte-different-conflict",
+    "initial-readiness-response-lost-status-byte-identical",
+    "initial-readiness-status-semantic-same-byte-different-refused",
+    "renewal-sequence-one-verified",
+    "github-204-lost-before-claim-initial",
+    "github-204-lost-before-claim-renewal",
+    "claim-wins-resolution-race",
+    "resolution-wins-delayed-claim",
+    "exact-permit-replay",
+    "conflicting-permit-replay",
+    "new-backup-and-restore-required",
+    "pointer-cas-exact-replay",
+    "pointer-cas-conflict",
+    "callback-success",
+    "callback-response-lost-status-verifies",
+    "callback-response-lost-status-uncertain",
+    "callback-started-forbids-second-post",
+    "failed-terminal-retained-without-lease-advance",
+    "reconciliation-terminal-retained-without-lease-advance",
+    "terminal-response-lost-status-verifies",
+    "terminal-response-lost-status-uncertain",
+    "revoked-lifecycle-key",
+    "expired-registry",
+    "invalid-der-signature",
+    "wrong-purpose-domain-signature"
+  ],
+  "activation_dependencies": [
+    "The peer receiver calls the accepted dispatch authority before every initial or renewal effect.",
+    "Cloud migration 0074 implements the atomic claim versus NOT_RECEIVED row transition and retains dispatch_attempted_at.",
+    "Cloud implements the asymmetric v2 verifiers, current-lease CAS, callback result, and status route.",
+    "Ops and Cloud share byte-identical fixed vectors for every required vector name.",
+    "The dedicated KMS key, registry, revocation object, OIDC role, environments, and distinct bearer are created only at final cutover."
+  ]
+}
