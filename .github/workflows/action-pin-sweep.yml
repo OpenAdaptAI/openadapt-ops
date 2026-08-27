@@ -1,0 +1,144 @@
+name: Action pin sweep
+
+# One scheduled job that asks, for EVERY repository we own, whether any GitHub
+# Action is referenced by something other than a commit SHA -- and files ONE
+# issue when a NEW one appears.
+#
+# Why this exists: a `uses:` reference that names a tag resolves to whatever the
+# upstream owner points it at today, and nothing in our repositories records
+# that it moved. pypa/gh-action-pypi-publish v1.14.0 bundles twine 6.1.0, which
+# rejects `Metadata-Version: 2.5`; it broke the openadapt-evals 0.91.0 release
+# after the tag, the version commit and the GitHub release had already landed,
+# leaving PyPI stale. Twelve repositories were corrected by hand in 2026-08.
+# Nothing detects the next one: dependency-review reads dependency manifests,
+# not workflow `uses:` lines, and Dependabot is happy to leave a floating tag
+# floating.
+#
+# Why it does not report the backlog: about 112 references are unpinned today.
+# A weekly issue listing all of them is the muted-alert failure this repository
+# already warns about in default-branch-sweep.yml. The reviewed backlog lives in
+# action-pin-baseline.json and only a NEW or WORSE reference raises the alarm.
+#
+# Why weekly rather than daily: pin drift is slow and operator-driven. A daily
+# run would repeat the same answer six extra times a week, which is how an alert
+# gets muted. 08:29 Monday is clear of every other cron in this repository.
+#
+# Cost: one ubuntu-latest runner, standard library only, no dependency install
+# for the sweep itself. Roughly 40 repository reads plus one workflow listing and
+# one file read per workflow file, against a 1000/hour budget.
+
+on:
+  schedule:
+    - cron: '29 8 * * 1'
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'scripts/sweep_action_pins.py'
+      - 'tests/test_sweep_action_pins.py'
+      - 'action-pin-baseline.json'
+      - '.github/workflows/action-pin-sweep.yml'
+
+concurrency:
+  group: action-pin-sweep-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  self-test:
+    # A detector nobody has seen fire is a detector nobody should trust. These
+    # tests prove it fires on the exact reference that stranded openadapt-evals
+    # 0.91.0 on PyPI, and stays quiet on an accepted backlog entry.
+    name: Prove the detector fires and stays quiet
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          enable-cache: true
+      - run: uv sync --locked --extra dev
+      - run: uv run pytest tests/test_sweep_action_pins.py -q
+
+  sweep:
+    name: Sweep every repository we own for an unpinned action
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      # A public repository's contents API is readable with no authentication at
+      # all, so the default repository-scoped token reads every public repository
+      # we own and needs no new secret. A private repository never appears in the
+      # listing that token sees, so the report says it covered the public half
+      # rather than quietly understating the count. Set the optional
+      # OA_SWEEP_TOKEN secret to cover private repositories too.
+      - name: Sweep
+        id: sweep
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          OA_SWEEP_TOKEN: ${{ secrets.OA_SWEEP_TOKEN }}
+        run: |
+          python scripts/sweep_action_pins.py \
+            --markdown action-pin-sweep.md \
+            --github-output "${GITHUB_OUTPUT}" \
+            --run-url "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+
+      # One issue for the whole organisation, rewritten in place. A new issue
+      # every week is the same as no issue: it stops being read. Editing a body
+      # does not notify, so a long-lived gap does not become a weekly ping.
+      - name: Open, reopen, or update the single sweep issue
+        if: steps.sweep.outputs.alert == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TITLE: "Action pin sweep - an action is not pinned to a commit"
+        run: |
+          set -euo pipefail
+          # Compare the full title in jq rather than searching for it: a colon
+          # inside a GitHub search phrase is parsed as a qualifier.
+          EXISTING_JSON=$(gh issue list --repo "${GITHUB_REPOSITORY}" --state all \
+            --limit 1000 --json number,title,state \
+            --jq '[.[] | select(.title == env.TITLE)][0] // {}')
+          EXISTING=$(jq -r '.number // empty' <<< "${EXISTING_JSON}")
+          EXISTING_STATE=$(jq -r '.state // empty' <<< "${EXISTING_JSON}")
+          if [ -n "${EXISTING}" ]; then
+            if [ "${EXISTING_STATE}" = "CLOSED" ]; then
+              gh issue reopen "${EXISTING}" --repo "${GITHUB_REPOSITORY}"
+            fi
+            gh issue edit "${EXISTING}" --repo "${GITHUB_REPOSITORY}" \
+              --body-file action-pin-sweep.md
+            echo "Updated issue #${EXISTING}."
+          else
+            gh issue create --repo "${GITHUB_REPOSITORY}" \
+              --title "${TITLE}" --body-file action-pin-sweep.md
+          fi
+
+      # Silence when nothing new appeared. Posting "no regressions" weekly is how
+      # an alert gets muted.
+      - name: Close the issue once nothing new is unpinned
+        if: steps.sweep.outputs.clear == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TITLE: "Action pin sweep - an action is not pinned to a commit"
+        run: |
+          set -euo pipefail
+          EXISTING=$(gh issue list --repo "${GITHUB_REPOSITORY}" --state open \
+            --limit 1000 --json number,title \
+            --jq '[.[] | select(.title == env.TITLE)][0].number // empty')
+          if [ -n "${EXISTING}" ]; then
+            gh issue close "${EXISTING}" --repo "${GITHUB_REPOSITORY}" \
+              --comment "No action outside the reviewed backlog is unpinned as of ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}. Closing automatically."
+          else
+            echo "Nothing new is unpinned and no issue is open."
+          fi

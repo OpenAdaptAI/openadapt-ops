@@ -78,6 +78,42 @@ right before the Monday docs sync:
 This repository intentionally ships no cron workflow for these scripts; wire
 the schedule in your own runner when the weekly review owns one.
 
+## Action pin sweep
+
+`sweep_action_pins.py` reads every workflow in every repository we own and
+reports each `uses:` reference that is not a full 40-character commit SHA. A tag
+is mutable by the upstream owner and a major tag moves by design; a branch ref
+tracks another project's HEAD continuously. `pypa/gh-action-pypi-publish`
+v1.14.0 rejects `Metadata-Version: 2.5` and broke the openadapt-evals 0.91.0
+release *after* its tag, version commit and GitHub release had landed.
+
+It uses the live organisation listing rather than `repos.yml`, for the reason
+`sweep_default_branch_ci.py` gives: `repos.yml` omits internal tooling, and a
+sweep built on it would miss exactly the repositories nothing else covers.
+
+```bash
+# Report (what the weekly job runs):
+python scripts/sweep_action_pins.py
+```
+
+### The reviewed backlog
+
+About 112 references are unpinned today. Alerting on all of them weekly is how
+an alert gets muted, so the accepted backlog lives in `action-pin-baseline.json`
+and the sweep alerts **only** on a reference that is new or worse than what was
+accepted. The backlog is counted in the report but never raises the alarm.
+
+Validation never regenerates the baseline — that is deliberate, so a person
+reviews the change. Accept a reference explicitly, then review the diff:
+
+```bash
+python scripts/sweep_action_pins.py --write-baseline
+```
+
+Shrinking the backlog is the point: pin a reference properly and drop its row.
+`.github/workflows/action-pin-sweep.yml` runs the report weekly and keeps one
+issue up to date, the same pattern as `default-branch-sweep.yml`.
+
 ## Guard and generator scripts
 
 The remaining scripts validate or generate the published site:
