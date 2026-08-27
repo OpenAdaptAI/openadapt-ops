@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-08-26 22:08 UTC*
+> *Last updated: 2026-08-27 03:29 UTC*
 
 
 
@@ -38,12 +38,6 @@
 
 - [build(deps): bump astral-sh/setup-uv from 10.0.0 to 10.0.1](https://github.com/OpenAdaptAI/OpenAdapt/pull/1101) (#1101) — merged 
 
-- [fix(ci): repin the docs dispatch action and stop the recurring bump](https://github.com/OpenAdaptAI/OpenAdapt/pull/1098) (#1098) — merged 
-
-- [feat: define the current OpenAdapt platform BOM](https://github.com/OpenAdaptAI/OpenAdapt/pull/1097) (#1097) — merged 
-
-- [Fix launcher quickstart and align public product docs](https://github.com/OpenAdaptAI/OpenAdapt/pull/1096) (#1096) — merged 
-
 
 
 ## openadapt-flow
@@ -54,6 +48,10 @@
 - [docs(readme): launch-funnel pass with evidence table, comparison, and FAQ](https://github.com/OpenAdaptAI/openadapt-flow/pull/410) (#410) — merged 
 
 - [Persist egress posture before durable resume](https://github.com/OpenAdaptAI/openadapt-flow/pull/408) (#408) — merged 
+
+- [chore: ignore every .env variant, not one at a time](https://github.com/OpenAdaptAI/openadapt-flow/pull/407) (#407) — merged 
+
+- [fix(runtime): read each frame's viewport from the frame, not live from the backend](https://github.com/OpenAdaptAI/openadapt-flow/pull/406) (#406) — merged 
 
 - [fix(cli): preserve model tiers on resume](https://github.com/OpenAdaptAI/openadapt-flow/pull/404) (#404) — merged 
 
@@ -85,10 +83,6 @@
 
 - [feat: require signed runtime authority for Production and campaign actuation](https://github.com/OpenAdaptAI/openadapt-flow/pull/385) (#385) — merged 
 
-- [fix: migrate an empty legacy pending-delivery table without data loss](https://github.com/OpenAdaptAI/openadapt-flow/pull/384) (#384) — merged 
-
-- [feat: bind production delivery to signed permits and receipts](https://github.com/OpenAdaptAI/openadapt-flow/pull/383) (#383) — merged 
-
 
 
 ## openadapt-desktop
@@ -109,22 +103,6 @@
 - [test(release): state the O_NOFOLLOW contract per platform](https://github.com/OpenAdaptAI/openadapt-desktop/pull/123) (#123) — merged 
 
 - [fix(release): close the residual native release admission gaps](https://github.com/OpenAdaptAI/openadapt-desktop/pull/122) (#122) — merged 
-
-- [fix(ci): name the CI native checksum manifest exactly SHA256SUMS](https://github.com/OpenAdaptAI/openadapt-desktop/pull/121) (#121) — merged 
-
-- [fix(release): write the native version transform as exact UTF-8 LF bytes](https://github.com/OpenAdaptAI/openadapt-desktop/pull/120) (#120) — merged 
-
-- [test(runner): make the lease-expiry test observe the clock, not race it](https://github.com/OpenAdaptAI/openadapt-desktop/pull/119) (#119) — merged 
-
-- [test: guard the POSIX 0600 assertions that cannot hold on Windows](https://github.com/OpenAdaptAI/openadapt-desktop/pull/118) (#118) — merged 
-
-- [ci: bound the apt installs and prefer the canonical Ubuntu archive](https://github.com/OpenAdaptAI/openadapt-desktop/pull/117) (#117) — merged 
-
-- [fix: enforce governed Desktop egress boundaries](https://github.com/OpenAdaptAI/openadapt-desktop/pull/116) (#116) — merged 
-
-- [fix: fail closed on untrusted native releases](https://github.com/OpenAdaptAI/openadapt-desktop/pull/115) (#115) — merged 
-
-- [feat(qualification): capture local institutional judgment cases](https://github.com/OpenAdaptAI/openadapt-desktop/pull/112) (#112) — merged 
 
 
 
@@ -150,6 +128,10 @@
 
 ## openadapt-evals
 
+
+- [fix(evidence): match the retention digests the Cloud writer emits](https://github.com/OpenAdaptAI/openadapt-evals/pull/311) (#311) — merged 
+
+- [docs(changelog): list the importer workflow in the 0.94.0 section](https://github.com/OpenAdaptAI/openadapt-evals/pull/310) (#310) — merged 
 
 - [feat(ci): add the authorized importer workflow and fix the proposal bot](https://github.com/OpenAdaptAI/openadapt-evals/pull/309) (#309) — merged 
 
@@ -181,16 +163,6 @@
 
 - [fix(evidence): verify private Cloud attestations on GitHub's instance](https://github.com/OpenAdaptAI/openadapt-evals/pull/293) (#293) — merged 
 
-- [fix(evidence): expect private Cloud source visibility at signing](https://github.com/OpenAdaptAI/openadapt-evals/pull/292) (#292) — merged 
-
-- [fix(ci): publish with an action that accepts Metadata-Version 2.5](https://github.com/OpenAdaptAI/openadapt-evals/pull/291) (#291) — merged 
-
-- [ci: bound the apt install and prefer the canonical Ubuntu archive](https://github.com/OpenAdaptAI/openadapt-evals/pull/289) (#289) — merged 
-
-- [ci: run pull-request checks on every base branch](https://github.com/OpenAdaptAI/openadapt-evals/pull/288) (#288) — merged 
-
-- [Verify retained production acceptance evidence](https://github.com/OpenAdaptAI/openadapt-evals/pull/287) (#287) — merged 
-
 
 
 ## openadapt-capture
@@ -208,10 +180,6 @@
 
 - [feat: bind each action to its exact retained screen frame](https://github.com/OpenAdaptAI/openadapt-capture/pull/84) (#84) — merged 
 
-- [ci: bound the apt install and prefer the canonical Ubuntu archive](https://github.com/OpenAdaptAI/openadapt-capture/pull/81) (#81) — merged 
-
-- [ci: run pull-request checks on every base branch](https://github.com/OpenAdaptAI/openadapt-capture/pull/80) (#80) — merged 
-
 - [feat: add authenticated recorder control channel](https://github.com/OpenAdaptAI/openadapt-capture/pull/79) (#79) — merged 
 
 - [feat: qualify resilient native capture](https://github.com/OpenAdaptAI/openadapt-capture/pull/78) (#78) — merged 
@@ -225,16 +193,12 @@
 
 - [chore: ignore every .env variant, not one at a time](https://github.com/OpenAdaptAI/openadapt-privacy/pull/16) (#16) — merged 
 
-- [fix(ci): publish with an action that accepts Metadata-Version 2.5](https://github.com/OpenAdaptAI/openadapt-privacy/pull/14) (#14) — merged 
-
 
 
 ## openadapt-types
 
 
 - [chore: ignore every .env variant, not one at a time](https://github.com/OpenAdaptAI/openadapt-types/pull/28) (#28) — merged 
-
-- [fix(ci): publish with an action that accepts Metadata-Version 2.5](https://github.com/OpenAdaptAI/openadapt-types/pull/26) (#26) — merged 
 
 
 
