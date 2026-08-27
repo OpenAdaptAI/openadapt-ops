@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-08-27 03:29 UTC*
+> *Last updated: 2026-08-27 17:33 UTC*
 
 
 
@@ -129,6 +129,8 @@
 ## openadapt-evals
 
 
+- [chore(release): prepare 0.94.1](https://github.com/OpenAdaptAI/openadapt-evals/pull/312) (#312) — merged 
+
 - [fix(evidence): match the retention digests the Cloud writer emits](https://github.com/OpenAdaptAI/openadapt-evals/pull/311) (#311) — merged 
 
 - [docs(changelog): list the importer workflow in the 0.94.0 section](https://github.com/OpenAdaptAI/openadapt-evals/pull/310) (#310) — merged 
@@ -167,6 +169,8 @@
 
 ## openadapt-capture
 
+
+- [feat(capture): seal native action geometry at capture time](https://github.com/OpenAdaptAI/openadapt-capture/pull/94) (#94) — merged 
 
 - [chore: ignore every .env variant, not one at a time](https://github.com/OpenAdaptAI/openadapt-capture/pull/93) (#93) — merged 
 
