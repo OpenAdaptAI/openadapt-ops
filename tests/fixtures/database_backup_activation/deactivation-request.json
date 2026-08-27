@@ -1,7 +1,7 @@
 {
   "request": {
     "activation_id": "act_11111111111111111111111111111111",
-    "active_admission_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "active_lease_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
     "audience": "OpenAdaptAI/openadapt-ops:database-backup-deactivation",
     "customer_data_remaining": false,
     "deactivation_id": "deact_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
@@ -16,7 +16,7 @@
     "target": "schedule_and_monitor",
     "zero_customer_proof": {
       "proof": {
-        "active_admission_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "active_lease_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
         "cloud_revision_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
         "customer_data_remaining": false,
         "deletion_receipt_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
@@ -28,7 +28,7 @@
         "retention_deletion_complete": true,
         "retention_receipt_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
       },
-      "proof_revision_sha256": "ec87d26185cfd97b36fcc3b50d9a98d6d2348dbb1020301c5aece2c3919f2a4c",
+      "proof_revision_sha256": "8c56cc42784f2718f0625f9abae665f1e98021d3703043416ffd54e096b734eb",
       "schema": "openadapt.zero-customer-backup-shutdown-proof/v1"
     }
   },
@@ -36,6 +36,6 @@
   "signature": {
     "algorithm": "HMAC-SHA256",
     "key_id": "cloud-backup-deactivation-hmac-2026-01",
-    "value": "06d531f5528ab7c916b96ce549bc61d988ae9c5cacf3ee4c34eb2b96760f352e"
+    "value": "e7a2356027f9aafbb966249ecf01394ebda9a578da47906aa68c7669e9ca2f6e"
   }
 }

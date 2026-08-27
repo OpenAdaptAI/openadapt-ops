@@ -226,12 +226,34 @@ jobs:
           }
 
           prefix="activation/${ACTIVATION_ID}"
+          get_optional_activation_object() {
+            local key=$1
+            local destination=$2
+            local error_file=/tmp/database-backup-activation-read-error.txt
+            set +e
+            aws s3api get-object --bucket "${AWS_BACKUP_BUCKET}" --key "${key}" \
+              --expected-bucket-owner 992382684924 "${destination}" \
+              > /dev/null 2> "${error_file}"
+            local result=$?
+            set -e
+            if [ "${result}" -eq 0 ]; then
+              rm -f "${error_file}"
+              return 0
+            fi
+            rm -f "${destination}"
+            if grep -Eq '\((NoSuchKey|NotFound|404)\)' "${error_file}"; then
+              rm -f "${error_file}"
+              return 1
+            fi
+            echo "::error::S3 did not prove whether activation state exists: ${key}"
+            sed 's/^/::error::/' "${error_file}"
+            exit 1
+          }
           state_args=()
           for stage in active ready restore backup pending-backup; do
             path="/tmp/database-backup-${stage}-signed-state.json"
-            if aws s3api get-object --bucket "${AWS_BACKUP_BUCKET}" \
-              --key "${prefix}/${stage}-state.json" \
-              --expected-bucket-owner 992382684924 "${path}" > /dev/null 2>&1; then
+            if get_optional_activation_object \
+              "${prefix}/${stage}-state.json" "${path}"; then
               state_args+=(--signed-state "${path}")
             fi
           done

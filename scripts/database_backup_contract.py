@@ -343,15 +343,40 @@ def single_put_contract(
             "the encrypted archive exceeds the 5 GiB single-PutObject launch limit"
         )
 
+    contract = single_put_contract_from_manifest(
+        manifest_path, maximum_bytes=maximum_bytes
+    )
+    digest = sha256_file(ciphertext)
+    if contract["bytes"] != size or contract["sha256"] != digest:
+        raise ContractError("the encrypted archive does not match the manifest")
+    return contract
+
+
+def single_put_contract_from_manifest(
+    manifest_path: Path,
+    *,
+    maximum_bytes: int = S3_SINGLE_PUT_MAX_BYTES,
+) -> dict[str, object]:
+    """Rebuild the exact upload contract from a retained redacted manifest."""
+    if maximum_bytes <= 0:
+        raise ContractError("the S3 single-PutObject limit must be positive")
     manifest = read_manifest(manifest_path)
     artifact = manifest["artifact"]
     assert isinstance(artifact, dict)
     expected = artifact.get("ciphertext_archive")
     if not isinstance(expected, dict):
         raise ContractError("the encrypted archive contract is missing")
-    digest = sha256_file(ciphertext)
-    if expected.get("bytes") != size or expected.get("sha256") != digest:
-        raise ContractError("the encrypted archive does not match the manifest")
+    size = expected.get("bytes")
+    digest = expected.get("sha256")
+    if (
+        not isinstance(size, int)
+        or isinstance(size, bool)
+        or size <= 0
+        or size > maximum_bytes
+    ):
+        raise ContractError("the encrypted archive size in the manifest is invalid")
+    if not isinstance(digest, str) or SHA256.fullmatch(digest) is None:
+        raise ContractError("the encrypted archive digest in the manifest is invalid")
 
     return {
         "schema": S3_UPLOAD_SCHEMA,
@@ -364,6 +389,44 @@ def single_put_contract(
         "checksum_sha256": base64.b64encode(bytes.fromhex(digest)).decode(),
         "maximum_bytes": maximum_bytes,
     }
+
+
+def recover_single_put(args: argparse.Namespace) -> None:
+    """Verify a completed ciphertext PutObject and rebuild its local contract."""
+    manifest_path = Path(args.manifest)
+    contract = single_put_contract_from_manifest(manifest_path)
+    head = json.loads(Path(args.ciphertext_head).read_text(encoding="utf-8"))
+    if not isinstance(head, dict):
+        raise ContractError("the retained ciphertext head response is invalid")
+    require_version_id(head.get("VersionId"), "ciphertext")
+    if head.get("ContentLength") != contract["bytes"]:
+        raise ContractError("the retained ciphertext size does not match")
+    if head.get("StorageClass") != CIPHERTEXT_STORAGE_CLASS:
+        raise ContractError("the retained ciphertext is not in GLACIER_IR")
+    if head.get("ServerSideEncryption") != "AES256":
+        raise ContractError("the retained ciphertext is not encrypted with SSE-S3")
+    if head.get("ChecksumSHA256") != contract["checksum_sha256"]:
+        raise ContractError("the retained ciphertext checksum does not match")
+    metadata = head.get("Metadata")
+    if not isinstance(metadata, dict) or metadata.get("sha256") != contract["sha256"]:
+        raise ContractError("the retained ciphertext digest metadata does not match")
+    manifest_b64 = base64.b64encode(manifest_path.read_bytes()).decode()
+    if metadata.get("artifact-manifest-base64") != manifest_b64:
+        raise ContractError("the retained ciphertext manifest metadata does not match")
+    output = Path(args.output)
+    output.write_text(
+        json.dumps(contract, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    print(
+        json.dumps(
+            {
+                "recovered": True,
+                "ciphertext_version_id": head["VersionId"],
+                "upload_contract": str(output),
+            },
+            sort_keys=True,
+        )
+    )
 
 
 def read_single_put_contract(path: Path) -> dict[str, object]:
@@ -826,6 +889,12 @@ def parser() -> argparse.ArgumentParser:
     upload.add_argument("--ciphertext-archive", required=True)
     upload.add_argument("--output", required=True)
     upload.set_defaults(run=prepare_single_put)
+
+    recover_upload = commands.add_parser("recover-single-put")
+    recover_upload.add_argument("--manifest", required=True)
+    recover_upload.add_argument("--ciphertext-head", required=True)
+    recover_upload.add_argument("--output", required=True)
+    recover_upload.set_defaults(run=recover_single_put)
 
     uploaded = commands.add_parser("verify-single-put")
     uploaded.add_argument("--upload-contract", required=True)
