@@ -32,6 +32,7 @@ from sweep_default_branch_ci import (  # noqa: E402
     classify_run,
     is_github_managed,
     is_push_gated,
+    is_scheduled,
     render,
     token_sees_private,
 )
@@ -103,6 +104,25 @@ def test_reports_a_failure_that_happened_after_the_retirement():
     assert outcome == FAILING
 
 
+def test_a_failed_scheduled_run_is_live_even_after_a_later_workflow_edit():
+    """A cron failure is live evidence, not frozen manual-run history."""
+    outcome, explanation = classify_run(
+        run(
+            name="Production DB backup freshness",
+            conclusion="failure",
+            created_at="2026-07-28T01:00:00Z",
+        ),
+        ACTIVE,
+        SCHEDULE_ONLY,
+        "2026-07-28T02:22:00Z",
+        HEAD,
+        NOW,
+        6.0,
+    )
+    assert outcome == FAILING
+    assert "retired" not in explanation
+
+
 def test_a_failure_predating_a_workflow_edit_stays_red_but_says_so():
     """openadapt-wright: 9 for 9 failures in March, a gate added on 2026-07-28.
 
@@ -162,13 +182,18 @@ def test_a_dispatch_only_workflow_whose_failure_predates_retirement_is_not_a_fai
     assert outcome == NOT_PUSH_GATED
 
 
-def test_a_schedule_only_workflow_is_not_push_gated():
-    outcome = classify(
+def test_a_schedule_only_workflow_failure_is_live():
+    outcome, explanation = classify_run(
         run(conclusion="failure", created_at="2026-01-01T00:00:00Z"),
-        source=SCHEDULE_ONLY,
-        changed_at="2026-06-01T00:00:00Z",
+        ACTIVE,
+        SCHEDULE_ONLY,
+        "2026-06-01T00:00:00Z",
+        HEAD,
+        NOW,
+        6.0,
     )
-    assert outcome == NOT_PUSH_GATED
+    assert outcome == FAILING
+    assert "retired" not in explanation
 
 
 def test_a_young_in_flight_run_does_not_alert():
@@ -210,6 +235,13 @@ def test_push_gating_detection():
     assert is_push_gated('"on":\n  pull_request:\njobs: {}\n')
     # YAML 1.1 turns a bare `on` key into `true`; some formatters emit that.
     assert is_push_gated("true:\n  push:\njobs: {}\n")
+
+
+def test_schedule_detection():
+    assert is_scheduled(SCHEDULE_ONLY)
+    assert is_scheduled("on: [workflow_dispatch, schedule]\njobs: {}\n")
+    assert not is_scheduled(DISPATCH_ONLY)
+    assert not is_scheduled("this is not a workflow at all")
 
 
 def test_a_later_jobs_key_does_not_leak_into_the_on_block():

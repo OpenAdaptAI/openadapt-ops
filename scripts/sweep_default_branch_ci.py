@@ -36,13 +36,15 @@ Ported from ``bin/oa-green``, not re-derived:
 
       workflow file gone from the default branch -> RETIRED
       workflow disabled                          -> RETIRED
-      no push / pull_request trigger left        -> NOT PUSH-GATED
+      schedule trigger remains                   -> genuinely NOT GREEN
+      no change or schedule trigger left         -> NOT PUSH-GATED
       otherwise                                  -> genuinely NOT GREEN
 
 - A GREEN run whose head SHA is not the current head tested an older tree. That
   is worth saying and is never a failure.
 
-RETIRED and NOT PUSH-GATED are never reported as failures. A daily issue that
+RETIRED and NOT PUSH-GATED are never reported as failures. A scheduled workflow
+is live even when it has no push or pull-request trigger. A daily issue that
 cries wolf gets muted, and a muted alert is worse than none -- that is the same
 mechanism that let a red badge sit for five months.
 
@@ -185,19 +187,12 @@ class Reader:
 
 _ON_KEY = re.compile(r"^(on|\"on\"|'on'|True|true)\s*:")
 _TRIGGER = re.compile(r"\b(push|pull_request|pull_request_target|merge_group)\b")
+_SCHEDULE_TRIGGER = re.compile(r"\bschedule\b")
 
 
-def is_push_gated(source: str) -> bool:
-    """Does this workflow still run on a change to the default branch?
+def _on_block(source: str) -> str | None:
+    """Return the workflow trigger block, or ``None`` when it cannot be found."""
 
-    Text-level, because the standard library has no YAML parser and this job
-    installs nothing. The ``on:`` block is located and read to the next
-    top-level key. YAML 1.1 turns the bare key ``on`` into ``true``, which some
-    formatters emit, so that spelling is accepted too.
-
-    An unparseable file returns ``True``: assuming a workflow is live keeps a
-    real failure visible, whereas assuming it is retired would hide one.
-    """
     lines = [line for line in source.splitlines() if not line.lstrip().startswith("#")]
     block: list[str] = []
     inside = False
@@ -211,8 +206,31 @@ def is_push_gated(source: str) -> bool:
             break
         block.append(line)
     if not inside:
+        return None
+    return "\n".join(block)
+
+
+def is_push_gated(source: str) -> bool:
+    """Does this workflow still run on a change to the default branch?
+
+    Text-level, because the standard library has no YAML parser and this job
+    installs nothing. The ``on:`` block is located and read to the next
+    top-level key. YAML 1.1 turns the bare key ``on`` into ``true``, which some
+    formatters emit, so that spelling is accepted too.
+
+    An unparseable file returns ``True``: assuming a workflow is live keeps a
+    real failure visible, whereas assuming it is retired would hide one.
+    """
+    block = _on_block(source)
+    if block is None:
         return True
-    return _TRIGGER.search("\n".join(block)) is not None
+    return _TRIGGER.search(block) is not None
+
+
+def is_scheduled(source: str) -> bool:
+    """Does this workflow have a schedule that can produce a live red run?"""
+    block = _on_block(source)
+    return block is not None and _SCHEDULE_TRIGGER.search(block) is not None
 
 
 def _parse_time(stamp: str) -> datetime:
@@ -296,9 +314,10 @@ def classify_run(
             f"{workflow['path']} is not on the default branch; "
             f"the {conclusion} run is frozen history"
         )
-    elif not is_push_gated(workflow_source):
+    elif not is_push_gated(workflow_source) and not is_scheduled(workflow_source):
         retirement = (
-            f"dispatch or schedule only, so the {conclusion} run says nothing about the tree"
+            f"no change or schedule trigger, so the {conclusion} run says nothing "
+            "about the tree"
         )
 
     if retirement is None:
