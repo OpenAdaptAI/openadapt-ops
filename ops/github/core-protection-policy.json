@@ -8,6 +8,7 @@
     "repository_ruleset_counts": {
       ".github": 0,
       "OpenAdapt": 0,
+      "openadapt-agent": 0,
       "openadapt-capture": 0,
       "openadapt-desktop": 0,
       "openadapt-evals": 0,
@@ -18,6 +19,7 @@
     "main_protected": {
       ".github": false,
       "OpenAdapt": true,
+      "openadapt-agent": true,
       "openadapt-capture": true,
       "openadapt-desktop": false,
       "openadapt-evals": true,
@@ -28,11 +30,12 @@
     "classic_branch_protection_detail": "Not available without valid authenticated administration read access",
     "release_environment_state": {
       "OpenAdapt": "No release environment",
+      "openadapt-agent": "pypi exists with no protection rule and no deployment policy; release-identity and mcp-registry do not exist",
       "openadapt-flow": "pypi exists with no protection rule and no deployment policy",
       "openadapt-capture": "No release environment",
       "openadapt-desktop": "native-release has reviewer 774615 and exact desktop-v* plus ffmpeg-runtime-v8.1.2-r1 tag policies",
       "openadapt-evals": "pypi exists with no protection rule and no deployment policy",
-      "openadapt-ops": "production-backup and production-backup-monitor exist without a protection rule, deployment branch policy, or reviewer; operational backup environments remain outside this policy",
+      "openadapt-ops": "production-backup and production-backup-monitor exist without a protection rule, deployment branch policy, or reviewer; the target policy manages production-backup and leaves production-backup-monitor unchanged",
       "openadapt-web": "No release environment",
       ".github": "No release environment"
     }
@@ -54,6 +57,7 @@
     },
     "lifecycle_app_installation": "absent",
     "docs_app_installation": "absent",
+    "cloud_checkout_app_installation": "absent",
     "required_non_lifecycle_dispatch_guard": "A no-permission reject-lifecycle-app predecessor plus actor and triggering_actor rejection on every effect job",
     "required_dispatch_concurrency": "A workflow-and-event-specific concurrency group with cancel-in-progress false",
     "mutable_actions_capabilities": [
@@ -86,6 +90,18 @@
       "Pull requests: write",
       "Metadata: read"
     ],
+    "repository_selection": "selected",
+    "repository_scope": [
+      ".github",
+      "OpenAdapt",
+      "openadapt-agent",
+      "openadapt-capture",
+      "openadapt-desktop",
+      "openadapt-evals",
+      "openadapt-flow",
+      "openadapt-ops",
+      "openadapt-web"
+    ],
     "purpose": "Create release tags only. This identity has no main-branch bypass."
   },
   "lifecycle_identity": {
@@ -114,6 +130,7 @@
     "workflow_paths": {
       ".github": [
         ".github/workflows/production-lifecycle-activation.yml",
+        ".github/workflows/production-cloud-deploy.yml",
         ".github/workflows/qualification-authority-state.yml",
         ".github/workflows/qualification-revocation-state.yml"
       ],
@@ -144,7 +161,42 @@
         "Production evidence remains content-addressed outside mutable Actions artifacts"
       ]
     },
-    "purpose": "Dispatch only the five founder-reviewed lifecycle workflows and create their reviewable pull requests. The workflow GITHUB_TOKEN pushes the automation branch."
+    "purpose": "Initiate only the six founder-reviewed lifecycle and Cloud deployment workflows. The App does not authorize a Cloud deploy and has no Cloud repository or deployment permission."
+  },
+  "lifecycle_ref_identity": {
+    "app_slug": "",
+    "app_slug_environment": "OPENADAPT_LIFECYCLE_REF_APP_SLUG",
+    "app_id": 0,
+    "app_id_environment": "OPENADAPT_LIFECYCLE_REF_APP_ID",
+    "actor_login": "",
+    "actor_login_environment": "OPENADAPT_LIFECYCLE_REF_ACTOR_LOGIN",
+    "actor_id": 0,
+    "actor_id_environment": "OPENADAPT_LIFECYCLE_REF_ACTOR_ID",
+    "installation_id": 0,
+    "installation_id_environment": "OPENADAPT_LIFECYCLE_REF_INSTALLATION_ID",
+    "repository_scope": [
+      ".github"
+    ],
+    "required_repository_permissions": [
+      "Contents: write",
+      "Metadata: read"
+    ],
+    "ruleset_bypass": false,
+    "workflow_path": ".github/workflows/production-lifecycle-ref.yml",
+    "workflow_paths": {
+      ".github": [
+        ".github/workflows/production-lifecycle-ref.yml"
+      ]
+    },
+    "protected_ref": "refs/heads/production-lifecycle-feed",
+    "authority_repository_id": 858454062,
+    "repository_variables": {
+      "app_id": "OPENADAPT_LIFECYCLE_REF_APP_ID",
+      "actor_id": "OPENADAPT_LIFECYCLE_REF_ACTOR_ID",
+      "installation_id": "OPENADAPT_LIFECYCLE_REF_INSTALLATION_ID"
+    },
+    "private_key_secret": "OPENADAPT_LIFECYCLE_REF_APP_PRIVATE_KEY",
+    "purpose": "Create or fast-forward only the protected Production lifecycle feed ref. The inactive identity must fail closed until the founder approves its trust root."
   },
   "docs_identity": {
     "app_slug": "openadapt-docs",
@@ -177,6 +229,35 @@
     },
     "purpose": "Dispatch only the founder-reviewed documentation synchronization workflow and create its reviewable pull request. The workflow GITHUB_TOKEN pushes the automation branch."
   },
+  "cloud_checkout_identity": {
+    "app_slug": "openadapt-cloud-checkout",
+    "app_id": null,
+    "app_id_environment": "OPENADAPT_CLOUD_CHECKOUT_APP_ID",
+    "installation_id": null,
+    "installation_id_environment": "OPENADAPT_CLOUD_CHECKOUT_INSTALLATION_ID",
+    "repository_scope": [
+      "openadapt-cloud"
+    ],
+    "required_repository_permissions": [
+      "Contents: read",
+      "Metadata: read"
+    ],
+    "forbidden_repository_permissions": [
+      "Actions: write",
+      "Administration: write",
+      "Contents: write",
+      "Deployments: write",
+      "Environments: write",
+      "Secrets: write"
+    ],
+    "ruleset_bypass": false,
+    "repository_variables": {
+      "app_id": "OPENADAPT_CLOUD_CHECKOUT_APP_ID",
+      "installation_id": "OPENADAPT_CLOUD_CHECKOUT_INSTALLATION_ID"
+    },
+    "private_key_secret": "OPENADAPT_CLOUD_CHECKOUT_APP_PRIVATE_KEY",
+    "purpose": "Issue one short-lived token for the exact openadapt-cloud commit. The token has Contents read only and cannot dispatch, deploy, write source, or bypass a rule."
+  },
   "environment_reviewer": {
     "type": "User",
     "login": "abrichr",
@@ -191,7 +272,7 @@
       "name": "OpenAdapt",
       "visibility": "public",
       "default_branch": "main",
-      "audited_main_sha": "42970fbb1246f77f8350254569e5ce55f9bb60ed",
+      "audited_main_sha": "f6d275807cc18557f57c989519be3327b90d7ac5",
       "require_code_owner_review": true,
       "required_checks": [
         "Analyze (python)",
@@ -246,10 +327,99 @@
       ]
     },
     {
+      "name": "openadapt-agent",
+      "visibility": "public",
+      "default_branch": "main",
+      "audited_main_sha": "be253dd558a95bfb457c18715d258854aba79f69",
+      "require_code_owner_review": true,
+      "required_checks": [
+        "Analyze (python)",
+        "dependency-review",
+        "gitleaks",
+        "test (3.10, floor)",
+        "test (3.11, current)",
+        "test (3.12, current)"
+      ],
+      "path_scoped_checks": [
+        "Build + validate (dry run, no publish)"
+      ],
+      "admission_gaps": [
+        "Make the release identity job use the founder-reviewed main environment and the release App. Put PyPI and MCP registry publication in separate protected tag environments."
+      ],
+      "release_tag_patterns": [
+        "refs/tags/v*"
+      ],
+      "release_environments": [
+        {
+          "name": "release-identity",
+          "deployment_policies": [
+            {
+              "type": "branch",
+              "name": "main"
+            }
+          ],
+          "exclusive_workflow": ".github/workflows/release.yml"
+        },
+        {
+          "name": "pypi",
+          "deployment_policies": [
+            {
+              "type": "tag",
+              "name": "v*"
+            }
+          ],
+          "exclusive_workflow": ".github/workflows/release.yml"
+        },
+        {
+          "name": "mcp-registry",
+          "deployment_policies": [
+            {
+              "type": "tag",
+              "name": "v*"
+            }
+          ],
+          "exclusive_workflow": ".github/workflows/release.yml"
+        }
+      ],
+      "release_workflows": [
+        {
+          "path": ".github/workflows/release.yml",
+          "required_patterns": [
+            "(?m)^[ ]{2}workflow_dispatch:\\s*$",
+            "(?m)^[ ]{2}push:\\s*$",
+            "tags:\\s*\\[?[\"']?v\\*[\"']?\\]?",
+            "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?release-identity\\s*$",
+            "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?pypi\\s*$",
+            "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?mcp-registry\\s*$",
+            "actions/create-github-app-token",
+            "vars\\.OPENADAPT_RELEASE_APP_ID",
+            "secrets\\.OPENADAPT_RELEASE_APP_PRIVATE_KEY",
+            "permission-contents:\\s*write",
+            "git\\s+tag",
+            "git\\s+push",
+            "(?m)^\\s*id-token:\\s*write\\s*$",
+            "pypa/gh-action-pypi-publish",
+            "mcp-publisher\\s+login\\s+github-oidc",
+            "scripts/check_release_artifacts\\.py",
+            "scripts/check_source_boundary\\.py\\s+--require-dist",
+            "scripts/verify_release_registries\\.py",
+            "production-admission-candidate\\.json"
+          ],
+          "forbidden_patterns": [
+            "ADMIN_TOKEN",
+            "(?m)^[ ]{2}release:\\s*$",
+            "PYPI_API_TOKEN",
+            "MCP_GITHUB_TOKEN",
+            "registry/releases/latest/download"
+          ]
+        }
+      ]
+    },
+    {
       "name": "openadapt-flow",
       "visibility": "public",
       "default_branch": "main",
-      "audited_main_sha": "7da6571bdc38faca5b6b944ae8dbac6ec1d771cb",
+      "audited_main_sha": "980681490bcfc459f9c0a2069d9da80214b5de7c",
       "require_code_owner_review": true,
       "required_checks": [
         "docs-consistency",
@@ -601,7 +771,7 @@
         "Prove the classifier fires and stays quiet"
       ],
       "admission_gaps": [
-        "production-backup and production-backup-monitor have no protection rule, deployment branch policy, or reviewer.",
+        "production-backup is not configured with its AWS role, S3 bucket, Supabase project reference, or Supabase database URL. production-backup-monitor remains outside this policy.",
         "Every non-lifecycle manual workflow needs the no-permission lifecycle-App rejection predecessor and non-cancelling dispatch concurrency.",
         "sync.yml must remove repository_dispatch and direct main push before the protected documentation workflow can apply."
       ],
@@ -644,6 +814,21 @@
             }
           ],
           "exclusive_workflow": ".github/workflows/production-lifecycle-projection.yml"
+        }
+      ],
+      "operational_environments": [
+        {
+          "name": "production-backup",
+          "wait_timer": 0,
+          "prevent_self_review": false,
+          "required_reviewers": false,
+          "deployment_policies": [
+            {
+              "type": "branch",
+              "name": "main"
+            }
+          ],
+          "exclusive_workflow": ".github/workflows/db-backup.yml"
         }
       ],
       "release_workflows": [
@@ -741,6 +926,37 @@
           ]
         }
       ],
+      "operational_workflows": [
+        {
+          "path": ".github/workflows/db-backup.yml",
+          "required_patterns": [
+            "(?m)^[ ]{2}workflow_dispatch:\\s*$",
+            "(?m)^[ ]{2}schedule:\\s*$",
+            "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?production-backup\\s*$",
+            "(?m)^\\s*group:\\s*production-db-backup\\s*$",
+            "(?m)^\\s*cancel-in-progress:\\s*false\\s*$",
+            "(?m)^\\s*group:\\s*production-backup\\s*$",
+            "(?m)^\\s*labels:\\s*self-hosted\\s*$",
+            "github\\.ref_protected",
+            "refs/heads/main",
+            "scripts/check_github_environment_gate\\.py",
+            "(?m)^\\s*id-token:\\s*write\\s*$",
+            "role-to-assume:\\s*\\$\\{\\{ env\\.BACKUP_ROLE_ARN \\}\\}",
+            "allowed-account-ids:\\s*'992382684924'",
+            "vars\\.AWS_BACKUP_ROLE_ARN",
+            "vars\\.AWS_BACKUP_BUCKET",
+            "secrets\\.SUPABASE_DB_URL",
+            "secrets\\.SUPABASE_PROJECT_REF",
+            "scripts/check_live_database_backup_target\\.sh",
+            "--expected-bucket-owner 992382684924"
+          ],
+          "forbidden_patterns": [
+            "(?m)^[ ]{2}(?:pull_request|pull_request_target|push|release|repository_dispatch|workflow_call):\\s*$",
+            "AWS_ACCESS_KEY_ID",
+            "AWS_SECRET_ACCESS_KEY"
+          ]
+        }
+      ],
       "dispatch_workflow_inventory": [
         {
           "path": ".github/workflows/production-lifecycle-projection.yml",
@@ -784,7 +1000,7 @@
       "name": "openadapt-web",
       "visibility": "public",
       "default_branch": "main",
-      "audited_main_sha": "ba35b60125160b4b40a0871644709d8c7e29259f",
+      "audited_main_sha": "58f947e464687053b6dde7690c7a85d97c318f0b",
       "require_code_owner_review": true,
       "required_checks": [
         "Analyze (javascript-typescript)",
@@ -854,6 +1070,18 @@
           "exclusive_workflow": ".github/workflows/production-lifecycle-activation.yml"
         },
         {
+          "name": "production-cloud-deploy",
+          "wait_timer": 0,
+          "prevent_self_review": true,
+          "deployment_policies": [
+            {
+              "type": "branch",
+              "name": "main"
+            }
+          ],
+          "exclusive_workflow": ".github/workflows/production-cloud-deploy.yml"
+        },
+        {
           "name": "qualification-authority-state",
           "wait_timer": 0,
           "prevent_self_review": true,
@@ -903,6 +1131,122 @@
             "(?m)^[ ]{2}(?:pull_request|pull_request_target|push|release|schedule|repository_dispatch|workflow_call):\\s*$",
             "git\\s+push[^\\n]*(?:refs/heads/)?main",
             "permission-contents:\\s*write"
+          ]
+        },
+        {
+          "path": ".github/workflows/production-cloud-deploy.yml",
+          "required_patterns": [
+            "(?m)^name:\\s*Production Cloud deploy\\s*$",
+            "(?m)^[ ]{2}workflow_dispatch:\\s*$",
+            "(?m)^\\s*environment:\\s*(?:\\n\\s*name:\\s*)?production-cloud-deploy\\s*$",
+            "github\\.repository\\s*==\\s*'OpenAdaptAI/\\.github'",
+            "github\\.ref\\s*==\\s*'refs/heads/main'",
+            "github\\.event_name\\s*==\\s*'workflow_dispatch'",
+            "github\\.actor\\s*==\\s*'openadapt-lifecycle\\[bot\\]'",
+            "github\\.triggering_actor\\s*==\\s*'openadapt-lifecycle\\[bot\\]'",
+            "github\\.actor_id\\s*==\\s*vars\\.OPENADAPT_LIFECYCLE_ACTOR_ID",
+            "inputs\\.source_commit",
+            "inputs\\.deployment_intent_id",
+            "inputs\\.provider_idempotency_key",
+            "inputs\\.operation",
+            "inputs\\.expected_lifecycle_ledger_head_sha256",
+            "inputs\\.expected_lifecycle_ledger_sha256",
+            "inputs\\.expected_registry_head_sha256",
+            "inputs\\.expected_registry_revision",
+            "openadapt\\.production-cloud-deploy-authorization/v1",
+            "production-cloud-deploy-authorization",
+            "openadapt\\.production-cloud-deploy-authorization-sigstore-bundle/v1",
+            "production-cloud-deploy-authorization-sigstore-bundle",
+            "OpenAdapt production cloud deploy authorization v1\\\\0",
+            "openadapt\\.production-cloud-deployment-registry/v1",
+            "openadapt\\.production-cloud-deployment-registry-entry/v1",
+            "OpenAdapt production cloud deployment registry v1\\\\0",
+            "production-cloud-deployment-registry\\.json",
+            "authorization_id",
+            "deployment_intent_id",
+            "source_commit",
+            "authority_source_commit",
+            "deploy_workflow_run_id",
+            "deploy_workflow_run_attempt",
+            "github\\.run_id",
+            "github\\.run_attempt",
+            "provider_idempotency_key",
+            "lifecycle_policy_sha256",
+            "lifecycle_ledger_sha256",
+            "lifecycle_ledger_head_sha256",
+            "OpenAdapt production lifecycle ledger head v1\\\\0",
+            "prior_admission_sha256",
+            "prior_revocation_sha256",
+            "prior_registry_head_sha256",
+            "prior_registry_revision",
+            "issued_at",
+            "expires_at",
+            "default_change",
+            "same_default_redeploy",
+            "sigstore",
+            "https://github\\.com/OpenAdaptAI/\\.github/\\.github/workflows/production-cloud-deploy\\.yml@refs/heads/main",
+            "repo:OpenAdaptAI/\\.github:ref:refs/heads/main",
+            "token\\.actions\\.githubusercontent\\.com",
+            "github\\.ref_protected",
+            "actions/create-github-app-token",
+            "vars\\.OPENADAPT_CLOUD_CHECKOUT_APP_ID",
+            "secrets\\.OPENADAPT_CLOUD_CHECKOUT_APP_PRIVATE_KEY",
+            "owner:\\s*OpenAdaptAI",
+            "repositories:\\s*openadapt-cloud",
+            "permission-contents:\\s*read",
+            "repository:\\s*OpenAdaptAI/openadapt-cloud",
+            "ref:\\s*\\$\\{\\{ inputs\\.source_commit \\}\\}",
+            "persist-credentials:\\s*false",
+            "/api/internal/production-secret-source-proof",
+            "https://app\\.openadapt\\.ai/api/health/ready",
+            "https://app\\.openadapt\\.ai/api/internal/execute-acceptance/target/attestation",
+            "openadapt\\.production-cloud-deployment-result/v1",
+            "production-cloud-deployment-result",
+            "openadapt\\.production-cloud-deployment-result-sigstore-bundle/v1",
+            "production-cloud-deployment-result-sigstore-bundle",
+            "OpenAdapt production cloud deployment result v1\\\\0",
+            "authorization_registry_source_commit",
+            "dispatch_count",
+            "delivery_status",
+            "provider_active",
+            "provider_effect_commitment_sha256",
+            "blind_retry_count",
+            "replay_dispatch_count",
+            "reconciliation_required",
+            "dispatched_at",
+            "verified_at",
+            "repo:OpenAdaptAI/\\.github:environment:production-cloud-deploy",
+            "actions/attest",
+            "production-lifecycle-activation\\.yml"
+          ],
+          "ordered_patterns": [
+            "(?:sign|attest)[^\\n]*(?:authorization|certificate)",
+            "gh\\s+pr\\s+create",
+            "verify[^\\n]*(?:authorization|registry)",
+            "actions/create-github-app-token",
+            "repository:\\s*OpenAdaptAI/openadapt-cloud",
+            "(?:npm|pnpm|yarn|scripts/)[^\\n]*(?:build|manifest)",
+            "(?:deploy|provider_effect_commitment_sha256)",
+            "https://app\\.openadapt\\.ai/api/health/ready",
+            "openadapt\\.production-cloud-deployment-result/v1",
+            "gh\\s+pr\\s+create",
+            "production-lifecycle-activation\\.yml"
+          ],
+          "forbidden_patterns": [
+            "(?m)^[ ]{2}(?:pull_request|pull_request_target|push|release|schedule|repository_dispatch|workflow_call):\\s*$",
+            "actions/upload-artifact",
+            "persist-credentials:\\s*true",
+            "permission-contents:\\s*write",
+            "git\\s+push",
+            "set\\s+-x",
+            "printenv",
+            "toJson\\(secrets\\)",
+            "ref:\\s*(?:main|refs/heads/main)\\s*$",
+            "inputs\\.authorization_sha256",
+            "inputs\\.idempotency_key",
+            "consumed\\s*[:=]\\s*false",
+            "(?i)\\b(?:retry|rerun)\\b[^\\n]*(?:deploy|dispatch)",
+            "replay_dispatch_count\\s*[:=]\\s*[1-9]"
           ]
         },
         {
@@ -960,9 +1304,51 @@
           ]
         }
       ],
+      "ref_workflows": [
+        {
+          "path": ".github/workflows/production-lifecycle-ref.yml",
+          "required_patterns": [
+            "production-lifecycle-feed",
+            "repositories/858454062/git/ref/heads/production-lifecycle-feed",
+            "expected_old_sha",
+            "force(?:=|:)\\s*false",
+            "actions/create-github-app-token",
+            "vars\\.OPENADAPT_LIFECYCLE_REF_APP_ID",
+            "secrets\\.OPENADAPT_LIFECYCLE_REF_APP_PRIVATE_KEY",
+            "permission-contents:\\s*write",
+            "owner:\\s*OpenAdaptAI",
+            "repositories:\\s*\\.github",
+            "(?m)^\\s*group:\\s*production-lifecycle-feed\\s*$",
+            "(?m)^\\s*cancel-in-progress:\\s*false\\s*$"
+          ],
+          "minimum_occurrences": [
+            {
+              "pattern": "repositories/858454062/git/ref/heads/production-lifecycle-feed",
+              "count": 3
+            }
+          ],
+          "ordered_patterns": [
+            "repositories/858454062/git/ref/heads/production-lifecycle-feed",
+            "expected_old_sha",
+            "force(?:=|:)\\s*false",
+            "repositories/858454062/git/ref/heads/production-lifecycle-feed"
+          ],
+          "forbidden_patterns": [
+            "github\\.token",
+            "git\\s+push",
+            "force(?:=|:)\\s*true",
+            "refs/heads/main",
+            "permission-contents:\\s*(?:read|write-all)"
+          ]
+        }
+      ],
       "dispatch_workflow_inventory": [
         {
           "path": ".github/workflows/production-lifecycle-activation.yml",
+          "mode": "lifecycle-only"
+        },
+        {
+          "path": ".github/workflows/production-cloud-deploy.yml",
           "mode": "lifecycle-only"
         },
         {
@@ -980,16 +1366,169 @@
       ]
     }
   ],
+  "private_cloud_authority": {
+    "source_repository": "openadapt-cloud",
+    "visibility": "private",
+    "default_branch": "main",
+    "audited_main_sha": "a8ebf847b51c75e79e0d4e931091966d7a55d516",
+    "authority_repository": ".github",
+    "workflow_path": ".github/workflows/production-cloud-deploy.yml",
+    "environment": "production-cloud-deploy",
+    "dispatch_identity": "openadapt-lifecycle",
+    "checkout_identity": "openadapt-cloud-checkout",
+    "workflow_name": "Production Cloud deploy",
+    "authority_repository_id": 858454062,
+    "authority_owner_id": 132681217,
+    "authorization_schema": "openadapt.production-cloud-deploy-authorization/v1",
+    "authorization_registry_kind": "production-cloud-deploy-authorization",
+    "authorization_bundle_schema": "openadapt.production-cloud-deploy-authorization-sigstore-bundle/v1",
+    "authorization_bundle_kind": "production-cloud-deploy-authorization-sigstore-bundle",
+    "authorization_domain": "OpenAdapt production cloud deploy authorization v1\\0",
+    "authorization_max_age_seconds": 3600,
+    "lifecycle_ledger_head_domain": "OpenAdapt production lifecycle ledger head v1\\0",
+    "sigstore_issuer": "https://token.actions.githubusercontent.com",
+    "sigstore_public_good_root_sha256": "3c2cc7f357dc064ec527fdcd78da6e9245c21a381e1abaa0f2b62b186bcac1a1",
+    "registry_path": "production-cloud-deployment-registry.json",
+    "registry_schema": "openadapt.production-cloud-deployment-registry/v1",
+    "registry_entry_schema": "openadapt.production-cloud-deployment-registry-entry/v1",
+    "registry_domain": "OpenAdapt production cloud deployment registry v1\\0",
+    "authorization_fields": [
+      "schema_version",
+      "kind",
+      "authorization_id",
+      "deployment_intent_id",
+      "target",
+      "operation",
+      "source_commit",
+      "authority_source_commit",
+      "deploy_workflow_run_id",
+      "deploy_workflow_run_attempt",
+      "provider_idempotency_key",
+      "lifecycle_policy_sha256",
+      "lifecycle_ledger_sha256",
+      "lifecycle_ledger_head_sha256",
+      "prior_admission_sha256",
+      "prior_revocation_sha256",
+      "prior_registry_head_sha256",
+      "prior_registry_revision",
+      "issued_at",
+      "expires_at"
+    ],
+    "dispatch_inputs": [
+      "source_commit",
+      "deployment_intent_id",
+      "provider_idempotency_key",
+      "operation",
+      "expected_lifecycle_ledger_head_sha256",
+      "expected_lifecycle_ledger_sha256",
+      "expected_registry_head_sha256",
+      "expected_registry_revision"
+    ],
+    "result_schema": "openadapt.production-cloud-deployment-result/v1",
+    "result_registry_kind": "production-cloud-deployment-result",
+    "result_bundle_schema": "openadapt.production-cloud-deployment-result-sigstore-bundle/v1",
+    "result_bundle_kind": "production-cloud-deployment-result-sigstore-bundle",
+    "result_domain": "OpenAdapt production cloud deployment result v1\\0",
+    "result_fields": [
+      "schema_version",
+      "kind",
+      "result_id",
+      "authorization_sha256",
+      "authorization_registry_source_commit",
+      "deployment_intent_id",
+      "source_commit",
+      "deploy_workflow_run_id",
+      "deploy_workflow_run_attempt",
+      "provider_idempotency_key",
+      "dispatch_count",
+      "delivery_status",
+      "provider_active",
+      "provider_effect_commitment_sha256",
+      "blind_retry_count",
+      "replay_dispatch_count",
+      "reconciliation_required",
+      "dispatched_at",
+      "verified_at"
+    ],
+    "forbidden_private_workflow_paths": [
+      ".github/workflows/deploy.yml",
+      ".github/workflows/stage-production-secret-migration.yml"
+    ],
+    "forbidden_private_workflow_patterns": [
+      "scripts/deploy\\.mjs",
+      "(?i)\\bsupabase\\s+(?:db\\s+push|functions\\s+deploy|secrets\\s+set)\\b",
+      "(?i)\\bmodal\\s+deploy\\b",
+      "(?i)\\bnetlify\\s+deploy\\b",
+      "(?i)\\bvercel\\s+deploy\\b",
+      "production-cloud-deploy"
+    ],
+    "private_production_secret_names": [
+      "CRON_SECRET",
+      "DISCORD_ALERT_WEBHOOK_URL",
+      "GA4_BEARER_TOKEN",
+      "GLITCHTIP_AUTH_TOKEN",
+      "MODAL_TOKEN_ID",
+      "MODAL_TOKEN_SECRET",
+      "NETLIFY_AUTH_TOKEN",
+      "NETLIFY_SITE_ID",
+      "NEXT_PUBLIC_POSTHOG_KEY",
+      "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY",
+      "OPENADAPT_EMAIL_FROM",
+      "OPENADAPT_PURCHASE_ALERT_TO",
+      "OPENADAPT_WEB_PUSH_VAPID_PRIVATE_KEY",
+      "PLATFORM_ADMIN_EMAILS",
+      "POSTHOG_PERSONAL_API_KEY",
+      "PRODUCTION_BUSINESS_DECISION_ANSWER_HMAC_KEY",
+      "PRODUCTION_BUSINESS_DECISION_ANSWER_HMAC_KEY_ID",
+      "PRODUCTION_BUSINESS_DECISION_CLOUD_POLICY_HMAC_KEYS_JSON",
+      "PRODUCTION_BUSINESS_DECISION_PRINCIPAL_ALIAS_HMAC_KEY",
+      "PRODUCTION_BUSINESS_DECISION_QUALIFICATION_HMAC_KEYS_JSON",
+      "PRODUCTION_BUSINESS_DECISION_ROLE_MAPPING_HMAC_KEY",
+      "PRODUCTION_BUSINESS_DECISION_RUNNER_RECEIPT_HMAC_KEYS_JSON",
+      "PRODUCTION_BUSINESS_DECISION_SESSION_BINDING_HMAC_KEY",
+      "PRODUCTION_BUSINESS_DECISION_TASK_HMAC_KEYS_JSON",
+      "PRODUCTION_EXECUTE_ACCEPTANCE_CAMPAIGN_PROVISIONER_TOKEN",
+      "PRODUCTION_EXECUTE_ACCEPTANCE_OBSERVER_BEARER_TOKEN",
+      "PRODUCTION_EXECUTE_ACCEPTANCE_OBSERVER_KEY",
+      "PRODUCTION_EXECUTE_ACCEPTANCE_OBSERVER_SIGNING_PRIVATE_KEY",
+      "PRODUCTION_EXECUTE_ACCEPTANCE_RUNNER_EVIDENCE_PRIVATE_KEY",
+      "PRODUCTION_EXECUTE_ACCEPTANCE_RUNNER_EVIDENCE_SIGNERS_JSON",
+      "PRODUCTION_EXECUTE_ACCEPTANCE_TARGET_ATTESTATION_PRIVATE_KEY",
+      "PRODUCTION_EXECUTE_ACCEPTANCE_TARGET_SIGNING_SECRET",
+      "PRODUCTION_OPENADAPT_EXECUTE_SERVICE_ACCOUNTS_JSON",
+      "PRODUCTION_OPENADAPT_QUALIFICATION_SIGNERS_JSON",
+      "PRODUCT_INTELLIGENCE_ALLOWED_ORG_IDS",
+      "PRODUCT_INTELLIGENCE_API_KEY",
+      "PRODUCT_INTELLIGENCE_PSEUDONYM_KEY",
+      "PRODUCT_INTELLIGENCE_SYNC_KEY",
+      "RESEND_API_KEY",
+      "RUNNER_SHARED_SECRET",
+      "SANDBOX_IP_PSEUDONYM_KEY",
+      "SANDBOX_PROVIDER_SECRET",
+      "SANDBOX_SESSION_SIGNING_KEY",
+      "SANITIZATION_POLICY_KEYS_JSON",
+      "SECRETS_ENC_KEY",
+      "SECRETS_ENC_KEY_PREVIOUS",
+      "SENTRY_ALERT_CLIENT_SECRET",
+      "STRIPE_PRICE_ID",
+      "STRIPE_SECRET_KEY",
+      "STRIPE_WEBHOOK_SECRET",
+      "SUPABASE_ACCESS_TOKEN",
+      "SUPABASE_PROJECT_REF",
+      "VERCEL_TOKEN"
+    ]
+  },
   "plan_constraints": [
     {
       "repository": "openadapt-cloud",
       "visibility": "private",
-      "mode": "audit-only",
-      "managed": false,
+      "mode": "public-deployment-authority",
+      "managed": true,
+      "private_repository_mutation": false,
       "current_plan": "GitHub Free organization",
-      "constraint": "GitHub artifact attestations for private repositories require GitHub Enterprise Cloud.",
-      "required_fallback": "Keep the existing signed Ed25519 evidence envelope and public verifier until the organization has GitHub Enterprise Cloud.",
-      "apply_rule": "This tool must never mutate openadapt-cloud."
+      "constraint": "GitHub Free cannot protect private openadapt-cloud main or its deployment environment.",
+      "required_fallback": "Use the protected founder-reviewed public Profile authority, a one-use signed deployment authorization, and an exact read-only Cloud checkout token.",
+      "apply_rule": "Manage the public authority and fail closed on unsafe private Cloud workflows or secrets. Never mutate openadapt-cloud settings."
     }
   ]
 }

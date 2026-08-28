@@ -29,6 +29,7 @@ PLAN_MAX_AGE_SECONDS = 900
 EXPECTED_REPOSITORIES = {
     ".github",
     "OpenAdapt",
+    "openadapt-agent",
     "openadapt-capture",
     "openadapt-desktop",
     "openadapt-evals",
@@ -41,6 +42,7 @@ MANAGED_RULESET_NAMES = (
     "OpenAdapt policy: protected main",
     "OpenAdapt policy: release tag creation",
     "OpenAdapt policy: immutable release tags",
+    "OpenAdapt policy: Production lifecycle feed",
 )
 
 
@@ -149,6 +151,12 @@ class LifecycleActor:
     installation_id: int
 
 
+@dataclass(frozen=True)
+class CloudCheckoutActor:
+    app_id: int
+    installation_id: int
+
+
 def _utc_now() -> datetime:
     return datetime.now(timezone.utc)
 
@@ -189,7 +197,7 @@ def validate_config(config: Mapping[str, Any]) -> None:
         values = live_audit.get(field)
         if not isinstance(values, Mapping) or set(values) != EXPECTED_REPOSITORIES:
             raise PolicyError(
-                f"live_audit.{field} must cover the eight core repositories"
+                f"live_audit.{field} must cover the nine core repositories"
             )
     dispatch_audit = config.get("dispatch_privilege_audit")
     if not isinstance(dispatch_audit, Mapping):
@@ -205,12 +213,34 @@ def validate_config(config: Mapping[str, Any]) -> None:
         raise PolicyError("dispatch audit must record the missing lifecycle App")
     if dispatch_audit.get("docs_app_installation") != "absent":
         raise PolicyError("dispatch audit must record the missing docs App")
+    if dispatch_audit.get("cloud_checkout_app_installation") != "absent":
+        raise PolicyError("dispatch audit must record the missing Cloud checkout App")
     actions_id = config.get("github_actions_integration_id")
     if not isinstance(actions_id, int) or actions_id <= 0:
         raise PolicyError("github_actions_integration_id must be a positive integer")
     environment_defaults = config.get("environment_defaults")
     if environment_defaults != {"wait_timer": 0, "prevent_self_review": False}:
         raise PolicyError("environment_defaults must define the reviewed release gate")
+
+    release_identity = config.get("release_identity")
+    if not isinstance(release_identity, Mapping):
+        raise PolicyError("release_identity must be an object")
+    if release_identity.get("app_slug") != "openadapt-release":
+        raise PolicyError("release_identity must use the openadapt-release App")
+    if release_identity.get("required_repository_permissions") != [
+        "Contents: write",
+        "Pull requests: write",
+        "Metadata: read",
+    ]:
+        raise PolicyError("release_identity repository permissions are not exact")
+    if release_identity.get("repository_selection") != "selected":
+        raise PolicyError("release_identity must select only the core repositories")
+    release_scope = _require_list(
+        release_identity.get("repository_scope"),
+        "release_identity.repository_scope",
+    )
+    if set(release_scope) != EXPECTED_REPOSITORIES or len(release_scope) != 9:
+        raise PolicyError("release_identity repository scope is not exact")
 
     lifecycle_identity = config.get("lifecycle_identity")
     if not isinstance(lifecycle_identity, Mapping):
@@ -238,11 +268,65 @@ def validate_config(config: Mapping[str, Any]) -> None:
         "Contents: write"
     ]:
         raise PolicyError("lifecycle_identity must forbid Contents write")
+
+    ref_identity = config.get("lifecycle_ref_identity")
+    if not isinstance(ref_identity, Mapping):
+        raise PolicyError("lifecycle_ref_identity must be an object")
+    if ref_identity.get("repository_scope") != [".github"]:
+        raise PolicyError("lifecycle_ref_identity repository scope is not exact")
+    if ref_identity.get("required_repository_permissions") != [
+        "Contents: write",
+        "Metadata: read",
+    ]:
+        raise PolicyError("lifecycle_ref_identity permissions are not exact")
+    if ref_identity.get("ruleset_bypass") is not False:
+        raise PolicyError("lifecycle_ref_identity must not bypass the feed ruleset")
+    if ref_identity.get("workflow_path") != (
+        ".github/workflows/production-lifecycle-ref.yml"
+    ):
+        raise PolicyError("lifecycle_ref_identity workflow path is not exact")
+    if ref_identity.get("workflow_paths") != {
+        ".github": [".github/workflows/production-lifecycle-ref.yml"]
+    }:
+        raise PolicyError("lifecycle_ref_identity workflow scope is not exact")
+    if ref_identity.get("protected_ref") != ("refs/heads/production-lifecycle-feed"):
+        raise PolicyError("lifecycle_ref_identity protected ref is not exact")
+    if ref_identity.get("authority_repository_id") != 858454062:
+        raise PolicyError("lifecycle_ref_identity repository ID is not exact")
+    if ref_identity.get("repository_variables") != {
+        "app_id": "OPENADAPT_LIFECYCLE_REF_APP_ID",
+        "actor_id": "OPENADAPT_LIFECYCLE_REF_ACTOR_ID",
+        "installation_id": "OPENADAPT_LIFECYCLE_REF_INSTALLATION_ID",
+    }:
+        raise PolicyError("lifecycle_ref_identity variables are not exact")
+    if (
+        ref_identity.get("private_key_secret")
+        != "OPENADAPT_LIFECYCLE_REF_APP_PRIVATE_KEY"
+    ):
+        raise PolicyError("lifecycle_ref_identity private key name is not exact")
+    for field in ("app_slug", "actor_login"):
+        value = ref_identity.get(field)
+        if not isinstance(value, str):
+            raise PolicyError(f"lifecycle_ref_identity.{field} must be a string")
+        if not isinstance(ref_identity.get(f"{field}_environment"), str):
+            raise PolicyError(f"lifecycle_ref_identity.{field}_environment is required")
+    for field in ("app_id", "actor_id", "installation_id"):
+        value = ref_identity.get(field)
+        if not isinstance(value, int) or value < 0:
+            raise PolicyError(
+                f"lifecycle_ref_identity.{field} must be a nonnegative integer"
+            )
+        if not isinstance(ref_identity.get(f"{field}_environment"), str):
+            raise PolicyError(f"lifecycle_ref_identity.{field}_environment is required")
     expected_lifecycle_environments = {
         ".github": [
             (
                 "production-lifecycle-activation",
                 ".github/workflows/production-lifecycle-activation.yml",
+            ),
+            (
+                "production-cloud-deploy",
+                ".github/workflows/production-cloud-deploy.yml",
             ),
             (
                 "qualification-authority-state",
@@ -334,11 +418,49 @@ def validate_config(config: Mapping[str, Any]) -> None:
         if not isinstance(docs_identity.get(environment_field), str):
             raise PolicyError(f"docs_identity.{environment_field} is required")
 
+    checkout_identity = config.get("cloud_checkout_identity")
+    if not isinstance(checkout_identity, Mapping):
+        raise PolicyError("cloud_checkout_identity must be an object")
+    if checkout_identity.get("app_slug") != "openadapt-cloud-checkout":
+        raise PolicyError(
+            "cloud_checkout_identity must use the openadapt-cloud-checkout App"
+        )
+    if checkout_identity.get("repository_scope") != ["openadapt-cloud"]:
+        raise PolicyError("cloud_checkout_identity repository scope is not exact")
+    if checkout_identity.get("required_repository_permissions") != [
+        "Contents: read",
+        "Metadata: read",
+    ]:
+        raise PolicyError("cloud_checkout_identity permissions are not read-only")
+    if checkout_identity.get("ruleset_bypass") is not False:
+        raise PolicyError("cloud_checkout_identity must not have a ruleset bypass")
+    if checkout_identity.get("repository_variables") != {
+        "app_id": "OPENADAPT_CLOUD_CHECKOUT_APP_ID",
+        "installation_id": "OPENADAPT_CLOUD_CHECKOUT_INSTALLATION_ID",
+    }:
+        raise PolicyError("cloud_checkout_identity variables are not exact")
+    if (
+        checkout_identity.get("private_key_secret")
+        != "OPENADAPT_CLOUD_CHECKOUT_APP_PRIVATE_KEY"
+    ):
+        raise PolicyError("cloud_checkout_identity private key name is not exact")
+    for field in ("app_id", "installation_id"):
+        value = checkout_identity.get(field)
+        if value is not None and (not isinstance(value, int) or value <= 0):
+            raise PolicyError(
+                f"cloud_checkout_identity.{field} must be null or positive"
+            )
+        environment_field = f"{field}_environment"
+        if not isinstance(checkout_identity.get(environment_field), str):
+            raise PolicyError(
+                f"cloud_checkout_identity.{environment_field} is required"
+            )
+
     repositories = _require_list(config.get("repositories"), "repositories")
     names = [repo.get("name") for repo in repositories if isinstance(repo, Mapping)]
     if set(names) != EXPECTED_REPOSITORIES or len(names) != len(EXPECTED_REPOSITORIES):
         raise PolicyError(
-            "repositories must contain exactly the eight reviewed OpenAdapt core repositories"
+            "repositories must contain exactly the nine reviewed OpenAdapt core repositories"
         )
 
     for repo in repositories:
@@ -380,7 +502,13 @@ def validate_config(config: Mapping[str, Any]) -> None:
             repo.get("lifecycle_environments", []),
             f"{name}.lifecycle_environments",
         )
-        environments = release_environments + lifecycle_environments
+        operational_environments = _require_list(
+            repo.get("operational_environments", []),
+            f"{name}.operational_environments",
+        )
+        environments = (
+            release_environments + lifecycle_environments + operational_environments
+        )
         environment_names = [item.get("name") for item in environments]
         if len(environment_names) != len(set(environment_names)):
             raise PolicyError(f"{name}: duplicate protected environment")
@@ -428,6 +556,20 @@ def validate_config(config: Mapping[str, Any]) -> None:
             name, []
         ):
             raise PolicyError(f"{name}: lifecycle environments are not exact")
+        for environment in operational_environments:
+            if name != "openadapt-ops":
+                raise PolicyError(f"{name}: an operational environment is outside Ops")
+            if environment != {
+                "name": "production-backup",
+                "wait_timer": 0,
+                "prevent_self_review": False,
+                "required_reviewers": False,
+                "deployment_policies": [{"type": "branch", "name": "main"}],
+                "exclusive_workflow": ".github/workflows/db-backup.yml",
+            }:
+                raise PolicyError(
+                    "openadapt-ops: production-backup environment is not exact"
+                )
         workflows = _require_list(
             repo.get("release_workflows"), f"{name}.release_workflows"
         )
@@ -444,13 +586,28 @@ def validate_config(config: Mapping[str, Any]) -> None:
         lifecycle_workflows = _require_list(
             repo.get("lifecycle_workflows", []), f"{name}.lifecycle_workflows"
         )
+        operational_workflows = _require_list(
+            repo.get("operational_workflows", []),
+            f"{name}.operational_workflows",
+        )
+        if operational_workflows and name != "openadapt-ops":
+            raise PolicyError(f"{name}: operational workflow is outside Ops")
+        if [item.get("path") for item in operational_workflows] != (
+            [".github/workflows/db-backup.yml"] if operational_environments else []
+        ):
+            raise PolicyError(f"{name}: operational workflow path is not exact")
         expected_lifecycle_paths = expected_lifecycle_workflows.get(name, [])
         actual_lifecycle_paths = [item.get("path") for item in lifecycle_workflows]
         if not expected_lifecycle_paths and actual_lifecycle_paths:
             raise PolicyError(f"{name}: lifecycle workflow is outside the App scope")
         if actual_lifecycle_paths != expected_lifecycle_paths:
             raise PolicyError(f"{name}: lifecycle workflow path is not exact")
-        all_workflows = workflows + admission_workflows + lifecycle_workflows
+        all_workflows = (
+            workflows
+            + admission_workflows
+            + lifecycle_workflows
+            + operational_workflows
+        )
         configured_workflow_paths = {item.get("path") for item in all_workflows}
         for environment in environments:
             exclusive_workflow = environment.get("exclusive_workflow")
@@ -499,7 +656,13 @@ def validate_config(config: Mapping[str, Any]) -> None:
             path = workflow.get("path")
             if not isinstance(path, str) or not path.startswith(".github/workflows/"):
                 raise PolicyError(f"{name}: invalid workflow path")
-            for field in ("required_patterns", "forbidden_patterns"):
+            for field in (
+                "required_patterns",
+                "ordered_patterns",
+                "forbidden_patterns",
+            ):
+                if field == "ordered_patterns" and field not in workflow:
+                    continue
                 patterns = _require_list(workflow.get(field), f"{name}.{path}.{field}")
                 for pattern in patterns:
                     try:
@@ -509,14 +672,157 @@ def validate_config(config: Mapping[str, Any]) -> None:
                             f"{name}: invalid workflow pattern {pattern!r}"
                         ) from exc
 
+    cloud_authority = config.get("private_cloud_authority")
+    if not isinstance(cloud_authority, Mapping):
+        raise PolicyError("private_cloud_authority must be an object")
+    expected_cloud_scalars = {
+        "source_repository": "openadapt-cloud",
+        "visibility": "private",
+        "default_branch": "main",
+        "authority_repository": ".github",
+        "workflow_path": ".github/workflows/production-cloud-deploy.yml",
+        "environment": "production-cloud-deploy",
+        "dispatch_identity": "openadapt-lifecycle",
+        "checkout_identity": "openadapt-cloud-checkout",
+        "workflow_name": "Production Cloud deploy",
+        "authorization_schema": ("openadapt.production-cloud-deploy-authorization/v1"),
+        "authorization_registry_kind": "production-cloud-deploy-authorization",
+        "authorization_bundle_schema": (
+            "openadapt.production-cloud-deploy-authorization-sigstore-bundle/v1"
+        ),
+        "authorization_bundle_kind": (
+            "production-cloud-deploy-authorization-sigstore-bundle"
+        ),
+        "authorization_domain": (
+            "OpenAdapt production cloud deploy authorization v1\\0"
+        ),
+        "lifecycle_ledger_head_domain": (
+            "OpenAdapt production lifecycle ledger head v1\\0"
+        ),
+        "sigstore_issuer": "https://token.actions.githubusercontent.com",
+        "sigstore_public_good_root_sha256": (
+            "3c2cc7f357dc064ec527fdcd78da6e9245c21a381e1abaa0f2b62b186bcac1a1"
+        ),
+        "registry_path": "production-cloud-deployment-registry.json",
+        "registry_schema": "openadapt.production-cloud-deployment-registry/v1",
+        "registry_entry_schema": (
+            "openadapt.production-cloud-deployment-registry-entry/v1"
+        ),
+        "registry_domain": "OpenAdapt production cloud deployment registry v1\\0",
+        "result_schema": "openadapt.production-cloud-deployment-result/v1",
+        "result_registry_kind": "production-cloud-deployment-result",
+        "result_bundle_schema": (
+            "openadapt.production-cloud-deployment-result-sigstore-bundle/v1"
+        ),
+        "result_bundle_kind": ("production-cloud-deployment-result-sigstore-bundle"),
+        "result_domain": "OpenAdapt production cloud deployment result v1\\0",
+    }
+    if any(
+        cloud_authority.get(key) != value
+        for key, value in expected_cloud_scalars.items()
+    ):
+        raise PolicyError("private_cloud_authority identity is not exact")
+    cloud_sha = cloud_authority.get("audited_main_sha")
+    if (
+        not isinstance(cloud_sha, str)
+        or re.fullmatch(r"[0-9a-f]{40}", cloud_sha) is None
+    ):
+        raise PolicyError("private_cloud_authority audited main SHA is invalid")
+    if cloud_authority.get("authority_repository_id") != 858454062:
+        raise PolicyError("Cloud authority repository ID is not exact")
+    if cloud_authority.get("authority_owner_id") != 132681217:
+        raise PolicyError("Cloud authority owner ID is not exact")
+    if cloud_authority.get("authorization_max_age_seconds") != 3600:
+        raise PolicyError("Cloud deployment authorization expiry is not exact")
+    if cloud_authority.get("authorization_fields") != [
+        "schema_version",
+        "kind",
+        "authorization_id",
+        "deployment_intent_id",
+        "target",
+        "operation",
+        "source_commit",
+        "authority_source_commit",
+        "deploy_workflow_run_id",
+        "deploy_workflow_run_attempt",
+        "provider_idempotency_key",
+        "lifecycle_policy_sha256",
+        "lifecycle_ledger_sha256",
+        "lifecycle_ledger_head_sha256",
+        "prior_admission_sha256",
+        "prior_revocation_sha256",
+        "prior_registry_head_sha256",
+        "prior_registry_revision",
+        "issued_at",
+        "expires_at",
+    ]:
+        raise PolicyError("Cloud deployment authorization fields are not exact")
+    if cloud_authority.get("dispatch_inputs") != [
+        "source_commit",
+        "deployment_intent_id",
+        "provider_idempotency_key",
+        "operation",
+        "expected_lifecycle_ledger_head_sha256",
+        "expected_lifecycle_ledger_sha256",
+        "expected_registry_head_sha256",
+        "expected_registry_revision",
+    ]:
+        raise PolicyError("Cloud deployment dispatch inputs are not exact")
+    if cloud_authority.get("result_fields") != [
+        "schema_version",
+        "kind",
+        "result_id",
+        "authorization_sha256",
+        "authorization_registry_source_commit",
+        "deployment_intent_id",
+        "source_commit",
+        "deploy_workflow_run_id",
+        "deploy_workflow_run_attempt",
+        "provider_idempotency_key",
+        "dispatch_count",
+        "delivery_status",
+        "provider_active",
+        "provider_effect_commitment_sha256",
+        "blind_retry_count",
+        "replay_dispatch_count",
+        "reconciliation_required",
+        "dispatched_at",
+        "verified_at",
+    ]:
+        raise PolicyError("Cloud deployment result fields are not exact")
+    secret_names = _require_list(
+        cloud_authority.get("private_production_secret_names"),
+        "private_cloud_authority.private_production_secret_names",
+    )
+    if not secret_names or secret_names != sorted(set(secret_names)):
+        raise PolicyError("Cloud production secret names must be unique and sorted")
+    for field in (
+        "forbidden_private_workflow_paths",
+        "forbidden_private_workflow_patterns",
+    ):
+        values = _require_list(
+            cloud_authority.get(field), f"private_cloud_authority.{field}"
+        )
+        if not values or any(not isinstance(item, str) or not item for item in values):
+            raise PolicyError(f"private_cloud_authority.{field} is invalid")
+    for pattern in cloud_authority["forbidden_private_workflow_patterns"]:
+        try:
+            re.compile(pattern)
+        except re.error as exc:
+            raise PolicyError(
+                f"private_cloud_authority has invalid pattern {pattern!r}"
+            ) from exc
+
     constraints = _require_list(config.get("plan_constraints"), "plan_constraints")
     cloud = [
         item for item in constraints if item.get("repository") == "openadapt-cloud"
     ]
-    if len(cloud) != 1 or cloud[0].get("managed") is not False:
-        raise PolicyError("openadapt-cloud must exist once as an unmanaged constraint")
-    if cloud[0].get("mode") != "audit-only":
-        raise PolicyError("openadapt-cloud must remain audit-only")
+    if len(cloud) != 1 or cloud[0].get("managed") is not True:
+        raise PolicyError("openadapt-cloud must exist once under public authority")
+    if cloud[0].get("mode") != "public-deployment-authority":
+        raise PolicyError("openadapt-cloud must use the public deployment authority")
+    if cloud[0].get("private_repository_mutation") is not False:
+        raise PolicyError("the policy must not mutate private Cloud settings")
 
 
 def _resolve_release_actor(
@@ -584,25 +890,47 @@ def _resolve_release_actor(
             }
         )
         return None
-    if installation.get("repository_selection") != "all":
-        repository_response = client.get(
-            f"/user/installations/{installation['id']}/repositories?per_page=100"
+    expected_permissions = {
+        name.lower().replace(" ", "_"): level.lower()
+        for name, level in (
+            item.split(": ", 1) for item in identity["required_repository_permissions"]
         )
-        installed_names = {
-            item.get("name") for item in repository_response.get("repositories", [])
-        }
-        missing = EXPECTED_REPOSITORIES.difference(installed_names)
-        if missing:
-            blockers.append(
-                {
-                    "code": "release_identity_repository_scope",
-                    "message": (
-                        f"GitHub App {slug!r} is not installed on: "
-                        f"{', '.join(sorted(missing))}."
-                    ),
-                }
-            )
-            return None
+    }
+    if installation.get("permissions") != expected_permissions:
+        blockers.append(
+            {
+                "code": "release_identity_permissions_mismatch",
+                "message": (
+                    f"GitHub App {slug!r} does not have the exact reviewed permissions."
+                ),
+            }
+        )
+        return None
+    if installation.get("repository_selection") != "selected":
+        blockers.append(
+            {
+                "code": "release_identity_repository_selection",
+                "message": f"GitHub App {slug!r} must use selected repositories.",
+            }
+        )
+        return None
+    repository_response = client.get(
+        f"/user/installations/{installation['id']}/repositories?per_page=100"
+    )
+    installed_names = {
+        item.get("name") for item in repository_response.get("repositories", [])
+    }
+    if installed_names != EXPECTED_REPOSITORIES:
+        blockers.append(
+            {
+                "code": "release_identity_repository_scope",
+                "message": (
+                    f"GitHub App {slug!r} does not select the exact nine public "
+                    "core repositories."
+                ),
+            }
+        )
+        return None
     return ReleaseActor(actor_id=actor_id, app_slug=slug)
 
 
@@ -636,6 +964,30 @@ def _identity_number(
     return value
 
 
+def _identity_string(
+    identity: Mapping[str, Any],
+    field: str,
+    blockers: list[dict[str, str]],
+    identity_key: str,
+) -> str | None:
+    value = identity.get(field)
+    if not isinstance(value, str) or not value:
+        environment_name = identity.get(f"{field}_environment")
+        value = os.environ.get(environment_name, "") if environment_name else ""
+    if not isinstance(value, str) or not value:
+        blockers.append(
+            {
+                "code": f"{identity_key}_{field}_unresolved",
+                "message": (
+                    f"Set {identity.get(f'{field}_environment')} to the reviewed "
+                    f"lifecycle feed App {field.replace('_', ' ')}."
+                ),
+            }
+        )
+        return None
+    return value
+
+
 def _resolve_scoped_dispatch_actor(
     client: GitHubClient,
     config: Mapping[str, Any],
@@ -643,15 +995,22 @@ def _resolve_scoped_dispatch_actor(
     identity_key: str,
 ) -> LifecycleActor | None:
     identity = config[identity_key]
+    slug = _identity_string(identity, "app_slug", blockers, identity_key)
+    actor_login = _identity_string(identity, "actor_login", blockers, identity_key)
     app_id = _identity_number(identity, "app_id", blockers, identity_key)
     actor_id = _identity_number(identity, "actor_id", blockers, identity_key)
     installation_id = _identity_number(
         identity, "installation_id", blockers, identity_key
     )
-    if app_id is None or actor_id is None or installation_id is None:
+    if (
+        slug is None
+        or actor_login is None
+        or app_id is None
+        or actor_id is None
+        or installation_id is None
+    ):
         return None
 
-    slug = identity["app_slug"]
     app = client.get(f"/apps/{quote(slug, safe='')}", optional=True)
     if not isinstance(app, Mapping):
         blockers.append(
@@ -670,7 +1029,6 @@ def _resolve_scoped_dispatch_actor(
         )
         return None
 
-    actor_login = identity["actor_login"]
     actor = client.get(f"/users/{quote(actor_login, safe='')}", optional=True)
     if not isinstance(actor, Mapping):
         blockers.append(
@@ -786,6 +1144,105 @@ def _resolve_docs_actor(
     return _resolve_scoped_dispatch_actor(client, config, blockers, "docs_identity")
 
 
+def _resolve_cloud_checkout_actor(
+    client: GitHubClient,
+    config: Mapping[str, Any],
+    blockers: list[dict[str, str]],
+) -> CloudCheckoutActor | None:
+    identity = config["cloud_checkout_identity"]
+    app_id = _identity_number(identity, "app_id", blockers, "cloud_checkout_identity")
+    installation_id = _identity_number(
+        identity, "installation_id", blockers, "cloud_checkout_identity"
+    )
+    if app_id is None or installation_id is None:
+        return None
+
+    slug = identity["app_slug"]
+    app = client.get(f"/apps/{quote(slug, safe='')}", optional=True)
+    if not isinstance(app, Mapping):
+        blockers.append(
+            {
+                "code": "cloud_checkout_identity_app_not_found",
+                "message": f"GitHub App {slug!r} was not found.",
+            }
+        )
+        return None
+    if app.get("id") != app_id or app.get("slug") != slug:
+        blockers.append(
+            {
+                "code": "cloud_checkout_identity_app_mismatch",
+                "message": f"GitHub App {slug!r} does not have App ID {app_id}.",
+            }
+        )
+        return None
+
+    owner = config["organization"]
+    response = client.get(f"/orgs/{owner}/installations?per_page=100")
+    installations = (
+        response.get("installations", []) if isinstance(response, Mapping) else response
+    )
+    installation = next(
+        (
+            item
+            for item in installations or []
+            if item.get("id") == installation_id
+            and item.get("app_id") == app_id
+            and item.get("app_slug") == slug
+        ),
+        None,
+    )
+    if installation is None:
+        blockers.append(
+            {
+                "code": "cloud_checkout_identity_installation_not_found",
+                "message": (
+                    f"GitHub App {slug!r} installation {installation_id} was not "
+                    f"found for {owner}."
+                ),
+            }
+        )
+        return None
+    expected_permissions = {
+        item.split(":", 1)[0].strip().lower().replace(" ", "_"): item.split(":", 1)[1]
+        .strip()
+        .lower()
+        for item in identity["required_repository_permissions"]
+    }
+    if installation.get("permissions") != expected_permissions:
+        blockers.append(
+            {
+                "code": "cloud_checkout_identity_permissions_mismatch",
+                "message": (
+                    f"GitHub App {slug!r} does not have exact read-only permissions."
+                ),
+            }
+        )
+        return None
+    if installation.get("repository_selection") != "selected":
+        blockers.append(
+            {
+                "code": "cloud_checkout_identity_repository_scope_mismatch",
+                "message": f"GitHub App {slug!r} must use selected repositories.",
+            }
+        )
+        return None
+    repository_response = client.get(
+        f"/user/installations/{installation_id}/repositories?per_page=100"
+    )
+    installed_names = {
+        item.get("name") for item in repository_response.get("repositories", [])
+    }
+    if installed_names != {"openadapt-cloud"}:
+        blockers.append(
+            {
+                "code": "cloud_checkout_identity_repository_scope_mismatch",
+                "message": (f"GitHub App {slug!r} must select only openadapt-cloud."),
+            }
+        )
+        return None
+    return CloudCheckoutActor(app_id=app_id, installation_id=installation_id)
+
+
 def _verify_reviewer(
     client: GitHubClient, config: Mapping[str, Any], blockers: list[dict[str, str]]
 ) -> None:
@@ -874,6 +1331,26 @@ def desired_rulesets(
         ],
     }
     result = [main, immutable]
+    if repo["name"] == ".github":
+        result.append(
+            {
+                "name": MANAGED_RULESET_NAMES[3],
+                "target": "branch",
+                "enforcement": "active",
+                "bypass_actors": [],
+                "conditions": {
+                    "ref_name": {
+                        "include": ["refs/heads/production-lifecycle-feed"],
+                        "exclude": [],
+                    }
+                },
+                "rules": [
+                    {"type": "deletion"},
+                    {"type": "non_fast_forward"},
+                    {"type": "required_linear_history"},
+                ],
+            }
+        )
     if actor is not None:
         result.append(
             {
@@ -904,12 +1381,17 @@ def desired_environment(
 ) -> dict[str, Any]:
     reviewer = config["environment_reviewer"]
     defaults = config["environment_defaults"]
+    reviewers = (
+        [{"type": reviewer["type"], "id": reviewer["id"]}]
+        if environment.get("required_reviewers", True)
+        else []
+    )
     return {
         "wait_timer": environment.get("wait_timer", defaults["wait_timer"]),
         "prevent_self_review": environment.get(
             "prevent_self_review", defaults["prevent_self_review"]
         ),
-        "reviewers": [{"type": reviewer["type"], "id": reviewer["id"]}],
+        "reviewers": reviewers,
         "deployment_branch_policy": {
             "protected_branches": False,
             "custom_branch_policies": True,
@@ -1064,6 +1546,21 @@ def _workflow_contract_blockers(
                         "message": f"{repo['name']}: {path} does not match {pattern!r}.",
                     }
                 )
+        position = 0
+        for pattern in workflow.get("ordered_patterns", []):
+            match = re.search(pattern, content[position:])
+            if match is None:
+                blockers.append(
+                    {
+                        "code": f"{code_prefix}_workflow_order_invalid",
+                        "message": (
+                            f"{repo['name']}: {path} does not match {pattern!r} "
+                            "after the preceding required operation."
+                        ),
+                    }
+                )
+                break
+            position += match.end()
         for pattern in workflow["forbidden_patterns"]:
             if re.search(pattern, content) is not None:
                 blockers.append(
@@ -1120,16 +1617,66 @@ def _dispatch_identity_variable_blockers(
     return blockers
 
 
+def _cloud_checkout_variable_blockers(
+    client: GitHubClient,
+    owner: str,
+    repo: Mapping[str, Any],
+    identity: Mapping[str, Any],
+    actor: CloudCheckoutActor | None,
+) -> list[dict[str, str]]:
+    if repo["name"] != ".github" or actor is None:
+        return []
+    expected_values = {
+        identity["repository_variables"]["app_id"]: actor.app_id,
+        identity["repository_variables"]["installation_id"]: actor.installation_id,
+    }
+    blockers: list[dict[str, str]] = []
+    for variable_name, expected in expected_values.items():
+        variable = client.get(
+            (
+                f"/repos/{owner}/{repo['name']}/actions/variables/"
+                f"{quote(variable_name, safe='')}"
+            ),
+            optional=True,
+        )
+        if not isinstance(variable, Mapping):
+            blockers.append(
+                {
+                    "code": "cloud_checkout_identity_variable_missing",
+                    "message": (
+                        f"{repo['name']}: Actions variable {variable_name} is missing."
+                    ),
+                }
+            )
+        elif variable.get("name") != variable_name or variable.get("value") != str(
+            expected
+        ):
+            blockers.append(
+                {
+                    "code": "cloud_checkout_identity_variable_mismatch",
+                    "message": (
+                        f"{repo['name']}: Actions variable {variable_name} does not "
+                        "match the reviewed checkout App identity."
+                    ),
+                }
+            )
+    return blockers
+
+
 def _exclusive_environment_blockers(
     client: GitHubClient,
     owner: str,
     repo: Mapping[str, Any],
 ) -> list[dict[str, str]]:
-    environments = repo.get("lifecycle_environments", []) + [
-        item
-        for item in repo.get("release_environments", [])
-        if item.get("exclusive_workflow")
-    ]
+    environments = (
+        repo.get("lifecycle_environments", [])
+        + repo.get("operational_environments", [])
+        + [
+            item
+            for item in repo.get("release_environments", [])
+            if item.get("exclusive_workflow")
+        ]
+    )
     if not environments:
         return []
     tree = client.get(f"/repos/{owner}/{repo['name']}/git/trees/main?recursive=1")
@@ -1153,10 +1700,16 @@ def _exclusive_environment_blockers(
     for environment in environments:
         environment_name = environment["name"]
         allowed = environment["exclusive_workflow"]
+        reference_pattern = re.compile(
+            rf"(?m)^\s*environment:\s*(?:\n\s*name:\s*)?"
+            rf"{re.escape(environment_name)}\s*$"
+        )
         unexpected = [
             path
             for path, content in content_by_path.items()
-            if path != allowed and content is not None and environment_name in content
+            if path != allowed
+            and content is not None
+            and reference_pattern.search(content) is not None
         ]
         if unexpected:
             blockers.append(
@@ -1285,12 +1838,17 @@ def _dispatch_workflow_blockers(
         non_cancelling = re.search(
             r"(?m)^[ ]{2}cancel-in-progress:\s*false\s*$", content
         )
-        if (
-            group is None
-            or "github.workflow" not in group.group(1)
-            or "github.event_name" not in group.group(1)
-            or non_cancelling is None
-        ):
+        group_is_isolated = group is not None and (
+            (
+                "github.workflow" in group.group(1)
+                and "github.event_name" in group.group(1)
+            )
+            or (
+                path == ".github/workflows/db-backup.yml"
+                and group.group(1).strip() == "production-db-backup"
+            )
+        )
+        if not group_is_isolated or non_cancelling is None:
             blockers.append(
                 {
                     "code": "dispatch_workflow_concurrency_not_isolated",
@@ -1322,6 +1880,157 @@ def _dispatch_workflow_blockers(
                     }
                 )
     return blockers
+
+
+def _secret_names(value: Any, label: str) -> set[str]:
+    if not isinstance(value, Mapping) or not isinstance(value.get("secrets"), list):
+        raise GitHubError(f"{label}: secret-name inventory is not available")
+    names = {item.get("name") for item in value["secrets"]}
+    if any(not isinstance(item, str) or not item for item in names):
+        raise GitHubError(f"{label}: secret-name inventory is invalid")
+    return names
+
+
+def _private_cloud_authority_state(
+    client: GitHubClient,
+    config: Mapping[str, Any],
+) -> dict[str, Any]:
+    owner = config["organization"]
+    authority = config["private_cloud_authority"]
+    name = authority["source_repository"]
+    blockers: list[dict[str, str]] = []
+    warnings: list[dict[str, str]] = []
+
+    metadata = client.get(f"/repos/{owner}/{name}")
+    if metadata.get("full_name") != f"{owner}/{name}" or not metadata.get("private"):
+        blockers.append(
+            {
+                "code": "private_cloud_identity_mismatch",
+                "message": f"{owner}/{name} is not the exact private Cloud repository.",
+            }
+        )
+    if metadata.get("default_branch") != authority["default_branch"]:
+        blockers.append(
+            {
+                "code": "private_cloud_default_branch_mismatch",
+                "message": f"{name}: the default branch is not main.",
+            }
+        )
+    commit = client.get(f"/repos/{owner}/{name}/commits/{authority['default_branch']}")
+    main_sha = commit.get("sha")
+    if not isinstance(main_sha, str) or re.fullmatch(r"[0-9a-f]{40}", main_sha) is None:
+        blockers.append(
+            {
+                "code": "private_cloud_main_commit_invalid",
+                "message": f"{name}: current main did not resolve to an exact commit.",
+            }
+        )
+    elif main_sha != authority["audited_main_sha"]:
+        warnings.append(
+            {
+                "code": "private_cloud_audit_snapshot_advanced",
+                "message": (
+                    f"{name}: main advanced from {authority['audited_main_sha']} "
+                    f"to {main_sha}. The apply plan binds the new SHA."
+                ),
+            }
+        )
+
+    tree = client.get(f"/repos/{owner}/{name}/git/trees/main?recursive=1")
+    if not isinstance(tree, Mapping) or tree.get("truncated"):
+        raise GitHubError(
+            f"{owner}/{name}: complete private workflow tree is unavailable"
+        )
+    workflow_paths = sorted(
+        item.get("path")
+        for item in tree.get("tree", [])
+        if item.get("type") == "blob"
+        and isinstance(item.get("path"), str)
+        and item["path"].startswith(".github/workflows/")
+        and item["path"].endswith((".yml", ".yaml"))
+    )
+    forbidden_paths = set(authority["forbidden_private_workflow_paths"])
+    present_forbidden = sorted(forbidden_paths.intersection(workflow_paths))
+    if present_forbidden:
+        blockers.append(
+            {
+                "code": "private_cloud_deploy_workflow_present",
+                "message": (
+                    f"{name}: private deployment workflow paths remain: "
+                    f"{', '.join(present_forbidden)}."
+                ),
+            }
+        )
+    for workflow_path in workflow_paths:
+        content = _workflow_text(client, owner, name, workflow_path)
+        if content is None:
+            raise GitHubError(f"{owner}/{name}/{workflow_path}: workflow disappeared")
+        matched = [
+            pattern
+            for pattern in authority["forbidden_private_workflow_patterns"]
+            if re.search(pattern, content) is not None
+        ]
+        if matched:
+            blockers.append(
+                {
+                    "code": "private_cloud_workflow_can_deploy",
+                    "message": (
+                        f"{name}:{workflow_path} retains private deployment authority: "
+                        f"{', '.join(matched)}."
+                    ),
+                }
+            )
+
+    forbidden_secret_names = set(authority["private_production_secret_names"])
+    present_secret_locations: list[str] = []
+    repo_secrets = _secret_names(
+        client.get(f"/repos/{owner}/{name}/actions/secrets?per_page=100"),
+        f"{name} repository",
+    )
+    for secret_name in sorted(repo_secrets.intersection(forbidden_secret_names)):
+        present_secret_locations.append(f"repository:{secret_name}")
+    environments = client.get(f"/repos/{owner}/{name}/environments?per_page=100")
+    if not isinstance(environments, Mapping) or not isinstance(
+        environments.get("environments"), list
+    ):
+        raise GitHubError(f"{name}: environment inventory is not available")
+    repository_id = metadata.get("id")
+    if not isinstance(repository_id, int) or repository_id <= 0:
+        raise GitHubError(f"{name}: numeric repository identity is unavailable")
+    for environment in environments["environments"]:
+        environment_name = environment.get("name")
+        if not isinstance(environment_name, str) or not environment_name:
+            raise GitHubError(f"{name}: environment name is invalid")
+        encoded_name = quote(environment_name, safe="")
+        environment_secrets = _secret_names(
+            client.get(
+                f"/repositories/{repository_id}/environments/"
+                f"{encoded_name}/secrets?per_page=100"
+            ),
+            f"{name}:{environment_name}",
+        )
+        for secret_name in sorted(
+            environment_secrets.intersection(forbidden_secret_names)
+        ):
+            present_secret_locations.append(f"{environment_name}:{secret_name}")
+    if present_secret_locations:
+        blockers.append(
+            {
+                "code": "private_cloud_production_secret_present",
+                "message": (
+                    f"{name}: production deployment secret names remain private: "
+                    f"{', '.join(present_secret_locations)}."
+                ),
+            }
+        )
+    return {
+        "name": name,
+        "main_sha": main_sha,
+        "audited_main_sha": authority["audited_main_sha"],
+        "warnings": warnings,
+        "blockers": blockers,
+        "actions": [],
+    }
 
 
 def _list_rulesets(
@@ -1385,7 +2094,11 @@ def _environment_actions(
 ) -> tuple[list[dict[str, Any]], bool]:
     actions: list[dict[str, Any]] = []
     prune_needed = False
-    environments = repo["release_environments"] + repo.get("lifecycle_environments", [])
+    environments = (
+        repo["release_environments"]
+        + repo.get("lifecycle_environments", [])
+        + repo.get("operational_environments", [])
+    )
     for environment in environments:
         name = environment["name"]
         encoded = quote(name, safe="")
@@ -1405,9 +2118,14 @@ def _environment_actions(
                 }
             )
         current_policies: list[Mapping[str, Any]] = []
-        if isinstance(current, Mapping) and current.get(
-            "deployment_branch_policy", {}
-        ).get("custom_branch_policies"):
+        current_deployment_policy = (
+            current.get("deployment_branch_policy")
+            if isinstance(current, Mapping)
+            else None
+        )
+        if isinstance(
+            current_deployment_policy, Mapping
+        ) and current_deployment_policy.get("custom_branch_policies"):
             response = client.get(
                 f"/repos/{owner}/{repo['name']}/environments/{encoded}/deployment-branch-policies?per_page=100"
             )
@@ -1450,7 +2168,13 @@ def build_plan(client: GitHubClient, config: Mapping[str, Any]) -> dict[str, Any
     global_blockers: list[dict[str, str]] = []
     actor = _resolve_release_actor(client, config, global_blockers)
     lifecycle_actor = _resolve_lifecycle_actor(client, config, global_blockers)
+    lifecycle_ref_actor = _resolve_scoped_dispatch_actor(
+        client, config, global_blockers, "lifecycle_ref_identity"
+    )
     docs_actor = _resolve_docs_actor(client, config, global_blockers)
+    cloud_checkout_actor = _resolve_cloud_checkout_actor(
+        client, config, global_blockers
+    )
     _verify_reviewer(client, config, global_blockers)
     repositories: list[dict[str, Any]] = []
 
@@ -1502,10 +2226,12 @@ def build_plan(client: GitHubClient, config: Mapping[str, Any]) -> dict[str, Any
             client, owner, name, repo["default_branch"]
         )
         if pulls:
-            warnings.append(
+            blockers.append(
                 {
                     "code": "open_pull_requests",
-                    "message": f"{name}: {len(pulls)} open pull request(s) target main.",
+                    "message": (
+                        f"{name}: {len(pulls)} open pull request(s) still target main."
+                    ),
                 }
             )
         if active_checks:
@@ -1532,12 +2258,35 @@ def build_plan(client: GitHubClient, config: Mapping[str, Any]) -> dict[str, Any
             )
         )
         blockers.extend(
+            _workflow_contract_blockers(
+                client, owner, repo, "operational_workflows", "operational"
+            )
+        )
+        blockers.extend(
             _dispatch_identity_variable_blockers(
                 client,
                 owner,
                 repo,
                 config["lifecycle_identity"],
                 lifecycle_actor,
+            )
+        )
+        blockers.extend(
+            _dispatch_identity_variable_blockers(
+                client,
+                owner,
+                repo,
+                config["lifecycle_ref_identity"],
+                lifecycle_ref_actor,
+            )
+        )
+        blockers.extend(
+            _cloud_checkout_variable_blockers(
+                client,
+                owner,
+                repo,
+                config["cloud_checkout_identity"],
+                cloud_checkout_actor,
             )
         )
         blockers.extend(
@@ -1592,8 +2341,11 @@ def build_plan(client: GitHubClient, config: Mapping[str, Any]) -> dict[str, Any
             }
         )
 
-    blocker_count = len(global_blockers) + sum(
-        len(repo["blockers"]) for repo in repositories
+    private_cloud = _private_cloud_authority_state(client, config)
+    blocker_count = (
+        len(global_blockers)
+        + len(private_cloud["blockers"])
+        + sum(len(repo["blockers"]) for repo in repositories)
     )
     return {
         "schema_version": 1,
@@ -1607,11 +2359,27 @@ def build_plan(client: GitHubClient, config: Mapping[str, Any]) -> dict[str, Any
         "lifecycle_installation_id": (
             lifecycle_actor.installation_id if lifecycle_actor else None
         ),
+        "lifecycle_ref_app_id": (
+            lifecycle_ref_actor.app_id if lifecycle_ref_actor else None
+        ),
+        "lifecycle_ref_actor_id": (
+            lifecycle_ref_actor.actor_id if lifecycle_ref_actor else None
+        ),
+        "lifecycle_ref_installation_id": (
+            lifecycle_ref_actor.installation_id if lifecycle_ref_actor else None
+        ),
         "docs_app_id": docs_actor.app_id if docs_actor else None,
         "docs_actor_id": docs_actor.actor_id if docs_actor else None,
         "docs_installation_id": docs_actor.installation_id if docs_actor else None,
+        "cloud_checkout_app_id": (
+            cloud_checkout_actor.app_id if cloud_checkout_actor else None
+        ),
+        "cloud_checkout_installation_id": (
+            cloud_checkout_actor.installation_id if cloud_checkout_actor else None
+        ),
         "global_blockers": global_blockers,
         "repositories": repositories,
+        "private_cloud_authority": private_cloud,
         "plan_constraints": config["plan_constraints"],
         "blocker_count": blocker_count,
         "safe_to_apply": blocker_count == 0,
@@ -1625,9 +2393,18 @@ def _plan_snapshot(plan: Mapping[str, Any]) -> dict[str, Any]:
         "lifecycle_app_id": plan.get("lifecycle_app_id"),
         "lifecycle_actor_id": plan.get("lifecycle_actor_id"),
         "lifecycle_installation_id": plan.get("lifecycle_installation_id"),
+        "lifecycle_ref_app_id": plan.get("lifecycle_ref_app_id"),
+        "lifecycle_ref_actor_id": plan.get("lifecycle_ref_actor_id"),
+        "lifecycle_ref_installation_id": plan.get("lifecycle_ref_installation_id"),
         "docs_app_id": plan.get("docs_app_id"),
         "docs_actor_id": plan.get("docs_actor_id"),
         "docs_installation_id": plan.get("docs_installation_id"),
+        "cloud_checkout_app_id": plan.get("cloud_checkout_app_id"),
+        "cloud_checkout_installation_id": plan.get("cloud_checkout_installation_id"),
+        "private_cloud_authority": {
+            "name": plan.get("private_cloud_authority", {}).get("name"),
+            "main_sha": plan.get("private_cloud_authority", {}).get("main_sha"),
+        },
         "repositories": [
             {
                 "name": repo.get("name"),
@@ -1768,7 +2545,7 @@ def main(argv: Iterable[str] | None = None) -> int:
         if args.command == "validate-config":
             print(
                 f"Valid policy for {len(config['repositories'])} managed repositories; "
-                "openadapt-cloud is audit-only."
+                "openadapt-cloud uses the fail-closed public deployment authority."
             )
             return 0
 
