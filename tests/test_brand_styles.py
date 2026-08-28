@@ -1,17 +1,21 @@
 from __future__ import annotations
 
+import json
 import re
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
 
-CSS = (Path(__file__).parents[1] / "docs/stylesheets/brand.css").read_text(
-    encoding="utf-8"
+REPO = Path(__file__).parents[1]
+CSS = (REPO / "docs/stylesheets/brand.css").read_text(encoding="utf-8")
+MKDOCS = (REPO / "mkdocs.yml").read_text(encoding="utf-8")
+LOGO = (REPO / "docs/assets/logo.svg").read_text(encoding="utf-8")
+TOKENS = json.loads(
+    (REPO / "docs/stylesheets/vendor/openadapt-web/tokens.json").read_text(
+        encoding="utf-8"
+    )
 )
-MKDOCS = (Path(__file__).parents[1] / "mkdocs.yml").read_text(encoding="utf-8")
-LOGO = (Path(__file__).parents[1] / "docs/assets/logo.svg").read_text(
-    encoding="utf-8"
-)
+COLOR = TOKENS["color"]
 
 
 def _luminance(hex_color: str) -> float:
@@ -23,6 +27,16 @@ def _luminance(hex_color: str) -> float:
         for channel in channels
     ]
     return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2]
+
+
+def _mix(foreground: str, background: str, percent: float) -> str:
+    """Reproduce `color-mix(in srgb, foreground <percent>, background)`."""
+    channels = []
+    for index in (1, 3, 5):
+        front = int(foreground[index : index + 2], 16)
+        back = int(background[index : index + 2], 16)
+        channels.append(round(front * percent + back * (1 - percent)))
+    return "#%02x%02x%02x" % tuple(channels)
 
 
 def _contrast(foreground: str, background: str) -> float:
@@ -52,16 +66,39 @@ def test_focus_and_reduced_motion_apply_beyond_document_content() -> None:
 
 
 def test_light_and_dark_link_states_meet_wcag_aa_contrast() -> None:
-    combinations = (
-        ("#3e6b4f", "#f2f1ec"),
-        ("#2f513c", "#f2f1ec"),
-        ("#76512f", "#f2f1ec"),
-        ("#86d9a8", "#14171a"),
-        ("#a8e8bf", "#14171a"),
-        ("#e0b27f", "#14171a"),
+    """Measure the colours brand.css actually resolves to, not a copy of them.
+
+    Every value below is read from the vendored canonical tokens, or derived
+    from them by the same color-mix() brand.css writes. A palette change
+    upstream is therefore re-measured here rather than silently trusted.
+    """
+    ground = COLOR["--surface"]
+    raised = COLOR["--surface-raised"]
+    inset = COLOR["--inset-bg"]
+    inset_raised = COLOR["--inset-raised"]
+    inset_text = COLOR["--inset-text"]
+
+    light_states = (
+        COLOR["--accent-verified"],
+        COLOR["--accent-verified-hover"],
+        COLOR["--link-visited"],
+        COLOR["--text-secondary"],
+        COLOR["--text-tertiary"],
     )
-    for foreground, background in combinations:
-        assert _contrast(foreground, background) >= 4.5
+    for foreground in light_states:
+        assert _contrast(foreground, ground) >= 4.5
+        assert _contrast(foreground, raised) >= 4.5
+
+    dark_states = (
+        COLOR["--inset-ok"],
+        _mix(COLOR["--inset-ok"], raised, 0.70),
+        _mix(COLOR["--link-visited"], inset_text, 0.30),
+        _mix(inset_text, inset, 0.70),
+        _mix(COLOR["--focus-ring"], inset_text, 0.35),
+    )
+    for foreground in dark_states:
+        assert _contrast(foreground, inset) >= 4.5
+        assert _contrast(foreground, inset_raised) >= 4.5
 
 
 def test_docs_chrome_uses_the_public_site_system_fonts_and_paper_layout() -> None:
@@ -69,12 +106,17 @@ def test_docs_chrome_uses_the_public_site_system_fonts_and_paper_layout() -> Non
     assert "generator: false" in MKDOCS
     assert "OpenAdapt.ai ↗: https://openadapt.ai" in MKDOCS
     assert "OpenAdapt.AI and MLDSAI Inc." in MKDOCS
-    assert '--oa-display-font: "Avenir Next", "Segoe UI"' in CSS
-    assert "--oa-body-font: -apple-system, BlinkMacSystemFont" in CSS
+    # The stacks themselves live in the canonical tokens. brand.css only maps
+    # them onto Material, so assert the mapping here and the value there.
+    assert TOKENS["font"]["--font-display"].startswith("'Avenir Next'")
+    assert TOKENS["font"]["--font-body"].startswith("-apple-system")
+    assert "--oa-display-font: var(--font-display)" in CSS
+    assert "--oa-body-font: var(--font-body)" in CSS
     assert ".md-grid" in CSS and "max-width: 72rem" in CSS
     assert re.search(
         r'\[data-md-color-scheme="default"\] \.md-header\s*\{'
-        r'[^}]*background: rgba\(253, 252, 249, 0\.97\)',
+        r'[^}]*background: color-mix\(in srgb, var\(--surface-raised\) 97%,'
+        r' transparent\)',
         CSS,
         re.DOTALL,
     )

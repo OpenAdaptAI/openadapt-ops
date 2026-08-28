@@ -51,3 +51,28 @@ jobs:
 
       - name: Build canonical documentation in strict mode
         run: uv run mkdocs build --strict
+
+  design-tokens:
+    name: Vendored design tokens match openadapt-web
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      # The online half of the palette guard. The offline half runs in
+      # `pytest tests/` above and needs no network: it pins the digest of each
+      # vendored copy and fails on a retired palette value in any shipped
+      # stylesheet, template, script, SVG, or recorded image measurement.
+      #
+      # This job is what catches the other direction: a token that changes in
+      # OpenAdaptAI/openadapt-web while this site keeps serving the old value.
+      # Failing here is the intended outcome of that drift, not a flake. The
+      # fix is `python scripts/vendor_design_tokens.py --write`, reviewed and
+      # committed. Nothing is installed, so it cannot fail on a lock refresh.
+      - name: Check the vendored tokens against openadapt-web@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/vendor_design_tokens.py --check

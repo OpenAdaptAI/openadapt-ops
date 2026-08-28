@@ -1,46 +1,69 @@
 Current UI visual provenance
 =============================
 
+Every file below is a byte-identical copy of a file in OpenAdaptAI/openadapt-web,
+which owns the published visual record for every OpenAdapt surface. That
+repository's provenance manifests name the upstream Cloud or Desktop commit
+each capture came from. docs/assets/visual-palette.json records the measured
+dominant colours of every image on this site, and tests/test_design_tokens.py
+fails if a copy stops matching its record.
+
 desktop-qualification-cockpit.png
-  SHA-256: 14cf86ae66ce91c0255eba74ac2c4fa3b8db188a01eb9c5874e90afe37300f9d
-  1600 x 1100. Unmodified source: OpenAdaptAI/openadapt-web, Web PR #332
-  final head 0e57c9ce7c7bd92e37af7e4ca4bf54833d949fe7,
-  public/desktop-preview/cockpit/10_dashboard_workflows.png. The documentation
-  copy is byte-identical to that source file. It contains synthetic data.
+  1600 x 1100. SHA-256:
+  83b854f7375bea220902bb6fca6d1ca40e31123691c0da4a7f4a435de37da65a.
+  Source: openadapt-web public/desktop-preview/cockpit/10_dashboard_workflows.png.
+  Headless Chromium rendered the Desktop React cockpit through
+  scripts/capture-cockpit-previews.mjs in openadapt-desktop at PR #139 head
+  d8c08567e42ae45e9687211d757ae3536c97e460, answering the engine IPC surface
+  from that repository's committed synthetic fixture table. No Tauri window,
+  engine sidecar, account, Cloud session, recording, physical input, customer
+  data, or live execution was used. It shows a synthetic local workflow library
+  with one halted workflow and one verified workflow.
 
 mobile-decision-request.jpg
-  SHA-256: 6249a4288a807a6f33ec05c3df6f1f52ef169a3ee25edf99feebbd89de37464e
-  314 x 784. Phone-shell crop from an OpenAdaptAI/openadapt-cloud production
-  build at component commit f250ef34962e9237e49a3d04b37c6fead3b565f9.
-  The supported production-browser capture used device scale factor 1. The
-  files are not post-upscaled.
-  The retained capture set is in commit
-  7e462d489b4b9fc249cefb5b70c9a6009c737a0c. The route is
-  /demo/attention in Cloud PR #276. The data is synthetic OpenEMR application
-  data.
+  314 x 784. SHA-256:
+  c50b46b5febaafafcef2a58e6ec2d9a6c5221a4386bdeacaa3a2f3836886b9b6.
+  Source: openadapt-web public/attended-decision/identity-request.jpg. Phone
+  shell at route /demo/attention, captured with Playwright Chromium through
+  openadapt-cloud scripts/capture-public-previews.mjs against the local Cloud
+  mock UI at commit 021a9caf99a6832bff9f32e14b1b34d42ec2e290. The runtime-mode
+  banner is hidden during capture because it reports the environment the
+  capture ran in, not the product. It shows an open identity request before an
+  operator answer. The data is synthetic OpenEMR application data.
 
 mobile-decision-pending.jpg
-  SHA-256: fa616b67e072ed82291b7990e8623bc5d263f64547c5bbd269daf121d77791a5
-  314 x 784. From the same source and capture sequence as the request. It shows
-  the decision_pending state. The signed answer was accepted once. No runner
-  receipt exists, and the workflow remains paused.
+  314 x 784. SHA-256:
+  a4d4af28c3627de9356ef1ee09d78137e3a2d530edc3cfa68c0d242299288b46.
+  Source: openadapt-web public/attended-decision/decision-pending.jpg. From the
+  same capture sequence as the request. It shows the decision_pending state:
+  the signed answer was accepted once, no runner receipt exists, and the
+  workflow remains paused.
 
 mobile-decision-result.jpg
-  SHA-256: 3096f8b5064a6271894c894e98c15919668a14ef0bd3aa0c59319710d75d69a6
-  314 x 784. From the same source and capture sequence as the request. It is the
-  completed runner result with the verified_and_resumed reason code. The data
-  is synthetic OpenEMR application data.
+  314 x 784. SHA-256:
+  e64f5de7ba84457baa5280cfac0cdcfea12f8c38009bd8dfb3443b794ed01042.
+  Source: openadapt-web public/attended-decision/identity-verified.jpg. From the
+  same capture sequence as the request. It is the completed runner result with
+  the verified_and_resumed reason code. The data is synthetic OpenEMR
+  application data.
 
 business-decision-qualification-capture.png
-  SHA-256: 1876efdba92d3995cffcdca126d32d9e2493f7e4ffaf46b131f8580c09994862
-  860 x 3542. Byte-identical source: OpenAdaptAI/openadapt-cloud,
-  Cloud PR #281 merge commit 176595db43c3bfbf0a0bd4a1100e035e922396c0,
-  public/demo/qualification-judgment/judgment-capture-request.png. It is a
-  synthetic qualification capture. It is not a live execution request.
+  860 x 3240. SHA-256:
+  013d3dedd76fb02c01a05b06ebfb64da4d51d6ae442f9cd5e2eac0b66126d7e9.
+  Source: openadapt-web public/qualification-judgment/judgment-capture-human-node.png.
+  Route /demo/qualification-judgment in openadapt-cloud, captured with
+  Playwright Chromium through that repository's
+  scripts/capture-public-previews.mjs at commit
+  021a9caf99a6832bff9f32e14b1b34d42ec2e290. It is a synthetic qualification
+  capture. It is not a live execution request.
 
 business-decision-runtime-request.png
-  SHA-256: cf9ab3f36f6869ec80758ae70ff6aa2466d73615997de5d5eed351d2cdca1a65
-  520 x 880. Byte-identical source: OpenAdaptAI/openadapt-cloud,
-  Cloud PR #278 merge commit 167b2f0843229c5938f3d9e97de46f68b66e3476,
-  public/demo/judgment/business-decision-request.png. It is a synthetic
-  mobile live-run decision request. It does not report an execution result.
+  430 x 859. SHA-256:
+  829347392941e65d8ec2e895cd503a9b600260ed638ddb662e15fcc423b797dd.
+  Source: openadapt-web public/business-decision/business-decision-request.png.
+  Route /demo/judgment?view=request in openadapt-cloud at commit
+  baf08a94e38618c9de4b47cfa85c95750ed51b2a, captured with Playwright Chromium
+  through that repository's scripts/capture-public-previews.mjs. The shot is
+  clipped to the phone bezel's border box and carries an alpha channel. It is a
+  synthetic mobile live-run decision request. It does not report an execution
+  result.

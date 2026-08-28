@@ -1,0 +1,221 @@
+{
+  "$note": "Measured palette of every image docs.openadapt.ai ships. The docs site kept a retired warm palette after the rest of the product moved to the canonical cool one, and nobody could see it: a screenshot's ground reads as 'off-white' either way, and a search for token names finds nothing inside a PNG. So this file records a measurement instead of an opinion. scripts/measure_asset_palette.py writes it; tests/test_design_tokens.py enforces it offline.",
+  "$cool_rule": "The DOMINANT colour of every image must have blue >= red. The dominant colour is the page ground, and the ground is what makes a capture read warm or cool: the canonical grounds are cool by construction (#FFFFFF, #F5F7FA, #EDF1F6, #0B1220 all satisfy it) and every retired warm ground fails it (#f2f1ec, #fbfaf6, #fdfcf9, #fdfcf8, #f4f3ef, #f4f3ed all have red > blue). The rule needs no allowlist and no warm ground can satisfy it. It deliberately stops at the dominant colour: a warm tint below it is usually --accent-halt doing its job, which is a canonical token, not a retired palette.",
+  "$provenance": "Each entry names the file in OpenAdaptAI/openadapt-web this copy is byte-identical to. openadapt-web owns the published visual record; that repository's own provenance manifests name the upstream Cloud or Desktop commit each capture came from. The prose descriptions stay in the PROVENANCE.txt beside the images.",
+  "assets": {
+    "favicon.ico": {
+      "source_repository": null,
+      "source_path": null,
+      "note": "Neutral greyscale mark. It carries no brand hue in either palette.",
+      "sha256": "56f16c3d7104a06436643c659cfe360b869633ebe4e1f1d49ac1a90dc0a0f03b",
+      "width": 48,
+      "height": 48,
+      "dominant_colors": [
+        {
+          "hex": "#ffffff",
+          "share_percent": 68.01
+        },
+        {
+          "hex": "#595959",
+          "share_percent": 4.86
+        },
+        {
+          "hex": "#e9e9e9",
+          "share_percent": 3.73
+        }
+      ]
+    },
+    "screenshots/dashboard-overview.png": {
+      "source_repository": "OpenAdaptAI/openadapt-web",
+      "source_path": "public/product-preview/dashboard-workflows.png",
+      "sha256": "f9f894a60e44b266f16b8d138d8747e1a1fb639bf92370db6adbf4d4aab5bde4",
+      "width": 2560,
+      "height": 1440,
+      "dominant_colors": [
+        {
+          "hex": "#ffffff",
+          "share_percent": 46.48
+        },
+        {
+          "hex": "#f5f7fa",
+          "share_percent": 30.14
+        },
+        {
+          "hex": "#fafafa",
+          "share_percent": 2.51
+        }
+      ]
+    },
+    "screenshots/for-each-program-graph.png": {
+      "source_repository": null,
+      "source_path": null,
+      "note": "Output of `openadapt flow visualize`, not product chrome. It was already neutral and is unchanged by the palette move.",
+      "sha256": "0a6e524c4066a07c14db8732bd416d1e940e5b525d46c749ee548f1a6b94b244",
+      "width": 1280,
+      "height": 455,
+      "dominant_colors": [
+        {
+          "hex": "#ffffff",
+          "share_percent": 78.27
+        },
+        {
+          "hex": "#f6f8fa",
+          "share_percent": 10.69
+        },
+        {
+          "hex": "#f7f9fb",
+          "share_percent": 0.76
+        }
+      ]
+    },
+    "showcase/demo.gif": {
+      "source_repository": null,
+      "source_path": null,
+      "note": "Terminal recording of a replay run on a dark ground, not product chrome.",
+      "sha256": "cec6464e0e7acabc5c551e047bc906488bcc0be5e8c62a2cc082a21a36e16f7f",
+      "width": 1272,
+      "height": 535,
+      "dominant_colors": [
+        {
+          "hex": "#0d0b1e",
+          "share_percent": 94.68
+        },
+        {
+          "hex": "#0c0a1d",
+          "share_percent": 0.56
+        },
+        {
+          "hex": "#0b091c",
+          "share_percent": 0.38
+        }
+      ]
+    },
+    "ui/business-decision-qualification-capture.png": {
+      "source_repository": "OpenAdaptAI/openadapt-web",
+      "source_path": "public/qualification-judgment/judgment-capture-human-node.png",
+      "sha256": "013d3dedd76fb02c01a05b06ebfb64da4d51d6ae442f9cd5e2eac0b66126d7e9",
+      "width": 860,
+      "height": 3240,
+      "dominant_colors": [
+        {
+          "hex": "#ffffff",
+          "share_percent": 21.37
+        },
+        {
+          "hex": "#f5f7fa",
+          "share_percent": 9.64
+        },
+        {
+          "hex": "#0b1220",
+          "share_percent": 2.33
+        }
+      ]
+    },
+    "ui/business-decision-runtime-request.png": {
+      "source_repository": "OpenAdaptAI/openadapt-web",
+      "source_path": "public/business-decision/business-decision-request.png",
+      "sha256": "829347392941e65d8ec2e895cd503a9b600260ed638ddb662e15fcc423b797dd",
+      "width": 430,
+      "height": 859,
+      "dominant_colors": [
+        {
+          "hex": "#ffffff",
+          "share_percent": 33.93
+        },
+        {
+          "hex": "#edf1f6",
+          "share_percent": 18.81
+        },
+        {
+          "hex": "#fdfcfe",
+          "share_percent": 4.53
+        }
+      ]
+    },
+    "ui/desktop-qualification-cockpit.png": {
+      "source_repository": "OpenAdaptAI/openadapt-web",
+      "source_path": "public/desktop-preview/cockpit/10_dashboard_workflows.png",
+      "sha256": "83b854f7375bea220902bb6fca6d1ca40e31123691c0da4a7f4a435de37da65a",
+      "width": 1600,
+      "height": 1100,
+      "dominant_colors": [
+        {
+          "hex": "#f5f7fa",
+          "share_percent": 75.8
+        },
+        {
+          "hex": "#ffffff",
+          "share_percent": 16.49
+        },
+        {
+          "hex": "#f8f9fb",
+          "share_percent": 0.93
+        }
+      ]
+    },
+    "ui/mobile-decision-pending.jpg": {
+      "source_repository": "OpenAdaptAI/openadapt-web",
+      "source_path": "public/attended-decision/decision-pending.jpg",
+      "note": "The second colour, #fdfcf8, is the halt-state card wash derived from the canonical --accent-halt #9A5B0A. It is warm on purpose. The ground above it is #ffffff.",
+      "sha256": "a4d4af28c3627de9356ef1ee09d78137e3a2d530edc3cfa68c0d242299288b46",
+      "width": 314,
+      "height": 784,
+      "dominant_colors": [
+        {
+          "hex": "#ffffff",
+          "share_percent": 26.33
+        },
+        {
+          "hex": "#fdfcf8",
+          "share_percent": 16.52
+        },
+        {
+          "hex": "#edf0f5",
+          "share_percent": 14.03
+        }
+      ]
+    },
+    "ui/mobile-decision-request.jpg": {
+      "source_repository": "OpenAdaptAI/openadapt-web",
+      "source_path": "public/attended-decision/identity-request.jpg",
+      "sha256": "c50b46b5febaafafcef2a58e6ec2d9a6c5221a4386bdeacaa3a2f3836886b9b6",
+      "width": 314,
+      "height": 784,
+      "dominant_colors": [
+        {
+          "hex": "#ffffff",
+          "share_percent": 24.65
+        },
+        {
+          "hex": "#edf0f5",
+          "share_percent": 7.81
+        },
+        {
+          "hex": "#fbfdfc",
+          "share_percent": 2.91
+        }
+      ]
+    },
+    "ui/mobile-decision-result.jpg": {
+      "source_repository": "OpenAdaptAI/openadapt-web",
+      "source_path": "public/attended-decision/identity-verified.jpg",
+      "sha256": "e64f5de7ba84457baa5280cfac0cdcfea12f8c38009bd8dfb3443b794ed01042",
+      "width": 314,
+      "height": 784,
+      "dominant_colors": [
+        {
+          "hex": "#ffffff",
+          "share_percent": 21.85
+        },
+        {
+          "hex": "#fbfdfc",
+          "share_percent": 12.27
+        },
+        {
+          "hex": "#edf0f5",
+          "share_percent": 11.5
+        }
+      ]
+    }
+  }
+}
