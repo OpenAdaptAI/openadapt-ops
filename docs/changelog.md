@@ -18,6 +18,8 @@
 
 ## openadapt-flow
 
+- **[v1.34.0](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.34.0)** (2026-08-28)
+  Bug Fixes
 - **[v1.33.0](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.33.0)** (2026-08-25)
   Bug Fixes
 - **[v1.32.0](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.32.0)** (2026-08-20)
@@ -26,8 +28,6 @@
   Bug Fixes
 - **[v1.30.0](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.30.0)** (2026-08-05)
   Bug Fixes
-- **[v1.29.0](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.29.0)** (2026-08-02)
-  Documentation
 
 ## openadapt-desktop
 
@@ -83,6 +83,8 @@
 
 ## openadapt-privacy
 
+- **[v1.0.4](https://github.com/OpenAdaptAI/openadapt-privacy/releases/tag/v1.0.4)** (2026-08-28)
+  Bug Fixes
 - **[v1.0.3](https://github.com/OpenAdaptAI/openadapt-privacy/releases/tag/v1.0.3)** (2026-08-19)
   Bug Fixes
 - **[v1.0.2](https://github.com/OpenAdaptAI/openadapt-privacy/releases/tag/v1.0.2)** (2026-07-29)
@@ -90,8 +92,6 @@
 - **[v1.0.1](https://github.com/OpenAdaptAI/openadapt-privacy/releases/tag/v1.0.1)** (2026-07-28)
   Bug Fixes
 - **[v1.0.0](https://github.com/OpenAdaptAI/openadapt-privacy/releases/tag/v1.0.0)** (2026-07-15)
-  Bug Fixes
-- **[v0.1.1](https://github.com/OpenAdaptAI/openadapt-privacy/releases/tag/v0.1.1)** (2026-01-29)
   Bug Fixes
 
 ## openadapt-types
