@@ -1,7 +1,7 @@
 # Database backup activation fixtures
 
-These files use synthetic identifiers and a test-only HMAC key. They contain
-no customer, Stripe, database, or AWS credentials.
+These files use synthetic identifiers and test-only HMAC keys. They don't
+contain customer, Stripe, database, or AWS credentials.
 
 The request fixture key is:
 
@@ -15,4 +15,15 @@ The deactivation fixture key is:
 cloud-deactivation-key-that-is-at-least-32-bytes
 ```
 
-Never configure either value outside a test.
+The activation and lease fixtures use these additional keys:
+
+```text
+readiness-receipt-key-that-is-at-least-32-bytes
+cloud-activation-ack-key-that-is-at-least-32-bytes
+ops-schedule-lease-key-that-is-at-least-32-bytes
+cloud-continuation-key-that-is-at-least-32-bytes
+ops-renewal-receipt-key-that-is-at-least-32-bytes
+cloud-lease-ack-key-that-is-at-least-32-bytes
+```
+
+Never configure these values outside a test.

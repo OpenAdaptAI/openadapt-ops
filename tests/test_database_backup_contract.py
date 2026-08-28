@@ -212,6 +212,68 @@ def test_restore_storage_class_gate_refuses_a_wrong_class(tmp_path: Path) -> Non
         backup.verify_storage_classes(args)
 
 
+def test_interrupted_upload_recovers_only_from_exact_ciphertext_metadata(
+    tmp_path: Path,
+) -> None:
+    _, _, contract = make_contract(tmp_path)
+    plaintext = tmp_path / "backup.tar.gz"
+    ciphertext = tmp_path / "backup.tar.gz.age"
+    plaintext.write_bytes(b"plain")
+    ciphertext.write_bytes(b"ciphertext")
+    manifest = tmp_path / "artifact-manifest.json"
+    backup.create_manifest(
+        Namespace(
+            contract=str(contract),
+            plaintext_archive=str(plaintext),
+            ciphertext_archive=str(ciphertext),
+            repository_commit="a" * 40,
+            workflow_run_id="123",
+            output=str(manifest),
+        )
+    )
+    upload = backup.single_put_contract(ciphertext, manifest)
+    head = tmp_path / "ciphertext-head.json"
+    head.write_text(
+        json.dumps(
+            {
+                "ChecksumSHA256": upload["checksum_sha256"],
+                "ContentLength": upload["bytes"],
+                "Metadata": {
+                    "artifact-manifest-base64": base64.b64encode(
+                        manifest.read_bytes()
+                    ).decode(),
+                    "sha256": upload["sha256"],
+                },
+                "ServerSideEncryption": "AES256",
+                "StorageClass": "GLACIER_IR",
+                "VersionId": "cipher-v1",
+            }
+        ),
+        encoding="utf-8",
+    )
+    output = tmp_path / "recovered-upload.json"
+    backup.recover_single_put(
+        Namespace(
+            manifest=str(manifest),
+            ciphertext_head=str(head),
+            output=str(output),
+        )
+    )
+    assert json.loads(output.read_text(encoding="utf-8")) == upload
+
+    changed = json.loads(head.read_text(encoding="utf-8"))
+    changed["StorageClass"] = "STANDARD"
+    head.write_text(json.dumps(changed), encoding="utf-8")
+    with pytest.raises(backup.ContractError, match="GLACIER_IR"):
+        backup.recover_single_put(
+            Namespace(
+                manifest=str(manifest),
+                ciphertext_head=str(head),
+                output=str(output),
+            )
+        )
+
+
 def test_uploaded_pair_binds_exact_versions_and_both_checksums(
     tmp_path: Path,
 ) -> None:

@@ -20,6 +20,10 @@ UTC = timezone.utc
 REQUEST_KEY = b"payment-signal-key-that-is-at-least-32-bytes"
 RECEIPT_KEY = b"readiness-receipt-key-that-is-at-least-32-bytes"
 CLOUD_KEY = b"cloud-activation-ack-key-that-is-at-least-32-bytes"
+LEASE_KEY = b"ops-schedule-lease-key-that-is-at-least-32-bytes"
+CONTINUATION_KEY = b"cloud-continuation-key-that-is-at-least-32-bytes"
+RENEWAL_RECEIPT_KEY = b"ops-renewal-receipt-key-that-is-at-least-32-bytes"
+LEASE_ACK_KEY = b"cloud-lease-ack-key-that-is-at-least-32-bytes"
 STATE_KEY = b"ops-activation-state-key-that-is-at-least-32-bytes"
 DEACTIVATION_KEY = b"cloud-deactivation-key-that-is-at-least-32-bytes"
 DEACTIVATION_RECEIPT_KEY = b"ops-deactivation-key-that-is-at-least-32-bytes"
@@ -125,7 +129,7 @@ def signed_cloud_ack(receipt: dict[str, object]) -> dict[str, object]:
         "cloud_revision_sha256": "9" * 64,
         "idempotency_key": payload["activation_id"],
         "issuer": activation.CLOUD_ACK_ISSUER,
-        "new_state": "ACTIVE",
+        "new_state": "PENDING_SCHEDULE",
         "organization_id_sha256": payload["organization_id_sha256"],
         "prior_state": "PENDING_RECOVERY",
         "readiness_receipt_sha256": receipt["receipt_sha256"],
@@ -142,9 +146,149 @@ def signed_cloud_ack(receipt: dict[str, object]) -> dict[str, object]:
     }
 
 
+def initial_lease() -> tuple[
+    dict[str, object], dict[str, object], dict[str, object]
+]:
+    state, receipt = ready()
+    lease = activation.create_admission(
+        receipt,
+        signed_cloud_ack(receipt),
+        receipt_key=RECEIPT_KEY,
+        cloud_ack_key=CLOUD_KEY,
+        lease_key=LEASE_KEY,
+        now=datetime(2026, 8, 26, 12, 13, tzinfo=UTC),
+    )
+    return state, receipt, lease
+
+
+def signed_lease_ack(
+    lease: dict[str, object], *, prior_state: str = "PENDING_SCHEDULE"
+) -> dict[str, object]:
+    payload = lease["lease"]
+    assert isinstance(payload, dict)
+    ack = {
+        "activation_id": payload["activation_id"],
+        "applied_at": "2026-08-26T12:13:00Z"
+        if payload["lease_sequence"] == 0
+        else "2026-10-25T12:13:00Z",
+        "audience": activation.CLOUD_LEASE_ACK_AUDIENCE,
+        "cloud_revision_sha256": "b" * 64,
+        "issuer": activation.CLOUD_LEASE_ACK_ISSUER,
+        "lease_event_id": payload["lease_event_id"],
+        "lease_sequence": payload["lease_sequence"],
+        "lease_sha256": lease["lease_sha256"],
+        "new_state": "ACTIVE",
+        "organization_id_sha256": payload["organization_id_sha256"],
+        "prior_state": prior_state,
+    }
+    return {
+        "schema": activation.CLOUD_LEASE_ACK_SCHEMA,
+        "ack": ack,
+        "ack_sha256": activation.sha256_value(ack),
+        "signature": {
+            "algorithm": activation.SIGNATURE_ALGORITHM,
+            "key_id": activation.CLOUD_LEASE_ACK_KEY_ID,
+            "value": activation.signature(ack, LEASE_ACK_KEY),
+        },
+    }
+
+
+def renewal_evidence() -> tuple[dict[str, object], dict[str, object]]:
+    backup = backup_evidence()
+    stamp = "20261025T120100Z"
+    backup.update(
+        {
+            "artifact_sha256": "a" * 64,
+            "ciphertext_key": f"daily/{stamp}/db-backup-{stamp}.tar.gz.age",
+            "ciphertext_sha256": "b" * 64,
+            "ciphertext_version_id": "cipher-version-2",
+            "manifest_key": f"daily/{stamp}/artifact-manifest.json",
+            "manifest_sha256": "c" * 64,
+            "manifest_version_id": "manifest-version-2",
+            "recovery_point_stamp": stamp,
+            "workflow_run_id": "23456",
+        }
+    )
+    restore = restore_evidence(backup)
+    restore["started_at"] = "2026-10-25T12:03:00Z"
+    restore["completed_at"] = "2026-10-25T12:11:00Z"
+    return backup, restore
+
+
+def renewal_contract(
+    prior_lease: dict[str, object],
+) -> tuple[dict[str, object], dict[str, object]]:
+    backup, restore = renewal_evidence()
+    now = datetime(2026, 10, 25, 12, 13, tzinfo=UTC)
+    receipt = activation.issue_renewal_receipt(
+        prior_lease,
+        backup,
+        restore,
+        receipt_key=RECEIPT_KEY,
+        cloud_ack_key=CLOUD_KEY,
+        lease_key=LEASE_KEY,
+        renewal_receipt_key=RENEWAL_RECEIPT_KEY,
+        continuation_key=CONTINUATION_KEY,
+        now=now,
+    )
+    prior_sha = prior_lease["lease_sha256"]
+    assert isinstance(prior_sha, str)
+    event_id = activation.renewal_lease_event_id(ACTIVATION_ID, prior_sha, 1)
+    assertion = {
+        "activation_id": ACTIVATION_ID,
+        "active_lease_sha256": prior_sha,
+        "audience": activation.CLOUD_CONTINUATION_AUDIENCE,
+        "backup_required": True,
+        "cloud_revision_sha256": "d" * 64,
+        "customer_data_remaining": False,
+        "expires_at": "2026-10-25T12:15:00Z",
+        "issued_at": "2026-10-25T12:00:00Z",
+        "issuer": activation.CLOUD_CONTINUATION_ISSUER,
+        "lease_event_id": event_id,
+        "offer_contract": activation.OFFER_CONTRACT,
+        "organization_id_sha256": ORGANIZATION_SHA,
+        "paid_customer_count": 1,
+        "pending_customer_count": 0,
+        "requested_lease_sequence": 1,
+        "service_state": "ACTIVE",
+    }
+    continuation = {
+        "schema": activation.CONTINUATION_SCHEMA,
+        "assertion": assertion,
+        "assertion_sha256": activation.sha256_value(assertion),
+        "signature": {
+            "algorithm": activation.SIGNATURE_ALGORITHM,
+            "key_id": activation.CLOUD_CONTINUATION_KEY_ID,
+            "value": activation.signature(assertion, CONTINUATION_KEY),
+        },
+    }
+    return receipt, continuation
+
+
+def accepted_continuation(
+    prior_lease: dict[str, object],
+    continuation: dict[str, object],
+    *,
+    now: datetime = datetime(2026, 10, 25, 12, 1, tzinfo=UTC),
+    existing: dict[str, object] | None = None,
+) -> dict[str, object]:
+    return activation.accept_continuation(
+        prior_lease,
+        continuation,
+        receipt_key=RECEIPT_KEY,
+        cloud_ack_key=CLOUD_KEY,
+        lease_key=LEASE_KEY,
+        renewal_receipt_key=RENEWAL_RECEIPT_KEY,
+        continuation_key=CONTINUATION_KEY,
+        state_key=STATE_KEY,
+        now=now,
+        existing=existing,
+    )
+
+
 def signed_deactivation_request() -> dict[str, object]:
     proof = {
-        "active_admission_sha256": "a" * 64,
+        "active_lease_sha256": "a" * 64,
         "cloud_revision_sha256": "c" * 64,
         "customer_data_remaining": False,
         "deletion_receipt_sha256": "d" * 64,
@@ -163,7 +307,7 @@ def signed_deactivation_request() -> dict[str, object]:
     }
     request = {
         "activation_id": ACTIVATION_ID,
-        "active_admission_sha256": "a" * 64,
+        "active_lease_sha256": "a" * 64,
         "audience": activation.CLOUD_DEACTIVATION_AUDIENCE,
         "customer_data_remaining": False,
         "deactivation_id": "deact_" + "b" * 32,
@@ -267,51 +411,355 @@ def test_activation_refuses_wrong_class_and_failed_restore() -> None:
         activation.issue_receipt(state, key=RECEIPT_KEY)
 
 
-def test_receipt_and_cloud_ack_are_required_for_schedule_admission() -> None:
-    state, receipt = ready()
-    ack = signed_cloud_ack(receipt)
-    admission = activation.create_admission(
-        receipt,
-        ack,
-        receipt_key=RECEIPT_KEY,
-        cloud_ack_key=CLOUD_KEY,
-        now=datetime(2026, 8, 26, 12, 13, tzinfo=UTC),
-    )
-    activation.validate_admission(
-        admission,
-        receipt_key=RECEIPT_KEY,
-        cloud_ack_key=CLOUD_KEY,
-        now=datetime(2026, 8, 26, 12, 13, tzinfo=UTC),
-    )
-    active = activation.record_active(
-        state,
-        admission,
-        receipt_key=RECEIPT_KEY,
-        cloud_ack_key=CLOUD_KEY,
-        now=datetime(2026, 8, 26, 12, 13, tzinfo=UTC),
-    )
-    assert active["state"]["stage"] == "ACTIVE"
-    assert (
-        activation.record_active(
-            active,
-            admission,
-            receipt_key=RECEIPT_KEY,
-            cloud_ack_key=CLOUD_KEY,
-            now=datetime(2026, 8, 26, 12, 13, tzinfo=UTC),
-        )
-        == active
+def test_initial_schedule_lease_is_signed_exact_and_retry_safe() -> None:
+    _, receipt, lease = initial_lease()
+    payload = lease["lease"]
+    assert payload["lease_sequence"] == 0
+    assert payload["prior_lease_sha256"] is None
+    assert payload["continuation_assertion"] is None
+    assert payload["issued_at"] == "2026-08-26T12:12:00Z"
+    assert payload["renewal_due_at"] == "2026-10-25T12:12:00Z"
+    assert payload["expires_at"] == "2026-11-24T12:12:00Z"
+    assert payload["lease_event_id"] == activation.initial_lease_event_id(
+        ACTIVATION_ID
     )
 
-    tampered = copy.deepcopy(admission)
-    tampered["admission"]["cloud_ack"]["ack"]["new_state"] = "PENDING_RECOVERY"
-    tampered["admission_sha256"] = activation.sha256_value(tampered["admission"])
-    with pytest.raises(activation.ActivationError, match="digest"):
+    status = activation.validate_admission(
+        lease,
+        receipt_key=RECEIPT_KEY,
+        cloud_ack_key=CLOUD_KEY,
+        lease_key=LEASE_KEY,
+        now=datetime(2026, 8, 26, 12, 13, tzinfo=UTC),
+    )
+    assert status["renewal_overdue"] is False
+    assert status["customer_admission_allowed"] is True
+    assert (
+        activation.create_admission(
+            receipt,
+            signed_cloud_ack(receipt),
+            receipt_key=RECEIPT_KEY,
+            cloud_ack_key=CLOUD_KEY,
+            lease_key=LEASE_KEY,
+            now=datetime(2026, 8, 26, 12, 13, tzinfo=UTC),
+            existing=lease,
+        )
+        == lease
+    )
+
+    tampered = copy.deepcopy(lease)
+    tampered["lease"]["requested_cadence_seconds"] = 86_400
+    tampered["lease_sha256"] = activation.sha256_value(tampered["lease"])
+    with pytest.raises(activation.ActivationError, match="signature"):
         activation.validate_admission(
             tampered,
             receipt_key=RECEIPT_KEY,
             cloud_ack_key=CLOUD_KEY,
+            lease_key=LEASE_KEY,
             now=datetime(2026, 8, 26, 12, 13, tzinfo=UTC),
         )
+
+    changed_ack = signed_cloud_ack(receipt)
+    changed_ack["ack"]["cloud_revision_sha256"] = "f" * 64
+    changed_ack["ack_sha256"] = activation.sha256_value(changed_ack["ack"])
+    changed_ack["signature"]["value"] = activation.signature(
+        changed_ack["ack"], CLOUD_KEY
+    )
+    with pytest.raises(activation.ActivationError, match="conflicts"):
+        activation.create_admission(
+            receipt,
+            changed_ack,
+            receipt_key=RECEIPT_KEY,
+            cloud_ack_key=CLOUD_KEY,
+            lease_key=LEASE_KEY,
+            now=datetime(2026, 8, 26, 12, 13, tzinfo=UTC),
+            existing=lease,
+        )
+
+
+def test_expired_lease_blocks_customer_admission_but_keeps_protection() -> None:
+    _, _, lease = initial_lease()
+    expired_at = datetime(2026, 11, 25, 12, 13, tzinfo=UTC)
+    with pytest.raises(activation.ActivationError, match="expired for customer"):
+        activation.validate_admission(
+            lease,
+            receipt_key=RECEIPT_KEY,
+            cloud_ack_key=CLOUD_KEY,
+            lease_key=LEASE_KEY,
+            now=expired_at,
+        )
+    status = activation.validate_admission(
+        lease,
+        receipt_key=RECEIPT_KEY,
+        cloud_ack_key=CLOUD_KEY,
+        lease_key=LEASE_KEY,
+        now=expired_at,
+        protective_backup=True,
+    )
+    assert status == {
+        "customer_admission_allowed": False,
+        "expired": True,
+        "lease": lease["lease"],
+        "protective_backup_allowed": True,
+        "renewal_overdue": True,
+    }
+
+
+def test_continuation_acceptance_survives_expiry_and_rejects_backdating() -> None:
+    _, _, prior = initial_lease()
+    receipt, continuation = renewal_contract(prior)
+    acceptance = accepted_continuation(prior, continuation)
+    payload = acceptance["acceptance"]
+    assert acceptance["schema"] == activation.CONTINUATION_ACCEPTANCE_SCHEMA
+    assert acceptance["signature"]["key_id"] == activation.STATE_KEY_ID
+    assert payload["accepted_at"] == "2026-10-25T12:01:00Z"
+    assert payload["continuation_assertion"] == continuation
+    assert payload["continuation_assertion_sha256"] == activation.sha256_value(
+        continuation
+    )
+
+    after_assertion_expiry = datetime(2026, 10, 25, 12, 30, tzinfo=UTC)
+    assert (
+        accepted_continuation(
+            prior,
+            continuation,
+            now=after_assertion_expiry,
+            existing=acceptance,
+        )
+        == acceptance
+    )
+
+    forged = copy.deepcopy(acceptance)
+    forged["acceptance"]["accepted_at"] = "2026-10-25T11:59:00Z"
+    forged["acceptance_sha256"] = activation.sha256_value(forged["acceptance"])
+    forged["signature"]["value"] = activation.signature(
+        forged["acceptance"], STATE_KEY
+    )
+    with pytest.raises(activation.ActivationError, match="not within assertion validity"):
+        activation.validate_continuation_acceptance(
+            forged,
+            prior,
+            receipt_key=RECEIPT_KEY,
+            cloud_ack_key=CLOUD_KEY,
+            lease_key=LEASE_KEY,
+            renewal_receipt_key=RENEWAL_RECEIPT_KEY,
+            continuation_key=CONTINUATION_KEY,
+            state_key=STATE_KEY,
+            now=after_assertion_expiry,
+        )
+
+    renewed = activation.renew_admission(
+        prior,
+        acceptance,
+        receipt,
+        receipt_key=RECEIPT_KEY,
+        cloud_ack_key=CLOUD_KEY,
+        lease_key=LEASE_KEY,
+        renewal_receipt_key=RENEWAL_RECEIPT_KEY,
+        continuation_key=CONTINUATION_KEY,
+        state_key=STATE_KEY,
+        now=after_assertion_expiry,
+    )
+    retained = json.loads(
+        (FIXTURE_ROOT / "renewed-schedule-lease.json").read_text(encoding="utf-8")
+    )
+    assert renewed == retained
+
+
+def test_renewal_binds_sequence_prior_assertion_and_new_recovery() -> None:
+    _, _, prior = initial_lease()
+    receipt, continuation = renewal_contract(prior)
+    acceptance = accepted_continuation(prior, continuation)
+    now = datetime(2026, 10, 25, 12, 13, tzinfo=UTC)
+    renewed = activation.renew_admission(
+        prior,
+        acceptance,
+        receipt,
+        receipt_key=RECEIPT_KEY,
+        cloud_ack_key=CLOUD_KEY,
+        lease_key=LEASE_KEY,
+        renewal_receipt_key=RENEWAL_RECEIPT_KEY,
+        continuation_key=CONTINUATION_KEY,
+        state_key=STATE_KEY,
+        now=now,
+    )
+    payload = renewed["lease"]
+    assert payload["lease_sequence"] == 1
+    assert payload["prior_lease_sha256"] == prior["lease_sha256"]
+    assert payload["continuation_assertion"] == continuation
+    assert payload["readiness_receipt"] == receipt
+    assert payload["lease_event_id"] == activation.renewal_lease_event_id(
+        ACTIVATION_ID, prior["lease_sha256"], 1
+    )
+    status = activation.validate_admission(
+        renewed,
+        receipt_key=RECEIPT_KEY,
+        cloud_ack_key=CLOUD_KEY,
+        lease_key=LEASE_KEY,
+        renewal_receipt_key=RENEWAL_RECEIPT_KEY,
+        continuation_key=CONTINUATION_KEY,
+        now=now,
+    )
+    assert status["customer_admission_allowed"] is True
+    assert (
+        activation.renew_admission(
+            prior,
+            acceptance,
+            receipt,
+            receipt_key=RECEIPT_KEY,
+            cloud_ack_key=CLOUD_KEY,
+            lease_key=LEASE_KEY,
+            renewal_receipt_key=RENEWAL_RECEIPT_KEY,
+            continuation_key=CONTINUATION_KEY,
+            state_key=STATE_KEY,
+            now=now,
+            existing=renewed,
+        )
+        == renewed
+    )
+
+    fixtures = {
+        "initial-schedule-lease.json": prior,
+        "initial-schedule-lease-ack.json": signed_lease_ack(prior),
+        "renewal-continuation-assertion.json": continuation,
+        "renewal-readiness-receipt.json": receipt,
+        "renewed-schedule-lease.json": renewed,
+    }
+    for name, expected in fixtures.items():
+        retained = json.loads((FIXTURE_ROOT / name).read_text(encoding="utf-8"))
+        assert retained == expected
+
+    changed = copy.deepcopy(continuation)
+    changed["assertion"]["cloud_revision_sha256"] = "e" * 64
+    changed["assertion_sha256"] = activation.sha256_value(changed["assertion"])
+    changed["signature"]["value"] = activation.signature(
+        changed["assertion"], CONTINUATION_KEY
+    )
+    with pytest.raises(activation.ActivationError, match="conflicts"):
+        activation.accept_continuation(
+            prior,
+            changed,
+            receipt_key=RECEIPT_KEY,
+            cloud_ack_key=CLOUD_KEY,
+            lease_key=LEASE_KEY,
+            renewal_receipt_key=RENEWAL_RECEIPT_KEY,
+            continuation_key=CONTINUATION_KEY,
+            state_key=STATE_KEY,
+            now=now,
+            existing=acceptance,
+        )
+
+
+def test_renewal_rejects_bad_signatures_and_empty_customer_state() -> None:
+    _, _, prior = initial_lease()
+    receipt, continuation = renewal_contract(prior)
+    acceptance = accepted_continuation(prior, continuation)
+    now = datetime(2026, 10, 25, 12, 13, tzinfo=UTC)
+
+    bad_receipt = copy.deepcopy(receipt)
+    bad_receipt["signature"]["value"] = "0" * 64
+    with pytest.raises(activation.ActivationError, match="receipt signature"):
+        activation.renew_admission(
+            prior,
+            acceptance,
+            bad_receipt,
+            receipt_key=RECEIPT_KEY,
+            cloud_ack_key=CLOUD_KEY,
+            lease_key=LEASE_KEY,
+            renewal_receipt_key=RENEWAL_RECEIPT_KEY,
+            continuation_key=CONTINUATION_KEY,
+            state_key=STATE_KEY,
+            now=now,
+        )
+
+    empty = copy.deepcopy(continuation)
+    empty["assertion"]["paid_customer_count"] = 0
+    empty["assertion"]["pending_customer_count"] = 0
+    empty["assertion"]["customer_data_remaining"] = False
+    empty["assertion_sha256"] = activation.sha256_value(empty["assertion"])
+    empty["signature"]["value"] = activation.signature(
+        empty["assertion"], CONTINUATION_KEY
+    )
+    with pytest.raises(activation.ActivationError, match="no protected customer"):
+        activation.accept_continuation(
+            prior,
+            empty,
+            receipt_key=RECEIPT_KEY,
+            cloud_ack_key=CLOUD_KEY,
+            lease_key=LEASE_KEY,
+            renewal_receipt_key=RENEWAL_RECEIPT_KEY,
+            continuation_key=CONTINUATION_KEY,
+            state_key=STATE_KEY,
+            now=now,
+        )
+
+    with pytest.raises(activation.ActivationError, match="assertion is not active"):
+        activation.accept_continuation(
+            prior,
+            continuation,
+            receipt_key=RECEIPT_KEY,
+            cloud_ack_key=CLOUD_KEY,
+            lease_key=LEASE_KEY,
+            renewal_receipt_key=RENEWAL_RECEIPT_KEY,
+            continuation_key=CONTINUATION_KEY,
+            state_key=STATE_KEY,
+            now=datetime(2026, 10, 25, 12, 16, tzinfo=UTC),
+        )
+
+
+def test_signed_cloud_lease_ack_is_the_only_record_active_gate() -> None:
+    state, receipt, lease = initial_lease()
+    with pytest.raises(activation.ActivationError, match="schema"):
+        activation.record_active(
+            state,
+            lease,
+            signed_cloud_ack(receipt),
+            receipt_key=RECEIPT_KEY,
+            cloud_ack_key=CLOUD_KEY,
+            lease_key=LEASE_KEY,
+            cloud_lease_ack_key=LEASE_ACK_KEY,
+            now=datetime(2026, 8, 26, 12, 13, tzinfo=UTC),
+        )
+    lease_ack = signed_lease_ack(lease)
+    wrong_key = copy.deepcopy(lease_ack)
+    wrong_key["signature"]["value"] = activation.signature(
+        wrong_key["ack"], CONTINUATION_KEY
+    )
+    with pytest.raises(activation.ActivationError, match="lease acknowledgment signature"):
+        activation.record_active(
+            state,
+            lease,
+            wrong_key,
+            receipt_key=RECEIPT_KEY,
+            cloud_ack_key=CLOUD_KEY,
+            lease_key=LEASE_KEY,
+            cloud_lease_ack_key=LEASE_ACK_KEY,
+            now=datetime(2026, 8, 26, 12, 13, tzinfo=UTC),
+        )
+    active = activation.record_active(
+        state,
+        lease,
+        lease_ack,
+        receipt_key=RECEIPT_KEY,
+        cloud_ack_key=CLOUD_KEY,
+        lease_key=LEASE_KEY,
+        cloud_lease_ack_key=LEASE_ACK_KEY,
+        now=datetime(2026, 8, 26, 12, 13, tzinfo=UTC),
+    )
+    assert active["state"]["stage"] == "ACTIVE"
+    assert active["state"]["schedule_lease_sha256"] == lease["lease_sha256"]
+    assert (
+        activation.record_active(
+            active,
+            lease,
+            lease_ack,
+            receipt_key=RECEIPT_KEY,
+            cloud_ack_key=CLOUD_KEY,
+            lease_key=LEASE_KEY,
+            cloud_lease_ack_key=LEASE_ACK_KEY,
+            now=datetime(2026, 8, 26, 12, 13, tzinfo=UTC),
+        )
+        == active
+    )
 
 
 def test_expired_request_cannot_create_late_retained_state() -> None:
@@ -409,13 +857,17 @@ def test_crash_at_each_recorded_stage_resumes_only_incomplete_work() -> None:
         ack,
         receipt_key=RECEIPT_KEY,
         cloud_ack_key=CLOUD_KEY,
+        lease_key=LEASE_KEY,
         now=datetime(2026, 8, 26, 12, 13, tzinfo=UTC),
     )
     active = activation.record_active(
         ready_state,
         admission,
+        signed_lease_ack(admission),
         receipt_key=RECEIPT_KEY,
         cloud_ack_key=CLOUD_KEY,
+        lease_key=LEASE_KEY,
+        cloud_lease_ack_key=LEASE_ACK_KEY,
         now=datetime(2026, 8, 26, 12, 13, tzinfo=UTC),
     )
     cases = (

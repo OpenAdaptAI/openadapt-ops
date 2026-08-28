@@ -148,19 +148,42 @@ python scripts/database_backup_contract.py extract-artifact \
   --manifest "$root/artifact-manifest.json" \
   --output-dir "$root/recovered"
 
-PGDATABASE="$SCRATCH_DB_URL" psql \
-  --single-transaction --variable ON_ERROR_STOP=1 \
-  --file "$root/recovered/roles.sql" \
-  --file "$root/recovered/schema.sql" \
-  --command 'SET session_replication_role = replica' \
-  --file "$root/recovered/data.sql"
-supabase db dump --db-url "$SCRATCH_DB_URL" -f "$root/redump/schema.sql"
-supabase db dump --db-url "$SCRATCH_DB_URL" -f "$root/redump/data.sql" \
-  --use-copy --data-only \
-  -x 'storage.buckets_vectors' -x 'storage.vector_indexes'
-python scripts/database_backup_contract.py verify-restored-dumps \
-  --source-dir "$root/recovered" --restored-dir "$root/redump" \
-  > "$root/verification.json"
+precheck_result=0
+set +e
+supabase db dump --db-url "$SCRATCH_DB_URL" -f "$root/redump/schema.sql" \
+  || precheck_result=$?
+if [[ "$precheck_result" -eq 0 ]]; then
+  supabase db dump --db-url "$SCRATCH_DB_URL" -f "$root/redump/data.sql" \
+    --use-copy --data-only \
+    -x 'storage.buckets_vectors' -x 'storage.vector_indexes' \
+    || precheck_result=$?
+fi
+if [[ "$precheck_result" -eq 0 ]]; then
+  python scripts/database_backup_contract.py verify-restored-dumps \
+    --source-dir "$root/recovered" --restored-dir "$root/redump" \
+    > "$root/verification.json" || precheck_result=$?
+fi
+set -e
+
+if [[ "$precheck_result" -eq 0 ]]; then
+  echo 'The scratch database already matches the exact backup. Restore actuation is skipped.'
+else
+  rm -f "$root/redump/schema.sql" "$root/redump/data.sql" \
+    "$root/verification.json"
+  PGDATABASE="$SCRATCH_DB_URL" psql \
+    --single-transaction --variable ON_ERROR_STOP=1 \
+    --file "$root/recovered/roles.sql" \
+    --file "$root/recovered/schema.sql" \
+    --command 'SET session_replication_role = replica' \
+    --file "$root/recovered/data.sql"
+  supabase db dump --db-url "$SCRATCH_DB_URL" -f "$root/redump/schema.sql"
+  supabase db dump --db-url "$SCRATCH_DB_URL" -f "$root/redump/data.sql" \
+    --use-copy --data-only \
+    -x 'storage.buckets_vectors' -x 'storage.vector_indexes'
+  python scripts/database_backup_contract.py verify-restored-dumps \
+    --source-dir "$root/recovered" --restored-dir "$root/redump" \
+    > "$root/verification.json"
+fi
 completed_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 
 output=${RESTORE_EVIDENCE_OUTPUT:-restore-evidence-${BACKUP_STAMP}.json}

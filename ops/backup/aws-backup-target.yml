@@ -171,7 +171,10 @@ Resources:
               - Effect: Allow
                 Action:
                   - s3:AbortMultipartUpload
+                  - s3:GetObject
                   - s3:GetObjectAttributes
+                  - s3:GetObjectVersion
+                  - s3:GetObjectVersionAttributes
                   - s3:PutObject
                 Resource: !Sub ${BackupBucket.Arn}/daily/*
               - Effect: Allow
@@ -250,7 +253,10 @@ Resources:
                   - s3:GetBucketPolicy
                 Resource: !GetAtt BackupBucket.Arn
               - Effect: Allow
-                Action: s3:GetObject
+                Action:
+                  - s3:GetObject
+                  - s3:GetObjectVersion
+                  - s3:GetObjectVersionAttributes
                 Resource: !Sub ${BackupBucket.Arn}/daily/*
               - Effect: Allow
                 Action: s3:PutObject

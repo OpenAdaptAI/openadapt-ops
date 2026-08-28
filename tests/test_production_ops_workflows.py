@@ -42,7 +42,7 @@ def test_backup_uses_one_s3_validated_full_object_put() -> None:
     workflow = read(".github/workflows/db-backup.yml")
     prepare = workflow.index("prepare-single-put")
     put = workflow.index("aws s3api put-object", prepare)
-    verify = workflow.index("verify-uploaded-pair")
+    verify = workflow.index("verify-uploaded-pair", prepare)
     assert prepare < put < verify
     assert '--checksum-algorithm SHA256 --checksum-sha256 "$local_checksum"' in workflow
     assert '--content-length "$cipher_bytes"' in workflow
@@ -57,16 +57,18 @@ def test_backup_uses_one_s3_validated_full_object_put() -> None:
     assert 'aws s3 cp "$cipher"' not in workflow
 
 
-def test_backup_write_paths_require_payment_or_signed_active_admission() -> None:
+def test_backup_write_paths_require_payment_or_signed_schedule_lease() -> None:
     workflow = read(".github/workflows/db-backup.yml")
     assert "workflow_dispatch:" not in workflow
     assert "vars.DATABASE_BACKUP_SCHEDULE_ENABLED == 'true'" in workflow
-    gate = workflow.index("Verify the paid activation or active schedule admission")
+    gate = workflow.index("Verify the paid activation or signed schedule lease")
     credentials = workflow.index("aws-actions/configure-aws-credentials")
     put = workflow.index("aws s3api put-object")
     assert gate < credentials < put
     assert "database_backup_activation.py begin" in workflow
-    assert "database_backup_activation.py verify-admission" in workflow
+    assert "database_backup_activation.py verify-lease" in workflow
+    assert "--lease-hmac-key-env OPS_SCHEDULE_LEASE_HMAC_KEY" in workflow
+    assert "--protective-backup" in workflow
     assert "database_backup_activation.py resume" in workflow
     assert "database_backup_activation.py sign-state" in workflow
     assert '"activation/${activation_id}"' in workflow
@@ -141,6 +143,10 @@ def test_pre_revenue_backup_stack_has_no_fixed_cost_addons() -> None:
         assert "s3:GetObject" in policy
         assert "s3:PutObject" in policy
         assert "activation/*" in policy
+    assert "s3:GetObjectVersionAttributes" in writer
+    assert "s3:GetObjectVersion" in writer
+    assert "s3:GetObjectVersionAttributes" in restore
+    assert "s3:GetObjectVersion" in restore
     assert "AWS::IAM::OIDCProvider" in template
     assert "AWS::S3::Bucket" in template
 
@@ -160,6 +166,19 @@ def test_backup_cadence_keeps_one_attempt_inside_the_24_hour_rpo() -> None:
     assert "--maximum-rpo-seconds 86400" in backup
     assert "--maximum-age-seconds 86400" in monitor
     assert "cron: '43 * * * *'" in monitor
+    assert 'created_at="${stamp:0:4}-${stamp:4:2}-${stamp:6:2}' in backup
+
+
+def test_activation_resume_reconciles_s3_objects_and_refuses_unknown_reads() -> None:
+    backup = read(".github/workflows/db-backup.yml")
+    activation = read(".github/workflows/db-backup-activate.yml")
+    assert "recover-single-put" in backup
+    assert "artifact-manifest-base64" in backup
+    assert "steps.reconcile.outputs.recovered != 'true'" in backup
+    assert "The interrupted first-backup upload was reconciled" in backup
+    for workflow in (backup, activation):
+        assert "S3 did not prove whether activation state exists" in workflow
+        assert "(NoSuchKey|NotFound|404)" in workflow
 
 
 def test_backup_monitor_cannot_download_or_change_ciphertext() -> None:
@@ -201,6 +220,10 @@ def test_restore_refuses_wrong_storage_classes_before_download() -> None:
     assert restore.count('--version-id "$BACKUP_MANIFEST_VERSION_ID"') >= 2
     assert "RESTORE_ROLE_SESSION_READY" in restore
     assert "assumed-role/${role_name}" in restore
+    assert restore.index("precheck_result=0") < restore.index(
+        'PGDATABASE="$SCRATCH_DB_URL" psql'
+    )
+    assert "already matches the exact backup" in restore
 
 
 def test_health_probe_uses_the_strict_contract_and_a_durable_issue() -> None:
