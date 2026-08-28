@@ -18,7 +18,13 @@ lint, and supervised replay loop works with native Windows, macOS, or Linux
 applications and RDP or Citrix sessions when you choose a different
 [backend](../reference/cli.md#backend).
 
-![Record, compile, and replay a workflow with OpenAdapt](../assets/showcase/demo.gif)
+<figure markdown="span">
+  ![An openIMIS eligibility check: a recorded demonstration, a verified replay, and a replay that halts.](../assets/showcase/demo.gif){ width="900" }
+  <figcaption>The same loop in a real application. Someone demonstrates an
+  eligibility check in openIMIS 25.10 on synthetic data, then the compiled
+  program replays it twice. A read-only SQL query confirms one replay. It
+  contradicts the other, which halts.</figcaption>
+</figure>
 
 ## Install OpenAdapt
 

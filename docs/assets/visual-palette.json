@@ -69,24 +69,24 @@
       ]
     },
     "showcase/demo.gif": {
-      "source_repository": null,
-      "source_path": null,
-      "note": "Terminal recording of a replay run on a dark ground, not product chrome.",
-      "sha256": "cec6464e0e7acabc5c551e047bc906488bcc0be5e8c62a2cc082a21a36e16f7f",
+      "source_repository": "OpenAdaptAI/openadapt-web",
+      "source_path": "public/reference/openimis-eligibility-standard-synthetic-v1",
+      "note": "Composed here from the openIMIS eligibility reference pack, so it is not a byte-identical copy of any one file. The measured dominant colour is the opening card's --inset-bg ground, because measure_asset_palette.py samples an animation's first frame only. The openIMIS screens inside it measure #fafafc and #dbeef0, which are cool as well. docs/assets/showcase/PROVENANCE.txt records the source media hashes.",
+      "sha256": "edd20326a94304fa6ff11ce93fc2d20e6073b40c395ac61eac7efff791f57e22",
       "width": 1272,
-      "height": 535,
+      "height": 596,
       "dominant_colors": [
         {
-          "hex": "#0d0b1e",
-          "share_percent": 94.68
+          "hex": "#0b1220",
+          "share_percent": 95.1
         },
         {
-          "hex": "#0c0a1d",
-          "share_percent": 0.56
+          "hex": "#0a111f",
+          "share_percent": 0.34
         },
         {
-          "hex": "#0b091c",
-          "share_percent": 0.38
+          "hex": "#09101e",
+          "share_percent": 0.32
         }
       ]
     },
