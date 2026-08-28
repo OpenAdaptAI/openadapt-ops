@@ -40,6 +40,11 @@ flagship code lives at
   [`tidy/README.md`](tidy/README.md).
 - **`ops/`**: production operations and recovery runbooks. Start with
   [`ops/PRODUCTION_OPERATIONS.md`](ops/PRODUCTION_OPERATIONS.md).
+- **Synthetic Production acceptance publisher**: a public, fail-closed workflow
+  that verifies every qualified campaign row and the private Cloud workflow's
+  Sigstore proof, creates GitHub provenance for every asset, and publishes a
+  content-addressed immutable release. See
+  [`docs/reference/synthetic-acceptance-proof.md`](docs/reference/synthetic-acceptance-proof.md).
 - **`repos.yml`**: the list of ecosystem repositories the pipeline reads from.
 
 ## Build the docs locally

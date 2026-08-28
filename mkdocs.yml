@@ -158,6 +158,7 @@ nav:
     - Security and deployment review: guides/security-review.md
     - Account security and privileged access: guides/account-security.md
     - Qualification evidence: get-started/what-works-today.md
+    - Synthetic Production acceptance proof: reference/synthetic-acceptance-proof.md
     - Fail-closed regulated execution: concepts/regulated-execution.md
     - Settings and policy governance: concepts/settings-governance.md
     - Security and data handling: guides/security-and-data-handling.md
