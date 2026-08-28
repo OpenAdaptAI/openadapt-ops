@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-08-28 18:56 UTC*
+> *Last updated: 2026-08-28 20:53 UTC*
 
 
 
@@ -47,6 +47,8 @@
 ## openadapt-flow
 
 
+- [docs: match four published claims to their artifacts](https://github.com/OpenAdaptAI/openadapt-flow/pull/425) (#425) — merged 
+
 - [docs(paper): correct the tree map, and name the profile in each main.tex](https://github.com/OpenAdaptAI/openadapt-flow/pull/424) (#424) — merged 
 
 - [docs: rewrite the README around what the tool does](https://github.com/OpenAdaptAI/openadapt-flow/pull/423) (#423) — merged 
@@ -85,8 +87,6 @@
 
 - [fix(cli): preserve model tiers on resume](https://github.com/OpenAdaptAI/openadapt-flow/pull/404) (#404) — merged 
 
-- [ci: require release App tag publication](https://github.com/OpenAdaptAI/openadapt-flow/pull/403) (#403) — merged 
-
 
 
 ## openadapt-desktop
@@ -120,6 +120,8 @@
 
 ## openadapt-agent
 
+
+- [docs: stop naming 2.0.2 as a shipped release](https://github.com/OpenAdaptAI/openadapt-agent/pull/37) (#37) — merged 
 
 - [chore(policy): sync generated source boundary](https://github.com/OpenAdaptAI/openadapt-agent/pull/36) (#36) — merged 
 
@@ -192,6 +194,12 @@
 ## openadapt-capture
 
 
+- [Close recorder database sessions before finalization](https://github.com/OpenAdaptAI/openadapt-capture/pull/125) (#125) — merged 
+
+- [fix(db): never raise from the connect handler, and scale the budget test right](https://github.com/OpenAdaptAI/openadapt-capture/pull/124) (#124) — merged 
+
+- [fix(db): bound the write-lock wait by the worst case it can really produce](https://github.com/OpenAdaptAI/openadapt-capture/pull/123) (#123) — merged 
+
 - [fix(db): bound the SQLite write-lock wait by time, not by attempts](https://github.com/OpenAdaptAI/openadapt-capture/pull/122) (#122) — merged 
 
 - [docs: the control commands ship in 1.3.0, not 1.2.3](https://github.com/OpenAdaptAI/openadapt-capture/pull/121) (#121) — merged 
@@ -225,12 +233,6 @@
 - [fix(db): retry transient SQLite writer locks](https://github.com/OpenAdaptAI/openadapt-capture/pull/106) (#106) — merged 
 
 - [chore(policy): sync generated source boundary](https://github.com/OpenAdaptAI/openadapt-capture/pull/105) (#105) — merged 
-
-- [ci: update CodeQL actions atomically to 4.37.8](https://github.com/OpenAdaptAI/openadapt-capture/pull/104) (#104) — merged 
-
-- [fix(capture): replace public recordings with synthetic fixtures](https://github.com/OpenAdaptAI/openadapt-capture/pull/103) (#103) — merged 
-
-- [fix: preserve the capture clock epoch](https://github.com/OpenAdaptAI/openadapt-capture/pull/102) (#102) — merged 
 
 
 
