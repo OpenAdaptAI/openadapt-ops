@@ -1,0 +1,65 @@
+Showcase animation provenance
+=============================
+
+The showcase animation shows a real application running synthetic data. It is
+not a mock application, and it is not a hand-drawn or scripted mock-up. Public
+material never uses an in-house stand-in application; those are for internal
+testing.
+
+Unlike docs/assets/ui, this file is not a byte-identical vendored copy. It is
+composed here from media that OpenAdaptAI/openadapt-web publishes, by
+scripts/build_showcase_animation.py in this repository. That script reads the
+pack manifest and renders no claim the manifest does not state. Rebuild it with:
+
+  uv run --with pillow python scripts/build_showcase_animation.py \
+      --pack <openadapt-web>/public/reference/openimis-eligibility-standard-synthetic-v1
+  uv run --with pillow python scripts/measure_asset_palette.py --write
+
+demo.gif
+  1272 x 596, 24 frames, 12.4 s loop, 365,669 bytes. SHA-256:
+  edd20326a94304fa6ff11ce93fc2d20e6073b40c395ac61eac7efff791f57e22.
+  Used on get-started/index.md and get-started/first-workflow.md.
+
+  Source: the openIMIS eligibility reference pack in OpenAdaptAI/openadapt-web,
+  public/reference/openimis-eligibility-standard-synthetic-v1, at commit
+  be96bf748e673258bbdd0f5bfac1a1a11009de93. That pack declares
+  data_classification "synthetic" and evidence_class
+  "public_application_reference", and the build script refuses any pack that is
+  not classified synthetic.
+
+  The application is openIMIS 25.10, run locally from the container images the
+  pack manifest pins by digest. The runtime is openadapt-flow at commit
+  3879bd505202db0471e3dd9c0ec2bab6410a5fb9. The manifest records 0 model calls,
+  0 off-box transmissions, and 0 observed silent incorrect successes. No
+  customer, patient, or production record appears in any frame; every insuree,
+  policy, and date is fixture data from the pack's synthetic database.
+
+  Three media files supply every screen, sampled and scaled but not otherwise
+  altered. The animation adds only chrome: a caption panel, a header, a footer,
+  and the opening card, all drawn in canonical tokens read from
+  docs/stylesheets/vendor/openadapt-web/tokens.json.
+
+    recording/openimis-source-recording.unbound.mp4  SHA-256
+      2ed62ab7b9e3df69c04eb19c472c929c42f0baaaabbb8e1c4cac754de4bfb7d2
+      Labelled "Recorded demonstration" in the manifest. 8 frames sampled.
+    verified-replay/eligible-replay.mp4  SHA-256
+      a13cc78a9ca427f7d2d57586902ec815a053729d281fb26f7c752821a2cc73c4
+      Labelled "Verified replay", outcome VERIFIED, 3 of 3 trials. 7 frames.
+    fail-safe-halt/expired-halt.mp4  SHA-256
+      0bacb22000d2f4ffdcba8468b79860375a42db779b5c734cb8a6985de2d07db2
+      Labelled "Fail-safe halt", outcome HALTED, 3 of 3 trials. 7 frames.
+
+  Pack manifest SHA-256:
+  1a9e6b11dfbb1c99572f3d2e2f564d9dd4780e7b85a9c5868c9c4dac08827d1c.
+
+  Read the measurement in docs/assets/visual-palette.json with one thing in
+  mind: scripts/measure_asset_palette.py samples an animation's first frame
+  only, and the first frame here is the opening card. The recorded #0b1220 is
+  therefore the composition's own --inset-bg, not an openIMIS screen. The
+  openIMIS screens are cool on their own measurement too, at #fafafc for the
+  recording ground and #dbeef0 for the eligibility panel, so the cool-ground
+  rule holds for the footage as well as for the card.
+
+  The pack carries media only. It contains no openIMIS source and no AGPL
+  benchmark file, which the pack manifest states under
+  provenance.license_boundary.

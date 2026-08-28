@@ -10,7 +10,14 @@ Start with one complete local result. You do not need to understand the package
 layout first. The tutorial records a demonstration, compiles it into a program,
 runs the program, and verifies the saved result.
 
-![OpenAdapt records, compiles, and replays a demonstrated workflow](../assets/showcase/demo.gif)
+<figure markdown="span">
+  ![An openIMIS eligibility check: a recorded demonstration, a verified replay, and a replay that halts.](../assets/showcase/demo.gif){ width="900" }
+  <figcaption>A reference run against openIMIS 25.10 on synthetic data. It shows one
+  recorded eligibility check, then the compiled program replaying that check
+  twice. A read-only SQL query verifies the first replay and contradicts the
+  second, so the second one halts. The tutorial below runs the same loop against
+  a browser page.</figcaption>
+</figure>
 
 See it working before you install anything:
 
