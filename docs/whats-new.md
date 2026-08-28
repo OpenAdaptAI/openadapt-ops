@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-08-27 17:33 UTC*
+> *Last updated: 2026-08-27 20:30 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [chore(policy): sync generated source boundary](https://github.com/OpenAdaptAI/OpenAdapt/pull/1124) (#1124) — merged 
 
 - [chore(release): reconcile platform manifest substrate projection](https://github.com/OpenAdaptAI/OpenAdapt/pull/1121) (#1121) — merged 
 
@@ -88,6 +90,8 @@
 ## openadapt-desktop
 
 
+- [chore(policy): sync generated source boundary](https://github.com/OpenAdaptAI/openadapt-desktop/pull/136) (#136) — merged 
+
 - [chore: ignore every .env variant, not one at a time](https://github.com/OpenAdaptAI/openadapt-desktop/pull/134) (#134) — merged 
 
 - [Scope Desktop secret scans to the tested change](https://github.com/OpenAdaptAI/openadapt-desktop/pull/133) (#133) — merged 
@@ -109,9 +113,15 @@
 ## openadapt-agent
 
 
+- [chore(policy): sync generated source boundary](https://github.com/OpenAdaptAI/openadapt-agent/pull/36) (#36) — merged 
+
 - [chore: ignore every .env variant, not one at a time](https://github.com/OpenAdaptAI/openadapt-agent/pull/35) (#35) — merged 
 
 - [Derive Agent state from release admission](https://github.com/OpenAdaptAI/openadapt-agent/pull/33) (#33) — merged 
+
+- [chore(deps): Bump astral-sh/setup-uv from 9.0.0 to 10.0.1](https://github.com/OpenAdaptAI/openadapt-agent/pull/32) (#32) — merged 
+
+- [chore(deps): Bump the codeql-action group with 2 updates](https://github.com/OpenAdaptAI/openadapt-agent/pull/31) (#31) — merged 
 
 - [security: require cryptography 50.0.0](https://github.com/OpenAdaptAI/openadapt-agent/pull/30) (#30) — merged 
 
@@ -119,6 +129,8 @@
 
 ## openadapt-ml
 
+
+- [chore(policy): sync generated source boundary](https://github.com/OpenAdaptAI/openadapt-ml/pull/77) (#77) — merged 
 
 - [chore: ignore every .env variant, not one at a time](https://github.com/OpenAdaptAI/openadapt-ml/pull/75) (#75) — merged 
 
@@ -128,6 +140,8 @@
 
 ## openadapt-evals
 
+
+- [chore(policy): sync generated source boundary](https://github.com/OpenAdaptAI/openadapt-evals/pull/316) (#316) — merged 
 
 - [chore(release): prepare 0.94.1](https://github.com/OpenAdaptAI/openadapt-evals/pull/312) (#312) — merged 
 
@@ -170,6 +184,24 @@
 ## openadapt-capture
 
 
+- [chore(policy): sync generated source boundary](https://github.com/OpenAdaptAI/openadapt-capture/pull/105) (#105) — merged 
+
+- [ci: update CodeQL actions atomically to 4.37.8](https://github.com/OpenAdaptAI/openadapt-capture/pull/104) (#104) — merged 
+
+- [fix(capture): replace public recordings with synthetic fixtures](https://github.com/OpenAdaptAI/openadapt-capture/pull/103) (#103) — merged 
+
+- [fix: preserve the capture clock epoch](https://github.com/OpenAdaptAI/openadapt-capture/pull/102) (#102) — merged 
+
+- [feat: ship the two demo captures as loadable fixtures](https://github.com/OpenAdaptAI/openadapt-capture/pull/101) (#101) — merged 
+
+- [fix(recorder): retain native frames before readiness](https://github.com/OpenAdaptAI/openadapt-capture/pull/100) (#100) — merged 
+
+- [test(recorder): isolate observer failure from ffmpeg](https://github.com/OpenAdaptAI/openadapt-capture/pull/98) (#98) — merged 
+
+- [ci(windows): fail when ffmpeg install is absent](https://github.com/OpenAdaptAI/openadapt-capture/pull/99) (#99) — merged 
+
+- [test(terminal): accept platform-specific seal rejection](https://github.com/OpenAdaptAI/openadapt-capture/pull/97) (#97) — merged 
+
 - [feat(capture): seal native action geometry at capture time](https://github.com/OpenAdaptAI/openadapt-capture/pull/94) (#94) — merged 
 
 - [chore: ignore every .env variant, not one at a time](https://github.com/OpenAdaptAI/openadapt-capture/pull/93) (#93) — merged 
@@ -177,6 +209,10 @@
 - [ci: require release App tag publication](https://github.com/OpenAdaptAI/openadapt-capture/pull/92) (#92) — merged 
 
 - [Derive Capture state from release admission](https://github.com/OpenAdaptAI/openadapt-capture/pull/91) (#91) — merged 
+
+- [chore(deps): bump actions/download-artifact from 4.3.0 to 8.0.1](https://github.com/OpenAdaptAI/openadapt-capture/pull/89) (#89) — merged 
+
+- [chore(deps): bump actions/upload-artifact from 4.6.2 to 7.0.1](https://github.com/OpenAdaptAI/openadapt-capture/pull/87) (#87) — merged 
 
 - [ci: require three counted live qualification trials per OS](https://github.com/OpenAdaptAI/openadapt-capture/pull/86) (#86) — merged 
 
@@ -188,12 +224,12 @@
 
 - [feat: qualify resilient native capture](https://github.com/OpenAdaptAI/openadapt-capture/pull/78) (#78) — merged 
 
-- [docs: correct stale Capture recorder facts and mark the extension a prototype](https://github.com/OpenAdaptAI/openadapt-capture/pull/76) (#76) — merged 
-
 
 
 ## openadapt-privacy
 
+
+- [chore(policy): sync generated source boundary](https://github.com/OpenAdaptAI/openadapt-privacy/pull/17) (#17) — merged 
 
 - [chore: ignore every .env variant, not one at a time](https://github.com/OpenAdaptAI/openadapt-privacy/pull/16) (#16) — merged 
 
@@ -201,6 +237,8 @@
 
 ## openadapt-types
 
+
+- [chore(policy): sync generated source boundary](https://github.com/OpenAdaptAI/openadapt-types/pull/29) (#29) — merged 
 
 - [chore: ignore every .env variant, not one at a time](https://github.com/OpenAdaptAI/openadapt-types/pull/28) (#28) — merged 
 

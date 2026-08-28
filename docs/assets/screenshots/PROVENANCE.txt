@@ -2,9 +2,11 @@ Screenshot provenance
 =====================
 
 All screenshots below are rendered from OpenAdapt's own tooling in local /
-mock mode. None are mocked-up or hand-drawn. The Cloud captures carry the
-visible "LOCAL MOCK MODE" banner because they were taken against the app
-running with OPENADAPT_CLOUD_MODE=mock (seeded demo data, no real tenant).
+mock mode. None are mocked-up or hand-drawn. Each capture that shows product
+chrome is a byte-identical copy of a file in OpenAdaptAI/openadapt-web, which
+owns the published visual record for every OpenAdapt surface;
+docs/assets/visual-palette.json records the measured dominant colours of every
+image on this site.
 
 program-graph-cloud.png
   The compiled-program visualizer in the OpenAdapt Cloud workspace
@@ -58,8 +60,11 @@ settings-governance.png
 
 dashboard-overview.png
   The /dashboard overview of the OpenAdapt Cloud workspace at exact commit
-  f2300ee69b555d1676e69348999f910c1cc8cd8c. Cypress Electron captured the
-  focused 2560x1440 viewport in OPENADAPT_CLOUD_MODE=mock. It shows grouped
-  navigation and the visible LOCAL MOCK MODE banner. The fixture is synthetic
-  OpenEMR patient registration. SHA-256:
-  ea3b8065cc139f94202ce2422443566ad4fb74f159d0af255e3802f0b7e74a01.
+  021a9caf99a6832bff9f32e14b1b34d42ec2e290, captured at 2560x1440 with
+  Playwright Chromium through openadapt-cloud scripts/capture-public-previews.mjs
+  against the local Cloud mock UI. The runtime-mode banner and the account chip
+  are hidden during capture because both report the environment the capture ran
+  in, not the product. The fixture is synthetic OpenEMR patient registration.
+  Byte-identical source: OpenAdaptAI/openadapt-web,
+  public/product-preview/dashboard-workflows.png. SHA-256:
+  f9f894a60e44b266f16b8d138d8747e1a1fb639bf92370db6adbf4d4aab5bde4.

@@ -25,7 +25,8 @@ theme:
   logo: assets/logo.svg
   favicon: assets/favicon.ico
   # Match the public site's local system stacks and avoid a third-party font
-  # request on documentation pages. brand.css defines both Material font vars.
+  # request on documentation pages. The canonical tokens define the stacks and
+  # brand.css maps them onto both Material font vars.
   font: false
   icon:
     repo: fontawesome/brands/github
@@ -59,6 +60,10 @@ theme:
     - search.highlight
 
 extra_css:
+  # The canonical OpenAdapt design tokens, vendored byte-identical from
+  # OpenAdaptAI/openadapt-web. Load them FIRST: brand.css consumes them and
+  # defines no colour of its own. See the VENDORED.txt beside the copies.
+  - stylesheets/vendor/openadapt-web/tokens.css
   - stylesheets/brand.css
 
 extra_javascript:

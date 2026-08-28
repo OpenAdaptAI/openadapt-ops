@@ -1,0 +1,51 @@
+Vendored design tokens — canonical source is OpenAdaptAI/openadapt-web
+======================================================================
+
+openadapt-web owns the OpenAdapt design tokens. styles/tokens.json there is the
+single source of truth for palette, type scale, spacing, radii, elevation, and
+motion, and it names this repository as a "vendor + hash-check" consumer.
+
+Every token file in this directory is a byte-identical copy of its counterpart
+in openadapt-web. Do not hand-edit one. A hand edit is exactly the drift this
+directory exists to make impossible, and it fails CI.
+
+    tokens.json   <-  openadapt-web:styles/tokens.json
+    tokens.css    <-  openadapt-web:styles/tokens.css
+
+provenance.json records the upstream commit and the SHA-256 of each copy.
+
+This file is plain text, not Markdown, because everything under docs/ that ends
+in .md becomes a published page. The same reason applies to the PROVENANCE.txt
+files beside the image assets.
+
+Changing a token
+----------------
+
+1. Change the value in openadapt-web (styles/tokens.json and styles/tokens.css;
+   tests/designTokens.test.js there fails if they disagree). Merge it.
+2. Here, run `python scripts/vendor_design_tokens.py --write`. It refetches the
+   canonical files, rewrites this directory, and rewrites provenance.json.
+3. Review the diff and commit it.
+
+What the docs theme adds on top
+-------------------------------
+
+mkdocs.yml loads tokens.css first, then docs/stylesheets/brand.css. brand.css
+maps the canonical tokens onto the Material for MkDocs variables and defines
+only what Material needs and the canonical set does not carry: the slate
+scheme's chrome tones, and a few component tints. Every colour there is
+derived from a canonical token with var() or color-mix(). brand.css never
+redefines a canonical colour token, and a test enforces that.
+
+What enforces this
+------------------
+
+- tests/test_design_tokens.py runs offline in `pytest tests/`. It fails when a
+  vendored file's SHA-256 stops matching provenance.json, when brand.css
+  redefines a canonical colour token, when a retired warm-palette value
+  reappears in a shipped stylesheet, template, script, or SVG, and when a
+  shipped image is not recorded in docs/assets/visual-palette.json or its
+  recorded palette family is not cool.
+- `python scripts/vendor_design_tokens.py --check` runs in CI with network
+  access. It fails when a vendored copy differs from the canonical file on
+  openadapt-web@main — that is, when the surfaces have drifted apart.
