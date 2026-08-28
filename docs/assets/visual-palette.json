@@ -28,13 +28,13 @@
     "screenshots/dashboard-overview.png": {
       "source_repository": "OpenAdaptAI/openadapt-web",
       "source_path": "public/product-preview/dashboard-workflows.png",
-      "sha256": "f9f894a60e44b266f16b8d138d8747e1a1fb639bf92370db6adbf4d4aab5bde4",
+      "sha256": "d93431712b5b36addf77fb5600e8b5f208291b80776940c1c76f9c7b4f6b4679",
       "width": 2560,
       "height": 1440,
       "dominant_colors": [
         {
           "hex": "#ffffff",
-          "share_percent": 46.48
+          "share_percent": 46.49
         },
         {
           "hex": "#f5f7fa",
@@ -214,6 +214,94 @@
         {
           "hex": "#edf0f5",
           "share_percent": 11.5
+        }
+      ]
+    },
+    "screenshots/program-state-live-relation.png": {
+      "source_repository": "OpenAdaptAI/openadapt-web",
+      "source_path": null,
+      "note": "The public-synthetic Program State Console, captured for these docs rather than vendored: openadapt-web publishes the component, not a still of it. The console is built from the canonical tokens, so its ground is cool by construction.",
+      "sha256": "676f0e57c4a19a490d4c9ee9bfccaecfb44dfe99d83febf24fc4f00c2fc1ae13",
+      "width": 1440,
+      "height": 1000,
+      "dominant_colors": [
+        {
+          "hex": "#f6f7fb",
+          "share_percent": 23.08
+        },
+        {
+          "hex": "#f9fafc",
+          "share_percent": 7.55
+        },
+        {
+          "hex": "#0c1220",
+          "share_percent": 3.92
+        }
+      ]
+    },
+    "screenshots/program-workbench-cloud.png": {
+      "source_repository": "OpenAdaptAI/openadapt-cloud",
+      "source_path": null,
+      "note": "The remote-safe Program map in Cloud local mock mode, captured for these docs. The workbench canvas is the canonical dark inset, which is why the dominant colour is #0c1220 rather than a page ground.",
+      "sha256": "0f77308464f618efcb04814b411eb322af779699d33298ea9f0e57f7edab6d6e",
+      "width": 1280,
+      "height": 720,
+      "dominant_colors": [
+        {
+          "hex": "#0c1220",
+          "share_percent": 19.7
+        },
+        {
+          "hex": "#f6f7fb",
+          "share_percent": 13.78
+        },
+        {
+          "hex": "#121a27",
+          "share_percent": 11.0
+        }
+      ]
+    },
+    "screenshots/program-workbench-cli.png": {
+      "source_repository": "OpenAdaptAI/openadapt-flow",
+      "source_path": null,
+      "note": "A self-contained `openadapt flow visualize` HTML export. It is generated output rather than product chrome, and its ground is plain white.",
+      "sha256": "aa5ff1e1455b0444f234f398e3f645490b974c3b48c5e38156fd041964fec4d2",
+      "width": 1280,
+      "height": 720,
+      "dominant_colors": [
+        {
+          "hex": "#ffffff",
+          "share_percent": 26.46
+        },
+        {
+          "hex": "#0c1220",
+          "share_percent": 14.34
+        },
+        {
+          "hex": "#131b28",
+          "share_percent": 9.43
+        }
+      ]
+    },
+    "screenshots/program-workbench-desktop.png": {
+      "source_repository": "OpenAdaptAI/openadapt-desktop",
+      "source_path": null,
+      "note": "The development-only qualification workbench preview at ?surface=program-workbench-preview, captured at 1440x1000 from openadapt-desktop ebc10b037533f7adc0b12e0664d718d373245108, which is the first commit carrying the canonical tokens (its #139). The first capture came from a build before that merge and grounded on the retired #f2f1ed.",
+      "sha256": "4fbc62dd9ee5b48f758aca0ed5a13e072b3e0a4b6fc391847202297673f12e3f",
+      "width": 1440,
+      "height": 1000,
+      "dominant_colors": [
+        {
+          "hex": "#f5f7fa",
+          "share_percent": 35.05
+        },
+        {
+          "hex": "#ffffff",
+          "share_percent": 13.71
+        },
+        {
+          "hex": "#0b1220",
+          "share_percent": 11.29
         }
       ]
     }
