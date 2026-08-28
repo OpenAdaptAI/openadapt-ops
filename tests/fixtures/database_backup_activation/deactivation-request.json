@@ -1,0 +1,41 @@
+{
+  "request": {
+    "activation_id": "act_11111111111111111111111111111111",
+    "active_lease_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "audience": "OpenAdaptAI/openadapt-ops:database-backup-deactivation",
+    "customer_data_remaining": false,
+    "deactivation_id": "deact_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "expires_at": "2026-11-25T12:15:00Z",
+    "final_backup_retention_expired_at": "2026-11-25T11:00:00Z",
+    "issued_at": "2026-11-25T12:00:00Z",
+    "issuer": "openadapt-cloud",
+    "paid_customer_count": 0,
+    "pending_customer_count": 0,
+    "retention_deletion_complete": true,
+    "retention_deletion_completed_at": "2026-11-25T11:30:00Z",
+    "target": "schedule_and_monitor",
+    "zero_customer_proof": {
+      "proof": {
+        "active_lease_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "cloud_revision_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "customer_data_remaining": false,
+        "deletion_receipt_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "entitlement_ledger_revision_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        "final_backup_retention_expired_at": "2026-11-25T11:00:00Z",
+        "observed_at": "2026-11-25T11:30:00Z",
+        "paid_customer_count": 0,
+        "pending_customer_count": 0,
+        "retention_deletion_complete": true,
+        "retention_receipt_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+      },
+      "proof_revision_sha256": "8c56cc42784f2718f0625f9abae665f1e98021d3703043416ffd54e096b734eb",
+      "schema": "openadapt.zero-customer-backup-shutdown-proof/v1"
+    }
+  },
+  "schema": "openadapt.database-backup-deactivation-request/v1",
+  "signature": {
+    "algorithm": "HMAC-SHA256",
+    "key_id": "cloud-backup-deactivation-hmac-2026-01",
+    "value": "e7a2356027f9aafbb966249ecf01394ebda9a578da47906aa68c7669e9ca2f6e"
+  }
+}

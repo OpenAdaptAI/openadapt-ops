@@ -1,0 +1,22 @@
+{
+  "ack": {
+    "activation_id": "act_11111111111111111111111111111111",
+    "applied_at": "2026-08-26T12:13:00Z",
+    "audience": "OpenAdaptAI/openadapt-ops:database-backup-lease-ack",
+    "cloud_revision_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "issuer": "openadapt-cloud",
+    "lease_event_id": "lease_ea936715862d47d1efc95360916033fd675ba2bf50e6bb730c6370694f462c6f",
+    "lease_sequence": 0,
+    "lease_sha256": "9479320df81f5326131a8fd8277e2206139b3aa148ce275e22cdb4c0cc364955",
+    "new_state": "ACTIVE",
+    "organization_id_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+    "prior_state": "PENDING_SCHEDULE"
+  },
+  "ack_sha256": "2fe70098b9b39a3ec8a62c9ed02f7d897b03d1e97ea388b9ace9e69041f8611e",
+  "schema": "openadapt.cloud-backup-schedule-lease-ack/v1",
+  "signature": {
+    "algorithm": "HMAC-SHA256",
+    "key_id": "cloud-backup-schedule-lease-ack-hmac-2026-01",
+    "value": "984e1b33e2a4a58ee14a88f9f60997fc434a749ce38d3636cc5f1edef576c5b3"
+  }
+}

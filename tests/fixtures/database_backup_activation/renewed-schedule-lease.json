@@ -1,0 +1,135 @@
+{
+  "lease": {
+    "activation_id": "act_11111111111111111111111111111111",
+    "audience": "openadapt-cloud:database-backup-schedule-lease",
+    "cloud_readiness_ack": {
+      "ack": {
+        "activation_id": "act_11111111111111111111111111111111",
+        "applied_at": "2026-08-26T12:12:00Z",
+        "audience": "OpenAdaptAI/openadapt-ops:database-backup-schedule",
+        "cloud_revision_sha256": "9999999999999999999999999999999999999999999999999999999999999999",
+        "idempotency_key": "act_11111111111111111111111111111111",
+        "issuer": "openadapt-cloud",
+        "new_state": "PENDING_SCHEDULE",
+        "organization_id_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+        "prior_state": "PENDING_RECOVERY",
+        "readiness_receipt_sha256": "ea95acdb7a112067de7807af68cf75297cc97e24b661b9f732ae777f0a3ac3b1"
+      },
+      "ack_sha256": "408624a9f27ad33973b1c6d3bba663384e32a10f2765e39cedf888fef54e9497",
+      "schema": "openadapt.database-backup-cloud-readiness-ack/v2",
+      "signature": {
+        "algorithm": "HMAC-SHA256",
+        "key_id": "cloud-backup-activation-ack-hmac-2026-01",
+        "value": "f4f2ebf6d8c43900597174d7aff1a7899db546ce676bca18be48fe2e336eec86"
+      }
+    },
+    "continuation_assertion": {
+      "assertion": {
+        "activation_id": "act_11111111111111111111111111111111",
+        "active_lease_sha256": "9479320df81f5326131a8fd8277e2206139b3aa148ce275e22cdb4c0cc364955",
+        "audience": "OpenAdaptAI/openadapt-ops:database-backup-renewal",
+        "backup_required": true,
+        "cloud_revision_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "customer_data_remaining": false,
+        "expires_at": "2026-10-25T12:15:00Z",
+        "issued_at": "2026-10-25T12:00:00Z",
+        "issuer": "openadapt-cloud",
+        "lease_event_id": "lease_7852bacb587d73323ccd84b51a3529be1197ff70499936f0b049e8081aa12fa0",
+        "offer_contract": "openadapt-cloud-managed-browser-v1",
+        "organization_id_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+        "paid_customer_count": 1,
+        "pending_customer_count": 0,
+        "requested_lease_sequence": 1,
+        "service_state": "ACTIVE"
+      },
+      "assertion_sha256": "6c24c7313286eeba67f4828860063ede071c5164ecfbd1a2e8f28b5f414dac26",
+      "schema": "openadapt.database-backup-continuation-assertion/v1",
+      "signature": {
+        "algorithm": "HMAC-SHA256",
+        "key_id": "cloud-backup-continuation-hmac-2026-01",
+        "value": "678b78820ec33451c2c58fc55cd1bab5156f93464127d553fafa4206721546d5"
+      }
+    },
+    "continuation_policy": "continue_until_signed_zero_customer_deactivation",
+    "expires_at": "2027-01-23T12:11:00Z",
+    "issued_at": "2026-10-25T12:11:00Z",
+    "issuer": "openadapt-ops",
+    "lease_event_id": "lease_7852bacb587d73323ccd84b51a3529be1197ff70499936f0b049e8081aa12fa0",
+    "lease_sequence": 1,
+    "offer_contract": "openadapt-cloud-managed-browser-v1",
+    "organization_id_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+    "prior_lease_sha256": "9479320df81f5326131a8fd8277e2206139b3aa148ce275e22cdb4c0cc364955",
+    "readiness_receipt": {
+      "receipt": {
+        "activation_id": "act_11111111111111111111111111111111",
+        "audience": "openadapt-cloud:database-backup-renewal-readiness",
+        "backup": {
+          "artifact_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "aws_account_id": "992382684924",
+          "aws_region": "us-east-1",
+          "backup_contract_sha256": "5555555555555555555555555555555555555555555555555555555555555555",
+          "bucket_name": "openadapt-production-db-backups-992382684924",
+          "ciphertext_bytes": 1073741824,
+          "ciphertext_checksum_sha256": "yAbNnHFs+/20djxx3ROUs+YC/OgSkaAzi/jjIlQWrDI=",
+          "ciphertext_gib": "1.000000000",
+          "ciphertext_key": "daily/20261025T120100Z/db-backup-20261025T120100Z.tar.gz.age",
+          "ciphertext_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "ciphertext_storage_class": "GLACIER_IR",
+          "ciphertext_version_id": "cipher-version-2",
+          "manifest_checksum_sha256": "BbOr8leaXrZkA814vlV/2GBjOh/iEDx2QgMN7+MsZX8=",
+          "manifest_key": "daily/20261025T120100Z/artifact-manifest.json",
+          "manifest_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "manifest_storage_class": "STANDARD",
+          "manifest_version_id": "manifest-version-2",
+          "recovery_point_stamp": "20261025T120100Z",
+          "repository_commit": "8888888888888888888888888888888888888888",
+          "workflow_run_id": "23456"
+        },
+        "expires_at": "2027-01-23T12:11:00Z",
+        "issued_at": "2026-10-25T12:11:00Z",
+        "issuer": "openadapt-ops",
+        "lease_event_id": "lease_7852bacb587d73323ccd84b51a3529be1197ff70499936f0b049e8081aa12fa0",
+        "offer_contract": "openadapt-cloud-managed-browser-v1",
+        "organization_id_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+        "payment_event_id_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+        "prior_lease_sha256": "9479320df81f5326131a8fd8277e2206139b3aa148ce275e22cdb4c0cc364955",
+        "readiness_state": "DATABASE_RECOVERY_READY",
+        "recovery_scope": "database_only",
+        "restore": {
+          "artifact_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "aws_account_id": "992382684924",
+          "aws_region": "us-east-1",
+          "backup_contract_sha256": "5555555555555555555555555555555555555555555555555555555555555555",
+          "bucket_name": "openadapt-production-db-backups-992382684924",
+          "ciphertext_key": "daily/20261025T120100Z/db-backup-20261025T120100Z.tar.gz.age",
+          "ciphertext_version_id": "cipher-version-2",
+          "completed_at": "2026-10-25T12:11:00Z",
+          "database_restored": true,
+          "manifest_key": "daily/20261025T120100Z/artifact-manifest.json",
+          "manifest_version_id": "manifest-version-2",
+          "rpo_seconds_at_start": 120,
+          "rto_seconds": 480,
+          "schema": "openadapt.database-restore-evidence/v2",
+          "started_at": "2026-10-25T12:03:00Z",
+          "storage_restored": false
+        }
+      },
+      "receipt_sha256": "49af6fcfee68cb693e8000a4d3b07843599678fa5377d1c89dd7f75c6affcd7c",
+      "schema": "openadapt.database-backup-renewal-readiness-receipt/v1",
+      "signature": {
+        "algorithm": "HMAC-SHA256",
+        "key_id": "ops-backup-renewal-readiness-hmac-2026-01",
+        "value": "f0e10e2c8345a88069984d7eabd175053be17cec0943b2b11713163d298e7d8f"
+      }
+    },
+    "renewal_due_at": "2026-12-24T12:11:00Z",
+    "requested_cadence_seconds": 43200
+  },
+  "lease_sha256": "3c91de0b4616308827304aa3bc27924d459dc79edc0464160c8afa582ac3c9ee",
+  "schema": "openadapt.database-backup-schedule-lease/v1",
+  "signature": {
+    "algorithm": "HMAC-SHA256",
+    "key_id": "ops-backup-schedule-lease-hmac-2026-01",
+    "value": "37c2f8862bae658fdd5d152df9e7ef8fa83afd21f30e707805455de7657f4884"
+  }
+}

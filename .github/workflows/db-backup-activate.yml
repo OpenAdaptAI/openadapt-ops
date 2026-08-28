@@ -1,0 +1,454 @@
+name: Activate production DB backup after first payment
+
+# Cloud sends a signed hint after it independently verifies the first payment.
+# The hint has no AWS authority. Ops validates it before the reusable backup can
+# request AWS credentials. The organization stays pending until the exact first
+# backup versions restore and Cloud accepts the signed readiness receipt.
+
+on:
+  repository_dispatch:
+    types: [verified_first_payment]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-db-backup-first-payment-activation
+  cancel-in-progress: false
+
+jobs:
+  verify-payment-signal:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment: production-backup-activation
+    permissions:
+      actions: read
+      contents: read
+    outputs:
+      activation_id: ${{ steps.request.outputs.activation_id }}
+      activation_request_b64: ${{ steps.request.outputs.activation_request_b64 }}
+      recovery_point_stamp: ${{ steps.request.outputs.recovery_point_stamp }}
+    env:
+      ACTIVATION_REQUEST_B64: ${{ github.event.client_payload.activation_request_b64 }}
+      EXPECTED_GITHUB_ENVIRONMENT: production-backup-activation
+      GITHUB_REF_PROTECTED: ${{ github.ref_protected }}
+      PAYMENT_SIGNAL_HMAC_KEY: ${{ secrets.PAYMENT_SIGNAL_HMAC_KEY }}
+    steps:
+      - name: Refuse an incomplete or unprotected activation
+        run: |
+          set -euo pipefail
+          [ -n "${ACTIVATION_REQUEST_B64}" ] || {
+            echo '::error::The signed first-payment request is missing.'
+            exit 1
+          }
+          [ -n "${PAYMENT_SIGNAL_HMAC_KEY}" ] || {
+            echo '::error::The first-payment verification key is missing.'
+            exit 1
+          }
+          if [ "${GITHUB_REF}" != 'refs/heads/main' ]; then
+            echo "::error::Paid activation must use refs/heads/main, not ${GITHUB_REF}."
+            exit 1
+          fi
+          if [ "${GITHUB_REF_PROTECTED}" != 'true' ]; then
+            echo '::error::Paid activation refuses an unprotected main branch.'
+            exit 1
+          fi
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Verify the exact GitHub environment gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api "repos/${GITHUB_REPOSITORY}/environments/${EXPECTED_GITHUB_ENVIRONMENT}" \
+            > /tmp/database-backup-activation-environment.json
+          gh api "repos/${GITHUB_REPOSITORY}/environments/${EXPECTED_GITHUB_ENVIRONMENT}/deployment-branch-policies?per_page=100" \
+            > /tmp/database-backup-activation-environment-policies.json
+          python scripts/check_github_environment_gate.py \
+            --environment-json /tmp/database-backup-activation-environment.json \
+            --policies-json /tmp/database-backup-activation-environment-policies.json \
+            --expected-environment "${EXPECTED_GITHUB_ENVIRONMENT}" \
+            --expected-branch main --actual-ref "${GITHUB_REF}" \
+            --ref-protected "${GITHUB_REF_PROTECTED}"
+
+      - name: Validate the signed first-payment request
+        id: request
+        run: |
+          set -euo pipefail
+          umask 077
+          printf '%s' "${ACTIVATION_REQUEST_B64}" | base64 --decode \
+            > /tmp/database-backup-activation-request.json
+          python scripts/database_backup_activation.py begin \
+            --request /tmp/database-backup-activation-request.json \
+            --hmac-key-env PAYMENT_SIGNAL_HMAC_KEY \
+            --output /tmp/database-backup-activation-state.json
+          activation_id=$(jq -r '.state.activation_id' /tmp/database-backup-activation-state.json)
+          recovery_point_stamp=$(jq -r '.state.recovery_point_stamp' /tmp/database-backup-activation-state.json)
+          {
+            echo "activation_id=${activation_id}"
+            echo "activation_request_b64=${ACTIVATION_REQUEST_B64}"
+            echo "recovery_point_stamp=${recovery_point_stamp}"
+          } >> "${GITHUB_OUTPUT}"
+          rm -f /tmp/database-backup-activation-request.json
+          rm -f /tmp/database-backup-activation-state.json
+
+  first-backup:
+    needs: verify-payment-signal
+    uses: ./.github/workflows/db-backup.yml
+    with:
+      activation_request_b64: ${{ needs.verify-payment-signal.outputs.activation_request_b64 }}
+      recovery_point_stamp: ${{ needs.verify-payment-signal.outputs.recovery_point_stamp }}
+    secrets: inherit
+
+  restore-first-backup:
+    needs: [verify-payment-signal, first-backup]
+    runs-on:
+      group: production-backup-activation
+      labels: self-hosted
+    timeout-minutes: 60
+    environment: production-backup-activation
+    permissions:
+      actions: read
+      contents: read
+    outputs:
+      readiness_receipt_b64: ${{ steps.receipt.outputs.readiness_receipt_b64 }}
+      readiness_receipt_sha256: ${{ steps.receipt.outputs.readiness_receipt_sha256 }}
+    env:
+      ACTIVATION_ID: ${{ needs.verify-payment-signal.outputs.activation_id }}
+      ACTIVATION_REQUEST_B64: ${{ needs.verify-payment-signal.outputs.activation_request_b64 }}
+      AWS_BACKUP_BUCKET: ${{ vars.AWS_BACKUP_BUCKET }}
+      AWS_PROFILE: openadapt
+      AWS_RESTORE_ROLE_ARN: ${{ vars.AWS_RESTORE_ROLE_ARN }}
+      EXPECTED_GITHUB_ENVIRONMENT: production-backup-activation
+      GITHUB_REF_PROTECTED: ${{ github.ref_protected }}
+      PRODUCTION_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+      SCRATCH_DB_URL: ${{ secrets.SCRATCH_DB_URL }}
+      SCRATCH_PROJECT_REF: ${{ secrets.SCRATCH_PROJECT_REF }}
+      CONFIRM_SCRATCH_PROJECT_REF: ${{ secrets.SCRATCH_PROJECT_REF }}
+      AGE_SECRET_KEY_FILE: ${{ vars.AGE_SECRET_KEY_FILE }}
+      READINESS_RECEIPT_HMAC_KEY: ${{ secrets.READINESS_RECEIPT_HMAC_KEY }}
+      PAYMENT_SIGNAL_HMAC_KEY: ${{ secrets.PAYMENT_SIGNAL_HMAC_KEY }}
+      OPS_ACTIVATION_STATE_HMAC_KEY: ${{ secrets.OPS_ACTIVATION_STATE_HMAC_KEY }}
+    steps:
+      - name: Refuse an incomplete restore boundary
+        env:
+          RUNNER_BOUNDARY: ${{ runner.environment }}
+        run: |
+          set -euo pipefail
+          missing=()
+          [ -n "${ACTIVATION_ID}" ] || missing+=(ACTIVATION_ID)
+          [ -n "${ACTIVATION_REQUEST_B64}" ] || missing+=(ACTIVATION_REQUEST_B64)
+          [ -n "${AWS_BACKUP_BUCKET}" ] || missing+=(AWS_BACKUP_BUCKET)
+          [ -n "${AWS_RESTORE_ROLE_ARN}" ] || missing+=(AWS_RESTORE_ROLE_ARN)
+          [ -n "${PRODUCTION_PROJECT_REF}" ] || missing+=(SUPABASE_PROJECT_REF)
+          [ -n "${SCRATCH_DB_URL}" ] || missing+=(SCRATCH_DB_URL)
+          [ -n "${SCRATCH_PROJECT_REF}" ] || missing+=(SCRATCH_PROJECT_REF)
+          [ -n "${AGE_SECRET_KEY_FILE}" ] || missing+=(AGE_SECRET_KEY_FILE)
+          [ -n "${READINESS_RECEIPT_HMAC_KEY}" ] || missing+=(READINESS_RECEIPT_HMAC_KEY)
+          [ -n "${PAYMENT_SIGNAL_HMAC_KEY}" ] || missing+=(PAYMENT_SIGNAL_HMAC_KEY)
+          [ -n "${OPS_ACTIVATION_STATE_HMAC_KEY}" ] || missing+=(OPS_ACTIVATION_STATE_HMAC_KEY)
+          if [ "${#missing[@]}" -ne 0 ]; then
+            echo "::error::The activation restore boundary is missing: ${missing[*]}"
+            exit 1
+          fi
+          if [ "${GITHUB_REF}" != 'refs/heads/main' ] || [ "${GITHUB_REF_PROTECTED}" != 'true' ]; then
+            echo '::error::The activation restore requires protected main.'
+            exit 1
+          fi
+          if [ "${RUNNER_BOUNDARY}" != 'self-hosted' ]; then
+            echo '::error::The activation restore requires its isolated self-hosted runner.'
+            exit 1
+          fi
+          for command in aws age age-keygen base64 jq psql; do
+            command -v "${command}" > /dev/null || {
+              echo "::error::The activation runner is missing ${command}."
+              exit 1
+            }
+          done
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Verify the exact GitHub environment gate
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh api "repos/${GITHUB_REPOSITORY}/environments/${EXPECTED_GITHUB_ENVIRONMENT}" \
+            > /tmp/database-backup-activation-environment.json
+          gh api "repos/${GITHUB_REPOSITORY}/environments/${EXPECTED_GITHUB_ENVIRONMENT}/deployment-branch-policies?per_page=100" \
+            > /tmp/database-backup-activation-environment-policies.json
+          python scripts/check_github_environment_gate.py \
+            --environment-json /tmp/database-backup-activation-environment.json \
+            --policies-json /tmp/database-backup-activation-environment-policies.json \
+            --expected-environment "${EXPECTED_GITHUB_ENVIRONMENT}" \
+            --expected-branch main --actual-ref "${GITHUB_REF}" \
+            --ref-protected "${GITHUB_REF_PROTECTED}"
+
+      - uses: supabase/setup-cli@46f7f98c7f948ad727d22c1e67fab04c223a0520 # v3.0.0
+        with:
+          version: 2.75.0
+
+      - name: Restore the exact first backup and issue readiness
+        id: receipt
+        run: |
+          set -euo pipefail
+          umask 077
+          cleanup() {
+            rm -f /tmp/database-backup-first-evidence.json
+            rm -f /tmp/database-backup-resume-request.json
+            rm -f /tmp/database-backup-resumed-state.json
+            rm -f /tmp/database-backup-restore-evidence.json
+            rm -f /tmp/database-backup-state-after-restore.json
+            rm -f /tmp/database-backup-signed-restore-state.json
+            rm -f /tmp/database-backup-ready-state.json
+            rm -f /tmp/database-backup-signed-ready-state.json
+            rm -f /tmp/database-backup-readiness-receipt.json
+            rm -f /tmp/database-backup-retained.json
+            rm -f /tmp/database-backup-*-signed-state.json
+          }
+          trap cleanup EXIT
+
+          read -r AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN < <(
+            AWS_PROFILE=openadapt aws sts assume-role \
+              --role-arn "${AWS_RESTORE_ROLE_ARN}" \
+              --role-session-name "openadapt-db-activation-${GITHUB_RUN_ID}" \
+              --duration-seconds 3600 \
+              --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' \
+              --output text
+          )
+          export AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN
+          unset AWS_PROFILE
+          account=$(aws sts get-caller-identity --query Account --output text)
+          [ "${account}" = '992382684924' ] || {
+            echo '::error::The activation restore role is in the wrong AWS account.'
+            exit 1
+          }
+
+          prefix="activation/${ACTIVATION_ID}"
+          get_optional_activation_object() {
+            local key=$1
+            local destination=$2
+            local error_file=/tmp/database-backup-activation-read-error.txt
+            set +e
+            aws s3api get-object --bucket "${AWS_BACKUP_BUCKET}" --key "${key}" \
+              --expected-bucket-owner 992382684924 "${destination}" \
+              > /dev/null 2> "${error_file}"
+            local result=$?
+            set -e
+            if [ "${result}" -eq 0 ]; then
+              rm -f "${error_file}"
+              return 0
+            fi
+            rm -f "${destination}"
+            if grep -Eq '\((NoSuchKey|NotFound|404)\)' "${error_file}"; then
+              rm -f "${error_file}"
+              return 1
+            fi
+            echo "::error::S3 did not prove whether activation state exists: ${key}"
+            sed 's/^/::error::/' "${error_file}"
+            exit 1
+          }
+          state_args=()
+          for stage in active ready restore backup pending-backup; do
+            path="/tmp/database-backup-${stage}-signed-state.json"
+            if get_optional_activation_object \
+              "${prefix}/${stage}-state.json" "${path}"; then
+              state_args+=(--signed-state "${path}")
+            fi
+          done
+          [ "${#state_args[@]}" -ne 0 ] || {
+            echo '::error::The first backup has no durable signed activation state.'
+            exit 1
+          }
+          printf '%s' "${ACTIVATION_REQUEST_B64}" | base64 --decode \
+            > /tmp/database-backup-resume-request.json
+          python scripts/database_backup_activation.py resume \
+            --request /tmp/database-backup-resume-request.json \
+            "${state_args[@]}" \
+            --request-hmac-key-env PAYMENT_SIGNAL_HMAC_KEY \
+            --state-hmac-key-env OPS_ACTIVATION_STATE_HMAC_KEY \
+            --output /tmp/database-backup-resumed-state.json
+
+          put_exact_activation_object() {
+            local source=$1
+            local key=$2
+            local checksum
+            checksum=$(openssl dgst -sha256 -binary "${source}" | base64)
+            set +e
+            aws s3api put-object --bucket "${AWS_BACKUP_BUCKET}" --key "${key}" \
+              --body "${source}" --if-none-match '*' --storage-class STANDARD \
+              --server-side-encryption AES256 --checksum-algorithm SHA256 \
+              --checksum-sha256 "${checksum}" \
+              --expected-bucket-owner 992382684924 > /dev/null
+            local result=$?
+            set -e
+            if [ "${result}" -ne 0 ]; then
+              aws s3api get-object --bucket "${AWS_BACKUP_BUCKET}" --key "${key}" \
+                --expected-bucket-owner 992382684924 \
+                /tmp/database-backup-retained.json > /dev/null
+              cmp -s "${source}" /tmp/database-backup-retained.json || {
+                echo "::error::The retained activation object conflicts: ${key}"
+                exit 1
+              }
+            fi
+          }
+
+          stage=$(jq -r '.state.stage' /tmp/database-backup-resumed-state.json)
+          if [ "${stage}" = 'PENDING_BACKUP' ]; then
+            echo '::error::The reusable backup did not record a verified backup stage.'
+            exit 1
+          fi
+          if [ "${stage}" = 'BACKUP_VERIFIED' ]; then
+            jq '.state.backup' /tmp/database-backup-resumed-state.json \
+              > /tmp/database-backup-first-evidence.json
+            export BACKUP_STAMP
+            export BACKUP_CIPHERTEXT_VERSION_ID
+            export BACKUP_MANIFEST_VERSION_ID
+            export RESTORE_ROLE_SESSION_READY=true
+            BACKUP_STAMP=$(jq -r '.recovery_point_stamp' /tmp/database-backup-first-evidence.json)
+            BACKUP_CIPHERTEXT_VERSION_ID=$(jq -r '.ciphertext_version_id' /tmp/database-backup-first-evidence.json)
+            BACKUP_MANIFEST_VERSION_ID=$(jq -r '.manifest_version_id' /tmp/database-backup-first-evidence.json)
+            RESTORE_EVIDENCE_OUTPUT=/tmp/database-backup-restore-evidence.json \
+              scripts/run_database_restore_drill.sh
+            python scripts/database_backup_activation.py record-restore \
+              --state /tmp/database-backup-resumed-state.json \
+              --evidence /tmp/database-backup-restore-evidence.json \
+              --output /tmp/database-backup-state-after-restore.json
+            python scripts/database_backup_activation.py sign-state \
+              --state /tmp/database-backup-state-after-restore.json \
+              --hmac-key-env OPS_ACTIVATION_STATE_HMAC_KEY \
+              --output /tmp/database-backup-signed-restore-state.json
+            put_exact_activation_object \
+              /tmp/database-backup-signed-restore-state.json \
+              "${prefix}/restore-state.json"
+            cp /tmp/database-backup-state-after-restore.json \
+              /tmp/database-backup-resumed-state.json
+            stage='RESTORE_VERIFIED'
+          fi
+
+          if [ "${stage}" = 'RESTORE_VERIFIED' ]; then
+            python scripts/database_backup_activation.py issue-receipt \
+              --state /tmp/database-backup-resumed-state.json \
+              --hmac-key-env READINESS_RECEIPT_HMAC_KEY \
+              --state-output /tmp/database-backup-ready-state.json \
+              --receipt-output /tmp/database-backup-readiness-receipt.json
+            python scripts/database_backup_activation.py sign-state \
+              --state /tmp/database-backup-ready-state.json \
+              --hmac-key-env OPS_ACTIVATION_STATE_HMAC_KEY \
+              --output /tmp/database-backup-signed-ready-state.json
+            put_exact_activation_object \
+              /tmp/database-backup-readiness-receipt.json \
+              "${prefix}/readiness-receipt.json"
+            put_exact_activation_object \
+              /tmp/database-backup-signed-ready-state.json \
+              "${prefix}/ready-state.json"
+            stage='READY'
+          fi
+          if [ "${stage}" = 'READY' ] || [ "${stage}" = 'ACTIVE' ]; then
+            aws s3api get-object --bucket "${AWS_BACKUP_BUCKET}" \
+              --key "${prefix}/readiness-receipt.json" \
+              --expected-bucket-owner 992382684924 \
+              /tmp/database-backup-readiness-receipt.json > /dev/null
+          else
+            echo "::error::The activation cannot issue readiness from ${stage}."
+            exit 1
+          fi
+          python scripts/database_backup_activation.py verify-receipt \
+            --receipt /tmp/database-backup-readiness-receipt.json \
+            --hmac-key-env READINESS_RECEIPT_HMAC_KEY > /dev/null
+          receipt_b64=$(base64 < /tmp/database-backup-readiness-receipt.json | tr -d '\n')
+          echo "::add-mask::${receipt_b64}"
+          receipt_sha=$(jq -r '.receipt_sha256' /tmp/database-backup-readiness-receipt.json)
+          {
+            echo "readiness_receipt_b64=${receipt_b64}"
+            echo "readiness_receipt_sha256=${receipt_sha}"
+          } >> "${GITHUB_OUTPUT}"
+
+  send-readiness:
+    needs: [verify-payment-signal, restore-first-backup]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment: production-backup-activation
+    permissions:
+      contents: read
+    env:
+      ACTIVATION_ID: ${{ needs.verify-payment-signal.outputs.activation_id }}
+      READINESS_RECEIPT_B64: ${{ needs.restore-first-backup.outputs.readiness_receipt_b64 }}
+      CLOUD_BACKUP_READINESS_URL: ${{ vars.CLOUD_BACKUP_READINESS_URL }}
+      CLOUD_BACKUP_READINESS_STATUS_URL: ${{ vars.CLOUD_BACKUP_READINESS_STATUS_URL }}
+      CLOUD_BACKUP_READINESS_TOKEN: ${{ secrets.CLOUD_BACKUP_READINESS_TOKEN }}
+      READINESS_RECEIPT_HMAC_KEY: ${{ secrets.READINESS_RECEIPT_HMAC_KEY }}
+      CLOUD_ACTIVATION_ACK_HMAC_KEY: ${{ secrets.CLOUD_ACTIVATION_ACK_HMAC_KEY }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Send readiness once and reconcile an uncertain response
+        run: |
+          set -euo pipefail
+          umask 077
+          missing=()
+          [ -n "${READINESS_RECEIPT_B64}" ] || missing+=(READINESS_RECEIPT_B64)
+          [ -n "${CLOUD_BACKUP_READINESS_URL}" ] || missing+=(CLOUD_BACKUP_READINESS_URL)
+          [ -n "${CLOUD_BACKUP_READINESS_STATUS_URL}" ] || missing+=(CLOUD_BACKUP_READINESS_STATUS_URL)
+          [ -n "${CLOUD_BACKUP_READINESS_TOKEN}" ] || missing+=(CLOUD_BACKUP_READINESS_TOKEN)
+          [ -n "${READINESS_RECEIPT_HMAC_KEY}" ] || missing+=(READINESS_RECEIPT_HMAC_KEY)
+          [ -n "${CLOUD_ACTIVATION_ACK_HMAC_KEY}" ] || missing+=(CLOUD_ACTIVATION_ACK_HMAC_KEY)
+          if [ "${#missing[@]}" -ne 0 ]; then
+            echo "::error::The readiness callback is missing: ${missing[*]}"
+            exit 1
+          fi
+          printf '%s' "${READINESS_RECEIPT_B64}" | base64 --decode \
+            > /tmp/database-backup-readiness-receipt.json
+          python scripts/database_backup_activation.py verify-receipt \
+            --receipt /tmp/database-backup-readiness-receipt.json \
+            --hmac-key-env READINESS_RECEIPT_HMAC_KEY > /dev/null
+
+          set +e
+          status=$(curl --silent --show-error --max-time 20 \
+            --output /tmp/database-backup-cloud-ack.json --write-out '%{http_code}' \
+            --get "${CLOUD_BACKUP_READINESS_STATUS_URL}" \
+            --header "Authorization: Bearer ${CLOUD_BACKUP_READINESS_TOKEN}" \
+            --data-urlencode "idempotency_key=${ACTIVATION_ID}")
+          status_result=$?
+          set -e
+          if [ "${status_result}" -ne 0 ]; then
+            echo '::error::Cloud activation status is uncertain. No callback was sent.'
+            exit 1
+          fi
+          if [[ "${status}" =~ ^2[0-9][0-9]$ ]]; then
+            echo 'Cloud already retained the exact activation acknowledgment.'
+          elif [ "${status}" = '404' ]; then
+            set +e
+            status=$(curl --silent --show-error --max-time 20 \
+              --output /tmp/database-backup-cloud-ack.json --write-out '%{http_code}' \
+              --request POST "${CLOUD_BACKUP_READINESS_URL}" \
+              --header "Authorization: Bearer ${CLOUD_BACKUP_READINESS_TOKEN}" \
+              --header 'Content-Type: application/json' \
+              --header "Idempotency-Key: ${ACTIVATION_ID}" \
+              --data-binary @/tmp/database-backup-readiness-receipt.json)
+            post_result=$?
+            set -e
+            if [ "${post_result}" -ne 0 ] || [[ ! "${status}" =~ ^2[0-9][0-9]$ ]]; then
+              curl --silent --show-error --fail --max-time 20 \
+                --output /tmp/database-backup-cloud-ack.json \
+                --get "${CLOUD_BACKUP_READINESS_STATUS_URL}" \
+                --header "Authorization: Bearer ${CLOUD_BACKUP_READINESS_TOKEN}" \
+                --data-urlencode "idempotency_key=${ACTIVATION_ID}"
+            fi
+          else
+            echo "::error::Cloud refused the activation status query with HTTP ${status}."
+            exit 1
+          fi
+
+          python scripts/database_backup_activation.py create-admission \
+            --receipt /tmp/database-backup-readiness-receipt.json \
+            --cloud-ack /tmp/database-backup-cloud-ack.json \
+            --receipt-hmac-key-env READINESS_RECEIPT_HMAC_KEY \
+            --cloud-ack-hmac-key-env CLOUD_ACTIVATION_ACK_HMAC_KEY \
+            --output /tmp/database-backup-schedule-admission.json > /dev/null
+          echo 'Cloud accepted the exact signed database-readiness receipt.'
+          echo 'The schedule stays inactive until protected Ops stores the signed admission.'
+          rm -f /tmp/database-backup-readiness-receipt.json
+          rm -f /tmp/database-backup-cloud-ack.json
+          rm -f /tmp/database-backup-schedule-admission.json

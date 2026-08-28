@@ -1,0 +1,27 @@
+{
+  "assertion": {
+    "activation_id": "act_11111111111111111111111111111111",
+    "active_lease_sha256": "9479320df81f5326131a8fd8277e2206139b3aa148ce275e22cdb4c0cc364955",
+    "audience": "OpenAdaptAI/openadapt-ops:database-backup-renewal",
+    "backup_required": true,
+    "cloud_revision_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "customer_data_remaining": false,
+    "expires_at": "2026-10-25T12:15:00Z",
+    "issued_at": "2026-10-25T12:00:00Z",
+    "issuer": "openadapt-cloud",
+    "lease_event_id": "lease_7852bacb587d73323ccd84b51a3529be1197ff70499936f0b049e8081aa12fa0",
+    "offer_contract": "openadapt-cloud-managed-browser-v1",
+    "organization_id_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+    "paid_customer_count": 1,
+    "pending_customer_count": 0,
+    "requested_lease_sequence": 1,
+    "service_state": "ACTIVE"
+  },
+  "assertion_sha256": "6c24c7313286eeba67f4828860063ede071c5164ecfbd1a2e8f28b5f414dac26",
+  "schema": "openadapt.database-backup-continuation-assertion/v1",
+  "signature": {
+    "algorithm": "HMAC-SHA256",
+    "key_id": "cloud-backup-continuation-hmac-2026-01",
+    "value": "678b78820ec33451c2c58fc55cd1bab5156f93464127d553fafa4206721546d5"
+  }
+}
