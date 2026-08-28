@@ -1,12 +1,22 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-08-27 22:26 UTC*
+> *Last updated: 2026-08-28 18:56 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [chore(lifecycle): repin the Production lifecycle source to openadapt-ops main](https://github.com/OpenAdaptAI/OpenAdapt/pull/1129) (#1129) — merged 
+
+- [chore(release): reconcile platform manifest with flow 1.34.0, privacy 1.0.4](https://github.com/OpenAdaptAI/OpenAdapt/pull/1128) (#1128) — merged 
+
+- [docs: rewrite the README around the first run](https://github.com/OpenAdaptAI/OpenAdapt/pull/1127) (#1127) — merged 
+
+- [docs: reconcile the two contributing guides](https://github.com/OpenAdaptAI/OpenAdapt/pull/1126) (#1126) — merged 
+
+- [docs: record that the CLA is published, not under consideration](https://github.com/OpenAdaptAI/OpenAdapt/pull/1125) (#1125) — merged 
 
 - [chore(policy): sync generated source boundary](https://github.com/OpenAdaptAI/OpenAdapt/pull/1124) (#1124) — merged 
 
@@ -32,18 +42,30 @@
 
 - [feat(launcher): quickstart dir auto-suffix, engine flag passthrough, plain Python remedy](https://github.com/OpenAdaptAI/OpenAdapt/pull/1108) (#1108) — merged 
 
-- [docs: clarify verified automation positioning](https://github.com/OpenAdaptAI/OpenAdapt/pull/1107) (#1107) — merged 
-
-- [chore(release): reconcile Flow 1.32.0 platform manifest](https://github.com/OpenAdaptAI/OpenAdapt/pull/1104) (#1104) — merged 
-
-- [build(deps): bump both codeql-action pins to v4.37.7 together](https://github.com/OpenAdaptAI/OpenAdapt/pull/1103) (#1103) — merged 
-
-- [build(deps): bump astral-sh/setup-uv from 10.0.0 to 10.0.1](https://github.com/OpenAdaptAI/OpenAdapt/pull/1101) (#1101) — merged 
-
 
 
 ## openadapt-flow
 
+
+- [docs(paper): correct the tree map, and name the profile in each main.tex](https://github.com/OpenAdaptAI/openadapt-flow/pull/424) (#424) — merged 
+
+- [docs: rewrite the README around what the tool does](https://github.com/OpenAdaptAI/openadapt-flow/pull/423) (#423) — merged 
+
+- [fix(release): create the GitHub Release with the App instead of semantic-release](https://github.com/OpenAdaptAI/openadapt-flow/pull/422) (#422) — merged 
+
+- [fix(release): install PyYAML before the claims registry gate](https://github.com/OpenAdaptAI/openadapt-flow/pull/421) (#421) — merged 
+
+- [docs: publish the Contributor License Agreement CONTRIBUTING has promised](https://github.com/OpenAdaptAI/openadapt-flow/pull/420) (#420) — merged 
+
+- [fix(release): restore changelog generation, backfill v1.0.0-v1.33.0, detect the gap](https://github.com/OpenAdaptAI/openadapt-flow/pull/419) (#419) — merged 
+
+- [feat(sanitize): materialize an approved derivative from its archive](https://github.com/OpenAdaptAI/openadapt-flow/pull/418) (#418) — merged 
+
+- [fix(validate-hosted): name the derivative whose approval is missing](https://github.com/OpenAdaptAI/openadapt-flow/pull/417) (#417) — merged 
+
+- [fix(macos): match known Chrome AX title suffixes](https://github.com/OpenAdaptAI/openadapt-flow/pull/416) (#416) — merged 
+
+- [Add governed program visualization profiles](https://github.com/OpenAdaptAI/openadapt-flow/pull/415) (#415) — merged 
 
 - [chore(policy): sync generated source boundary](https://github.com/OpenAdaptAI/openadapt-flow/pull/414) (#414) — merged 
 
@@ -51,44 +73,32 @@
 
 - [docs(readme): launch-funnel pass with evidence table, comparison, and FAQ](https://github.com/OpenAdaptAI/openadapt-flow/pull/410) (#410) — merged 
 
+- [docs: align Flow claims and limits with current contracts](https://github.com/OpenAdaptAI/openadapt-flow/pull/409) (#409) — merged 
+
 - [Persist egress posture before durable resume](https://github.com/OpenAdaptAI/openadapt-flow/pull/408) (#408) — merged 
 
 - [chore: ignore every .env variant, not one at a time](https://github.com/OpenAdaptAI/openadapt-flow/pull/407) (#407) — merged 
 
 - [fix(runtime): read each frame's viewport from the frame, not live from the backend](https://github.com/OpenAdaptAI/openadapt-flow/pull/406) (#406) — merged 
 
+- [Add strict hosted runner execution adapter](https://github.com/OpenAdaptAI/openadapt-flow/pull/405) (#405) — merged 
+
 - [fix(cli): preserve model tiers on resume](https://github.com/OpenAdaptAI/openadapt-flow/pull/404) (#404) — merged 
 
 - [ci: require release App tag publication](https://github.com/OpenAdaptAI/openadapt-flow/pull/403) (#403) — merged 
-
-- [docs: derive Flow product state from admissions](https://github.com/OpenAdaptAI/openadapt-flow/pull/401) (#401) — merged 
-
-- [test: fail a run that leaves tracked repository files dirty](https://github.com/OpenAdaptAI/openadapt-flow/pull/400) (#400) — merged 
-
-- [docs(paper): add the three-tree paper map](https://github.com/OpenAdaptAI/openadapt-flow/pull/399) (#399) — merged 
-
-- [ci: deselect the platform-neutral qualification campaign on macOS](https://github.com/OpenAdaptAI/openadapt-flow/pull/397) (#397) — merged 
-
-- [feat(record): declare the coordinate space on the capture path too](https://github.com/OpenAdaptAI/openadapt-flow/pull/396) (#396) — merged 
-
-- [test: fix a Python 3.10 permit parse and a Chromium CDP readiness race](https://github.com/OpenAdaptAI/openadapt-flow/pull/395) (#395) — merged 
-
-- [fix(record): double-click as one step, refuse native select, document coverage](https://github.com/OpenAdaptAI/openadapt-flow/pull/391) (#391) — merged 
-
-- [fix(record): compose iframe events into page space and emit frame_path](https://github.com/OpenAdaptAI/openadapt-flow/pull/390) (#390) — merged 
-
-- [docs: reconcile the OpenEMR 19/20 correction with older 20/20 summaries](https://github.com/OpenAdaptAI/openadapt-flow/pull/389) (#389) — merged 
-
-- [feat: scaffold-verifier + explain operator commands, outcome epilogues, run social card](https://github.com/OpenAdaptAI/openadapt-flow/pull/388) (#388) — merged 
-
-- [feat: add installer-first onboarding and pre-download Linux browser checks](https://github.com/OpenAdaptAI/openadapt-flow/pull/387) (#387) — merged 
-
-- [feat: add the gate-standard local qualification campaign](https://github.com/OpenAdaptAI/openadapt-flow/pull/386) (#386) — merged 
 
 
 
 ## openadapt-desktop
 
+
+- [docs: rewrite the README, and say up front that there is no build to download](https://github.com/OpenAdaptAI/openadapt-desktop/pull/142) (#142) — merged 
+
+- [feat(capture): put both published workbench shots under the capture contract](https://github.com/OpenAdaptAI/openadapt-desktop/pull/141) (#141) — merged 
+
+- [fix(tests): read tracked source files as UTF-8, not as the platform locale](https://github.com/OpenAdaptAI/openadapt-desktop/pull/140) (#140) — merged 
+
+- [style: consume the canonical cool design tokens from openadapt-web](https://github.com/OpenAdaptAI/openadapt-desktop/pull/139) (#139) — merged 
 
 - [fix(ci): allowlist FFmpeg's public signing-key digest in gitleaks](https://github.com/OpenAdaptAI/openadapt-desktop/pull/138) (#138) — merged 
 
@@ -106,14 +116,6 @@
 
 - [ci: derive Desktop Production from central admission](https://github.com/OpenAdaptAI/openadapt-desktop/pull/126) (#126) — merged 
 
-- [fix(release): publish native chain from reviewed main](https://github.com/OpenAdaptAI/openadapt-desktop/pull/125) (#125) — merged 
-
-- [ci: correct the stale version comment on the pypi-publish pin](https://github.com/OpenAdaptAI/openadapt-desktop/pull/124) (#124) — merged 
-
-- [test(release): state the O_NOFOLLOW contract per platform](https://github.com/OpenAdaptAI/openadapt-desktop/pull/123) (#123) — merged 
-
-- [fix(release): close the residual native release admission gaps](https://github.com/OpenAdaptAI/openadapt-desktop/pull/122) (#122) — merged 
-
 
 
 ## openadapt-agent
@@ -129,23 +131,23 @@
 
 - [chore(deps): Bump the codeql-action group with 2 updates](https://github.com/OpenAdaptAI/openadapt-agent/pull/31) (#31) — merged 
 
-- [security: require cryptography 50.0.0](https://github.com/OpenAdaptAI/openadapt-agent/pull/30) (#30) — merged 
-
 
 
 ## openadapt-ml
 
 
+- [docs: rewrite README for a human reader](https://github.com/OpenAdaptAI/openadapt-ml/pull/78) (#78) — merged 
+
 - [chore(policy): sync generated source boundary](https://github.com/OpenAdaptAI/openadapt-ml/pull/77) (#77) — merged 
 
 - [chore: ignore every .env variant, not one at a time](https://github.com/OpenAdaptAI/openadapt-ml/pull/75) (#75) — merged 
-
-- [ci: pin pypa/gh-action-pypi-publish to a commit SHA](https://github.com/OpenAdaptAI/openadapt-ml/pull/74) (#74) — merged 
 
 
 
 ## openadapt-evals
 
+
+- [docs: rewrite README for a human reader](https://github.com/OpenAdaptAI/openadapt-evals/pull/318) (#318) — merged 
 
 - [fix(evidence): follow the verified-certificate retention receipt](https://github.com/OpenAdaptAI/openadapt-evals/pull/317) (#317) — merged 
 
@@ -185,12 +187,38 @@
 
 - [docs: public tagged copy of the Phase-2 certified-reward RL pre-registration](https://github.com/OpenAdaptAI/openadapt-evals/pull/295) (#295) — merged 
 
-- [feat(evidence): publish the Flow 1.32.0 comparison; mark 1.31.0 superseded](https://github.com/OpenAdaptAI/openadapt-evals/pull/294) (#294) — merged 
-
 
 
 ## openadapt-capture
 
+
+- [fix(db): bound the SQLite write-lock wait by time, not by attempts](https://github.com/OpenAdaptAI/openadapt-capture/pull/122) (#122) — merged 
+
+- [docs: the control commands ship in 1.3.0, not 1.2.3](https://github.com/OpenAdaptAI/openadapt-capture/pull/121) (#121) — merged 
+
+- [chore(release): cover the last two commits in the 1.3.0 notes](https://github.com/OpenAdaptAI/openadapt-capture/pull/120) (#120) — merged 
+
+- [fix(test): do not assert a POSIX execute bit on Windows](https://github.com/OpenAdaptAI/openadapt-capture/pull/119) (#119) — merged 
+
+- [feat: install FFmpeg with one command, from a pinned LGPL build](https://github.com/OpenAdaptAI/openadapt-capture/pull/118) (#118) — merged 
+
+- [chore(release): prepare 1.3.0](https://github.com/OpenAdaptAI/openadapt-capture/pull/117) (#117) — merged 
+
+- [fix(recorder): survive SQLite writer contention in the video writer](https://github.com/OpenAdaptAI/openadapt-capture/pull/116) (#116) — merged 
+
+- [ci: bound the trial step and drop the flaking Windows lane from the gate](https://github.com/OpenAdaptAI/openadapt-capture/pull/115) (#115) — merged 
+
+- [ci: qualify releases on hosted runners, schedule the live lanes](https://github.com/OpenAdaptAI/openadapt-capture/pull/114) (#114) — merged 
+
+- [chore(release): prepare 1.2.3](https://github.com/OpenAdaptAI/openadapt-capture/pull/113) (#113) — merged 
+
+- [fix(ci): allowlist the published extension key by exact value](https://github.com/OpenAdaptAI/openadapt-capture/pull/112) (#112) — merged 
+
+- [docs: rewrite the README and move the deep contracts into docs/](https://github.com/OpenAdaptAI/openadapt-capture/pull/111) (#111) — merged 
+
+- [fix(release): let the changelog document the pending release candidate](https://github.com/OpenAdaptAI/openadapt-capture/pull/110) (#110) — merged 
+
+- [test(fixtures): run the byte check on every matching builder](https://github.com/OpenAdaptAI/openadapt-capture/pull/109) (#109) — merged 
 
 - [fix(fixtures): bind synthetic provenance to the fixture byte determinants](https://github.com/OpenAdaptAI/openadapt-capture/pull/107) (#107) — merged 
 
@@ -204,38 +232,14 @@
 
 - [fix: preserve the capture clock epoch](https://github.com/OpenAdaptAI/openadapt-capture/pull/102) (#102) — merged 
 
-- [feat: ship the two demo captures as loadable fixtures](https://github.com/OpenAdaptAI/openadapt-capture/pull/101) (#101) — merged 
-
-- [fix(recorder): retain native frames before readiness](https://github.com/OpenAdaptAI/openadapt-capture/pull/100) (#100) — merged 
-
-- [test(recorder): isolate observer failure from ffmpeg](https://github.com/OpenAdaptAI/openadapt-capture/pull/98) (#98) — merged 
-
-- [ci(windows): fail when ffmpeg install is absent](https://github.com/OpenAdaptAI/openadapt-capture/pull/99) (#99) — merged 
-
-- [test(terminal): accept platform-specific seal rejection](https://github.com/OpenAdaptAI/openadapt-capture/pull/97) (#97) — merged 
-
-- [feat: capture native structural observations](https://github.com/OpenAdaptAI/openadapt-capture/pull/96) (#96) — merged 
-
-- [feat(capture): seal native action geometry at capture time](https://github.com/OpenAdaptAI/openadapt-capture/pull/94) (#94) — merged 
-
-- [chore: ignore every .env variant, not one at a time](https://github.com/OpenAdaptAI/openadapt-capture/pull/93) (#93) — merged 
-
-- [ci: require release App tag publication](https://github.com/OpenAdaptAI/openadapt-capture/pull/92) (#92) — merged 
-
-- [Derive Capture state from release admission](https://github.com/OpenAdaptAI/openadapt-capture/pull/91) (#91) — merged 
-
-- [chore(deps): bump actions/download-artifact from 4.3.0 to 8.0.1](https://github.com/OpenAdaptAI/openadapt-capture/pull/89) (#89) — merged 
-
-- [chore(deps): bump actions/upload-artifact from 4.6.2 to 7.0.1](https://github.com/OpenAdaptAI/openadapt-capture/pull/87) (#87) — merged 
-
-- [ci: require three counted live qualification trials per OS](https://github.com/OpenAdaptAI/openadapt-capture/pull/86) (#86) — merged 
-
-- [test: pin the writer shutdown-drain contract](https://github.com/OpenAdaptAI/openadapt-capture/pull/85) (#85) — merged 
-
 
 
 ## openadapt-privacy
 
+
+- [fix: decide separated action text by shape, and label identifiers by recognizer](https://github.com/OpenAdaptAI/openadapt-privacy/pull/19) (#19) — merged 
+
+- [docs: rewrite the README, and replace the examples with measured output](https://github.com/OpenAdaptAI/openadapt-privacy/pull/18) (#18) — merged 
 
 - [chore(policy): sync generated source boundary](https://github.com/OpenAdaptAI/openadapt-privacy/pull/17) (#17) — merged 
 
@@ -246,23 +250,13 @@
 ## openadapt-types
 
 
+- [docs: state the real number of shipped schema files](https://github.com/OpenAdaptAI/openadapt-types/pull/31) (#31) — merged 
+
+- [docs: rewrite the README around the schema you actually import](https://github.com/OpenAdaptAI/openadapt-types/pull/30) (#30) — merged 
+
 - [chore(policy): sync generated source boundary](https://github.com/OpenAdaptAI/openadapt-types/pull/29) (#29) — merged 
 
 - [chore: ignore every .env variant, not one at a time](https://github.com/OpenAdaptAI/openadapt-types/pull/28) (#28) — merged 
-
-
-
-## openadapt-grounding
-
-
-- [ci: pin pypa/gh-action-pypi-publish to a commit SHA](https://github.com/OpenAdaptAI/openadapt-grounding/pull/10) (#10) — merged 
-
-
-
-## openadapt-retrieval
-
-
-- [ci: pin pypa/gh-action-pypi-publish to a commit SHA](https://github.com/OpenAdaptAI/openadapt-retrieval/pull/10) (#10) — merged 
 
 
 
