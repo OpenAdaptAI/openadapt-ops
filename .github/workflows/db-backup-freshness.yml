@@ -2,7 +2,8 @@ name: Production DB backup freshness
 
 # Read-only check of the newest off-provider database recovery point. This job
 # cannot create, replace, or delete a backup. It inspects only the redacted
-# manifest and S3 metadata; it never downloads or decrypts database bytes.
+# manifest, S3 metadata, and the redacted restore receipt. It never downloads
+# or decrypts database bytes.
 
 on:
   workflow_dispatch:
@@ -108,6 +109,32 @@ jobs:
             --manifest /tmp/database-backup-manifest.json \
             --attributes /tmp/database-backup-attributes.json
 
+      - name: Select a database-only restore drill from the last 30 days
+        id: restore
+        run: |
+          set -euo pipefail
+          aws s3api list-objects-v2 --bucket "$BACKUP_BUCKET" \
+            --prefix drills/database-only/ \
+            --expected-bucket-owner 992382684924 \
+            > /tmp/database-restore-inventory.json
+          python scripts/check_database_backup_freshness.py select-restore \
+            --inventory /tmp/database-restore-inventory.json \
+            --output /tmp/database-restore-selection.json \
+            --github-output "$GITHUB_OUTPUT" \
+            --maximum-age-seconds 2592000
+
+      - name: Verify the current database-only restore receipt
+        run: |
+          set -euo pipefail
+          aws s3api get-object --bucket "$BACKUP_BUCKET" \
+            --key '${{ steps.restore.outputs.receipt_key }}' \
+            --expected-bucket-owner 992382684924 \
+            /tmp/database-restore-receipt.json > /dev/null
+          python scripts/check_database_backup_freshness.py verify-restore \
+            --selection /tmp/database-restore-selection.json \
+            --receipt /tmp/database-restore-receipt.json \
+            --maximum-age-seconds 2592000
+
   record-alert:
     name: Keep one durable backup freshness alert
     needs: verify
@@ -133,7 +160,7 @@ jobs:
           if [ "${VERIFY_RESULT}" = 'success' ]; then
             if [ -n "${existing}" ] && [ "${existing_state}" = 'OPEN' ]; then
               gh issue close "${existing}" --repo "${GITHUB_REPOSITORY}" \
-                --comment "The newest encrypted recovery point is complete and less than 24 hours old in ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}."
+                --comment "The newest encrypted recovery point is complete and less than 24 hours old. A database-only restore drill from the last 30 days also passed in ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}."
             else
               echo 'The recovery point is current and no freshness issue is open.'
             fi
@@ -147,7 +174,9 @@ jobs:
             '' \
             'The check reads only the redacted manifest and S3 metadata. It does not read or decrypt database bytes.' \
             '' \
-            'Do not claim the 24-hour database RPO until a later run passes and closes this issue.' \
+            'The check also requires a valid database-only restore receipt from the last 30 days.' \
+            '' \
+            'Do not claim the 24-hour database RPO or a tested database restore until a later run passes and closes this issue.' \
             > database-backup-freshness-alert.md
           if [ -n "${existing}" ]; then
             if [ "${existing_state}" = 'CLOSED' ]; then

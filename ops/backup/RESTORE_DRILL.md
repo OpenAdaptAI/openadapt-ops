@@ -18,25 +18,31 @@ The design target is:
 - measured database-only RPO and recovery-time objective (RTO) evidence; and
 - the separate Cloud drill before any complete recovery claim.
 
-This is not yet a proven recovery path. A read-only check on 2026-08-18 used
+This is not yet a proven recovery path. A read-only check on 2026-08-28 used
 AWS account `992382684924` and confirmed that the
-`openadapt-production-db-backup` CloudFormation stack does not exist. GitHub
-issue [#126](https://github.com/OpenAdaptAI/openadapt-ops/issues/126) records
-the matching protected-environment configuration failure. As of that check:
+`openadapt-production-db-backup` CloudFormation stack does not exist. The same
+check found this GitHub state:
 
 - no daily backup has completed;
 - no scratch restore has completed;
 - no measured RTO exists;
 - provider PITR is not enabled;
 - the AWS stack is not deployed;
-- `main` has no repository ruleset or branch protection;
-- no workflow-restricted production backup runner group or runner is confirmed;
-- the `production-backup` GitHub environment has none of its four required
-  settings and has no deployment-branch restriction;
-- the `production-backup-monitor` GitHub environment is not configured;
+- `main` has status-check protection, but it does not require a pull request;
+- the organization has only the default runner group and this repository has
+  no runner;
+- the `production-backup` GitHub environment exists, but it has no deployment
+  policy, variable, or secret;
+- the `production-backup-monitor` GitHub environment exists, but it has no
+  deployment policy or variable;
 - no scratch Supabase project is configured; and
 - one local private `age` key exists, but its required second vault or offline
   copy is not confirmed.
+
+Scheduled backup run `33203958625` stopped before its first step. GitHub
+reported `Required runner group 'production-backup' not found`. Freshness run
+`33201818749` reported the missing `AWS_BACKUP_BUCKET` and
+`AWS_BACKUP_MONITOR_ROLE_ARN` variables.
 
 Do not describe the database as recoverable until one scheduled backup and one
 isolated restore drill pass.
@@ -176,8 +182,8 @@ database identity only after the stack passes validation:
    - `AWS_BACKUP_MONITOR_ROLE_ARN`
 
 The monitor environment has no secret. Its AWS role can list and inspect only
-the `daily/` objects. It cannot create, replace, delete, download, or decrypt a
-database backup.
+the `daily/` objects and the redacted database-only restore receipts. It cannot
+create, replace, delete, download, or decrypt a database backup.
 
 The workflow validates that the URL belongs to the declared Supabase project.
 It also checks AWS account `992382684924`, complete S3 public-access blocking,
@@ -224,6 +230,11 @@ Require all of these results:
 
 A successful upload proves backup creation and storage. It does not prove that
 the backup can restore.
+
+The hourly monitor also requires a valid database-only restore receipt from
+the last 30 days. A fresh backup cannot close the recovery-point issue by
+itself. Run the scratch restore after the first backup and at least every 30
+days after that.
 
 ## Run the database-only scratch restore
 
@@ -348,7 +359,9 @@ as exposed. Do not keep encrypting new backups to both old and new recipients.
 A failed backup job stays red and opens or updates one durable GitHub issue.
 The hourly `Production DB backup freshness` workflow uses a separate read-only
 AWS role. It opens or updates one durable issue when the newest complete pair
-is absent, stale, or inconsistent. A successful run closes its matching issue.
+is absent, stale, or inconsistent. It also keeps the issue open when no valid
+database-only restore receipt exists from the last 30 days. A successful run
+closes its matching issue.
 
 The two checks use different workflows and different AWS roles. They still use
 the same GitHub scheduler. Configure one external monitor to alert when either

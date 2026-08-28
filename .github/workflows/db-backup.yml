@@ -248,6 +248,7 @@ jobs:
     if: ${{ always() }}
     runs-on: ubuntu-latest
     permissions:
+      actions: read
       contents: read
       issues: write
     env:
@@ -274,10 +275,23 @@ jobs:
             exit 0
           fi
 
+          runner_note=''
+          step_count='-1'
+          if value=$(gh api \
+            "repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/jobs" \
+            --jq '[.jobs[] | select(.name == "dump") | (.steps | length)][0] // -1' \
+            2>/dev/null); then
+            step_count="$value"
+          fi
+          if [ "$step_count" = '0' ]; then
+            runner_note='The dump job did not get a runner. Confirm that the organization has the workflow-restricted production-backup runner group and an online runner in that group.'
+          fi
           printf '%s\n' \
             'The scheduled production database backup did not complete.' \
             '' \
             "Run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" \
+            '' \
+            "$runner_note" \
             '' \
             'No new recovery point is claimed. Review the failed step before any retry.' \
             > database-backup-alert.md

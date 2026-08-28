@@ -12,6 +12,7 @@ must pass qualification.
 | Production health | Every 30 minutes | HTTP 200, `no-store`, fresh `checked_at`, live mode, active encrypted writer, and every required component | One GitHub issue and optional Telegram alert |
 | Database backup | Daily | An encrypted archive no larger than 5 GiB, one S3 PutObject, a redacted manifest, and a matching S3-validated full-object SHA-256 | One GitHub issue |
 | Database backup freshness | Hourly | A complete S3 pair from the last 24 hours, a valid manifest digest, a matching object size, and the same full-object SHA-256 | One GitHub issue |
+| Database restore gate | The hourly monitor checks it; run the drill every 30 days | A redacted receipt for an isolated database restore, with exact backup digests and measured RPO and RTO | The backup-freshness issue stays open when the receipt is absent or stale |
 | Default branch sweep | Daily | The newest applicable run for every owned repository | One GitHub issue |
 | Published version claims | Daily | Documentation claims against current package indexes | One GitHub issue |
 

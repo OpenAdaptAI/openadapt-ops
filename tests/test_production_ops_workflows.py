@@ -57,6 +57,8 @@ def test_backup_monitor_cannot_download_or_change_ciphertext() -> None:
     assert "daily/*/artifact-manifest.json" in monitor
     assert "Action: s3:GetObjectAttributes" in monitor
     assert "daily/*/*.age" in monitor
+    assert "drills/database-only/*/*.json" in monitor
+    assert "drills/database-only/*" in monitor
     assert "s3:PutObject" not in monitor
     assert "s3:DeleteObject" not in monitor
 
@@ -73,6 +75,12 @@ def test_backup_monitor_cannot_download_or_change_ciphertext() -> None:
     assert "actions: read" in workflow
     assert "GITHUB_REF_PROTECTED" in workflow
     assert "check_github_environment_gate.py" in workflow
+    backup_verify = workflow.index("check_database_backup_freshness.py verify")
+    restore_select = workflow.index("check_database_backup_freshness.py select-restore")
+    restore_get = workflow.index("steps.restore.outputs.receipt_key")
+    restore_verify = workflow.index("check_database_backup_freshness.py verify-restore")
+    assert backup_verify < restore_select < restore_get < restore_verify
+    assert "--maximum-age-seconds 2592000" in workflow
 
 
 def test_health_probe_uses_the_strict_contract_and_a_durable_issue() -> None:
@@ -90,3 +98,6 @@ def test_backup_jobs_keep_distinct_failure_and_freshness_issues() -> None:
     assert "Production database recovery point is stale or unverified" in freshness
     assert "issues: write" in backup
     assert "issues: write" in freshness
+    assert "The dump job did not get a runner." in backup
+    assert '(.steps | length)' in backup
+    assert "database-only restore receipt from the last 30 days" in freshness

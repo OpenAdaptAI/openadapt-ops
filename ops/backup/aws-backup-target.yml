@@ -172,13 +172,18 @@ Resources:
                 Resource: !GetAtt BackupBucket.Arn
                 Condition:
                   StringLike:
-                    s3:prefix: daily/*
+                    s3:prefix:
+                      - daily/*
+                      - drills/database-only/*
               - Effect: Allow
                 Action: s3:GetObject
                 Resource: !Sub ${BackupBucket.Arn}/daily/*/artifact-manifest.json
               - Effect: Allow
                 Action: s3:GetObjectAttributes
                 Resource: !Sub ${BackupBucket.Arn}/daily/*/*.age
+              - Effect: Allow
+                Action: s3:GetObject
+                Resource: !Sub ${BackupBucket.Arn}/drills/database-only/*/*.json
 
   BackupRestoreRole:
     Type: AWS::IAM::Role
