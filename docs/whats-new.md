@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-08-27 20:30 UTC*
+> *Last updated: 2026-08-27 22:26 UTC*
 
 
 
@@ -45,6 +45,8 @@
 ## openadapt-flow
 
 
+- [chore(policy): sync generated source boundary](https://github.com/OpenAdaptAI/openadapt-flow/pull/414) (#414) — merged 
+
 - [docs(readme): restructure for scan-ability, relocate depth into docs/](https://github.com/OpenAdaptAI/openadapt-flow/pull/411) (#411) — merged 
 
 - [docs(readme): launch-funnel pass with evidence table, comparison, and FAQ](https://github.com/OpenAdaptAI/openadapt-flow/pull/410) (#410) — merged 
@@ -83,14 +85,18 @@
 
 - [feat: add the gate-standard local qualification campaign](https://github.com/OpenAdaptAI/openadapt-flow/pull/386) (#386) — merged 
 
-- [feat: require signed runtime authority for Production and campaign actuation](https://github.com/OpenAdaptAI/openadapt-flow/pull/385) (#385) — merged 
-
 
 
 ## openadapt-desktop
 
 
+- [fix(ci): allowlist FFmpeg's public signing-key digest in gitleaks](https://github.com/OpenAdaptAI/openadapt-desktop/pull/138) (#138) — merged 
+
+- [Add the qualification program workbench](https://github.com/OpenAdaptAI/openadapt-desktop/pull/137) (#137) — merged 
+
 - [chore(policy): sync generated source boundary](https://github.com/OpenAdaptAI/openadapt-desktop/pull/136) (#136) — merged 
+
+- [Guide the first real workflow run](https://github.com/OpenAdaptAI/openadapt-desktop/pull/135) (#135) — merged 
 
 - [chore: ignore every .env variant, not one at a time](https://github.com/OpenAdaptAI/openadapt-desktop/pull/134) (#134) — merged 
 
@@ -141,7 +147,11 @@
 ## openadapt-evals
 
 
+- [fix(evidence): follow the verified-certificate retention receipt](https://github.com/OpenAdaptAI/openadapt-evals/pull/317) (#317) — merged 
+
 - [chore(policy): sync generated source boundary](https://github.com/OpenAdaptAI/openadapt-evals/pull/316) (#316) — merged 
+
+- [fix(windows): require fresh isolation proofs before pool work](https://github.com/OpenAdaptAI/openadapt-evals/pull/315) (#315) — merged 
 
 - [chore(release): prepare 0.94.1](https://github.com/OpenAdaptAI/openadapt-evals/pull/312) (#312) — merged 
 
@@ -177,12 +187,14 @@
 
 - [feat(evidence): publish the Flow 1.32.0 comparison; mark 1.31.0 superseded](https://github.com/OpenAdaptAI/openadapt-evals/pull/294) (#294) — merged 
 
-- [fix(evidence): verify private Cloud attestations on GitHub's instance](https://github.com/OpenAdaptAI/openadapt-evals/pull/293) (#293) — merged 
-
 
 
 ## openadapt-capture
 
+
+- [fix(fixtures): bind synthetic provenance to the fixture byte determinants](https://github.com/OpenAdaptAI/openadapt-capture/pull/107) (#107) — merged 
+
+- [fix(db): retry transient SQLite writer locks](https://github.com/OpenAdaptAI/openadapt-capture/pull/106) (#106) — merged 
 
 - [chore(policy): sync generated source boundary](https://github.com/OpenAdaptAI/openadapt-capture/pull/105) (#105) — merged 
 
@@ -202,6 +214,8 @@
 
 - [test(terminal): accept platform-specific seal rejection](https://github.com/OpenAdaptAI/openadapt-capture/pull/97) (#97) — merged 
 
+- [feat: capture native structural observations](https://github.com/OpenAdaptAI/openadapt-capture/pull/96) (#96) — merged 
+
 - [feat(capture): seal native action geometry at capture time](https://github.com/OpenAdaptAI/openadapt-capture/pull/94) (#94) — merged 
 
 - [chore: ignore every .env variant, not one at a time](https://github.com/OpenAdaptAI/openadapt-capture/pull/93) (#93) — merged 
@@ -217,12 +231,6 @@
 - [ci: require three counted live qualification trials per OS](https://github.com/OpenAdaptAI/openadapt-capture/pull/86) (#86) — merged 
 
 - [test: pin the writer shutdown-drain contract](https://github.com/OpenAdaptAI/openadapt-capture/pull/85) (#85) — merged 
-
-- [feat: bind each action to its exact retained screen frame](https://github.com/OpenAdaptAI/openadapt-capture/pull/84) (#84) — merged 
-
-- [feat: add authenticated recorder control channel](https://github.com/OpenAdaptAI/openadapt-capture/pull/79) (#79) — merged 
-
-- [feat: qualify resilient native capture](https://github.com/OpenAdaptAI/openadapt-capture/pull/78) (#78) — merged 
 
 
 
