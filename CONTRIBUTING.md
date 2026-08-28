@@ -5,26 +5,39 @@ keep the company able to steward it.
 
 ## Licensing of your contributions
 
-This repository's code is MIT-licensed. So that OpenAdapt (MLDSAI Inc.) can
-continue to steward and, if ever necessary, relicense the combined work, every
-contribution must be covered by BOTH of the following:
+This repository's code is MIT-licensed, and your contribution goes in under the
+MIT License. Two things cover it.
 
-1. **Developer Certificate of Origin (DCO) sign-off (required now).** Add a
-   `Signed-off-by` line to every commit certifying you wrote the change or have
-   the right to submit it under the project license:
+1. **Developer Certificate of Origin (required now).** Add a `Signed-off-by`
+   line to every commit, certifying you wrote the change or that you have the
+   right to submit it under the project license:
 
    ```
    git commit -s -m "fix: ..."
    ```
 
-   This produces `Signed-off-by: Your Name <you@example.com>`. See
-   https://developercertificate.org for the full DCO text.
+   This produces `Signed-off-by: Your Name <you@example.com>`. The full text is
+   at https://developercertificate.org.
 
-2. **Contributor License Agreement (CLA).** By opening a pull request you agree
-   to the OpenAdapt Contributor License Agreement. The canonical CLA text lives
-   at [`openadapt-flow/CLA.md`](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/CLA.md).
-   When the CLA Assistant check is enabled on this repository, first-time
-   contributors sign it once by commenting on their PR.
+2. **Contributor License Agreement (published, not yet enforced).** The
+   canonical text is
+   [`openadapt-flow/CLA.md`](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/CLA.md)
+   for individuals, and
+   [`openadapt-flow/CCLA.md`](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/CCLA.md)
+   for companies whose employees contribute on company time. It gives MLDSAI
+   Inc. an explicit copyright and patent license, which the MIT License alone
+   doesn't provide, and it keeps the option of relicensing the combined work
+   later.
+
+   You don't agree to the CLA by opening a pull request. Nothing is implied.
+   You agree when you sign, either through the automated CLA check once that
+   check is turned on for this repository, or by email. Until the check is on,
+   the DCO sign-off and the MIT License are what govern your contribution.
+
+OpenAdapt is open-core. MLDSAI Inc. sells proprietary products built on this
+code, including a hosted control plane, and your contribution may end up in
+them. The MIT License already permits that. The CLA says it out loud so nobody
+is surprised.
 
 ## Pull request guidelines
 
