@@ -40,10 +40,30 @@ EXPECTED_REPOSITORIES = {
     "openadapt-web",
 }
 ACTIVE_CHECK_STATES = {"queued", "in_progress", "pending", "requested", "waiting"}
+CREDENTIAL_VARIABLE_NAME = re.compile(
+    r"(?:^|_)(?:API_KEY|AUTH_TOKEN|ACCESS_TOKEN|SECRET|PASSWORD|PRIVATE_KEY|"
+    r"DATABASE_URL|SERVICE_ROLE_KEY|CLIENT_SECRET)(?:$|_)"
+)
+CREDENTIAL_VALUE_PATTERNS = tuple(
+    re.compile(pattern)
+    for pattern in (
+        r"^sk-(?:proj-|svcacct-|ant-)?[A-Za-z0-9_-]{20,}$",
+        r"^github_pat_[A-Za-z0-9_]{20,}$",
+        r"^gh[opusr]_[A-Za-z0-9]{20,}$",
+        r"^(?:AKIA|ASIA)[A-Z0-9]{16}$",
+        r"^(?:sk|rk)_live_[A-Za-z0-9]{16,}$",
+        r"^xox[baprs]-[A-Za-z0-9-]{16,}$",
+        r"^AIza[A-Za-z0-9_-]{30,}$",
+        r"^eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$",
+        r"^-----BEGIN [A-Z0-9 ]*PRIVATE KEY-----",
+    )
+)
 MANAGED_RULESET_NAMES = (
     "OpenAdapt policy: protected main",
     "OpenAdapt policy: release tag creation",
     "OpenAdapt policy: immutable release tags",
+    "OpenAdapt policy: lifecycle feed integrity",
+    "OpenAdapt policy: lifecycle feed mutation",
 )
 EXPECTED_PRIVATE_KEY_BINDINGS = {
     "openadapt-release": {
@@ -176,8 +196,11 @@ class GhApiClient:
 
 @dataclass(frozen=True)
 class ReleaseActor:
+    app_id: int
     actor_id: int
+    actor_login: str
     app_slug: str
+    installation_id: int
 
 
 @dataclass(frozen=True)
@@ -213,37 +236,10 @@ def _require_list(value: Any, field: str) -> list[Any]:
 
 
 def validate_config(config: Mapping[str, Any]) -> None:
-    if config.get("schema_version") != 1:
-        raise PolicyError("schema_version must be 1")
+    if config.get("schema_version") != 2:
+        raise PolicyError("schema_version must be 2")
     if config.get("organization") != "OpenAdaptAI":
         raise PolicyError("organization must be OpenAdaptAI")
-    live_audit = config.get("live_audit")
-    if not isinstance(live_audit, Mapping):
-        raise PolicyError("live_audit must be an object")
-    for field in (
-        "repository_ruleset_counts",
-        "main_protected",
-        "release_environment_state",
-    ):
-        values = live_audit.get(field)
-        if not isinstance(values, Mapping) or set(values) != EXPECTED_REPOSITORIES:
-            raise PolicyError(
-                f"live_audit.{field} must cover the nine core repositories"
-            )
-    dispatch_audit = config.get("dispatch_privilege_audit")
-    if not isinstance(dispatch_audit, Mapping):
-        raise PolicyError("dispatch_privilege_audit must be an object")
-    if dispatch_audit.get("openadapt_ops_main_protected") is not False:
-        raise PolicyError("dispatch audit must record unprotected Ops main")
-    if set(dispatch_audit.get("unprotected_operational_environments", {})) != {
-        "production-backup",
-        "production-backup-monitor",
-    }:
-        raise PolicyError("dispatch audit must record both backup environments")
-    if dispatch_audit.get("lifecycle_app_installation") != "absent":
-        raise PolicyError("dispatch audit must record the missing lifecycle App")
-    if dispatch_audit.get("docs_app_installation") != "absent":
-        raise PolicyError("dispatch audit must record the missing docs App")
     actions_id = config.get("github_actions_integration_id")
     if not isinstance(actions_id, int) or actions_id <= 0:
         raise PolicyError("github_actions_integration_id must be a positive integer")
@@ -261,10 +257,12 @@ def validate_config(config: Mapping[str, Any]) -> None:
     if (
         release_identity.get("actor_type") != "Integration"
         or release_identity.get("app_slug") != "openadapt-release"
+        or release_identity.get("actor_login") != "openadapt-release[bot]"
         or release_identity.get("bypass_mode") != "always"
     ):
         raise PolicyError("release_identity is not exact")
     if release_identity.get("required_repository_permissions") != [
+        "Administration: read",
         "Contents: write",
         "Metadata: read",
     ]:
@@ -288,7 +286,9 @@ def validate_config(config: Mapping[str, Any]) -> None:
     ):
         raise PolicyError("release_identity repository scope is not exact")
     if release_identity.get("repository_variables") != {
-        "app_id": "OPENADAPT_RELEASE_APP_ID"
+        "app_id": "OPENADAPT_RELEASE_APP_ID",
+        "actor_id": "OPENADAPT_RELEASE_ACTOR_ID",
+        "installation_id": "OPENADAPT_RELEASE_APP_INSTALLATION_ID",
     }:
         raise PolicyError("release_identity repository variables are not exact")
     if (
@@ -306,6 +306,13 @@ def validate_config(config: Mapping[str, Any]) -> None:
         != EXPECTED_TOKEN_REPOSITORY_BINDINGS["openadapt-release"]
     ):
         raise PolicyError("release_identity token repository bindings are not exact")
+    for field in ("app_id", "actor_id", "installation_id"):
+        value = release_identity.get(field)
+        if value is not None and (not isinstance(value, int) or value <= 0):
+            raise PolicyError(f"release_identity.{field} must be null or positive")
+        environment_field = f"{field}_environment"
+        if not isinstance(release_identity.get(environment_field), str):
+            raise PolicyError(f"release_identity.{environment_field} is required")
 
     lifecycle_identity = config.get("lifecycle_identity")
     if not isinstance(lifecycle_identity, Mapping):
@@ -314,8 +321,11 @@ def validate_config(config: Mapping[str, Any]) -> None:
         raise PolicyError("lifecycle_identity must use the openadapt-lifecycle App")
     if lifecycle_identity.get("actor_login") != "openadapt-lifecycle[bot]":
         raise PolicyError("lifecycle_identity actor login is not exact")
-    if lifecycle_identity.get("ruleset_bypass") is not False:
-        raise PolicyError("lifecycle_identity must not have a ruleset bypass")
+    if lifecycle_identity.get("ruleset_bypass") != {
+        "main": False,
+        "production_lifecycle_feed": True,
+    }:
+        raise PolicyError("lifecycle_identity ruleset bypass scope is not exact")
     expected_lifecycle_scope = {".github", "openadapt-evals", "openadapt-ops"}
     lifecycle_scope = _require_list(
         lifecycle_identity.get("repository_scope"),
@@ -325,14 +335,13 @@ def validate_config(config: Mapping[str, Any]) -> None:
         raise PolicyError("lifecycle_identity repository scope is not exact")
     if lifecycle_identity.get("required_repository_permissions") != [
         "Actions: write",
+        "Contents: write",
         "Metadata: read",
         "Pull requests: write",
     ]:
         raise PolicyError("lifecycle_identity repository permissions are not exact")
-    if lifecycle_identity.get("forbidden_repository_permissions") != [
-        "Contents: write"
-    ]:
-        raise PolicyError("lifecycle_identity must forbid Contents write")
+    if lifecycle_identity.get("forbidden_repository_permissions") != []:
+        raise PolicyError("lifecycle_identity forbidden permissions are not exact")
     expected_lifecycle_environments = {
         ".github": [
             (
@@ -471,9 +480,6 @@ def validate_config(config: Mapping[str, Any]) -> None:
             raise PolicyError(f"{name}: managed repository must be public")
         if repo.get("default_branch") != "main":
             raise PolicyError(f"{name}: default_branch must be main")
-        sha = repo.get("audited_main_sha")
-        if not isinstance(sha, str) or re.fullmatch(r"[0-9a-f]{40}", sha) is None:
-            raise PolicyError(f"{name}: audited_main_sha must be a full commit SHA")
         required = _require_list(repo.get("required_checks"), f"{name}.required_checks")
         scoped = _require_list(
             repo.get("path_scoped_checks"), f"{name}.path_scoped_checks"
@@ -658,113 +664,18 @@ def _resolve_release_actor(
     client: GitHubClient, config: Mapping[str, Any], blockers: list[dict[str, str]]
 ) -> ReleaseActor | None:
     identity = config["release_identity"]
-    actor_id = identity.get("actor_id")
-    source = "config"
-    if actor_id is None:
-        source = identity["actor_id_environment"]
-        raw = os.environ.get(source)
-        if raw:
-            try:
-                actor_id = int(raw)
-            except ValueError:
-                actor_id = None
-    if not isinstance(actor_id, int) or actor_id <= 0:
-        blockers.append(
-            {
-                "code": "release_identity_unresolved",
-                "message": (
-                    "Set OPENADAPT_RELEASE_APP_ID to the reviewed openadapt-release "
-                    "GitHub App ID before apply."
-                ),
-            }
-        )
-        return None
-
-    slug = identity["app_slug"]
-    app = client.get(f"/apps/{quote(slug, safe='')}", optional=True)
-    if not isinstance(app, Mapping):
-        blockers.append(
-            {
-                "code": "release_identity_not_found",
-                "message": f"GitHub App {slug!r} from {source} was not found.",
-            }
-        )
-        return None
-    if app.get("id") != actor_id or app.get("slug") != slug:
-        blockers.append(
-            {
-                "code": "release_identity_mismatch",
-                "message": f"GitHub App {slug!r} does not have actor ID {actor_id}.",
-            }
-        )
-        return None
-    owner = config["organization"]
-    response = client.get(f"/orgs/{owner}/installations?per_page=100")
-    installations = (
-        response.get("installations", []) if isinstance(response, Mapping) else response
+    resolved = _resolve_scoped_dispatch_actor(
+        client, config, blockers, "release_identity"
     )
-    installation = next(
-        (
-            item
-            for item in installations or []
-            if item.get("app_id") == actor_id and item.get("app_slug") == slug
-        ),
-        None,
+    if resolved is None:
+        return None
+    return ReleaseActor(
+        app_id=resolved.app_id,
+        actor_id=resolved.actor_id,
+        actor_login=resolved.actor_login,
+        app_slug=identity["app_slug"],
+        installation_id=resolved.installation_id,
     )
-    if installation is None:
-        blockers.append(
-            {
-                "code": "release_identity_not_installed",
-                "message": f"GitHub App {slug!r} is not installed for {owner}.",
-            }
-        )
-        return None
-    expected_permissions = {
-        item.split(":", 1)[0].strip().lower().replace(" ", "_"): item.split(":", 1)[1]
-        .strip()
-        .lower()
-        for item in identity["required_repository_permissions"]
-    }
-    if installation.get("permissions") != expected_permissions:
-        blockers.append(
-            {
-                "code": "release_identity_permissions_mismatch",
-                "message": (
-                    f"GitHub App {slug!r} does not have the exact reviewed permissions."
-                ),
-            }
-        )
-        return None
-    if installation.get("repository_selection") != "selected":
-        blockers.append(
-            {
-                "code": "release_identity_repository_scope",
-                "message": (
-                    f"GitHub App {slug!r} must select only the six public package "
-                    "repositories."
-                ),
-            }
-        )
-        return None
-    repository_response = client.get(
-        f"/user/installations/{installation['id']}/repositories?per_page=100"
-    )
-    installed_names = {
-        item.get("name") for item in repository_response.get("repositories", [])
-    }
-    expected_names = set(identity["repository_scope"])
-    if installed_names != expected_names:
-        blockers.append(
-            {
-                "code": "release_identity_repository_scope",
-                "message": (
-                    f"GitHub App {slug!r} repository scope must be exactly: "
-                    f"{', '.join(sorted(expected_names))}."
-                ),
-            }
-        )
-        return None
-    return ReleaseActor(actor_id=actor_id, app_slug=slug)
 
 
 def _identity_number(
@@ -984,7 +895,10 @@ def _pull_request_rule(
 
 
 def desired_rulesets(
-    config: Mapping[str, Any], repo: Mapping[str, Any], actor: ReleaseActor | None
+    config: Mapping[str, Any],
+    repo: Mapping[str, Any],
+    actor: ReleaseActor | None,
+    lifecycle_actor: LifecycleActor | None = None,
 ) -> list[dict[str, Any]]:
     rules: list[dict[str, Any]] = [
         {"type": "deletion"},
@@ -1040,7 +954,7 @@ def desired_rulesets(
         if repo["name"] in config["release_identity"]["repository_scope"]:
             bypass_actors = [
                 {
-                    "actor_id": actor.actor_id,
+                    "actor_id": actor.app_id,
                     "actor_type": "Integration",
                     "bypass_mode": config["release_identity"]["bypass_mode"],
                 }
@@ -1060,6 +974,45 @@ def desired_rulesets(
                 "rules": [{"type": "creation"}],
             }
         )
+    if repo["name"] == ".github":
+        feed_ref = ["refs/heads/production-lifecycle-feed"]
+        result.append(
+            {
+                "name": MANAGED_RULESET_NAMES[3],
+                "target": "branch",
+                "enforcement": "active",
+                "bypass_actors": [],
+                "conditions": {
+                    "ref_name": {"include": feed_ref, "exclude": []}
+                },
+                "rules": [{"type": "deletion"}, {"type": "non_fast_forward"}],
+            }
+        )
+        if lifecycle_actor is not None:
+            result.append(
+                {
+                    "name": MANAGED_RULESET_NAMES[4],
+                    "target": "branch",
+                    "enforcement": "active",
+                    "bypass_actors": [
+                        {
+                            "actor_id": lifecycle_actor.app_id,
+                            "actor_type": "Integration",
+                            "bypass_mode": "always",
+                        }
+                    ],
+                    "conditions": {
+                        "ref_name": {"include": feed_ref, "exclude": []}
+                    },
+                    "rules": [
+                        {"type": "creation"},
+                        {
+                            "type": "update",
+                            "parameters": {"update_allows_fetch_and_merge": False},
+                        },
+                    ],
+                }
+            )
     return result
 
 
@@ -1738,36 +1691,42 @@ def _release_identity_variable_blockers(
 ) -> list[dict[str, str]]:
     if repo["name"] not in identity["repository_scope"] or actor is None:
         return []
-    variable_name = identity["repository_variables"]["app_id"]
-    variable = client.get(
-        (
-            f"/repos/{owner}/{repo['name']}/actions/variables/"
-            f"{quote(variable_name, safe='')}"
-        ),
-        optional=True,
-    )
-    if not isinstance(variable, Mapping):
-        return [
-            {
-                "code": "openadapt-release_variable_missing",
-                "message": (
-                    f"{repo['name']}: Actions variable {variable_name} is missing."
-                ),
-            }
-        ]
-    if variable.get("name") != variable_name or variable.get("value") != str(
-        actor.actor_id
-    ):
-        return [
-            {
-                "code": "openadapt-release_variable_mismatch",
-                "message": (
-                    f"{repo['name']}: Actions variable {variable_name} does not "
-                    "match the reviewed release App identity."
-                ),
-            }
-        ]
-    return []
+    blockers: list[dict[str, str]] = []
+    expected_values = {
+        identity["repository_variables"]["app_id"]: actor.app_id,
+        identity["repository_variables"]["actor_id"]: actor.actor_id,
+        identity["repository_variables"]["installation_id"]: actor.installation_id,
+    }
+    for variable_name, expected in expected_values.items():
+        variable = client.get(
+            (
+                f"/repos/{owner}/{repo['name']}/actions/variables/"
+                f"{quote(variable_name, safe='')}"
+            ),
+            optional=True,
+        )
+        if not isinstance(variable, Mapping):
+            blockers.append(
+                {
+                    "code": "openadapt-release_variable_missing",
+                    "message": (
+                        f"{repo['name']}: Actions variable {variable_name} is missing."
+                    ),
+                }
+            )
+        elif variable.get("name") != variable_name or variable.get("value") != str(
+            expected
+        ):
+            blockers.append(
+                {
+                    "code": "openadapt-release_variable_mismatch",
+                    "message": (
+                        f"{repo['name']}: Actions variable {variable_name} does not "
+                        "match the reviewed release App identity."
+                    ),
+                }
+            )
+    return blockers
 
 
 def _inventory_names(response: Any, field: str, description: str) -> set[str]:
@@ -2275,6 +2234,44 @@ def _list_rulesets(
     return result
 
 
+def _actions_variable_credential_blockers(
+    client: GitHubClient,
+    path: str,
+    scope: str,
+) -> list[dict[str, str]]:
+    """Report credential-like Actions variables without retaining their values."""
+
+    response = client.get(path)
+    if not isinstance(response, Mapping) or not isinstance(
+        response.get("variables"), list
+    ):
+        raise GitHubError(f"{scope}: Actions variable inventory is unavailable")
+    blockers: list[dict[str, str]] = []
+    for item in response["variables"]:
+        if not isinstance(item, Mapping):
+            raise GitHubError(f"{scope}: Actions variable metadata is invalid")
+        name = item.get("name")
+        value = item.get("value")
+        if not isinstance(name, str) or not isinstance(value, str):
+            raise GitHubError(f"{scope}: Actions variable metadata is incomplete")
+        name_match = CREDENTIAL_VARIABLE_NAME.search(name) is not None
+        value_match = any(pattern.search(value) for pattern in CREDENTIAL_VALUE_PATTERNS)
+        if not name_match and not value_match:
+            continue
+        updated_at = item.get("updated_at")
+        safe_timestamp = updated_at if isinstance(updated_at, str) else "unknown"
+        blockers.append(
+            {
+                "code": "credential_stored_as_actions_variable",
+                "message": (
+                    f"{scope}: Actions variable {name} contains credential-like data "
+                    f"(updated_at={safe_timestamp}). Move it to an Actions secret."
+                ),
+            }
+        )
+    return blockers
+
+
 def _open_pull_requests(
     client: GitHubClient, owner: str, repo: str, branch: str
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
@@ -2401,6 +2398,13 @@ def _environment_actions(
 def build_plan(client: GitHubClient, config: Mapping[str, Any]) -> dict[str, Any]:
     owner = config["organization"]
     global_blockers: list[dict[str, str]] = []
+    global_blockers.extend(
+        _actions_variable_credential_blockers(
+            client,
+            f"/orgs/{owner}/actions/variables?per_page=100",
+            f"organization {owner}",
+        )
+    )
     actor = _resolve_release_actor(client, config, global_blockers)
     lifecycle_actor = _resolve_lifecycle_actor(client, config, global_blockers)
     docs_actor = _resolve_docs_actor(client, config, global_blockers)
@@ -2410,6 +2414,13 @@ def build_plan(client: GitHubClient, config: Mapping[str, Any]) -> dict[str, Any
     for repo in config["repositories"]:
         name = repo["name"]
         blockers: list[dict[str, str]] = []
+        blockers.extend(
+            _actions_variable_credential_blockers(
+                client,
+                f"/repos/{owner}/{name}/actions/variables?per_page=100",
+                f"repository {owner}/{name}",
+            )
+        )
         warnings = [
             {"code": "admission_gap", "message": message}
             for message in repo.get("admission_gaps", [])
@@ -2445,17 +2456,18 @@ def build_plan(client: GitHubClient, config: Mapping[str, Any]) -> dict[str, Any
             or re.fullmatch(r"[0-9a-f]{40}", main_sha) is None
         ):
             raise GitHubError(f"{name}: default branch did not resolve to a commit SHA")
-        if main_sha != repo["audited_main_sha"]:
-            blockers.append(
-                {
-                    "code": "audited_main_drift",
-                    "message": (
-                        f"{name}: main advanced from {repo['audited_main_sha']} to {main_sha}. "
-                        "Re-audit the exact current main workflow state and update the policy SHA."
-                    ),
-                }
+        immutable_releases_enabled = True
+        if name in config["release_identity"]["repository_scope"]:
+            immutable_state = client.get(
+                f"/repos/{owner}/{name}/immutable-releases"
             )
-
+            if not isinstance(immutable_state, Mapping) or not isinstance(
+                immutable_state.get("enabled"), bool
+            ):
+                raise GitHubError(
+                    f"{name}: immutable release state is unavailable"
+                )
+            immutable_releases_enabled = immutable_state["enabled"]
         pulls, active_checks = _open_pull_requests(
             client, owner, name, repo["default_branch"]
         )
@@ -2548,7 +2560,9 @@ def build_plan(client: GitHubClient, config: Mapping[str, Any]) -> dict[str, Any
         )
         current_rulesets = _list_rulesets(client, owner, name)
         actions: list[dict[str, Any]] = []
-        for desired in desired_rulesets(config, repo, actor):
+        if not immutable_releases_enabled:
+            actions.append({"kind": "enable_immutable_releases"})
+        for desired in desired_rulesets(config, repo, actor, lifecycle_actor):
             current = current_rulesets.get(desired["name"])
             if current is None:
                 actions.append(
@@ -2592,7 +2606,6 @@ def build_plan(client: GitHubClient, config: Mapping[str, Any]) -> dict[str, Any
                 "name": name,
                 "default_branch": repo["default_branch"],
                 "main_sha": main_sha,
-                "audited_main_sha": repo["audited_main_sha"],
                 "open_pull_requests": pulls,
                 "active_checks": active_checks,
                 "path_scoped_checks": repo["path_scoped_checks"],
@@ -2607,12 +2620,14 @@ def build_plan(client: GitHubClient, config: Mapping[str, Any]) -> dict[str, Any
         len(repo["blockers"]) for repo in repositories
     )
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "generated_at": _utc_now().isoformat(),
         "max_age_seconds": PLAN_MAX_AGE_SECONDS,
         "organization": owner,
         "config_sha256": _json_digest(config),
+        "release_app_id": actor.app_id if actor else None,
         "release_actor_id": actor.actor_id if actor else None,
+        "release_installation_id": actor.installation_id if actor else None,
         "lifecycle_app_id": lifecycle_actor.app_id if lifecycle_actor else None,
         "lifecycle_actor_id": lifecycle_actor.actor_id if lifecycle_actor else None,
         "lifecycle_installation_id": (
@@ -2632,7 +2647,9 @@ def build_plan(client: GitHubClient, config: Mapping[str, Any]) -> dict[str, Any
 def _plan_snapshot(plan: Mapping[str, Any]) -> dict[str, Any]:
     return {
         "config_sha256": plan.get("config_sha256"),
+        "release_app_id": plan.get("release_app_id"),
         "release_actor_id": plan.get("release_actor_id"),
+        "release_installation_id": plan.get("release_installation_id"),
         "lifecycle_app_id": plan.get("lifecycle_app_id"),
         "lifecycle_actor_id": plan.get("lifecycle_actor_id"),
         "lifecycle_installation_id": plan.get("lifecycle_installation_id"),
@@ -2738,6 +2755,10 @@ def _apply_actions(
                         f"/repos/{owner}/{name}/environments/{environment}/"
                         f"deployment-branch-policies/{action['policy_id']}"
                     ),
+                )
+            elif kind == "enable_immutable_releases":
+                client.write(
+                    "PUT", f"/repos/{owner}/{name}/immutable-releases"
                 )
             else:
                 raise PolicyError(f"unknown plan action: {kind}")
