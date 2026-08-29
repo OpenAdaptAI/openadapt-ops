@@ -236,29 +236,34 @@ refused at authoring.
 ## process
 
 Author a ProcessContract parent over independently admitted capabilities.
-Schema `openadapt.process-contract/v0`. Each `--child` is an `admission_id`
-from a live `openadapt.qualification-admission/v1` envelope, not a recording
-path. The parent points at those admissions. It doesn't copy bundles. See
+Schema `openadapt.process-contract/v0`. `--child NAME=BUNDLE` is the admitted
+bundle. `--admission NAME=ENVELOPE` is that child's signed
+`openadapt.qualification-admission/v1` file. A compose child under
+`composition.json` is not an envelope. The parent points at those admissions.
+It doesn't copy recordings. See
 [Process contracts](../concepts/process-contract.md).
 
 ```bash
 openadapt flow process \
-  --child intake=<intake-admission-id> \
-  --child posting=<posting-admission-id> \
+  --child intake=./intake-bundle \
+  --admission intake=./intake-admission.json \
+  --child posting=./posting-bundle \
+  --admission posting=./posting-admission.json \
   --handoff intake.patient_id=posting.patient_id \
   --out process-parent
 ```
 
 | Argument / flag | Description |
 |---|---|
-| `--child NAME=ADMISSION_ID` | Named admitted capability (repeat; at least two). `ADMISSION_ID` is the UUID on the child's qualification-admission envelope. |
+| `--child NAME=BUNDLE` | Named admitted child bundle (repeat; at least two). |
+| `--admission NAME=ENVELOPE` | Signed qualification-admission file for NAME. Required for every `--child`. |
 | `--handoff FROM.source=TO.target` | Copy a predecessor's effect-bound parameter into a successor parameter. Repeatable. Missing evidence stops the run. |
 | `--after NAME=PRED[,PRED]` | Explicit DAG predecessors for NAME. Omit to run children in `--child` order. |
 | `--allow-halt NAME=OUTCOME` | Let NAME start when a predecessor ended OUTCOME instead of `VERIFIED`. `VERIFIED` is always allowed. |
 | `--out` (required) | Output process-contract directory |
 | `--name` | Process name |
 
-`--child`, `--handoff`, `--after`, and `--allow-halt` have the same shape as
+`--handoff`, `--after`, and `--allow-halt` have the same shape as
 [`compose`](#compose). Pointing `process` at a `composition.json` directory is
 refused. Each child runs through
 [OpenAdapt Execute](../commercial/execute-api.md) with that child's envelope.

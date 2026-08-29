@@ -90,16 +90,20 @@ After both envelopes exist, author the process parent:
 
 ```bash
 openadapt flow process \
-  --child intake=<intake-admission-id> \
-  --child posting=<posting-admission-id> \
+  --child intake=./intake-bundle \
+  --admission intake=./intake-admission.json \
+  --child posting=./posting-bundle \
+  --admission posting=./posting-admission.json \
   --handoff intake.patient_id=posting.patient_id \
   --out process-parent
 openadapt flow visualize process-parent -o process.html
 ```
 
-`--child`, `--handoff`, `--after`, and `--allow-halt` have the same shape as
-`compose`. The children are admission ids, not bundle paths. The parent file
-is `process-parent/process-contract.json`, schema
+`--handoff`, `--after`, and `--allow-halt` have the same shape as `compose`.
+`--child NAME=BUNDLE` is the admitted bundle. `--admission NAME=ENVELOPE` is
+that child's signed `openadapt.qualification-admission/v1` file. A compose
+child path under `composition.json` is not an envelope. The parent file is
+`process-parent/process-contract.json`, schema
 `openadapt.process-contract/v0`. It points at the envelopes. It doesn't copy
 recordings. It doesn't become a ProgramGraph.
 
