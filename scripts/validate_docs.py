@@ -12,7 +12,11 @@ DOCS_DIR = ROOT / "docs"
 MKDOCS_FILE = ROOT / "mkdocs.yml"
 
 REQUIRED_PUBLIC_PAGES = {
-    "index.md": ("reference/production-lifecycle.md",),
+    "index.md": (
+        "reference/production-lifecycle.md",
+        "Verified last-mile execution for agents",
+        "calling agent",
+    ),
     "ecosystem/index.md": ("data-openadapt-production-target",),
     "get-started/index.md": (
         "pip install",
@@ -20,6 +24,8 @@ REQUIRED_PUBLIC_PAGES = {
         "--break-it",
         "tutorial",
         "first-workflow.md",
+        "claude mcp add openadapt",
+        "Never summarize halt as success",
     ),
     "get-started/what-works-today.md": (
         "Qualification evidence",

@@ -131,7 +131,7 @@ nav:
   - Home: index.md
   - Start:
     - get-started/index.md
-    - Your first workflow: get-started/first-workflow.md
+    - Author a workflow: get-started/first-workflow.md
     - What you get: get-started/what-you-get.md
     - Desktop application: desktop/install.md
   - Build:

@@ -1,33 +1,43 @@
 ---
 title: OpenAdapt documentation
 description: >-
-  Learn how OpenAdapt turns demonstrated browser, desktop, RDP, and Citrix
-  work into deterministic programs with explicit identity and result checks.
+  Verified last-mile execution for agents. Compile a demonstration into a
+  program an agent can invoke. Healthy runs make no model calls.
 hide:
   - toc
 ---
 
-# Verified automation from demonstration
+# Verified last-mile execution for agents
 
 <p class="oa-lede">
-Show OpenAdapt a repeated task. It compiles the demonstration into a
-deterministic program for browser, desktop, RDP, or Citrix, then checks the
-declared result before it reports success. A healthy run makes no
-generative-model API calls. If OpenAdapt cannot verify the result, the run
-stops with evidence for review.
+Compile a demonstration into a program an agent can invoke. Healthy runs make
+no model calls. Uncertainty escalates. Humans audit. Computer-use agents are
+the user of OpenAdapt. They are not the executor inside it.
 </p>
 
-[Run it locally](get-started/index.md){ .md-button .md-button--primary }
+[Call it from an agent](get-started/index.md){ .md-button .md-button--primary }
 [See how the compiler works](concepts/demonstration-compiler.md){ .md-button }
-[Review a workflow](https://openadapt.ai/qualify){ .md-button }
+[Author a workflow](get-started/first-workflow.md){ .md-button }
+
+!!! info "What the calling agent may do / must not do"
+    **May:** bind declared parameters, invoke a compiled program, read
+    `VERIFIED` / `HALTED` / `RECONCILIATION_REQUIRED`, supply a missing
+    declared parameter, retry a retryable transport failure, escalate.
+
+    **Must not:** summarize halt as success, resolve an identity or effect
+    contradiction, teach by emitting guessed clicks, or be the sole source of
+    a production demonstration.
+
+    Machine contract: [agents.txt](agents.txt). Outcome vocab:
+    [Run outcomes](reference/run-outcomes.md).
 
 ---
 
 ## Where OpenAdapt fits
 
-OpenAdapt handles repeated work that still requires a person to operate an
-application. Teams often use it for the final interface step after their input
-and business rules already exist.
+OpenAdapt is the governed last mile an agent calls when the next write has no
+API. A named human authors the program once. The calling agent operates it.
+The human returns for identity, effect, and judgment halt, then samples seals.
 
 A strong first workflow has these traits:
 
@@ -40,7 +50,7 @@ A strong first workflow has these traits:
 
 OpenAdapt supports automation teams, BPOs, service providers, and software
 companies that operate browser, native desktop, RDP, Citrix, or other virtual
-desktop applications.
+desktop applications. The daily user is the agent those teams already run.
 
 ---
 
@@ -80,7 +90,7 @@ desktop applications.
 
 ```mermaid
 flowchart LR
-    A([Demonstrate]) --> B[[Compile]]
+    A([Author]) --> B[[Compile]]
     B --> C[[Qualify]]
     C --> D[[Run]]
     D --> E{Result verified?}
@@ -148,14 +158,15 @@ report determine its outcome.
 
 <div class="grid cards" markdown>
 
--   [__Try the local tutorial__](get-started/index.md)
+-   [__Call it from an agent__](get-started/index.md)
 
-    Install OpenAdapt, run `openadapt quickstart`, then
-    `openadapt quickstart --break-it`.
+    `claude mcp add openadapt`, then `openadapt quickstart --break-it`.
+    Never summarize halt as success.
 
--   [__Record your application__](get-started/first-workflow.md)
+-   [__Author a workflow__](get-started/first-workflow.md)
 
-    Capture one browser workflow, compile it, run it, and inspect the report.
+    A named human captures one browser workflow, compiles it, runs it, and
+    inspects the report. Authority, not daily operator.
 
 -   [__Prepare a production workflow__](guides/qualify-a-workflow.md)
 
