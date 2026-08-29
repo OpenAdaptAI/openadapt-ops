@@ -82,7 +82,7 @@ flowchart LR
   the runner's local sensitive-data policy. Verification prefers an
   independent read path; where only the screen is available, that is labeled
   same-surface confirmation and high-risk workflows may not qualify on it.
-- **Status:** see the honest status statement in the
+- **Status:** see the current qualification status in the
   [external Citrix brief](citrix-external-brief.md).
 
 ## Rules that hold in every lane

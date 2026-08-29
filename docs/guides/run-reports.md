@@ -49,7 +49,7 @@ When auditing a consequential run, check:
 1. **Did every write verify an effect?** A write with only a screen
    postcondition is exactly as silent as the [five transactional
    faults](../concepts/effect-verification.md). Confirm the effect verdict is
-   CONFIRMED, not just a passing screen check.
+   CONFIRMED, not a passing screen check.
 2. **Were consequential clicks identity armed?** Cross-check the
    identity-coverage line against the steps that navigate to or write a record.
 3. **Did anything heal?** A heal means the UI drifted. Review the diff and

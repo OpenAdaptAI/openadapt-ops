@@ -34,7 +34,7 @@ the evidence supports a "do not automate" decision.
 | [OpenAdapt Execute private-pilot guide](oem-brief.md) | A vendor that wants to embed verified execution. The API is available to approved private-pilot partners with scoped credentials. |
 | [Procurement FAQ](procurement-faq.md) | Procurement, legal, and vendor-risk questions. |
 
-## Honesty rules for this section
+## How claims are bounded
 
 These documents follow the same rules as the public site:
 

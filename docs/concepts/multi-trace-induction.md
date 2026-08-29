@@ -31,7 +31,7 @@ is resolving that ambiguity:
 ## The induction loop
 
 Induction turns several demonstrations into a program by proposing, questioning,
-and validating, not guessing:
+and validating:
 
 ```mermaid
 flowchart TD
@@ -49,12 +49,12 @@ flowchart TD
 1. **Bootstrap** one interpretation from one demonstration.
 2. **Enumerate** candidate generalizations (is this value a parameter, is this
    step a loop body).
-3. **Resolve ambiguity by asking**, not guessing: surface concrete
-   multiple-choice questions to the operator.
+3. **Resolve ambiguity by asking**: surface concrete multiple-choice questions
+   to the operator.
 4. **Fold in additional traces** and infer the shared control-flow graph.
 5. **Validate** on held-out traces and synthetic perturbations.
-6. **Quarantine** when intent stays underdetermined: refuse to emit rather than
-   ship a workflow that might do the wrong thing.
+6. **Quarantine** when intent stays underdetermined: refuse to emit a workflow
+   that might do the wrong thing.
 
 ## Induce a program
 
@@ -72,7 +72,7 @@ scores. A certified program can then loop over a data source with
 The worked walkthrough is in
 [Induce a program from multiple traces](../guides/induce-a-program.md).
 
-## Ask, don't guess
+## Disambiguate before certify
 
 The disambiguation step ships as a CLI verb. It surfaces the compile-time
 questions an ambiguous demonstration raises and applies the answers as guards or
@@ -83,15 +83,11 @@ certified.
 openadapt flow disambiguate bundle --interactive --write
 ```
 
-A consequential (must-answer) ambiguity exits nonzero until it is resolved. Same
-posture as the rest of the system: when the right action is not determined, stop
-and ask, rather than proceed and hope.
-
-## The through-line
+A consequential (must-answer) ambiguity exits nonzero until it's resolved. When
+the right action isn't determined, stop and ask.
 
 OpenAdapt spent enormous effort making a *single trace* safe: the
 [identity ladder](identity-gate.md), volatility mining, postconditions,
-[effect verification](effect-verification.md). That work is necessary but
-insufficient, because the trace itself under-specifies intent. Induction
-recovers the intended program, and quarantine keeps the system honest when it
-cannot.
+[effect verification](effect-verification.md). That work is necessary, and it
+still leaves the trace under-specified. Induction recovers the intended
+program. Quarantine withholds a program when it cannot.

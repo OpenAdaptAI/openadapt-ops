@@ -68,14 +68,14 @@ model is trusted to do:
 3. a **[durable pause, approve, resume](durable-runtime.md)** from the last
    verified checkpoint.
 
-Explicitly **not** "hand the rest of the workflow to a free-form agent after a
-halt." Recovery is scoped to a single transition; the checkpoint is where a
-human takes over if it cannot be. When a human *does* demonstrate the fix at a
-halt, the [halt-learn loop](halt-learn-loop.md) folds it back into the program
-through the same governed induction and regression gate, so that state need not
-halt again.
+Recovery is scoped to a single transition. After a halt, OpenAdapt does not
+hand the rest of the workflow to a free-form agent. The checkpoint is where a
+human takes over if the next action is not determined. When a human
+demonstrates the fix at a halt, the [halt-learn loop](halt-learn-loop.md) folds
+it back into the program through the same governed induction and regression
+gate, so that state need not halt again.
 
-The IR is how OpenAdapt gets from "replay this one demonstration safely" to "run
-this program safely across the variation the real world throws at it." How a
-program is *recovered* from more than one demonstration is
+The IR is how OpenAdapt gets from "replay this one demonstration safely" to
+"run this program safely across the variation the real world throws at it." How
+a program is *recovered* from more than one demonstration is
 [multi-trace induction](multi-trace-induction.md).

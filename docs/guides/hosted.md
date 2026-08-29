@@ -59,7 +59,7 @@ support.
 
 ## Hosted recorder boundary
 
-The hosted recorder is a real, bounded authoring path rather than a simulated
+The hosted recorder is a real, bounded authoring path, not a simulated
 demo. A qualified hosted browser session produced PNG frames, accepted and
 retained input evidence, assembled a native recording, created one compileable
 workflow idempotently, enforced its resource limits, and removed the ephemeral

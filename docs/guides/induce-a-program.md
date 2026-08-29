@@ -3,7 +3,7 @@
 A single demonstration is evidence, not a specification: it cannot show which
 values are parameters, where a branch or loop belongs, or what the failure path
 is. `induce` recovers a parameterized **program** from several demonstrations of
-the same task, and refuses rather than guesses when the traces leave intent
+the same task, and refuses when the traces leave intent
 underdetermined. For the model behind this, see
 [Multi-trace induction](../concepts/multi-trace-induction.md).
 

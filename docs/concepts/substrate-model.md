@@ -12,7 +12,7 @@ the resolution ladder, the [identity gate](identity-gate.md),
 [effect verification](effect-verification.md), and the
 [halt-learn loop](halt-learn-loop.md).
 
-## Two axes, one contract
+## Substrate and deployment
 
 Two orthogonal questions about any run, kept separate:
 
@@ -59,10 +59,10 @@ The released backends cover it behind the same protocol:
 - **`WindowsBackend`** drives a native Windows desktop through an in-session
   agent. Its shipped typed RPC exposes bounded screenshot, input, and UIA
   operations while the legacy arbitrary-execution route stays disabled by
-  default. It reads the **UI Automation** tree for identity. Crucially, most
+  default. It reads the **UI Automation** tree for identity. Most
   native controls expose `Name` / `Value` text **even without a stable
-  `AutomationId`**, so structured identity is viable on desktop, not just the
-  browser.
+  `AutomationId`**, so structured identity is viable on desktop as well as
+  the browser.
 - The **native macOS backend** binds one exact application window and uses
   Accessibility metadata plus retained visual evidence.
 - **`LinuxBackend`** binds one exact AT-SPI application and top-level window,
@@ -88,7 +88,7 @@ coordinates.
     identity gate uses its pixel/OCR tiers. When an identifier is genuinely
     ambiguous at that fidelity (a same-name/same-DOB record whose MRN differs by
     a single `O`/`0` glyph), the gate
-    **[halts rather than guesses](identity-gate.md)** by design. That is the same
+    **[halts](identity-gate.md)** instead of guessing. That is the same
     never-click-the-wrong-record guarantee every substrate enforces. Each surface
     verifies with the highest-fidelity signal it exposes, and structured layers
     (a browser DOM, Windows UIA) resolve that class outright. Per-substrate

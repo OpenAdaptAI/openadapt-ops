@@ -1,6 +1,6 @@
 # Security packet
 
-The honest current state of OpenAdapt's security posture, written for a
+Current OpenAdapt security posture, written for a
 security or vendor-risk reviewer. Deeper technical detail:
 [Security and data handling](../guides/security-and-data-handling.md) and the
 reviewer-oriented
@@ -29,7 +29,7 @@ add an append-only, hash-chained audit log.
   read of the system of record. REFUTED and INDETERMINATE verdicts both halt;
   an unreachable verifier is never treated as success
   ([effect verification](../concepts/effect-verification.md)).
-- **Fail-closed regulated path.** The `run` verb refuses to start without
+- **Regulated `run` path.** The `run` verb refuses to start without
   certification, identity coverage, effect contracts or explicit approval, and
   encrypted, integrity-sealed bundles
   ([regulated execution](../concepts/regulated-execution.md)).

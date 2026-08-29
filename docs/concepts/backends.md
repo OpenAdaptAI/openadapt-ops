@@ -46,7 +46,7 @@ substrate; nothing about the safety model is specific to it.
 The public `WindowsBackend` now narrows the in-session boundary to typed
 `/input` and `/uia/*` operations, disables arbitrary legacy execution by
 default, screenshots the desktop, and reads the **UI Automation** tree for
-identity. Crucially, an
+identity. An
 element usually exposes `Name` / `Value` text **even when it has no stable
 `AutomationId`**, so UIA-based identity is viable on most native apps even where
 a durable selector is not.
@@ -135,7 +135,7 @@ swappable `RDPTransport` protocol (so the adapter is CI-testable without a live
 server) and a real transport over the pure-Python async `aardwolf` client,
 behind the optional `rdp` extra. On a pure-pixel substrate the ladder runs on
 its visual floor and the identity gate falls back to its pixel/OCR tiers, which
-is why a look-alike identifier can force a [halt rather than a verify](identity-gate.md)
+is why a look-alike identifier can force a [halt instead of a verify](identity-gate.md)
 there.
 
 For every consequential remote action, the runtime uses a two-phase actuation

@@ -30,8 +30,8 @@ other substrate:
   fresh pixels, resolved target, and record identity, then a one-shot input
   lease refuses delivery if **anything** changed between resolution and the
   first input edge.
-- Identity checks run on the pixel tier; ambiguity deliberately over-halts
-  rather than guessing. A collapsible or unreadable identifier halts the run.
+- Identity checks run on the pixel tier; ambiguity over-halts
+  instead of guessing. A collapsible or unreadable identifier halts the run.
 - Business effects are verified out of band where a read path exists (API,
   database, report export, or a read-only second session). Screen-only
   confirmation is labeled as such, and high-risk workflows may not qualify on
@@ -39,7 +39,7 @@ other substrate:
 - Halts are durable: the run pauses for a human with the violated expectation
   named in the report.
 
-## Honest status
+## Current qualification status
 
 Two claims, kept separate:
 

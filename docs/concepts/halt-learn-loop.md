@@ -1,13 +1,13 @@
 # Attended decisions and the halt-learn loop
 
-A [halt](identity-gate.md) is honest, but a halt nobody hears is just a stopped
-run, and a halt that teaches the system nothing means the same unhandled state
-halts forever. This page covers both halves of the answer: **where a halt goes**
-— the bounded question OpenAdapt puts in front of a person — and **what happens
-when that person teaches the fix**, which is the halt-learn loop proper.
+A [halt](identity-gate.md) nobody hears is just a stopped run, and a halt that
+teaches the system nothing means the same unhandled state halts forever. This
+page covers both halves of the answer: **where a halt goes** (the bounded
+question OpenAdapt puts in front of a person) and **what happens when that
+person teaches the fix**, which is the halt-learn loop proper.
 
-Both halves refuse rather than guess. Neither hands control to a free-form
-agent, and neither puts a generative-model API call on the runtime path.
+Neither half hands control to a free-form agent, and neither puts a
+generative-model API call on the runtime path.
 
 ## Terms used here
 
@@ -59,7 +59,7 @@ start, what kind of target it was looking for, what the
 [resolution ladder](capability-ladder.md) tried on each rung, and what the
 engine will re-prove if they continue.
 
-The decision client is a **responsive web app** — deliberately not a native iOS
+The decision client is a **responsive web app**, not a native iOS
 or Android application, so there is no app store or separate update channel.
 The customer-controlled runner serves the full local portal. The hosted queue
 receives only a closed, PHI-free decision context.
@@ -99,14 +99,14 @@ When an answer arrives, the engine:
 2. takes a single-flight lease, so two people cannot both decide one task;
 3. **re-reads the live application** and re-runs its identity, postcondition,
    and effect checks against a fresh observation;
-4. continues only if that fresh check passes — and **refuses** when the
+4. continues only if that fresh check passes, and **refuses** when the
    application is not actually in the state the step needs.
 
 So "I fixed it" means *I prepared the live state; now go and check it*. It never
 means "repeat the paused write". A run reaches `VERIFIED` only when the complete
 configured contract proves the intended effect, exactly as on an unattended run.
-An operator's answer is an input to a verification, never a substitute for one —
-which is why an operator who is mistaken produces a second halt rather than a
+An operator's answer is an input to a verification, never a substitute for one,
+which is why an operator who is mistaken produces a second halt instead of a
 silent wrong write.
 
 !!! note "The operator's own work is verified, not replayed"
@@ -116,7 +116,7 @@ silent wrong write.
     A step whose postconditions or independent effect check do not pass is
     refused, not banked.
 
-The reply is also honest about delivery. Three states stay distinct: not sent,
+The reply also keeps delivery states distinct. Three states stay distinct: not sent,
 sent, and **may have been sent**. For uncertain delivery, use **Reconcile**.
 The runner reads the required postcondition and independent effect again. It
 does not send the action again. It reports a reconciled result only when that
@@ -128,10 +128,10 @@ The retained screen, the observed values, the OCR, and the failing target never
 leave the customer-controlled runner. Only a typed, PHI-free envelope crosses to
 a hosted control plane: opaque identifiers, digests, closed enums, bounded
 counts, and expiry. There is no free-text field anywhere in that envelope, so
-raw values and prose are **structurally unable** to travel rather than being
+raw values and prose are **structurally unable** to travel; they are not
 stripped in transit.
 
-The direct consequence is that a hosted surface shows **less** than the runner —
+The direct consequence is that a hosted surface shows **less** than the runner:
 it can say the *shape* of a failure but not its content. That is the design
 working, not a gap:
 
@@ -144,7 +144,7 @@ working, not a gap:
 
 A hosted surface that says less is a surface that cannot leak more. An operator
 who needs the full picture opens the run on the runner, where the evidence
-already is — and the hosted surface says so, rather than letting absent detail
+already is, and the hosted surface says so, so absent detail does not
 read as "OpenAdapt does not know".
 
 Sending a decision *back* through a hosted control plane requires an explicit
@@ -158,7 +158,7 @@ runner keeps decisions on its local surface.
 There are two ways, and they trade fidelity against what your network has to do.
 Neither of them asks OpenAdapt to open a hole in it.
 
-#### The hosted lane — nothing to configure
+#### The hosted lane: nothing to configure
 
 **This is the default answer for a practice without an IT department.** The
 runner makes **outbound HTTPS requests only** to the control plane: no inbound
@@ -184,16 +184,16 @@ certificate.
 What the phone shows on this lane is the *closed halt context*: which category
 of check failed, which resolution rungs were tried and what each one returned,
 which contracts a "Continue" will re-prove, and bounded counts. Every value is a
-closed enum, a bounded integer, or a boolean — **there is no string field and no
+closed enum, a bounded integer, or a boolean. **There is no string field and no
 image**, so the hosted service is structurally unable to hold a name, an MRN, an
 observed value, or a workflow label. It is not scrubbed; it has nowhere to put
 them.
 
 The one thing it gives up is the target control's own accessible name. The phone
-says *"OpenAdapt could not find the button"* rather than *"the button labelled
+says *"OpenAdapt could not find the button"* instead of *"the button labelled
 `Open`"*, and it tells you a name exists that it is not showing you.
 
-#### The runner-local portal — full fidelity, on your own terms
+#### The runner-local portal: full fidelity, on your own terms
 
 The portal on the runner serves everything, including the protected screenshot
 crops. That is why it is the path with a network requirement.
@@ -202,8 +202,8 @@ crops. That is why it is the path with a network requirement.
     Out of the box the decision portal binds `127.0.0.1` and advertises a
     loopback URL. **A phone cannot reach it, and a fresh install will not serve
     one.** Publishing it to a phone requires *you* to terminate trusted TLS in
-    front of the runner — an enterprise reverse proxy, a VPN, or a ZTNA
-    hostname — and to record that decision in configuration.
+    front of the runner (an enterprise reverse proxy, a VPN, or a ZTNA
+    hostname) and to record that decision in configuration.
 
     Use the hosted lane above if you do not operate one. See
     [the portal settings](../reference/configuration.md#the-self-hosted-phone-portal)
@@ -214,7 +214,7 @@ crops. That is why it is the path with a network requirement.
 We did not punch a hole in your network for our convenience, and there is no
 "bind everything" switch to make a demo easier. The boundary in front of a
 runner that can see protected records is yours to open, deliberately, under your
-own certificate and access policy — so this path inherits the authentication,
+own certificate and access policy, so this path inherits the authentication,
 device posture, and logging you already run, instead of asking you to trust a
 second one.
 
@@ -236,8 +236,8 @@ The phone then shows a short, one-use pairing code. Type that code on the
 runner to approve that phone. This binds the phone to the local portal; it does
 not give the phone an engine or console capability.
 
-Do it the intuitive way — derive the code from the pairing and show it on the
-runner — and an attacker who photographed the QR from across the room and
+Do it the intuitive way (derive the code from the pairing and show it on the
+runner) and an attacker who photographed the QR from across the room and
 claimed it first would be shown the very code the runner's screen was already
 displaying. The "matching code" would then confirm the attacker. Minting per
 claim means a remote attacker's phone shows a code the operator cannot see, and
@@ -245,7 +245,7 @@ the mismatch is visible immediately.
 
 The rest of the shape follows from the same posture:
 
-- The QR link carries **only a pairing secret** — no console capability, no
+- The QR link carries **only a pairing secret**: no console capability, no
   pause capability, no tenant, run, or pause identifier.
 - The secret rides in the URL **fragment**, which browsers never transmit, so it
   cannot land in a reverse-proxy access log or a referrer header.
@@ -406,23 +406,19 @@ the re-run command.
     class; generalizing to arbitrary corrections is the job of a richer inducer
     behind that same seam, which inherits the same gate.
 
-## Why this shape
+## What a person supplies, what the engine keeps
 
-Every other safety mechanism in OpenAdapt refuses rather than guesses. The
-halt-learn loop is how the system *improves* without abandoning that posture: the
-only thing trusted to generalize a fix is a demonstration plus a gate, biased
-the way the runtime is, so a revision that might weaken safety is quarantined,
-not shipped. It is the counterpart to
+The only thing trusted to generalize a fix is a demonstration plus a gate. A
+revision that might weaken safety is quarantined, not shipped. That pairs with
 [multi-trace induction](multi-trace-induction.md) (recover the program from
 several traces) and [policy and certify](policy-and-certify.md) (refuse a bundle
-whose gaps were not closed): learn only what you can prove safe.
+whose gaps were not closed).
 
-The attended decision is the same posture pointed at people. It would be easier
-to treat a tap as an answer, publish the portal on every interface so a phone
-just works, and forward the failing screen to a dashboard where support can see
-it. Each of those would move a decision, a network boundary, or a protected
-record somewhere it does not belong. Instead the person supplies the one thing a
-machine cannot — an observation about the world — and the engine keeps
-everything it is actually good at: re-reading live state, checking identity and
+It would be easier to treat a tap as an answer, publish the portal on every
+interface so a phone just works, and forward the failing screen to a dashboard
+where support can see it. Each of those would move a decision, a network
+boundary, or a protected record somewhere it does not belong. The person
+supplies the one thing a machine cannot (an observation about the world) and
+the engine keeps the rest: re-reading live state, checking identity and
 effects, and refusing. A halt reaches a phone in seconds, and it still cannot
 turn into a wrong write because somebody was in a hurry.

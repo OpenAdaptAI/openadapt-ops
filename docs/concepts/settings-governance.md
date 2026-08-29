@@ -31,15 +31,13 @@ safety-relevant change is always attributable. Preferences do not need this
 weight; safety-critical controls do, and the audit trail is where the difference
 shows.
 
-## Fail-closed
+## Missing settings block the run
 
-Governed configuration is fail-closed. When a required safety-critical setting is
-missing, unreadable, or ambiguous, the workspace refuses rather than falling back
-to a permissive default. The same posture runs through the product: a run that
-cannot establish its declared checks
-[halts rather than guessing](regulated-execution.md), and configuration that
-cannot be resolved safely blocks rather than quietly loosening a control.
+When a required safety-critical setting is missing, unreadable, or ambiguous,
+the workspace refuses instead of falling back to a permissive default. The same
+rule applies at runtime: a run that can't establish its declared checks
+[halts](regulated-execution.md), and configuration that cannot be resolved
+safely blocks instead of quietly loosening a control.
 
-This is why the tiers matter. A preference stays easy to change and a safety
-control hard, with every governed change audited and every missing one refused.
-That keeps a convenience edit from becoming a safety incident.
+A preference stays easy to change. A safety control stays hard, with every
+governed change audited and every missing one refused.

@@ -21,7 +21,7 @@ jump to what you need.
     Hosted browser launch, customer-controlled execution, self-hosting, and the
     authoring-versus-runtime data boundary.
 
--   [__Fail-closed regulated execution__](regulated-execution.md)
+-   [__Regulated execution__](regulated-execution.md)
 
     `replay` is the local $0 dev path; `run` refuses to execute unless
     certified, identity-covered, effect-verified, signed, and config-pinned.
@@ -67,8 +67,7 @@ jump to what you need.
 
 -   [__Policy and certify__](policy-and-certify.md)
 
-    Fail-closed safety: `lint` reports gaps, `certify` refuses an unsafe
-    bundle before it deploys.
+    `lint` reports gaps, `certify` refuses an unsafe bundle before it deploys.
 
 -   [__Backends: where it runs__](backends.md)
 

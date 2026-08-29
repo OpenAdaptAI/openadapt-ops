@@ -39,12 +39,12 @@ The rung you land on changes what the system can guarantee. Identity is the
 clearest example. Two different records with the same name and date of birth,
 distinguished only by an identifier differing by a single `O` versus
 `0` glyph, render to a byte-identical OCR band. On the **visual** rung, OCR
-cannot separate them, so OpenAdapt refuses rather than guesses. On the
-**structural** rung, the two rows are different strings in the tree, so the same
-case verifies with no availability cost.
+can't separate them, so OpenAdapt stops. On the **structural** rung, the two
+rows are different strings in the tree, so the same case verifies with no
+availability cost.
 
-The principle: push each decision to the highest rung the app supports, and fail
-safe below it. See [The identity gate](identity-gate.md) for how this plays out.
+Push each decision to the highest rung the app supports, and stop below it. See
+[The identity gate](identity-gate.md) for how that plays out.
 
 ## Capability-adaptive compilation
 

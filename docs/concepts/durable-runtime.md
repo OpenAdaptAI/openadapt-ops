@@ -1,10 +1,10 @@
 # Durable runtime: checkpoint, attended decision, resume
 
-A halt is the safety design working: the run stopped rather than guessing. But a
-halt mid-workflow should not mean starting over, and must never re-perform a
-write that already landed. The durable runtime turns a halt into a **durable
-pause**. An authorized operator can make a bounded attended decision, and the
-runtime resumes only from the last verified checkpoint.
+A halt means the run stopped instead of guessing. A halt mid-workflow should
+not mean starting over, and must never re-perform a write that already landed.
+The durable runtime turns a halt into a **durable pause**. An authorized
+operator can make a bounded attended decision, and the runtime resumes only
+from the last verified checkpoint.
 
 !!! note "Off by default"
     The durable runtime is Tier-3 and opt-in. Enable it with `runtime.durable`
@@ -32,9 +32,9 @@ from the system of record. **A halt is not a rollback.**
 What the halting step may already have done is stated in the run's terminal
 `transaction_outcome`, and is never inferred from the checkpoint:
 
-- **`HALTED_BEFORE_EFFECT`** — absence was positively established for every
+- **`HALTED_BEFORE_EFFECT`**: absence was positively established for every
   consequential step. There is nothing to reconcile.
-- **`RECONCILIATION_REQUIRED`** — delivery or persistence is uncertain,
+- **`RECONCILIATION_REQUIRED`**: delivery or persistence is uncertain,
   conflicting, or unverifiable. Reconcile the current state before resuming; the
   runtime will not blind-retry.
 
@@ -91,24 +91,23 @@ notification. It projects a closed context only; screenshots, OCR, values, and
 free-text application data stay on the customer-controlled runner. See
 [Attended decisions and the halt-learn loop](halt-learn-loop.md).
 
-## The bounded-recovery posture
+## Bounded recovery
 
-Durable resume is the third tier of a deliberately bounded runtime:
+Durable resume is the third tier of a bounded runtime:
 
 1. a **deterministic fast path** (the resolution ladder, $0);
 2. a **bounded model recovery** of at most one local transition, when
    configured and permitted;
 3. a **durable pause, approve, resume** from the last verified checkpoint.
 
-It is explicitly **not** "hand the rest of the workflow to a free-form agent
-after a halt." Recovery is scoped; the checkpoint is where a human takes over
-when it cannot be. Same posture as the
-[identity gate](identity-gate.md) and [effect verification](effect-verification.md):
-when the right action is not determined, stop, and here, stop *resumably*.
+Recovery is scoped. After a halt, OpenAdapt does not hand the rest of the
+workflow to a free-form agent. The checkpoint is where a human takes over when
+the next action is not determined. [Identity](identity-gate.md) and
+[effect verification](effect-verification.md) stop the same way; here the stop
+is resumable.
 
-How that handover actually reaches a person — the bounded question, what an
-answer does and does not authorize, and why the engine re-verifies rather than
-trusting it — is the
+How that handover reaches a person, what an answer authorizes, and why the
+engine re-verifies live state, is the
 [attended decision path](halt-learn-loop.md#where-a-halt-goes-the-attended-decision).
 
 See the [Run a deployment](../guides/run-a-deployment.md) guide for a worked

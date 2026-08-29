@@ -21,11 +21,11 @@ runs the program, and verifies the saved result.
 
 See it working before you install anything:
 
-- **[Hosted demo](https://app.openadapt.ai/demo)** — recorded demonstrations,
+- **[Hosted demo](https://app.openadapt.ai/demo)**: recorded demonstrations,
   verified replays, and fail-safe halts on real footage.
-- **[Template gallery](https://openadapt.ai/templates)** — ready-to-adapt
+- **[Template gallery](https://openadapt.ai/templates)**: ready-to-adapt
   workflow templates.
-- **[Blog](https://blog.openadapt.ai)** — guides, updates, and automation
+- **[Blog](https://blog.openadapt.ai)**: guides, updates, and automation
   recipes.
 
 ## First success: install, then run
