@@ -76,6 +76,8 @@ STALE_PRELAUNCH_MARKERS = {
     "Beta launch candidate",
     "full paid production lifecycle remains pending",
     "not a public availability statement",
+    "not actively admitted",
+    "Not actively admitted",
 }
 
 STATIC_MATURITY_PATTERN = re.compile(

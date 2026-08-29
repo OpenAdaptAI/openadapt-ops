@@ -247,6 +247,23 @@ def test_product_docs_contract_rejects_stale_prelaunch_copy(tmp_path):
     assert any("Stale prelaunch copy" in issue for issue in issues)
 
 
+def test_product_docs_contract_rejects_not_actively_admitted_label(tmp_path):
+    docs_dir = tmp_path / "docs"
+    pages = _write_contract_docs(docs_dir)
+    hosted = docs_dir / "guides/hosted.md"
+    hosted.write_text(hosted.read_text() + "\nNot actively admitted\n")
+    mkdocs_file = tmp_path / "mkdocs.yml"
+    mkdocs_file.write_text(
+        "nav:\n  - Reference:\n"
+        + "".join(f"    - {path}\n" for path in pages)
+        + "    - Package and repository lifecycle: ecosystem/index.md\n"
+    )
+
+    issues = check_product_docs_contract(docs_dir, mkdocs_file)
+
+    assert any("Stale prelaunch copy" in issue for issue in issues)
+
+
 def test_product_docs_contract_rejects_static_maturity_copy(tmp_path):
     docs_dir = tmp_path / "docs"
     pages = _write_contract_docs(docs_dir)
