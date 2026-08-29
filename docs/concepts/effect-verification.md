@@ -105,3 +105,12 @@ A bundle with no declared effects, or a run with no verifier, still has only the
 screen oracle for the write. The one automatic fail-safe: a step that declares
 effects while no verifier is configured is a configuration error and halts, so
 an unverifiable consequential write isn't silently accepted.
+
+## Oracle tiers and production Seals
+
+Screen confirmation is oracle tier 0. A second session or independent UI read
+is tier 1. Neither mints a production Seal. A system-of-record read (API,
+database, file, ack) is tier 2. A counterparty artifact is tier 3. Charge
+those two. `--break-it` on `qualify` is the fail-closed test: a fake success
+banner must halt and the store must stay unchanged. See
+[The Seal](../commercial/seal.md).

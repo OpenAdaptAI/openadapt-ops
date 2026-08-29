@@ -23,14 +23,15 @@ openadapt-flow replay bundle --seal
 ```
 
 A sealed verified run prints `VERIFIED`, a seal id, and
-`https://openadapt.ai/seals/<id>`. That route is synthetic and non-PHI only.
-`--seal` on replay issues the proof. `openadapt flow seal` encrypts a bundle
-for deployment.
+`https://openadapt.ai/seals/{id}`. That route is synthetic and non-PHI only.
+`--seal` on replay is the intended Seal command. `openadapt flow seal`
+encrypts a bundle for deployment.
 
-This is a good fit for a vertical software vendor, an RCM provider, a BPO, or
-an integration firm. The provider already has structured inputs, business
-logic, and an exception team. OpenAdapt supplies the verified last action in
-the customer system.
+The buyer is the technical owner at a vertical software vendor, an RCM
+provider, a BPO, or an agent platform. That company already has structured
+inputs, business logic, and an exception team. OpenAdapt supplies the last
+action in the customer GUI, then a Seal. Health-system IT is a downstream
+environment. Do not staff this motion as an IDN RFP.
 
 !!! note "Private pilot. Not a public API."
     This page describes the private-pilot product contract. It is not an
@@ -144,24 +145,34 @@ does not infer a class or an identity from a screenshot, OCR, an application
 name, parameters, or a model. If the class is unavailable, it uses `record` or
 `item`. The runner rechecks the real identity before any resumed action.
 
-## Two modes: attended and unattended
+## Two sales motions
 
-Pitch these separately.
+Do not mix these in one pitch.
 
 **Attended.** A person is in session. The runner uses that session. Consequential
 writes pause for a signed phone or console answer, then recheck live identity
-and state. This is the mode you can sell now. The human remains the legal
+and state. This is the motion you can sell now. The human remains the legal
 actor. A Seal is not a physician signature.
 
 **Unattended.** Needs a dedicated agent identity, PAM, and session recording. It
-does not type a physician password.
+does not type a physician password or stuff a physician login.
 
 Halt UX is the commercial product: who gets the push, what they see, how they
 teach one step without invalidating the bundle, and how "click continue" is
 refused.
 
-Oracle tiers 0 (visual) and 1 (second-session UI) never mint a production Seal.
-Charge 2 (system of record) and 3 (counterparty artifact) only. See
+## Oracle tiers
+
+Charge 2 and 3. Tiers 0 and 1 never mint a production Seal.
+
+| Tier | What it reads | Production Seal |
+|---|---|---|
+| 0 | Visual / OCR | Never. Dev only. |
+| 1 | Second session or independent UI read | Never. |
+| 2 | System-of-record read (API, database, file, ack) | Yes. |
+| 3 | Counterparty artifact (payer status, legal export) | Yes. |
+
+The field map, `requires_seal`, and Copilot coexistence live on
 [The Seal](seal.md).
 
 ## Attended decisions and mobile delivery
@@ -276,9 +287,9 @@ commercial compatibility pack.
 | OpenAdapt Execute | Private pilot | `POST /v1/executions` issues Seals. Not a new repository. |
 | Compatibility packs and verifier recipes | Commercial | Per-application and per-environment qualification assets. Bundles are not liquid. |
 
-Embed through Execute and MCP into RCM vendors and agent platforms. Hospital IT
-RFPs are not the growth engine. If Copilot or Power Automate already clicked,
-OpenAdapt can still emit the Seal.
+Embed through Execute and MCP into RCM vendors and agent platforms. Hospital
+IT RFPs are not the growth engine. If Copilot or Power Automate already
+clicked, OpenAdapt can still emit the Seal when asked.
 
 The compiler stays inspectable. Settlement is the Seal.
 

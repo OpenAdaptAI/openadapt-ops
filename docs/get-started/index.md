@@ -84,7 +84,8 @@ it can take, the evidence each one needs, and the paths that stop the run.
 See [Read a compiled program](../concepts/program-visualizer.md).
 
 The tutorial receipt is local and unsigned. Anyone who has to believe the run
-needs a Seal. On a qualified synthetic bundle with a tier-2 oracle:
+needs a Seal. On a qualified synthetic bundle with a tier-2 oracle, the
+intended command is:
 
 ```bash
 openadapt-flow replay bundle --seal

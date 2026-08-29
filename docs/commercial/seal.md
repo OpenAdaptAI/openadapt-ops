@@ -41,19 +41,20 @@ banner must halt. The store must stay unchanged.
 A Seal that points at a screenshot hash is a liability. Do not mint production
 `verified` below tier 2.
 
-## Two modes
+## Two sales motions
 
-Attended and unattended are two products. Pitch them separately.
+Attended and unattended are two motions. Do not mix them in one pitch.
 
 **Attended.** A person is already in session. The runner uses that session. A
 consequential write pauses at `decision_required`. The operator answers from
 the local console or the authenticated phone surface. The runner then
 reacquires focus, a fresh observation, identity, and the target before it
-continues. Sell this first. The human remains the legal actor. A Seal is not a
-physician signature.
+continues. This is the product you can sell now. The human remains the legal
+actor. A Seal is not a physician signature.
 
-**Unattended.** Needs a dedicated agent identity, PAM, and session recording. It
-does not type a physician password and it does not share a service account.
+**Unattended.** Needs a dedicated agent identity, PAM, and session recording.
+It does not type a physician password, stuff a physician login, or share a
+service account. Treat that as a later motion with its own identity design.
 
 Halt UX is the commercial product. Who gets the 2 a.m. push, what they see, how
 they teach one step without invalidating the bundle, and how "click continue"
@@ -61,7 +62,7 @@ is refused: that is renewal.
 
 ## CLI story
 
-On a qualified synthetic bundle with a tier-2 oracle:
+On a qualified synthetic bundle with a tier-2 oracle, the intended command is:
 
 ```bash
 openadapt-flow replay bundle --seal
@@ -129,12 +130,17 @@ The partner still validates the Seal the same way: `receipt_id`,
 
 ## How it ships
 
-Embed through Execute and MCP into RCM vendors and agent platforms. Hospital
-IT RFPs are not the growth engine.
+The buyer is the technical owner at an RCM vendor, BPO, vertical SaaS, or
+agent platform that already finishes last-mile work in someone else's GUI.
+Health-system IT is a downstream environment. IDN RFPs are not the growth
+engine.
 
-If another actuator already clicked (Power Automate, Copilot, a vendor bot),
-OpenAdapt can still issue the Seal. Until a counterparty demands that proof,
-distribution stays with the incumbent. Coexist.
+Embed through Execute and MCP. One partner is many environments. A hospital
+procurement cycle is 12 to 18 months.
+
+If Copilot, Power Automate, or another actuator already clicked, OpenAdapt
+can still emit the Seal when asked. We do not need to win the chat box. Until
+a counterparty demands the Seal, the incumbent keeps distribution. Coexist.
 
 Compile-once is a cache when the job is stable. If a computer-use agent gets
 cheap, the run still has to prove identity and effect, or halt.
