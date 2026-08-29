@@ -123,11 +123,15 @@ extra:
 # Start, Build, Operate, Security, Internals. Pages keep their existing
 # on-disk paths (get-started/, concepts/, guides/, reference/, desktop/,
 # ecosystem/); only their grouping and cross-links change.
+#
+# Guessed-path alias. Built so /start/ redirects; keep it off the nav.
+not_in_nav: |
+  /start/index.md
 nav:
   - Home: index.md
   - Start:
     - get-started/index.md
-    - Your first workflow: get-started/first-workflow.md
+    - Author a workflow: get-started/first-workflow.md
     - What you get: get-started/what-you-get.md
     - Desktop application: desktop/install.md
   - Build:
@@ -183,6 +187,7 @@ nav:
     - Subprocessors and data retention: commercial/subprocessors.md
     - Deployment boundaries: commercial/deployment-boundaries.md
     - External Citrix zero-install brief: commercial/citrix-external-brief.md
+    - The Seal: commercial/seal.md
     - OpenAdapt Execute private-pilot guide: commercial/oem-brief.md
     - Integrate OpenAdapt Execute: commercial/execute-api.md
     - Procurement FAQ: commercial/procurement-faq.md

@@ -1,46 +1,67 @@
 ---
 description: >-
-  Install OpenAdapt, complete a verified local tutorial, and choose the next
-  guide for browser, desktop, RDP, Citrix, or production use.
+  Install OpenAdapt, run the MockMed tutorial, watch --break-it halt a fake
+  success, then record one read-only workflow.
 ---
 
 # Get started
 
-Start with one complete local result. You do not need to understand the package
-layout first. The tutorial records a demonstration, compiles it into a program,
-runs the program, and verifies the saved result.
+The default reader is the calling agent. A named human authors the program
+and resolves identity, effect, and judgment halts. You need no account, target
+application, API key, or operating-system automation permission. Python 3.10
+through 3.12.
 
-<figure markdown="span">
-  ![An openIMIS eligibility check: a recorded demonstration, a verified replay, and a replay that halts.](../assets/showcase/demo.gif){ width="900" }
-  <figcaption>A reference run against openIMIS 25.10 on synthetic data. It shows one
-  recorded eligibility check, then the compiled program replaying that check
-  twice. A read-only SQL query verifies the first replay and contradicts the
-  second, so the second one halts. The tutorial below runs the same loop against
-  a browser page.</figcaption>
-</figure>
+Point Claude Code or Cursor at the local server:
 
-See it working before you install anything:
+```bash
+claude mcp add openadapt -- \
+  uvx --from 'openadapt-agent[tutorial]' openadapt-agent \
+  serve --allow-run
+```
 
-- **[Hosted demo](https://app.openadapt.ai/demo)**: recorded demonstrations,
-  verified replays, and fail-safe halts on real footage.
-- **[Template gallery](https://openadapt.ai/templates)**: ready-to-adapt
-  workflow templates.
-- **[Blog](https://blog.openadapt.ai)**: guides, updates, and automation
-  recipes.
+`--allow-run` is an explicit opt-in. The server generates the public synthetic
+tutorial at serve time. Halt, refused, timeout, and error come back as those
+outcomes. Never summarize halt as success.
 
-## First success: install, then run
+!!! info "What the calling agent may do / must not do"
+    **May:** bind declared parameters, invoke the compiled program, read
+    typed outcomes, supply a missing declared parameter, retry a retryable
+    transport failure, escalate to a human.
 
-You need no account, target application, API key, or operating-system
-automation permission.
+    **Must not:** summarize halt as success, resolve identity or effect
+    contradictions, or be the sole source of a production demonstration.
 
-**Recommended: install with pip.** Use an active Python 3.10–3.12 virtual
-environment when your system manages Python packages. The base package includes
-the browser driver used by the tutorial:
+    Full contract: [agents.txt](../agents.txt).
+
+Same loop from the CLI:
 
 ```bash
 python -m pip install --upgrade openadapt
 openadapt quickstart
+openadapt quickstart --break-it
 ```
+
+Add `--headed` if you want to watch the browser.
+
+The bundled workflow is a tutorial. Qualifying a real one means declaring its
+application boundary, its action risks, its identities, its effect verifiers,
+its fault cases, and its deployment policy.
+
+`openadapt quickstart` records a task in MockMed, a synthetic
+practice-management fixture, compiles the observed
+[effect contract](../reference/glossary.md#effect-contract), certifies it with
+the shipped clinical-write [policy](../reference/glossary.md#policy), and runs
+it under the Standard [profile](../reference/glossary.md#profile). A separate
+read-only API confirms the saved record outside the screen that performed the
+write. The healthy run returns [`VERIFIED`](../reference/run-outcomes.md) with
+no model or Cloud call.
+
+`--break-it` is the aha. Same certified bundle. The backend rejects the write
+after the app has already painted its success banner, so every on-screen check
+passes and the run halts anyway, because the independent read disagrees. The
+store is unchanged.
+
+OpenAdapt refuses to overwrite `openadapt-quickstart/`. Artifacts land there.
 
 **Isolated CLI alternative.** The public installer creates and maintains an
 isolated environment with [uv](https://docs.astral.sh/uv/):
@@ -52,14 +73,20 @@ curl -fsSL https://openadapt.ai/install.sh | sh
 Both paths install the same `openadapt` command. You need no package extra for
 the browser tutorial.
 
-`openadapt quickstart` records the bundled synthetic MockMed task, compiles its
-observed [effect contract](../reference/glossary.md#effect-contract), certifies
-it with the shipped clinical-write [policy](../reference/glossary.md#policy),
-and runs it under the Standard [profile](../reference/glossary.md#profile). A
-separate read-only API confirms the saved record outside the screen that
-performed the write. The healthy run returns
-[`VERIFIED`](../reference/run-outcomes.md) with no model or Cloud call. Artifacts
-go to `openadapt-quickstart/`. OpenAdapt refuses to overwrite that directory.
+## The receipt you just got
+
+Tutorial `VERIFIED` is a local receipt on synthetic MockMed. It is not a
+production Seal. `--break-it` is the aha: the banner can lie, and the
+independent read stops the run. When you qualify a real job, that same
+independent check is what a Seal attests. Public synthetic verify lives at
+[openadapt.ai/seals](https://openadapt.ai/seals). The contract is
+[The Seal](../commercial/seal.md).
+
+A production Seal needs a qualified program and an oracle at tier 2 or 3.
+Oracle tiers 0 (visual) and 1 (second-session UI) never mint one. Local
+unsigned replay stays free.
+
+## What the healthy run wrote
 
 You now have:
 
@@ -83,19 +110,6 @@ Open `graph.html` in a browser. That page is the compiled program: the steps
 it can take, the evidence each one needs, and the paths that stop the run.
 See [Read a compiled program](../concepts/program-visualizer.md).
 
-When you move from the tutorial to your own work, qualification tests the
-workflow against real failures in its environment before it runs.
-
-After the first run, choose the path that matches your goal:
-
-| Goal | Next guide |
-|---|---|
-| Record one real, read-only browser workflow | [Your first workflow](first-workflow.md) |
-| See what the compiled program looks like | [Read a compiled program](../concepts/program-visualizer.md) |
-| Use the Desktop application | [Install Desktop](../desktop/install.md) |
-| Use native desktop, RDP, or Citrix | [Install a different execution surface](#install-a-different-execution-surface) |
-| Prepare a qualified production run | [Move from demo to deployment](#move-from-demo-to-deployment) |
-
 !!! important "A tutorial result is not production certification"
     The bundled fixture proves that the local product path and its Standard
     verification gates work. It certifies only this bundled synthetic task,
@@ -103,11 +117,62 @@ After the first run, choose the path that matches your goal:
     own application, execution surface, action risks, identity checks,
     independent effect verifier, fault cases, and deployment policy.
 
-## See a fail-safe halt
+## What qualifying a real job adds
 
-Use the compiled tutorial bundle in an ordinary Demo-profile replay. This path
-has no independent verifier, so OpenAdapt must not reuse the Standard
-`VERIFIED` result:
+Qualification tests the workflow against real failures in its environment
+before it runs. You declare:
+
+- the application boundary
+- the action risks
+- the identities
+- the effect verifiers
+- the fault cases
+- the deployment policy
+
+Start with one real, read-only task. Don't start with a write.
+
+| Goal | Next guide |
+|---|---|
+| Author one real, read-only browser workflow | [Author a workflow](first-workflow.md) |
+| See what the compiled program looks like | [Read a compiled program](../concepts/program-visualizer.md) |
+| Bind identity, effects, faults, and policy | [Qualify a workflow](../guides/qualify-a-workflow.md) |
+| Use the Desktop application | [Install Desktop](../desktop/install.md) |
+| Use native desktop, RDP, or Citrix | [Install a different execution surface](#install-a-different-execution-surface) |
+| Prepare a qualified production run | [Move from demo to deployment](#move-from-demo-to-deployment) |
+
+<figure markdown="span">
+  ![An openIMIS eligibility check: a recorded demonstration, a verified replay, and a replay that halts.](../assets/showcase/demo.gif){ width="900" }
+  <figcaption>The same loop against openIMIS 25.10 on synthetic data. One
+  recorded eligibility check, then the compiled program replaying that check
+  twice. A read-only SQL query verifies the first replay and contradicts the
+  second, so the second one halts.</figcaption>
+</figure>
+
+Want to watch before you record your own app?
+
+- **[Hosted demo](https://app.openadapt.ai/demo)**: recorded demonstrations,
+  verified replays, and fail-safe halts on real footage.
+- **[Template gallery](https://openadapt.ai/templates)**: ready-to-adapt
+  workflow templates.
+- **[Blog](https://blog.openadapt.ai)**: guides, updates, and automation
+  recipes.
+
+## First real (read-only) workflow
+
+[Author a workflow](first-workflow.md) records one small real task that
+doesn't change business data. A read-only lookup against test data works.
+Open a known test record, then stop when a field shows the expected value.
+
+Don't start with a task that saves, submits, creates, or deletes data. A
+write waits until qualification binds its risks, identities, and effect
+verifiers.
+
+## See a fail-safe halt from UI drift
+
+`--break-it` already showed a painted success that failed the independent
+read. Theme drift is a different halt. Use the compiled tutorial bundle in an
+ordinary Demo-profile replay. This path has no independent verifier, so
+OpenAdapt must not reuse the Standard `VERIFIED` result:
 
 ```bash
 openadapt flow replay openadapt-quickstart/bundle \
@@ -206,7 +271,7 @@ resume from the last verified checkpoint after a halt.
 
 <div class="grid cards" markdown>
 
--   [__Your first workflow__](first-workflow.md)
+-   [__Author a workflow__](first-workflow.md)
 
     Record a read-only task with test data, review it, supervise its first
     replay, and inspect the report.

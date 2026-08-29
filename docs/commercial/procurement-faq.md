@@ -73,6 +73,34 @@ coverage, effect verdicts, heals, model calls, and halt reasons; on-prem adds
 an append-only hash-chained audit log
 ([run reports](../guides/run-reports.md)).
 
+## Seal, modes, and embedding
+
+**What is a Seal?**
+`ExecuteEvidenceReceiptV1`. It is the signed proof of one run. Production
+`verified` requires oracle tier 2 (system of record) or 3 (counterparty
+artifact). Visual/OCR (tier 0) and a second-session UI read (tier 1) never
+mint a production Seal. See [The Seal](seal.md).
+
+**Is a Seal a physician signature?**
+No. The human remains the legal actor. A Seal records that the configured
+identity, policy, and effect checks passed for that run.
+
+**Do you sell attended and unattended as one product?**
+No. Attended is the motion you can buy now: human session, phone or console
+approve consequential writes. Unattended needs a dedicated agent identity,
+PAM, and session recording. Do not mix them in one statement of work. Do not
+type a physician password.
+
+**Are we buying a hospital RFP engagement?**
+No. Embed through Execute and MCP into an RCM vendor, BPO, vertical SaaS, or
+agent platform. Health-system IT is a downstream environment. IDN procurement
+is not the growth path.
+
+**Can Copilot or Power Automate still do the click?**
+Yes. OpenAdapt can emit a Seal from another actuator when asked. The
+consequential MCP contract is `requires_seal: true`. Unsigned success is
+failure.
+
 ## Delivery and risk
 
 **What if the software gets it wrong silently?**

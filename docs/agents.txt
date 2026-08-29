@@ -1,0 +1,44 @@
+# OpenAdapt docs — agents.txt
+
+> Verified last-mile execution for agents. Compile a demonstration into a program an agent can invoke. Healthy runs make no model calls. Uncertainty escalates. Humans audit.
+
+Computer-use agents are the user of OpenAdapt. They are not the executor inside OpenAdapt.
+
+Site-wide machine contract: https://openadapt.ai/agents.txt
+Walkthrough: https://docs.openadapt.ai/get-started/
+Author a workflow (human authority): https://docs.openadapt.ai/get-started/first-workflow/
+Run outcomes: https://docs.openadapt.ai/reference/run-outcomes/
+
+## How to call
+
+```
+claude mcp add openadapt -- \
+  uvx --from 'openadapt-agent[tutorial]' openadapt-agent \
+  serve --allow-run
+```
+
+```
+python -m pip install --upgrade openadapt
+openadapt quickstart
+openadapt quickstart --break-it
+```
+
+`--allow-run` is an explicit opt-in. Never summarize halt as success.
+
+## Outcome vocabulary
+
+`VERIFIED` | `HALTED` | `RECONCILIATION_REQUIRED` | `REFUSED` | `TIMEOUT` | `ERROR`
+
+`VERIFIED` means the independent check passed. Halt is not success. If delivery is uncertain after an action may have been dispatched, the outcome is `RECONCILIATION_REQUIRED`. Do not blindly retry.
+
+Read `report.json` and the seal. `REPORT.md` is for humans.
+
+## Escalation
+
+Halt packets with typed agent-continue are not shipped this week.
+
+- Missing declared parameter: calling agent, if the schema allows it.
+- Retryable transport: agent, inside policy, same idempotency key.
+- Identity, effect contradiction, expired policy, novel UI, admission: human.
+
+Do not resolve identity or effect contradictions yourself. Do not fabricate a success path.

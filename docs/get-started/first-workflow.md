@@ -6,7 +6,10 @@ first_workflow_scope: read_only
 first_write_admission: qualification_required
 ---
 
-# Your first workflow
+# Author a workflow
+
+This is authority work. A named human demonstrates the task once. An agent
+operates the compiled program later.
 
 Choose one small real task that doesn't change business data. A read-only lookup
 against test data works well. Open a known test record, then stop when a field

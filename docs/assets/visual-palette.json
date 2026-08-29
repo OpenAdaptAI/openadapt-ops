@@ -348,6 +348,50 @@
           "share_percent": 11.29
         }
       ]
+    },
+    "screenshots/seal-certificate-desktop.png": {
+      "source_repository": "OpenAdaptAI/openadapt-web",
+      "source_path": "public/seals/certificate-desktop.png",
+      "note": "Public VERIFIED Seal instrument, desktop. Dark --inset-bg ground.",
+      "sha256": "eed485e92b27986f3961aeae39bedc426d5396b3ce703dd580b2ae3f6653a86e",
+      "width": 2048,
+      "height": 950,
+      "dominant_colors": [
+        {
+          "hex": "#0b1220",
+          "share_percent": 74.52
+        },
+        {
+          "hex": "#ffffff",
+          "share_percent": 2.24
+        },
+        {
+          "hex": "#0a111f",
+          "share_percent": 1.41
+        }
+      ]
+    },
+    "screenshots/seal-certificate-mobile.png": {
+      "source_repository": "OpenAdaptAI/openadapt-web",
+      "source_path": "public/seals/certificate-mobile.png",
+      "note": "Public VERIFIED Seal instrument, mobile. Dark --inset-bg ground.",
+      "sha256": "7d2c83d1e178b4f42ab55f3ff7f4c9dc875f0ad13b6ee051a9c1ba0b8b278116",
+      "width": 700,
+      "height": 1404,
+      "dominant_colors": [
+        {
+          "hex": "#0b1220",
+          "share_percent": 74.16
+        },
+        {
+          "hex": "#0a111f",
+          "share_percent": 1.68
+        },
+        {
+          "hex": "#151e2e",
+          "share_percent": 1.5
+        }
+      ]
     }
   }
 }

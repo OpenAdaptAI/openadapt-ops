@@ -12,8 +12,21 @@ DOCS_DIR = ROOT / "docs"
 MKDOCS_FILE = ROOT / "mkdocs.yml"
 
 REQUIRED_PUBLIC_PAGES = {
-    "index.md": ("reference/production-lifecycle.md",),
+    "index.md": (
+        "reference/production-lifecycle.md",
+        "Verified last-mile execution for agents",
+        "calling agent",
+    ),
     "ecosystem/index.md": ("data-openadapt-production-target",),
+    "get-started/index.md": (
+        "pip install",
+        "openadapt quickstart",
+        "--break-it",
+        "tutorial",
+        "first-workflow.md",
+        "claude mcp add openadapt",
+        "Never summarize halt as success",
+    ),
     "get-started/what-works-today.md": (
         "Qualification evidence",
         "Integrated product matrix",
@@ -109,7 +122,9 @@ PRODUCTION_TARGET_IDS = {
 # Old docs.openadapt.ai URLs that taught capture-then-train or mirrored a
 # research README as if it were the product. Each file must keep serving a
 # Flow-first redirect so a crawler that still holds the URL drops the old
-# snippet. Do not put these in the nav.
+# snippet. Do not put these in the nav. `start/index.md` is a guessed-path
+# alias, not a retired train-path page: people type /start on docs and must
+# land on get-started, not a third onboarding tree.
 RETIRED_REDIRECTS = {
     "architecture.md": "/concepts/",
     "cli.md": "/reference/cli/",
@@ -117,6 +132,7 @@ RETIRED_REDIRECTS = {
     "getting-started/installation.md": "/get-started/",
     "getting-started/permissions.md": "/desktop/install/",
     "getting-started/quickstart.md": "/get-started/",
+    "start/index.md": "/get-started/",
     "LEGACY_FREEZE.md": "/get-started/",
     "legacy/freeze.md": "/get-started/",
     "packages/capture.md": "/ecosystem/",

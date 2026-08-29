@@ -105,3 +105,18 @@ dashboard-overview.png
   Byte-identical source: OpenAdaptAI/openadapt-web,
   public/product-preview/dashboard-workflows.png. SHA-256:
   d93431712b5b36addf77fb5600e8b5f208291b80776940c1c76f9c7b4f6b4679.
+
+seal-certificate-desktop.png
+  The public VERIFIED Seal instrument for the synthetic MockMed
+  add-triage-note fixture (`smk_mockmed_triage_verified_001`), desktop
+  viewport, 2048x950. Cropped to the dark certificate; no page chrome.
+  Byte-identical source: OpenAdaptAI/openadapt-web
+  `public/seals/certificate-desktop.png`, copied from the
+  `feat/seal-certificate-2026-08-29` worktree on 2026-08-29. SHA-256:
+  eed485e92b27986f3961aeae39bedc426d5396b3ce703dd580b2ae3f6653a86e.
+
+seal-certificate-mobile.png
+  The same instrument, mobile viewport, 700x1404. Byte-identical source:
+  OpenAdaptAI/openadapt-web `public/seals/certificate-mobile.png`, copied
+  from the same worktree. SHA-256:
+  7d2c83d1e178b4f42ab55f3ff7f4c9dc875f0ad13b6ee051a9c1ba0b8b278116.
