@@ -123,6 +123,10 @@ extra:
 # Start, Build, Operate, Security, Internals. Pages keep their existing
 # on-disk paths (get-started/, concepts/, guides/, reference/, desktop/,
 # ecosystem/); only their grouping and cross-links change.
+#
+# Guessed-path alias. Built so /start/ redirects; keep it off the nav.
+not_in_nav: |
+  /start/index.md
 nav:
   - Home: index.md
   - Start:

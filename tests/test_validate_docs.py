@@ -81,8 +81,10 @@ def _write_contract_docs(root):
             "openadapt-evals is **Research**."
         ),
         "get-started/index.md": (
-            "# Get started\n\nInstall with `pip install openadapt` and use "
-            "`openadapt flow`."
+            "# Get started\n\nInstall with `pip install openadapt`, then "
+            "`openadapt quickstart` and `openadapt quickstart --break-it`. "
+            "The bundled workflow is a tutorial. Continue in "
+            "[Your first workflow](first-workflow.md)."
         ),
         "get-started/first-workflow.md": (
             "---\n"

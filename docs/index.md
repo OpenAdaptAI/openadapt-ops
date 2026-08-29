@@ -150,7 +150,8 @@ report determine its outcome.
 
 -   [__Try the local tutorial__](get-started/index.md)
 
-    Install OpenAdapt and produce a verified local result with two commands.
+    Install OpenAdapt, run `openadapt quickstart`, then
+    `openadapt quickstart --break-it`.
 
 -   [__Record your application__](get-started/first-workflow.md)
 
