@@ -6,14 +6,26 @@ integrate with.
 
 Your product decides the business action. OpenAdapt executes the qualified
 transaction in the customer-controlled browser, desktop, RDP, Citrix, or API
-environment. It then returns a precise outcome and a receipt.
+environment. It then returns a Seal: `ExecuteEvidenceReceiptV1`. Unsigned
+success is failure.
 
 ```text
 authorized transaction
   -> qualified local execution
   -> effect verification
-  -> verified | a precise non-success outcome + receipt
+  -> Seal (verified | halt | reconciliation_required)
 ```
+
+The one CLI story:
+
+```bash
+openadapt-flow replay bundle --seal
+```
+
+A sealed verified run prints `VERIFIED`, a seal id, and
+`https://openadapt.ai/seals/<id>`. That route is synthetic and non-PHI only.
+`--seal` on replay issues the proof. `openadapt flow seal` encrypts a bundle
+for deployment.
 
 This is a good fit for a vertical software vendor, an RCM provider, a BPO, or
 an integration firm. The provider already has structured inputs, business
@@ -132,6 +144,26 @@ does not infer a class or an identity from a screenshot, OCR, an application
 name, parameters, or a model. If the class is unavailable, it uses `record` or
 `item`. The runner rechecks the real identity before any resumed action.
 
+## Two modes: attended and unattended
+
+Pitch these separately.
+
+**Attended.** A person is in session. The runner uses that session. Consequential
+writes pause for a signed phone or console answer, then recheck live identity
+and state. This is the mode you can sell now. The human remains the legal
+actor. A Seal is not a physician signature.
+
+**Unattended.** Needs a dedicated agent identity, PAM, and session recording. It
+does not type a physician password.
+
+Halt UX is the commercial product: who gets the push, what they see, how they
+teach one step without invalidating the bundle, and how "click continue" is
+refused.
+
+Oracle tiers 0 (visual) and 1 (second-session UI) never mint a production Seal.
+Charge 2 (system of record) and 3 (counterparty artifact) only. See
+[The Seal](seal.md).
+
 ## Attended decisions and mobile delivery
 
 When the runner cannot prove a required condition, it creates one signed,
@@ -143,7 +175,7 @@ boundary.
 
 An operator answer is not a command to repeat a write. The runner first
 reacquires focus, a fresh observation, the workflow state, identity evidence,
-and the target. It continues only if those checks pass. The resulting receipt
+and the target. It continues only if those checks pass. The resulting Seal
 binds the decision, the runner transition, and the final state to the exact
 task and authorization.
 
@@ -182,26 +214,28 @@ event stream does not contain raw screenshots or live record data.
 
 ## Receipts and partner integration
 
-### ExecuteEvidenceReceiptV1
+### ExecuteEvidenceReceiptV1 is the Seal
 
-Every terminal execution returns an `ExecuteEvidenceReceiptV1` with exactly
-these public fields:
+Every terminal execution returns an `ExecuteEvidenceReceiptV1`. That object is
+the Seal. Map the receipt fields 1:1.
 
-- `schema_version: openadapt.execute-evidence-receipt/v1`;
-- `receipt_id`, `execution_id`, and `workflow_digest`;
-- the terminal `outcome`;
-- `contracts`: `authorization_passed`, `identity_passed`,
-  `postcondition_passed`, `effect_passed`, `minimum_effect_strength`, optional
-  `observed_effect_strength`, `model_used`, and `external_network_used`;
-- `delivery_uncertain`;
-- `compensation_effect_verified`: always present, normally `false`, and `true`
-  only when the outcome is `rolled_back_verified`;
-- `evidence_digest`; and
-- `issued_at`.
+| Receipt field | Seal field |
+|---|---|
+| `receipt_id` | Seal id. Verify at `https://openadapt.ai/seals/{receipt_id}` (synthetic only). |
+| `execution_id` | The `POST /v1/executions` that produced this Seal |
+| `workflow_digest`, `workflow_version` | Admitted program |
+| `qualification_id`, `environment_id`, `runner_id`, `nonce` | Admission, environment, runner, uniqueness |
+| `oracle_tier` | 0 visual, 1 second-session, 2 SoR, 3 counterparty |
+| `outcome` | `verified` / halt / `reconciliation_required` / the other terminal values |
+| `contracts` | Authorization, identity, postcondition, effect |
+| `evidence_digest` | Pointer to retained evidence. Bytes stay in the boundary. |
+| `issued_at` | When the Seal was issued |
 
-The status resource supplies the receipt identifier only when its state is
-`terminal`. It also supplies the terminal outcome. This keeps an in-progress
-state separate from a final outcome.
+`verified` requires `oracle_tier` 2 or 3. HTTP `202` is not a Seal. The status
+resource supplies `evidence_receipt_id` only when its state is `terminal`.
+
+Consequential MCP tools advertise `requires_seal: true`. If the tool returns
+unsigned success, treat it as failure.
 
 ### Local and private evidence
 
@@ -211,14 +245,14 @@ bindings, runner and environment details, report bodies, screenshots, live
 identity checks, and application observations. The public receipt identifies
 that evidence by digest. It does not copy it into the partner event stream.
 
-The partner stores the receipt with its own transaction record. This lets the
-partner tell an end customer what happened without using a screenshot or a UI
-banner as proof.
+The partner stores the Seal with its own transaction record. That is what you
+show an end customer. A screenshot or a UI banner is not proof.
 
 Private-pilot integrations use signed, versioned webhook events and polling.
 Webhook retry, signature verification, ordering, and event deduplication are
 part of the Execute contract. The [Execute integration guide](execute-api.md)
-shows the request, status, receipt, and webhook flow.
+shows the request, status, Seal, and webhook flow. The field map lives on
+[The Seal](seal.md).
 
 ## Start with one workflow
 
@@ -236,14 +270,17 @@ commercial compatibility pack.
 
 | Layer | Availability | Role |
 |---|---|---|
-| OpenAdapt Flow | MIT-licensed | Local compiler, governed runtime, transaction outcomes, qualification tools, and receipt mechanisms. |
-| `openadapt-types` 0.9.0 | MIT-licensed and released | Shared async Execute schema and OpenAPI document, plus signed decision-task and decision-receipt contracts. |
-| OpenAdapt Cloud foundation | Private and deployed | Tenant control plane, private Execute endpoints, customer-runner coordination, signed decision relay, audit records, and managed operations. |
-| OpenAdapt Execute | Private pilot | Versioned transaction submission, status, receipt delivery, and partner integration for approved pilot partners. |
-| Compatibility packs and verifier recipes | Commercial | Per-application and per-environment qualification assets, deployment evidence, and support. |
+| OpenAdapt Flow | MIT-licensed | Local compiler, governed runtime, halt/teach, qualification tools. Compile-once is a cache. |
+| `openadapt-types` | MIT-licensed | Shared Execute schema. The evidence receipt is the Seal. |
+| OpenAdapt Cloud foundation | Private and deployed | Tenant control plane, customer-runner coordination, signed decision relay. |
+| OpenAdapt Execute | Private pilot | `POST /v1/executions` issues Seals. Not a new repository. |
+| Compatibility packs and verifier recipes | Commercial | Per-application and per-environment qualification assets. Bundles are not liquid. |
 
-The open runtime remains inspectable. The commercial value is the qualified
-transaction, customer-environment evidence, operational delivery, and support.
+Embed through Execute and MCP into RCM vendors and agent platforms. Hospital IT
+RFPs are not the growth engine. If Copilot or Power Automate already clicked,
+OpenAdapt can still emit the Seal.
+
+The compiler stays inspectable. Settlement is the Seal.
 
 ## Next step
 
