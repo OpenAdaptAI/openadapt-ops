@@ -27,9 +27,6 @@ the complete Windows, macOS, and Linux installer set with
 `SHA256SUMS`, a CycloneDX SBOM, per-platform metadata, and build-provenance
 attestations.
 
-**Current Desktop release admission:**
-<span data-openadapt-production-target="desktop" aria-live="polite">Not actively admitted.</span>
-
 | OS | Installer |
 |---|---|
 | Windows | `.msi` or `.exe` |

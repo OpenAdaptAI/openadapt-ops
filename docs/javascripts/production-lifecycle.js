@@ -26,9 +26,9 @@
 })(typeof globalThis === "undefined" ? this : globalThis, function factory() {
   "use strict";
 
-  const TARGET_REQUIREMENT = "Not actively admitted.";
+  const TARGET_REQUIREMENT = "No current verified Production admission.";
   const PRODUCT_REQUIREMENT =
-    "Not actively admitted. Production requires a current verified admission for all seven product targets.";
+    "Not currently Production across all seven targets.";
   const PROJECTION_URL = "/production-lifecycle.json";
   const ADMISSIONS_URL =
     "https://raw.githubusercontent.com/OpenAdaptAI/.github/main/production-lifecycle-admissions.json";

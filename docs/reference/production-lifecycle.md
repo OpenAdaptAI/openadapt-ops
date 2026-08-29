@@ -88,8 +88,8 @@ This site derives each target label from that exact current admission. It
 checks the current authority metadata for every admitted artifact and retained
 evidence object. The five public package versions must match their admitted
 PyPI releases. A record mismatch, expiry, revocation, artifact drift, or
-authority outage makes the affected target not actively admitted. The
-product-wide Production label appears only while all seven targets pass.
+authority outage removes the affected target from the current Production set.
+The product-wide Production label appears only while all seven targets pass.
 
-Runnable does not mean admitted. An installation, release, or successful demo
-cannot create Production state without this complete evidence contract.
+An installation, release, or successful demo cannot create Production state
+without this complete evidence contract.

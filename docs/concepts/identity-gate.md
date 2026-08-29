@@ -53,7 +53,7 @@ flowchart TD
    accept and near-zero added over-halt**, including the exact attack that
    produces a high false-accept rate on the OCR path. Most native apps expose
    `Name` / `Value` text even without a stable automation id, so this tier is
-   viable on desktop, not just the browser.
+   viable on desktop and in the browser.
 2. **Pixel-compare of the identifier crop.** For substrates with no structured
    text (Citrix, RDP, VDI), pixels distinguish `O` from `0` where OCR cannot.
    The VERIFY path is **hard-gated off** today: adversarial review showed no

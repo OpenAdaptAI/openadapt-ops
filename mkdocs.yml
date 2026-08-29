@@ -8,7 +8,7 @@ site_url: https://docs.openadapt.ai
 # repo so it reflects the project's real GitHub traction, not this docs repo.
 repo_url: https://github.com/OpenAdaptAI/OpenAdapt
 repo_name: OpenAdaptAI/OpenAdapt
-# Docs live in this (openadapt-maintenance) repo, not the code repo above, so
+# Docs live in this openadapt-ops repo, not the flagship code repo above, so
 # the per-page "edit" link would 404. Disable it rather than point it wrong.
 edit_uri: ''
 copyright: >-

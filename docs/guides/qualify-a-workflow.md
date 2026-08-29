@@ -54,8 +54,8 @@ effect**. Identity can use the canonical evidence ladder or a quorum of explicit
 signals such as application, session, workflow state, subject name, record ID,
 and secondary identifier.
 
-Each signal declares its source, exact or normalized comparison, and—when
-needed—its screen region, parameter binding, or extraction rule. Duplicate or
+Each signal declares its source, exact or normalized comparison, and, when
+needed, its screen region, parameter binding, or extraction rule. Duplicate or
 conflicting records remain refusal conditions.
 
 ## Safe entity language for attended decisions

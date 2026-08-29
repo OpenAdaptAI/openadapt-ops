@@ -141,10 +141,6 @@ events, secret encryption, runtime-validation allowlists, and live billing
 configuration. Readiness proves those dependencies and contracts are configured
 and reachable; it is not a customer workflow qualification or an SLA.
 
-**Current Cloud release admission:**
-<span data-openadapt-production-target="cloud" aria-live="polite">Not actively admitted.</span>
-[Review the admission contract](../reference/production-lifecycle.md)
-
 Windows UIA, native macOS, native Linux, RDP, and Citrix/VDI are first-class substrates,
 ordered as scoped deployments and qualified per workflow in their real
 environment. The published qualification evidence to date: Windows UIA passed

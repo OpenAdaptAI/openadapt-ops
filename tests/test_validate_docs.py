@@ -16,7 +16,7 @@ def test_product_catalog_binds_all_admitted_targets_to_live_state():
 
     for target in ("agent", "capture", "cloud", "desktop", "docs", "flow", "openadapt"):
         assert f'data-openadapt-production-target="{target}"' in content
-    assert "Not actively admitted." in content
+    assert content.count("data-openadapt-production-target=") == 7
     assert "**Experimental**" in content
     assert "**Research**" in content
 
@@ -55,13 +55,13 @@ def _write_contract_docs(root):
         "index.md": (
             "# OpenAdapt\n\nShow it a repeated workflow. OpenAdapt compiles it "
             "into governed, deterministic replay. "
-            '<span data-openadapt-production-product>Not actively admitted.</span>'
+            "[Production status](reference/production-lifecycle.md)"
         ),
         "ecosystem/index.md": (
             "# Product components and release admission\n\n"
             + "\n".join(
                 f'<span data-openadapt-production-target="{target}">'
-                "Not actively admitted.</span>"
+                "No current verified Production admission.</span>"
                 for target in (
                     "agent",
                     "capture",
