@@ -69,6 +69,11 @@ jump to what you need.
 
     `lint` reports gaps, `certify` refuses an unsafe bundle before it deploys.
 
+-   [__Process contracts__](process-contract.md)
+
+    A parent receipt over independently admitted capabilities. Handoffs copy
+    effect facts. Compose sequences recordings; process points at admissions.
+
 -   [__Backends: where it runs__](backends.md)
 
     Browser (Playwright), native Windows (UIA), native macOS, native Linux

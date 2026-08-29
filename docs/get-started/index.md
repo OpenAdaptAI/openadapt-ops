@@ -167,10 +167,23 @@ for the real environment.
 
 ## Where to go next
 
-To compile several recordings, read
-[Induce a program](../guides/induce-a-program.md). [Durable
-runs](../concepts/durable-runtime.md) explains how an operator can resume from
-the last verified checkpoint after a halt.
+To compile several recordings of the same task, read
+[Induce a program](../guides/induce-a-program.md). A task that starts in one
+application and finishes in another is two recordings. Don't record them as
+one. Sequence the compiled bundles with `compose`, or after each child is
+admitted, with a process parent:
+
+```bash
+openadapt flow compose \
+  --child intake=./intake-bundle \
+  --child posting=./posting-bundle \
+  --handoff intake.patient_id=posting.patient_id \
+  --out composed
+```
+
+See [Sequence work across two applications](../guides/compose-multi-application.md).
+[Durable runs](../concepts/durable-runtime.md) explains how an operator can
+resume from the last verified checkpoint after a halt.
 
 <div class="grid cards" markdown>
 

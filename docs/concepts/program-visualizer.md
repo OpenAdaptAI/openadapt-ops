@@ -60,6 +60,29 @@ It does not prove `VERIFIED`. The run outcome still depends on the exact
 authorization, identity, postcondition, and effect evidence required by the
 execution profile.
 
+## Parents of children stay parents
+
+`visualize` on a compiled bundle emits that bundle's ProgramGraph: steps,
+ladders, gates, halt points.
+
+`visualize` on a compose directory (`composition.json`, schema
+`openadapt.composition/v1`) draws each compiled child as one node. Handoff
+edges are labeled with the effect-bound parameter names they copy, never a
+window title or a URL. Sequence edges follow `--after`, or `--child` order.
+
+`visualize` on a process-contract directory (`process-contract.json`, schema
+`openadapt.process-contract/v0`) draws each independently admitted child
+(name, `admission_id`) and the same kind of handoff edge.
+
+Both parents end at a terminal titled End of declared steps, not Success.
+Traversal ended. The parent is `VERIFIED` only when every child's receipt says
+so.
+
+The parent view doesn't inline a child's steps. Open the child bundle for its
+program map. See
+[Sequence work across two applications](../guides/compose-multi-application.md)
+and [Process contracts](process-contract.md).
+
 ## Follow one live occurrence
 
 The same program node can run more than once inside a loop. A useful live view
