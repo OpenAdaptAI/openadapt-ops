@@ -5,6 +5,14 @@ environment, and this independent effect produced a terminal outcome. The
 portable object is `ExecuteEvidenceReceiptV1`. Execute issues it. Execute is
 the invoke path, not a separate product.
 
+![A VERIFIED Seal, desktop: a dark certificate with a green outcome bar, the word VERIFIED, the job Add a triage note on MockMed, oracle tier 2, confirmed, and a hash-derived identity mark.](../assets/screenshots/seal-certificate-desktop.png)
+
+*A VERIFIED Seal, desktop.*
+
+![The same instrument, mobile: the VERIFIED certificate stacked for a phone viewport, identity mark above the outcome word.](../assets/screenshots/seal-certificate-mobile.png)
+
+*The same instrument, mobile.*
+
 `POST /api/v1/executions` is the partner invoke. The terminal receipt is the
 Seal. Local unsigned `openadapt-flow replay` stays free. Unsigned success is
 failure: if a consequential tool returns done without a Seal, treat the call as

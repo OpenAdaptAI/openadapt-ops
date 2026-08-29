@@ -24,6 +24,13 @@ governed repair. It halts when verification fails. The local runtime is MIT
 licensed; managed Cloud is optional. The flagship code lives at
 [github.com/OpenAdaptAI/OpenAdapt](https://github.com/OpenAdaptAI/OpenAdapt).
 
+A Seal is the signed attestation of one program run. Public examples are
+synthetic. See [The Seal](docs/commercial/seal.md).
+
+![A VERIFIED Seal, desktop](docs/assets/screenshots/seal-certificate-desktop.png)
+
+![The same instrument, mobile](docs/assets/screenshots/seal-certificate-mobile.png)
+
 ## Layout
 
 - **`docs/`** and **`mkdocs.yml`**: the curated MkDocs Material site published
