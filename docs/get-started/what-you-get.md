@@ -10,9 +10,8 @@ version it, review it, ship it. It holds the compiled workflow program, the
 per-step evidence the replayer needs to re-find each target, and the policy
 metadata `lint` and `certify` read.
 
-Because the bundle is the unit of deployment, everything about a workflow is
-auditable before it runs: which steps write, which clicks are identity armed,
-which postconditions each step asserts. See
+You can audit the bundle before it runs: which steps write, which clicks are
+identity armed, and which postconditions each step asserts. See
 [The bundle format](../reference/bundle-format.md) for the full layout.
 
 ## The run report

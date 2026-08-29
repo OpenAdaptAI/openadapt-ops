@@ -13,12 +13,12 @@ this page is a compliance determination.
 ## Architecture in one paragraph
 
 OpenAdapt is local-first. The engine records a demonstrated GUI workflow,
-compiles it into a deterministic bundle, and replays it with zero model calls
-on the healthy path. Consequential actions are guarded by pre-action identity
-checks, and writes are verified out of band against the system of record (API,
-database, or document hash), not the pixels. Any non-confirmed verdict halts
-the run. Every run produces an audit trail; on-prem deployments add an
-append-only, hash-chained audit log.
+compiles it into a deterministic bundle, and replays it with no generative-model
+API calls on the healthy path. Consequential actions are guarded by pre-action
+identity checks, and writes are verified out of band against the system of
+record (API, database, or document hash), not the pixels. Any non-confirmed
+verdict halts the run. Every run produces an audit trail; on-prem deployments
+add an append-only, hash-chained audit log.
 
 ## Core security properties
 

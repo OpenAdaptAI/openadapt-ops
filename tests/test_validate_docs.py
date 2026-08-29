@@ -16,7 +16,7 @@ def test_product_catalog_binds_all_admitted_targets_to_live_state():
 
     for target in ("agent", "capture", "cloud", "desktop", "docs", "flow", "openadapt"):
         assert f'data-openadapt-production-target="{target}"' in content
-    assert "Not actively admitted." in content
+    assert content.count("data-openadapt-production-target=") == 7
     assert "**Experimental**" in content
     assert "**Research**" in content
 
@@ -55,13 +55,13 @@ def _write_contract_docs(root):
         "index.md": (
             "# OpenAdapt\n\nShow it a repeated workflow. OpenAdapt compiles it "
             "into governed, deterministic replay. "
-            '<span data-openadapt-production-product>Not actively admitted.</span>'
+            "[Production status](reference/production-lifecycle.md)"
         ),
         "ecosystem/index.md": (
             "# Product components and release admission\n\n"
             + "\n".join(
                 f'<span data-openadapt-production-target="{target}">'
-                "Not actively admitted.</span>"
+                "No current verified Production admission.</span>"
                 for target in (
                     "agent",
                     "capture",
@@ -235,6 +235,23 @@ def test_product_docs_contract_rejects_stale_prelaunch_copy(tmp_path):
     pages = _write_contract_docs(docs_dir)
     hosted = docs_dir / "guides/hosted.md"
     hosted.write_text(hosted.read_text() + "\nBeta launch candidate\n")
+    mkdocs_file = tmp_path / "mkdocs.yml"
+    mkdocs_file.write_text(
+        "nav:\n  - Reference:\n"
+        + "".join(f"    - {path}\n" for path in pages)
+        + "    - Package and repository lifecycle: ecosystem/index.md\n"
+    )
+
+    issues = check_product_docs_contract(docs_dir, mkdocs_file)
+
+    assert any("Stale prelaunch copy" in issue for issue in issues)
+
+
+def test_product_docs_contract_rejects_not_actively_admitted_label(tmp_path):
+    docs_dir = tmp_path / "docs"
+    pages = _write_contract_docs(docs_dir)
+    hosted = docs_dir / "guides/hosted.md"
+    hosted.write_text(hosted.read_text() + "\nNot actively admitted\n")
     mkdocs_file = tmp_path / "mkdocs.yml"
     mkdocs_file.write_text(
         "nav:\n  - Reference:\n"

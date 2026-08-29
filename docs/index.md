@@ -12,8 +12,9 @@ hide:
 <p class="oa-lede">
 Show OpenAdapt a repeated task. It compiles the demonstration into a
 deterministic program for browser, desktop, RDP, or Citrix, then checks the
-declared result before it reports success. A healthy run makes no model calls.
-If OpenAdapt cannot verify the result, the run stops with evidence for review.
+declared result before it reports success. A healthy run makes no
+generative-model API calls. If OpenAdapt cannot verify the result, the run
+stops with evidence for review.
 </p>
 
 [Run it locally](get-started/index.md){ .md-button .md-button--primary }
@@ -91,11 +92,11 @@ flowchart LR
     I --> C
 ```
 
-The healthy path follows the approved program with no generative-model calls.
-When the interface changes, OpenAdapt first uses the evidence retained from the
-demonstration. A configured model can propose a repair when policy permits.
-The repaired version passes the same review and qualification gates before
-promotion.
+The healthy path follows the approved program with no generative-model API
+calls. When the interface changes, OpenAdapt first uses the evidence retained
+from the demonstration. A configured model can propose a repair when policy
+permits. The repaired version passes the same review and qualification gates
+before promotion.
 
 OpenAdapt separates action delivery from result verification. A save message
 on the acting screen does not prove that the intended record changed. A
@@ -139,9 +140,7 @@ report determine its outcome.
 [Review qualification evidence](get-started/what-works-today.md){ .md-button }
 [Read the benchmark methods](https://github.com/OpenAdaptAI/openadapt-flow/tree/main/benchmark){ .md-button }
 
-**Product release admission:**
-<span data-openadapt-production-product aria-live="polite">Not actively admitted. Production requires a current verified admission for all seven product targets.</span>
-[Read the release admission contract](reference/production-lifecycle.md)
+[Check the current Production status](reference/production-lifecycle.md){ .md-button }
 
 ---
 

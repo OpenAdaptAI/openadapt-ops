@@ -52,24 +52,24 @@ curl -fsSL https://openadapt.ai/install.sh | sh
 Both paths install the same `openadapt` command. You need no package extra for
 the browser tutorial.
 
-The command records the bundled synthetic MockMed task, compiles its observed
-[effect contract](../reference/glossary.md#effect-contract), certifies it with
-the shipped clinical-write [policy](../reference/glossary.md#policy), and runs
-it under the Standard [profile](../reference/glossary.md#profile). A separate
-read-only API confirms the saved record outside the screen that performed the
-write. The healthy run returns
-[`VERIFIED`](../reference/run-outcomes.md) with no model or Cloud call. OpenAdapt writes all artifacts to
-`openadapt-quickstart/` and refuses to overwrite that directory.
+`openadapt quickstart` records the bundled synthetic MockMed task, compiles its
+observed [effect contract](../reference/glossary.md#effect-contract), certifies
+it with the shipped clinical-write [policy](../reference/glossary.md#policy),
+and runs it under the Standard [profile](../reference/glossary.md#profile). A
+separate read-only API confirms the saved record outside the screen that
+performed the write. The healthy run returns
+[`VERIFIED`](../reference/run-outcomes.md) with no model or Cloud call. Artifacts
+go to `openadapt-quickstart/`. OpenAdapt refuses to overwrite that directory.
 
 You now have:
 
 - `openadapt-quickstart/recording/`: the demonstration and retained target
-  evidence;
-- `openadapt-quickstart/bundle/`: the inspectable compiled workflow; and
+  evidence
+- `openadapt-quickstart/bundle/`: the inspectable compiled workflow
 - `openadapt-quickstart/run/REPORT.md`: the ordered actions, evidence, outcome,
-  and any halt reason.
+  and any halt reason
 - `openadapt-quickstart/run/receipt.json`: a local, privacy-safe summary of the
-  synthetic verified run.
+  synthetic verified run
 
 Open the report, then inspect the program and its deployment gaps:
 
@@ -79,9 +79,8 @@ openadapt flow visualize openadapt-quickstart/bundle --out graph.html
 openadapt flow lint openadapt-quickstart/bundle
 ```
 
-When you move from the tutorial to your own work, OpenAdapt qualifies each
-workflow against its real environment. Qualification means we test your
-workflow against real failures before it runs.
+When you move from the tutorial to your own work, qualification tests the
+workflow against real failures in its environment before it runs.
 
 After the first run, choose the path that matches your goal:
 
@@ -98,21 +97,6 @@ After the first run, choose the path that matches your goal:
     application, and local system of record. A customer workflow must bind its
     own application, execution surface, action risks, identity checks,
     independent effect verifier, fault cases, and deployment policy.
-
-## See each stage
-
-`openadapt quickstart` runs these five stages for you:
-
-1. It starts the bundled application and its local persistence boundary.
-2. It records the synthetic task and observes the record state before and after
-   each action.
-3. It compiles the observed delta into an explicit effect contract.
-4. It applies the shipped `clinical-write` policy and the Standard run gate.
-5. It replays the task, confirms the saved record through the independent API,
-   and writes the local receipt.
-
-The same gate stops when the required evidence is missing or disagrees with the
-screen.
 
 ## See a fail-safe halt
 
@@ -161,7 +145,6 @@ general teaching demo. When a real, durable run halts on an unhandled state,
 record only the corrective actions and feed the halted run to `teach`:
 
 ```bash
-# 9. Compile a demonstrated correction through the regression/canary gate
 openadapt flow teach runs/<halted-run> \
   --fix recordings/<correction> \
   --bundle bundle \
@@ -175,45 +158,19 @@ correction is refused and the original bundle remains halting.
 
 ## Move from demo to deployment
 
-A real deployment must replace demo drift flags with explicit backend, effect,
-durability, and policy configuration:
-
-```bash
-# 10. Seal an encrypted candidate, then inspect and pass the run gate
-export OPENADAPT_BUNDLE_KEY='<inject from your secret manager>'
-openadapt flow seal bundle-v2 --out bundle-prod
-openadapt flow certify bundle-prod --config deployment.yaml
-openadapt flow run bundle-prod --config deployment.yaml --dry-run
-openadapt flow run bundle-prod --config deployment.yaml
-```
-
-!!! note "Why certification can exit 2"
-    A failed certification exits `2` and prints each violated requirement.
-    OpenAdapt refuses the bundle before deployment. Close the gaps it names (see
-    [Write and enforce a policy](../guides/policy-and-certification.md)), then
-    re-run `certify` and continue.
-
-Follow [Run a deployment](../guides/run-a-deployment.md), then complete the
-[security and deployment review](../guides/security-review.md). Do not promote a
-bundle just because the sample-app tour passed. `seal` preserves the source,
-refuses symlinks and an existing destination, encrypts the workflow and template
-crops, verifies the result, and expires any certification inherited from the
-source. Key custody and rotation belong to the deployment.
-
-## After the tutorial
-
-The local runtime also supports these paths:
-
-- **[Induce a program](../guides/induce-a-program.md)** from several recordings
-  (`induce`), and loop it over a data source with `replay --worklist`.
-- **[Run a real deployment](../guides/run-a-deployment.md)** (`run`) wired by one
-  [`deployment.yaml`](../reference/deployment-config.md): a real backend, effect
-  verification against the system of record, an API actuation tier, and a policy.
-- **[Durable runs](../concepts/durable-runtime.md)** (`--durable`) turn a halt
-  into a pause an operator can `approve` and `resume` from the last verified
-  checkpoint.
+Follow [Run a deployment](../guides/run-a-deployment.md) to seal the exact
+bundle, certify it, run a dry check, and start the governed run. A failed
+certification exits `2` and names each violated requirement. Close those gaps
+before another attempt. Do not promote a bundle because the sample application
+passed; complete the [security and deployment review](../guides/security-review.md)
+for the real environment.
 
 ## Where to go next
+
+To compile several recordings, read
+[Induce a program](../guides/induce-a-program.md). [Durable
+runs](../concepts/durable-runtime.md) explains how an operator can resume from
+the last verified checkpoint after a halt.
 
 <div class="grid cards" markdown>
 

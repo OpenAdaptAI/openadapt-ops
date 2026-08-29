@@ -237,14 +237,14 @@ default off, so an unconfigured replay behaves exactly as before):
 | `--api-actuator` | Perform a step carrying an `ApiBinding` via the API ($0, no GUI), confirmed by the effect verifier |
 | `--api-base-url` | Base URL for the API actuator (implies `--api-actuator`) |
 | `--durable` | Enable the Tier-3 [durable runtime](../concepts/durable-runtime.md): checkpoint each verified step, durably pause on halt, resumable via `resume` |
-| `--allow-model-grounding` | **Model-egress opt-in** (PHI audit REM-3): permit wiring an off-box model grounder / identity-VLM / state-verifier; screenshots may leave the box. Off by default: replay makes no model-service calls; target and effect-verifier traffic stays deployment-defined. |
+| `--allow-model-grounding` | **Model-egress opt-in** (PHI audit REM-3): permit wiring an off-box model grounder / identity-VLM / state-verifier; screenshots may leave the box. Off by default: replay makes no generative-model API calls; target and effect-verifier traffic stays deployment-defined. |
 
 Exits 0 on success, 1 on a halt (every terminal outcome and halt reason is
-defined in [Run outcomes and halt reasons](run-outcomes.md)). With no model
-component wired, replay makes no
-model-service calls; target and effect-verifier traffic follows the deployment
-config. The on-prem VLM appliance engages only when `--allow-model-grounding` is
-passed **and** [`OPENADAPT_FLOW_VLM_URL`](configuration.md) is set.
+defined in [Run outcomes and halt reasons](run-outcomes.md)). With no
+generative-model component wired, replay makes no generative-model API calls;
+target and effect-verifier traffic follows the deployment config. The on-prem
+VLM appliance engages only when `--allow-model-grounding` is passed **and**
+[`OPENADAPT_FLOW_VLM_URL`](configuration.md) is set.
 
 ## run
 

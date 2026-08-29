@@ -12,9 +12,10 @@ fields.
 
 !!! note "Every section is optional"
     An empty file is a valid deployment: fully local, GUI-only, no effect
-    verification, non-durable, no model-service calls. Add only the sections you
-    need. The loader validates the YAML against the schema and fails loudly on an
-    unknown field or a missing required value, rather than wiring a broken run.
+    verification, non-durable, no generative-model API calls. Add only the
+    sections you need. The loader validates the YAML against the schema and fails
+    loudly on an unknown field or a missing required value, rather than wiring a
+    broken run.
 
 ## The full schema
 
@@ -172,7 +173,7 @@ Shared: `timeout_s` (default `5.0`), `poll_interval_s` (default `0.2`).
 | Field | Default | Meaning |
 |---|---|---|
 | `durable` | `false` | The Tier-3 [durable runtime](../concepts/durable-runtime.md): checkpoint each verified step, durably pause on halt, resume via `resume`. |
-| `allow_model_grounding` | `false` | **Model-egress opt-in** (PHI audit REM-3). Off => no model-service calls; target and effect-verifier traffic remains deployment-defined. On => permit wiring an off-box model grounder / identity-VLM / state-verifier; screenshots may leave the box. |
+| `allow_model_grounding` | `false` | **Model-egress opt-in** (PHI audit REM-3). Off => no generative-model API calls; target and effect-verifier traffic remains deployment-defined. On => permit wiring an off-box model grounder / identity-VLM / state-verifier; screenshots may leave the box. |
 
 ### `policy`
 

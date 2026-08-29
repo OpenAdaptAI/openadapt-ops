@@ -2,6 +2,8 @@
 
 const assert = require("node:assert/strict");
 const { createHash } = require("node:crypto");
+const { readFileSync } = require("node:fs");
+const { resolve } = require("node:path");
 const test = require("node:test");
 
 const lifecycle = require("../../docs/javascripts/production-lifecycle.js");
@@ -500,7 +502,7 @@ test("every live authority request is uncached", async () => {
   assert.ok(firstRun.every((url) => url.includes("openadapt_lifecycle_request=")));
 });
 
-test("PyPI drift and yanks make the affected target not actively admitted", async () => {
+test("PyPI drift and yanks remove the affected target from Production", async () => {
   const fixture = makeFixture();
   const drifted = await lifecycle.load(
     fetchFixture(fixture, { pypiVersions: { "openadapt-flow": "1.2.4" } }),
@@ -526,7 +528,7 @@ test("PyPI drift and yanks make the affected target not actively admitted", asyn
   assert.equal(malformed.activeTargets.has("capture"), false);
 });
 
-test("a missing GitHub installer makes Desktop not actively admitted", async () => {
+test("a missing GitHub installer removes Desktop from Production", async () => {
   const fixture = makeFixture();
   const state = await lifecycle.load(
     fetchFixture(fixture, { githubMissingArtifact: true }),
@@ -537,7 +539,7 @@ test("a missing GitHub installer makes Desktop not actively admitted", async () 
   assert.equal(state.activeTargets.size, 6);
 });
 
-test("a managed-evidence outage makes Docs not actively admitted", async () => {
+test("a managed-evidence outage removes Docs from Production", async () => {
   const fixture = makeFixture();
   const state = await lifecycle.load(
     fetchFixture(fixture, { managedUnavailable: true }),
@@ -548,7 +550,7 @@ test("a managed-evidence outage makes Docs not actively admitted", async () => {
   assert.equal(state.activeTargets.size, 6);
 });
 
-test("an evidence authority outage makes the affected target not actively admitted", async () => {
+test("an evidence authority outage removes the affected target from Production", async () => {
   const fixture = makeFixture();
   for (const part of ["summary", "bundle", "manifest"]) {
     const state = await lifecycle.load(
@@ -617,7 +619,36 @@ test("an inactive target uses the exact neutral lifecycle term", () => {
     },
   };
   lifecycle.renderTarget(target, null);
-  assert.equal(target.textContent, "Not actively admitted.");
+  assert.equal(target.textContent, lifecycle.TARGET_REQUIREMENT);
+});
+
+test("the ecosystem page uses the runtime target fallback label", () => {
+  assert.equal(
+    lifecycle.TARGET_REQUIREMENT,
+    "No current verified Production admission.",
+  );
+  assert.equal(
+    lifecycle.PRODUCT_REQUIREMENT,
+    "Not currently Production across all seven targets.",
+  );
+
+  const ecosystem = readFileSync(
+    resolve(__dirname, "../../docs/ecosystem/index.md"),
+    "utf8",
+  );
+  const targetSpans = [
+    ...ecosystem.matchAll(
+      /<span\b[^>]*\bdata-openadapt-production-target="([^"]+)"[^>]*>([^<]+)<\/span>/g,
+    ),
+  ];
+  assert.deepEqual(
+    targetSpans.map((match) => match[1]).sort(),
+    [...lifecycle.TARGET_IDS].sort(),
+  );
+  assert.ok(
+    targetSpans.every((match) => match[2] === lifecycle.TARGET_REQUIREMENT),
+  );
+
 });
 
 test("the committed admission-free projection keeps every label neutral", async () => {

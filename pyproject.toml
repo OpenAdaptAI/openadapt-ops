@@ -1,7 +1,7 @@
 [project]
-name = "openadapt-maintenance"
+name = "openadapt-ops"
 version = "0.1.0"
-description = "Automated documentation generator for the OpenAdapt ecosystem"
+description = "Documentation and operations tooling for OpenAdapt"
 requires-python = ">=3.10"
 dependencies = [
     "mkdocs-material>=9.5",

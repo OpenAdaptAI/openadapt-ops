@@ -12,7 +12,7 @@ DOCS_DIR = ROOT / "docs"
 MKDOCS_FILE = ROOT / "mkdocs.yml"
 
 REQUIRED_PUBLIC_PAGES = {
-    "index.md": ("data-openadapt-production-product",),
+    "index.md": ("reference/production-lifecycle.md",),
     "ecosystem/index.md": ("data-openadapt-production-target",),
     "get-started/what-works-today.md": (
         "Qualification evidence",
@@ -76,6 +76,8 @@ STALE_PRELAUNCH_MARKERS = {
     "Beta launch candidate",
     "full paid production lifecycle remains pending",
     "not a public availability statement",
+    "not actively admitted",
+    "Not actively admitted",
 }
 
 STATIC_MATURITY_PATTERN = re.compile(

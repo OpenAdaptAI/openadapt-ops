@@ -7,7 +7,7 @@ halts forever. This page covers both halves of the answer: **where a halt goes**
 when that person teaches the fix**, which is the halt-learn loop proper.
 
 Both halves refuse rather than guess. Neither hands control to a free-form
-agent, and neither puts a model call on the runtime path.
+agent, and neither puts a generative-model API call on the runtime path.
 
 ## Terms used here
 
@@ -383,11 +383,11 @@ openadapt flow teach runs/replay-20260712-140233 \
 `teach` runs the governed loop end to end (load the halt, turn the fix into the
 operator-correction trace, induce, regression-gate, held-out canary) and writes
 `--out` **only** if the revision is promoted. On the shipped path it is
-deterministic and makes **no model calls** ($0): the resolution is induced by
-the model-free reference inducer (the structural-diff inducer that handles the
-"an unexpected optional dialog intercepted the workflow" class the loop was
-built for). A model-backed inducer wires in behind the same `Inducer` seam
-without touching this flow.
+deterministic and makes **no generative-model API calls** ($0 in model API
+charges): the resolution is induced by the model-free reference inducer (the
+structural-diff inducer that handles the "an unexpected optional dialog
+intercepted the workflow" class the loop was built for). A model-backed inducer
+wires in behind the same `Inducer` seam without touching this flow.
 
 **The refusal path is a normal outcome, not an error.** If the single correction
 underdetermines the generalization, or the induced revision would weaken a

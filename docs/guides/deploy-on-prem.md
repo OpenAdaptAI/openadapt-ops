@@ -14,10 +14,10 @@ on-prem deployment and the pilot install runbook.
 
 ## The default is already local
 
-A compiled bundle replays deterministically with no model calls and no OpenAdapt
-cloud dependency. The default backend is a local headless browser. Application and
-verifier traffic follows the endpoints in the deployment config; enforce its
-boundary at the host and network layers.
+A compiled bundle replays deterministically with no generative-model API calls
+and no OpenAdapt cloud dependency. The default backend is a local headless
+browser. Application and verifier traffic follows the endpoints in the
+deployment config; enforce its boundary at the host and network layers.
 
 ## What runs on the on-prem machine
 
@@ -26,7 +26,8 @@ stack locally:
 
 - **The engine**: `openadapt flow` (`run` / `replay` / `resume` / `certify` /
   `lint` / `teach`): compile-time bundle → deterministic replay → identity gate →
-  effect verification → halt. Deterministic, `$0`, no model calls by default.
+  effect verification → halt. By default, the path makes no generative-model
+  API calls and incurs $0 in model API charges.
 - **A local runner / scheduler**: a directory-as-queue wrapper
   (`deploy/on-prem/bin/run-queue.sh` + a systemd `.path` unit). No broker, no
   daemon framework, no network.
@@ -52,13 +53,13 @@ safety policy), read by `certify`, `run`, and `resume`:
 ```yaml
 backend:  { url: https://emr.internal.example.org }
 effects:  { kind: fhir, base_url: https://emr.internal.example.org/apis/default/fhir }
-runtime:  { durable: true, allow_model_grounding: false }   # zero model-service calls
+runtime:  { durable: true, allow_model_grounding: false }   # no generative-model API calls
 policy:   { policy: clinical-write }
 ```
 
 `runtime.allow_model_grounding` defaults to **false**, so the deterministic path
-makes no model-service calls unless you opt in and point the runtime at an on-prem
-appliance. See [Run a deployment](run-a-deployment.md).
+makes no generative-model API calls unless you opt in and point the runtime at
+an on-prem appliance. See [Run a deployment](run-a-deployment.md).
 
 ## Install (summary)
 
@@ -219,13 +220,13 @@ on your own hardware:
 export OPENADAPT_FLOW_VLM_URL='http://your-appliance:8000'
 ```
 
-The appliance is designed to make no external model calls and not persist
-payloads. Enforce those properties with network policy, process configuration, and
-retention tests. Identity crops and full frames are deliberately **not** scrubbed
-before the appliance sees them, because the identity check needs the literal
-identifier; the control there is the trusted local boundary and verified retention
-behavior, not redaction. Unset the URL and no model tiers exist (the default
-install pulls no model).
+The appliance is designed to make no external generative-model API calls and
+not persist payloads. Enforce those properties with network policy, process
+configuration, and retention tests. Identity crops and full frames are
+deliberately **not** scrubbed before the appliance sees them, because the
+identity check needs the literal identifier; the control there is the trusted
+local boundary and verified retention behavior, not redaction. Unset the URL
+and no model tiers exist (the default install pulls no model).
 
 ## Reaching the decision portal from a phone
 

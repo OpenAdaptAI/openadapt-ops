@@ -35,10 +35,6 @@ switching, and sign-out.
 
 ## What the subscription includes
 
-**Current Cloud release admission:**
-<span data-openadapt-production-target="cloud" aria-live="polite">Not actively admitted.</span>
-[Review the admission contract](../reference/production-lifecycle.md)
-
 | Surface | Availability | Boundary |
 |---|---|---|
 | Local browser record -> compile -> managed execute | **Included in the managed subscription** | Governed authoring and validation remain local; managed execution uses the qualified browser substrate. |

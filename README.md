@@ -1,15 +1,13 @@
 # openadapt-ops
 
-Documentation source and ops automation for the OpenAdapt ecosystem. This
-repository is the source of truth for the public product documentation at
-[docs.openadapt.ai](https://docs.openadapt.ai), and it holds the tooling that
-builds, validates, and publishes that site.
+This repository contains the public product documentation at
+[docs.openadapt.ai](https://docs.openadapt.ai): authored pages under `docs/`,
+the `mkdocs.yml` navigation, and the pipeline that validates and publishes the
+site. It also contains operations runbooks and a history-scrubbing CLI.
 
-> **Lifecycle: Support.** This public repository provides current documentation
-> and operations tooling. It isn't an end-user package. The `docs` product
-> target gets its Production state from the separate release admission. This
-> repository was formerly named `openadapt-maintenance` and is now
-> `OpenAdaptAI/openadapt-ops`.
+> **Lifecycle: Support.** This repository contains current documentation and
+> operations tooling. It isn't an end-user package. The deployed documentation
+> has a separate, admission-derived Production status.
 
 > **Source of truth:** This repository's `docs/` tree and `mkdocs.yml` own
 > `docs.openadapt.ai`. `OpenAdapt/docs`, `OpenAdapt/mkdocs.yml`, and
@@ -17,17 +15,16 @@ builds, validates, and publishes that site.
 > the production docs domain. See
 > [`docs/reference/documentation-governance.md`](docs/reference/documentation-governance.md).
 
-## About OpenAdapt
+## OpenAdapt
 
-OpenAdapt provides verified automation from demonstration. It compiles repeated
-GUI work into deterministic programs for browser, Windows, macOS, Linux, RDP,
-and Citrix/VDI. Healthy runs make no model calls. OpenAdapt checks the declared
-result before it reports `VERIFIED` and stops when the required evidence is
-missing. The local runtime is MIT licensed; managed Cloud is optional. The
-flagship code lives at
-[github.com/OpenAdaptAI/openadapt](https://github.com/OpenAdaptAI/openadapt).
+OpenAdapt compiles demonstrated GUI workflows into deterministic, locally
+executable programs. Healthy runs make no generative-model API calls. When
+interfaces drift, OpenAdapt re-resolves from retained evidence or proposes a
+governed repair. It halts when verification fails. The local runtime is MIT
+licensed; managed Cloud is optional. The flagship code lives at
+[github.com/OpenAdaptAI/OpenAdapt](https://github.com/OpenAdaptAI/OpenAdapt).
 
-## What is in this repository
+## Layout
 
 - **`docs/`** and **`mkdocs.yml`**: the curated MkDocs Material site published
   to [docs.openadapt.ai](https://docs.openadapt.ai). Curated product pages own
@@ -44,7 +41,7 @@ flagship code lives at
   [`ops/PRODUCTION_OPERATIONS.md`](ops/PRODUCTION_OPERATIONS.md).
 - **`repos.yml`**: the list of ecosystem repositories the pipeline reads from.
 
-## Build the docs locally
+## Preview the docs locally
 
 ```bash
 # Install dependencies
@@ -67,7 +64,7 @@ uv sync --extra dev
 uv run pytest tests/ -q
 ```
 
-## Continuous integration and publishing
+## CI and publishing
 
 - **`.github/workflows/ci.yml`** runs on every pull request and on push to
   `main`. It installs locked dependencies, runs the test suite, validates the
@@ -84,7 +81,7 @@ uv run pytest tests/ -q
   Every path validates and builds in strict mode before deploying, so a failing
   gate blocks publication.
 
-## Adding a new repository
+## Add a repository
 
 Add an entry to `repos.yml`. No code changes are needed.
 
@@ -92,6 +89,6 @@ Add an entry to `repos.yml`. No code changes are needed.
 
 - Live documentation: [docs.openadapt.ai](https://docs.openadapt.ai)
 - Flagship repository:
-  [github.com/OpenAdaptAI/openadapt](https://github.com/OpenAdaptAI/openadapt)
+  [github.com/OpenAdaptAI/OpenAdapt](https://github.com/OpenAdaptAI/OpenAdapt)
 - Documentation governance:
   [`docs/reference/documentation-governance.md`](docs/reference/documentation-governance.md)
