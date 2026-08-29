@@ -15,8 +15,9 @@ This URL is from an older docs tree. Start at [Get started](/get-started/).
 ```bash
 pip install openadapt
 openadapt quickstart
+openadapt quickstart --break-it
 ```
 
-`openadapt quickstart` records a demonstration, compiles it, and replays the program. For your own app, use `openadapt flow record`, `compile`, and `replay`.
+`openadapt quickstart` records a demonstration, compiles it, and replays the program. `--break-it` is the halt demo. For your own app, use `openadapt flow record`, `compile`, and `replay`.
 
 [Continue to Get started](/get-started/){ .md-button .md-button--primary }

@@ -3,7 +3,7 @@
 > Official documentation for OpenAdapt, an open-source demonstration compiler for repeated GUI work. Record a GUI workflow once and compile it into deterministic replay: healthy runs are local and make no generative-model API calls; under UI drift the runtime re-resolves from retained evidence, proposes governed repairs, accepts human teaching, or halts rather than guess. MIT licensed.
 
 ## Get started
-- [Get started](https://docs.openadapt.ai/get-started/): Run `pip install openadapt`, then `openadapt quickstart` for a complete local, effect-verified tutorial. The current CLI is `openadapt flow record`, `compile`, `replay`. Older `/getting-started/` and package-mirror URLs redirect here.
+- [Get started](https://docs.openadapt.ai/get-started/): Run `pip install openadapt`, then `openadapt quickstart`, then `openadapt quickstart --break-it`. The bundled workflow is a tutorial. The current CLI is `openadapt flow record`, `compile`, `replay`. Older `/getting-started/` URLs and the `/start/` alias redirect here.
 - [Qualification evidence](https://docs.openadapt.ai/get-started/what-works-today/): Accepted substrate results, exact environments, and deployment boundaries
 - [Your first workflow](https://docs.openadapt.ai/get-started/first-workflow/): Install the base package, then record, compile, lint, replay, and read the report on your own web app
 - [What you get](https://docs.openadapt.ai/get-started/what-you-get/): The workflow bundle, the run report, and what each artifact is for
