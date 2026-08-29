@@ -32,6 +32,7 @@ the evidence supports a "do not automate" decision.
 | [Deployment boundaries](deployment-boundaries.md) | Explaining where execution and sensitive data live. |
 | [External Citrix zero-install brief](citrix-external-brief.md) | A buyer whose workflow lives behind Citrix or VDI. |
 | [OpenAdapt Execute private-pilot guide](oem-brief.md) | A vendor that wants to embed verified execution. The API is available to approved private-pilot partners with scoped credentials. |
+| [Invoke a program: Seal or halt](execute-api.md) | The Execute request, poll, Seal-shaped receipt, and webhook contract. |
 | [Procurement FAQ](procurement-faq.md) | Procurement, legal, and vendor-risk questions. |
 
 ## How claims are bounded

@@ -1,12 +1,42 @@
-# Integrate OpenAdapt Execute
+# Invoke a program: Seal or halt
 
-OpenAdapt Execute accepts one already-qualified transaction and processes it
-as a durable asynchronous execution. Your integration submits the exact
-qualification binding, keeps one idempotency key for the business transaction,
-and waits for a terminal receipt.
+`POST /api/v1/executions` runs one already-qualified compiled program. When
+the run ends, `GET /v1/executions/{execution_id}/receipt` returns the Seal:
+`ExecuteEvidenceReceiptV1`. That is the existing evidence receipt. Do not
+look for a second object.
 
-This guide is for an approved private-pilot partner. OpenAdapt supplies the
-service credential and the identifiers from the qualification pack.
+Unsigned local `openadapt-flow replay` stays free. A production `verified`
+outcome without that receipt is a failure. HTTP `202` only means OpenAdapt
+accepted the request for durable processing.
+
+This page is for an approved private-pilot partner. OpenAdapt supplies the
+service credential and the identifiers from the qualification pack. The hosted
+Execute lane stays gated (`EXECUTE_LANE_ENABLED` is false) until a
+founder-gated production deploy can issue a signed Seal.
+
+## Oracle tiers
+
+`oracle_tier` on the receipt says how the effect was checked. Mint a
+production Seal only at tier 2 or 3.
+
+| Tier | Check | Production Seal |
+|---|---|---|
+| 0 | Visual / OCR | No. Dev only. |
+| 1 | Second session / independent UI read | No. |
+| 2 | System-of-record read (API, DB, file, ack) | Yes. |
+| 3 | Counterparty artifact (payer status, legal export) | Yes. |
+
+`--break-it` on `openadapt-flow qualify` is the fail-closed test. A fake
+success banner must halt. The store must stay unchanged.
+
+## Attended first
+
+A person stays the legal actor. A Seal is not a physician signature.
+Consequential writes pause at `decision_required` so an authorized operator
+can finish the signed task on phone or desktop. Do not type a physician
+password.
+
+The rest of this page is the request, poll, receipt, and webhook contract.
 
 ## Choose where execution runs
 
@@ -134,15 +164,20 @@ When the state is `terminal`, request
 returns HTTP `409`. It also returns HTTP `409` if the terminal run still waits
 for trusted evidence.
 
-Validate the response with `openadapt-types` 0.9.0 or its published JSON
-Schema. Then confirm these bindings in your application:
+The evidence receipt is the Seal. Validate it with the published
+`openadapt-types` Execute models or the JSON Schema in that package. Then
+confirm these bindings in your application:
 
 1. `execution_id` matches the accepted execution.
 2. `receipt_id` matches the status resource.
 3. `workflow_digest` matches the submitted qualified workflow.
-4. `outcome` matches `terminal_outcome`.
-5. The receipt schema accepts all contract and effect-strength invariants.
-6. Store the full receipt with your transaction record.
+4. `workflow_version`, `qualification_id`, `environment_id`, `runner_id`, and
+   `nonce` are present and bind the program, admission, environment, and
+   runner.
+5. `oracle_tier` is 2 or 3 when `outcome` is `verified`.
+6. `outcome` matches `terminal_outcome`.
+7. The receipt schema accepts all contract and effect-strength invariants.
+8. Store the full receipt with your transaction record.
 
 Python validation is small:
 
@@ -155,6 +190,10 @@ receipt = ExecuteEvidenceReceiptV1.model_validate(receipt_json)
 assert receipt.execution_id == accepted_execution_id
 assert receipt.receipt_id == status.evidence_receipt_id
 assert receipt.workflow_digest == submitted_workflow_digest
+assert receipt.workflow_version == submitted_workflow_version
+assert receipt.environment_id == submitted_environment_id
+assert receipt.nonce
+assert receipt.oracle_tier >= 2
 assert receipt.outcome == status.terminal_outcome
 ```
 
