@@ -104,8 +104,8 @@ defence-in-depth layers:
    kernel drops all IP traffic for the runner unless a LAN CIDR is explicitly
    allow-listed); the Docker Compose alternative puts the runner on an
    `internal: true` network with no gateway to the internet.
-3. **Fail-closed PHI/PII handling.** `OPENADAPT_FLOW_SCRUB=on` makes a missing
-   scrubbing capability *abort* rather than write plaintext PHI/PII.
+3. **PHI/PII handling.** `OPENADAPT_FLOW_SCRUB=on` makes a missing
+   scrubbing capability *abort* instead of writing plaintext PHI/PII.
 4. **Attestation.** `verify-airgap.sh` scans your config and environment for any
    off-LAN URL or cloud key; with `--probe` it actively curls a public canary and
    **asserts the call fails**; with `--audit` it walks the audit-log hash chain.
@@ -284,7 +284,7 @@ Two boundary points worth carrying into a security review:
 | Decision envelope to a hosted control plane | No (structurally) | Opaque ids, digests, closed enums, bounded counts only; no free-text field exists to carry a value |
 | Deterministic replay path | n/a | No OpenAdapt-hosted dependency; target and verifier traffic remains |
 
-## Compliance posture, stated honestly
+## Compliance posture
 
 **Not legal advice, and not a compliance guarantee.** OpenAdapt provides the
 software substrate for running compiled automations on-premise. Whether a given

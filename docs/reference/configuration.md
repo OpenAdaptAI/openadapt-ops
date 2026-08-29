@@ -128,8 +128,8 @@ that code on the runner.
 
 !!! warning "Loopback is the default, and a phone cannot reach it"
     Unconfigured, the portal binds `127.0.0.1` and advertises a loopback URL.
-    That is a complete, working configuration *on that computer* — the pairing
-    screen says a phone cannot reach it rather than minting a link that fails on
+    That is a complete, working configuration *on that computer*. The pairing
+    screen says a phone cannot reach it instead of minting a link that fails on
     your network. Publishing **this** surface to a phone is an explicit decision
     you make by standing up trusted TLS in front of the runner. See
     [Deploy on-prem](../guides/deploy-on-prem.md#reaching-the-decision-portal-from-a-phone).
@@ -139,8 +139,8 @@ that code on the runner.
 
 ## Cloud phone access with no inbound ingress
 
-The runner dials **out** to the control plane — no inbound port, no port
-forward, no certificate, no reverse proxy, no static address — so a phone
+The runner dials **out** to the control plane (no inbound port, no port
+forward, no certificate, no reverse proxy, no static address), so a phone
 reaches the queue from anywhere. In Cloud **Needs attention**, scan the QR
 code, sign in on the same Cloud origin, and optionally enable generic Web Push
 alerts. The QR code carries no session, runner credential, or decision
@@ -165,7 +165,7 @@ human_decisions:
 | `human_decisions.remote.enabled` | `false` | Must be literally `true`. A truthy string does not enable it. |
 | `human_decisions.remote.tenant_id` | *(unset)* | Required when enabled. |
 | `human_decisions.remote.runner_id` | *(unset)* | Required when enabled. |
-| `human_decisions.remote.context_tier` | `remote_closed_context` | `remote_closed_context` (what broke, as closed enums and bounded integers) or `remote_identifiers` (identifiers and counts only). `local_full` is refused by name — protected evidence never leaves the runner. |
+| `human_decisions.remote.context_tier` | `remote_closed_context` | `remote_closed_context` (what broke, as closed enums and bounded integers) or `remote_identifiers` (identifiers and counts only). `local_full` is refused by name; protected evidence never leaves the runner. |
 
 The execution profile applies its own ceiling, and the **weaker** of the two
 wins, so configuration cannot widen what a profile permits.
@@ -173,16 +173,16 @@ wins, so configuration cannot widen what a profile permits.
 !!! note "Every misconfiguration stops the console"
     A missing runner credential, a deployment that did not enable remote
     issuance, a read-only console, or a plaintext control-plane origin each
-    refuse to start rather than run a console whose phone lane is silently
+    refuse to start instead of running a console whose phone lane is silently
     absent. A lane that looks on and is not is worse than one that is plainly
     off.
 
 Every widening step fails closed, and the portal **does not start** on an invalid
-combination rather than falling back to something more exposed:
+combination instead of falling back to something more exposed:
 
 - A wildcard bind address (`0.0.0.0`, `::`, empty, `*`) is refused in **every**
   mode. There is no "bind everything for testing" switch.
-- The public origin must be a bare `https://` origin — no plaintext, no path,
+- The public origin must be a bare `https://` origin: no plaintext, no path,
   no query, no embedded credentials, and no self-signed bypass.
 - `OPENADAPT_PORTAL_BIND_HOST` must be a literal IP, not a hostname, and never
   an unspecified or multicast address.

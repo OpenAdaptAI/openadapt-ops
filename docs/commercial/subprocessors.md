@@ -20,7 +20,7 @@ As read from the hosted control plane's deployment configuration:
 |---|---|---|
 | Netlify | Hosting for the `app.openadapt.ai` control plane | Application traffic to the control plane: account and session data in transit, and the metadata/digest surfaces described in the [security packet](security-packet.md). |
 | Supabase | Database, authentication, and object storage for the control plane | Accounts, organizations, workflow versions, run metadata, sanitized artifact derivatives, retention/erasure receipts. |
-| Modal | Compute for the managed browser runner | Managed browser execution for explicitly initiated, public-HTTPS, non-regulated workloads only — not a lane for PHI/PII. |
+| Modal | Compute for the managed browser runner | Managed browser execution for explicitly initiated, public-HTTPS, non-regulated workloads only; not a lane for PHI/PII. |
 | Stripe | Payments and billing | Payment and subscription data. Card data is entered on Stripe's surfaces, not OpenAdapt's. |
 | Resend | Transactional email (organization invites, purchase alerts) | Recipient email addresses and the fixed-template message content. Purchase alerts carry purchase metadata only, never workflow evidence. |
 | GitHub | Source hosting, CI, release distribution | Public source, build artifacts, and CI logs. No customer workload data. |
@@ -35,7 +35,7 @@ not to your workflows.
 ## Hosted retention and deletion
 
 The hosted service applies a **versioned, explicitly configured retention
-policy** — there is no implicit retention duration. The policy names its
+policy**; there is no implicit retention duration. The policy names its
 version and sets explicit windows for recordings, reports, and run metadata
 (run metadata is never retained shorter than reports), plus a backup recovery
 window and a maximum restore-drill age.
@@ -47,7 +47,7 @@ Current behavior:
   private object storage restore into an isolated scratch environment.
 - **Legal holds pause eligible deletion** for the held organization.
 - **Tenant erasure is organization-scoped** and produces an append-only,
-  PHI/PII-free receipt with identifiers, counts, and digests — never deleted
+  PHI/PII-free receipt with identifiers, counts, and digests, never deleted
   payloads.
 - The public [readiness endpoint](https://app.openadapt.ai/api/health/ready)
   reports the configured retention component separately from the
@@ -86,8 +86,8 @@ flowchart TB
 
 ## Related pages
 
-- [Security packet](security-packet.md) — posture summary for reviewers.
-- [Vulnerability disclosure](vulnerability-disclosure.md) — how to report.
-- [PHI handling](phi-handling.md) — the end-to-end PHI narrative.
-- [Security and data handling](../guides/security-and-data-handling.md) — the
+- [Security packet](security-packet.md): posture summary for reviewers.
+- [Vulnerability disclosure](vulnerability-disclosure.md): how to report.
+- [PHI handling](phi-handling.md): the end-to-end PHI narrative.
+- [Security and data handling](../guides/security-and-data-handling.md): the
   full technical dossier, including hosted retention detail.

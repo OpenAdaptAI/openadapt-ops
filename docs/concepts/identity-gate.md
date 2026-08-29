@@ -1,12 +1,12 @@
 # The identity gate
 
-The most dangerous failure in desktop automation is not a crash. It is clicking
-the **right-looking wrong thing**: opening the wrong patient, editing the wrong
+The most dangerous failure in desktop automation is clicking the
+**right-looking wrong thing**: opening the wrong patient, editing the wrong
 account, in a repeated structure where the target still looks plausible. The
 identity gate is a pre-action check that refuses to act when it cannot tell two
 records apart.
 
-## The threat: right position, wrong entity
+## Right position, wrong entity
 
 When data shifts between runs (a row added above the target, the target's row
 deleted, a look-alike sibling, a re-sorted table), the resolver can still find a
@@ -14,21 +14,21 @@ pixel-identical target at a plausible position. Resolving is not enough. Before
 an armed click, OpenAdapt re-reads the resolved row's text and compares it to
 the recorded row; on a mismatch, it halts before clicking.
 
-## An impossibility result, and an honest response
+## OCR cannot tell those records apart
 
 Identity has a proven ceiling on pixels alone. Two **different** records with
 the same name and same date of birth, whose only distinguishing field is an
 identifier differing by a single glyph (`MG4408` vs `MG44O8`, `100512` vs
 `1OO512`), render to a **byte-identical OCR band**. That band is identical to
 what a re-read of the true row produces, so nothing downstream of OCR can
-separate them. This is not a tuning gap but the limit of OCR-based identity, and
-the honest response is to **refuse rather than guess**.
+separate them. That's the limit of OCR-based identity, not a threshold you can
+tune away. OpenAdapt stops.
 
 ## The identity ladder
 
 Identity is an ordered ladder of verifier tiers, highest-fidelity first: the
-first that can judge the substrate wins, and its verdict is final. Every tier is
-fail-safe: unsure abstains to the next, and if nothing verifies, the run halts.
+first that can judge the substrate wins, and its verdict is final. Unsure
+abstains to the next tier. If nothing verifies, the run halts.
 
 ```mermaid
 flowchart TD
@@ -61,7 +61,7 @@ flowchart TD
    tier may only MISMATCH (a safe halt) or ABSTAIN, never grant a pass.
 3. **Local-VLM veto** (optional, off by default). A local open model can
    **reject** a wrong record with high reliability but is not trusted to
-   **certify** a right one, so a "same" answer abstains rather than passes. It
+   **certify** a right one, so a "same" answer abstains instead of passing. It
    pulls no model on the default install and makes zero cloud calls.
 4. **OCR name + DOB band.** The fallback matcher. It verifies same-identity only
    when there is provably no collapsible glyph in any identifier-position token,
@@ -75,8 +75,7 @@ Driven through the real replayer, the integrated ladder measures **zero
 false-accept across every substrate configuration**, including the
 same-name/same-DOB homonym. On browser and desktop the structured tier closes
 the class at no availability cost. On pure pixels a collapsible identifier is
-not safely verifiable and **halts** today, the honest cost of "OCR alone cannot
-verify a collapsible identifier."
+not safely verifiable and **halts** today, because OCR alone cannot verify it.
 
 !!! warning "Coverage is a first-class, auditable metric"
     Identity verification covers only **armed** steps, and real bundles arm a
@@ -90,15 +89,14 @@ verify a collapsible identifier."
     wrong-entity click on an unarmed step is still silent. This is what
     [policy and certify](policy-and-certify.md) exists to gate.
 
-## Why this posture
+## Availability cost
 
-The identity gate costs availability: on noisy pure-pixel rows it sometimes
-halts a correct run rather than gamble. That is the cheap direction to be wrong.
-Clicking by position is what caused wrong-record writes, so OpenAdapt takes the
-halt. Deployments that cannot tolerate it can escalate each halt to a fallback
-rather than proceed blindly.
+On noisy pure-pixel rows the identity gate sometimes halts a correct run. That's
+cheaper than a wrong-record write. Clicking by position is what caused those
+writes, so OpenAdapt takes the halt. Deployments that can't tolerate it can
+escalate each halt to a fallback.
 
-A halt is not a dead end: it becomes a bounded question in front of a person,
-answerable from a phone on your own network. What that person's answer does —
-and, importantly, what it does *not* authorize — is the
+A halt becomes a bounded question in front of a person, answerable from a phone
+on your own network. What that person's answer does, and what it does not
+authorize, is the
 [attended decision path](halt-learn-loop.md#where-a-halt-goes-the-attended-decision).

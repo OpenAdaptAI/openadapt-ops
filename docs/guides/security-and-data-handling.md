@@ -84,7 +84,7 @@ your screens or records**:
 
 The same boundary governs the
 [attended decision path](../concepts/halt-learn-loop.md#where-a-halt-goes-the-attended-decision),
-where a halted run is answered by staff — including from a phone.
+where a halted run is answered by staff, including from a phone.
 
 - **The full-evidence decision surface is served by the runner, inside your
   boundary.** It is a responsive web app on the runner itself, not a native
@@ -97,7 +97,7 @@ where a halted run is answered by staff — including from a phone.
   certificate, and nothing to configure on your network. That lane carries the
   signed PHI-free task and the closed halt context only: closed enums, bounded
   integers, and booleans, with **no string field and no image**. It is not
-  scrubbed evidence — it is an envelope that cannot represent a record. See
+  scrubbed evidence; it is an envelope that cannot represent a record. See
   [Reaching it from a phone](../concepts/halt-learn-loop.md#reaching-it-from-a-phone).
 - **Protected evidence does not leave the runner.** The retained screen, the
   observed values, the OCR, and the failing target stay local. Projections and
@@ -114,7 +114,7 @@ where a halted run is answered by staff — including from a phone.
   The engine re-reads live state and re-runs its identity, postcondition, and
   effect checks before continuing, and refuses when the application is not in
   the state the step needs. An accepted tap never produces `VERIFIED`, and
-  notifications on any channel carry a fixed template and a count — never an
+  notifications on any channel carry a fixed template and a count, never an
   upstream string.
 - **Sending decisions back through a hosted control plane is opt-in.** It is off
   unless remote issuance is enabled in your deployment configuration and bound
@@ -129,7 +129,7 @@ part of the local-execution path. The
 [data-boundary table](security-review.md#data-boundary-answers) states exactly
 which component can see and transmit what.
 
-## PHI/PII posture: scrubbed where shareable, fail-closed where regulated
+## PHI/PII posture: scrubbed where shareable, refused where regulated
 
 OpenAdapt treats PHI/PII handling as an engineering surface with a published map.
 [PRIVACY.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/PRIVACY.md)
@@ -312,7 +312,7 @@ an on-prem, LAN-only appliance with no retention.
 Identity verification against recorded evidence before consequential clicks,
 typed postconditions, and effect verification against the system of record,
 with halt (not guess) on any non-confirmed verdict, and durable pause/resume
-for human review. ([Fail-closed regulated execution](../concepts/regulated-execution.md),
+for human review. ([Regulated execution](../concepts/regulated-execution.md),
 [The identity gate](../concepts/identity-gate.md))
 
 **Where are credentials stored?**

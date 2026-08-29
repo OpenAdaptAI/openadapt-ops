@@ -60,7 +60,7 @@ decides whether the run can continue.
 
 ## Halt
 
-The runtime's fail-closed refusal to act: when identity, a postcondition, an
+The runtime's refusal to act: when identity, a postcondition, an
 effect verdict, a policy gate, or an unhandled screen state does not match the
 compiled expectation, the run stops and records what it observed instead of
 guessing. A halt is a governed outcome, not a crash; it can be answered by an
@@ -71,9 +71,9 @@ operator (durable pause) or resolved permanently with `teach`. See
 ## Identity gate
 
 The pre-click check on consequential steps that verifies the on-screen record
-identifier against the run's expected identity evidence before acting — the
-wrong-record guard. A conflict or an unreadable identity band halts the run
-rather than clicking into the wrong record. See
+identifier against the run's expected identity evidence before acting (the
+wrong-record guard). A conflict or an unreadable identity band halts the run
+instead of clicking into the wrong record. See
 [The identity gate](../concepts/identity-gate.md).
 
 ## Reconciliation
@@ -94,12 +94,12 @@ and by the run gate at execution. See
 
 ## Profile
 
-A named runtime posture — `demo`, `standard`, or `regulated` — that selects
+A named runtime posture (`demo`, `standard`, or `regulated`) that selects
 which requirements the run gate enforces (certification, identity coverage,
 effect contracts and their minimum tier, encryption, durability) and how the
 outcome may be described. Only Standard and Regulated runs can report
 `VERIFIED`. See [Run outcomes](run-outcomes.md) and
-[Fail-closed regulated execution](../concepts/regulated-execution.md).
+[Regulated execution](../concepts/regulated-execution.md).
 
 ## Qualification
 

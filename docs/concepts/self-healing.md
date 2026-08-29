@@ -59,8 +59,8 @@ It does **not** cover changes that invalidate the evidence itself:
   content) halts. Per-tenant re-recording is the working assumption.
 
 When the screen stops matching expectations entirely, the run **halts with a
-report** naming the violated postcondition rather than guessing. Irreversible
-steps never act on a low-confidence match.
+report** naming the violated postcondition. Irreversible steps never act on a
+low-confidence match.
 
 ## Repairs are diffs you can review
 
@@ -91,9 +91,8 @@ it is not a general adaptation guarantee.
 
 ## Healing versus verification
 
-Self-healing recovers a target whose **appearance** drifted. It deliberately
-does **not** rescue a step whose **effect** is wrong: a duplicate write or
-partial save shows unchanged pixels, so there is nothing to heal. That is the
-job of [effect verification](effect-verification.md); clicking the wrong record
-is the job of [the identity gate](identity-gate.md). The three are separate on
-purpose.
+Self-healing recovers a target whose **appearance** drifted. It does **not**
+rescue a step whose **effect** is wrong: a duplicate write or partial save
+shows unchanged pixels, so there is nothing to heal. That is the job of
+[effect verification](effect-verification.md). Clicking the wrong record is
+the job of [the identity gate](identity-gate.md). They stay separate.

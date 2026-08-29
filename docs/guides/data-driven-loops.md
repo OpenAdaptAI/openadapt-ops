@@ -67,7 +67,7 @@ openadapt flow replay queue-bundle --url https://your.app \
 ```
 
 For a real deployment, use [`run --worklist`](../reference/cli.md#run) instead,
-which adds the fail-closed admission gate, effect verification, and durable
+which adds the admission gate, effect verification, and durable
 runtime from your deployment config.
 
 ## Every iteration keeps its gates

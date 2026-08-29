@@ -1,11 +1,10 @@
 # Effect verification
 
-The screen is not the system of record: a "Saved" banner can paint over an empty
-database. Effect verification confirms a write actually landed in the real
-record, exactly once, with the right values, by reading the record instead of
-the pixels.
+A "Saved" banner can paint over an empty database. Effect verification confirms
+a write actually landed in the real record, exactly once, with the right values,
+by reading the record instead of the pixels.
 
-## The problem: five silent write faults
+## Five silent write faults
 
 A vision postcondition asks a weak question: "do the pixels look like a save
 happened?" A fault-model study drove 90 replays through a real persistence
@@ -24,7 +23,7 @@ help) and the screen shows success (so the screen oracle cannot help):
 None is render drift: the screen genuinely showed success, so only the record
 knows the truth.
 
-## The mechanism: read the record, not the screen
+## Read the record, not the screen
 
 A step can declare typed **effects** against the system of record. Given an
 `EffectVerifier`, the replayer snapshots the record before the action and, after
@@ -38,10 +37,10 @@ verdict:
   non-2xx, expired token, unparseable body). **Halt.** An expired token is never
   mistaken for "record absent."
 
-No "probably fine": both non-confirmed verdicts halt the run, mirroring the
-[identity gate](identity-gate.md)'s refuse-rather-than-guess posture. The
-verifier reads an API or a database, never the pixels, and makes **zero model
-calls**, so the $0 runtime guarantee holds.
+Both non-confirmed verdicts halt the run, the same way the
+[identity gate](identity-gate.md) stops an unresolvable target. The verifier
+reads an API or a database, never the pixels, and makes **zero model calls**, so
+the $0 runtime guarantee holds.
 
 ```mermaid
 flowchart TD
@@ -93,7 +92,7 @@ approach is not tied to one backend.
 For the five classes the screen silently mishandles, effect verification
 REFUTES and halts.
 
-## The honest preconditions
+## What has to be declared
 
 Two conditions are required, and both are real:
 
@@ -103,7 +102,6 @@ Two conditions are required, and both are real:
 2. A verifier must be **configured** for the deployment.
 
 A bundle with no declared effects, or a run with no verifier, still has only the
-screen oracle for the write and is as silent as before. The one automatic
-fail-safe: a step that declares effects while no verifier is configured is a
-configuration error and halts, so an unverifiable consequential write is never
-silently accepted.
+screen oracle for the write. The one automatic fail-safe: a step that declares
+effects while no verifier is configured is a configuration error and halts, so
+an unverifiable consequential write isn't silently accepted.

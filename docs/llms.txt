@@ -17,7 +17,7 @@
 - [The demonstration compiler](https://docs.openadapt.ai/concepts/demonstration-compiler/): Compiling a bounded demonstration into a deterministic workflow
 - [The substrate model](https://docs.openadapt.ai/concepts/substrate-model/): One governed runner contract across browser, desktop, and virtual-desktop surfaces
 - [The deployment matrix](https://docs.openadapt.ai/concepts/deployment-matrix/): Substrate, hosting, and responsibility combinations
-- [Fail-closed regulated execution](https://docs.openadapt.ai/concepts/regulated-execution/): Halting instead of guessing in regulated environments
+- [Regulated execution](https://docs.openadapt.ai/concepts/regulated-execution/): `run` refuses missing gates; `replay` is the local $0 path
 - [The capability ladder](https://docs.openadapt.ai/concepts/capability-ladder/): One compiled step, several possible implementations; the highest-fidelity viable one is used
 - [Effect verification](https://docs.openadapt.ai/concepts/effect-verification/): Verifying real effects against the system of record
 - [The identity gate](https://docs.openadapt.ai/concepts/identity-gate/): Refusing writes on low-confidence target identity

@@ -63,5 +63,5 @@ openadapt flow lint    bundle --strict
 openadapt flow certify bundle --policy clinical-write
 ```
 
-Both exit nonzero on failure, so a standard CI step fails the build. The gate
-turns the limits OpenAdapt discloses into requirements it enforces.
+Both exit nonzero on failure, so a standard CI step fails the build. Gaps
+that `lint` only reports become requirements `certify` enforces.

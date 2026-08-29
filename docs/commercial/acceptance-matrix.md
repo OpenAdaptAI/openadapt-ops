@@ -24,7 +24,7 @@ Three outcomes are acceptable, one is not:
 Mechanics behind the outcomes:
 [effect verification](../concepts/effect-verification.md),
 [the identity gate](../concepts/identity-gate.md),
-[fail-closed regulated execution](../concepts/regulated-execution.md).
+[regulated execution](../concepts/regulated-execution.md).
 
 ## Template
 

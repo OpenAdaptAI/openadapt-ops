@@ -76,7 +76,7 @@ OpenAdapt uses that higher-fidelity signal via
 UIA, native macOS, native Linux AT-SPI, RDP, and Citrix/VDI
 [backends](backends.md) are all adapters to the same protocol, not rewrites.
 
-## An API compiler for the API-less long tail
+## When the app has no usable API
 
 Most enterprise software has no usable API for the workflow you actually run.
 The demonstration is the only interface that always exists: if a person can do

@@ -19,7 +19,7 @@ is a subcommand of `openadapt flow`.
 | [`induce`](#induce) | Induce a parameterized program from **multiple** recordings | 0 if certified, 2 if underdetermined |
 | [`for-each`](#for-each) | Author a data-driven **loop** bundle: run one demonstration once per worklist record | 0 on success, nonzero on a mapping error |
 | [`replay`](#replay) | Replay a bundle, locally and deterministically | 0 on success, 1 on failure |
-| [`run`](#run) | Execute a bundle through the fail-closed deployment gate | 0 success, 1 execution halt, 2 refusal |
+| [`run`](#run) | Execute a bundle through the regulated admission gate | 0 success, 1 execution halt, 2 refusal |
 | [`resume`](#resume) | Resume a durably-paused run from its last checkpoint | 0 on success, 1/3 otherwise |
 | [`approve`](#approve) | Mark a durably-paused run's escalation approved | 0 on success, 1 if none |
 | [`teach`](#teach) | Resolve a halted run from a fix demonstration, governed | 0 if promoted, 1 if refused, 2 on bad inputs |
@@ -151,7 +151,7 @@ openadapt flow compile rec --out bundle --name my-task
 Induce a parameterized **program** bundle from **two or more** recordings (or
 already-compiled bundles) of the same task: infer the shared parameters, loops,
 and branches. It **refuses** (writes no bundle, exits nonzero) when intent is
-underdetermined, rather than guessing a branch. See
+underdetermined, instead of guessing a branch. See
 [Induce a program from multiple traces](../guides/induce-a-program.md).
 
 ```bash
@@ -248,7 +248,7 @@ VLM appliance engages only when `--allow-model-grounding` is passed **and**
 
 ## run
 
-The same executor as [`replay`](#replay), behind a fail-closed admission gate:
+The same executor as [`replay`](#replay), behind a regulated admission gate:
 the bundle must pass policy, identity coverage, effect coverage, approval,
 encryption, and manifest-integrity checks before any action executes. Backend,
 effect verification, API actuation, durable runtime, and policy come from

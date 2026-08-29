@@ -10,7 +10,7 @@ by default; when on, the model and the data stay in the building.
 Enable the appliance by pointing the runtime at a local URL
 (`OPENADAPT_FLOW_VLM_URL`). Unset, no model tiers exist and the ladder has no
 grounder rung. Configured, three fail-safe tiers come online, each biased toward
-halting rather than mis-acting:
+halting instead of mis-acting:
 
 ```mermaid
 flowchart TD
@@ -38,7 +38,7 @@ Every appliance path is fail-safe to halt: an outage or unsure answer keeps the
 halt, never a mis-click. Every rescue is recorded in the run report and counted
 as a model call, so the appliance never silently breaks the $0 story.
 
-## Measured, and honestly bounded
+## What the measurements showed
 
 The appliance was measured end-to-end against a real served local model. The
 state verifier correctly refused 7 of 8 should-halt screens and false-rescued 1

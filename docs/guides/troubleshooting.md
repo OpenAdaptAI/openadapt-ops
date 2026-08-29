@@ -39,7 +39,7 @@ dialog. The app looks like it is recording but captures nothing.
 glyph-confusable identifier** (an MRN where `O`/`0` or `l`/`1`/`I` are ambiguous)
 far more often than on the browser.
 
-**Cause.** The identity gate doing its job, not a bug: it **halts rather than
+**Cause.** The identity gate doing its job, not a bug: it **halts instead of
 guessing** a wrong-record click. On a pure-pixel substrate there is no structured
 accessibility text, so the identity ladder falls back to OCR, which cannot always
 disambiguate confusable glyphs. See
