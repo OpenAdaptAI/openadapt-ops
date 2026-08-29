@@ -6,8 +6,34 @@ description: >-
 
 # Get started
 
-You need no account, target application, API key, or operating-system
-automation permission. Python 3.10 through 3.12.
+The default reader is the calling agent. A named human authors the program
+and resolves identity, effect, and judgment halts. You need no account, target
+application, API key, or operating-system automation permission. Python 3.10
+through 3.12.
+
+Point Claude Code or Cursor at the local server:
+
+```bash
+claude mcp add openadapt -- \
+  uvx --from 'openadapt-agent[tutorial]' openadapt-agent \
+  serve --allow-run
+```
+
+`--allow-run` is an explicit opt-in. The server generates the public synthetic
+tutorial at serve time. Halt, refused, timeout, and error come back as those
+outcomes. Never summarize halt as success.
+
+!!! info "What the calling agent may do / must not do"
+    **May:** bind declared parameters, invoke the compiled program, read
+    typed outcomes, supply a missing declared parameter, retry a retryable
+    transport failure, escalate to a human.
+
+    **Must not:** summarize halt as success, resolve identity or effect
+    contradictions, or be the sole source of a production demonstration.
+
+    Full contract: [agents.txt](../agents.txt).
+
+Same loop from the CLI:
 
 ```bash
 python -m pip install --upgrade openadapt
@@ -107,7 +133,7 @@ Start with one real, read-only task. Don't start with a write.
 
 | Goal | Next guide |
 |---|---|
-| Record one real, read-only browser workflow | [Your first workflow](first-workflow.md) |
+| Author one real, read-only browser workflow | [Author a workflow](first-workflow.md) |
 | See what the compiled program looks like | [Read a compiled program](../concepts/program-visualizer.md) |
 | Bind identity, effects, faults, and policy | [Qualify a workflow](../guides/qualify-a-workflow.md) |
 | Use the Desktop application | [Install Desktop](../desktop/install.md) |
@@ -133,7 +159,7 @@ Want to watch before you record your own app?
 
 ## First real (read-only) workflow
 
-[Your first workflow](first-workflow.md) records one small real task that
+[Author a workflow](first-workflow.md) records one small real task that
 doesn't change business data. A read-only lookup against test data works.
 Open a known test record, then stop when a field shows the expected value.
 
@@ -245,7 +271,7 @@ resume from the last verified checkpoint after a halt.
 
 <div class="grid cards" markdown>
 
--   [__Your first workflow__](first-workflow.md)
+-   [__Author a workflow__](first-workflow.md)
 
     Record a read-only task with test data, review it, supervise its first
     replay, and inspect the report.
