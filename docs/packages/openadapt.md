@@ -1,6 +1,6 @@
 ---
 title: OpenAdapt package documentation moved
-description: OpenAdapt package documentation now lives in the canonical product and component guide.
+description: Install openadapt and use openadapt flow. Package details live in the product catalog.
 canonical: https://docs.openadapt.ai/ecosystem/
 redirect_to: /ecosystem/
 hide:
@@ -10,13 +10,14 @@ hide:
 
 # OpenAdapt package documentation moved
 
-The product and package guide now lives at
-[Package and repository lifecycle](/ecosystem/). The public installation path
-is:
+The public install is the launcher. After that, the command is `openadapt flow`:
 
 ```bash
 pip install openadapt
 openadapt flow --help
 ```
 
-[Continue to the current guide →](/ecosystem/){ .md-button .md-button--primary }
+The first local result is `openadapt quickstart`. Package roles are in the
+[product components catalog](/ecosystem/).
+
+[Continue to the current guide](/ecosystem/){ .md-button .md-button--primary }

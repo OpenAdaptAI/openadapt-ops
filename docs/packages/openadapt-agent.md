@@ -1,6 +1,6 @@
 ---
 title: openadapt-agent documentation moved
-description: OpenAdapt package documentation now lives in the canonical product and component guide.
+description: Agent is a governed bridge to exact Flow bundles. The current command is openadapt flow.
 canonical: https://docs.openadapt.ai/ecosystem/
 redirect_to: /ecosystem/
 hide:
@@ -10,7 +10,8 @@ hide:
 
 # openadapt-agent documentation moved
 
-The current product and component guide lives at
-[Package and repository lifecycle](/ecosystem/).
+Agent is a governed bridge from MCP clients and Agent Skills to exact Flow bundles. It does not replace `openadapt flow record`, `compile`, and `replay`.
 
-[Continue to the current guide →](/ecosystem/){ .md-button .md-button--primary }
+See the [product catalog](/ecosystem/).
+
+[Continue to the current guide](/ecosystem/){ .md-button .md-button--primary }

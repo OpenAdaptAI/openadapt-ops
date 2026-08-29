@@ -1,6 +1,6 @@
 ---
 title: openadapt-desktop documentation moved
-description: OpenAdapt package documentation now lives in the canonical product and component guide.
+description: Desktop is the local cockpit for the same record, compile, replay loop as openadapt flow.
 canonical: https://docs.openadapt.ai/ecosystem/
 redirect_to: /ecosystem/
 hide:
@@ -10,7 +10,8 @@ hide:
 
 # openadapt-desktop documentation moved
 
-The current product and component guide lives at
-[Package and repository lifecycle](/ecosystem/).
+Desktop is the local cockpit for the same engine as `openadapt flow`. It records a workflow, compiles it, and replays the program. It does not collect training data for a model.
 
-[Continue to the current guide →](/ecosystem/){ .md-button .md-button--primary }
+Install and first-run steps are in [Desktop app: install and first run](/desktop/install/). Component status is in the [product catalog](/ecosystem/).
+
+[Continue to the current guide](/ecosystem/){ .md-button .md-button--primary }

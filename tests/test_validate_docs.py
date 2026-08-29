@@ -7,7 +7,12 @@ import pytest
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "scripts"))
 
-from validate_docs import check_empty_pages, check_product_docs_contract
+from validate_docs import (
+    check_empty_pages,
+    check_product_docs_contract,
+    check_retired_redirects,
+    check_train_path_not_current_product,
+)
 
 
 def test_product_catalog_binds_all_admitted_targets_to_live_state():
@@ -324,3 +329,53 @@ def test_product_docs_contract_rejects_competing_install_identity(tmp_path):
     issues = check_product_docs_contract(docs_dir, mkdocs_file)
 
     assert any("Competing end-user install identity" in issue for issue in issues)
+
+
+def test_train_path_copy_is_rejected(tmp_path):
+    docs_dir = tmp_path / "docs"
+    docs_dir.mkdir()
+    (docs_dir / "get-started").mkdir()
+    (docs_dir / "get-started" / "index.md").write_text(
+        "# Get started\n\nopenadapt train start --capture my-task\n"
+    )
+
+    issues = check_train_path_not_current_product(docs_dir)
+
+    assert any(
+        "Retired capture-then-train copy" in issue
+        and "openadapt train" in issue
+        for issue in issues
+    )
+
+
+def test_train_path_allowlist_skips_changelog(tmp_path):
+    docs_dir = tmp_path / "docs"
+    docs_dir.mkdir()
+    (docs_dir / "changelog.md").write_text(
+        "# Changelog\n\n- restore openadapt train for a historical note\n"
+    )
+
+    assert check_train_path_not_current_product(docs_dir) == []
+
+
+def test_real_docs_have_no_train_path_copy():
+    root = pathlib.Path(__file__).resolve().parent.parent
+    assert check_train_path_not_current_product(root / "docs") == []
+
+
+def test_real_docs_keep_retired_flow_redirects():
+    root = pathlib.Path(__file__).resolve().parent.parent
+    assert check_retired_redirects(root / "docs") == []
+
+
+def test_retired_redirect_missing_file_is_an_issue(tmp_path):
+    docs_dir = tmp_path / "docs"
+    docs_dir.mkdir()
+
+    issues = check_retired_redirects(docs_dir)
+
+    assert any(
+        "Missing Flow-first redirect for retired route: getting-started/quickstart.md"
+        in issue
+        for issue in issues
+    )

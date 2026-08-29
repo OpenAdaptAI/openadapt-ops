@@ -1,6 +1,6 @@
 ---
 title: openadapt-flow documentation moved
-description: OpenAdapt package documentation now lives in the canonical product and component guide.
+description: openadapt-flow is the compiler. End users install openadapt and run openadapt flow.
 canonical: https://docs.openadapt.ai/ecosystem/
 redirect_to: /ecosystem/
 hide:
@@ -10,7 +10,8 @@ hide:
 
 # openadapt-flow documentation moved
 
-The current product and component guide lives at
-[Package and repository lifecycle](/ecosystem/).
+`openadapt-flow` is the demonstration compiler. End users install `openadapt` and run `openadapt flow record`, `compile`, and `replay`. Engine contributors clone the flow repository.
 
-[Continue to the current guide →](/ecosystem/){ .md-button .md-button--primary }
+The product catalog is at [Package and repository lifecycle](/ecosystem/). The first run is on [Get started](/get-started/).
+
+[Continue to the current guide](/ecosystem/){ .md-button .md-button--primary }

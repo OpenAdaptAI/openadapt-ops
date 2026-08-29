@@ -1,6 +1,6 @@
 ---
 title: openadapt-capture documentation moved
-description: OpenAdapt package documentation now lives in the canonical product and component guide.
+description: Native capture feeds openadapt flow. The current command is openadapt flow record.
 canonical: https://docs.openadapt.ai/ecosystem/
 redirect_to: /ecosystem/
 hide:
@@ -10,7 +10,8 @@ hide:
 
 # openadapt-capture documentation moved
 
-The current product and component guide lives at
-[Package and repository lifecycle](/ecosystem/).
+Native screen, mouse, and keyboard capture is a product component. You reach it through `openadapt flow record` on a native, RDP, or Citrix backend, or through Desktop. The extra is `openadapt[capture,...]` when you install a native driver.
 
-[Continue to the current guide →](/ecosystem/){ .md-button .md-button--primary }
+See the [product catalog](/ecosystem/) and [Get started](/get-started/).
+
+[Continue to the current guide](/ecosystem/){ .md-button .md-button--primary }
