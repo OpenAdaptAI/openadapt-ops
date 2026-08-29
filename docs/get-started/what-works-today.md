@@ -7,9 +7,9 @@ description: >-
 # Qualification evidence
 
 OpenAdapt compiles demonstrated GUI workflows into deterministic, locally
-executable programs. Healthy runs make no model calls. When an interface
-drifts, the runtime can re-resolve a target deterministically or use an
-explicitly configured model tier; it records any repair and halts when the
+executable programs. Healthy runs make no generative-model API calls. When an
+interface drifts, the runtime can re-resolve a target deterministically or use
+an explicitly configured model tier; it records any repair and halts when the
 configured identity, postcondition, effect, or policy checks cannot verify the
 run.
 

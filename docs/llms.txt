@@ -1,6 +1,6 @@
 # OpenAdapt Documentation
 
-> Official documentation for OpenAdapt, an open-source demonstration compiler for repeated GUI work. Record a GUI workflow once and compile it into deterministic replay: healthy runs are local and make zero model calls; under UI drift the runtime re-resolves from retained evidence, proposes governed repairs, accepts human teaching, or halts rather than guess. MIT licensed.
+> Official documentation for OpenAdapt, an open-source demonstration compiler for repeated GUI work. Record a GUI workflow once and compile it into deterministic replay: healthy runs are local and make no generative-model API calls; under UI drift the runtime re-resolves from retained evidence, proposes governed repairs, accepts human teaching, or halts rather than guess. MIT licensed.
 
 ## Get started
 - [Get started](https://docs.openadapt.ai/get-started/): Run `pip install openadapt`, then `openadapt quickstart` for a complete local, effect-verified tutorial

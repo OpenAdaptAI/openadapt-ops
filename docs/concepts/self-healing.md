@@ -1,9 +1,9 @@
 # Governed self-healing
 
 UIs drift: themes change, buttons move, labels get renamed. Self-healing lets a
-compiled workflow survive that drift without a model in the loop. **Governed**
-means every repair is evidence in a report or an explicitly saved, reviewable
-candidate bundle, not an opaque adaptation.
+compiled workflow survive that drift without a generative model in the loop.
+**Governed** means every repair is evidence in a report or an explicitly saved,
+reviewable candidate bundle, not an opaque adaptation.
 
 ## Four different outcomes
 
@@ -38,8 +38,8 @@ flowchart TD
 ```
 
 A **healthy** script never leaves the first rung: every step resolves by local
-template match in milliseconds, no model calls, no per-run cost. The lower rungs
-exist for runs where something changed.
+template match in milliseconds, with no generative-model API calls or model API
+charges. The lower rungs exist for runs where something changed.
 
 ## What heals, and what does not
 
@@ -74,14 +74,15 @@ promotion stays an operator/deployment decision.
 openadapt flow replay bundle --drift theme --save-healed-to bundle-healed
 ```
 
-## Zero model calls on the healthy path
+## No generative-model API calls on the healthy path
 
-The deterministic rungs (template, OCR, geometry) make no model calls. The
-grounding rung is optional and engages only when they cannot resolve the target
-and a grounder is configured. Every model call is recorded and counted in the
-run report, so the $0-per-run property is observable, not assumed. See
-[The on-prem VLM appliance](vlm-appliance.md) for the optional grounding and
-state-verification tiers.
+The deterministic rungs (template, OCR, geometry) make no generative-model API
+calls. The grounding rung is optional and engages only when they cannot resolve
+the target and a grounder is configured. The run report records the selected
+resolution rung and counted grounding calls, so operators can distinguish
+deterministic resolution from configured grounding. See [The on-prem VLM
+appliance](vlm-appliance.md) for the optional grounding and state-verification
+tiers.
 
 The model tier can be wrong. A proposed target still faces the deterministic
 identity gate, and the optional state verifier can false-rescue an ambiguous

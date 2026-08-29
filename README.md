@@ -18,10 +18,10 @@ site. It also contains operations runbooks and a history-scrubbing CLI.
 ## OpenAdapt
 
 OpenAdapt compiles demonstrated GUI workflows into deterministic, locally
-executable programs. Healthy runs make no model calls. When interfaces drift,
-OpenAdapt re-resolves from retained evidence or proposes a governed repair. It
-halts when verification fails. The local runtime is MIT licensed; managed
-Cloud is optional. The flagship code lives at
+executable programs. Healthy runs make no generative-model API calls. When
+interfaces drift, OpenAdapt re-resolves from retained evidence or proposes a
+governed repair. It halts when verification fails. The local runtime is MIT
+licensed; managed Cloud is optional. The flagship code lives at
 [github.com/OpenAdaptAI/OpenAdapt](https://github.com/OpenAdaptAI/OpenAdapt).
 
 ## Layout
