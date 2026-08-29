@@ -51,7 +51,7 @@ Delivered as its own artifact and summarized here. For each step:
 | Identity armed | Whether a pre-action identity check guards the step, and what evidence it compares ([identity gate](../concepts/identity-gate.md)). |
 | Identity coverage line | "N of M consequential steps identity-armed", with each unarmed step listed by id and reason. |
 | Effect contract | For each write: the declared effect (`record_written`, `field_equals`), its selector, and idempotency handling. |
-| Verification strength | The strongest available oracle for the effect: independent system interface, independent read-only session, persisted-state reacquisition, or immediate screen confirmation. Screen-only confirmation is labeled as such, never presented as an independent system-of-record check. |
+| Verification strength | The strongest available oracle for the effect, named as an oracle tier: 0 visual/OCR, 1 second-session UI, 2 system of record, 3 counterparty artifact. Screen-only confirmation is tier 0 and is labeled as such. Production Seals mint only at 2 or 3. See [The Seal](seal.md). |
 | Gaps | Every step or write without coverage, and whether policy permits it at this risk class. |
 
 ## 5. Representative case results

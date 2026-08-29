@@ -76,6 +76,13 @@ wrong-record guard). A conflict or an unreadable identity band halts the run
 instead of clicking into the wrong record. See
 [The identity gate](../concepts/identity-gate.md).
 
+## Oracle tier
+
+How a Seal checks the business effect. Tier 0 is visual / OCR. Tier 1 is a
+second session or independent UI read. Tier 2 is a system-of-record read (API,
+database, file, ack). Tier 3 is a counterparty artifact. Production Seals mint
+only at 2 and 3. Charge those two. See [The Seal](../commercial/seal.md).
+
 ## Reconciliation
 
 **Reconciliation** is a no-re-dispatch check after delivery is uncertain or an
@@ -110,6 +117,14 @@ qualification belongs to the exact workflow, application, and environment; it
 is the artifact a pilot or deployment reviews. Contrast with
 [certification](#certification), the policy gate. See
 [Qualify a workflow](../guides/qualify-a-workflow.md).
+
+## Seal
+
+A signed attestation that one program version, identity, environment, and
+independent effect produced `VERIFIED`, `HALTED`, or
+`RECONCILIATION_REQUIRED`. The portable object is `ExecuteEvidenceReceiptV1`.
+Execute issues it (`POST /api/v1/executions`). Local unsigned replay stays
+free. Unsigned success is failure. See [The Seal](../commercial/seal.md).
 
 ## Substrate
 

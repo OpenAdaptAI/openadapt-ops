@@ -83,6 +83,27 @@ Open `graph.html` in a browser. That page is the compiled program: the steps
 it can take, the evidence each one needs, and the paths that stop the run.
 See [Read a compiled program](../concepts/program-visualizer.md).
 
+The tutorial receipt is local and unsigned. Anyone who has to believe the run
+needs a Seal. On a qualified synthetic bundle with a tier-2 oracle, the
+intended command is:
+
+```bash
+openadapt-flow replay bundle --seal
+```
+
+A sealed verified run prints `VERIFIED`, a seal id, and a public verify URL:
+
+```text
+VERIFIED
+seal_id  receipt_12345678
+verify   https://openadapt.ai/seals/receipt_12345678
+```
+
+`--seal` on replay issues that proof. `openadapt flow seal` encrypts a bundle
+for deployment. Public `/seals/` pages list synthetic fixtures. They do not
+list healthcare production. Oracle tiers 0 (visual) and 1 (second-session UI)
+never mint a production Seal. See [The Seal](../commercial/seal.md).
+
 When you move from the tutorial to your own work, qualification tests the
 workflow against real failures in its environment before it runs.
 
@@ -92,6 +113,7 @@ After the first run, choose the path that matches your goal:
 |---|---|
 | Record one real, read-only browser workflow | [Your first workflow](first-workflow.md) |
 | See what the compiled program looks like | [Read a compiled program](../concepts/program-visualizer.md) |
+| Issue a Seal on a synthetic run | [The Seal](../commercial/seal.md) |
 | Use the Desktop application | [Install Desktop](../desktop/install.md) |
 | Use native desktop, RDP, or Citrix | [Install a different execution surface](#install-a-different-execution-surface) |
 | Prepare a qualified production run | [Move from demo to deployment](#move-from-demo-to-deployment) |

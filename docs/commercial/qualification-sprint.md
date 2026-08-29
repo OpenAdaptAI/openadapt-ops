@@ -45,8 +45,12 @@ Days on which access is broken or revoked pause the clock. See the
   customer-controlled production boundary with explicit written approval).
 - Test data that is representative and safe to modify.
 - A read path for verification: an API, database, report, or read-only session
-  through which the business effect can be independently confirmed. See
-  [effect verification](../concepts/effect-verification.md).
+  through which the business effect can be independently confirmed. Screen-only
+  confirmation is oracle tier 0 and never a production Seal. See
+  [effect verification](../concepts/effect-verification.md) and
+  [The Seal](seal.md).
+- The sales motion: attended (human session, phone approve writes) or
+  unattended (dedicated agent identity, PAM). Do not mix them in one sprint.
 - A security contact for boundary and data-handling questions.
 
 ## Exclusions

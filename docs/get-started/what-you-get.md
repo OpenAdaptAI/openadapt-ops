@@ -52,6 +52,10 @@ openadapt flow emit-skill bundle --out skills/
 openadapt flow emit-mcp   bundle --out server.py
 ```
 
+Consequential tools advertise `requires_seal: true`. If the tool returns
+unsigned success, treat it as failure. The Seal is `ExecuteEvidenceReceiptV1`.
+See [The Seal](../commercial/seal.md).
+
 ## Privacy of the artifacts
 
 The `REPORT.md` and console logs can be processed by the PHI/PII sanitizer on the
