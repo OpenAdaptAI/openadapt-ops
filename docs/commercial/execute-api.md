@@ -236,6 +236,21 @@ This pattern also covers a response loss after your endpoint accepted an
 event: OpenAdapt can retry, and your `event_id` record makes the second delivery
 safe.
 
+## Process children are separate executions
+
+A [ProcessContract](../concepts/process-contract.md) parent sequences
+independently admitted capabilities. Each child is one `POST /v1/executions`
+with that child's `qualification_id`, `workflow_version`, `workflow_digest`,
+and its own `idempotency_key`. The parent doesn't collapse them into one
+request.
+
+Copy a handoff parameter into the next child's `parameters` only when the
+predecessor receipt `outcome` is `verified` and the predecessor's effect
+contract bound that fact. Don't replay the parent. If a predecessor returns
+`reconciliation_required`, stop and reconcile; don't dispatch the successor.
+
+See [Sequence work across two applications](../guides/compose-multi-application.md).
+
 ## Integration checklist
 
 - Keep the service token and webhook secret on the server.

@@ -18,6 +18,8 @@ is a subcommand of `openadapt flow`.
 | [`compile`](#compile) | Compile a recording into a workflow bundle | 0 |
 | [`induce`](#induce) | Induce a parameterized program from **multiple** recordings | 0 if certified, 2 if underdetermined |
 | [`for-each`](#for-each) | Author a data-driven **loop** bundle: run one demonstration once per worklist record | 0 on success, nonzero on a mapping error |
+| [`compose`](#compose) | Author a parent sequencer from compiled child bundles and a handoff contract | 0 on success, nonzero on an authoring refusal |
+| [`process`](#process) | Author a ProcessContract parent over independently admitted capabilities | 0 on success, nonzero on an authoring refusal |
 | [`replay`](#replay) | Replay a bundle, locally and deterministically | 0 on success, 1 on failure |
 | [`run`](#run) | Execute a bundle through the regulated admission gate | 0 success, 1 execution halt, 2 refusal |
 | [`resume`](#resume) | Resume a durably-paused run from its last checkpoint | 0 on success, 1/3 otherwise |
@@ -33,7 +35,7 @@ is a subcommand of `openadapt flow`.
 | [`push`](#push) | Explicitly upload a recording or bundle to a control plane | 0/1 |
 | [`validate-hosted`](#validate-hosted) | Bind local validation evidence to a one-time hosted challenge | 0/1 |
 | [`report-break`](#report-break) | Send a scrubbed, schema-minimized halt descriptor | 0/1 |
-| [`visualize`](#visualize) | Render a bundle's program graph (steps, ladder, gates, halts) | 0 |
+| [`visualize`](#visualize) | Render a compiled bundle, a compose parent, or a process parent | 0 |
 | [`bench`](#bench) | Replay a bundle N times against the sample app and aggregate | 0 if all pass |
 | [`benchmark`](#benchmark) | Compare compiled replay vs a computer-use agent | 0 |
 | [`emit-skill`](#emit) | Emit an Agent Skills folder for a bundle | 0 |
@@ -201,13 +203,78 @@ no demonstrated default, a ragged worklist, or a worklist longer than the bound
 all **fail loudly** and write no bundle. Once authored, drive the loop with
 [`replay --worklist`](#replay) or [`run --worklist`](#run).
 
+## compose
+
+Author a parent sequencer from two or more compiled child bundles and a handoff
+contract. Each child stays bound to the surface you recorded it on. The output
+is a directory with `composition.json` (`openadapt.composition/v1`) plus copied
+children. See
+[Sequence work across two applications](../guides/compose-multi-application.md).
+
+```bash
+openadapt flow compose \
+  --child intake=./intake-bundle \
+  --child posting=./posting-bundle \
+  --handoff intake.patient_id=posting.patient_id \
+  --out composed
+```
+
+| Argument / flag | Description |
+|---|---|
+| `--child NAME=PATH` | Named compiled child bundle (repeat; at least two). |
+| `--handoff FROM.source=TO.target` | Copy a predecessor's effect-bound parameter into a successor parameter. Repeatable. Missing evidence stops the run. |
+| `--after NAME=PRED[,PRED]` | Explicit DAG predecessors for NAME. Omit to run children in `--child` order. |
+| `--allow-halt NAME=OUTCOME` | Let NAME start when a predecessor ended OUTCOME instead of `VERIFIED`. `VERIFIED` is always allowed. |
+| `--out` (required) | Output composition directory |
+| `--name` | Composition name |
+
+`certify` and `run` execute this directory. Each child keeps its recorded
+surface. `replay` refuses a composition artifact; use `run`. A single child, a
+cycle, an unknown handoff target, and a source that is not effect-bound are
+refused at authoring.
+
+## process
+
+Author a ProcessContract parent over independently admitted capabilities.
+Schema `openadapt.process-contract/v0`. Each `--child` is an `admission_id`
+from a live `openadapt.qualification-admission/v1` envelope, not a recording
+path. The parent points at those admissions. It doesn't copy bundles. See
+[Process contracts](../concepts/process-contract.md).
+
+```bash
+openadapt flow process \
+  --child intake=<intake-admission-id> \
+  --child posting=<posting-admission-id> \
+  --handoff intake.patient_id=posting.patient_id \
+  --out process-parent
+```
+
+| Argument / flag | Description |
+|---|---|
+| `--child NAME=ADMISSION_ID` | Named admitted capability (repeat; at least two). `ADMISSION_ID` is the UUID on the child's qualification-admission envelope. |
+| `--handoff FROM.source=TO.target` | Copy a predecessor's effect-bound parameter into a successor parameter. Repeatable. Missing evidence stops the run. |
+| `--after NAME=PRED[,PRED]` | Explicit DAG predecessors for NAME. Omit to run children in `--child` order. |
+| `--allow-halt NAME=OUTCOME` | Let NAME start when a predecessor ended OUTCOME instead of `VERIFIED`. `VERIFIED` is always allowed. |
+| `--out` (required) | Output process-contract directory |
+| `--name` | Process name |
+
+`--child`, `--handoff`, `--after`, and `--allow-halt` have the same shape as
+[`compose`](#compose). Pointing `process` at a `composition.json` directory is
+refused. Each child runs through
+[OpenAdapt Execute](../commercial/execute-api.md) with that child's envelope.
+`replay` of the process parent is refused. `visualize` on the directory shows
+admitted children, handoff edges, and a terminal labeled End of declared
+steps.
+
 ## replay
 
 Replay a bundle against the substrate chosen by the [backend selector](#backend).
 On the default `web` backend, `--url` names the target app and, with no `--url`,
 replay serves the bundled sample app. For Windows, macOS, Linux, RDP, or Citrix,
 select its backend and exact target flags instead of `--url`. The example below
-replays the web substrate.
+replays the web substrate. `replay` refuses a compose parent and a
+ProcessContract parent; composed recordings run with [`run`](#run), and process
+children run through [Execute](../commercial/execute-api.md).
 
 ```bash
 openadapt flow replay bundle --url https://your.app --param note="Follow-up"
@@ -252,8 +319,9 @@ The same executor as [`replay`](#replay), behind a regulated admission gate:
 the bundle must pass policy, identity coverage, effect coverage, approval,
 encryption, and manifest-integrity checks before any action executes. Backend,
 effect verification, API actuation, durable runtime, and policy come from
-`--config`. The demo-only `--drift` teaching aid is not offered here. See
-[Run a deployment](../guides/run-a-deployment.md).
+`--config`. The demo-only `--drift` teaching aid is not offered here. If the
+path is a compose parent, `run` executes each child in order under the handoff
+contract. See [Run a deployment](../guides/run-a-deployment.md).
 
 ```bash
 openadapt flow run bundle --config deployment.yaml
@@ -261,7 +329,7 @@ openadapt flow run bundle --config deployment.yaml
 
 | Flag | Description |
 |---|---|
-| `bundle` (positional) | Workflow bundle directory |
+| `bundle` (positional) | Workflow bundle directory, or a compose parent directory |
 | `--url` | Target app URL (default: `backend.url` from `--config`) |
 | `--run-dir` | Run output directory (default `runs/replay-<UTC timestamp>`) |
 | `--param K=V` | Parameter substitution. Repeatable. |
@@ -386,12 +454,13 @@ openadapt flow certify bundle --config deployment.yaml
 
 | Flag | Description |
 |---|---|
-| `bundle` (positional) | Workflow bundle directory |
+| `bundle` (positional) | Workflow bundle directory, or a compose parent directory |
 | `--policy` | Policy YAML path, or a built-in name (`permissive`, `clinical-write`). Defaults to `policy.policy` from `--config`. |
 | `--config YAML` | [Deployment config](deployment-config.md) to read the policy from when `--policy` is omitted, so one file both certifies and runs the bundle |
 
 Provide `--policy` or a `--config` that sets `policy.policy`; certify errors if
-neither supplies a policy. Exits 2 when the bundle fails certification — the
+neither supplies a policy. If the path is a compose parent, certify evaluates
+the policy on each child. Exits 2 when the bundle fails certification: the
 gate refusing an unsafe bundle, not an error in your setup
 ([exit codes](run-outcomes.md#cli-exit-codes)).
 
@@ -679,28 +748,35 @@ sanitation protocol, and destination-aware boundary.
 ## visualize
 
 See what a demonstration compiled **into**, before it runs. `visualize` reads a
-bundle and renders its program graph: the ordered steps, the resolution ladder
-each step will try, where an identity gate is armed, which writes carry an effect
-check, and every point the run can halt. It writes one of three formats from the
-same graph spec, so the CLI, Cloud, and desktop surfaces all show the same thing.
-See [Visualize a compiled program](../concepts/program-visualizer.md).
+compiled bundle and renders its program graph: the ordered steps, the resolution
+ladder each step will try, where an identity gate is armed, which writes carry
+an effect check, and every point the run can halt. Point it at a compose
+directory (`composition.json`) and it shows child bundles plus handoff edges.
+Point it at a process-contract directory and it shows admitted children plus
+handoff edges. The parent terminal is labeled End of declared steps. That isn't
+`VERIFIED`. See
+[Read a compiled program](../concepts/program-visualizer.md).
 
 ```bash
 openadapt flow visualize bundle -o graph.html     # self-contained page
 openadapt flow visualize bundle --profile remote-safe -o review.html
 openadapt flow visualize bundle --format mermaid  # flowchart source, to stdout
 openadapt flow visualize bundle --format json      # the shared graph spec
+openadapt flow visualize composed -o composed.html
+openadapt flow visualize process-parent -o process.html
 ```
 
 | Flag | Description |
 |---|---|
-| `bundle` (positional) | Workflow bundle directory |
+| `bundle` (positional) | Workflow bundle directory, compose parent directory, or process-contract directory |
 | `--format {html,mermaid,json}` | `html` (default): a self-contained, offline-openable page. `mermaid`: flowchart source for Markdown and docs. `json`: the shared program-graph spec every surface renders. |
 | `--profile {operator-local,remote-safe,public-synthetic,sanitized-derivative}` | Select the fields allowed in the output. Non-local profiles keep topology and remove recorded values, target text, selectors, URLs, guard text, and local provenance. A projection does not sanitize the source bundle. |
 | `-o`, `--out FILE` | Write to a file instead of stdout (parent directories are created) |
 
 Reading is offline and side-effect-free: `visualize` never runs the workflow, so
-it is safe to point at any bundle, including one that would refuse to certify.
+it is safe to point at any bundle, including one that would refuse to certify. A
+compose parent and a process parent aren't one ProgramGraph; open a child
+bundle for that child's steps.
 
 ## bench
 

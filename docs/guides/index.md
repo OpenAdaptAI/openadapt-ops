@@ -19,6 +19,11 @@ How-to guides for real deployments. Each assumes you have
     Recover a parameterized program from several demonstrations, and run it
     over a worklist.
 
+-   [__Sequence work across two applications__](compose-multi-application.md)
+
+    Record one program per surface, sequence the compiled recordings with
+    `compose`, then after admission author a ProcessContract parent.
+
 -   [__Write and enforce a policy__](policy-and-certification.md)
 
     Use `lint` to find gaps and `certify` to refuse a bundle that violates the
