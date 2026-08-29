@@ -11,8 +11,16 @@ per-step evidence the replayer needs to re-find each target, and the policy
 metadata `lint` and `certify` read.
 
 You can audit the bundle before it runs: which steps write, which clicks are
-identity armed, and which postconditions each step asserts. See
-[The bundle format](../reference/bundle-format.md) for the full layout.
+identity armed, and which postconditions each step asserts.
+
+```bash
+openadapt flow visualize bundle -o graph.html
+```
+
+That page is the program map. A compose directory and a process-contract
+directory take the same command. Each child stays one node. See
+[Read a compiled program](../concepts/program-visualizer.md) and
+[The bundle format](../reference/bundle-format.md).
 
 ## The run report
 

@@ -60,6 +60,31 @@ It does not prove `VERIFIED`. The run outcome still depends on the exact
 authorization, identity, postcondition, and effect evidence required by the
 execution profile.
 
+`--format mermaid` writes the same map as a flowchart you can paste into a
+review note. This one is the public-safe projection of a bounded loop:
+
+```mermaid
+flowchart TD
+  n0{"Repeat the bounded steps"}
+  n1("Enter an approved input")
+  n2("Enter an approved input")
+  n3("Send an approved key<br/><small>effect · irreversible</small>")
+  n4{{"End of declared steps"}}
+  n0 -->|declared loop| n1
+  n1 --> n2
+  n2 --> n3
+  n3 --> n0
+  n0 --> n4
+  classDef irreversible stroke:#b4530a,stroke-width:2px;
+  classDef halt stroke:#b21f2d,stroke-width:2px;
+  class n3 irreversible;
+  class n3 halt;
+```
+
+`n0` owns the loop. The edge from `n3` back to `n0` is the next item. The edge
+from `n0` to `n4` is the exit. Open the HTML export to inspect each node's
+resolution, identity, screen, and effect lanes.
+
 ## Parents of children stay parents
 
 `visualize` on a compiled bundle emits that bundle's ProgramGraph: steps,
@@ -73,6 +98,49 @@ window title or a URL. Sequence edges follow `--after`, or `--child` order.
 `visualize` on a process-contract directory (`process-contract.json`, schema
 `openadapt.process-contract/v0`) draws each independently admitted child
 (name, `admission_id`) and the same kind of handoff edge.
+
+This is the HTML `visualize` writes for a two-child compose directory. Each
+child is one node. The handoff is the effect-bound parameter `patient_id`.
+Intake's own steps stay inside `intake-bundle`.
+
+<figure markdown="span">
+  ![OpenAdapt Flow visualize HTML for a two-child compose parent. Child bundles intake and posting sit above a terminal labeled End of declared steps. The edge from intake to posting is labeled patient_id.](../assets/screenshots/composed-parent-graph.png){ width="1180" }
+  <figcaption>A compose parent. Two child bundles, one handoff, one terminal. Representative synthetic composition from the visualize emission for <code>composition.json</code>.</figcaption>
+</figure>
+
+```mermaid
+flowchart TD
+  n0(["intake<br/><small>web</small>"])
+  n1(["posting<br/><small>linux</small>"])
+  n2{{"End of declared steps"}}
+  n0 --> n1
+  n1 --> n2
+  n0 -->|patient_id| n1
+  classDef irreversible stroke:#b4530a,stroke-width:2px;
+  classDef halt stroke:#b21f2d,stroke-width:2px;
+```
+
+A process parent uses the same two children after each one is admitted. Each
+node carries a short `admission_id` and digest. Handoff edges are dashed.
+
+<figure markdown="span">
+  ![Self-contained HTML from visualize on a process-contract directory. Cards for admitted children intake and posting sit beside a terminal labeled End of declared steps. The listed handoff is intake.patient_id to posting.](../assets/screenshots/process-parent-graph.png){ width="900" }
+  <figcaption>A process parent of two admitted capabilities. Representative synthetic process contract. The <code>admission_id</code> and digest values are fixtures, not a live tenant.</figcaption>
+</figure>
+
+```mermaid
+flowchart TD
+  intake["intake<br/>adm 11111111<br/>digest aaaaaaaa<br/>web"]
+  posting["posting<br/>adm 77777777<br/>digest bbbbbbbb<br/>linux"]
+  end_declared_steps["End of declared steps"]
+  intake --> posting
+  posting --> end_declared_steps
+  intake -.->|patient_id| posting
+  classDef admitted fill:#e8f0fe,stroke:#3b6ea5,color:#111;
+  classDef terminal fill:#f3f4f6,stroke:#6b7280,color:#111;
+  class intake,posting admitted;
+  class end_declared_steps terminal;
+```
 
 Both parents end at a terminal titled End of declared steps, not Success.
 Traversal ended. The parent is `VERIFIED` only when every child's receipt says
@@ -168,6 +236,10 @@ openadapt flow visualize bundle --profile remote-safe -o review.html
 openadapt flow visualize bundle --profile public-synthetic -o public.html
 openadapt flow visualize bundle --format mermaid
 openadapt flow visualize bundle --format json
+openadapt flow visualize composed -o composed.html
+openadapt flow visualize composed --format mermaid
+openadapt flow visualize process-parent -o process.html
+openadapt flow visualize process-parent --format mermaid
 ```
 
 <figure markdown="span">

@@ -43,6 +43,30 @@ program-workbench-cli.png
   concepts/program-visualizer.md. SHA-256:
   aa5ff1e1455b0444f234f398e3f645490b974c3b48c5e38156fd041964fec4d2.
 
+composed-parent-graph.png
+  HTML output of `openadapt flow visualize` on a two-child compose directory
+  (`composition.json`, schema `openadapt.composition/v1`). The fixture is the
+  synthetic intake/posting composition from the visualize emission in
+  OpenAdaptAI/openadapt-flow at commit
+  3d085d219c31e30577d42a9b55004fc15bb48605 (process-contract visualize
+  branch, which includes compose-parent rendering). Headless Google Chrome
+  capture of the self-contained page, light color scheme. Used on
+  concepts/program-visualizer.md and guides/compose-multi-application.md.
+  SHA-256:
+  83c58002551372df0a9eae936b92408c18d691775230e087b5736a304919691d.
+
+process-parent-graph.png
+  HTML output of `openadapt flow visualize` on a process-contract directory
+  (`process-contract.json`, schema `openadapt.process-contract/v0`). The
+  fixture is a representative synthetic process parent with admitted children
+  intake and posting. Admission ids and digests are fixtures, not a live
+  tenant. Captured from the same Flow commit as composed-parent-graph.png.
+  Headless Google Chrome, light color scheme, cropped to the cards and
+  handoff list. Used on concepts/program-visualizer.md,
+  concepts/process-contract.md, and guides/compose-multi-application.md.
+  SHA-256:
+  7507af9db132d424f93735c746151f1063fdb704ea8128e6e8446b65806746e7.
+
 program-workbench-desktop.png
   The development-only OpenAdapt Desktop preview that renders the production
   qualification workbench with a public synthetic graph. It has no bound live

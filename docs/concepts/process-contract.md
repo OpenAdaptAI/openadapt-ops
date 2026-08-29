@@ -39,8 +39,34 @@ is refused, because those children aren't admitted. Each child runs through
 
 A compiled bundle still has its own ProgramGraph. `visualize` on a process
 parent shows admitted children, handoff edges, and a terminal labeled End of
-declared steps. Open the child bundle for its steps. See
-[Read a compiled program](program-visualizer.md).
+declared steps. Open the child bundle for its steps.
+
+```bash
+openadapt flow visualize process-parent -o process.html
+openadapt flow visualize process-parent --format mermaid
+```
+
+```mermaid
+flowchart TD
+  intake["intake<br/>adm 11111111<br/>digest aaaaaaaa<br/>web"]
+  posting["posting<br/>adm 77777777<br/>digest bbbbbbbb<br/>linux"]
+  end_declared_steps["End of declared steps"]
+  intake --> posting
+  posting --> end_declared_steps
+  intake -.->|patient_id| posting
+  classDef admitted fill:#e8f0fe,stroke:#3b6ea5,color:#111;
+  classDef terminal fill:#f3f4f6,stroke:#6b7280,color:#111;
+  class intake,posting admitted;
+  class end_declared_steps terminal;
+```
+
+<figure markdown="span">
+  ![Self-contained HTML from visualize on a process-contract directory. Cards for admitted children intake and posting sit beside a terminal labeled End of declared steps. The listed handoff is intake.patient_id to posting.](../assets/screenshots/process-parent-graph.png){ width="900" }
+  <figcaption>A process parent of two admitted capabilities. Representative synthetic process contract. The <code>admission_id</code> and digest values are fixtures, not a live tenant.</figcaption>
+</figure>
+
+See [Read a compiled program](program-visualizer.md) and
+[Sequence work across two applications](../guides/compose-multi-application.md).
 
 RFC-0001 is the name of this contract. Qualify each child first:
 [Qualify a workflow](../guides/qualify-a-workflow.md).

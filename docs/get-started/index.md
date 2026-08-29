@@ -79,6 +79,10 @@ openadapt flow visualize openadapt-quickstart/bundle --out graph.html
 openadapt flow lint openadapt-quickstart/bundle
 ```
 
+Open `graph.html` in a browser. That page is the compiled program: the steps
+it can take, the evidence each one needs, and the paths that stop the run.
+See [Read a compiled program](../concepts/program-visualizer.md).
+
 When you move from the tutorial to your own work, qualification tests the
 workflow against real failures in its environment before it runs.
 
@@ -87,6 +91,7 @@ After the first run, choose the path that matches your goal:
 | Goal | Next guide |
 |---|---|
 | Record one real, read-only browser workflow | [Your first workflow](first-workflow.md) |
+| See what the compiled program looks like | [Read a compiled program](../concepts/program-visualizer.md) |
 | Use the Desktop application | [Install Desktop](../desktop/install.md) |
 | Use native desktop, RDP, or Citrix | [Install a different execution surface](#install-a-different-execution-surface) |
 | Prepare a qualified production run | [Move from demo to deployment](#move-from-demo-to-deployment) |
@@ -181,7 +186,21 @@ openadapt flow compose \
   --out composed
 ```
 
-See [Sequence work across two applications](../guides/compose-multi-application.md).
+`visualize composed` draws those two children and the `patient_id` handoff.
+Each child stays its own compiled program:
+
+```mermaid
+flowchart TD
+  n0(["intake<br/><small>web</small>"])
+  n1(["posting<br/><small>linux</small>"])
+  n2{{"End of declared steps"}}
+  n0 --> n1
+  n1 --> n2
+  n0 -->|patient_id| n1
+```
+
+See [Sequence work across two applications](../guides/compose-multi-application.md)
+and [Read a compiled program](../concepts/program-visualizer.md).
 [Durable runs](../concepts/durable-runtime.md) explains how an operator can
 resume from the last verified checkpoint after a halt.
 
@@ -195,6 +214,10 @@ resume from the last verified checkpoint after a halt.
 -   [__What you get__](what-you-get.md)
 
     The bundle, the run report, and what each artifact is for.
+
+-   [__Read a compiled program__](../concepts/program-visualizer.md)
+
+    The program map, a composed parent, and a process parent.
 
 -   [__Qualification evidence__](what-works-today.md)
 
