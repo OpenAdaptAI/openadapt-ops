@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-08-28 20:53 UTC*
+> *Last updated: 2026-08-29 03:36 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [docs: drop Production-admission legalese; state Production per workflow](https://github.com/OpenAdaptAI/OpenAdapt/pull/1130) (#1130) — merged 
 
 - [chore(lifecycle): repin the Production lifecycle source to openadapt-ops main](https://github.com/OpenAdaptAI/OpenAdapt/pull/1129) (#1129) — merged 
 
@@ -47,6 +49,8 @@
 ## openadapt-flow
 
 
+- [fix: preserve X11 library name casing](https://github.com/OpenAdaptAI/openadapt-flow/pull/426) (#426) — merged 
+
 - [docs: match four published claims to their artifacts](https://github.com/OpenAdaptAI/openadapt-flow/pull/425) (#425) — merged 
 
 - [docs(paper): correct the tree map, and name the profile in each main.tex](https://github.com/OpenAdaptAI/openadapt-flow/pull/424) (#424) — merged 
@@ -85,12 +89,12 @@
 
 - [Add strict hosted runner execution adapter](https://github.com/OpenAdaptAI/openadapt-flow/pull/405) (#405) — merged 
 
-- [fix(cli): preserve model tiers on resume](https://github.com/OpenAdaptAI/openadapt-flow/pull/404) (#404) — merged 
-
 
 
 ## openadapt-desktop
 
+
+- [fix: close Desktop release and Tray protocol gaps](https://github.com/OpenAdaptAI/openadapt-desktop/pull/143) (#143) — merged 
 
 - [docs: rewrite the README, and say up front that there is no build to download](https://github.com/OpenAdaptAI/openadapt-desktop/pull/142) (#142) — merged 
 
@@ -120,6 +124,8 @@
 
 ## openadapt-agent
 
+
+- [Fix the Agent MCPB dependency closure](https://github.com/OpenAdaptAI/openadapt-agent/pull/38) (#38) — merged 
 
 - [docs: stop naming 2.0.2 as a shipped release](https://github.com/OpenAdaptAI/openadapt-agent/pull/37) (#37) — merged 
 
