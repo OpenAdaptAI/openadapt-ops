@@ -47,8 +47,8 @@ Flow accepts its recording.
 
 | Repository | Lifecycle | Public role |
 |---|---|---|
-| [openadapt-ml](https://github.com/OpenAdaptAI/openadapt-ml) | **Research** | Optional VLM training, inference, and demonstration-conditioning work. The healthy compiler path does not require it. |
-| [openadapt-evals](https://github.com/OpenAdaptAI/openadapt-evals) | **Research** | GUI workflow and demonstration-conditioning evaluation infrastructure. |
+| [openadapt-ml](https://github.com/OpenAdaptAI/openadapt-ml) | **Research** | Optional model-training research. Recording, compiling, and replaying a workflow does not use it. |
+| [openadapt-evals](https://github.com/OpenAdaptAI/openadapt-evals) | **Research** | GUI workflow evaluation research. The compiler path does not depend on it. |
 | [openadapt-grounding](https://github.com/OpenAdaptAI/openadapt-grounding) | **Research** | UI grounding mechanisms and model adapters. |
 | [openadapt-retrieval](https://github.com/OpenAdaptAI/openadapt-retrieval) | **Research** | Demonstration retrieval mechanisms. |
 

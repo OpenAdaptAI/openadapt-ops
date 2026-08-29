@@ -104,3 +104,33 @@ def test_sync_configured_repos_are_page_free(tmp_path, mocker):
     repos = load_repos()
     results = sync(repos=repos, docs_dir=tmp_path, templates_dir=ROOT / "templates")
     assert results == []
+
+
+def test_sync_does_not_overwrite_a_redirect_stub(tmp_path, mocker):
+    """A curated Flow-first redirect must survive README sync."""
+    mocker.patch(
+        "sync_readmes.fetch_readme",
+        return_value="# openadapt-ml\n\nopenadapt train start --capture my-task\n",
+    )
+    stub = tmp_path / "packages" / "openadapt-ml.md"
+    stub.parent.mkdir(parents=True)
+    stub.write_text(
+        "---\nredirect_to: /ecosystem/\n---\n\n# openadapt-ml is Research\n"
+    )
+    before = stub.read_text()
+
+    results = sync(
+        repos=[
+            {
+                "name": "openadapt-ml",
+                "github": "OpenAdaptAI/openadapt-ml",
+                "doc_page": "packages/openadapt-ml.md",
+                "category": "core",
+            }
+        ],
+        docs_dir=tmp_path,
+        templates_dir=ROOT / "templates",
+    )
+
+    assert results == []
+    assert stub.read_text() == before

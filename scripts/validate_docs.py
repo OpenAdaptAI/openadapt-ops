@@ -106,6 +106,64 @@ PRODUCTION_TARGET_IDS = {
     "openadapt",
 }
 
+# Old docs.openadapt.ai URLs that taught capture-then-train or mirrored a
+# research README as if it were the product. Each file must keep serving a
+# Flow-first redirect so a crawler that still holds the URL drops the old
+# snippet. Do not put these in the nav.
+RETIRED_REDIRECTS = {
+    "architecture.md": "/concepts/",
+    "cli.md": "/reference/cli/",
+    "getting-started/index.md": "/get-started/",
+    "getting-started/installation.md": "/get-started/",
+    "getting-started/permissions.md": "/desktop/install/",
+    "getting-started/quickstart.md": "/get-started/",
+    "LEGACY_FREEZE.md": "/get-started/",
+    "legacy/freeze.md": "/get-started/",
+    "packages/capture.md": "/ecosystem/",
+    "packages/evals.md": "/ecosystem/",
+    "packages/grounding.md": "/ecosystem/",
+    "packages/index.md": "/ecosystem/",
+    "packages/ml.md": "/ecosystem/",
+    "packages/openadapt-bootstrap.md": "/ecosystem/",
+    "packages/openadapt-evals.md": "/ecosystem/",
+    "packages/openadapt-grounding.md": "/ecosystem/",
+    "packages/openadapt-ml.md": "/ecosystem/",
+    "packages/openadapt-retrieval.md": "/ecosystem/",
+    "packages/openadapt-viewer.md": "/ecosystem/",
+    "packages/privacy.md": "/ecosystem/",
+    "packages/retrieval.md": "/ecosystem/",
+    "packages/viewer.md": "/ecosystem/",
+}
+
+# Phrases that describe the retired train-a-VLM happy path as current product.
+# Auto-generated changelog pages may quote a historical PR title; everything
+# else must not.
+FORBIDDEN_TRAIN_PATH_PHRASES = (
+    "openadapt train",
+    "openadapt capture start",
+    "openadapt capture stop",
+    "openadapt capture view",
+    "qwen3vl",
+    "training_output/",
+    "pip install openadapt-ml",
+    "from openadapt_ml",
+    "AgentPolicy",
+    "Learn a Policy",
+    "Learn an agent policy",
+    "Collect a Demonstration",
+    "generative RPA",
+    "Generative RPA",
+    "LMM-on-the-desktop",
+    "LMM on the desktop",
+    "demo-conditioned AI agents",
+    "legacy model-training path",
+)
+
+TRAIN_PATH_ALLOWLIST = {
+    "changelog.md",
+    "whats-new.md",
+}
+
 
 def check_empty_pages(docs_dir=None):
     """Check for empty or stub-only doc pages."""
@@ -274,6 +332,54 @@ def check_product_docs_contract(docs_dir=None, mkdocs_file=None):
     return issues
 
 
+def check_train_path_not_current_product(docs_dir=None):
+    """Fail if current-product pages still teach capture-then-train."""
+    docs_dir = pathlib.Path(docs_dir or DOCS_DIR)
+    issues = []
+    for md_file in sorted(docs_dir.rglob("*.md")):
+        if not md_file.is_file():
+            continue
+        relative = md_file.relative_to(docs_dir).as_posix()
+        if relative in TRAIN_PATH_ALLOWLIST:
+            continue
+        text = md_file.read_text()
+        for phrase in FORBIDDEN_TRAIN_PATH_PHRASES:
+            if phrase in text:
+                issues.append(
+                    f"Retired capture-then-train copy in {relative}: {phrase!r}"
+                )
+    return issues
+
+
+def check_retired_redirects(docs_dir=None):
+    """Keep retired train-path and package-mirror URLs on a Flow-first redirect."""
+    docs_dir = pathlib.Path(docs_dir or DOCS_DIR)
+    issues = []
+    for relative, dest in sorted(RETIRED_REDIRECTS.items()):
+        page = docs_dir / relative
+        if not page.is_file():
+            issues.append(
+                f"Missing Flow-first redirect for retired route: {relative}"
+            )
+            continue
+        meta = _frontmatter(page.read_text())
+        if meta.get("redirect_to") != dest:
+            issues.append(
+                f"Retired route {relative} must redirect_to {dest}; "
+                f"found: {meta.get('redirect_to')!r}"
+            )
+    packages = docs_dir / "packages"
+    if packages.is_dir():
+        for page in sorted(packages.glob("*.md")):
+            meta = _frontmatter(page.read_text())
+            if meta.get("redirect_to") != "/ecosystem/":
+                relative = page.relative_to(docs_dir).as_posix()
+                issues.append(
+                    f"Package page {relative} must redirect_to: /ecosystem/"
+                )
+    return issues
+
+
 def run_mkdocs_build(strict=False):
     """Run mkdocs build and return (success, output).
 
@@ -305,6 +411,9 @@ def validate():
 
     contract_issues = check_product_docs_contract()
     issues.extend(contract_issues)
+
+    issues.extend(check_train_path_not_current_product())
+    issues.extend(check_retired_redirects())
 
     # Run mkdocs build
     success, output = run_mkdocs_build(strict=True)

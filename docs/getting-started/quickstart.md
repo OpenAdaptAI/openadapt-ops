@@ -1,6 +1,6 @@
 ---
 title: Quick Start moved
-description: The current OpenAdapt quickstart uses the deterministic demonstration compiler.
+description: Record a GUI workflow, compile it, and replay the program with openadapt flow.
 canonical: https://docs.openadapt.ai/get-started/
 redirect_to: /get-started/
 hide:
@@ -10,10 +10,21 @@ hide:
 
 # Quick Start moved
 
-The current quickstart is at [Get started](/get-started/).
+The current first run is at [Get started](/get-started/).
 
-It uses the canonical `openadapt quickstart` command to record, compile, check,
-and replay a bundled synthetic workflow locally. It does not use the legacy
-model-training path.
+```bash
+pip install openadapt
+openadapt quickstart
+```
 
-[Continue to the current quickstart →](/get-started/){ .md-button .md-button--primary }
+That records a bundled demonstration, compiles a program, and replays it locally. A healthy run makes no model API call.
+
+To record your own application:
+
+```bash
+openadapt flow record --backend web --url https://your.app --out rec
+openadapt flow compile rec --out bundle --name my-task
+openadapt flow replay bundle --url https://your.app --headed
+```
+
+[Continue to Get started](/get-started/){ .md-button .md-button--primary }

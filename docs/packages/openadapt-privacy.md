@@ -1,6 +1,6 @@
 ---
 title: openadapt-privacy documentation moved
-description: OpenAdapt package documentation now lives in the canonical product and component guide.
+description: Privacy is optional sanitization. The current command surface is openadapt flow.
 canonical: https://docs.openadapt.ai/ecosystem/
 redirect_to: /ecosystem/
 hide:
@@ -10,7 +10,8 @@ hide:
 
 # openadapt-privacy documentation moved
 
-The current product and component guide lives at
-[Package and repository lifecycle](/ecosystem/).
+Privacy is optional PII/PHI sanitization for configured logs and artifact egress. The current command surface is `openadapt flow`.
 
-[Continue to the current guide →](/ecosystem/){ .md-button .md-button--primary }
+See the [product catalog](/ecosystem/).
+
+[Continue to the current guide](/ecosystem/){ .md-button .md-button--primary }

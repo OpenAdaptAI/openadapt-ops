@@ -2,6 +2,8 @@
 
 import datetime
 import pathlib
+import re
+
 import yaml
 import requests
 from jinja2 import Environment, FileSystemLoader
@@ -60,6 +62,13 @@ def sync(repos=None, docs_dir=None, templates_dir=None):
         )
 
         out_path = docs_dir / doc_page
+        if out_path.exists() and re.search(
+            r"^redirect_to:\s+", out_path.read_text(), flags=re.MULTILINE
+        ):
+            # Curated Flow-first redirects own these URLs. A README mirror
+            # would republish capture-then-train copy as current product.
+            print(f"Skipping {name} (canonical redirect stub at {out_path})")
+            continue
         out_path.parent.mkdir(parents=True, exist_ok=True)
         out_path.write_text(rendered)
         results.append({"name": name, "path": str(out_path), "size": len(readme)})
