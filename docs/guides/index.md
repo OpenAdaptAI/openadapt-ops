@@ -22,7 +22,8 @@ How-to guides for real deployments. Each assumes you have
 -   [__Sequence work across two applications__](compose-multi-application.md)
 
     Record one program per surface, sequence the compiled recordings with
-    `compose`, then after admission author a ProcessContract parent.
+    `compose`, then after admission author a ProcessContract parent. The
+    parent graph shows two child nodes and the handoff.
 
 -   [__Write and enforce a policy__](policy-and-certification.md)
 

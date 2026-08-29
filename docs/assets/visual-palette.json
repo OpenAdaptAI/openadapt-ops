@@ -283,6 +283,50 @@
         }
       ]
     },
+    "screenshots/composed-parent-graph.png": {
+      "source_repository": "OpenAdaptAI/openadapt-flow",
+      "source_path": null,
+      "note": "Self-contained `openadapt flow visualize` HTML for a two-child compose parent. Generated output rather than product chrome. Ground is the page white plus the dark program-map canvas.",
+      "sha256": "83c58002551372df0a9eae936b92408c18d691775230e087b5736a304919691d",
+      "width": 2464,
+      "height": 1604,
+      "dominant_colors": [
+        {
+          "hex": "#ffffff",
+          "share_percent": 25.14
+        },
+        {
+          "hex": "#0b1220",
+          "share_percent": 20.39
+        },
+        {
+          "hex": "#111a29",
+          "share_percent": 11.25
+        }
+      ]
+    },
+    "screenshots/process-parent-graph.png": {
+      "source_repository": "OpenAdaptAI/openadapt-flow",
+      "source_path": null,
+      "note": "Self-contained `openadapt flow visualize` HTML for a process-contract parent. Generated output rather than product chrome. Ground is plain white.",
+      "sha256": "7507af9db132d424f93735c746151f1063fdb704ea8128e6e8446b65806746e7",
+      "width": 1336,
+      "height": 553,
+      "dominant_colors": [
+        {
+          "hex": "#ffffff",
+          "share_percent": 58.52
+        },
+        {
+          "hex": "#e8f0fe",
+          "share_percent": 13.46
+        },
+        {
+          "hex": "#f3f4f6",
+          "share_percent": 9.03
+        }
+      ]
+    },
     "screenshots/program-workbench-desktop.png": {
       "source_repository": "OpenAdaptAI/openadapt-desktop",
       "source_path": null,

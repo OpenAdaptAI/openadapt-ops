@@ -67,11 +67,31 @@ intake's program graph.
 
 ```bash
 openadapt flow visualize composed -o composed.html
+openadapt flow visualize composed --format mermaid
 openadapt flow visualize intake-bundle -o intake.html
 ```
 
+<figure markdown="span">
+  ![OpenAdapt Flow visualize HTML for a two-child compose parent. Child bundles intake and posting sit above a terminal labeled End of declared steps. The edge from intake to posting is labeled patient_id.](../assets/screenshots/composed-parent-graph.png){ width="1180" }
+  <figcaption>The parent graph for the compose directory above. Two children, one <code>patient_id</code> handoff, terminal End of declared steps. Representative synthetic composition.</figcaption>
+</figure>
+
+```mermaid
+flowchart TD
+  n0(["intake<br/><small>web</small>"])
+  n1(["posting<br/><small>linux</small>"])
+  n2{{"End of declared steps"}}
+  n0 --> n1
+  n1 --> n2
+  n0 -->|patient_id| n1
+  classDef irreversible stroke:#b4530a,stroke-width:2px;
+  classDef halt stroke:#b21f2d,stroke-width:2px;
+```
+
 Flags and the `certify` / `run` path are in the
-[CLI reference](../reference/cli.md#compose).
+[CLI reference](../reference/cli.md#compose). See
+[Read a compiled program](../concepts/program-visualizer.md) for the child
+program map.
 
 ## Qualify and admit each child
 
@@ -118,6 +138,25 @@ key. `replay` of the process parent is refused.
 and End of declared steps. That label means the declared sequence ended. It
 doesn't mean `VERIFIED`. Parent `VERIFIED` requires every child `VERIFIED`
 and zero model calls.
+
+```mermaid
+flowchart TD
+  intake["intake<br/>adm 11111111<br/>digest aaaaaaaa<br/>web"]
+  posting["posting<br/>adm 77777777<br/>digest bbbbbbbb<br/>linux"]
+  end_declared_steps["End of declared steps"]
+  intake --> posting
+  posting --> end_declared_steps
+  intake -.->|patient_id| posting
+  classDef admitted fill:#e8f0fe,stroke:#3b6ea5,color:#111;
+  classDef terminal fill:#f3f4f6,stroke:#6b7280,color:#111;
+  class intake,posting admitted;
+  class end_declared_steps terminal;
+```
+
+<figure markdown="span">
+  ![Self-contained HTML from visualize on a process-contract directory. Cards for admitted children intake and posting sit beside a terminal labeled End of declared steps. The listed handoff is intake.patient_id to posting.](../assets/screenshots/process-parent-graph.png){ width="900" }
+  <figcaption>The process parent for the same two children after admission. Representative synthetic process contract. The <code>admission_id</code> and digest values are fixtures.</figcaption>
+</figure>
 
 Open the child bundle when you need its steps. The parent view won't inline
 them.

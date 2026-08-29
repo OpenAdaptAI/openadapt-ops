@@ -69,6 +69,10 @@ jump to what you need.
 
     `lint` reports gaps, `certify` refuses an unsafe bundle before it deploys.
 
+-   [__Read a compiled program__](program-visualizer.md)
+
+    The program map, live evidence, a composed parent, and a process parent.
+
 -   [__Process contracts__](process-contract.md)
 
     A parent receipt over independently admitted capabilities. Handoffs copy

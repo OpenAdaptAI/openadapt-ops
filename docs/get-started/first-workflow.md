@@ -132,6 +132,16 @@ OpenAdapt classifies write-shaped clicks such as save, submit, create, and
 delete as irreversible. Treat that classification as a stop signal. Review the
 bundle before any replay.
 
+Open the compiled program before you lint it:
+
+```bash
+openadapt flow visualize bundle -o graph.html
+```
+
+The page lists every step, the evidence it needs, and where the run can stop.
+A task that spans two applications is a parent of two child nodes. See
+[Read a compiled program](../concepts/program-visualizer.md).
+
 ## 3. Lint and review
 
 ```bash
@@ -203,6 +213,7 @@ its policy. Use the governed `run` path only after those checks pass.
 
 ## What is next
 
+- See the compiled program: [Read a compiled program](../concepts/program-visualizer.md)
 - Build the full qualification project: [Qualify a workflow](../guides/qualify-a-workflow.md)
 - Enforce a workload policy: [Write and enforce a policy](../guides/policy-and-certification.md)
 - Audit the evidence from a run: [Read and audit run reports](../guides/run-reports.md)
