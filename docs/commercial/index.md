@@ -11,14 +11,16 @@ price and claim matches the public
 |---|---|---|
 | Community | Free (MIT) | Local runtime and qualification tools for self-directed use. No account required. |
 | [Workflow Qualification Sprint](qualification-sprint.md) | From $15,000 (native, RDP, and Citrix scopes typically $25,000 to $40,000) | Fixed-scope paid qualification of one workflow, ending in a signed go/no-go report. |
-| OpenAdapt Cloud | $500.00/month | Managed self-service browser execution for non-regulated data, up to 10,000 runs/month. Separate from enterprise qualification. |
+| [Hosted Execute](execute-api.md) | $10 / 1,000 VERIFIED | Org API key, OpenAdapt-signed Seal, customer runner by default. Lane off until Cloud mints live keys. |
+| Hosted browser | Enterprise | OpenAdapt operates the browser. Separate from the Execute meter. |
 | Supervised Production Pilot | Typically $30,000 to $60,000 | Prove the qualified workflow on representative production cases and leave with an acceptance report. |
 | Production | Typically $48,000 to $120,000/year | Annual scope covering the qualified workflow family, environment, runners, evidence, support, and requalification. |
-| OEM / embedding | Typically $75,000 to $150,000/year plus scoped integration | Embed verified execution in another product. See the [OpenAdapt Execute private-pilot guide](oem-brief.md). |
+| OEM / embedding | $10 / 1,000 VERIFIED on Hosted Execute, plus scoped integration when needed | Embed verified execution in another product. See [OpenAdapt Execute](oem-brief.md). |
 
-The Workflow Qualification Sprint comes first. A successful qualification can
-move to a supervised pilot and then to production. The sprint remains paid when
-the evidence supports a "do not automate" decision.
+The MIT engine is free. Hosted Execute is $10 / 1,000 `VERIFIED` on a customer
+runner. A Workflow Qualification Sprint is the paid assessment when a buyer
+needs a go/no-go on one named workflow. The sprint remains paid when the
+evidence supports a "do not automate" decision.
 
 ## Buyer and evaluation resources
 
@@ -31,8 +33,8 @@ the evidence supports a "do not automate" decision.
 | [Security packet](security-packet.md) | Answering a security or IT review. |
 | [Deployment boundaries](deployment-boundaries.md) | Explaining where execution and sensitive data live. |
 | [External Citrix zero-install brief](citrix-external-brief.md) | A buyer whose workflow lives behind Citrix or VDI. |
-| [OpenAdapt Execute private-pilot guide](oem-brief.md) | A vendor that wants to embed verified execution. The API is available to approved private-pilot partners with scoped credentials. |
-| [Invoke a program: Seal or halt](execute-api.md) | The Execute request, poll, Seal-shaped receipt, and webhook contract. |
+| [OpenAdapt Execute](oem-brief.md) | A vendor that wants to embed verified execution. Hosted Execute is the easy path; `openadapt-flow serve-execute` is the MIT reference. |
+| [Integrate OpenAdapt Execute](execute-api.md) | The two-layer Execute request, poll, Seal, and webhook contract. |
 | [Procurement FAQ](procurement-faq.md) | Procurement, legal, and vendor-risk questions. |
 
 ## How claims are bounded

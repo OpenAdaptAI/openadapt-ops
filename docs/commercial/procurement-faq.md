@@ -15,16 +15,17 @@ outcome; "do not automate" is a full-value deliverable. See the
 [Qualification Sprint one-pager](qualification-sprint.md).
 
 **Is there a subscription?**
-OpenAdapt Cloud is $500.00/month for managed browser execution of approved
-workflows on non-regulated data, up to 10,000 runs/month. It is a self-service
-developer and team offering, separate from enterprise qualification, and does
-not include a production SLA or regulated deployment.
+Hosted Execute is $10 / 1,000 `VERIFIED` on a customer runner. Only `VERIFIED`
+bills. The hosted Execute lane is off today (`EXECUTE_LANE_ENABLED=false`), so
+Cloud does not mint live keys. Ask for hosted browser as an Enterprise
+engagement.
 
 **What does production cost?**
 Supervised Production Pilots are typically $30,000 to $60,000; production
 contracts typically $48,000 to $120,000 per year depending on workflow family,
 environment, runners, evidence, support, and requalification scope. OEM
-embedding is typically $75,000 to $150,000 per year plus integration.
+embedding uses Hosted Execute at $10 / 1,000 `VERIFIED`, plus scoped
+integration when the partner needs it.
 
 **Does the sprint fee credit toward production?**
 Any production credit is stated in the customer-specific written proposal. No
@@ -47,8 +48,10 @@ is no license key that turns your local runtime off.
 
 **Can we self-host everything?**
 Yes. Fully local and air-gapped on-prem deployment shapes exist, including an
-operator-verifiable no-egress posture. See
-[deployment boundaries](deployment-boundaries.md).
+operator-verifiable no-egress posture. The intended MIT protocol entry is
+`openadapt-flow serve-execute`; receipts from that process are self-signed.
+See [deployment boundaries](deployment-boundaries.md) and the
+[Execute integration guide](execute-api.md).
 
 ## Security and compliance
 

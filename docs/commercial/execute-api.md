@@ -1,18 +1,30 @@
-# Invoke a program: Seal or halt
+# Integrate OpenAdapt Execute
 
 `POST /api/v1/executions` runs one already-qualified compiled program. When
 the run ends, `GET /v1/executions/{execution_id}/receipt` returns the Seal:
 `ExecuteEvidenceReceiptV1`. That is the existing evidence receipt. Do not
 look for a second object.
 
-Unsigned local `openadapt-flow replay` stays free. A production `verified`
-outcome without that receipt is a failure. HTTP `202` only means OpenAdapt
-accepted the request for durable processing.
+Execute is two layers. They share that request schema.
 
-This page is for an approved private-pilot partner. OpenAdapt supplies the
-service credential and the identifiers from the qualification pack. The hosted
-Execute lane stays gated (`EXECUTE_LANE_ENABLED` is false) until a
-founder-gated production deploy can issue a signed Seal.
+Hosted Execute is the easy path. Call `https://app.openadapt.ai/api` with an
+org API key. The default runner is the customer's. A `verified` receipt is an
+OpenAdapt-signed Seal. Price is $10 / 1,000 `VERIFIED`. Only `VERIFIED` bills.
+A halt is $0.
+
+Hosted browser is an Enterprise engagement with its own contract.
+
+The hosted lane is off today. Production has `EXECUTE_LANE_ENABLED=false`, so
+Cloud doesn't mint live keys. When that flag is on, create the key in the
+Cloud dashboard and send it as `Authorization: Bearer <org-api-key>`.
+
+The MIT reference is `openadapt-flow serve-execute`. Same schema on one
+machine. Receipts from that process are self-signed. They are not an
+OpenAdapt production Seal.
+
+Unsigned local `openadapt-flow replay` stays free. A production `verified`
+outcome without a receipt is a failure. HTTP `202` only means the request was
+accepted for durable processing.
 
 ## Oracle tiers
 
@@ -40,24 +52,29 @@ The rest of this page is the request, poll, receipt, and webhook contract.
 
 ## Choose where execution runs
 
-Execute can dispatch to an approved managed runner or to a customer-controlled
-runner. A customer-owned cloud runner and storage boundary can use the existing
+Hosted Execute dispatches to the customer runner by default: a workstation,
+server, on-premises VM, or a customer-owned cloud runner. A customer-owned
+cloud runner and storage boundary can use the existing
 [bring your own cloud (BYOC)](../reference/glossary.md#byoc) connector. The
 customer runner executes the workflow. Cloud carries bounded authorization and
 control metadata and receives only the declared result and evidence allowed by
-the data boundary. Other customer-controlled deployments can use a workstation,
-server, or on-premises virtual machine without using BYOC.
+the data boundary.
+
+Ask for OpenAdapt-hosted browser as an Enterprise engagement.
 
 ## Authenticate the service
 
-OpenAdapt issues one service token. The token is restricted to one organization
-and a non-empty list of qualification identifiers.
+Hosted Execute authenticates an organization API key. The key is restricted to
+one organization and a non-empty list of qualification identifiers.
 
-Store the token in a server-side secret manager. Do not send it to a browser or
+When `EXECUTE_LANE_ENABLED` is true, create the key in the Cloud dashboard.
+Until then there are no live keys.
+
+Store the key in a server-side secret manager. Do not send it to a browser or
 mobile client. Send it only over HTTPS:
 
 ```http
-Authorization: Bearer <service-token>
+Authorization: Bearer <org-api-key>
 Content-Type: application/json
 ```
 
@@ -68,6 +85,21 @@ https://app.openadapt.ai/api
 ```
 
 All resource examples below are relative to that base URL.
+
+## Self-host the protocol
+
+`openadapt-flow serve-execute` is the intended MIT entry. It speaks the same
+`ExecuteRequestV1`, status, and receipt schema as Hosted Execute.
+
+That process binds to one machine. Receipts it issues are self-signed. They
+are not an OpenAdapt production Seal.
+
+The command is not on `openadapt-flow` `main` yet. Use the name as the
+intended CLI once the sibling lands. Until then, unsigned
+`openadapt-flow replay` is the local path. The JSON on this page is the
+schema both layers share.
+
+See the [openadapt-flow CLI](../reference/cli.md).
 
 ## Create an execution
 
@@ -292,13 +324,14 @@ See [Sequence work across two applications](../guides/compose-multi-application.
 
 ## Integration checklist
 
-- Keep the service token and webhook secret on the server.
+- Keep the org API key and webhook secret on the server.
 - Bind every request to the supplied qualification identifiers.
 - Keep the same idempotency key and body across transport retries.
 - Distinguish lifecycle states from terminal outcomes.
 - Validate and store the terminal receipt.
+- Treat a self-signed MIT receipt as local proof, not an OpenAdapt Seal.
 - Never resubmit a possible write before reconciliation.
 - Verify, persist, and deduplicate each webhook before acknowledgment.
 
-For the product and qualification boundary, read the
-[OpenAdapt Execute private-pilot guide](oem-brief.md).
+For the product and qualification boundary, read
+[OpenAdapt Execute](oem-brief.md).

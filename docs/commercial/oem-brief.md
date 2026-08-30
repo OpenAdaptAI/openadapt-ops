@@ -1,13 +1,20 @@
-# OpenAdapt Execute: private-pilot guide
+# OpenAdapt Execute
 
-OpenAdapt Execute gives a software or service provider a safe way to complete
-an authorized transaction in an application that the provider cannot directly
+OpenAdapt Execute gives a software or service provider a way to complete an
+authorized transaction in an application that the provider cannot directly
 integrate with.
 
 Your product decides the business action. OpenAdapt executes the qualified
 transaction in the customer-controlled browser, desktop, RDP, Citrix, or API
 environment. It then returns a Seal: `ExecuteEvidenceReceiptV1`. Unsigned
 success is failure.
+
+Hosted Execute is the easy path: an org API key at
+`https://app.openadapt.ai/api`, an OpenAdapt-signed Seal, customer runner by
+default, $10 / 1,000 `VERIFIED`. The MIT reference is
+`openadapt-flow serve-execute` on one machine. Those receipts are self-signed,
+so they aren't an OpenAdapt production Seal. The
+[Execute integration guide](execute-api.md) has the shared JSON contract.
 
 ```text
 authorized transaction
@@ -33,13 +40,12 @@ inputs, business logic, and an exception team. OpenAdapt supplies the last
 action in the customer GUI, then a Seal. Health-system IT is a downstream
 environment. Do not staff this motion as an IDN RFP.
 
-!!! note "Private pilot. Not a public API."
-    This page describes the private-pilot product contract. It is not an
-    self-service integration recipe and it does not publish partner access,
-    credentials, an SDK, or a webhook URL. `openadapt-types` 0.9.0 publishes
-    the shared async Execute schema, OpenAPI document, and signed decision
-    contract. OpenAdapt Cloud provides private execution, customer-runner
-    coordination, and receipt delivery for approved pilot partners.
+!!! note "Hosted Execute lane is off."
+    Production has `EXECUTE_LANE_ENABLED=false`. Cloud does not mint live keys.
+    When the lane is on, create the org API key in the Cloud dashboard.
+    `openadapt-types` 0.9.0 publishes the shared async Execute schema, OpenAPI
+    document, and signed decision contract. Hosted browser is an Enterprise
+    engagement with its own contract.
 
 ## What a partner gets
 
@@ -57,8 +63,8 @@ The qualification work produces:
 - representative and fault cases;
 - a sealed qualified version and an acceptance report.
 
-The partner can then submit an authorized transaction to the private pilot
-service. The service selects only the exact qualified workflow and the exact
+The partner can then submit an authorized transaction to Hosted Execute. The
+service selects only the exact qualified workflow and the exact
 customer-controlled runner that can meet the contract.
 
 ## The Execute contract
@@ -98,8 +104,8 @@ fields in the public Execute request.
 
 ### Lifecycle states
 
-The private-pilot contract uses these states. A state describes current work;
-it is not a success claim.
+The Execute contract uses these states. A state describes current work; it is
+not a success claim.
 
 | State | Meaning |
 |---|---|
@@ -111,9 +117,9 @@ it is not a success claim.
 
 ### Terminal transaction outcomes
 
-The released OpenAdapt Execute v1 contract defines these outcomes. The
-private-pilot service exposes the same values without translating them into a
-generic "success" flag.
+The released OpenAdapt Execute v1 contract defines these outcomes. Hosted
+Execute and the MIT reference expose the same values without translating them
+into a generic "success" flag.
 
 | Outcome | Meaning for the partner |
 |---|---|
@@ -220,8 +226,8 @@ or review the full
 The released public contract for this round trip is
 `openadapt-types` 0.9.0. It defines the async Execute schema and OpenAPI
 document, plus signed, PHI-safe decision tasks and receipts. Flow and Cloud use
-this contract for the decision relay and private-pilot execution. The partner
-event stream does not contain raw screenshots or live record data.
+this contract for the decision relay and Execute. The partner event stream
+does not contain raw screenshots or live record data.
 
 ## Receipts and partner integration
 
@@ -259,7 +265,7 @@ that evidence by digest. It does not copy it into the partner event stream.
 The partner stores the Seal with its own transaction record. That is what you
 show an end customer. A screenshot or a UI banner is not proof.
 
-Private-pilot integrations use signed, versioned webhook events and polling.
+Hosted Execute integrations use signed, versioned webhook events and polling.
 Webhook retry, signature verification, ordering, and event deduplication are
 part of the Execute contract. The [Execute integration guide](execute-api.md)
 shows the request, status, Seal, and webhook flow. The field map lives on
@@ -281,10 +287,11 @@ commercial compatibility pack.
 
 | Layer | Availability | Role |
 |---|---|---|
-| OpenAdapt Flow | MIT-licensed | Local compiler, governed runtime, halt/teach, qualification tools. Compile-once is a cache. |
+| OpenAdapt Flow | MIT-licensed | Local compiler, governed runtime, halt/teach, qualification tools. `openadapt-flow serve-execute` is the intended one-machine reference. Receipts are self-signed. |
 | `openadapt-types` | MIT-licensed | Shared Execute schema. The evidence receipt is the Seal. |
 | OpenAdapt Cloud foundation | Private and deployed | Tenant control plane, customer-runner coordination, signed decision relay. |
-| OpenAdapt Execute | Private pilot | `POST /v1/executions` issues Seals. Not a new repository. |
+| Hosted Execute | $10 / 1,000 VERIFIED | Org API key at `https://app.openadapt.ai/api`. OpenAdapt-signed Seal. Customer runner by default. Lane off until `EXECUTE_LANE_ENABLED` is true. |
+| Hosted browser | Enterprise | OpenAdapt operates the browser. Separate from the Execute meter. |
 | Compatibility packs and verifier recipes | Commercial | Per-application and per-environment qualification assets. Bundles are not liquid. |
 
 Embed through Execute and MCP into RCM vendors and agent platforms. Hospital

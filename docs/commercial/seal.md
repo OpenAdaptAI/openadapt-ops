@@ -154,4 +154,4 @@ Compile-once is a cache when the job is stable. If a computer-use agent gets
 cheap, the run still has to prove identity and effect, or halt.
 
 Partner API contract: [Integrate OpenAdapt Execute](execute-api.md).
-OEM embedding: [OpenAdapt Execute private-pilot guide](oem-brief.md).
+OEM embedding: [OpenAdapt Execute](oem-brief.md).
