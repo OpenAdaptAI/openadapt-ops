@@ -19,16 +19,15 @@ failure: if a consequential tool returns done without a Seal, treat the call as
 failed.
 
 The compiler stays MIT. Record, compile, replay, halt, teach, `openadapt-types`,
-local MCP, and Agent Skills stay inspectable. Settlement is the Seal.
+local MCP, and Agent Skills stay inspectable.
 
 Public verify pages list synthetic and non-PHI Seals. They do not list
 healthcare production. Bundles are bound to one app build, one farm, one
-resolution, one custom screen. Do not publish a public healthcare procedure
-npm.
+resolution, one custom screen.
 
 ## Oracle tiers
 
-Charge tiers 2 and 3. Tiers 0 and 1 never mint a production Seal.
+Only a tier 2 or tier 3 oracle mints a production Seal.
 
 | Tier | What it reads | Production Seal |
 |---|---|---|
@@ -49,24 +48,20 @@ banner must halt. The store must stay unchanged.
 A Seal that points at a screenshot hash is a liability. Do not mint production
 `verified` below tier 2.
 
-## Two sales motions
+## Attended and unattended operation
 
-Attended and unattended are two motions. Do not mix them in one pitch.
+Attended is the mode available now. A person is already signed in to the
+target application and the runner acts inside that session. A consequential
+write pauses at `decision_required`. The operator answers from the local
+console or the authenticated phone surface. The runner then reacquires focus,
+a fresh observation, identity, and the target before it continues.
 
-**Attended.** A person is already in session. The runner uses that session. A
-consequential write pauses at `decision_required`. The operator answers from
-the local console or the authenticated phone surface. The runner then
-reacquires focus, a fresh observation, identity, and the target before it
-continues. This is the product you can sell now. The human remains the legal
-actor. A Seal is not a physician signature.
+That person stays the legal actor. A Seal is not a physician signature.
 
-**Unattended.** Needs a dedicated agent identity, PAM, and session recording.
-It does not type a physician password, stuff a physician login, or share a
-service account. Treat that as a later motion with its own identity design.
-
-Halt UX is the commercial product. Who gets the 2 a.m. push, what they see, how
-they teach one step without invalidating the bundle, and how "click continue"
-is refused: that is renewal.
+Unattended operation needs a dedicated agent identity, privileged access
+management, and session recording, and it is qualified separately. In either
+mode, OpenAdapt does not type a person's password, reuse a person's login, or
+share a service account.
 
 ## CLI story
 
@@ -107,7 +102,7 @@ on that page.
 | `environment_id` | environment | The qualified environment |
 | `runner_id` | runner | The customer-controlled runner |
 | `nonce` | nonce | Per-Seal uniqueness so a consumer does not need the original request |
-| `oracle_tier` | oracle | 0 visual, 1 second-session, 2 SoR, 3 counterparty |
+| `oracle_tier` | oracle | 0 visual, 1 second-session, 2 system of record, 3 counterparty |
 | `outcome` | outcome | `verified`, `halted_before_effect`, `reconciliation_required`, `rejected_policy`, `failed_platform`, or `rolled_back_verified` |
 | `contracts` | contracts | Authorization, identity, postcondition, effect, required and observed strength, `model_used`, `external_network_used` |
 | `delivery_uncertain` | delivery | True when a write may have landed |
@@ -138,17 +133,10 @@ The partner still validates the Seal the same way: `receipt_id`,
 
 ## How it ships
 
-The buyer is the technical owner at an RCM vendor, BPO, vertical SaaS, or
-agent platform that already finishes last-mile work in someone else's GUI.
-Health-system IT is a downstream environment. IDN RFPs are not the growth
-engine.
+A partner embeds OpenAdapt through Execute and MCP.
 
-Embed through Execute and MCP. One partner is many environments. A hospital
-procurement cycle is 12 to 18 months.
-
-If Copilot, Power Automate, or another actuator already clicked, OpenAdapt
-can still emit the Seal when asked. We do not need to win the chat box. Until
-a counterparty demands the Seal, the incumbent keeps distribution. Coexist.
+If Copilot, Power Automate, or another actuator already clicked, OpenAdapt can
+still emit the Seal for that action when asked.
 
 Compile-once is a cache when the job is stable. If a computer-use agent gets
 cheap, the run still has to prove identity and effect, or halt.

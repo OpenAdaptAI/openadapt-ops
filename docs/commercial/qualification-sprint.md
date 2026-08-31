@@ -49,8 +49,9 @@ Days on which access is broken or revoked pause the clock. See the
   confirmation is oracle tier 0 and never a production Seal. See
   [effect verification](../concepts/effect-verification.md) and
   [The Seal](seal.md).
-- The sales motion: attended (human session, phone approve writes) or
-  unattended (dedicated agent identity, PAM). Do not mix them in one sprint.
+- The operation mode for the workflow: attended (a person is in session and
+  answers a pause from a phone or console) or unattended (a dedicated agent
+  identity and privileged access management). One sprint qualifies one mode.
 - A security contact for boundary and data-handling questions.
 
 ## Exclusions

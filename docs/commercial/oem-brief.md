@@ -27,12 +27,6 @@ A sealed verified run prints `VERIFIED`, a seal id, and
 `--seal` on replay is the intended Seal command. `openadapt flow seal`
 encrypts a bundle for deployment.
 
-The buyer is the technical owner at a vertical software vendor, an RCM
-provider, a BPO, or an agent platform. That company already has structured
-inputs, business logic, and an exception team. OpenAdapt supplies the last
-action in the customer GUI, then a Seal. Health-system IT is a downstream
-environment. Do not staff this motion as an IDN RFP.
-
 !!! note "Private pilot. Not a public API."
     This page describes the private-pilot product contract. It is not an
     self-service integration recipe and it does not publish partner access,
@@ -145,25 +139,27 @@ does not infer a class or an identity from a screenshot, OCR, an application
 name, parameters, or a model. If the class is unavailable, it uses `record` or
 `item`. The runner rechecks the real identity before any resumed action.
 
-## Two sales motions
+## Attended and unattended operation
 
-Do not mix these in one pitch.
+The private pilot runs attended. A person is signed in to the target
+application, and the runner acts inside that session. A consequential write
+pauses at `decision_required` until an authorized person answers, and the
+runner rechecks live identity and workflow state before it continues. The
+[attended decisions](#attended-decisions-and-mobile-delivery) section below
+describes that round trip.
 
-**Attended.** A person is in session. The runner uses that session. Consequential
-writes pause for a signed phone or console answer, then recheck live identity
-and state. This is the motion you can sell now. The human remains the legal
-actor. A Seal is not a physician signature.
+That person stays the legal actor. A Seal records that the configured
+authorization, identity, postcondition, and effect contracts passed for one
+run. A Seal is not a physician signature.
 
-**Unattended.** Needs a dedicated agent identity, PAM, and session recording. It
-does not type a physician password or stuff a physician login.
-
-Halt UX is the commercial product: who gets the push, what they see, how they
-teach one step without invalidating the bundle, and how "click continue" is
-refused.
+Unattended operation is qualified separately and is not part of the private
+pilot. It requires a dedicated agent identity, privileged access management,
+and session recording. In either mode, OpenAdapt does not type a person's
+password, reuse a person's login, or share a service account.
 
 ## Oracle tiers
 
-Charge 2 and 3. Tiers 0 and 1 never mint a production Seal.
+Only a tier 2 or tier 3 oracle mints a production Seal.
 
 | Tier | What it reads | Production Seal |
 |---|---|---|
@@ -236,7 +232,7 @@ the Seal. Map the receipt fields 1:1.
 | `execution_id` | The `POST /v1/executions` that produced this Seal |
 | `workflow_digest`, `workflow_version` | Admitted program |
 | `qualification_id`, `environment_id`, `runner_id`, `nonce` | Admission, environment, runner, uniqueness |
-| `oracle_tier` | 0 visual, 1 second-session, 2 SoR, 3 counterparty |
+| `oracle_tier` | 0 visual, 1 second-session, 2 system of record, 3 counterparty |
 | `outcome` | `verified` / halt / `reconciliation_required` / the other terminal values |
 | `contracts` | Authorization, identity, postcondition, effect |
 | `evidence_digest` | Pointer to retained evidence. Bytes stay in the boundary. |
@@ -286,12 +282,6 @@ commercial compatibility pack.
 | OpenAdapt Cloud foundation | Private and deployed | Tenant control plane, customer-runner coordination, signed decision relay. |
 | OpenAdapt Execute | Private pilot | `POST /v1/executions` issues Seals. Not a new repository. |
 | Compatibility packs and verifier recipes | Commercial | Per-application and per-environment qualification assets. Bundles are not liquid. |
-
-Embed through Execute and MCP into RCM vendors and agent platforms. Hospital
-IT RFPs are not the growth engine. If Copilot or Power Automate already
-clicked, OpenAdapt can still emit the Seal when asked.
-
-The compiler stays inspectable. Settlement is the Seal.
 
 ## Next step
 

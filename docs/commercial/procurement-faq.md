@@ -86,15 +86,16 @@ No. The human remains the legal actor. A Seal records that the configured
 identity, policy, and effect checks passed for that run.
 
 **Do you sell attended and unattended as one product?**
-No. Attended is the motion you can buy now: human session, phone or console
-approve consequential writes. Unattended needs a dedicated agent identity,
-PAM, and session recording. Do not mix them in one statement of work. Do not
-type a physician password.
+No. Attended is the mode you can buy now: a person is in session, and a phone
+or console answer releases each consequential write. Unattended needs a
+dedicated agent identity, privileged access management, and session recording,
+and it is qualified separately. One statement of work covers one mode.
+OpenAdapt does not type a person's password.
 
-**Are we buying a hospital RFP engagement?**
-No. Embed through Execute and MCP into an RCM vendor, BPO, vertical SaaS, or
-agent platform. Health-system IT is a downstream environment. IDN procurement
-is not the growth path.
+**Does this need a health-system IT procurement?**
+No. OpenAdapt embeds into your product through Execute and MCP, and your
+company holds that integration. The health system is the environment where the
+transaction runs.
 
 **Can Copilot or Power Automate still do the click?**
 Yes. OpenAdapt can emit a Seal from another actuator when asked. The
