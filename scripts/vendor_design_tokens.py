@@ -21,6 +21,8 @@ import hashlib
 import json
 import os
 import sys
+import urllib.error
+import urllib.parse
 import urllib.request
 from pathlib import Path
 
@@ -29,24 +31,64 @@ VENDOR_DIR = REPO / "docs" / "stylesheets" / "vendor" / "openadapt-web"
 PROVENANCE_PATH = VENDOR_DIR / "provenance.json"
 
 TIMEOUT_SECONDS = 30
+USER_AGENT = "openadapt-ops-vendor-design-tokens"
+API_ROOT = "https://api.github.com"
+
+
+class FetchError(RuntimeError):
+    """A canonical-file fetch failed. --check must not treat this as a match."""
 
 
 def sha256(payload: bytes) -> str:
     return hashlib.sha256(payload).hexdigest()
 
 
+def github_token() -> str | None:
+    return os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
+
+
+def contents_url(repository: str, path: str, ref: str) -> str:
+    return (
+        f"{API_ROOT}/repos/{repository}/contents/{path}"
+        f"?ref={urllib.parse.quote(ref, safe='')}"
+    )
+
+
 def fetch(url: str, accept: str) -> bytes:
-    request = urllib.request.Request(url, headers={"Accept": accept})
-    token = os.environ.get("GITHUB_TOKEN")
-    if token and url.startswith("https://api.github.com/"):
+    headers = {"Accept": accept, "User-Agent": USER_AGENT}
+    request = urllib.request.Request(url, headers=headers)
+    token = github_token()
+    if token and url.startswith(f"{API_ROOT}/"):
         request.add_header("Authorization", f"Bearer {token}")
-    with urllib.request.urlopen(request, timeout=TIMEOUT_SECONDS) as response:
-        return response.read()
+    try:
+        with urllib.request.urlopen(request, timeout=TIMEOUT_SECONDS) as response:
+            return response.read()
+    except urllib.error.HTTPError as exc:
+        raise FetchError(f"GET {url} -> HTTP {exc.code}") from exc
+    except urllib.error.URLError as exc:
+        raise FetchError(f"GET {url} -> {exc.reason}") from exc
+    except TimeoutError as exc:
+        raise FetchError(f"GET {url} -> timed out") from exc
+
+
+def fetch_canonical(provenance: dict, entry: dict) -> bytes:
+    # openadapt-web is private, so raw.githubusercontent.com 404s in Actions.
+    # A repo-scoped GITHUB_TOKEN cannot authenticate that host. Use the
+    # Contents API the same way openadapt-desktop does (PR 154).
+    token = github_token()
+    if token:
+        url = contents_url(
+            provenance["canonical_repository"],
+            entry["canonical_path"],
+            provenance["canonical_branch"],
+        )
+        return fetch(url, "application/vnd.github.raw")
+    return fetch(entry["raw_url"], "text/plain")
 
 
 def canonical_commit(provenance: dict) -> str:
     url = (
-        f"https://api.github.com/repos/{provenance['canonical_repository']}"
+        f"{API_ROOT}/repos/{provenance['canonical_repository']}"
         f"/commits/{provenance['canonical_branch']}"
     )
     return json.loads(fetch(url, "application/vnd.github+json"))["sha"]
@@ -76,7 +118,11 @@ def main() -> int:
                 f"{entry['canonical_path']} instead."
             )
 
-        canonical = fetch(entry["raw_url"], "text/plain")
+        try:
+            canonical = fetch_canonical(provenance, entry)
+        except FetchError as exc:
+            print(f"{name}: {exc}", file=sys.stderr)
+            return 1
         canonical_digest = sha256(canonical)
 
         if arguments.write:
