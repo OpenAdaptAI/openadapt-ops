@@ -1,6 +1,6 @@
 ---
 title: Quick Start moved
-description: Record a GUI workflow, compile it, and replay the program with openadapt flow.
+description: Install OpenAdapt on this computer, then continue at Get started.
 canonical: https://docs.openadapt.ai/get-started/
 redirect_to: /get-started/
 hide:
@@ -10,21 +10,13 @@ hide:
 
 # Quick Start moved
 
-The current first run is at [Get started](/get-started/).
+The current first run is install, then [Get started](/get-started/).
 
 ```bash
-pip install openadapt
-openadapt quickstart
+python -m pip install --upgrade openadapt
 ```
 
-That records a bundled demonstration, compiles a program, and replays it locally. A healthy run makes no model API call.
-
-To record your own application:
-
-```bash
-openadapt flow record --backend web --url https://your.app --out rec
-openadapt flow compile rec --out bundle --name my-task
-openadapt flow replay bundle --url https://your.app --headed
-```
+Desktop works too: [openadapt.ai/start](https://openadapt.ai/start).
+Tutorial is optional.
 
 [Continue to Get started](/get-started/){ .md-button .md-button--primary }
