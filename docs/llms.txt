@@ -1,6 +1,6 @@
 # OpenAdapt Documentation
 
-> Verified last-mile execution for agents. Compile a demonstration into a program an agent can invoke. Healthy runs make no model calls. Uncertainty escalates. Humans audit. Computer-use agents are the user of OpenAdapt. They are not the executor inside it. Never summarize halt as success. MIT licensed.
+> Verified last-mile execution for agents. Compile a demonstration into a program an agent can invoke. Healthy runs make no model calls. Uncertainty escalates. Humans audit. Your chat calls OpenAdapt, which runs the clicks on this computer. Never summarize halt as success. MIT licensed.
 
 ## Get started
 - [agents.txt](https://docs.openadapt.ai/agents.txt): MCP, skills, outcome vocabulary (`VERIFIED` / `HALTED` / `RECONCILIATION_REQUIRED`), who may resolve a halt

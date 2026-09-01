@@ -11,8 +11,8 @@ hide:
 
 <p class="oa-lede">
 Compile a demonstration into a program an agent can invoke. Healthy runs make
-no model calls. Uncertainty escalates. Humans audit. Computer-use agents are
-the user of OpenAdapt. They are not the executor inside it.
+no model calls. Uncertainty escalates. Humans audit. Your chat calls OpenAdapt,
+which runs the clicks on this computer.
 </p>
 
 [Install OpenAdapt](get-started/index.md){ .md-button .md-button--primary }

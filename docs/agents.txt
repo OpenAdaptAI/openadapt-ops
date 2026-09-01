@@ -2,7 +2,7 @@
 
 > Verified last-mile execution for agents. Compile a demonstration into a program an agent can invoke. Healthy runs make no model calls. Uncertainty escalates. Humans audit.
 
-Computer-use agents are the user of OpenAdapt. They are not the executor inside OpenAdapt.
+Your chat calls OpenAdapt, which runs the clicks on this computer.
 
 Site-wide machine contract: https://openadapt.ai/agents.txt
 Walkthrough: https://docs.openadapt.ai/get-started/
