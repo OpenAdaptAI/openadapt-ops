@@ -1,10 +1,9 @@
 # Scope and prerequisite checklist
 
-What the customer must provide before a
-[Qualification Sprint](qualification-sprint.md) can start. The sprint clock
-does not start until every required item is confirmed. Sending this list with
-the proposal avoids the most common cause of stalled engagements: access that
-arrives three weeks after signature.
+What you provide before a [Qualification Sprint](qualification-sprint.md) can
+start. The sprint clock does not start until every required item is confirmed.
+The most common cause of a stalled sprint is access that arrives three weeks
+after signature, so settle this list early.
 
 ## 1. The workflow
 
@@ -28,7 +27,7 @@ arrives three weeks after signature.
 - [ ] Any VPN, MFA, jump-host, or allowlisting steps completed for the named
       engineers.
 - [ ] Confirmation that automated input against this environment is permitted
-      by the application's terms and the customer's policies.
+      by the application's terms and your own policies.
 
 ## 3. Test data
 
@@ -59,7 +58,7 @@ Effect verification reads the system of record instead of trusting the screen
       fault-case adjudication (roughly 4 to 8 hours across the sprint).
 - [ ] Security contact: for data-boundary questions and access approvals.
 - [ ] IT contact: for environment, VPN, and credential logistics.
-- [ ] Any security review the customer requires of OpenAdapt started early;
+- [ ] Any security review you require of OpenAdapt started early;
       the [security packet](security-packet.md) and
       [security review guide](../guides/security-review.md) answer most
       questionnaires.

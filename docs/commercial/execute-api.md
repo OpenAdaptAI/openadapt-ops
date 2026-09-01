@@ -11,13 +11,13 @@ accepted the request for durable processing.
 
 This page is for an approved private-pilot partner. OpenAdapt supplies the
 service credential and the identifiers from the qualification pack. The hosted
-Execute lane stays gated (`EXECUTE_LANE_ENABLED` is false) until a
-founder-gated production deploy can issue a signed Seal.
+Execute lane is not open yet: `EXECUTE_LANE_ENABLED` is false until the
+production deployment can issue a signed Seal.
 
 ## Oracle tiers
 
-`oracle_tier` on the receipt says how the effect was checked. Mint a
-production Seal only at tier 2 or 3.
+`oracle_tier` on the receipt says how the effect was checked. OpenAdapt
+mints a production Seal only at tier 2 or 3.
 
 | Tier | Check | Production Seal |
 |---|---|---|
@@ -29,14 +29,12 @@ production Seal only at tier 2 or 3.
 `--break-it` on `openadapt-flow qualify` is the fail-closed test. A fake
 success banner must halt. The store must stay unchanged.
 
-## Attended first
+## Attended operation
 
 A person stays the legal actor. A Seal is not a physician signature.
 Consequential writes pause at `decision_required` so an authorized operator
-can finish the signed task on phone or desktop. Do not type a physician
-password.
-
-The rest of this page is the request, poll, receipt, and webhook contract.
+can finish the signed task on phone or desktop. OpenAdapt does not type a
+person's password, reuse a person's login, or share a service account.
 
 ## Choose where execution runs
 
