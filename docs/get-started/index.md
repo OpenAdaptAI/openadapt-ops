@@ -80,9 +80,10 @@ openadapt flow lint openadapt-quickstart/bundle
 
 ## Local coding agents
 
-Claude Code and Cursor can talk to OpenAdapt over MCP after `openadapt` is
-on this machine. ChatGPT.com can't. Don't send a hosted chat your
-passwords.
+Claude Code and Cursor on this machine can use the local MCP command
+below. ChatGPT.com can't talk to localhost, so it can't use this
+command. For a hosted chat, stay on the job tab and put OpenAdapt on
+this computer. Don't send that chat your passwords.
 
 ```bash
 claude mcp add openadapt -- \
