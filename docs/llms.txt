@@ -4,7 +4,7 @@
 
 ## Get started
 - [agents.txt](https://docs.openadapt.ai/agents.txt): MCP, skills, outcome vocabulary (`VERIFIED` / `HALTED` / `RECONCILIATION_REQUIRED`), who may resolve a halt
-- [Get started](https://docs.openadapt.ai/get-started/): `claude mcp add openadapt`, then `openadapt quickstart`, then `openadapt quickstart --break-it`. The bundled workflow is a tutorial. The current CLI is `openadapt flow record`, `compile`, `replay`. Older `/getting-started/` URLs and the `/start/` alias redirect here.
+- [Get started](https://docs.openadapt.ai/get-started/): Install with Desktop or `python -m pip install --upgrade openadapt`. Tutorial (`openadapt quickstart`, optionally `openadapt quickstart --break-it`) is optional. Local coding agents can `claude mcp add openadapt` later. Never summarize halt as success. Older `/getting-started/` URLs and the `/start/` alias redirect here. The current CLI after install is `openadapt flow record`, `compile`, `replay`.
 - [Qualification evidence](https://docs.openadapt.ai/get-started/what-works-today/): Accepted substrate results, exact environments, and deployment boundaries
 - [Author a workflow](https://docs.openadapt.ai/get-started/first-workflow/): A named human records, compiles, lints, replays, and reads the report on your own web app. Authority, not daily operator.
 - [What you get](https://docs.openadapt.ai/get-started/what-you-get/): The workflow bundle, the run report, and what each artifact is for

@@ -1,6 +1,6 @@
 ---
 title: Getting started moved
-description: Install OpenAdapt and run the current record, compile, replay tutorial.
+description: Install OpenAdapt on this computer, then continue at Get started.
 canonical: https://docs.openadapt.ai/get-started/
 redirect_to: /get-started/
 hide:
@@ -10,14 +10,15 @@ hide:
 
 # Getting started moved
 
-This URL is from an older docs tree. Start at [Get started](/get-started/).
+This URL is from an older docs tree. Install first, then continue at
+[Get started](/get-started/).
 
 ```bash
-pip install openadapt
-openadapt quickstart
-openadapt quickstart --break-it
+python -m pip install --upgrade openadapt
 ```
 
-`openadapt quickstart` records a demonstration, compiles it, and replays the program. `--break-it` is the halt demo. For your own app, use `openadapt flow record`, `compile`, and `replay`.
+The bundled tutorial (`openadapt quickstart`, then optionally
+`openadapt quickstart --break-it`) is optional. For your own app, see
+[Author a workflow](/get-started/first-workflow/).
 
 [Continue to Get started](/get-started/){ .md-button .md-button--primary }

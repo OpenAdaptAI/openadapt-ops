@@ -1,6 +1,6 @@
 ---
 title: Start moved
-description: Install OpenAdapt and run the current record, compile, replay tutorial.
+description: Install OpenAdapt on this computer, then continue at Get started.
 canonical: https://docs.openadapt.ai/get-started/
 redirect_to: /get-started/
 search:
@@ -12,12 +12,15 @@ hide:
 
 # Start moved
 
-This URL is an alias. The walkthrough is [Get started](/get-started/).
+This URL is an alias. Install first. The walkthrough is
+[Get started](/get-started/).
 
 ```bash
-pip install openadapt
-openadapt quickstart
-openadapt quickstart --break-it
+python -m pip install --upgrade openadapt
 ```
 
-The bundled workflow is a tutorial. [Continue to Get started](/get-started/){ .md-button .md-button--primary }
+Desktop works too: [openadapt.ai/start](https://openadapt.ai/start). The
+bundled tutorial (`openadapt quickstart`, then optionally
+`openadapt quickstart --break-it`) is optional.
+
+[Continue to Get started](/get-started/){ .md-button .md-button--primary }

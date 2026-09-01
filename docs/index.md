@@ -15,7 +15,7 @@ no model calls. Uncertainty escalates. Humans audit. Computer-use agents are
 the user of OpenAdapt. They are not the executor inside it.
 </p>
 
-[Call it from an agent](get-started/index.md){ .md-button .md-button--primary }
+[Install OpenAdapt](get-started/index.md){ .md-button .md-button--primary }
 [See how the compiler works](concepts/demonstration-compiler.md){ .md-button }
 [Author a workflow](get-started/first-workflow.md){ .md-button }
 
@@ -158,10 +158,9 @@ report determine its outcome.
 
 <div class="grid cards" markdown>
 
--   [__Call it from an agent__](get-started/index.md)
+-   [__Install OpenAdapt__](get-started/index.md)
 
-    `claude mcp add openadapt`, then `openadapt quickstart --break-it`.
-    Never summarize halt as success.
+    Desktop or pip on this computer. Tutorial is optional.
 
 -   [__Author a workflow__](get-started/first-workflow.md)
 
