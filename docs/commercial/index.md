@@ -1,7 +1,7 @@
 # Commercial offers
 
-This section explains how a buyer can qualify and deploy one workflow. Every
-price and claim matches the public
+This section explains how to qualify and deploy one workflow. Every price and
+claim matches the public
 [pricing page](https://openadapt.ai/pricing) and the
 [qualification evidence appendix](../get-started/what-works-today.md).
 
@@ -22,15 +22,15 @@ the evidence supports a "do not automate" decision.
 
 ## Buyer and evaluation resources
 
-| Document | Use it when |
+| Document | What it covers |
 |---|---|
-| [Qualification Sprint one-pager](qualification-sprint.md) | Introducing the entry offer to a buyer. |
-| [Scope and prerequisite checklist](scope-checklist.md) | Confirming the customer can actually start. |
-| [Qualification report outline](qualification-report-outline.md) | Showing a buyer what they will receive. |
-| [Acceptance matrix template](acceptance-matrix.md) | Agreeing pass/fail criteria up front. |
-| [Security packet](security-packet.md) | Answering a security or IT review. |
-| [Deployment boundaries](deployment-boundaries.md) | Explaining where execution and sensitive data live. |
-| [External Citrix zero-install brief](citrix-external-brief.md) | A buyer whose workflow lives behind Citrix or VDI. |
+| [Workflow Qualification Sprint](qualification-sprint.md) | The entry offer: price, clock, deliverables, and acceptance criteria. |
+| [Scope and prerequisite checklist](scope-checklist.md) | What you provide before the sprint clock starts. |
+| [Qualification report outline](qualification-report-outline.md) | The structure of the report you receive. |
+| [Acceptance matrix template](acceptance-matrix.md) | The pass/fail contract, agreed before any trial runs. |
+| [Security packet](security-packet.md) | The posture summary a security or IT review asks for. |
+| [Deployment boundaries](deployment-boundaries.md) | Where execution runs and where sensitive data lives. |
+| [External Citrix zero-install brief](citrix-external-brief.md) | A workflow that lives behind Citrix or VDI. |
 | [OpenAdapt Execute private-pilot guide](oem-brief.md) | A vendor that wants to embed verified execution. The API is available to approved private-pilot partners with scoped credentials. |
 | [Invoke a program: Seal or halt](execute-api.md) | The Execute request, poll, Seal-shaped receipt, and webhook contract. |
 | [Procurement FAQ](procurement-faq.md) | Procurement, legal, and vendor-risk questions. |

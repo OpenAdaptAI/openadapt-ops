@@ -33,12 +33,12 @@ of the following are true, confirmed in writing:
 2. Working access to the target application and test environment is verified by
    an OpenAdapt engineer (login succeeds, the workflow's screens are reachable).
 3. Representative test data is available and safe to write against.
-4. The customer has named its workflow owner and security contact.
+4. You have named your workflow owner and security contact.
 
 Days on which access is broken or revoked pause the clock. See the
 [scope and prerequisite checklist](scope-checklist.md).
 
-## What the customer provides
+## What you provide
 
 - A named business workflow with an owner who can demonstrate it.
 - Application access in a test or sandboxed environment (or a
@@ -83,7 +83,7 @@ We recommend against automation, and say so in the report, when for example:
 ## Acceptance criteria
 
 The sprint is complete when the deliverables below are handed over and walked
-through with the customer. A "go" recommendation additionally requires, on the
+through with you. A "go" recommendation additionally requires, on the
 qualified fixture set:
 
 - All representative cases complete with the declared verification strength.

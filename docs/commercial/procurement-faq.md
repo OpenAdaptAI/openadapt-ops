@@ -12,7 +12,7 @@ A fixed-scope engineering assessment of one workflow, from $15,000 (native,
 RDP, and Citrix scopes typically $25,000 to $40,000), delivering a signed
 go/no-go report, coverage matrix, and evidence pack. It is paid regardless of
 outcome; "do not automate" is a full-value deliverable. See the
-[Qualification Sprint one-pager](qualification-sprint.md).
+[Workflow Qualification Sprint](qualification-sprint.md) page.
 
 **Is there a subscription?**
 OpenAdapt Cloud is $500.00/month for managed browser execution of approved
