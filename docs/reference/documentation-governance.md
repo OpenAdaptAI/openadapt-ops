@@ -40,8 +40,10 @@ Public docs must:
    expanding them.
 6. Keep generated repository material out of top-level navigation; package and
    research topology belongs under Ecosystem or Reference.
-7. Publish `openadapt flow record`, `compile`, and `replay` (or
-   `openadapt quickstart`) as the current first run. Do not publish
-   capture-then-train or a model-training CLI as current product
-   instructions. Research repositories stay listed as Research. Retired
-   URLs from the old docs tree keep a Flow-first redirect.
+7. Publish `openadapt flow tutorial` as the current first run that
+   writes a VERIFIED receipt. `openadapt quickstart --break-it` is the
+   halt demo. `openadapt flow record`, `compile`, and `replay` author a
+   real workflow. Do not publish capture-then-train or a model-training
+   CLI as current product instructions. Research repositories stay listed
+   as Research. Retired URLs from the old docs tree keep a Flow-first
+   redirect.

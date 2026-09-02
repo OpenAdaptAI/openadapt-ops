@@ -17,7 +17,7 @@ pip install openadapt
 openadapt flow --help
 ```
 
-The first local result is `openadapt quickstart`. Package roles are in the
+The first local result is `openadapt flow tutorial`. Package roles are in the
 [product components catalog](/ecosystem/).
 
 [Continue to the current guide](/ecosystem/){ .md-button .md-button--primary }

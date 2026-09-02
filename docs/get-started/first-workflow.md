@@ -88,7 +88,7 @@ package with [uv](https://docs.astral.sh/uv/).
 
 ### Optional installation check
 
-Run `openadapt quickstart` if you want to check the installation before you
+Run `openadapt flow tutorial` if you want to check the installation before you
 touch your own application. It records, compiles, certifies, and verifies a
 bundled synthetic workflow. A healthy run ends in `VERIFIED`. That result
 applies only to the bundled task, application, and local system of record. It
