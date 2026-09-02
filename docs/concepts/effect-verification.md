@@ -113,4 +113,5 @@ is tier 1. Neither mints a production Seal. A system-of-record read (API,
 database, file, ack) is tier 2. A counterparty artifact is tier 3. Charge
 those two. `--break-it` on `qualify` is the fail-closed test: a fake success
 banner must halt and the store must stay unchanged. See
-[The Seal](../commercial/seal.md).
+[The Seal](../commercial/seal.md). A tier-2 read is also the only thing that
+earns a training reward: [Seal as an RL reward](../commercial/seal-reward.md).

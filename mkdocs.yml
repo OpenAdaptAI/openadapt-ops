@@ -188,6 +188,7 @@ nav:
     - Deployment boundaries: commercial/deployment-boundaries.md
     - External Citrix zero-install brief: commercial/citrix-external-brief.md
     - The Seal: commercial/seal.md
+    - Seal as an RL reward: commercial/seal-reward.md
     - OpenAdapt Execute private-pilot guide: commercial/oem-brief.md
     - Integrate OpenAdapt Execute: commercial/execute-api.md
     - Procurement FAQ: commercial/procurement-faq.md
