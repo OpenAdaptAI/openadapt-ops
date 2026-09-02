@@ -82,7 +82,7 @@ def _write_contract_docs(root):
         ),
         "get-started/index.md": (
             "# Get started\n\nInstall with `pip install openadapt`, then "
-            "`openadapt quickstart` and `openadapt quickstart --break-it`. "
+            "`openadapt flow tutorial` and `openadapt quickstart --break-it`. "
             "`claude mcp add openadapt`. Never summarize halt as success. "
             "The bundled workflow is a tutorial. Continue in "
             "[Your first workflow](first-workflow.md)."

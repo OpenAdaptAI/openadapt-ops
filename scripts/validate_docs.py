@@ -20,7 +20,7 @@ REQUIRED_PUBLIC_PAGES = {
     "ecosystem/index.md": ("data-openadapt-production-target",),
     "get-started/index.md": (
         "pip install",
-        "openadapt quickstart",
+        "openadapt flow tutorial",
         "--break-it",
         "tutorial",
         "first-workflow.md",

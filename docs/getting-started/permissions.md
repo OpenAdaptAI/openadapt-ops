@@ -16,7 +16,7 @@ The command-line first run does not need those permissions:
 
 ```bash
 pip install openadapt
-openadapt quickstart
+openadapt flow tutorial
 ```
 
 [Continue to the Desktop install guide](/desktop/install/){ .md-button .md-button--primary }

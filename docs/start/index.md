@@ -20,7 +20,7 @@ python -m pip install --upgrade openadapt
 ```
 
 Desktop works too: [openadapt.ai/start](https://openadapt.ai/start). The
-bundled tutorial (`openadapt quickstart`, then optionally
+bundled tutorial (`openadapt flow tutorial`, then optionally
 `openadapt quickstart --break-it`) is optional.
 
 [Continue to Get started](/get-started/){ .md-button .md-button--primary }

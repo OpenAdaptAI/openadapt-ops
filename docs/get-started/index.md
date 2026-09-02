@@ -55,27 +55,28 @@ Sign in on this computer, in the real app. Not in the chat.
 
 ### Optional tutorial
 
-`openadapt quickstart` records a bundled tutorial and compiles it, then
-runs it locally. To see a halt when the on-screen banner disagrees with
-the record, run `openadapt quickstart --break-it` against the same
-compiled tutorial; the run stops because the independent read failed, and
-the store stays as it was. Add `--headed` if you want to watch the
-browser.
+`openadapt flow tutorial` records a bundled tutorial and compiles it, then
+runs it locally. A healthy run writes a VERIFIED receipt. To see a halt
+when the on-screen banner disagrees with the record, run
+`openadapt quickstart --break-it`. The run stops because the independent
+read failed, and the store stays as it was. Add `--headed` if you want to
+watch the browser.
 
 Skip it if you already have a real task.
 
-OpenAdapt refuses to overwrite `openadapt-quickstart/`. Artifacts land
-there:
+The tutorial writes the recording, the compiled bundle, and the run
+receipt under its output directory (default
+`tutorials/tutorial-<UTC timestamp>`):
 
-- `openadapt-quickstart/recording/`
-- `openadapt-quickstart/bundle/`
-- `openadapt-quickstart/run/REPORT.md`
-- `openadapt-quickstart/run/receipt.json`
+- `<out>/recording/`
+- `<out>/bundle/`
+- `<out>/run/REPORT.md`
+- `<out>/run/receipt.json`
 
 ```bash
-less openadapt-quickstart/run/REPORT.md
-openadapt flow visualize openadapt-quickstart/bundle --out graph.html
-openadapt flow lint openadapt-quickstart/bundle
+less <out>/run/REPORT.md
+openadapt flow visualize <out>/bundle --out graph.html
+openadapt flow lint <out>/bundle
 ```
 
 ## Local coding agents
