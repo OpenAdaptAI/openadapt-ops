@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-09-02 15:06 UTC*
+> *Last updated: 2026-09-02 15:47 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [docs: lead with flow tutorial as the VERIFIED first command](https://github.com/OpenAdaptAI/OpenAdapt/pull/1139) (#1139) — merged 
 
 - [docs: front the agent-callable path](https://github.com/OpenAdaptAI/OpenAdapt/pull/1137) (#1137) — merged 
 
@@ -45,8 +47,6 @@
 - [Replace the legacy GitBook link](https://github.com/OpenAdaptAI/OpenAdapt/pull/1117) (#1117) — merged 
 
 - [Derive launcher lifecycle from signed admissions](https://github.com/OpenAdaptAI/OpenAdapt/pull/1116) (#1116) — merged 
-
-- [docs: lead with the verified base-package quickstart](https://github.com/OpenAdaptAI/OpenAdapt/pull/1115) (#1115) — merged 
 
 
 
@@ -147,6 +147,8 @@
 
 - [feat(agent): authoring connect mailbox client for hosted ChatGPT.com](https://github.com/OpenAdaptAI/openadapt-agent/pull/45) (#45) — merged 
 
+- [chore(deps): Bump the codeql-action group with 2 updates](https://github.com/OpenAdaptAI/openadapt-agent/pull/44) (#44) — merged 
+
 - [docs: name the three roles and default runtime interface](https://github.com/OpenAdaptAI/openadapt-agent/pull/41) (#41) — merged 
 
 - [feat: serve the synthetic tutorial and report HALTED honestly](https://github.com/OpenAdaptAI/openadapt-agent/pull/40) (#40) — merged 
@@ -172,6 +174,8 @@
 ## openadapt-ml
 
 
+- [docs: lead with research, not VLM-agent training](https://github.com/OpenAdaptAI/openadapt-ml/pull/79) (#79) — merged 
+
 - [docs: rewrite README for a human reader](https://github.com/OpenAdaptAI/openadapt-ml/pull/78) (#78) — merged 
 
 - [chore(policy): sync generated source boundary](https://github.com/OpenAdaptAI/openadapt-ml/pull/77) (#77) — merged 
@@ -182,6 +186,8 @@
 
 ## openadapt-evals
 
+
+- [docs(prime): install the environment from the Prime Intellect hub](https://github.com/OpenAdaptAI/openadapt-evals/pull/333) (#333) — merged 
 
 - [fix(reward): trainer adapters carry the oracle identity the worker requires](https://github.com/OpenAdaptAI/openadapt-evals/pull/332) (#332) — merged 
 
@@ -221,8 +227,6 @@
 
 - [fix(evidence): match the retention digests the Cloud writer emits](https://github.com/OpenAdaptAI/openadapt-evals/pull/311) (#311) — merged 
 
-- [docs(changelog): list the importer workflow in the 0.94.0 section](https://github.com/OpenAdaptAI/openadapt-evals/pull/310) (#310) — merged 
-
 
 
 ## openadapt-capture
@@ -231,6 +235,10 @@
 - [feat(capture): window_tree observations and authoring projector](https://github.com/OpenAdaptAI/openadapt-capture/pull/131) (#131) — merged 
 
 - [chore: make capture tests portable](https://github.com/OpenAdaptAI/openadapt-capture/pull/130) (#130) — merged 
+
+- [chore(deps): bump github/codeql-action/analyze from 4.37.8 to 4.37.9](https://github.com/OpenAdaptAI/openadapt-capture/pull/129) (#129) — merged 
+
+- [chore(deps): bump github/codeql-action/init from 4.37.8 to 4.37.9](https://github.com/OpenAdaptAI/openadapt-capture/pull/128) (#128) — merged 
 
 - [Capture off-Space macOS windows and protect authentication handoffs](https://github.com/OpenAdaptAI/openadapt-capture/pull/126) (#126) — merged 
 
@@ -263,10 +271,6 @@
 - [fix(ci): allowlist the published extension key by exact value](https://github.com/OpenAdaptAI/openadapt-capture/pull/112) (#112) — merged 
 
 - [docs: rewrite the README and move the deep contracts into docs/](https://github.com/OpenAdaptAI/openadapt-capture/pull/111) (#111) — merged 
-
-- [fix(release): let the changelog document the pending release candidate](https://github.com/OpenAdaptAI/openadapt-capture/pull/110) (#110) — merged 
-
-- [test(fixtures): run the byte check on every matching builder](https://github.com/OpenAdaptAI/openadapt-capture/pull/109) (#109) — merged 
 
 
 
