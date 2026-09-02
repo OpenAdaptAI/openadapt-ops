@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-09-02 15:47 UTC*
+> *Last updated: 2026-09-02 16:27 UTC*
 
 
 
@@ -65,6 +65,8 @@
 
 - [feat(flow): authoring session wraps Recorder; compile wrapper returns needs_human_admit](https://github.com/OpenAdaptAI/openadapt-flow/pull/449) (#449) — merged 
 
+- [build: bump ruff from 0.16.3 to 0.16.5 in the python-minor group across 1 directory](https://github.com/OpenAdaptAI/openadapt-flow/pull/447) (#447) — merged 
+
 - [feat: extend ProcessContract with mixed capabilities](https://github.com/OpenAdaptAI/openadapt-flow/pull/444) (#444) — merged 
 
 - [feat: add admit status that reports not-admitted](https://github.com/OpenAdaptAI/openadapt-flow/pull/443) (#443) — merged 
@@ -91,12 +93,12 @@
 
 - [feat(compiler): admit REST bindings only after held-out Effect confirmation](https://github.com/OpenAdaptAI/openadapt-flow/pull/432) (#432) — merged 
 
-- [docs: drop 29-app failure-discovery from README](https://github.com/OpenAdaptAI/openadapt-flow/pull/431) (#431) — merged 
-
 
 
 ## openadapt-desktop
 
+
+- [docs: point the README at flow tutorial, not quickstart](https://github.com/OpenAdaptAI/openadapt-desktop/pull/157) (#157) — merged 
 
 - [fix: rustfmt overlay coords and skip POSIX 0600 on Windows](https://github.com/OpenAdaptAI/openadapt-desktop/pull/156) (#156) — merged 
 
@@ -136,12 +138,12 @@
 
 - [chore: ignore every .env variant, not one at a time](https://github.com/OpenAdaptAI/openadapt-desktop/pull/134) (#134) — merged 
 
-- [Scope Desktop secret scans to the tested change](https://github.com/OpenAdaptAI/openadapt-desktop/pull/133) (#133) — merged 
-
 
 
 ## openadapt-agent
 
+
+- [docs: lead pip install with `openadapt flow tutorial`](https://github.com/OpenAdaptAI/openadapt-agent/pull/47) (#47) — merged 
 
 - [docs: rewrite README as a calling-agent landing page](https://github.com/OpenAdaptAI/openadapt-agent/pull/46) (#46) — merged 
 
