@@ -212,13 +212,26 @@ eval dataset carries the six labeled reward-hacking rows (`dup`, `extra`,
 `omit`, `unsubmit`, `claim`, `screen_only`) so you can confirm the reward
 fails them closed before you train.
 
-The package is not on PyPI or the Prime hub yet, so install it from the
-repository:
+The environment is public on the Prime Intellect hub as
+[`openadapt/openadapt-mockmed-extradup`](https://app.primeintellect.ai/dashboard/environments/openadapt/openadapt-mockmed-extradup).
+Install it with the `prime` CLI:
+
+```bash
+prime env install openadapt/openadapt-mockmed-extradup@latest
+uv run vf-eval openadapt-mockmed-extradup -m gpt-4.1-mini -n 8 -r 1
+```
+
+Or with pip, from the hub's package index:
+
+```bash
+pip install --extra-index-url https://hub.primeintellect.ai/openadapt/simple/ openadapt-mockmed-extradup
+```
+
+To run the unreleased head instead, install from the repository:
 
 ```bash
 uv pip install "verifiers>=0.3.1,<0.3.2" \
   "openadapt-mockmed-extradup @ git+https://github.com/OpenAdaptAI/openadapt-evals@main#subdirectory=environments/openadapt_mockmed_extradup"
-uv run vf-eval openadapt-mockmed-extradup -m gpt-4.1-mini -n 8 -r 1
 ```
 
 To watch it fail closed without a model, serve the scripted policy and let
