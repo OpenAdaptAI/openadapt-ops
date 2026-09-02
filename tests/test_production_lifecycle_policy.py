@@ -111,7 +111,7 @@ class ProductionLifecycleProjectionTests(unittest.TestCase):
             target["latest_admission"]["admission_id"], "production:flow:2"
         )
 
-    def test_committed_projection_is_admission_free_and_schema_bound(self) -> None:
+    def test_committed_projection_admits_flow_only_and_is_schema_bound(self) -> None:
         output = json.loads(
             (ROOT / "docs" / "production-lifecycle.json").read_text(encoding="utf-8")
         )
@@ -130,9 +130,16 @@ class ProductionLifecycleProjectionTests(unittest.TestCase):
         )
         self.assertEqual(output["source"], source)
         self.assertEqual(len(output["targets"]), 7)
-        for target in output["targets"]:
-            self.assertIsNone(target["latest_admission"])
-            self.assertEqual(target["admission_history"], [])
+        by_id = {target["id"]: target for target in output["targets"]}
+        flow = by_id["flow"]
+        self.assertEqual(flow["latest_admission"]["release"]["version"], "1.34.0")
+        self.assertEqual(
+            flow["latest_admission"]["evidence_class"], "remote-safe-synthetic"
+        )
+        self.assertEqual(len(flow["admission_history"]), 1)
+        for target_id in ("agent", "capture", "cloud", "desktop", "docs", "openadapt"):
+            self.assertIsNone(by_id[target_id]["latest_admission"])
+            self.assertEqual(by_id[target_id]["admission_history"], [])
 
     def test_source_requires_exact_commit_bound_inventory(self) -> None:
         source = _source()
