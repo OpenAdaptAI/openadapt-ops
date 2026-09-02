@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-08-29 22:59 UTC*
+> *Last updated: 2026-09-02 15:06 UTC*
 
 
 
@@ -53,7 +53,35 @@
 ## openadapt-flow
 
 
+- [chore: release 1.35.0](https://github.com/OpenAdaptAI/openadapt-flow/pull/454) (#454) — merged 
+
+- [fix(reward): trainer adapters live in openadapt_evals.reward; flow keeps the worker and the client](https://github.com/OpenAdaptAI/openadapt-flow/pull/453) (#453) — merged 
+
+- [feat(reward): MIT reference reward worker with self-signed reward receipts](https://github.com/OpenAdaptAI/openadapt-flow/pull/452) (#452) — merged 
+
+- [feat(cli): default record without --backend to this OS](https://github.com/OpenAdaptAI/openadapt-flow/pull/451) (#451) — merged 
+
+- [fix(paper): drop the ORCID that 404s](https://github.com/OpenAdaptAI/openadapt-flow/pull/450) (#450) — merged 
+
+- [feat(flow): authoring session wraps Recorder; compile wrapper returns needs_human_admit](https://github.com/OpenAdaptAI/openadapt-flow/pull/449) (#449) — merged 
+
+- [feat: extend ProcessContract with mixed capabilities](https://github.com/OpenAdaptAI/openadapt-flow/pull/444) (#444) — merged 
+
+- [feat: add admit status that reports not-admitted](https://github.com/OpenAdaptAI/openadapt-flow/pull/443) (#443) — merged 
+
+- [feat: MIT reference Execute server with self-signed local receipts](https://github.com/OpenAdaptAI/openadapt-flow/pull/442) (#442) — merged 
+
 - [ci: skip the expensive suite on documentation-only PRs](https://github.com/OpenAdaptAI/openadapt-flow/pull/441) (#441) — merged 
+
+- [feat(qualify): execute --break-it oracle gate before accept](https://github.com/OpenAdaptAI/openadapt-flow/pull/440) (#440) — merged 
+
+- [feat(induce): emit a record-next worklist of missing demonstrations](https://github.com/OpenAdaptAI/openadapt-flow/pull/439) (#439) — merged 
+
+- [feat: lint same-channel effect oracles on consequential writes](https://github.com/OpenAdaptAI/openadapt-flow/pull/438) (#438) — merged 
+
+- [feat(cli): write a deploy.yaml draft bound to a bundle digest](https://github.com/OpenAdaptAI/openadapt-flow/pull/437) (#437) — merged 
+
+- [feat(qualify): propose production-shaped pins from a demo](https://github.com/OpenAdaptAI/openadapt-flow/pull/436) (#436) — merged 
 
 - [feat: refuse VERIFIED without an independent system-of-record read](https://github.com/OpenAdaptAI/openadapt-flow/pull/435) (#435) — merged 
 
@@ -65,38 +93,18 @@
 
 - [docs: drop 29-app failure-discovery from README](https://github.com/OpenAdaptAI/openadapt-flow/pull/431) (#431) — merged 
 
-- [feat(compose): sequence separately recorded Flow bundles](https://github.com/OpenAdaptAI/openadapt-flow/pull/430) (#430) — merged 
-
-- [docs: clarify governed and multi-app workflow paths](https://github.com/OpenAdaptAI/openadapt-flow/pull/428) (#428) — merged 
-
-- [fix: retain fail-closed qualification summaries](https://github.com/OpenAdaptAI/openadapt-flow/pull/427) (#427) — merged 
-
-- [fix: preserve X11 library name casing](https://github.com/OpenAdaptAI/openadapt-flow/pull/426) (#426) — merged 
-
-- [docs: match four published claims to their artifacts](https://github.com/OpenAdaptAI/openadapt-flow/pull/425) (#425) — merged 
-
-- [docs(paper): correct the tree map, and name the profile in each main.tex](https://github.com/OpenAdaptAI/openadapt-flow/pull/424) (#424) — merged 
-
-- [docs: rewrite the README around what the tool does](https://github.com/OpenAdaptAI/openadapt-flow/pull/423) (#423) — merged 
-
-- [fix(release): create the GitHub Release with the App instead of semantic-release](https://github.com/OpenAdaptAI/openadapt-flow/pull/422) (#422) — merged 
-
-- [fix(release): install PyYAML before the claims registry gate](https://github.com/OpenAdaptAI/openadapt-flow/pull/421) (#421) — merged 
-
-- [docs: publish the Contributor License Agreement CONTRIBUTING has promised](https://github.com/OpenAdaptAI/openadapt-flow/pull/420) (#420) — merged 
-
-- [fix(release): restore changelog generation, backfill v1.0.0-v1.33.0, detect the gap](https://github.com/OpenAdaptAI/openadapt-flow/pull/419) (#419) — merged 
-
-- [feat(sanitize): materialize an approved derivative from its archive](https://github.com/OpenAdaptAI/openadapt-flow/pull/418) (#418) — merged 
-
-- [fix(validate-hosted): name the derivative whose approval is missing](https://github.com/OpenAdaptAI/openadapt-flow/pull/417) (#417) — merged 
-
-- [fix(macos): match known Chrome AX title suffixes](https://github.com/OpenAdaptAI/openadapt-flow/pull/416) (#416) — merged 
-
 
 
 ## openadapt-desktop
 
+
+- [fix: rustfmt overlay coords and skip POSIX 0600 on Windows](https://github.com/OpenAdaptAI/openadapt-desktop/pull/156) (#156) — merged 
+
+- [fix: ship the OpenAdapt robot as the macOS app icon and DMG](https://github.com/OpenAdaptAI/openadapt-desktop/pull/155) (#155) — merged 
+
+- [feat(desktop): authoring runner URI, Allow-per-sub, and mailbox poll](https://github.com/OpenAdaptAI/openadapt-desktop/pull/154) (#154) — merged 
+
+- [feat: add a local demonstration coach HUD](https://github.com/OpenAdaptAI/openadapt-desktop/pull/153) (#153) — merged 
 
 - [feat: Qualify this recording fills Flow pins from the demo](https://github.com/OpenAdaptAI/openadapt-desktop/pull/152) (#152) — merged 
 
@@ -130,16 +138,14 @@
 
 - [Scope Desktop secret scans to the tested change](https://github.com/OpenAdaptAI/openadapt-desktop/pull/133) (#133) — merged 
 
-- [Bind production admission to tag attestations](https://github.com/OpenAdaptAI/openadapt-desktop/pull/132) (#132) — merged 
-
-- [feat: route hosted runs through Flow's governed adapter](https://github.com/OpenAdaptAI/openadapt-desktop/pull/130) (#130) — merged 
-
-- [ci: derive Desktop Production from central admission](https://github.com/OpenAdaptAI/openadapt-desktop/pull/126) (#126) — merged 
-
 
 
 ## openadapt-agent
 
+
+- [docs: rewrite README as a calling-agent landing page](https://github.com/OpenAdaptAI/openadapt-agent/pull/46) (#46) — merged 
+
+- [feat(agent): authoring connect mailbox client for hosted ChatGPT.com](https://github.com/OpenAdaptAI/openadapt-agent/pull/45) (#45) — merged 
 
 - [docs: name the three roles and default runtime interface](https://github.com/OpenAdaptAI/openadapt-agent/pull/41) (#41) — merged 
 
@@ -177,6 +183,28 @@
 ## openadapt-evals
 
 
+- [fix(reward): trainer adapters carry the oracle identity the worker requires](https://github.com/OpenAdaptAI/openadapt-evals/pull/332) (#332) — merged 
+
+- [chore(release): prepare 0.96.1](https://github.com/OpenAdaptAI/openadapt-evals/pull/331) (#331) — merged 
+
+- [fix(prime): pin verifiers below 0.3.2, the last release with SingleTurnEnv](https://github.com/OpenAdaptAI/openadapt-evals/pull/330) (#330) — merged 
+
+- [docs(prime): options brief for the verifiers Taskset port](https://github.com/OpenAdaptAI/openadapt-evals/pull/329) (#329) — merged 
+
+- [chore(release): prepare 0.96.0](https://github.com/OpenAdaptAI/openadapt-evals/pull/328) (#328) — merged 
+
+- [fix(release): accept the .publish.attestation sidecars the publish action writes](https://github.com/OpenAdaptAI/openadapt-evals/pull/327) (#327) — merged 
+
+- [feat(reward): TRL and verl adapters for certified reward receipts, plus the MockMed proof](https://github.com/OpenAdaptAI/openadapt-evals/pull/326) (#326) — merged 
+
+- [chore(release): prepare 0.95.1](https://github.com/OpenAdaptAI/openadapt-evals/pull/325) (#325) — merged 
+
+- [feat(prime): openadapt-mockmed-extradup verifiers environment](https://github.com/OpenAdaptAI/openadapt-evals/pull/324) (#324) — merged 
+
+- [fix(release): accept the dist/.gitignore marker uv build writes](https://github.com/OpenAdaptAI/openadapt-evals/pull/323) (#323) — merged 
+
+- [chore(release): prepare 0.95.0](https://github.com/OpenAdaptAI/openadapt-evals/pull/322) (#322) — merged 
+
 - [feat: ExtraDup kit against MockMed and local OpenEMR](https://github.com/OpenAdaptAI/openadapt-evals/pull/320) (#320) — merged 
 
 - [feat(evidence): publish the Flow 1.34.0 comparison; supersede 1.33.0](https://github.com/OpenAdaptAI/openadapt-evals/pull/319) (#319) — merged 
@@ -195,32 +223,16 @@
 
 - [docs(changelog): list the importer workflow in the 0.94.0 section](https://github.com/OpenAdaptAI/openadapt-evals/pull/310) (#310) — merged 
 
-- [feat(ci): add the authorized importer workflow and fix the proposal bot](https://github.com/OpenAdaptAI/openadapt-evals/pull/309) (#309) — merged 
-
-- [feat(evidence): implement the private-export contract mechanism](https://github.com/OpenAdaptAI/openadapt-evals/pull/308) (#308) — merged 
-
-- [chore: ignore every .env variant, not one at a time](https://github.com/OpenAdaptAI/openadapt-evals/pull/307) (#307) — merged 
-
-- [chore(release): prepare 0.94.0](https://github.com/OpenAdaptAI/openadapt-evals/pull/306) (#306) — merged 
-
-- [fix(evidence): bind retained evidence to the reviewed signing route](https://github.com/OpenAdaptAI/openadapt-evals/pull/305) (#305) — merged 
-
-- [docs(evidence): draft the private-export contract](https://github.com/OpenAdaptAI/openadapt-evals/pull/304) (#304) — merged 
-
-- [feat(evidence): add v3 qualification and immutable recovery](https://github.com/OpenAdaptAI/openadapt-evals/pull/303) (#303) — merged 
-
-- [chore(release): prepare 0.93.0](https://github.com/OpenAdaptAI/openadapt-evals/pull/302) (#302) — merged 
-
-- [feat(ci): propose the next release as a reviewable pull request](https://github.com/OpenAdaptAI/openadapt-evals/pull/301) (#301) — merged 
-
-- [feat(evidence): bind Cloud acceptance to the public Sigstore instance](https://github.com/OpenAdaptAI/openadapt-evals/pull/300) (#300) — merged 
-
-- [fix(evidence): accept the timestamp format GitHub CLI actually emits](https://github.com/OpenAdaptAI/openadapt-evals/pull/299) (#299) — merged 
-
 
 
 ## openadapt-capture
 
+
+- [feat(capture): window_tree observations and authoring projector](https://github.com/OpenAdaptAI/openadapt-capture/pull/131) (#131) — merged 
+
+- [chore: make capture tests portable](https://github.com/OpenAdaptAI/openadapt-capture/pull/130) (#130) — merged 
+
+- [Capture off-Space macOS windows and protect authentication handoffs](https://github.com/OpenAdaptAI/openadapt-capture/pull/126) (#126) — merged 
 
 - [Close recorder database sessions before finalization](https://github.com/OpenAdaptAI/openadapt-capture/pull/125) (#125) — merged 
 
@@ -256,16 +268,12 @@
 
 - [test(fixtures): run the byte check on every matching builder](https://github.com/OpenAdaptAI/openadapt-capture/pull/109) (#109) — merged 
 
-- [fix(fixtures): bind synthetic provenance to the fixture byte determinants](https://github.com/OpenAdaptAI/openadapt-capture/pull/107) (#107) — merged 
-
-- [fix(db): retry transient SQLite writer locks](https://github.com/OpenAdaptAI/openadapt-capture/pull/106) (#106) — merged 
-
-- [chore(policy): sync generated source boundary](https://github.com/OpenAdaptAI/openadapt-capture/pull/105) (#105) — merged 
-
 
 
 ## openadapt-privacy
 
+
+- [feat: add stdlib git/CI PHI scanner](https://github.com/OpenAdaptAI/openadapt-privacy/pull/20) (#20) — merged 
 
 - [fix: decide separated action text by shape, and label identifiers by recognizer](https://github.com/OpenAdaptAI/openadapt-privacy/pull/19) (#19) — merged 
 
@@ -279,6 +287,16 @@
 
 ## openadapt-types
 
+
+- [feat(types): add calibration scope and issuer to the reward certificate](https://github.com/OpenAdaptAI/openadapt-types/pull/38) (#38) — merged 
+
+- [feat(types): add reward contract, certificate, and evidence receipt](https://github.com/OpenAdaptAI/openadapt-types/pull/37) (#37) — merged 
+
+- [feat(types): add clinic inbox, outbox, and MCP result contracts](https://github.com/OpenAdaptAI/openadapt-types/pull/36) (#36) — merged 
+
+- [feat(types): authoring observe, command, and bind schemas](https://github.com/OpenAdaptAI/openadapt-types/pull/35) (#35) — merged 
+
+- [feat: add portable process capability contracts](https://github.com/OpenAdaptAI/openadapt-types/pull/34) (#34) — merged 
 
 - [feat: Tier-2 oracle adapter; refuse visual VERIFIED](https://github.com/OpenAdaptAI/openadapt-types/pull/33) (#33) — merged 
 
