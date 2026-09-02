@@ -105,12 +105,23 @@ combinations a trainer must never accept: an unscored episode is removed from
 its GRPO group, a `development_only` receipt is never certified, and in
 `require_certified` mode an expired certificate stops the run.
 
-### OpenAI Agent RFT grader
+### OpenAI grader shape
 
-OpenAI documents one custom-grader contract, the `python` grader's
-`grade(sample, item) -> float`, and that grader runs with no network access.
-A hosted RFT job can't reach this worker. The route exists for a self-hosted
-loop that already speaks that shape.
+OpenAI's [graders guide](https://developers.openai.com/api/docs/guides/graders)
+and [reinforcement fine-tuning guide](https://developers.openai.com/api/docs/guides/reinforcement-fine-tuning)
+(read 2026-09-01) document six grader types: `string_check`,
+`text_similarity`, `score_model`, `label_model`, `python`, and `multi`. None
+takes a URL. The one custom contract is the `python` grader's
+`grade(sample, item) -> float`, and the guide says its uploaded code "will not
+have network access". So a hosted OpenAI RFT job can't call this worker. The
+guides also describe no tool endpoint that could carry a receipt into the
+sample: `sample` holds the model output (`output_text`, `output_json`,
+`output_tools`, `choices`) and `item` holds the training row, nothing else.
+OpenAI adds that it "is winding down the fine-tuning platform" and that new
+users can't access it.
+
+The route below is the local mirror of that contract, for a loop you host
+yourself that already speaks `grade(sample, item)`.
 
 ```bash
 curl -s -H "Authorization: Bearer $TOKEN" -H 'content-type: application/json' \
