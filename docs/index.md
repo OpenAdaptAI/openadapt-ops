@@ -36,12 +36,13 @@ which runs the clicks on this computer.
 ## Where OpenAdapt fits
 
 OpenAdapt is the governed last mile an agent calls when the next write has no
-API. A named human authors the program once. The calling agent operates it.
-The human returns for identity, effect, and judgment halt, then samples seals.
+API. A person or a local agent they watch demonstrates. A named human
+admits the program. The calling agent operates it. The human returns for
+identity, effect, and judgment halt, then samples seals.
 
 A strong first workflow has these traits:
 
-- A person can demonstrate the task from start to finish.
+- A person or a local agent they watch can demonstrate the task from start to finish.
 - The inputs are mostly structured and the business intent stays stable.
 - The application has no practical write API for the required step.
 - A wrong action has an operational, financial, or compliance cost.
@@ -164,8 +165,9 @@ report determine its outcome.
 
 -   [__Author a workflow__](get-started/first-workflow.md)
 
-    A named human captures one browser workflow, compiles it, runs it, and
-    inspects the report. Authority, not daily operator.
+    A person or a local agent they watch records one browser workflow.
+    A named human admits the compiled program and inspects the report.
+    Authority, not daily operator.
 
 -   [__Prepare a production workflow__](guides/qualify-a-workflow.md)
 

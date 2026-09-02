@@ -8,7 +8,7 @@ Canonical status: https://docs.openadapt.ai/production-lifecycle.json. The signe
 - [agents.txt](https://docs.openadapt.ai/agents.txt): MCP, skills, outcome vocabulary (`VERIFIED` / `HALTED` / `RECONCILIATION_REQUIRED`), who may resolve a halt
 - [Get started](https://docs.openadapt.ai/get-started/): Install with Desktop or `python -m pip install --upgrade openadapt`. First command after install: `openadapt flow tutorial`. That writes a VERIFIED receipt. `openadapt quickstart --break-it` is the halt demo. Tutorial is optional. Local coding agents can `claude mcp add openadapt` later. Never summarize halt as success. Older `/getting-started/` URLs and the `/start/` alias redirect here. The current CLI after install is `openadapt flow record`, `compile`, `replay`.
 - [Qualification evidence](https://docs.openadapt.ai/get-started/what-works-today/): Accepted substrate results, exact environments, and deployment boundaries
-- [Author a workflow](https://docs.openadapt.ai/get-started/first-workflow/): A named human records, compiles, lints, replays, and reads the report on your own web app. Authority, not daily operator.
+- [Author a workflow](https://docs.openadapt.ai/get-started/first-workflow/): A person or a local agent they watch records, compiles, lints, and replays. A named human admits and reads the report on your own web app. Authority, not daily operator.
 - [What you get](https://docs.openadapt.ai/get-started/what-you-get/): The workflow bundle, the run report, and what each artifact is for
 - [The Seal](https://docs.openadapt.ai/commercial/seal/): Signed proof of a verified, halted, or reconciling run. `openadapt-flow replay bundle --seal`. Public verify at `https://openadapt.ai/seals/{id}` (synthetic only)
 
