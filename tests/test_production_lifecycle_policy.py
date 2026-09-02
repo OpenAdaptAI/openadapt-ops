@@ -4,9 +4,12 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 SPEC = importlib.util.spec_from_file_location(
@@ -152,6 +155,51 @@ class ProductionLifecycleProjectionTests(unittest.TestCase):
             path.write_text(json.dumps(source))
             with self.assertRaisesRegex(MODULE.RenderError, "exact commit"):
                 MODULE.load_source(path)
+
+    def test_validator_python_uses_current_interpreter_when_imports_work(self) -> None:
+        probe = subprocess.CompletedProcess(
+            args=[], returncode=0, stdout="", stderr=""
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            tree = Path(directory)
+            with patch.object(MODULE.subprocess, "run", return_value=probe) as mocked:
+                self.assertEqual(
+                    MODULE._validator_python(tree, tree), sys.executable
+                )
+                mocked.assert_called_once()
+
+    def test_validator_python_refuses_when_deps_and_requirements_are_missing(
+        self,
+    ) -> None:
+        probe = subprocess.CompletedProcess(
+            args=[], returncode=1, stdout="", stderr="ModuleNotFoundError"
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            tree = Path(directory)
+            with patch.object(MODULE.subprocess, "run", return_value=probe):
+                with self.assertRaisesRegex(MODULE.RenderError, "cryptography"):
+                    MODULE._validator_python(tree, tree)
+
+    def test_validator_python_installs_pinned_requirements_when_imports_fail(
+        self,
+    ) -> None:
+        fail = subprocess.CompletedProcess(
+            args=[], returncode=1, stdout="", stderr="missing"
+        )
+        ok = subprocess.CompletedProcess(args=[], returncode=0, stdout="", stderr="")
+        with tempfile.TemporaryDirectory() as directory:
+            tree = Path(directory)
+            venv_home = tree / "venv-home"
+            (tree / "requirements").mkdir()
+            (tree / MODULE.PROFILE_REQUIREMENTS).write_text(
+                "cryptography==43.0.3\n", encoding="utf-8"
+            )
+            with patch.object(
+                MODULE.subprocess, "run", side_effect=[fail, ok, ok]
+            ) as mocked:
+                python = MODULE._validator_python(tree, venv_home)
+            self.assertEqual(python, str(venv_home / "venv" / "bin" / "python"))
+            self.assertEqual(mocked.call_count, 3)
 
     def test_source_requires_the_complete_evidence_registry_contract(self) -> None:
         for key in (

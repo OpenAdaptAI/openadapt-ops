@@ -37,6 +37,8 @@ HEX40 = re.compile(r"^[0-9a-f]{40}$")
 SHA256 = re.compile(r"^sha256:[0-9a-f]{64}$")
 MAX_SOURCE_BYTES = 2 * 1024 * 1024
 PROFILE_CLONE_URL = "https://github.com/OpenAdaptAI/.github.git"
+PROFILE_REQUIREMENTS = Path("requirements") / "profile-consistency.txt"
+_PROFILE_IMPORT_PROBE = "import cryptography, jsonschema, referencing"
 # Retained v1 public bound. v3 policy is until-revoked and has no day cap.
 RETAINED_PUBLIC_MAXIMUM_ADMISSION_DAYS = 30
 PUBLIC_TARGET_CONTRACT = {
@@ -341,30 +343,85 @@ def read_pinned_files(source: Mapping[str, Any], tree: Path) -> dict[str, bytes]
     return inputs
 
 
+def _run(
+    command: list[str],
+    *,
+    timeout: int,
+    cwd: str | None = None,
+    env: dict[str, str] | None = None,
+) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        command,
+        check=False,
+        capture_output=True,
+        text=True,
+        timeout=timeout,
+        cwd=cwd,
+        env=env,
+    )
+
+
+def _refuse_command(completed: subprocess.CompletedProcess[str], fallback: str) -> None:
+    detail = (completed.stderr or completed.stdout or fallback).strip()
+    last = detail.splitlines()[-1] if detail else fallback
+    raise RenderError(f"canonical Production lifecycle refused: {last}")
+
+
+def _validator_python(tree: Path, venv_home: Path) -> str:
+    """Return a Python that can import the pinned canonical validator deps."""
+
+    probe = _run([sys.executable, "-c", _PROFILE_IMPORT_PROBE], timeout=30)
+    if probe.returncode == 0:
+        return sys.executable
+    requirements = tree / PROFILE_REQUIREMENTS
+    if not requirements.is_file():
+        raise RenderError(
+            "canonical Production lifecycle refused: "
+            "ModuleNotFoundError: No module named 'cryptography'"
+        )
+    venv = venv_home / "venv"
+    created = _run([sys.executable, "-m", "venv", str(venv)], timeout=60)
+    if created.returncode != 0:
+        _refuse_command(created, "venv creation failed")
+    bin_dir = "Scripts" if os.name == "nt" else "bin"
+    python = venv / bin_dir / ("python.exe" if os.name == "nt" else "python")
+    print(
+        "Installing pinned profile validator dependencies from the source tree.",
+        file=sys.stderr,
+    )
+    installed = _run(
+        [
+            str(python),
+            "-m",
+            "pip",
+            "install",
+            "--disable-pip-version-check",
+            "--no-input",
+            "--requirement",
+            str(requirements),
+        ],
+        timeout=180,
+    )
+    if installed.returncode != 0:
+        _refuse_command(installed, "profile requirement install failed")
+    return str(python)
+
+
 def validate_tree(tree: Path) -> None:
     """Run the exact canonical validator from the materialized source tree."""
 
     environment = dict(os.environ)
     environment["PYTHONPYCACHEPREFIX"] = str(tree / ".pycache")
-    completed = subprocess.run(
-        [
-            sys.executable,
-            str(tree / EXPECTED_PATHS["validator"]),
-            "--root",
-            str(tree),
-        ],
-        check=False,
-        capture_output=True,
-        text=True,
-        timeout=120,
-        env=environment,
-        cwd=str(tree),
-    )
-    if completed.returncode != 0:
-        detail = (completed.stderr or completed.stdout or "validation failed").strip()
-        raise RenderError(
-            f"canonical Production lifecycle refused: {detail.splitlines()[-1]}"
+    with tempfile.TemporaryDirectory(prefix="openadapt-validator-venv-") as venv_home:
+        python = _validator_python(tree, Path(venv_home))
+        completed = _run(
+            [python, str(tree / EXPECTED_PATHS["validator"]), "--root", str(tree)],
+            timeout=120,
+            cwd=str(tree),
+            env=environment,
         )
+    if completed.returncode != 0:
+        _refuse_command(completed, "validation failed")
 
 
 def validate_inputs(inputs: Mapping[str, bytes]) -> None:
