@@ -72,9 +72,9 @@ at tier 0 does not validate; the validator raises
 
 ## Wire a trainer
 
-The reward worker is `openadapt-flow serve-reward` (as of openadapt-flow#452).
-It runs inside the customer network, reads the system of record once after
-each episode, and signs a `RewardEvidenceReceiptV1` with a local Ed25519 key under
+The reward worker is `openadapt-flow serve-reward`. It runs inside the
+customer network, reads the system of record once after each episode, and
+signs a `RewardEvidenceReceiptV1` with a local Ed25519 key under
 `~/.openadapt/reward-ref/`. A trainer submits an episode descriptor and gets
 the receipt back. It never gets a credential for the store.
 
@@ -267,8 +267,6 @@ registered in the public
 (tag `prereg-certified-reward-rl-2026-08-25`).
 
 ## Run it locally with MockMed
-
-The worker and its `--seed-mockmed` fixtures are as of openadapt-flow#452.
 
 ```bash
 pip install 'openadapt-flow[reward]'
