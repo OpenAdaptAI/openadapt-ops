@@ -143,3 +143,4 @@ cheap, the run still has to prove identity and effect, or halt.
 
 Partner API contract: [Integrate OpenAdapt Execute](execute-api.md).
 OEM embedding: [OpenAdapt Execute private-pilot guide](oem-brief.md).
+Train against it: [Seal as an RL reward](seal-reward.md).
