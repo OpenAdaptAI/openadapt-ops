@@ -39,7 +39,7 @@ MAX_SOURCE_BYTES = 2 * 1024 * 1024
 PROFILE_CLONE_URL = "https://github.com/OpenAdaptAI/.github.git"
 PROFILE_REQUIREMENTS = Path("requirements") / "profile-consistency.txt"
 _PROFILE_IMPORT_PROBE = "import cryptography, jsonschema, referencing"
-# Retained v1 public bound. v3 policy is until-revoked and has no day cap.
+# Retained v1 public bound. The v3 policy names its release bound separately.
 RETAINED_PUBLIC_MAXIMUM_ADMISSION_DAYS = 30
 PUBLIC_TARGET_CONTRACT = {
     "agent": {
@@ -569,7 +569,9 @@ def render(
         raise RenderError(
             f"canonical admissions contain unknown targets: {sorted(by_target)}"
         )
-    maximum_admission_days = policy.get("maximum_admission_days")
+    maximum_admission_days = policy.get("maximum_release_admission_days")
+    if maximum_admission_days is None:
+        maximum_admission_days = policy.get("maximum_admission_days")
     if maximum_admission_days is None:
         maximum_admission_days = RETAINED_PUBLIC_MAXIMUM_ADMISSION_DAYS
     return {
