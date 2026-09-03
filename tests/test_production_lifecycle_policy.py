@@ -114,7 +114,7 @@ class ProductionLifecycleProjectionTests(unittest.TestCase):
             target["latest_admission"]["admission_id"], "production:flow:2"
         )
 
-    def test_committed_projection_admits_flow_only_and_is_schema_bound(self) -> None:
+    def test_committed_projection_admits_all_seven_and_is_schema_bound(self) -> None:
         output = json.loads(
             (ROOT / "docs" / "production-lifecycle.json").read_text(encoding="utf-8")
         )
@@ -134,15 +134,27 @@ class ProductionLifecycleProjectionTests(unittest.TestCase):
         self.assertEqual(output["source"], source)
         self.assertEqual(len(output["targets"]), 7)
         by_id = {target["id"]: target for target in output["targets"]}
-        flow = by_id["flow"]
-        self.assertEqual(flow["latest_admission"]["release"]["version"], "1.34.0")
-        self.assertEqual(
-            flow["latest_admission"]["evidence_class"], "remote-safe-synthetic"
-        )
-        self.assertEqual(len(flow["admission_history"]), 1)
-        for target_id in ("agent", "capture", "cloud", "desktop", "docs", "openadapt"):
-            self.assertIsNone(by_id[target_id]["latest_admission"])
-            self.assertEqual(by_id[target_id]["admission_history"], [])
+        expected_versions = {
+            "agent": "2.0.1",
+            "capture": "1.2.2",
+            "desktop": "0.16.0",
+            "flow": "1.34.0",
+            "openadapt": "1.16.0",
+        }
+        for target_id, version in expected_versions.items():
+            target = by_id[target_id]
+            self.assertEqual(target["latest_admission"]["release"]["version"], version)
+            self.assertEqual(
+                target["latest_admission"]["evidence_class"], "remote-safe-synthetic"
+            )
+            self.assertEqual(len(target["admission_history"]), 1)
+        for target_id in ("cloud", "docs"):
+            target = by_id[target_id]
+            self.assertEqual(target["latest_admission"]["release"]["kind"], "deployment")
+            self.assertEqual(
+                target["latest_admission"]["evidence_class"], "remote-safe-synthetic"
+            )
+            self.assertEqual(len(target["admission_history"]), 1)
 
     def test_source_requires_exact_commit_bound_inventory(self) -> None:
         source = _source()
