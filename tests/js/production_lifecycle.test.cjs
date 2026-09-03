@@ -704,3 +704,166 @@ test("a timestamped v2 expiry is not until-revoked", () => {
   target.latest_admission.expires_at = "2026-09-09T18:24:25Z";
   assert.equal(lifecycle.deriveTarget(target, committed, now), null);
 });
+
+const V2_SPEC = {
+  agent: { claimScope: "production_agent", releaseKind: "package" },
+  capture: { claimScope: "production_capture", releaseKind: "package" },
+  cloud: { claimScope: "production_cloud", releaseKind: "deployment" },
+  desktop: { claimScope: "production_desktop", releaseKind: "package" },
+  docs: { claimScope: "production_docs", releaseKind: "deployment" },
+  flow: { claimScope: "production_flow", releaseKind: "package" },
+  openadapt: { claimScope: "production_openadapt", releaseKind: "package" },
+};
+
+function v2Admission(targetId, overrides = {}) {
+  const spec = V2_SPEC[targetId];
+  const release =
+    spec.releaseKind === "package"
+      ? { kind: "package", version: "1.2.3" }
+      : { kind: "deployment", deployment_id: `${targetId}-deploy` };
+  return {
+    target: targetId,
+    claim_scope: spec.claimScope,
+    verdict: "accepted",
+    expires_at: null,
+    revoked_at: null,
+    evidence_class: "remote-safe-synthetic",
+    issued_at: "2026-09-02T18:24:25Z",
+    release_identity: {
+      schema_version: "openadapt.monotonic-production-release/v1",
+      channel: "production",
+      sequence: 1,
+      previous_admission_sha256: null,
+    },
+    release,
+    ...overrides,
+  };
+}
+
+function objectRef(index) {
+  return {
+    schema_version: "openadapt.production-evidence-object-reference/v2",
+    kind: "qualification-release",
+    object_path: `production-evidence/objects/sha256/${index}/obj.qualification-release.json`,
+  };
+}
+
+function makeUntilRevokedFixture(overrides = {}) {
+  const histories = Object.fromEntries(
+    lifecycle.TARGET_IDS.map((id) => [id, [v2Admission(id, overrides.admissions?.[id])]]),
+  );
+  const fixture = makeFixture(histories);
+  const policy = {
+    admission_validity: overrides.admissionValidity ?? "until_revoked",
+  };
+  const policyBytes = jsonBytes(policy);
+  const live = {
+    $schema: "schemas/production-lifecycle-admissions.schema.json",
+    schema_version: "openadapt.production-lifecycle-admissions/v1",
+    policy_sha256: overrides.issuedPolicySha256 ?? `sha256:${"a".repeat(64)}`,
+    admissions: overrides.liveAdmissions ?? lifecycle.TARGET_IDS.map((_, index) => objectRef(index)),
+  };
+  const bytes = jsonBytes(live);
+  fixture.live = live;
+  fixture.bytes = bytes;
+  fixture.policyBytes = policyBytes;
+  fixture.projection.source.files.admissions.sha256 = digest(bytes);
+  fixture.projection.source.files.policy.sha256 = digest(policyBytes);
+  return fixture;
+}
+
+function fetchUntilRevoked(fixture, options = {}) {
+  return async (url) => {
+    if (options.unavailable) return { ok: false };
+    if (url.startsWith(`${lifecycle.PROJECTION_URL}?openadapt_lifecycle_request=`)) {
+      return { ok: true, json: async () => structuredClone(fixture.projection) };
+    }
+    if (url.startsWith(`${lifecycle.ADMISSIONS_URL}?openadapt_lifecycle_request=`)) {
+      return byteResponse(options.bytes ?? fixture.bytes);
+    }
+    const policyUrl = fixture.projection.source.files.policy.url;
+    if (url === policyUrl || url.startsWith(`${policyUrl}?`)) {
+      if (options.policyUnavailable) return { ok: false };
+      return byteResponse(options.policyBytes ?? fixture.policyBytes);
+    }
+    return { ok: false };
+  };
+}
+
+const AFTER_ISSUE = Date.parse("2026-09-02T20:00:00Z");
+
+test("until-revoked object-refs keep retained policy hashes active", async () => {
+  const fixture = makeUntilRevokedFixture();
+  const state = await lifecycle.load(fetchUntilRevoked(fixture), AFTER_ISSUE);
+
+  assert.ok(state?.activeTargets instanceof Map);
+  assert.deepEqual([...state.activeTargets.keys()].sort(), lifecycle.TARGET_IDS);
+  assert.equal(state.activeTargets.get("flow").untilRevoked, true);
+  assert.equal(state.activeTargets.get("flow").releaseLabel, "release 1.2.3");
+  assert.equal(state.defaultInstallVerified, true);
+});
+
+test("until-revoked policy mismatch fails closed without a parseable policy", async () => {
+  const fixture = makeUntilRevokedFixture();
+  assert.equal(
+    await lifecycle.load(
+      fetchUntilRevoked(fixture, { policyUnavailable: true }),
+      AFTER_ISSUE,
+    ),
+    null,
+  );
+
+  const unparseable = Buffer.from("not-json");
+  fixture.projection.source.files.policy.sha256 = digest(unparseable);
+  assert.equal(
+    await lifecycle.load(
+      fetchUntilRevoked(fixture, { policyBytes: unparseable }),
+      AFTER_ISSUE,
+    ),
+    null,
+  );
+
+  const bounded = makeUntilRevokedFixture({ admissionValidity: "bounded" });
+  assert.equal(await lifecycle.load(fetchUntilRevoked(bounded), AFTER_ISSUE), null);
+});
+
+test("until-revoked mismatch fails closed on expiry, revocation, or identity drift", async () => {
+  const expired = makeUntilRevokedFixture({
+    admissions: { flow: { expires_at: "2026-09-09T18:24:25Z" } },
+  });
+  assert.equal(await lifecycle.load(fetchUntilRevoked(expired), AFTER_ISSUE), null);
+
+  const revoked = makeUntilRevokedFixture({
+    admissions: { flow: { revoked_at: "2026-09-02T19:00:00Z" } },
+  });
+  assert.equal(await lifecycle.load(fetchUntilRevoked(revoked), AFTER_ISSUE), null);
+
+  const drifted = makeUntilRevokedFixture({
+    admissions: { flow: { claim_scope: "production_openadapt" } },
+  });
+  const driftedState = await lifecycle.load(fetchUntilRevoked(drifted), AFTER_ISSUE);
+  assert.equal(driftedState.activeTargets.has("flow"), false);
+  assert.equal(driftedState.activeTargets.size, 6);
+  assert.equal(driftedState.defaultInstallVerified, false);
+});
+
+test("object-ref rows are not product targets and unknown rows fail closed", async () => {
+  const fixture = makeUntilRevokedFixture({
+    liveAdmissions: [
+      ...lifecycle.TARGET_IDS.map((_, index) => objectRef(index)),
+      { kind: "not-a-target", object_path: "nope.json" },
+    ],
+  });
+  assert.equal(await lifecycle.load(fetchUntilRevoked(fixture), AFTER_ISSUE), null);
+
+  const valid = makeUntilRevokedFixture();
+  assert.equal(
+    lifecycle.validateLiveAdmissions(
+      valid.live,
+      valid.projection,
+      lifecycle.validateProjection(valid.projection),
+      { admission_validity: "until_revoked" },
+    ),
+    true,
+  );
+});

@@ -222,25 +222,65 @@
     return targets;
   }
 
-  function validateLiveAdmissions(value, projection, targets) {
+  function isObjectReferenceRow(admission) {
+    return (
+      isObject(admission) &&
+      admission.kind === "qualification-release" &&
+      typeof admission.object_path === "string" &&
+      typeof admission.target !== "string"
+    );
+  }
+
+  function latestAdmissionsAreUntilRevoked(targets) {
+    for (const targetId of TARGET_IDS) {
+      const admission = targets.get(targetId)?.latest_admission;
+      if (
+        !isObject(admission) ||
+        admission.expires_at !== null ||
+        admission.revoked_at != null
+      ) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  function issuedPolicyBindsOrUntilRevoked(value, projection, targets, policy) {
+    if (!DIGEST.test(value.policy_sha256)) return false;
+    if (value.policy_sha256 === projection.source.files.policy.sha256) return true;
+    return (
+      isObject(policy) &&
+      policy.admission_validity === "until_revoked" &&
+      latestAdmissionsAreUntilRevoked(targets)
+    );
+  }
+
+  function validateLiveAdmissions(value, projection, targets, policy = null) {
     if (
       !hasExactKeys(value, ["$schema", "schema_version", "policy_sha256", "admissions"]) ||
       value.$schema !== "schemas/production-lifecycle-admissions.schema.json" ||
       value.schema_version !== "openadapt.production-lifecycle-admissions/v1" ||
-      value.policy_sha256 !== projection.source.files.policy.sha256 ||
-      !Array.isArray(value.admissions)
+      !Array.isArray(value.admissions) ||
+      !issuedPolicyBindsOrUntilRevoked(value, projection, targets, policy)
     ) {
       return false;
     }
     const byTarget = new Map(TARGET_IDS.map((id) => [id, []]));
+    let objectRefCount = 0;
     for (const admission of value.admissions) {
-      if (!isObject(admission) || !byTarget.has(admission.target)) return false;
+      if (!isObject(admission)) return false;
+      if (isObjectReferenceRow(admission)) {
+        objectRefCount += 1;
+        continue;
+      }
+      if (!byTarget.has(admission.target)) return false;
       byTarget.get(admission.target).push(admission);
     }
     for (const targetId of TARGET_IDS) {
       const live = byTarget
         .get(targetId)
         .sort((left, right) => left?.release_identity?.sequence - right?.release_identity?.sequence);
+      if (live.length === 0 && objectRefCount > 0) continue;
       if (!sameJson(live, targets.get(targetId).admission_history)) return false;
     }
     return true;
@@ -294,6 +334,7 @@
       summaryUrl: null,
       evidence: { class: admission.evidence_class },
       release,
+      untilRevoked: true,
     });
   }
 
@@ -624,7 +665,28 @@
       const expectedDigest = projection.source.files.admissions.sha256;
       if ((await sha256(admissionsBytes)) !== expectedDigest) return null;
       const liveAdmissions = JSON.parse(new TextDecoder().decode(admissionsBytes));
-      if (!validateLiveAdmissions(liveAdmissions, projection, targets)) return null;
+      let policy = null;
+      if (liveAdmissions.policy_sha256 !== projection.source.files.policy.sha256) {
+        const policyItem = projection.source.files.policy;
+        if (
+          !isObject(policyItem) ||
+          !isHttpsUrl(policyItem.url) ||
+          !DIGEST.test(policyItem.sha256)
+        ) {
+          return null;
+        }
+        const policyBytes = await fetchBytes(fetchImpl, policyItem.url, now);
+        if (!policyBytes || (await sha256(policyBytes)) !== policyItem.sha256) {
+          return null;
+        }
+        policy = JSON.parse(new TextDecoder().decode(policyBytes));
+        if (!isObject(policy) || typeof policy.admission_validity !== "string") {
+          return null;
+        }
+      }
+      if (!validateLiveAdmissions(liveAdmissions, projection, targets, policy)) {
+        return null;
+      }
 
       const candidates = new Map();
       for (const [targetId, target] of targets) {
@@ -636,7 +698,9 @@
         [...candidates.entries()].map(async ([targetId, active]) => [
           targetId,
           active,
-          await verifyTargetAuthorities(active, fetchImpl, now),
+          active.untilRevoked === true
+            ? true
+            : await verifyTargetAuthorities(active, fetchImpl, now),
         ]),
       );
       const activeTargets = new Map(
@@ -660,6 +724,7 @@
       return;
     }
     element.append("Production: ", active.releaseLabel, ". ");
+    if (!isHttpsUrl(active.summaryUrl)) return;
     const link = element.ownerDocument.createElement("a");
     link.href = active.summaryUrl;
     link.rel = "noopener noreferrer";
