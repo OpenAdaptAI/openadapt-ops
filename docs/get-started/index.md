@@ -1,16 +1,18 @@
 ---
 description: >-
-  Install OpenAdapt on this computer with Desktop or pip. Show the task
-  once; it becomes a program your agent can run. Tutorial is optional.
+  Install OpenAdapt on this computer with Desktop or pip. You can show
+  the task, or a local agent can click while you watch. A person admits.
+  Tutorial is optional.
 ---
 
 # Get started
 
 You want an agent to do a job on this computer. Keep that job here.
 
-You show the clicks once. OpenAdapt turns that into a program on this
-computer, and later an agent runs it and checks the work landed. Healthy
-repeats don't send your data to a model.
+You can show the clicks, or a local agent can click while you watch.
+A person admits the compiled program. OpenAdapt turns that into a
+program on this computer, and later an agent runs it and checks the
+work landed. Healthy repeats don't send your data to a model.
 
 OpenAdapt is a compiler. The chat is the IDE, and credentials stay on this
 computer. The core is free forever under MIT.

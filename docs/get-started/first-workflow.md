@@ -8,8 +8,9 @@ first_write_admission: qualification_required
 
 # Author a workflow
 
-This is authority work. A named human demonstrates the task once. An agent
-operates the compiled program later.
+This is authority work. A person or a local agent they watch demonstrates
+the task once. A named human admits the compiled program. An agent
+operates it later.
 
 Choose one small real task that doesn't change business data. A read-only lookup
 against test data works well. Open a known test record, then stop when a field
