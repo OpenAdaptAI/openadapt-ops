@@ -17,7 +17,7 @@ assert SPEC is not None and SPEC.loader is not None
 MODULE = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(MODULE)
 
-PINNED_COMMIT = "078db7a9399702d0b725676e4a427b1b52fb19ff"
+PINNED_COMMIT = "34207373d1e21de90772e0343c1abfbf477483e0"
 PINNED_LEDGER_SHA256 = (
     "sha256:fa3b4cc4ed0ab62d8d4ff5705495ec0a82f0572654617a152fd9675818684150"
 )
@@ -42,7 +42,7 @@ def _source() -> dict:
 
 
 class ProductionWorkflowAdmissionsProjectionTests(unittest.TestCase):
-    def test_committed_projection_lists_seven_inactive_synthetic_records(self) -> None:
+    def test_committed_projection_lists_seven_synthetic_admissions(self) -> None:
         source = json.loads(
             (ROOT / "production-workflow-admissions-source.json").read_text(
                 encoding="utf-8"
@@ -154,13 +154,15 @@ class ProductionWorkflowAdmissionsCopyTests(unittest.TestCase):
             "workflow version",
             text,
         )
-        self.assertIn("no target is actively admitted", text)
-        self.assertIn("null expiry", text)
+        self.assertIn("seven active target admissions", text)
+        self.assertIn("seven active synthetic admissions", text)
         self.assertIn("0.0.0-synthetic", text)
         self.assertIn("remote-safe-synthetic", text)
         self.assertIn("production-workflow-admissions.json", text)
         self.assertIn(PINNED_COMMIT, text)
-        self.assertIn("aren't customer workflows", text)
+        self.assertIn("isn't a customer workflow", text)
+        self.assertNotIn("no target is actively admitted", text)
+        self.assertNotIn("null expiry", text)
         self.assertNotIn("customer job is admitted", text.lower())
         self.assertNotIn("MockMed production_acceptance", text)
 
@@ -172,9 +174,11 @@ class ProductionWorkflowAdmissionsCopyTests(unittest.TestCase):
         self.assertIn("0.0.0-synthetic", text)
         self.assertIn("production-workflow-admissions.json", text)
         self.assertIn(PINNED_COMMIT, text)
-        self.assertIn("aren't customer workflows", collapsed)
-        self.assertIn("none is actively admitted", collapsed)
+        self.assertIn("isn't a customer workflow", collapsed)
+        self.assertIn("seven active synthetic admissions", collapsed)
         self.assertIn("seven Production targets", text)
+        self.assertNotIn("none is actively admitted", collapsed)
+        self.assertNotIn("No target is actively admitted", text)
         self.assertNotIn("MockMed production_acceptance", text)
 
 

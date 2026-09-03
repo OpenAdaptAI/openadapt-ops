@@ -246,27 +246,23 @@
     return true;
   }
 
-  function deriveTargetV2(target, projection, now) {
+  function deriveTargetV2(target, now) {
     const spec = V2_TARGETS[target.id];
     const admission = target.latest_admission;
     if (!spec || !isObject(admission)) return null;
     const identity = admission.release_identity;
     const release = admission.release;
     const issuedAt = parseTimestamp(admission.issued_at);
-    const expiresAt = parseTimestamp(admission.expires_at);
     if (
       admission.target !== target.id ||
       admission.claim_scope !== spec.claimScope ||
       admission.verdict !== "accepted" ||
-      expiresAt === null ||
+      admission.expires_at !== null ||
       admission.revoked_at != null ||
       typeof admission.evidence_class !== "string" ||
       admission.evidence_class.length === 0 ||
       issuedAt === null ||
       issuedAt > now ||
-      expiresAt <= now ||
-      expiresAt <= issuedAt ||
-      expiresAt - issuedAt > projection.maximum_admission_days * 86400000 ||
       !isObject(identity) ||
       identity.schema_version !== "openadapt.monotonic-production-release/v1" ||
       identity.channel !== "production" ||
@@ -302,8 +298,8 @@
   }
 
   function deriveTarget(target, projection, now = Date.now()) {
-    const currentV2 = deriveTargetV2(target, projection, now);
-    if (currentV2) return currentV2;
+    const untilRevoked = deriveTargetV2(target, now);
+    if (untilRevoked) return untilRevoked;
     const admission = target.latest_admission;
     if (!isObject(admission)) return null;
     const [claimScope, releaseKind] = EXPECTED_TARGETS[target.id];
