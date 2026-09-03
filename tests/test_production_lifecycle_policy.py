@@ -132,7 +132,7 @@ class ProductionLifecycleProjectionTests(unittest.TestCase):
             (ROOT / "production-lifecycle-source.json").read_text(encoding="utf-8")
         )
         self.assertEqual(output["source"], source)
-        self.assertEqual(output["policy_revision"], 5)
+        self.assertEqual(output["policy_revision"], 7)
         self.assertEqual(len(output["targets"]), 7)
         by_id = {target["id"]: target for target in output["targets"]}
         expected_versions = {
