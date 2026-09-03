@@ -75,7 +75,9 @@ uv run pytest tests/ -q
 
 - **`.github/workflows/ci.yml`** runs on every pull request and on push to
   `main`. It installs locked dependencies, runs the test suite, validates the
-  documentation contract, and builds the site with `mkdocs build --strict`.
+  documentation contract, builds the site with `mkdocs build --strict`, and
+  checks both tracked source and the complete generated site against the public
+  source policy.
 - **`.github/workflows/sync.yml`** keeps generated documentation reviewed and
   publishes the site to GitHub Pages. A sub-repository dispatch, the weekly
   schedule, or a manual run regenerates the cross-repository pages from current

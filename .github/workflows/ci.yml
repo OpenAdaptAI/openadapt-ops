@@ -37,6 +37,9 @@ jobs:
       - name: Install locked dependencies
         run: uv sync --locked --extra dev
 
+      - name: Check the public source boundary
+        run: uv run python scripts/check_source_boundary.py
+
       - name: Run tests
         run: uv run pytest tests/ -q
 
@@ -51,6 +54,9 @@ jobs:
 
       - name: Build canonical documentation in strict mode
         run: uv run mkdocs build --strict
+
+      - name: Check the generated site boundary
+        run: uv run python scripts/check_source_boundary.py --site site
 
   design-tokens:
     name: Vendored design tokens match openadapt-web
