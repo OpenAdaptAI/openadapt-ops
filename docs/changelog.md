@@ -57,6 +57,8 @@
 
 ## openadapt-evals
 
+- **[v0.97.0](https://github.com/OpenAdaptAI/openadapt-evals/releases/tag/v0.97.0)** (2026-09-03)
+  What's Changed
 - **[v0.96.1](https://github.com/OpenAdaptAI/openadapt-evals/releases/tag/v0.96.1)** (2026-09-02)
   What's Changed
 - **[v0.96.0](https://github.com/OpenAdaptAI/openadapt-evals/releases/tag/v0.96.0)** (2026-09-01)
@@ -65,8 +67,6 @@
   What's Changed
 - **[v0.93.0](https://github.com/OpenAdaptAI/openadapt-evals/releases/tag/v0.93.0)** (2026-08-26)
   What's Changed
-- **[v0.92.0](https://github.com/OpenAdaptAI/openadapt-evals/releases/tag/v0.92.0)** (2026-08-22)
-  Features
 
 ## openadapt-capture
 

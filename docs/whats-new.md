@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-09-03 01:45 UTC*
+> *Last updated: 2026-09-03 20:17 UTC*
 
 
 
@@ -47,6 +47,8 @@
 ## openadapt-flow
 
 
+- [fix(release): qualify the exact candidate from one dispatch](https://github.com/OpenAdaptAI/openadapt-flow/pull/458) (#458) — merged 
+
 - [fix(reward): refuse a bundle whose required effects ignore an identity key](https://github.com/OpenAdaptAI/openadapt-flow/pull/456) (#456) — merged 
 
 - [chore: release 1.35.0](https://github.com/OpenAdaptAI/openadapt-flow/pull/454) (#454) — merged 
@@ -85,12 +87,12 @@
 
 - [feat(process): sequence independently admitted capabilities](https://github.com/OpenAdaptAI/openadapt-flow/pull/434) (#434) — merged 
 
-- [feat(visualize): render composed parents without merging ProgramGraphs](https://github.com/OpenAdaptAI/openadapt-flow/pull/433) (#433) — merged 
-
 
 
 ## openadapt-desktop
 
+
+- [docs: state the current native release boundary](https://github.com/OpenAdaptAI/openadapt-desktop/pull/158) (#158) — merged 
 
 - [docs: point the README at flow tutorial, not quickstart](https://github.com/OpenAdaptAI/openadapt-desktop/pull/157) (#157) — merged 
 
@@ -130,12 +132,12 @@
 
 - [Guide the first real workflow run](https://github.com/OpenAdaptAI/openadapt-desktop/pull/135) (#135) — merged 
 
-- [feat: route hosted runs through Flow's governed adapter](https://github.com/OpenAdaptAI/openadapt-desktop/pull/130) (#130) — merged 
-
 
 
 ## openadapt-agent
 
+
+- [copy: point Production claims at both live ledgers](https://github.com/OpenAdaptAI/openadapt-agent/pull/49) (#49) — merged 
 
 - [copy: two authoring modes, person-click and watch-and-admit](https://github.com/OpenAdaptAI/openadapt-agent/pull/48) (#48) — merged 
 
@@ -179,6 +181,12 @@
 ## openadapt-evals
 
 
+- [chore(prime): pin the environment to the release that carries wrong_record](https://github.com/OpenAdaptAI/openadapt-evals/pull/341) (#341) — merged 
+
+- [chore(release): prepare 0.97.0](https://github.com/OpenAdaptAI/openadapt-evals/pull/340) (#340) — merged 
+
+- [fix: bind Evals releases to exact CI and notices](https://github.com/OpenAdaptAI/openadapt-evals/pull/339) (#339) — merged 
+
 - [feat(extradup): add the wrong_record fault family and resolve the record by identity](https://github.com/OpenAdaptAI/openadapt-evals/pull/337) (#337) — merged 
 
 - [feat(extradup): add kill-scan CLI for the frozen ExtraDup corpus](https://github.com/OpenAdaptAI/openadapt-evals/pull/336) (#336) — merged 
@@ -213,16 +221,12 @@
 
 - [feat: ExtraDup kit against MockMed and local OpenEMR](https://github.com/OpenAdaptAI/openadapt-evals/pull/320) (#320) — merged 
 
-- [feat(evidence): publish the Flow 1.34.0 comparison; supersede 1.33.0](https://github.com/OpenAdaptAI/openadapt-evals/pull/319) (#319) — merged 
-
-- [docs: rewrite README for a human reader](https://github.com/OpenAdaptAI/openadapt-evals/pull/318) (#318) — merged 
-
-- [fix(evidence): follow the verified-certificate retention receipt](https://github.com/OpenAdaptAI/openadapt-evals/pull/317) (#317) — merged 
-
 
 
 ## openadapt-capture
 
+
+- [fix(release): prepare Capture 1.3.0 for Production qualification](https://github.com/OpenAdaptAI/openadapt-capture/pull/132) (#132) — merged 
 
 - [feat(capture): window_tree observations and authoring projector](https://github.com/OpenAdaptAI/openadapt-capture/pull/131) (#131) — merged 
 
@@ -261,8 +265,6 @@
 - [chore(release): prepare 1.2.3](https://github.com/OpenAdaptAI/openadapt-capture/pull/113) (#113) — merged 
 
 - [fix(ci): allowlist the published extension key by exact value](https://github.com/OpenAdaptAI/openadapt-capture/pull/112) (#112) — merged 
-
-- [docs: rewrite the README and move the deep contracts into docs/](https://github.com/OpenAdaptAI/openadapt-capture/pull/111) (#111) — merged 
 
 
 
