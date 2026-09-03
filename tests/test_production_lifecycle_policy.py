@@ -132,6 +132,7 @@ class ProductionLifecycleProjectionTests(unittest.TestCase):
             (ROOT / "production-lifecycle-source.json").read_text(encoding="utf-8")
         )
         self.assertEqual(output["source"], source)
+        self.assertEqual(output["policy_revision"], 5)
         self.assertEqual(len(output["targets"]), 7)
         by_id = {target["id"]: target for target in output["targets"]}
         expected_versions = {
@@ -147,6 +148,8 @@ class ProductionLifecycleProjectionTests(unittest.TestCase):
             self.assertEqual(
                 target["latest_admission"]["evidence_class"], "remote-safe-synthetic"
             )
+            self.assertEqual(target["latest_admission"]["verdict"], "accepted")
+            self.assertIsNone(target["latest_admission"]["expires_at"])
             self.assertEqual(len(target["admission_history"]), 1)
         for target_id in ("cloud", "docs"):
             target = by_id[target_id]
@@ -154,6 +157,8 @@ class ProductionLifecycleProjectionTests(unittest.TestCase):
             self.assertEqual(
                 target["latest_admission"]["evidence_class"], "remote-safe-synthetic"
             )
+            self.assertEqual(target["latest_admission"]["verdict"], "accepted")
+            self.assertIsNone(target["latest_admission"]["expires_at"])
             self.assertEqual(len(target["admission_history"]), 1)
 
     def test_source_requires_exact_commit_bound_inventory(self) -> None:

@@ -651,7 +651,7 @@ test("the ecosystem page uses the runtime target fallback label", () => {
 
 });
 
-test("the committed admission-free projection keeps every label neutral", async () => {
+test("the committed ledger is not yet active before issued_at", () => {
   const committed = require("../../docs/production-lifecycle.json");
   const targets = lifecycle.validateProjection(committed);
 
@@ -659,4 +659,48 @@ test("the committed admission-free projection keeps every label neutral", async 
   for (const target of targets.values()) {
     assert.equal(lifecycle.deriveTarget(target, committed, NOW), null);
   }
+});
+
+test("the committed ledger admits all seven until-revoked targets", () => {
+  const committed = require("../../docs/production-lifecycle.json");
+  const targets = lifecycle.validateProjection(committed);
+  const afterIssue = Date.parse("2026-09-02T20:00:00Z");
+  const afterThirtyDays = Date.parse("2026-12-01T00:00:00Z");
+  const expectedVersion = {
+    agent: "2.0.1",
+    capture: "1.2.2",
+    desktop: "0.16.0",
+    flow: "1.34.0",
+    openadapt: "1.16.0",
+  };
+
+  assert.ok(targets instanceof Map);
+  assert.equal(targets.size, 7);
+  for (const [id, target] of targets) {
+    assert.equal(target.latest_admission.expires_at, null);
+    assert.equal(target.latest_admission.verdict, "accepted");
+    const derived = lifecycle.deriveTarget(target, committed, afterIssue);
+    assert.ok(derived, `${id} should derive an until-revoked admission`);
+    assert.ok(
+      lifecycle.deriveTarget(target, committed, afterThirtyDays),
+      `${id} must stay active past the retained 30-day v1 window`,
+    );
+    if (expectedVersion[id]) {
+      assert.equal(derived.releaseVersion, expectedVersion[id]);
+    } else {
+      assert.equal(target.latest_admission.release.kind, "deployment");
+    }
+  }
+});
+
+test("a timestamped v2 expiry is not until-revoked", () => {
+  const committed = require("../../docs/production-lifecycle.json");
+  const target = structuredClone(
+    committed.targets.find((candidate) => candidate.id === "flow"),
+  );
+  const now = Date.parse("2026-09-03T12:00:00Z");
+
+  assert.ok(lifecycle.deriveTarget(target, committed, now));
+  target.latest_admission.expires_at = "2026-09-09T18:24:25Z";
+  assert.equal(lifecycle.deriveTarget(target, committed, now), null);
 });

@@ -155,11 +155,14 @@ class ProductionWorkflowAdmissionsCopyTests(unittest.TestCase):
             text,
         )
         self.assertIn("seven active target admissions", text)
+        self.assertIn("seven active synthetic admissions", text)
         self.assertIn("0.0.0-synthetic", text)
         self.assertIn("remote-safe-synthetic", text)
         self.assertIn("production-workflow-admissions.json", text)
         self.assertIn(PINNED_COMMIT, text)
         self.assertIn("isn't a customer workflow", text)
+        self.assertNotIn("no target is actively admitted", text)
+        self.assertNotIn("null expiry", text)
         self.assertNotIn("customer job is admitted", text.lower())
         self.assertNotIn("MockMed production_acceptance", text)
 
@@ -172,7 +175,10 @@ class ProductionWorkflowAdmissionsCopyTests(unittest.TestCase):
         self.assertIn("production-workflow-admissions.json", text)
         self.assertIn(PINNED_COMMIT, text)
         self.assertIn("isn't a customer workflow", collapsed)
+        self.assertIn("seven active synthetic admissions", collapsed)
         self.assertIn("seven Production targets", text)
+        self.assertNotIn("none is actively admitted", collapsed)
+        self.assertNotIn("No target is actively admitted", text)
         self.assertNotIn("MockMed production_acceptance", text)
 
 
