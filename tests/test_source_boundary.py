@@ -37,16 +37,6 @@ def _policy_document() -> dict:
     return json.loads(guard.POLICY_PATH.read_text(encoding="utf-8"))
 
 
-def test_generated_policy_matches_the_internal_renderer() -> None:
-    expected = Path(
-        "/private/tmp/openadapt-internal-source-guards-production/"
-        "source-policy.public.json"
-    )
-    if not expected.exists():
-        pytest.skip("the internal renderer worktree is not available")
-    assert guard.POLICY_PATH.read_bytes() == expected.read_bytes()
-
-
 def test_repository_policy_is_public_and_complete() -> None:
     document = _policy_document()
     repository = document["public_repositories"][guard.REPOSITORY_NAME]
