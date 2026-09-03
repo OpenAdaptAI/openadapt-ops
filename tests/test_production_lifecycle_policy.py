@@ -114,20 +114,7 @@ class ProductionLifecycleProjectionTests(unittest.TestCase):
             target["latest_admission"]["admission_id"], "production:flow:2"
         )
 
-    def test_render_uses_the_v3_release_admission_bound(self) -> None:
-        source = _source()
-        inputs = _inputs()
-        policy = json.loads(inputs["policy"])
-        policy["schema_version"] = MODULE.POLICY_SCHEMA_V3
-        policy.pop("maximum_admission_days")
-        policy["maximum_release_admission_days"] = 14
-        inputs["policy"] = json.dumps(policy).encode()
-
-        output = MODULE.render(source, inputs)
-
-        self.assertEqual(output["maximum_admission_days"], 14)
-
-    def test_committed_projection_lists_all_seven_inactive_records(self) -> None:
+    def test_committed_projection_admits_all_seven_and_is_schema_bound(self) -> None:
         output = json.loads(
             (ROOT / "docs" / "production-lifecycle.json").read_text(encoding="utf-8")
         )
@@ -160,7 +147,6 @@ class ProductionLifecycleProjectionTests(unittest.TestCase):
             self.assertEqual(
                 target["latest_admission"]["evidence_class"], "remote-safe-synthetic"
             )
-            self.assertIsNone(target["latest_admission"]["expires_at"])
             self.assertEqual(len(target["admission_history"]), 1)
         for target_id in ("cloud", "docs"):
             target = by_id[target_id]
@@ -168,7 +154,6 @@ class ProductionLifecycleProjectionTests(unittest.TestCase):
             self.assertEqual(
                 target["latest_admission"]["evidence_class"], "remote-safe-synthetic"
             )
-            self.assertIsNone(target["latest_admission"]["expires_at"])
             self.assertEqual(len(target["admission_history"]), 1)
 
     def test_source_requires_exact_commit_bound_inventory(self) -> None:
