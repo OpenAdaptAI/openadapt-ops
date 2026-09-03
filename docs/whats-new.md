@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-09-03 20:17 UTC*
+> *Last updated: 2026-09-03 20:56 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [fix: fail Linux browser preflight before download](https://github.com/OpenAdaptAI/OpenAdapt/pull/1142) (#1142) — merged 
 
 - [copy: two authoring modes, person-click and watch-and-admit](https://github.com/OpenAdaptAI/OpenAdapt/pull/1141) (#1141) — merged 
 
@@ -92,6 +94,8 @@
 ## openadapt-desktop
 
 
+- [fix: use canonical Oracle tiers in operator copy](https://github.com/OpenAdaptAI/openadapt-desktop/pull/159) (#159) — merged 
+
 - [docs: state the current native release boundary](https://github.com/OpenAdaptAI/openadapt-desktop/pull/158) (#158) — merged 
 
 - [docs: point the README at flow tutorial, not quickstart](https://github.com/OpenAdaptAI/openadapt-desktop/pull/157) (#157) — merged 
@@ -129,8 +133,6 @@
 - [Add the qualification program workbench](https://github.com/OpenAdaptAI/openadapt-desktop/pull/137) (#137) — merged 
 
 - [chore(policy): sync generated source boundary](https://github.com/OpenAdaptAI/openadapt-desktop/pull/136) (#136) — merged 
-
-- [Guide the first real workflow run](https://github.com/OpenAdaptAI/openadapt-desktop/pull/135) (#135) — merged 
 
 
 
@@ -226,6 +228,8 @@
 ## openadapt-capture
 
 
+- [fix: make cold Windows recording bounded](https://github.com/OpenAdaptAI/openadapt-capture/pull/133) (#133) — merged 
+
 - [fix(release): prepare Capture 1.3.0 for Production qualification](https://github.com/OpenAdaptAI/openadapt-capture/pull/132) (#132) — merged 
 
 - [feat(capture): window_tree observations and authoring projector](https://github.com/OpenAdaptAI/openadapt-capture/pull/131) (#131) — merged 
@@ -263,8 +267,6 @@
 - [ci: qualify releases on hosted runners, schedule the live lanes](https://github.com/OpenAdaptAI/openadapt-capture/pull/114) (#114) — merged 
 
 - [chore(release): prepare 1.2.3](https://github.com/OpenAdaptAI/openadapt-capture/pull/113) (#113) — merged 
-
-- [fix(ci): allowlist the published extension key by exact value](https://github.com/OpenAdaptAI/openadapt-capture/pull/112) (#112) — merged 
 
 
 
