@@ -37,6 +37,11 @@ def _policy_document() -> dict:
     return json.loads(guard.POLICY_PATH.read_text(encoding="utf-8"))
 
 
+def _resign(document: dict) -> dict:
+    document["policy_digest"] = guard.canonical_policy_digest(document)
+    return document
+
+
 def test_repository_policy_is_public_and_complete() -> None:
     document = _policy_document()
     repository = document["public_repositories"][guard.REPOSITORY_NAME]
@@ -66,6 +71,7 @@ def test_invalid_policy_fails_closed(tmp_path: Path) -> None:
 def test_missing_repository_classification_fails_closed() -> None:
     document = _policy_document()
     del document["public_repositories"][guard.REPOSITORY_NAME]
+    _resign(document)
     with pytest.raises(guard.PolicyError, match=guard.REPOSITORY_NAME):
         guard.SourcePolicy.from_document(document)
 
@@ -73,6 +79,7 @@ def test_missing_repository_classification_fails_closed() -> None:
 def test_missing_build_content_patterns_fails_closed() -> None:
     document = _policy_document()
     del document["enforcement"]["built_artifacts"]["content_patterns"]
+    _resign(document)
     with pytest.raises(guard.PolicyError, match="content_patterns"):
         guard.SourcePolicy.from_document(document)
 
@@ -81,6 +88,13 @@ def test_missing_policy_digest_fails_closed() -> None:
     document = _policy_document()
     del document["policy_digest"]
     with pytest.raises(guard.PolicyError, match="policy_digest"):
+        guard.SourcePolicy.from_document(document)
+
+
+def test_policy_tampering_with_the_retained_digest_fails_closed() -> None:
+    document = _policy_document()
+    document["enforcement"]["path_tokens"].append("tampered-rule")
+    with pytest.raises(guard.PolicyError, match="canonical policy JSON"):
         guard.SourcePolicy.from_document(document)
 
 
@@ -94,6 +108,15 @@ def test_tracked_source_rejects_an_innocently_named_tuning_file(
     )
     violations = guard.scan_tracked_source(root, policy)
     assert any("build-content pattern" in item for item in violations)
+
+
+@pytest.mark.parametrize("relative_path", sorted(guard.SOURCE_REGEX_ALLOWLIST))
+def test_regex_allowlist_never_exempts_a_private_signature(
+    tmp_path: Path, policy: guard.SourcePolicy, relative_path: str
+) -> None:
+    root = _repository(tmp_path, relative_path, policy.content_signatures[0])
+    violations = guard.scan_tracked_source(root, policy)
+    assert any("private-artifact signature" in item for item in violations)
 
 
 def test_generated_site_rejects_an_innocently_named_tuning_file(

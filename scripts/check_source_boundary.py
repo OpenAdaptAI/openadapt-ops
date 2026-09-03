@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import re
@@ -19,8 +20,9 @@ POLICY_SCHEMA_VERSION = 1
 REPOSITORY_NAME = "openadapt-ops"
 REPOSITORY_SLUG = "OpenAdaptAI/openadapt-ops"
 
-# These files implement or carry the policy, so their literal rules are data.
-SOURCE_ALLOWLIST = frozenset(
+# These files implement or carry the policy, so their literal regexes are data.
+# Path, file type, and private byte signatures still apply to every entry.
+SOURCE_REGEX_ALLOWLIST = frozenset(
     {
         "scripts/check_source_boundary.py",
         "source-policy.public.json",
@@ -57,6 +59,13 @@ def _regex(patterns: Iterable[str], where: str) -> re.Pattern[str]:
         ) from exc
 
 
+def canonical_policy_digest(document: dict) -> str:
+    """Compute the renderer's digest over canonical JSON without the digest."""
+    content = {key: value for key, value in document.items() if key != "policy_digest"}
+    encoded = (json.dumps(content, sort_keys=True, indent=2) + "\n").encode("utf-8")
+    return f"sha256:{hashlib.sha256(encoded).hexdigest()}"
+
+
 @dataclass(frozen=True)
 class SourcePolicy:
     path_tokens: tuple[str, ...]
@@ -81,6 +90,8 @@ class SourcePolicy:
             r"sha256:[0-9a-f]{64}", policy_digest
         ):
             raise PolicyError("policy_digest must be a lowercase sha256 digest")
+        if canonical_policy_digest(document) != policy_digest:
+            raise PolicyError("policy_digest does not match the canonical policy JSON")
         policy_last_updated = document.get("policy_last_updated")
         if not isinstance(policy_last_updated, str) or not re.fullmatch(
             r"\d{4}-\d{2}-\d{2}", policy_last_updated
@@ -237,10 +248,14 @@ def _content_violations(
     policy: SourcePolicy,
     *,
     generated: bool,
+    allow_regex: bool = False,
 ) -> list[str]:
     for signature in policy.content_signatures:
         if signature in data:
             return [f"{relative_path}: content carries a private-artifact signature"]
+
+    if allow_regex:
+        return []
 
     text = data.decode("utf-8", errors="ignore")
     regexes = (
@@ -289,8 +304,6 @@ def _tracked_files(root: Path) -> list[tuple[str, str]]:
 def scan_tracked_source(root: Path, policy: SourcePolicy) -> list[str]:
     violations: list[str] = []
     for mode, relative_path in _tracked_files(root):
-        if relative_path in SOURCE_ALLOWLIST:
-            continue
         violations.extend(_path_violations(relative_path, policy))
         path = root / relative_path
         if mode == "120000":
@@ -306,7 +319,13 @@ def scan_tracked_source(root: Path, policy: SourcePolicy) -> list[str]:
         except OSError as exc:
             raise ScanError(f"cannot read tracked file {relative_path}: {exc}") from exc
         violations.extend(
-            _content_violations(relative_path, data, policy, generated=False)
+            _content_violations(
+                relative_path,
+                data,
+                policy,
+                generated=False,
+                allow_regex=relative_path in SOURCE_REGEX_ALLOWLIST,
+            )
         )
     return violations
 
