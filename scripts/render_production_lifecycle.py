@@ -30,10 +30,90 @@ OUTPUT_PATH = ROOT / "docs" / "production-lifecycle.json"
 SOURCE_SCHEMA = "openadapt.production-lifecycle-source/v1"
 OUTPUT_SCHEMA = "openadapt.public-production-lifecycle/v1"
 POLICY_SCHEMA = "openadapt.production-lifecycle-policy/v1"
+POLICY_SCHEMA_V3 = "openadapt.production-lifecycle-policy/v3"
+SUPPORTED_POLICY_SCHEMAS = {POLICY_SCHEMA, POLICY_SCHEMA_V3}
 ADMISSIONS_SCHEMA = "openadapt.production-lifecycle-admissions/v1"
 HEX40 = re.compile(r"^[0-9a-f]{40}$")
 SHA256 = re.compile(r"^sha256:[0-9a-f]{64}$")
 MAX_SOURCE_BYTES = 2 * 1024 * 1024
+PROFILE_CLONE_URL = "https://github.com/OpenAdaptAI/.github.git"
+PROFILE_REQUIREMENTS = Path("requirements") / "profile-consistency.txt"
+_PROFILE_IMPORT_PROBE = "import cryptography, jsonschema, referencing"
+# Retained v1 public bound. v3 policy is until-revoked and has no day cap.
+RETAINED_PUBLIC_MAXIMUM_ADMISSION_DAYS = 30
+PUBLIC_TARGET_CONTRACT = {
+    "agent": {
+        "lifecycle_scope": "repository",
+        "lifecycle_subject": "openadapt-agent",
+        "release_kind": "public_package",
+        "required_claim_scope": "qualified_agent_bridge_release",
+        "required_artifact_kinds": ["sdist", "wheel"],
+        "artifact_authority_by_kind": {"sdist": "pypi", "wheel": "pypi"},
+    },
+    "capture": {
+        "lifecycle_scope": "repository",
+        "lifecycle_subject": "openadapt-capture",
+        "release_kind": "public_package",
+        "required_claim_scope": "qualified_native_recorder_release",
+        "required_artifact_kinds": ["sdist", "wheel"],
+        "artifact_authority_by_kind": {"sdist": "pypi", "wheel": "pypi"},
+    },
+    "cloud": {
+        "lifecycle_scope": "repository",
+        "lifecycle_subject": "openadapt-cloud",
+        "release_kind": "private_deployment",
+        "required_claim_scope": "qualified_workflow_control_plane_deployment",
+        "required_artifact_kinds": [],
+        "artifact_authority_by_kind": {},
+    },
+    "desktop": {
+        "lifecycle_scope": "repository",
+        "lifecycle_subject": "openadapt-desktop",
+        "release_kind": "public_package",
+        "required_claim_scope": "qualified_native_workflow_desktop_release",
+        "required_artifact_kinds": [
+            "linux-installer",
+            "macos-installer",
+            "sdist",
+            "wheel",
+            "windows-installer",
+        ],
+        "artifact_authority_by_kind": {
+            "linux-installer": "github_release",
+            "macos-installer": "github_release",
+            "sdist": "pypi",
+            "wheel": "pypi",
+            "windows-installer": "github_release",
+        },
+    },
+    "docs": {
+        "lifecycle_scope": "public_surface",
+        "lifecycle_subject": "docs.openadapt.ai",
+        "release_kind": "public_deployment",
+        "required_claim_scope": "production_documentation_deployment",
+        "required_artifact_kinds": ["deployment-manifest", "site-archive"],
+        "artifact_authority_by_kind": {
+            "deployment-manifest": "managed_evidence",
+            "site-archive": "managed_evidence",
+        },
+    },
+    "flow": {
+        "lifecycle_scope": "repository",
+        "lifecycle_subject": "openadapt-flow",
+        "release_kind": "public_package",
+        "required_claim_scope": "qualified_workflow_runtime_release",
+        "required_artifact_kinds": ["sdist", "wheel"],
+        "artifact_authority_by_kind": {"sdist": "pypi", "wheel": "pypi"},
+    },
+    "openadapt": {
+        "lifecycle_scope": "repository",
+        "lifecycle_subject": "OpenAdapt",
+        "release_kind": "public_package",
+        "required_claim_scope": "qualified_workflow_launcher_release",
+        "required_artifact_kinds": ["sdist", "wheel"],
+        "artifact_authority_by_kind": {"sdist": "pypi", "wheel": "pypi"},
+    },
+}
 EXPECTED_FILE_KEYS = {
     "admissions",
     "admissions_schema",
@@ -172,6 +252,178 @@ def fetch_inputs(
     return inputs
 
 
+def _local_profile_repo() -> Path | None:
+    for candidate in (
+        Path.home() / "oa" / "src" / ".github",
+        Path("/Users/abrichr/oa/src/.github"),
+    ):
+        if (candidate / ".git").exists() or candidate.is_dir():
+            git_dir = candidate / ".git"
+            if git_dir.exists():
+                return candidate
+    return None
+
+
+def materialize_commit(commit: str, dest: Path) -> None:
+    """Materialize the exact profile commit so the validator can read evidence."""
+
+    dest.mkdir(parents=True, exist_ok=True)
+    local = _local_profile_repo()
+    if local is not None:
+        probe = subprocess.run(
+            ["git", "-C", str(local), "cat-file", "-e", f"{commit}^{{commit}}"],
+            check=False,
+            capture_output=True,
+            timeout=30,
+        )
+        if probe.returncode == 0:
+            archive = subprocess.run(
+                ["git", "-C", str(local), "archive", "--format=tar", commit],
+                check=True,
+                capture_output=True,
+                timeout=60,
+            )
+            subprocess.run(
+                ["tar", "-xf", "-", "-C", str(dest)],
+                check=True,
+                input=archive.stdout,
+                timeout=60,
+            )
+            return
+    subprocess.run(
+        ["git", "init", str(dest)],
+        check=True,
+        capture_output=True,
+        timeout=30,
+    )
+    subprocess.run(
+        ["git", "-C", str(dest), "remote", "add", "origin", PROFILE_CLONE_URL],
+        check=True,
+        capture_output=True,
+        timeout=30,
+    )
+    fetched = subprocess.run(
+        ["git", "-C", str(dest), "fetch", "--depth", "1", "origin", commit],
+        check=False,
+        capture_output=True,
+        timeout=120,
+    )
+    if fetched.returncode != 0:
+        detail = (fetched.stderr or fetched.stdout or b"").decode("utf-8", "replace")
+        raise RenderError(f"canonical source commit could not be fetched: {detail.strip()}")
+    subprocess.run(
+        ["git", "-C", str(dest), "checkout", "--force", "FETCH_HEAD"],
+        check=True,
+        capture_output=True,
+        timeout=30,
+    )
+    head = subprocess.check_output(
+        ["git", "-C", str(dest), "rev-parse", "HEAD"],
+        text=True,
+        timeout=30,
+    ).strip()
+    if head != commit:
+        raise RenderError("materialized source commit differs from the pin")
+
+
+def read_pinned_files(source: Mapping[str, Any], tree: Path) -> dict[str, bytes]:
+    inputs: dict[str, bytes] = {}
+    for key in sorted(EXPECTED_FILE_KEYS):
+        item = source["files"][key]
+        path = tree / item["path"]
+        try:
+            body = path.read_bytes()
+        except OSError as exc:
+            raise RenderError(
+                f"canonical source file {key} is missing from the source tree: {exc}"
+            ) from exc
+        if _digest_bytes(body) != item["sha256"]:
+            raise RenderError(f"canonical source file {key} digest changed")
+        inputs[key] = body
+    return inputs
+
+
+def _run(
+    command: list[str],
+    *,
+    timeout: int,
+    cwd: str | None = None,
+    env: dict[str, str] | None = None,
+) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        command,
+        check=False,
+        capture_output=True,
+        text=True,
+        timeout=timeout,
+        cwd=cwd,
+        env=env,
+    )
+
+
+def _refuse_command(completed: subprocess.CompletedProcess[str], fallback: str) -> None:
+    detail = (completed.stderr or completed.stdout or fallback).strip()
+    last = detail.splitlines()[-1] if detail else fallback
+    raise RenderError(f"canonical Production lifecycle refused: {last}")
+
+
+def _validator_python(tree: Path, venv_home: Path) -> str:
+    """Return a Python that can import the pinned canonical validator deps."""
+
+    probe = _run([sys.executable, "-c", _PROFILE_IMPORT_PROBE], timeout=30)
+    if probe.returncode == 0:
+        return sys.executable
+    requirements = tree / PROFILE_REQUIREMENTS
+    if not requirements.is_file():
+        raise RenderError(
+            "canonical Production lifecycle refused: "
+            "ModuleNotFoundError: No module named 'cryptography'"
+        )
+    venv = venv_home / "venv"
+    created = _run([sys.executable, "-m", "venv", str(venv)], timeout=60)
+    if created.returncode != 0:
+        _refuse_command(created, "venv creation failed")
+    bin_dir = "Scripts" if os.name == "nt" else "bin"
+    python = venv / bin_dir / ("python.exe" if os.name == "nt" else "python")
+    print(
+        "Installing pinned profile validator dependencies from the source tree.",
+        file=sys.stderr,
+    )
+    installed = _run(
+        [
+            str(python),
+            "-m",
+            "pip",
+            "install",
+            "--disable-pip-version-check",
+            "--no-input",
+            "--requirement",
+            str(requirements),
+        ],
+        timeout=180,
+    )
+    if installed.returncode != 0:
+        _refuse_command(installed, "profile requirement install failed")
+    return str(python)
+
+
+def validate_tree(tree: Path) -> None:
+    """Run the exact canonical validator from the materialized source tree."""
+
+    environment = dict(os.environ)
+    environment["PYTHONPYCACHEPREFIX"] = str(tree / ".pycache")
+    with tempfile.TemporaryDirectory(prefix="openadapt-validator-venv-") as venv_home:
+        python = _validator_python(tree, Path(venv_home))
+        completed = _run(
+            [python, str(tree / EXPECTED_PATHS["validator"]), "--root", str(tree)],
+            timeout=120,
+            cwd=str(tree),
+            env=environment,
+        )
+    if completed.returncode != 0:
+        _refuse_command(completed, "validation failed")
+
+
 def validate_inputs(inputs: Mapping[str, bytes]) -> None:
     """Run the exact canonical validator pinned by the source descriptor."""
 
@@ -188,6 +440,7 @@ def validate_inputs(inputs: Mapping[str, bytes]) -> None:
         completed = subprocess.run(
             [
                 sys.executable,
+                "-S",
                 str(root / EXPECTED_PATHS["validator"]),
                 "--root",
                 str(root),
@@ -207,27 +460,99 @@ def validate_inputs(inputs: Mapping[str, bytes]) -> None:
             )
 
 
-def render(source: Mapping[str, Any], inputs: Mapping[str, bytes]) -> dict[str, Any]:
+def _group_admissions(
+    current_admissions: list[Any],
+    *,
+    tree: Path | None,
+) -> dict[str, list[dict[str, Any]]]:
+    by_target: dict[str, list[dict[str, Any]]] = {}
+    for admission in current_admissions:
+        if not isinstance(admission, dict):
+            raise RenderError("canonical admission target is invalid")
+        if isinstance(admission.get("target"), str):
+            record = admission
+            target_id = admission["target"]
+        elif (
+            admission.get("kind") == "qualification-release"
+            and isinstance(admission.get("object_path"), str)
+        ):
+            if tree is None:
+                raise RenderError(
+                    "v2 qualification-release rows require the source tree"
+                )
+            path = tree / admission["object_path"]
+            try:
+                record = _load_json_bytes(
+                    path.read_bytes(), "qualification-release object"
+                )
+            except OSError as exc:
+                raise RenderError(
+                    f"qualification-release object is missing: {exc}"
+                ) from exc
+            target_id = record.get("target")
+            if not isinstance(target_id, str):
+                raise RenderError("qualification-release object has no target")
+        else:
+            raise RenderError("canonical admission target is invalid")
+        by_target.setdefault(target_id, []).append(record)
+    return by_target
+
+
+def _public_target_fields(target: Mapping[str, Any]) -> dict[str, Any]:
+    target_id = target["id"]
+    contract = PUBLIC_TARGET_CONTRACT.get(target_id)
+    if contract is None:
+        raise RenderError(f"canonical policy target is not public: {target_id!r}")
+    if "lifecycle_scope" in target:
+        return {
+            "id": target_id,
+            "display_name": target["display_name"],
+            "lifecycle_scope": target["lifecycle_scope"],
+            "lifecycle_subject": target["lifecycle_subject"],
+            "source_repository": target["source_repository"],
+            "release_kind": target["release_kind"],
+            "required_claim_scope": target["required_claim_scope"],
+            "required_artifact_kinds": target["required_artifact_kinds"],
+            "package_index_project": target["package_index_project"],
+            "artifact_authority_by_kind": target["artifact_authority_by_kind"],
+        }
+    return {
+        "id": target_id,
+        "display_name": target["display_name"],
+        "lifecycle_scope": contract["lifecycle_scope"],
+        "lifecycle_subject": contract["lifecycle_subject"],
+        "source_repository": target["source_repository"],
+        "release_kind": contract["release_kind"],
+        "required_claim_scope": contract["required_claim_scope"],
+        "required_artifact_kinds": contract["required_artifact_kinds"],
+        "package_index_project": target["package_index_project"],
+        "artifact_authority_by_kind": contract["artifact_authority_by_kind"],
+    }
+
+
+def render(
+    source: Mapping[str, Any],
+    inputs: Mapping[str, bytes],
+    *,
+    tree: Path | None = None,
+) -> dict[str, Any]:
     policy = _load_json_bytes(inputs["policy"], "canonical policy")
     admissions = _load_json_bytes(inputs["admissions"], "canonical admissions")
-    if policy.get("schema_version") != POLICY_SCHEMA:
+    if policy.get("schema_version") not in SUPPORTED_POLICY_SCHEMAS:
         raise RenderError("canonical policy schema is not supported")
     if admissions.get("schema_version") != ADMISSIONS_SCHEMA:
         raise RenderError("canonical admissions schema is not supported")
     policy_digest = source["files"]["policy"]["sha256"]
-    if admissions.get("policy_sha256") != policy_digest:
+    if (
+        policy.get("schema_version") == POLICY_SCHEMA
+        and admissions.get("policy_sha256") != policy_digest
+    ):
         raise RenderError("canonical admissions do not bind the exact policy")
     targets = policy.get("targets")
     current_admissions = admissions.get("admissions")
     if not isinstance(targets, list) or not isinstance(current_admissions, list):
         raise RenderError("canonical policy target or admission inventory is invalid")
-    by_target: dict[str, list[dict[str, Any]]] = {}
-    for admission in current_admissions:
-        if not isinstance(admission, dict) or not isinstance(
-            admission.get("target"), str
-        ):
-            raise RenderError("canonical admission target is invalid")
-        by_target.setdefault(admission["target"], []).append(admission)
+    by_target = _group_admissions(current_admissions, tree=tree)
     rendered_targets: list[dict[str, Any]] = []
     for target in targets:
         if not isinstance(target, dict) or not isinstance(target.get("id"), str):
@@ -236,32 +561,23 @@ def render(source: Mapping[str, Any], inputs: Mapping[str, bytes]) -> dict[str, 
         target_admissions = by_target.pop(target_id, [])
         target_admissions.sort(key=lambda item: item["release_identity"]["sequence"])
         latest_admission = target_admissions[-1] if target_admissions else None
-        rendered_targets.append(
-            {
-                "id": target_id,
-                "display_name": target["display_name"],
-                "lifecycle_scope": target["lifecycle_scope"],
-                "lifecycle_subject": target["lifecycle_subject"],
-                "source_repository": target["source_repository"],
-                "release_kind": target["release_kind"],
-                "required_claim_scope": target["required_claim_scope"],
-                "required_artifact_kinds": target["required_artifact_kinds"],
-                "package_index_project": target["package_index_project"],
-                "artifact_authority_by_kind": target["artifact_authority_by_kind"],
-                "latest_admission": latest_admission,
-                "admission_history": target_admissions,
-            }
-        )
+        rendered = _public_target_fields(target)
+        rendered["latest_admission"] = latest_admission
+        rendered["admission_history"] = target_admissions
+        rendered_targets.append(rendered)
     if by_target:
         raise RenderError(
             f"canonical admissions contain unknown targets: {sorted(by_target)}"
         )
+    maximum_admission_days = policy.get("maximum_admission_days")
+    if maximum_admission_days is None:
+        maximum_admission_days = RETAINED_PUBLIC_MAXIMUM_ADMISSION_DAYS
     return {
         "$schema": "schemas/production-lifecycle-public.schema.json",
         "schema_version": OUTPUT_SCHEMA,
         "source": source,
         "policy_revision": policy["revision"],
-        "maximum_admission_days": policy["maximum_admission_days"],
+        "maximum_admission_days": maximum_admission_days,
         "derivation": {
             "mode": "latest_signed_admission_at_read_time",
             "static_production_state": False,
@@ -284,9 +600,14 @@ def main() -> int:
     args = parser.parse_args()
     try:
         source = load_source()
-        inputs = fetch_inputs(source)
-        validate_inputs(inputs)
-        output = encode(render(source, inputs))
+        with tempfile.TemporaryDirectory(
+            prefix="openadapt-production-policy-"
+        ) as directory:
+            tree = Path(directory) / "profile"
+            materialize_commit(source["source_commit"], tree)
+            inputs = read_pinned_files(source, tree)
+            validate_tree(tree)
+            output = encode(render(source, inputs, tree=tree))
         if args.check:
             if not OUTPUT_PATH.is_file() or OUTPUT_PATH.read_bytes() != output:
                 raise RenderError(

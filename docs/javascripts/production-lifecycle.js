@@ -41,6 +41,15 @@
     flow: ["qualified_workflow_runtime_release", "public_package"],
     openadapt: ["qualified_workflow_launcher_release", "public_package"],
   });
+  const V2_TARGETS = Object.freeze({
+    agent: { claimScope: "production_agent", releaseKind: "package" },
+    capture: { claimScope: "production_capture", releaseKind: "package" },
+    cloud: { claimScope: "production_cloud", releaseKind: "deployment" },
+    desktop: { claimScope: "production_desktop", releaseKind: "package" },
+    docs: { claimScope: "production_docs", releaseKind: "deployment" },
+    flow: { claimScope: "production_flow", releaseKind: "package" },
+    openadapt: { claimScope: "production_openadapt", releaseKind: "package" },
+  });
   const TARGET_IDS = Object.freeze(Object.keys(EXPECTED_TARGETS).sort());
   const PYPI_PROJECTS = Object.freeze({
     agent: "openadapt-agent",
@@ -237,7 +246,60 @@
     return true;
   }
 
+  function deriveTargetV2(target, now) {
+    const spec = V2_TARGETS[target.id];
+    const admission = target.latest_admission;
+    if (!spec || !isObject(admission)) return null;
+    const identity = admission.release_identity;
+    const release = admission.release;
+    const issuedAt = parseTimestamp(admission.issued_at);
+    if (
+      admission.target !== target.id ||
+      admission.claim_scope !== spec.claimScope ||
+      admission.verdict !== "accepted" ||
+      admission.expires_at !== null ||
+      admission.revoked_at != null ||
+      typeof admission.evidence_class !== "string" ||
+      admission.evidence_class.length === 0 ||
+      issuedAt === null ||
+      issuedAt > now ||
+      !isObject(identity) ||
+      identity.schema_version !== "openadapt.monotonic-production-release/v1" ||
+      identity.channel !== "production" ||
+      !Number.isInteger(identity.sequence) ||
+      identity.sequence < 1 ||
+      !isObject(release) ||
+      release.kind !== spec.releaseKind
+    ) {
+      return null;
+    }
+    let releaseLabel;
+    let releaseVersion = null;
+    if (spec.releaseKind === "package" && VERSION.test(release.version)) {
+      releaseLabel = `release ${release.version}`;
+      releaseVersion = release.version;
+    } else if (
+      spec.releaseKind === "deployment" &&
+      typeof release.deployment_id === "string" &&
+      release.deployment_id.length > 0
+    ) {
+      releaseLabel = `deployment ${release.deployment_id}`;
+    } else {
+      return null;
+    }
+    return Object.freeze({
+      targetId: target.id,
+      releaseLabel,
+      releaseVersion,
+      summaryUrl: null,
+      evidence: { class: admission.evidence_class },
+      release,
+    });
+  }
+
   function deriveTarget(target, projection, now = Date.now()) {
+    const untilRevoked = deriveTargetV2(target, now);
+    if (untilRevoked) return untilRevoked;
     const admission = target.latest_admission;
     if (!isObject(admission)) return null;
     const [claimScope, releaseKind] = EXPECTED_TARGETS[target.id];
