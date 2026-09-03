@@ -130,6 +130,18 @@ def test_generated_site_rejects_a_private_signature(
 
 
 @pytest.mark.skipif(not hasattr(os, "symlink"), reason="symlinks are unavailable")
+def test_tracked_source_rejects_an_internal_symbolic_link(
+    tmp_path: Path, policy: guard.SourcePolicy
+) -> None:
+    subprocess.run(["git", "init", "-q"], cwd=tmp_path, check=True)
+    (tmp_path / "target.txt").write_text("clean\n", encoding="utf-8")
+    os.symlink("target.txt", tmp_path / "linked.txt")
+    subprocess.run(["git", "add", "target.txt", "linked.txt"], cwd=tmp_path, check=True)
+    violations = guard.scan_tracked_source(tmp_path, policy)
+    assert any("tracked source contains a symbolic link" in item for item in violations)
+
+
+@pytest.mark.skipif(not hasattr(os, "symlink"), reason="symlinks are unavailable")
 def test_generated_site_rejects_a_symbolic_link(
     tmp_path: Path, policy: guard.SourcePolicy
 ) -> None:

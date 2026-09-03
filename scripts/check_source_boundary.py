@@ -286,16 +286,6 @@ def _tracked_files(root: Path) -> list[tuple[str, str]]:
     return entries
 
 
-def _unsafe_link(path: Path, boundary: Path) -> bool:
-    try:
-        target = os.readlink(path)
-        resolved = (path.parent / target).resolve(strict=True)
-        resolved.relative_to(boundary.resolve(strict=True))
-    except (OSError, RuntimeError, ValueError):
-        return True
-    return False
-
-
 def scan_tracked_source(root: Path, policy: SourcePolicy) -> list[str]:
     violations: list[str] = []
     for mode, relative_path in _tracked_files(root):
@@ -304,8 +294,9 @@ def scan_tracked_source(root: Path, policy: SourcePolicy) -> list[str]:
         violations.extend(_path_violations(relative_path, policy))
         path = root / relative_path
         if mode == "120000":
-            if _unsafe_link(path, root):
-                violations.append(f"{relative_path}: unsafe symbolic link")
+            violations.append(
+                f"{relative_path}: tracked source contains a symbolic link"
+            )
             continue
         if not path.is_file():
             violations.append(f"{relative_path}: tracked entry is not a regular file")
