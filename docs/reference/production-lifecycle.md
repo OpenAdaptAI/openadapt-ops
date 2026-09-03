@@ -43,10 +43,11 @@ Production admission and still refuse an unqualified customer workflow.
 
 The public workflow ledger is
 [production-workflow-admissions.json](../production-workflow-admissions.json).
-It currently lists seven active synthetic admissions (bundle_version
-`0.0.0-synthetic`, evidence class remote-safe-synthetic). That isn't a
-customer workflow. The source pin is OpenAdaptAI/.github
-`34207373d1e21de90772e0343c1abfbf477483e0`.
+It currently lists seven synthetic admission records (bundle_version
+`0.0.0-synthetic`, evidence class remote-safe-synthetic). Each record has a
+null expiry, so none is actively admitted. These aren't customer workflows.
+The source pin is OpenAdaptAI/.github
+`078db7a9399702d0b725676e4a427b1b52fb19ff`.
 
 ## Release admission
 
@@ -83,6 +84,9 @@ The machine-readable [Production lifecycle record](../production-lifecycle.json)
 contains the exact source commit, input hashes, policy, and admission history.
 It doesn't store a static `production: true` flag. A consumer must use the
 pinned validator and derive the state at read time.
+
+At the current source pin, all seven release records have a null expiry. No
+target is actively admitted.
 
 The documentation build runs that pinned validator. It verifies the signed
 summary and its GitHub attestation before publishing the projection. At read

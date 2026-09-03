@@ -651,12 +651,34 @@ test("the ecosystem page uses the runtime target fallback label", () => {
 
 });
 
-test("the committed admission-free projection keeps every label neutral", async () => {
+test("the committed null-expiry projection keeps every label neutral", async () => {
   const committed = require("../../docs/production-lifecycle.json");
   const targets = lifecycle.validateProjection(committed);
 
   assert.ok(targets instanceof Map);
   for (const target of targets.values()) {
-    assert.equal(lifecycle.deriveTarget(target, committed, NOW), null);
+    assert.equal(
+      lifecycle.deriveTarget(target, committed, Date.parse("2026-09-03T12:00:00Z")),
+      null,
+    );
   }
+});
+
+test("a v2 release needs a bounded future expiry", () => {
+  const committed = require("../../docs/production-lifecycle.json");
+  const target = structuredClone(
+    committed.targets.find((candidate) => candidate.id === "flow"),
+  );
+  const now = Date.parse("2026-09-03T12:00:00Z");
+
+  assert.equal(lifecycle.deriveTarget(target, committed, now), null);
+
+  target.latest_admission.expires_at = "2026-09-09T18:24:25Z";
+  assert.equal(
+    lifecycle.deriveTarget(target, committed, now).releaseLabel,
+    "release 1.34.0",
+  );
+
+  target.latest_admission.expires_at = "2026-10-03T18:24:26Z";
+  assert.equal(lifecycle.deriveTarget(target, committed, now), null);
 });
