@@ -1,12 +1,16 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-09-02 16:27 UTC*
+> *Last updated: 2026-09-03 01:45 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [copy: two authoring modes, person-click and watch-and-admit](https://github.com/OpenAdaptAI/OpenAdapt/pull/1141) (#1141) — merged 
+
+- [docs: name seven until-revoked target admissions in the README](https://github.com/OpenAdaptAI/OpenAdapt/pull/1140) (#1140) — merged 
 
 - [docs: lead with flow tutorial as the VERIFIED first command](https://github.com/OpenAdaptAI/OpenAdapt/pull/1139) (#1139) — merged 
 
@@ -36,22 +40,14 @@
 
 - [chore(policy): sync generated source boundary](https://github.com/OpenAdaptAI/OpenAdapt/pull/1124) (#1124) — merged 
 
-- [chore(release): reconcile platform manifest substrate projection](https://github.com/OpenAdaptAI/OpenAdapt/pull/1121) (#1121) — merged 
-
 - [ci: gate launcher release publication](https://github.com/OpenAdaptAI/OpenAdapt/pull/1120) (#1120) — merged 
-
-- [chore: ignore every .env variant, not one at a time](https://github.com/OpenAdaptAI/OpenAdapt/pull/1119) (#1119) — merged 
-
-- [ci: bind launcher releases to the release app](https://github.com/OpenAdaptAI/OpenAdapt/pull/1118) (#1118) — merged 
-
-- [Replace the legacy GitBook link](https://github.com/OpenAdaptAI/OpenAdapt/pull/1117) (#1117) — merged 
-
-- [Derive launcher lifecycle from signed admissions](https://github.com/OpenAdaptAI/OpenAdapt/pull/1116) (#1116) — merged 
 
 
 
 ## openadapt-flow
 
+
+- [fix(reward): refuse a bundle whose required effects ignore an identity key](https://github.com/OpenAdaptAI/openadapt-flow/pull/456) (#456) — merged 
 
 - [chore: release 1.35.0](https://github.com/OpenAdaptAI/openadapt-flow/pull/454) (#454) — merged 
 
@@ -90,8 +86,6 @@
 - [feat(process): sequence independently admitted capabilities](https://github.com/OpenAdaptAI/openadapt-flow/pull/434) (#434) — merged 
 
 - [feat(visualize): render composed parents without merging ProgramGraphs](https://github.com/OpenAdaptAI/openadapt-flow/pull/433) (#433) — merged 
-
-- [feat(compiler): admit REST bindings only after held-out Effect confirmation](https://github.com/OpenAdaptAI/openadapt-flow/pull/432) (#432) — merged 
 
 
 
@@ -136,12 +130,14 @@
 
 - [Guide the first real workflow run](https://github.com/OpenAdaptAI/openadapt-desktop/pull/135) (#135) — merged 
 
-- [chore: ignore every .env variant, not one at a time](https://github.com/OpenAdaptAI/openadapt-desktop/pull/134) (#134) — merged 
+- [feat: route hosted runs through Flow's governed adapter](https://github.com/OpenAdaptAI/openadapt-desktop/pull/130) (#130) — merged 
 
 
 
 ## openadapt-agent
 
+
+- [copy: two authoring modes, person-click and watch-and-admit](https://github.com/OpenAdaptAI/openadapt-agent/pull/48) (#48) — merged 
 
 - [docs: lead pip install with `openadapt flow tutorial`](https://github.com/OpenAdaptAI/openadapt-agent/pull/47) (#47) — merged 
 
@@ -163,10 +159,6 @@
 
 - [chore(policy): sync generated source boundary](https://github.com/OpenAdaptAI/openadapt-agent/pull/36) (#36) — merged 
 
-- [chore: ignore every .env variant, not one at a time](https://github.com/OpenAdaptAI/openadapt-agent/pull/35) (#35) — merged 
-
-- [Derive Agent state from release admission](https://github.com/OpenAdaptAI/openadapt-agent/pull/33) (#33) — merged 
-
 - [chore(deps): Bump astral-sh/setup-uv from 9.0.0 to 10.0.1](https://github.com/OpenAdaptAI/openadapt-agent/pull/32) (#32) — merged 
 
 - [chore(deps): Bump the codeql-action group with 2 updates](https://github.com/OpenAdaptAI/openadapt-agent/pull/31) (#31) — merged 
@@ -182,12 +174,18 @@
 
 - [chore(policy): sync generated source boundary](https://github.com/OpenAdaptAI/openadapt-ml/pull/77) (#77) — merged 
 
-- [chore: ignore every .env variant, not one at a time](https://github.com/OpenAdaptAI/openadapt-ml/pull/75) (#75) — merged 
-
 
 
 ## openadapt-evals
 
+
+- [feat(extradup): add the wrong_record fault family and resolve the record by identity](https://github.com/OpenAdaptAI/openadapt-evals/pull/337) (#337) — merged 
+
+- [feat(extradup): add kill-scan CLI for the frozen ExtraDup corpus](https://github.com/OpenAdaptAI/openadapt-evals/pull/336) (#336) — merged 
+
+- [feat(reward): add identity-swap family to the MockMed ExtraDup proof](https://github.com/OpenAdaptAI/openadapt-evals/pull/335) (#335) — merged 
+
+- [docs: freeze M for certified-reward RL Phase-1/pilot](https://github.com/OpenAdaptAI/openadapt-evals/pull/334) (#334) — merged 
 
 - [docs(prime): install the environment from the Prime Intellect hub](https://github.com/OpenAdaptAI/openadapt-evals/pull/333) (#333) — merged 
 
@@ -220,14 +218,6 @@
 - [docs: rewrite README for a human reader](https://github.com/OpenAdaptAI/openadapt-evals/pull/318) (#318) — merged 
 
 - [fix(evidence): follow the verified-certificate retention receipt](https://github.com/OpenAdaptAI/openadapt-evals/pull/317) (#317) — merged 
-
-- [chore(policy): sync generated source boundary](https://github.com/OpenAdaptAI/openadapt-evals/pull/316) (#316) — merged 
-
-- [fix(windows): require fresh isolation proofs before pool work](https://github.com/OpenAdaptAI/openadapt-evals/pull/315) (#315) — merged 
-
-- [chore(release): prepare 0.94.1](https://github.com/OpenAdaptAI/openadapt-evals/pull/312) (#312) — merged 
-
-- [fix(evidence): match the retention digests the Cloud writer emits](https://github.com/OpenAdaptAI/openadapt-evals/pull/311) (#311) — merged 
 
 
 
@@ -287,8 +277,6 @@
 
 - [chore(policy): sync generated source boundary](https://github.com/OpenAdaptAI/openadapt-privacy/pull/17) (#17) — merged 
 
-- [chore: ignore every .env variant, not one at a time](https://github.com/OpenAdaptAI/openadapt-privacy/pull/16) (#16) — merged 
-
 
 
 ## openadapt-types
@@ -313,8 +301,6 @@
 - [docs: rewrite the README around the schema you actually import](https://github.com/OpenAdaptAI/openadapt-types/pull/30) (#30) — merged 
 
 - [chore(policy): sync generated source boundary](https://github.com/OpenAdaptAI/openadapt-types/pull/29) (#29) — merged 
-
-- [chore: ignore every .env variant, not one at a time](https://github.com/OpenAdaptAI/openadapt-types/pull/28) (#28) — merged 
 
 
 
