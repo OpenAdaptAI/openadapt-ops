@@ -20,7 +20,7 @@ The pure scorer is `openadapt_types.score`.
 | Node | Runs | Holds |
 |---|---|---|
 | Organization worker (inside the customer network) | The reward worker, the oracle read, the MockMed or real system of record | Records, the oracle recipe, the calibration corpus, evidence bytes. None of these leave. |
-| OpenAdapt control service (off the high-volume path) | Contract registry, certificate issue, revocation | Contracts, certificates, the revocation list, privacy-safe receipts |
+| OpenAdapt control service (off the high-volume path) | Contract registry and certificate issue | Contracts, certificates, privacy-safe receipts |
 | Trainer node | The policy, rollouts, the optimizer | The checkpoint, episode ids, the receipts it fetched |
 
 The trainer sees ids, digests, a tier, an outcome, a scalar, and a certificate
@@ -44,8 +44,8 @@ a scalar exists.
 `certified` on a receipt is a separate column from the scalar. It is true only
 when all four hold: oracle tier 2 or 3, a certificate that is current at that
 policy update, a `calibration_corpus_digest`, and a `calibration_scope`. The
-scope is `synthetic` or `production`. Today the only certificate anyone can
-compute is `synthetic` scope, calibrated on MockMed and ExtraDup. A
+scope is `synthetic` or `production`. Today the only certificate our code
+issues is `synthetic` scope, calibrated on MockMed and ExtraDup. A
 `production` scope needs the Phase-1 calibration on a held-out corpus, which
 is not published. Show the scope beside the word certified;
 `production_certified` on the receipt is that check.
@@ -254,7 +254,7 @@ rate. Its fields:
 
 | Field | Meaning |
 |---|---|
-| `certificate_id` | Revocation key. The issuer checks the revocation list, as for every other admission. |
+| `certificate_id` | Names the certificate. A receipt that references a certificate carries this id. |
 | `reward_contract_digest` | The `RewardContractV1` this bound applies to |
 | `checker_configuration_digest` | The checker configuration the bound was calibrated for |
 | `epsilon` | Upper bound on P(false-accept) |
@@ -264,7 +264,7 @@ rate. Its fields:
 | `calibration_scope` | `synthetic` or `production`. What corpus family the bound was calibrated against. |
 | `issued_at_policy_update` | The policy update the certificate was issued at |
 | `expiry_policy_updates` | How many policy updates it stays current |
-| `issuer` | `self_signed` or `organization`. A self-signed certificate may carry only `synthetic` scope; the validator refuses the other combination. |
+| `issuer` | `self_signed` or `organization`, as declared by whoever built the certificate. The validator refuses `self_signed` with any scope but `synthetic`. It does not check who the issuer is. |
 | `issued_at`, `issuer_key_id`, `signature` | Ed25519 signature over the unsigned payload |
 
 Expiry counts policy updates, not hours. A certificate issued at update `i`
@@ -277,13 +277,16 @@ every receipt after it, and a certified arm halts.
 
 `RewardContractV1.certificate_policy` states the weakest certificate the
 contract accepts (`epsilon`, `delta`, `threshold`, corpus digest, expiry).
-`RewardCertificateV1.satisfies(policy)` is the check.
+`RewardCertificateV1.satisfies(policy)` compares the two. Nothing on the
+worker or trainer path calls it, so a receipt is not refused today for a
+certificate weaker than its contract asks.
 
 The MockMed worker signs its own certificate, so every certificate it issues
 is `self_signed` and `synthetic`. That is enough to prove the plumbing and to
-bound a synthetic run. It says nothing about a production checker. An
-`organization` issuer holds the calibration corpus and the signing key, and
-it is the only issuer that can state `production` scope.
+bound a synthetic run. It says nothing about a production checker. A
+`production` scope is meant to come from an `organization` issuer that holds
+the calibration corpus and the signing key. That issuer does not exist yet,
+and no code reads `issuer` as anything but a declared string.
 
 The re-certification cadence, the vacuity check, and the kill criteria are
 registered in the public
@@ -292,8 +295,19 @@ registered in the public
 
 ## Run it locally with MockMed
 
+The reward worker is not in a published `openadapt-flow` release yet, and
+the release that carries it has no date. When it lands, two commands start
+the MockMed worker:
+
 ```bash
 pip install 'openadapt-flow[reward]'
+openadapt-flow serve-reward --seed-mockmed --port 8788
+```
+
+Until then, install the repository head:
+
+```bash
+uv pip install "openadapt-flow[reward] @ git+https://github.com/OpenAdaptAI/openadapt-flow@main"
 openadapt-flow serve-reward --seed-mockmed --port 8788
 ```
 
