@@ -8,23 +8,31 @@ on:
     paths:
       - ".github/workflows/production-lifecycle-policy.yml"
       - "docs/production-lifecycle.json"
+      - "docs/production-workflow-admissions.json"
       - "docs/reference/production-lifecycle.md"
       - "docs/schemas/production-lifecycle-public.schema.json"
       - "mkdocs.yml"
       - "production-lifecycle-source.json"
+      - "production-workflow-admissions-source.json"
       - "scripts/render_production_lifecycle.py"
+      - "scripts/render_production_workflow_admissions.py"
       - "tests/test_production_lifecycle_policy.py"
+      - "tests/test_production_workflow_admissions.py"
   push:
     branches: [main]
     paths:
       - ".github/workflows/production-lifecycle-policy.yml"
       - "docs/production-lifecycle.json"
+      - "docs/production-workflow-admissions.json"
       - "docs/reference/production-lifecycle.md"
       - "docs/schemas/production-lifecycle-public.schema.json"
       - "mkdocs.yml"
       - "production-lifecycle-source.json"
+      - "production-workflow-admissions-source.json"
       - "scripts/render_production_lifecycle.py"
+      - "scripts/render_production_workflow_admissions.py"
       - "tests/test_production_lifecycle_policy.py"
+      - "tests/test_production_workflow_admissions.py"
 
 permissions:
   contents: read
@@ -47,8 +55,11 @@ jobs:
       - name: Check exact canonical Production lifecycle projection
         run: python3 scripts/render_production_lifecycle.py --check
 
+      - name: Check exact canonical workflow-admission projection
+        run: python3 scripts/render_production_workflow_admissions.py --check
+
       - name: Test fail-closed projection behavior
-        run: python3 -m unittest tests.test_production_lifecycle_policy
+        run: python3 -m unittest tests.test_production_lifecycle_policy tests.test_production_workflow_admissions
 
   report-failure:
     needs: validate

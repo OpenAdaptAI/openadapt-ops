@@ -41,6 +41,13 @@ Release admission proves that an exact OpenAdapt component or deployment passed
 the target-specific product acceptance policy. A runtime can have a current
 Production admission and still refuse an unqualified customer workflow.
 
+The public workflow ledger is
+[production-workflow-admissions.json](../production-workflow-admissions.json).
+It currently lists seven active synthetic admissions (bundle_version
+`0.0.0-synthetic`, evidence class remote-safe-synthetic). That isn't a
+customer workflow. The source pin is OpenAdaptAI/.github
+`34207373d1e21de90772e0343c1abfbf477483e0`.
+
 ## Release admission
 
 The organization policy defines seven Production targets: the launcher, Flow,
