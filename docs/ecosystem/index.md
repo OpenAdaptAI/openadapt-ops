@@ -4,6 +4,10 @@ OpenAdapt is one product. Install `openadapt` and use `openadapt flow …`. The
 public repositories below supply the product's launcher, compiler, recorder,
 desktop cockpit, agent bridge, and trust surfaces.
 
+The Production path starts with one exact Flow release admission. Once Flow
+clears that gate, the next exact target enters qualification. Teams can prepare
+one workflow in parallel.
+
 A release appears as **Production** only while the current canonical record
 contains a live, non-revoked admission for that exact release. The browser
 checks the record hash and each live artifact authority. It does not use an
@@ -14,19 +18,20 @@ Workflow qualification binds one exact bundle to the application and
 environment where it will run, including its identity, effect, and policy
 contracts.
 
-[Read the Production admission contract](../reference/production-lifecycle.md)
+[Follow the Production admission sequence](../reference/production-lifecycle.md)
+or [prepare one workflow](../guides/qualify-a-workflow.md).
 
 ## Product components
 
-| Component | Current release admission | Public role |
+| Component | Production sequence | Public role |
 |---|---|---|
-| [OpenAdapt](https://github.com/OpenAdaptAI/OpenAdapt) | <span data-openadapt-production-target="openadapt" aria-live="polite">No current verified Production admission.</span> | Installer, meta-package, and unified `openadapt flow` command. |
-| [OpenAdapt Flow](https://github.com/OpenAdaptAI/openadapt-flow) | <span data-openadapt-production-target="flow" aria-live="polite">No current verified Production admission.</span> | Canonical demonstration compiler and governed runtime for Browser, native Windows, native macOS, native Linux, RDP, and Citrix/VDI. |
-| [OpenAdapt Cloud](https://app.openadapt.ai/) | <span data-openadapt-production-target="cloud" aria-live="polite">No current verified Production admission.</span> | Managed control plane for organizations, exact-hash admission, browser runners, reports, billing, and usage. |
-| [OpenAdapt Desktop](https://github.com/OpenAdaptAI/openadapt-desktop) | <span data-openadapt-production-target="desktop" aria-live="polite">No current verified Production admission.</span> | Windows, macOS, and Linux cockpit for recording, compilation, qualification, replay, and local review. |
-| [OpenAdapt Agent](https://github.com/OpenAdaptAI/openadapt-agent) | <span data-openadapt-production-target="agent" aria-live="polite">No current verified Production admission.</span> | Governed bridge from MCP clients and Agent Skills to exact Flow bundles. |
-| [OpenAdapt Capture](https://github.com/OpenAdaptAI/openadapt-capture) | <span data-openadapt-production-target="capture" aria-live="polite">No current verified Production admission.</span> | Canonical native recorder for screen, mouse, keyboard, timing, window scope, and media. Windows UIA evidence is emitted with the captured action. The shared observer protocol defines the macOS Accessibility and Linux AT-SPI integration boundary. RDP and Citrix remain pixel-observed at the remote boundary. |
-| OpenAdapt documentation | <span data-openadapt-production-target="docs" aria-live="polite">No current verified Production admission.</span> | Version-bound product, operation, security, and qualification documentation at this site. |
+| [OpenAdapt](https://github.com/OpenAdaptAI/OpenAdapt) | <span data-openadapt-production-target="openadapt" data-openadapt-production-next="After Flow: admit the exact launcher release." aria-live="polite">After Flow: admit the exact launcher release.</span> | Installer, meta-package, and unified `openadapt flow` command. |
+| [OpenAdapt Flow](https://github.com/OpenAdaptAI/openadapt-flow) | <span data-openadapt-production-target="flow" data-openadapt-production-next="Now: complete the exact Flow Production admission." aria-live="polite">Now: complete the exact Flow Production admission.</span> | Canonical demonstration compiler and governed runtime for Browser, native Windows, native macOS, native Linux, RDP, and Citrix/VDI. |
+| [OpenAdapt Cloud](https://app.openadapt.ai/) | <span data-openadapt-production-target="cloud" data-openadapt-production-next="After Flow: admit the exact Cloud deployment." aria-live="polite">After Flow: admit the exact Cloud deployment.</span> | Managed control plane for organizations, exact-hash admission, browser runners, reports, billing, and usage. |
+| [OpenAdapt Desktop](https://github.com/OpenAdaptAI/openadapt-desktop) | <span data-openadapt-production-target="desktop" data-openadapt-production-next="After Flow: admit the exact Desktop release." aria-live="polite">After Flow: admit the exact Desktop release.</span> | Windows, macOS, and Linux cockpit for recording, compilation, qualification, replay, and local review. |
+| [OpenAdapt Agent](https://github.com/OpenAdaptAI/openadapt-agent) | <span data-openadapt-production-target="agent" data-openadapt-production-next="After Flow: admit the exact Agent release." aria-live="polite">After Flow: admit the exact Agent release.</span> | Governed bridge from MCP clients and Agent Skills to exact Flow bundles. |
+| [OpenAdapt Capture](https://github.com/OpenAdaptAI/openadapt-capture) | <span data-openadapt-production-target="capture" data-openadapt-production-next="After Flow: admit the exact Capture release." aria-live="polite">After Flow: admit the exact Capture release.</span> | Canonical native recorder for screen, mouse, keyboard, timing, window scope, and media. Windows UIA evidence is emitted with the captured action. The shared observer protocol defines the macOS Accessibility and Linux AT-SPI integration boundary. RDP and Citrix remain pixel-observed at the remote boundary. |
+| OpenAdapt documentation | <span data-openadapt-production-target="docs" data-openadapt-production-next="After Flow: admit the exact docs deployment." aria-live="polite">After Flow: admit the exact docs deployment.</span> | Version-bound product, operation, security, and qualification documentation at this site. |
 
 Browser recording stays in Flow because DOM identity, field geometry,
 source-time secret masking, and Playwright execution use one browser session

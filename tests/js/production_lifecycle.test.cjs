@@ -622,14 +622,32 @@ test("an inactive target uses the exact neutral lifecycle term", () => {
   assert.equal(target.textContent, lifecycle.TARGET_REQUIREMENT);
 });
 
+test("an inactive target can show its next Production step", () => {
+  const target = {
+    textContent: "",
+    getAttribute(name) {
+      assert.equal(name, "data-openadapt-production-next");
+      return "Now: complete the exact Flow Production admission.";
+    },
+    append() {
+      throw new Error("inactive targets must not append a Production label");
+    },
+  };
+  lifecycle.renderTarget(target, null);
+  assert.equal(
+    target.textContent,
+    "Now: complete the exact Flow Production admission.",
+  );
+});
+
 test("the ecosystem page uses the runtime target fallback label", () => {
   assert.equal(
     lifecycle.TARGET_REQUIREMENT,
-    "No current verified Production admission.",
+    "Next gate: complete this target's exact Production admission.",
   );
   assert.equal(
     lifecycle.PRODUCT_REQUIREMENT,
-    "Not currently Production across all seven targets.",
+    "Production path: complete all seven exact target admissions.",
   );
 
   const ecosystem = readFileSync(
@@ -645,8 +663,17 @@ test("the ecosystem page uses the runtime target fallback label", () => {
     targetSpans.map((match) => match[1]).sort(),
     [...lifecycle.TARGET_IDS].sort(),
   );
-  assert.ok(
-    targetSpans.every((match) => match[2] === lifecycle.TARGET_REQUIREMENT),
+  assert.deepEqual(
+    Object.fromEntries(targetSpans.map((match) => [match[1], match[2]])),
+    {
+      openadapt: "After Flow: admit the exact launcher release.",
+      flow: "Now: complete the exact Flow Production admission.",
+      cloud: "After Flow: admit the exact Cloud deployment.",
+      desktop: "After Flow: admit the exact Desktop release.",
+      agent: "After Flow: admit the exact Agent release.",
+      capture: "After Flow: admit the exact Capture release.",
+      docs: "After Flow: admit the exact docs deployment.",
+    },
   );
 
 });

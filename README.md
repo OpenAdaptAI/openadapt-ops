@@ -76,17 +76,13 @@ uv run pytest tests/ -q
 - **`.github/workflows/ci.yml`** runs on every pull request and on push to
   `main`. It installs locked dependencies, runs the test suite, validates the
   documentation contract, and builds the site with `mkdocs build --strict`.
-- **`.github/workflows/sync.yml`** builds and deploys the site to GitHub Pages,
-  served at `docs.openadapt.ai`. It runs when:
-  - a push to `main` touches `docs/**`, `mkdocs.yml`, or the workflow itself,
-    which builds and deploys this repository's docs as-is;
-  - a sub-repository's `notify-docs.yml` workflow dispatches a `repo-updated`
-    event after its public README, changelog, or release changes, so those
-    pages re-sync here;
-  - the weekly schedule or a manual run performs a full cross-repo rebuild.
-
-  Every path validates and builds in strict mode before deploying, so a failing
-  gate blocks publication.
+- **`.github/workflows/sync.yml`** keeps generated documentation reviewed and
+  publishes the site to GitHub Pages. A sub-repository dispatch, the weekly
+  schedule, or a manual run regenerates the cross-repository pages from current
+  `main`, validates them, and opens or updates `docs/auto-sync` through a pull
+  request. These events never deploy branch content. A merged push to `main`
+  validates and builds that exact commit before it deploys to
+  [docs.openadapt.ai](https://docs.openadapt.ai).
 
 ## Add a repository
 

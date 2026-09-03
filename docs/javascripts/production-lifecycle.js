@@ -26,9 +26,10 @@
 })(typeof globalThis === "undefined" ? this : globalThis, function factory() {
   "use strict";
 
-  const TARGET_REQUIREMENT = "No current verified Production admission.";
+  const TARGET_REQUIREMENT =
+    "Next gate: complete this target's exact Production admission.";
   const PRODUCT_REQUIREMENT =
-    "Not currently Production across all seven targets.";
+    "Production path: complete all seven exact target admissions.";
   const PROJECTION_URL = "/production-lifecycle.json";
   const ADMISSIONS_URL =
     "https://raw.githubusercontent.com/OpenAdaptAI/.github/main/production-lifecycle-admissions.json";
@@ -660,7 +661,14 @@
   function renderTarget(element, active) {
     element.textContent = "";
     if (!active) {
-      element.textContent = TARGET_REQUIREMENT;
+      const nextStep =
+        typeof element.getAttribute === "function"
+          ? element.getAttribute("data-openadapt-production-next")
+          : null;
+      element.textContent =
+        typeof nextStep === "string" && nextStep.trim()
+          ? nextStep.trim()
+          : TARGET_REQUIREMENT;
       return;
     }
     element.append("Production: ", active.releaseLabel, ". ");

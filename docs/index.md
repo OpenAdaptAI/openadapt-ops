@@ -151,7 +151,7 @@ report determine its outcome.
 [Review qualification evidence](get-started/what-works-today.md){ .md-button }
 [Read the benchmark methods](https://github.com/OpenAdaptAI/openadapt-flow/tree/main/benchmark){ .md-button }
 
-[Check the current Production status](reference/production-lifecycle.md){ .md-button }
+[Follow the Production qualification](reference/production-lifecycle.md){ .md-button }
 
 ---
 

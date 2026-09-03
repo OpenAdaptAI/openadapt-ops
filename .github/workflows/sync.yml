@@ -1,17 +1,14 @@
 name: Sync Documentation
 
 on:
-  # Same-repo docs merges publish directly, with no dispatch round-trip.
-  # A push that only touches this repo's docs sources builds and deploys the
-  # site as-is; the cross-repo content-sync steps below are skipped on push.
+  # A merged docs change publishes the exact source on main.
   push:
     branches: [main]
     paths:
       - 'docs/**'
       - 'mkdocs.yml'
       - '.github/workflows/sync.yml'
-  # Cross-repo content sync: sub-repos dispatch repo-updated (see trigger.yml)
-  # when their README/changelog changes so their pages re-sync here.
+  # Cross-repo and operator triggers only prepare a reviewed source change.
   repository_dispatch:
     types: [repo-updated]
   schedule:
@@ -23,24 +20,25 @@ on:
         default: 'all'
 
 permissions:
-  contents: write
-  pull-requests: write
-  pages: write
-  id-token: write
+  contents: read
 
 concurrency:
-  group: docs-deploy
+  group: docs-${{ github.event_name == 'push' && 'deploy' || 'prepare' }}
   cancel-in-progress: true
 
 jobs:
-  sync-and-deploy:
-    if: github.ref == 'refs/heads/main'
+  prepare-sync:
+    if: github.event_name != 'push'
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
+      # A manual run can select another ref. Generated content must still start
+      # from current main before it enters the normal pull-request path.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
 
       - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
@@ -49,30 +47,19 @@ jobs:
       - name: Install dependencies
         run: uv sync --locked --extra llm --extra dev
 
-      # Cross-repo content sync (pulls from OTHER repos): runs on
-      # repository_dispatch / schedule / workflow_dispatch, but is skipped on a
-      # same-repo push, which just builds and deploys this repo's docs as-is.
       - name: Sync READMEs
-        if: ${{ success() && github.event_name != 'push' }}
         run: uv run python scripts/sync_readmes.py
 
       - name: Aggregate changelogs
-        if: ${{ success() && github.event_name != 'push' }}
         run: uv run python scripts/aggregate_changelog.py
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Generate What's New
-        if: ${{ success() && github.event_name != 'push' }}
         run: uv run python scripts/generate_whats_new.py
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # The auto-generated architecture overview mirrored each repo README and
-      # deep-linked to per-package pages that the docs site no longer publishes.
-      # The curated Concepts and Ecosystem sections replace it. Re-enable only
-      # if a maintained, product-accurate architecture page is reintroduced.
 
       - name: Run tests against generated source
         run: uv run pytest tests/ -q
@@ -83,31 +70,18 @@ jobs:
       - name: Build MkDocs site
         run: uv run mkdocs build --strict
 
-      # Persist exactly the generated source that passed the gates before
-      # publishing it. This workflow never pushes to `main`: the generated
-      # commit goes to the workflow-owned branch `docs/auto-sync`, and an
-      # auto-merging pull request carries it to `main`. Publishing therefore
-      # works whether or not `main` requires a pull request. The branch push is
-      # the persistence step and it gates deploy: published content is always
-      # content that is recorded on that branch.
-      #
-      # Skipped on push: no cross-repo sync ran, so there is nothing new to
-      # persist and no second commit to record.
       - name: Record the generated docs source and open a PR for it
         id: docs_pr
-        if: ${{ success() && github.event_name != 'push' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: docs/auto-sync
         run: |
-          set -uo pipefail
+          set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add docs/
-          # The What's New digest stamps the minute it was generated, and every
-          # sub-repo push dispatches this workflow. Treating that clock as a
-          # change would open a pull request many times a day that carries no
-          # new documentation, so ignore it and keep the empty-diff no-op.
+          # The What's New digest stamps its generation minute. Ignore a diff
+          # that changes only that clock so routine syncs do not create noise.
           if git diff --staged --quiet -I'^> \*Last updated: '; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
             echo "Generated documentation carries no new content."
@@ -115,26 +89,20 @@ jobs:
           fi
           git commit -m "docs: auto-sync generated documentation"
 
-          # The concurrency group serialises this workflow, and nothing else
-          # writes this branch, so overwriting it rebases the pending sync onto
-          # current main instead of stacking stale generated commits.
+          # This workflow is the only writer for the generated branch. Replace
+          # an older candidate with a new candidate based on current main.
           git push --force origin "HEAD:refs/heads/${BRANCH}"
 
           cat > /tmp/docs-auto-sync-body.md <<'BODY'
           Automated. Only the `Sync Documentation` workflow writes this branch.
 
-          It carries the regenerated `docs/` source: the synced READMEs, the
-          aggregated changelog, and the What's New page. The run that opened it
-          already ran the test suite, `scripts/validate_docs.py`, and a strict
-          MkDocs build against exactly this content.
+          This pull request carries regenerated documentation from current
+          `main`. The preparation run already ran the test suite,
+          `scripts/validate_docs.py`, and a strict MkDocs build against this
+          source.
 
-          Auto-merge (squash) is requested, so it lands once the required checks
-          pass. If those checks never report, close and reopen this PR once:
-          GitHub does not start a workflow for an event raised by the Actions
-          token, and reopening it by hand does.
-
-          Nothing here is hand-edited. To change it, change the generator under
-          `scripts/`.
+          The site will publish only after this change merges to `main` and the
+          resulting push passes the same validation and build gates.
           BODY
 
           echo "changed=true" >> "$GITHUB_OUTPUT"
@@ -147,27 +115,56 @@ jobs:
               --head "${BRANCH}" \
               --title "docs: auto-sync generated documentation" \
               --body-file /tmp/docs-auto-sync-body.md \
-              || echo "::warning::gh pr create failed for ${BRANCH}."
+              || true
             PR_URL=$(gh pr list --head "${BRANCH}" --base main --state open \
               --json url --jq '.[0].url // empty')
           fi
-          echo "pr_url=${PR_URL}" >> "$GITHUB_OUTPUT"
 
-          # The generated source is already on the branch, so the deploy below
-          # still publishes content that is recorded. Report the missing pull
-          # request as a warning here and fail the run after the deploy, so a
-          # broken queue is loud without also taking the site offline.
           if [ -z "${PR_URL}" ]; then
-            echo "::warning::${BRANCH} holds the generated source, but no pull request carries it to main."
-            exit 0
+            echo "::error::${BRANCH} holds generated source, but no pull request carries it to main."
+            echo "Enable Settings > Actions > General > Allow GitHub Actions to create and approve pull requests."
+            exit 1
           fi
+
+          echo "pr_url=${PR_URL}" >> "$GITHUB_OUTPUT"
           echo "Docs auto-sync PR: ${PR_URL}"
 
-          # A repository without auto-merge, or a token that may not enable it,
-          # must not fail the sync: the PR still exists for a person to merge.
+          # A repository without auto-merge still gets a reviewable pull
+          # request. A person can merge it after the required checks pass.
           if ! gh pr merge --squash --auto "${PR_URL}"; then
             echo "::warning::Auto-merge is not enabled on ${PR_URL}; merge it by hand."
           fi
+
+  deploy-main:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+
+      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync --locked --extra llm --extra dev
+
+      - name: Run tests
+        run: uv run pytest tests/ -q
+
+      - name: Validate
+        run: uv run python scripts/validate_docs.py
+
+      - name: Build MkDocs site
+        run: uv run mkdocs build --strict
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
@@ -177,16 +174,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deploy
         uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
-
-      # New content that reaches the site but never reaches `main` leaves the
-      # published site ahead of its own source, and the next same-repo docs
-      # push would rebuild without it. Fail the run so the gap is visible.
-      - name: Confirm the generated source is queued for main
-        if: ${{ steps.docs_pr.outputs.changed == 'true' && steps.docs_pr.outputs.pr_url == '' }}
-        env:
-          BRANCH: docs/auto-sync
-        run: |
-          echo "::error::The generated docs source sits on ${BRANCH} with no pull request to main."
-          echo "GitHub Actions may not create pull requests in this repository."
-          echo "Enable Settings > Actions > General > Allow GitHub Actions to create and approve pull requests."
-          exit 1
