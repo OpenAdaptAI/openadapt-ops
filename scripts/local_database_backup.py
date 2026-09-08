@@ -176,13 +176,20 @@ def native_dump(output: Path, flags: list[str], env: dict, postgres_bin: Path, *
 @contextlib.contextmanager
 def source_snapshot(env: dict, postgres_bin: Path):
     """Hold one read-only MVCC snapshot for both native dumps."""
+    role = env.get("OPENADAPT_DATABASE_ROLE", "postgres")
+    if role not in {"postgres", "supabase_read_only_user"}:
+        raise contract.ContractError("the snapshot role is not an approved source role")
     with tempfile.TemporaryFile() as diagnostics:
         process = subprocess.Popen(
             [str(postgres_bin / "psql"), "-X", "-qAt", "-v", "ON_ERROR_STOP=1"],
             env=env, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=diagnostics,
         )
         try:
-            process.stdin.write(b"BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY;\nSELECT pg_catalog.pg_export_snapshot();\n")
+            # Session poolers can ignore startup PGOPTIONS. Set the same approved
+            # role used by pg_dump at the SQL boundary before exporting.
+            process.stdin.write((f'SET ROLE "{role}";\n'
+                                 'BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY;\n'
+                                 'SELECT pg_catalog.pg_export_snapshot();\n').encode())
             process.stdin.flush()
             if not select.select([process.stdout], [], [], 30)[0]:
                 raise contract.ContractError("the source snapshot did not start within 30 seconds")
