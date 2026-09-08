@@ -228,8 +228,9 @@ failed capture, and incomplete uploads cannot advance that time. At 13:00 UTC,
 the check runs four to five hours after the local 04:00 Toronto capture. It can
 report a missed backup while the Mac is offline.
 
-The private check needs one standard Linux minute per scheduled run, at most
-31 per month. This can use the organization's included minutes; it is not a
+The private check is expected to use about one standard Linux minute per
+scheduled run, or up to31 scheduled minutes per month. This estimate is not a
+billing cap. It can use the organization's included minutes, but it is not a
 guarantee of zero future cost when other jobs consume that allowance. Keep its
 one-minute timeout, read-only token, and no-install/no-cache/no-artifact design.
 No Azure resource or unrestricted self-hosted GitHub runner is required.
