@@ -163,7 +163,7 @@ def run_once(config_path: Path) -> dict:
         return result
 
 
-def verify_recovery(archive: Path, config: dict, transport) -> None:
+def verify_recovery(archive: Path, config: dict, transport, capture) -> None:
     if (not archive.is_absolute() or archive.parent.resolve() != config["backup_root"].resolve()
             or archive.is_symlink()):
         raise ScheduleError("the proven archive must belong to the configured backup root")
@@ -179,6 +179,9 @@ def verify_recovery(archive: Path, config: dict, transport) -> None:
     if (not isinstance(source, str) or not isinstance(scratch, str) or source == scratch
             or not re.fullmatch(r"[0-9a-f]{64}", source) or not re.fullmatch(r"[0-9a-f]{64}", scratch)):
         raise ScheduleError("the restore receipt does not bind an isolated target")
+    capture_config = capture.config_file(config["capture_config"])
+    if hashlib.sha256(capture_config["project_ref"].encode()).hexdigest() != source:
+        raise ScheduleError("the restored source does not match the configured production project")
     copied = private_json(archive / transport.RECEIPT_NAME)
     if (copied.get("schema") != "openadapt.database-backup-github-release/v1"
             or copied.get("scope") != "production" or copied.get("repository") != transport.REPOSITORY
@@ -207,8 +210,8 @@ def private_log(path: Path) -> None:
 def setup(config_path: Path, verified_archive: Path, output: Path) -> Path:
     config = read_config(config_path)
     verify_source(config["expected_backup_commit"])
-    _, transport = load_operations()
-    verify_recovery(verified_archive, config, transport)
+    capture, transport = load_operations()
+    verify_recovery(verified_archive, config, transport, capture)
     if not output.is_absolute() or {"LaunchAgents", "LaunchDaemons"}.intersection(output.resolve().parts):
         raise ScheduleError("setup writes a private review file, never a launchd installation path")
     private_path(output.parent, directory=True)

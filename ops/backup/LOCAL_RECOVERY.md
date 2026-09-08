@@ -11,12 +11,15 @@ archive can be decrypted. A separate database restore must still pass.
 
 ## Current limits
 
-The local command doesn't repair the scheduled workflow or its freshness
-monitor. Those jobs still require their protected environments, restricted
-runner, and AWS target. Don't close their alerts because a local backup exists.
+The local path can replace the unavailable runner and S3 path with a pinned
+macOS job, private GitHub release assets, and a separate hosted freshness
+check. Keep the existing alerts open until the first real capture, isolated
+restore, remote readback, and replacement schedules pass.
 
-The production PostgreSQL password is an explicit input. The Supabase
-Management API token isn't a database password. Do not reset the production
+The manual capture command accepts the production PostgreSQL password as an
+explicit input. The scheduled command uses an existing task-owned temporary
+read-only login through the documented Supabase Management API. The API token
+isn't a database password. Do not reset the production
 password to obtain a backup, and do not use a table-by-table API export as a
 replacement for a database dump.
 
@@ -88,7 +91,7 @@ plaintext and must remain inside the encrypted device boundary.
 
 ## Off-device copy without a new cloud resource
 
-The proposed destination is an encrypted release asset in the existing private
+The destination is an encrypted release asset in the existing private
 `OpenAdaptAI/openadapt-internal` repository. It is a separate operation from
 capture. Verify the repository is private immediately before upload. Upload
 only `database.tar.gz.age` and `artifact-manifest.json`; keep the private key
@@ -99,9 +102,23 @@ or bandwidth limit. The local command enforces the per-asset limit before it
 claims a complete archive. This path uses neither Actions artifact storage nor
 Git LFS. See [GitHub's release limits](https://docs.github.com/en/repositories/releasing-projects-on-github/about-releases#storage-and-bandwidth-quotas).
 
-After upload, require the remote asset size and SHA-256 to match the local
-manifest. Download both assets into a new private directory and repeat the
-artifact and decryption checks. Retain the resulting receipt separately.
+Publish with the reviewed transport:
+
+```sh
+python scripts/private_database_backup_release.py \
+  --archive '<absolute UTC archive directory>' \
+  --source-commit '<exact commit in the private internal repository>'
+```
+
+The helper stages only the ciphertext and strict redacted manifest. It checks
+private visibility before each upload, compares remote asset IDs, sizes, and
+SHA-256 values, and downloads both assets for a byte comparison before it
+publishes the release. It writes `github-release-receipt.json` only after the
+published release and tag pass. Repeat the decryption check on the downloaded
+ciphertext for the first off-device recovery proof. A failed attempt preserves
+the local archive and remote draft. A failure after publication can leave a
+published release without a local receipt; inspect that exact release before
+another attempt.
 An upload response alone isn't off-device recovery evidence. Do not install a
 daily schedule until the first real backup and isolated restore both pass.
 
@@ -157,3 +174,62 @@ OPENADAPT_TEST_POSTGRES_BIN='<absolute PostgreSQL bin directory>' \
 
 This test proves the local archive and comparison mechanics. It doesn't prove
 that the production Supabase database restores.
+
+## Daily capture and independent freshness
+
+`scripts/local_database_backup_schedule.py` runs the reviewed temporary-login
+capture and release transport under one local lock. It checks the exact Git
+commit and each executed module before every run. It doesn't fetch new code or
+accept jobs from a public repository.
+
+The capture configuration is a private `0600` JSON file with exactly four
+fields: `project_ref`, `management_token`, `owned_role_oid`, and `pooler_host`.
+Obtain the token from the deployment configuration that already owns this
+project. The role OID must come from the operator's recorded temporary-role
+creation. The command refuses to adopt an unknown or already active role.
+
+Each capture requests `read_only: true`, bounds the returned credential to ten
+minutes, verifies the effective role and RLS bypass, and uses the shared
+read-only snapshot. Cleanup disables login, expires the credential, terminates
+only this operation's identified sessions, and verifies that none remain. The
+provider role record stays because its creator can withhold the ADMIN grant
+needed for an exact DROP. The command never uses the provider-wide role DELETE
+endpoint. A cleanup failure prevents publication.
+
+The schedule configuration is another private JSON file with these exact keys:
+
+- `expected_backup_commit`: the reviewed Ops commit;
+- `capture_config`: the absolute temporary-login configuration path;
+- `backup_root`: the absolute private archive directory;
+- `identity`: the existing age private key path;
+- `recipients`: the reviewed public recipient file path;
+- `postgres_bin`: the native PostgreSQL17 binary directory;
+- `internal_commit`: the exact private repository commit for new release tags.
+
+After a real restore and remote readback pass for the same archive, prepare the
+04:00 local-time launchd job:
+
+```sh
+python scripts/local_database_backup_schedule.py setup \
+  --config '<absolute private schedule configuration>' \
+  --verified-archive '<absolute archive with matching restore and release receipts>' \
+  --output '<absolute private review plist>'
+```
+
+Setup writes only a review file. It requires `restore-receipt.json` and
+`github-release-receipt.json` to bind the same verified production archive.
+Install the reviewed plist only after the end-to-end operation passes. Keep
+the checkout pinned; update its source and configuration together after review.
+
+Run `scripts/private_database_backup_freshness.py` from the independent private
+repository's hosted workflow with a read-only `GITHUB_TOKEN`. The daily check
+uses the manifest's capture time and fails above 26 hours. Drafts, release edits,
+failed capture, and incomplete uploads cannot advance that time. At 13:00 UTC,
+the check runs four to five hours after the local 04:00 Toronto capture. It can
+report a missed backup while the Mac is offline.
+
+The private check needs one standard Linux minute per scheduled run, at most
+31 per month. This can use the organization's included minutes; it is not a
+guarantee of zero future cost when other jobs consume that allowance. Keep its
+one-minute timeout, read-only token, and no-install/no-cache/no-artifact design.
+No Azure resource or unrestricted self-hosted GitHub runner is required.

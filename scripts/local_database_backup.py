@@ -107,9 +107,13 @@ def dump_connection(config: dict, passfile: Path) -> tuple[str, dict]:
     if any("\n" in value or "\r" in value for value in fields):
         raise contract.ContractError("the connection fields must not contain line breaks")
     line = ":".join(value.replace("\\", "\\\\").replace(":", "\\:") for value in fields)
-    with passfile.open("x") as stream:
+    # libpq requires a plaintext passfile: PostgreSQL17 libpq-pgpass.html.
+    # Create it0600 before writing, inside the private capture directory. This
+    # intentional credential channel avoids password-bearing argv/environment;
+    # the caller removes it after capture and expires the temporary login.
+    descriptor = os.open(passfile, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
+    with os.fdopen(descriptor, "w") as stream:
         stream.write(line + "\n")
-    passfile.chmod(0o600)
     username = parsed.netloc.rsplit("@", 1)[0].split(":", 1)[0]
     address = parsed.netloc.rsplit("@", 1)[1]
     passwordless = parsed._replace(netloc=username + "@" + address).geturl()

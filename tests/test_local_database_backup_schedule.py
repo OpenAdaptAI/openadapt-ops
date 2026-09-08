@@ -1,19 +1,25 @@
+import hashlib
 import importlib.util
 import json
 import plistlib
 import subprocess
+import sys
 from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
 
 SCRIPTS = Path(__file__).parents[1] / "scripts"
+sys.path.insert(0, str(SCRIPTS))
+capture_module = importlib.import_module("temporary_database_backup")
 SPEC = importlib.util.spec_from_file_location("local_database_backup_schedule", SCRIPTS / "local_database_backup_schedule.py")
 schedule = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(schedule)
 SHA = "a" * 40
 ARTIFACT = "b" * 64
 CONTRACT = "c" * 64
+PROJECT = "abcdefghijklmnopqrst"
+PROJECT_HASH = hashlib.sha256(PROJECT.encode()).hexdigest()
 
 
 def write_json(path, value):
@@ -27,9 +33,13 @@ def configuration(tmp_path):
     backup_root.mkdir(mode=0o700)
     postgres = tmp_path / "postgres-bin"
     postgres.mkdir()
-    for name in ("capture.json", "identity.agekey", "recipients.txt"):
+    for name in ("identity.agekey", "recipients.txt"):
         (tmp_path / name).write_text("synthetic fixture; never used as a credential")
         (tmp_path / name).chmod(0o600)
+    write_json(tmp_path / "capture.json", {
+        "project_ref": PROJECT, "management_token": "synthetic-test-only", "owned_role_oid": 12345,
+        "pooler_host": "aws-0-us-east-1.pooler.supabase.com",
+    })
     value = {"expected_backup_commit": SHA, "internal_commit": "d" * 40,
              "capture_config": str(tmp_path / "capture.json"), "backup_root": str(backup_root),
              "identity": str(tmp_path / "identity.agekey"), "recipients": str(tmp_path / "recipients.txt"),
@@ -48,7 +58,7 @@ def proof(configuration):
                 "artifact-manifest.json": {"bytes": 30, "sha256": "f" * 64}}
     restored = {"schema": "openadapt.database-restore-evidence/v2", "database_restored": True,
                 "storage_restored": False, "artifact_sha256": ARTIFACT, "backup_contract_sha256": CONTRACT,
-                "source_project_ref_sha256": "1" * 64, "scratch_project_ref_sha256": "2" * 64}
+                "source_project_ref_sha256": PROJECT_HASH, "scratch_project_ref_sha256": "2" * 64}
     copied = {"schema": "openadapt.database-backup-github-release/v1", "scope": "production",
               "repository": "OpenAdaptAI/openadapt-internal", "repository_visibility_verified": "private",
               "off_device_verified": True, "download_readback_verified": True, "artifact_sha256": ARTIFACT,
@@ -216,7 +226,7 @@ def test_failed_capture_or_upload_never_claims_success(configuration, monkeypatc
     ("restore-receipt.json", {"database_restored": False}),
     ("restore-receipt.json", {"artifact_sha256": "0" * 64}),
     ("restore-receipt.json", {"backup_contract_sha256": "0" * 64}),
-    ("restore-receipt.json", {"scratch_project_ref_sha256": "1" * 64}),
+    ("restore-receipt.json", {"scratch_project_ref_sha256": PROJECT_HASH}),
     ("github-release-receipt.json", {"scope": "synthetic"}),
     ("github-release-receipt.json", {"off_device_verified": False}),
     ("github-release-receipt.json", {"download_readback_verified": False}),
@@ -230,7 +240,7 @@ def test_setup_requires_restore_and_offdevice_receipts_for_same_production_archi
     receipt = archive / filename
     write_json(receipt, {**json.loads(receipt.read_text()), **mutation})
     with pytest.raises(schedule.ScheduleError):
-        schedule.verify_recovery(archive, schedule.read_config(path), transport)
+        schedule.verify_recovery(archive, schedule.read_config(path), transport, capture_module)
 
 
 def test_setup_generates_real_private_0400_plist_without_installation(configuration, proof, monkeypatch, tmp_path):
@@ -238,7 +248,7 @@ def test_setup_generates_real_private_0400_plist_without_installation(configurat
     archive, transport = proof
     events = []
     monkeypatch.setattr(schedule, "verify_source", lambda expected: events.append(expected))
-    monkeypatch.setattr(schedule, "load_operations", lambda: (None, transport))
+    monkeypatch.setattr(schedule, "load_operations", lambda: (capture_module, transport))
     output = tmp_path / "review.plist"
     assert schedule.setup(config_path, archive, output) == output
     with output.open("rb") as stream:
@@ -266,8 +276,25 @@ def test_missing_restore_receipt_cannot_generate_a_plist(configuration, proof, m
     archive, transport = proof
     (archive / "restore-receipt.json").unlink()
     monkeypatch.setattr(schedule, "verify_source", lambda expected: None)
-    monkeypatch.setattr(schedule, "load_operations", lambda: (None, transport))
+    monkeypatch.setattr(schedule, "load_operations", lambda: (capture_module, transport))
     output = tmp_path / "review.plist"
     with pytest.raises(OSError):
         schedule.setup(path, archive, output)
     assert not output.exists()
+
+
+def test_project_a_restore_cannot_authorize_a_schedule_for_project_b(configuration, proof, monkeypatch, tmp_path):
+    config_path, config = configuration
+    archive, transport = proof
+    capture_path = Path(config["capture_config"])
+    changed = json.loads(capture_path.read_text())
+    changed["project_ref"] = "zyxwvutsrqponmlkjihg"
+    write_json(capture_path, changed)
+    assert capture_module.config_file(capture_path)["project_ref"] == changed["project_ref"]
+    monkeypatch.setattr(schedule, "verify_source", lambda expected: None)
+    monkeypatch.setattr(schedule, "load_operations", lambda: (capture_module, transport))
+    output = tmp_path / "review.plist"
+    with pytest.raises(schedule.ScheduleError, match="configured production project"):
+        schedule.setup(config_path, archive, output)
+    assert not output.exists()
+    assert not (Path(config["backup_root"]) / "schedule.stdout.log").exists()
