@@ -15,6 +15,7 @@ import io
 import json
 import os
 import re
+import select
 import shutil
 import stat
 import subprocess
@@ -23,7 +24,7 @@ import tempfile
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
-from urllib.parse import parse_qs, urlsplit
+from urllib.parse import parse_qs, unquote, urlsplit
 
 import database_backup_contract as contract
 
@@ -36,11 +37,11 @@ def quiet(function, **kwargs):
         return function(argparse.Namespace(**kwargs))
 
 
-def run(command, *, stdout=None, env=None):
+def run(command, *, stdout=None, env=None, input=None):
     """Never put a subprocess command or its secret-bearing stderr in an error."""
     result = subprocess.run(
         command, stdout=stdout or subprocess.PIPE, stderr=subprocess.PIPE,
-        env=env, timeout=1800, check=False,
+        env=env, input=input, timeout=1800, check=False,
     )
     if result.returncode:
         raise contract.ContractError(
@@ -80,8 +81,14 @@ def check_identity(identity: Path, recipients: Path) -> None:
 def source_config(config: dict) -> dict:
     if set(config) != {"project_ref", "db_url"}:
         raise contract.ContractError("the source config requires exactly project_ref and db_url")
-    contract.database_identity(config["db_url"], config["project_ref"], "production database")
     parsed = urlsplit(config["db_url"])
+    identity_url = config["db_url"]
+    if unquote(parsed.username or "") == "cli_login_supabase_read_only_user." + config["project_ref"]:
+        # The provider's temporary role uses the same exact project suffix on
+        # a session pooler. Validate its host/project with the canonical role.
+        identity_url = parsed._replace(netloc="postgres." + config["project_ref"] + ":unused@" +
+                                       parsed.netloc.rsplit("@", 1)[1]).geturl()
+    contract.database_identity(identity_url, config["project_ref"], "production database")
     if not parsed.password:
         raise contract.ContractError("the source config has no database password")
     query = parse_qs(parsed.query, keep_blank_values=True)
@@ -90,6 +97,129 @@ def source_config(config: dict) -> dict:
     ):
         raise contract.ContractError("the source URL must use TLS and no additional connection options")
     return config
+
+
+def dump_connection(config: dict, passfile: Path) -> tuple[str, dict]:
+    """Use libpq's private password file, never a password in child argv."""
+    parsed = urlsplit(config["db_url"])
+    fields = (parsed.hostname, str(parsed.port or 5432), unquote(parsed.path.lstrip("/")),
+              unquote(parsed.username), unquote(parsed.password))
+    if any("\n" in value or "\r" in value for value in fields):
+        raise contract.ContractError("the connection fields must not contain line breaks")
+    line = ":".join(value.replace("\\", "\\\\").replace(":", "\\:") for value in fields)
+    with passfile.open("x") as stream:
+        stream.write(line + "\n")
+    passfile.chmod(0o600)
+    username = parsed.netloc.rsplit("@", 1)[0].split(":", 1)[0]
+    address = parsed.netloc.rsplit("@", 1)[1]
+    passwordless = parsed._replace(netloc=username + "@" + address).geturl()
+    env = {name: value for name, value in os.environ.items()
+           if not name.startswith("PG") and name != "SUPABASE_DB_PASSWORD"}
+    assumed_role = "supabase_read_only_user" if unquote(parsed.username).split(".")[0] == "cli_login_supabase_read_only_user" else "postgres"
+    env.update(PGPASSFILE=str(passfile), PGSSLMODE=parse_qs(parsed.query).get("sslmode", ["require"])[0],
+               PGHOST=parsed.hostname, PGPORT=str(parsed.port or 5432), PGUSER=unquote(parsed.username),
+               PGDATABASE=unquote(parsed.path.lstrip("/")), PGCONNECT_TIMEOUT="15",
+               PGOPTIONS=f"-c role={assumed_role} -c default_transaction_read_only=on -c statement_timeout=1200000",
+               OPENADAPT_DATABASE_ROLE=assumed_role)
+    return passwordless, env
+
+
+def native_dump_script(flags: list[str], *, snapshot: bool = False) -> bytes:
+    """Use the pinned upstream SQL procedure, with our actual libpq boundary.
+
+    The CLI's Docker path drops TLS parameters. Generate its script with a
+    fixed synthetic connection, then remove exactly those five exports. Never
+    expand a real password into shell text. pg_dump reads our private passfile.
+    """
+    expected = {
+        'export PGHOST="127.0.0.1"', 'export PGPORT="55480"',
+        'export PGUSER="postgres"', 'export PGPASSWORD="unused"',
+        'export PGDATABASE="postgres"',
+    }
+    env = {name: value for name, value in os.environ.items()
+           if not name.startswith("PG") and name != "SUPABASE_DB_PASSWORD"}
+    script = run(["supabase", "db", "dump", "--db-url",
+                  "postgresql://postgres:unused@127.0.0.1:55480/postgres", "--dry-run", *flags],
+                 env=env).decode()
+    lines = script.splitlines(keepends=True)
+    exports = [line.strip() for line in lines if re.match(r"^export PG", line)]
+    if len(exports) != 5 or set(exports) != expected:
+        raise contract.ContractError("the pinned dump script has an unexpected connection boundary")
+    script = "".join(line for line in lines if line.strip() not in expected)
+    if script.count('--role "postgres"') != 1:
+        raise contract.ContractError("the pinned dump script has an unexpected assumed role")
+    script = script.replace('--role "postgres"', '--role "$OPENADAPT_DATABASE_ROLE"')
+    if snapshot:
+        if script.count("\npg_dump \\\n") != 1:
+            raise contract.ContractError("the pinned script has an unexpected pg_dump command")
+        script = script.replace("\npg_dump \\\n", '\npg_dump --snapshot "$OPENADAPT_BACKUP_SNAPSHOT" \\\n')
+    return script.encode()
+
+
+def native_dump(output: Path, flags: list[str], env: dict, postgres_bin: Path, *, snapshot: str | None = None) -> None:
+    version = run([str(postgres_bin / "pg_dump"), "--version"]).decode()
+    if not re.search(r"\(PostgreSQL\) 17\.", version):
+        raise contract.ContractError("native PostgreSQL17 tools are required")
+    actual = dict(env)
+    actual.setdefault("OPENADAPT_DATABASE_ROLE", "postgres")
+    if actual["OPENADAPT_DATABASE_ROLE"] not in {"postgres", "supabase_read_only_user"}:
+        raise contract.ContractError("the dump role is not an approved source role")
+    actual["PATH"] = str(postgres_bin) + os.pathsep + os.environ.get("PATH", "")
+    if snapshot is not None:
+        if not re.fullmatch(r"[0-9A-F]{8}-[0-9A-F]{8}-[0-9]+", snapshot):
+            raise contract.ContractError("the exported snapshot identifier is invalid")
+        actual["OPENADAPT_BACKUP_SNAPSHOT"] = snapshot
+    with output.open("xb") as stream:
+        run(["bash", "-s"], stdout=stream, env=actual, input=native_dump_script(flags, snapshot=snapshot is not None))
+
+
+@contextlib.contextmanager
+def source_snapshot(env: dict, postgres_bin: Path):
+    """Hold one read-only MVCC snapshot for both native dumps."""
+    with tempfile.TemporaryFile() as diagnostics:
+        process = subprocess.Popen(
+            [str(postgres_bin / "psql"), "-X", "-qAt", "-v", "ON_ERROR_STOP=1"],
+            env=env, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=diagnostics,
+        )
+        try:
+            process.stdin.write(b"BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY;\nSELECT pg_catalog.pg_export_snapshot();\n")
+            process.stdin.flush()
+            if not select.select([process.stdout], [], [], 30)[0]:
+                raise contract.ContractError("the source snapshot did not start within 30 seconds")
+            value = process.stdout.readline().decode().strip()
+            if not re.fullmatch(r"[0-9A-F]{8}-[0-9A-F]{8}-[0-9]+", value):
+                raise contract.ContractError("the source did not return a valid exported snapshot")
+            yield value
+            if process.poll() is not None:
+                raise contract.ContractError("the source snapshot ended before the backup completed")
+            process.stdin.write(b"ROLLBACK;\n\\q\n")
+            process.stdin.flush()
+            process.wait(timeout=15)
+            if process.returncode:
+                raise contract.ContractError("the source snapshot did not close successfully")
+        finally:
+            if process.poll() is None:
+                process.terminate()
+                try:
+                    process.wait(timeout=10)
+                except subprocess.TimeoutExpired:
+                    process.kill()
+                    process.wait()
+            process.stdin.close()
+            process.stdout.close()
+
+
+def capture_dumps(dumps: Path, env: dict, postgres_bin: Path) -> None:
+    native_dump(dumps / "roles.sql", ["--role-only"], env, postgres_bin)
+    with source_snapshot(env, postgres_bin) as snapshot:
+        native_dump(dumps / "schema.sql", [], env, postgres_bin, snapshot=snapshot)
+        native_dump(dumps / "data.sql", ["--data-only", "--use-copy", "-x", "storage.buckets_vectors",
+                    "-x", "storage.vector_indexes"], env, postgres_bin, snapshot=snapshot)
+    # Roles are cluster metadata and pg_dumpall cannot import an MVCC snapshot.
+    # Refuse concurrent role changes instead of publishing a mismatched set.
+    native_dump(dumps / "roles-after.sql", ["--role-only"], env, postgres_bin)
+    if contract.comparison_sha256(dumps / "roles.sql") != contract.comparison_sha256(dumps / "roles-after.sql"):
+        raise contract.ContractError("database roles changed during the backup")
 
 
 def configure(args) -> None:
@@ -218,18 +348,10 @@ def capture(args) -> dict:
     stamp = now.strftime("%Y%m%dT%H%M%SZ")
     with tempfile.TemporaryDirectory(prefix=".capture-", dir=root) as temp:
         dumps = Path(temp)
-        env = os.environ.copy()
-        env["PGSSLMODE"] = "require"
-        # Supabase db dump runs only pg_dump/pg_dumpall, which read the source.
-        # Keep all stdout/stderr private: errors can contain connection details.
-        commands = [
-            ("roles.sql", ["--role-only"]), ("schema.sql", []),
-            ("data.sql", ["--data-only", "--use-copy", "-x", "storage.buckets_vectors",
-                          "-x", "storage.vector_indexes"]),
-        ]
-        for name, flags in commands:
-            run(["supabase", "db", "dump", "--db-url", config["db_url"],
-                 "--file", str(dumps / name), *flags], env=env)
+        _, env = dump_connection(config, dumps / "source.pgpass")
+        # Execute the maintained pg_dump/pg_dumpall procedure with explicit
+        # native TLS/passfile settings. Keep client diagnostics private.
+        capture_dumps(dumps, env, Path(args.postgres_bin))
         return pack(dumps, root / stamp, project_ref=config["project_ref"], recipients=recipients,
                     identity=identity, source_commit=args.source_commit, scope="production",
                     created_at=now.isoformat().replace("+00:00", "Z"))
@@ -248,6 +370,7 @@ def main() -> int:
     capture_parser.add_argument("--identity", required=True)
     capture_parser.add_argument("--recipients", required=True)
     capture_parser.add_argument("--source-commit", required=True)
+    capture_parser.add_argument("--postgres-bin", required=True)
     unpack_parser = commands.add_parser("unpack")
     unpack_parser.add_argument("--archive", required=True)
     unpack_parser.add_argument("--identity", required=True)

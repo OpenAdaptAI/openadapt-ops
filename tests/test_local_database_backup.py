@@ -2,6 +2,7 @@ import importlib.util
 import json
 import os
 import shutil
+import socket
 import subprocess
 import sys
 import tempfile
@@ -99,23 +100,56 @@ def test_source_refuses_wrong_identity_missing_password_or_tls_downgrade(url):
         backup.source_config({"project_ref": "syntheticfixture", "db_url": url})
 
 
-def test_real_postgres_isolated_restore(tmp_path, keys):
+def test_real_supabase_cli_reads_private_passfile_without_password_in_argv(tmp_path):
+    if not shutil.which("supabase"):
+        pytest.skip("Supabase CLI is required to prove the passfile boundary")
+    from urllib.parse import quote
+    secret = "synthetic:pass\\word-with-dashes"
+    config = {"project_ref": "syntheticfixture", "db_url":
+              "postgresql://postgres:" + quote(secret, safe="") +
+              "@db.syntheticfixture.supabase.co:5432/postgres?sslmode=require"}
+    passwordless, env = backup.dump_connection(config, tmp_path / "source.pgpass")
+    assert secret not in passwordless
+    assert quote(secret, safe="") not in passwordless
+    assert "PGPASSWORD" not in env
+    assert "SUPABASE_DB_PASSWORD" not in env
+    assert (tmp_path / "source.pgpass").stat().st_mode & 0o777 == 0o600
+    # This executes the real pinned CLI parser, without a server connection or
+    # Docker. Its generated script proves that it loaded the correct password.
+    output = subprocess.check_output(
+        ["supabase", "db", "dump", "--db-url", passwordless, "--dry-run", "--role-only"],
+        env=env, stderr=subprocess.PIPE,
+    ).decode()
+    assert 'export PGPASSWORD="' + secret + '"' in output
+
+
+def test_real_postgres_isolated_restore(tmp_path, keys, monkeypatch):
     """Run only when explicitly enabled; no production connection is possible."""
     configured = os.environ.get("OPENADAPT_TEST_POSTGRES_BIN")
     if not configured:
         pytest.skip("set OPENADAPT_TEST_POSTGRES_BIN for the isolated PostgreSQL drill")
     binary = Path(configured)
+    native17 = b" 17." in subprocess.check_output([str(binary / "pg_dump"), "--version"])
     clusters = []
+    source_port = None
     with tempfile.TemporaryDirectory(prefix="oadb-", dir="/private/tmp" if sys.platform == "darwin" else "/tmp") as work:
         root = Path(work)
         root.chmod(0o700)
 
-        def command(cluster, executable, *args, input=None):
+        def connection_env(cluster):
             env = os.environ.copy()
             for name in list(env):
                 if name.startswith("PG"):
                     env.pop(name)
-            env.update(PGHOST=str(cluster / "socket"), PGPORT="55481", PGUSER="postgres", PGDATABASE="postgres")
+            port = str(source_port) if cluster.name == "source" else "55481"
+            env.update(PGHOST=str(cluster / "socket"), PGPORT=port, PGUSER="postgres", PGDATABASE="postgres",
+                       PGSSLMODE="require", PGCONNECT_TIMEOUT="3",
+                       PGOPTIONS="-c default_transaction_read_only=on")
+            return env
+
+        def command(cluster, executable, *args, input=None):
+            env = connection_env(cluster)
+            env.pop("PGOPTIONS")  # Only the test fixture writer can change synthetic data.
             return subprocess.run([str(binary / executable), *args], input=input, env=env,
                                   capture_output=True, check=True, timeout=60).stdout
 
@@ -123,23 +157,54 @@ def test_real_postgres_isolated_restore(tmp_path, keys):
             output.mkdir()
             (output / "roles.sql").write_text("RESET ALL;\n")
             for name, flag in (("schema.sql", "--schema-only"), ("data.sql", "--data-only")):
-                (output / name).write_bytes(command(cluster, "pg_dump", flag, "--no-owner", "--no-privileges"))
+                if native17:
+                    flags = [] if flag == "--schema-only" else ["--data-only", "--use-copy", "-x", "storage.buckets_vectors", "-x", "storage.vector_indexes"]
+                    backup.native_dump(output / name, flags, connection_env(cluster), binary)
+                else:
+                    (output / name).write_bytes(command(cluster, "pg_dump", flag, "--no-owner", "--no-privileges"))
 
         try:
             for name in ("source", "scratch"):
                 cluster = root / name
                 cluster.mkdir()
                 (cluster / "socket").mkdir()
+                if name == "source":
+                    with socket.socket() as listener:
+                        listener.bind(("127.0.0.1", 0))
+                        source_port = listener.getsockname()[1]
                 command(cluster, "initdb", "-D", str(cluster / "data"), "-U", "postgres", "--auth=trust", "--no-locale", "-E", "UTF8")
+                hostname = "127.0.0.1" if name == "source" else "''"
+                port = source_port if name == "source" else 55481
                 command(cluster, "pg_ctl", "-D", str(cluster / "data"), "-l", str(cluster / "server.log"),
-                        "-o", f"-h '' -k {cluster / 'socket'} -p 55481", "-w", "start")
+                        "-o", f"-h {hostname} -k {cluster / 'socket'} -p {port}", "-w", "start")
                 clusters.append(cluster)
             command(clusters[0], "psql", "-X", "-v", "ON_ERROR_STOP=1", input=(
                 b"CREATE TABLE public.records (id integer PRIMARY KEY, amount numeric(12,2), note text);\n"
                 b"INSERT INTO public.records VALUES (1,123.45,'synthetic'),(2,-3.50,E'line1\\nline2'),(3,NULL,NULL);\n"
             ))
             source_dumps = root / "source-dump"
-            dumps(clusters[0], source_dumps)
+            if native17:
+                # Same real client and server: allow plaintext as a control,
+                # then require TLS and verify refusal before any archive exists.
+                tcp = connection_env(clusters[0]) | {"PGHOST": "127.0.0.1", "PGSSLMODE": "disable"}
+                backup.native_dump(root / "tls-control.sql", [], tcp, binary)
+                tcp["PGSSLMODE"] = "require"
+                with pytest.raises(backup.contract.ContractError):
+                    backup.native_dump(root / "tls-refused.sql", [], tcp, binary)
+                # Inject the exact live DDL race after the schema dump. The
+                # data dump must import the same exported snapshot.
+                original = backup.native_dump
+                def migrate_after_schema(output, flags, env, postgres_bin, **kwargs):
+                    original(output, flags, env, postgres_bin, **kwargs)
+                    if output.name == "schema.sql":
+                        command(clusters[0], "psql", "-X", "-v", "ON_ERROR_STOP=1", "-c",
+                                "ALTER TABLE records ADD COLUMN migration_race text NOT NULL DEFAULT 'new'; UPDATE records SET amount=999 WHERE id=1;")
+                source_dumps.mkdir()
+                with monkeypatch.context() as patch:
+                    patch.setattr(backup, "native_dump", migrate_after_schema)
+                    backup.capture_dumps(source_dumps, connection_env(clusters[0]), binary)
+            else:
+                dumps(clusters[0], source_dumps)
             archive, receipt = pack(tmp_path, keys, source_dumps)
             recovered = archive.parent / "restore-input"
             backup.unpack(archive, keys[0], recovered)

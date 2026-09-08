@@ -20,16 +20,18 @@ Management API token isn't a database password. Do not reset the production
 password to obtain a backup, and do not use a table-by-table API export as a
 replacement for a database dump.
 
-Supabase takes separate roles, schema, and data dumps. Run this procedure
-outside schema migrations. It doesn't export private Storage objects or
+The command uses one exported read-only PostgreSQL snapshot for both schema
+and data. It holds the exporting transaction open until both dumps complete.
+It also compares roles before and after capture and refuses a changed role
+set. It doesn't export private Storage objects or
 provide a provider-independent snapshot of Supabase's managed services. Use
 the complete Cloud recovery drill before a database-plus-Storage recovery
 claim.
 
 ## Prepare the device and the credential
 
-Use an encrypted local volume. Install Supabase CLI 2.75.0, its required Docker
-runtime, and `age`. Keep the decryption key in a `0600` file and in a separate
+Use an encrypted local volume. Install Supabase CLI 2.75.0, native PostgreSQL17
+tools, and `age`. This command doesn't start Docker. Keep the decryption key in a `0600` file and in a separate
 vault or offline copy. A second file on the same device doesn't protect against
 device loss.
 
@@ -61,8 +63,16 @@ python scripts/local_database_backup.py capture \
   --backup-root "$HOME/.config/openadapt/database-backup/archives" \
   --identity "$HOME/.config/openadapt/keys/production-db-backup.agekey" \
   --recipients ops/backup/age-recipients.txt \
+  --postgres-bin '<absolute PostgreSQL17 bin directory>' \
   --source-commit "$(git rev-parse HEAD)"
 ```
+
+The native client receives a passwordless connection and a temporary `0600`
+libpq password file. The script removes inherited PostgreSQL overrides and
+requires TLS at the actual `pg_dump` connection. It generates the maintained
+Supabase dump script with a fixed synthetic URL and removes exactly its five
+connection exports before execution. No production password enters process
+arguments or generated shell text. The source sessions are read-only.
 
 Each UTC directory contains exactly these files:
 
@@ -127,12 +137,17 @@ defines the database-only receipt and the separate private-Storage drill.
 
 ## Isolated synthetic verification
 
-The integration test initializes two new PostgreSQL clusters. They use private
-Unix sockets and contain synthetic rows only. It encrypts a real dump,
+The integration test initializes two new PostgreSQL clusters. They use local
+connections and contain synthetic rows only. The source also binds a random
+loopback port for the TLS refusal probe. It encrypts a real dump,
 decrypts it, restores into the second cluster, compares complete schema/data
 re-dumps, and checks an independent row count and sum. It then deletes one
 synthetic row and requires the comparison to fail. Both servers stop in the
-test cleanup.
+test cleanup. With PostgreSQL17, it also runs the actual native dump path,
+changes the source schema and rows between the two dumps, and proves that the
+restored snapshot retains the original schema and values. A plaintext control
+can connect to the synthetic server; the TLS-required backup client refuses
+that same server because it has no TLS certificate.
 
 ```sh
 OPENADAPT_TEST_POSTGRES_BIN='<absolute PostgreSQL bin directory>' \
