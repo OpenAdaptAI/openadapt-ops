@@ -1,12 +1,12 @@
 {
   "schema_version": "openadapt.production-workflow-admissions-source/v1",
   "repository": "OpenAdaptAI/.github",
-  "source_commit": "34207373d1e21de90772e0343c1abfbf477483e0",
+  "source_commit": "5b48240494a250633eec8fcf99fab26553efd0c6",
   "files": {
     "admissions": {
       "path": "production-workflow-admissions.json",
-      "url": "https://raw.githubusercontent.com/OpenAdaptAI/.github/34207373d1e21de90772e0343c1abfbf477483e0/production-workflow-admissions.json",
-      "sha256": "sha256:fa3b4cc4ed0ab62d8d4ff5705495ec0a82f0572654617a152fd9675818684150"
+      "url": "https://raw.githubusercontent.com/OpenAdaptAI/.github/5b48240494a250633eec8fcf99fab26553efd0c6/production-workflow-admissions.json",
+      "sha256": "sha256:ca24700ebf15acb3e7cd7c19b07d157c27ba90f2dd9705aa871c4015adf11857"
     }
   }
 }

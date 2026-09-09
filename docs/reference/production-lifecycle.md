@@ -45,7 +45,8 @@ The public workflow ledger is
 [production-workflow-admissions.json](../production-workflow-admissions.json).
 It retains remote-safe-synthetic workflow-admission records and each bundle's
 declared version. The projection includes tutorial bundles with
-`bundle_version` `0.0.0-synthetic`. Its source descriptor binds the exact
+`bundle_version` `0.0.0-synthetic` and the Flow 1.35.1 reference bundle
+`1.35.1-reference.1`. Its source descriptor binds the exact
 OpenAdaptAI/.github commit and ledger hash.
 
 A retained row doesn't establish current qualification. Verify the exact

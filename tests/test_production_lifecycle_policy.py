@@ -114,7 +114,7 @@ class ProductionLifecycleProjectionTests(unittest.TestCase):
             target["latest_admission"]["admission_id"], "production:flow:2"
         )
 
-    def test_committed_projection_admits_all_seven_and_is_schema_bound(self) -> None:
+    def test_committed_projection_retains_seven_targets_and_is_schema_bound(self) -> None:
         output = json.loads(
             (ROOT / "docs" / "production-lifecycle.json").read_text(encoding="utf-8")
         )
@@ -139,7 +139,7 @@ class ProductionLifecycleProjectionTests(unittest.TestCase):
             "agent": "2.0.1",
             "capture": "1.2.2",
             "desktop": "0.16.0",
-            "flow": "1.34.0",
+            "flow": "1.35.1",
             "openadapt": "1.16.0",
         }
         for target_id, version in expected_versions.items():
@@ -150,7 +150,7 @@ class ProductionLifecycleProjectionTests(unittest.TestCase):
             )
             self.assertEqual(target["latest_admission"]["verdict"], "accepted")
             self.assertIsNone(target["latest_admission"]["expires_at"])
-            self.assertEqual(len(target["admission_history"]), 1)
+            self.assertEqual(len(target["admission_history"]), 2 if target_id == "flow" else 1)
         for target_id in ("cloud", "docs"):
             target = by_id[target_id]
             self.assertEqual(target["latest_admission"]["release"]["kind"], "deployment")

@@ -664,13 +664,13 @@ test("the committed ledger is not yet active before issued_at", () => {
 test("the committed ledger retains seven until-revoked candidates for current verification", () => {
   const committed = require("../../docs/production-lifecycle.json");
   const targets = lifecycle.validateProjection(committed);
-  const afterIssue = Date.parse("2026-09-02T20:00:00Z");
+  const afterIssue = Date.parse("2026-09-10T00:00:00Z");
   const afterThirtyDays = Date.parse("2026-12-01T00:00:00Z");
   const expectedVersion = {
     agent: "2.0.1",
     capture: "1.2.2",
     desktop: "0.16.0",
-    flow: "1.34.0",
+    flow: "1.35.1",
     openadapt: "1.16.0",
   };
 
@@ -698,7 +698,7 @@ test("a timestamped v2 expiry is not until-revoked", () => {
   const target = structuredClone(
     committed.targets.find((candidate) => candidate.id === "flow"),
   );
-  const now = Date.parse("2026-09-03T12:00:00Z");
+  const now = Date.parse("2026-09-10T00:00:00Z");
 
   assert.ok(lifecycle.deriveTarget(target, committed, now));
   target.latest_admission.expires_at = "2026-09-09T18:24:25Z";

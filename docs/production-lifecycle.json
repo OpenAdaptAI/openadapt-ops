@@ -13,63 +13,63 @@
     "files": {
       "admissions": {
         "path": "production-lifecycle-admissions.json",
-        "sha256": "sha256:e64ef5d0b5b0e7b3ff91ac23446dac946378ba69af8a288d458edb27a185058e",
-        "url": "https://raw.githubusercontent.com/OpenAdaptAI/.github/9b61391713203998e584f4834e4812bb41b40f6e/production-lifecycle-admissions.json"
+        "sha256": "sha256:8859deeb4ff2dc7704dc56eb0e356f10afa127d7e9e768a8d803cc97f6e61cf5",
+        "url": "https://raw.githubusercontent.com/OpenAdaptAI/.github/5b48240494a250633eec8fcf99fab26553efd0c6/production-lifecycle-admissions.json"
       },
       "admissions_schema": {
         "path": "schemas/production-lifecycle-admissions.schema.json",
         "sha256": "sha256:33ad1421fafeef7780183bfd20100bada03111bc9b3eb06319097b6f0e61365f",
-        "url": "https://raw.githubusercontent.com/OpenAdaptAI/.github/9b61391713203998e584f4834e4812bb41b40f6e/schemas/production-lifecycle-admissions.schema.json"
+        "url": "https://raw.githubusercontent.com/OpenAdaptAI/.github/5b48240494a250633eec8fcf99fab26553efd0c6/schemas/production-lifecycle-admissions.schema.json"
       },
       "evidence_manifest_schema": {
         "path": "schemas/production-lifecycle-evidence-manifest.schema.json",
         "sha256": "sha256:d720f9676dde3ea6deb9d3a2b91bcd8eae8fcecc2cafaef17a0d055391cee860",
-        "url": "https://raw.githubusercontent.com/OpenAdaptAI/.github/9b61391713203998e584f4834e4812bb41b40f6e/schemas/production-lifecycle-evidence-manifest.schema.json"
+        "url": "https://raw.githubusercontent.com/OpenAdaptAI/.github/5b48240494a250633eec8fcf99fab26553efd0c6/schemas/production-lifecycle-evidence-manifest.schema.json"
       },
       "evidence_registry": {
         "path": "evidence-registry.json",
-        "sha256": "sha256:3d2e069c1b7ec3fce828d923bc79f94aeb6a25c01f3b201dbed65b099713c585",
-        "url": "https://raw.githubusercontent.com/OpenAdaptAI/.github/9b61391713203998e584f4834e4812bb41b40f6e/evidence-registry.json"
+        "sha256": "sha256:549c8559c7225ce55e8d35f16ecd9845f83e8d52483c98cf846f0417f4c7e4e7",
+        "url": "https://raw.githubusercontent.com/OpenAdaptAI/.github/5b48240494a250633eec8fcf99fab26553efd0c6/evidence-registry.json"
       },
       "evidence_registry_schema": {
         "path": "schemas/evidence-registry.schema.json",
         "sha256": "sha256:3159f1e13360acedf51de79a3d8f910db65530dcf545659a861ea4ccb6e12869",
-        "url": "https://raw.githubusercontent.com/OpenAdaptAI/.github/9b61391713203998e584f4834e4812bb41b40f6e/schemas/evidence-registry.schema.json"
+        "url": "https://raw.githubusercontent.com/OpenAdaptAI/.github/5b48240494a250633eec8fcf99fab26553efd0c6/schemas/evidence-registry.schema.json"
       },
       "evidence_registry_validator": {
         "path": "scripts/validate_evidence_registry.py",
         "sha256": "sha256:aea4d61cb5becb46f2853c7f765aba7a27b8f0737ae9a5f8d240def780e6c628",
-        "url": "https://raw.githubusercontent.com/OpenAdaptAI/.github/9b61391713203998e584f4834e4812bb41b40f6e/scripts/validate_evidence_registry.py"
+        "url": "https://raw.githubusercontent.com/OpenAdaptAI/.github/5b48240494a250633eec8fcf99fab26553efd0c6/scripts/validate_evidence_registry.py"
       },
       "evidence_summary_schema": {
         "path": "schemas/production-lifecycle-evidence-summary.schema.json",
         "sha256": "sha256:5d5f28261568222f45e9a66d9c9daf468168147f9d0d82d223eba1b8e777e2c9",
-        "url": "https://raw.githubusercontent.com/OpenAdaptAI/.github/9b61391713203998e584f4834e4812bb41b40f6e/schemas/production-lifecycle-evidence-summary.schema.json"
+        "url": "https://raw.githubusercontent.com/OpenAdaptAI/.github/5b48240494a250633eec8fcf99fab26553efd0c6/schemas/production-lifecycle-evidence-summary.schema.json"
       },
       "lifecycle": {
         "path": "repository-lifecycle.yml",
         "sha256": "sha256:823933a80ac4459f7359719f69dfeb7f164e940918ad4811d789eb2040bfc50b",
-        "url": "https://raw.githubusercontent.com/OpenAdaptAI/.github/9b61391713203998e584f4834e4812bb41b40f6e/repository-lifecycle.yml"
+        "url": "https://raw.githubusercontent.com/OpenAdaptAI/.github/5b48240494a250633eec8fcf99fab26553efd0c6/repository-lifecycle.yml"
       },
       "policy": {
         "path": "production-lifecycle-policy.json",
         "sha256": "sha256:1887a1222f5c34a6bd3e2a03f8aa2b55368c66bb9e6cad109a0c5c1ed0b5c524",
-        "url": "https://raw.githubusercontent.com/OpenAdaptAI/.github/9b61391713203998e584f4834e4812bb41b40f6e/production-lifecycle-policy.json"
+        "url": "https://raw.githubusercontent.com/OpenAdaptAI/.github/5b48240494a250633eec8fcf99fab26553efd0c6/production-lifecycle-policy.json"
       },
       "policy_schema": {
         "path": "schemas/production-lifecycle-policy.schema.json",
         "sha256": "sha256:c5d3157a7be841351b39f3ec8a8f6433de6d16b85ae0b1c61800d2c052aaa734",
-        "url": "https://raw.githubusercontent.com/OpenAdaptAI/.github/9b61391713203998e584f4834e4812bb41b40f6e/schemas/production-lifecycle-policy.schema.json"
+        "url": "https://raw.githubusercontent.com/OpenAdaptAI/.github/5b48240494a250633eec8fcf99fab26553efd0c6/schemas/production-lifecycle-policy.schema.json"
       },
       "validator": {
         "path": "scripts/validate_production_lifecycle.py",
-        "sha256": "sha256:77e583d8baed30938268b8c3c4f34e4634acf7ba5b82dc9d58b1f0f4527ea3cb",
-        "url": "https://raw.githubusercontent.com/OpenAdaptAI/.github/9b61391713203998e584f4834e4812bb41b40f6e/scripts/validate_production_lifecycle.py"
+        "sha256": "sha256:04c3945106fb1004535be531931eab58b5e7c209668f3602628c909ece669333",
+        "url": "https://raw.githubusercontent.com/OpenAdaptAI/.github/5b48240494a250633eec8fcf99fab26553efd0c6/scripts/validate_production_lifecycle.py"
       }
     },
     "repository": "OpenAdaptAI/.github",
     "schema_version": "openadapt.production-lifecycle-source/v1",
-    "source_commit": "9b61391713203998e584f4834e4812bb41b40f6e"
+    "source_commit": "5b48240494a250633eec8fcf99fab26553efd0c6"
   },
   "targets": [
     {
@@ -2351,6 +2351,245 @@
           "signer_registry_sha256": "sha256:e243a23243b24986ed08812e284a1bd8c4993814149f02bcba79cc520e10ca14",
           "target": "flow",
           "verdict": "accepted"
+        },
+        {
+          "admission_id_sha256": "sha256:279d6e0a9728be2d6466106b07a23a45cb6dd8acf0c4f4bcc2047d09468cabb1",
+          "artifact_inventory_sha256": "sha256:642f2fb785203048678cdad07c38a990701d6a312d8f1bba9e1b097d49569707",
+          "authority_state_sha256": "sha256:df5079141df68877c4b06f05b9fb9fdf279307b7629eb1f2dce12def4bd5e2fa",
+          "claim_scope": "production_flow",
+          "evidence_class": "remote-safe-synthetic",
+          "expires_at": null,
+          "issued_at": "2026-09-09T18:59:59Z",
+          "issuer": {
+            "environment": "production-release-admission",
+            "ref": "refs/heads/main",
+            "repository": "OpenAdaptAI/.github",
+            "repository_id": "858454062",
+            "repository_owner_id": "132681217",
+            "source_commit": "26e98be1866f342e2cb8bae53f57254b3ad715cd",
+            "workflow": ".github/workflows/issue-production-release-admission.yml"
+          },
+          "not_before": "2026-09-09T18:59:59Z",
+          "production_acceptance_summary_bundle_reference": {
+            "kind": "production-acceptance-summary-sigstore-bundle",
+            "object_media_type": "application/vnd.dev.sigstore.bundle.v0.3+json",
+            "object_path": "production-evidence/objects/sha256/45/4528137325a9fcc6a07b1dc6a4e4eb6ac542d153b7660aff0f58d1ab5803d52e.production-acceptance-summary-sigstore-bundle.json",
+            "object_schema_version": "application/vnd.dev.sigstore.bundle.v0.3+json",
+            "object_sha256": "sha256:4528137325a9fcc6a07b1dc6a4e4eb6ac542d153b7660aff0f58d1ab5803d52e",
+            "registry_entry_sha256": "sha256:691ab41408c5eb46bfb0653b17fcb87455733898d1acb33b175bc510af0ebc62",
+            "registry_head_sha256": "sha256:f821ad5b1f342d62494f3d2204a0fc15b861b3ee4f8b7e6dbd0f3139a058df90",
+            "registry_revision": 7,
+            "registry_source_commit": "26e98be1866f342e2cb8bae53f57254b3ad715cd",
+            "repository": "OpenAdaptAI/.github",
+            "repository_id": "858454062",
+            "repository_owner_id": "132681217",
+            "schema_version": "openadapt.production-evidence-object-reference/v2",
+            "semantic_identity_sha256": "sha256:65c5bf4d7b8e0159a1ede34440bd80c0287f4448027c54c44e6a09214ac9bf88",
+            "size_bytes": 2789,
+            "subject_sha256": "sha256:30eab7c62a55e988a543c1e21463676585171ba9e80afe71f518d89b04e53977"
+          },
+          "production_acceptance_summary_reference": {
+            "kind": "production-acceptance-summary",
+            "object_media_type": "application/vnd.openadapt.production-lifecycle-evidence-summary+json;version=3",
+            "object_path": "production-evidence/objects/sha256/30/30eab7c62a55e988a543c1e21463676585171ba9e80afe71f518d89b04e53977.production-acceptance-summary.json",
+            "object_schema_version": "openadapt.production-lifecycle-evidence-summary/v3",
+            "object_sha256": "sha256:30eab7c62a55e988a543c1e21463676585171ba9e80afe71f518d89b04e53977",
+            "registry_entry_sha256": "sha256:8b4d7accdc374e3859c552e934f1164ccb3c05b0ddbc711f855c4ad5e3bcd3cb",
+            "registry_head_sha256": "sha256:f821ad5b1f342d62494f3d2204a0fc15b861b3ee4f8b7e6dbd0f3139a058df90",
+            "registry_revision": 7,
+            "registry_source_commit": "26e98be1866f342e2cb8bae53f57254b3ad715cd",
+            "repository": "OpenAdaptAI/.github",
+            "repository_id": "858454062",
+            "repository_owner_id": "132681217",
+            "schema_version": "openadapt.production-evidence-object-reference/v2",
+            "semantic_identity_sha256": "sha256:06b6ad85b2a88ab5f829a0d1b895d50a65e07c072f3fab1c8329b3320068133a",
+            "size_bytes": 14525,
+            "subject_sha256": null
+          },
+          "publication_policy_sha256": "sha256:ed5ab69fe8127604ca674263cbc8c774b7cfd10754e90bfaa9b71ba573bce1d1",
+          "publication_staging": {
+            "assets": [
+              {
+                "asset_id": "553219190",
+                "kind": "python-wheel",
+                "media_type": "application/zip",
+                "name": "openadapt_flow-1.35.1-py3-none-any.whl",
+                "publish_destinations": [
+                  "github-release",
+                  "pypi"
+                ],
+                "sha256": "sha256:cfbc89acc6a2e3bcb5502a4d1fb29e985a03149a7f14c32c259254676bb3f11d",
+                "size_bytes": 2129416,
+                "uploader_id": "321543906",
+                "uploader_login": "openadapt-release[bot]"
+              },
+              {
+                "asset_id": "553219189",
+                "kind": "python-sdist",
+                "media_type": "application/gzip",
+                "name": "openadapt_flow-1.35.1.tar.gz",
+                "publish_destinations": [
+                  "github-release",
+                  "pypi"
+                ],
+                "sha256": "sha256:c5c6c437472b23999223b0d2473dbf21de2ca05274c270ae3854adeda6b07dca",
+                "size_bytes": 21135866,
+                "uploader_id": "321543906",
+                "uploader_login": "openadapt-release[bot]"
+              }
+            ],
+            "draft": false,
+            "draft_release_id": "385710075",
+            "immutable_releases": {
+              "enabled": true,
+              "enforced_by_owner": false
+            },
+            "immutable_releases_sha256": "sha256:07649aafb167237fecc138f5e93b48ddce5a69f4060da7130e3c78e59fd48581",
+            "observed_at": "2026-09-09T18:40:27Z",
+            "prerelease": false,
+            "publication_mode": "already-published-pypi",
+            "pypi_files": [
+              {
+                "filename": "openadapt_flow-1.35.1-py3-none-any.whl",
+                "packagetype": "bdist_wheel",
+                "sha256": "sha256:cfbc89acc6a2e3bcb5502a4d1fb29e985a03149a7f14c32c259254676bb3f11d",
+                "size_bytes": 2129416,
+                "yanked": false
+              },
+              {
+                "filename": "openadapt_flow-1.35.1.tar.gz",
+                "packagetype": "sdist",
+                "sha256": "sha256:c5c6c437472b23999223b0d2473dbf21de2ca05274c270ae3854adeda6b07dca",
+                "size_bytes": 21135866,
+                "yanked": false
+              }
+            ],
+            "release_app_bot_user_id": "321543906",
+            "release_app_id": "4730708",
+            "release_app_installation_id": "156835568",
+            "release_author_login": "openadapt-release[bot]",
+            "repository": "OpenAdaptAI/openadapt-flow",
+            "repository_id": "1291376938",
+            "schema_version": "openadapt.production-release-staging-evidence/v1",
+            "tag": "v1.35.1",
+            "tag_ref_state": {
+              "exists": true,
+              "ref": "refs/tags/v1.35.1"
+            },
+            "tag_ref_state_sha256": "sha256:2efe31dddf8f57f3ba0986b364e1ee4caf962f0172faa902662b747edaa84fa0",
+            "tag_rulesets": [
+              {
+                "bypass_actors": [
+                  {
+                    "actor_id": "4730708",
+                    "actor_type": "Integration",
+                    "bypass_mode": "always"
+                  }
+                ],
+                "conditions": {
+                  "ref_name": {
+                    "exclude": [],
+                    "include": [
+                      "refs/tags/v*"
+                    ]
+                  }
+                },
+                "enforcement": "active",
+                "name": "OpenAdapt policy: release tag creation",
+                "repository": "OpenAdaptAI/openadapt-flow",
+                "repository_id": "1291376938",
+                "role": "creation_authority",
+                "rules": [
+                  {
+                    "type": "creation"
+                  }
+                ],
+                "ruleset_id": "22667117",
+                "schema_version": "openadapt.production-release-tag-ruleset/v1",
+                "target": "tag"
+              },
+              {
+                "bypass_actors": [],
+                "conditions": {
+                  "ref_name": {
+                    "exclude": [],
+                    "include": [
+                      "refs/tags/v*"
+                    ]
+                  }
+                },
+                "enforcement": "active",
+                "name": "OpenAdapt policy: immutable release tags",
+                "repository": "OpenAdaptAI/openadapt-flow",
+                "repository_id": "1291376938",
+                "role": "immutability",
+                "rules": [
+                  {
+                    "type": "deletion"
+                  },
+                  {
+                    "type": "non_fast_forward"
+                  },
+                  {
+                    "type": "update"
+                  }
+                ],
+                "ruleset_id": "22667137",
+                "schema_version": "openadapt.production-release-tag-ruleset/v1",
+                "target": "tag"
+              }
+            ],
+            "tag_rulesets_sha256": "sha256:6d002021c7ade6bd0abd4c81ad3fbd8421be7d87116cc7d5a840951a1a2fe0fb",
+            "target_commitish": "44e99a48ebf048c18892aa17cef6ae594db0d0c2"
+          },
+          "publication_staging_sha256": "sha256:ade70ba59e8ca9827d3f090559f02b31cdbc7f1198dbf526b9b483510ac0b6b1",
+          "release": {
+            "artifacts": [
+              {
+                "kind": "python-sdist",
+                "media_type": "application/gzip",
+                "name": "openadapt_flow-1.35.1.tar.gz",
+                "publish_destinations": [
+                  "github-release",
+                  "pypi"
+                ],
+                "sha256": "sha256:c5c6c437472b23999223b0d2473dbf21de2ca05274c270ae3854adeda6b07dca",
+                "size_bytes": 21135866
+              },
+              {
+                "kind": "python-wheel",
+                "media_type": "application/zip",
+                "name": "openadapt_flow-1.35.1-py3-none-any.whl",
+                "publish_destinations": [
+                  "github-release",
+                  "pypi"
+                ],
+                "sha256": "sha256:cfbc89acc6a2e3bcb5502a4d1fb29e985a03149a7f14c32c259254676bb3f11d",
+                "size_bytes": 2129416
+              }
+            ],
+            "deployment_id": null,
+            "deployment_sha256": null,
+            "kind": "package",
+            "schema_version": "openadapt.production-release-candidate/v1",
+            "source_commit": "44e99a48ebf048c18892aa17cef6ae594db0d0c2",
+            "source_repository": "OpenAdaptAI/openadapt-flow",
+            "source_repository_id": "1291376938",
+            "tag": "v1.35.1",
+            "version": "1.35.1"
+          },
+          "release_identity": {
+            "channel": "production",
+            "previous_admission_sha256": "sha256:d2983b86d5428c892421b191f6943a63cf4f9a0b1629e324d099f5df6fa5dcda",
+            "schema_version": "openadapt.monotonic-production-release/v1",
+            "sequence": 2
+          },
+          "release_sha256": "sha256:32cae0917121cbcf657347ca023da15b5b3151db6656526df896e93e3377d49e",
+          "revocation_state_sha256": "sha256:250ab430e467f5e584ebd2b1832976b42186b698da71d627ee1724c2b1da2457",
+          "schema_version": "openadapt.qualification-release/v2",
+          "signer_registry_sha256": "sha256:e243a23243b24986ed08812e284a1bd8c4993814149f02bcba79cc520e10ca14",
+          "target": "flow",
+          "verdict": "accepted"
         }
       ],
       "artifact_authority_by_kind": {
@@ -2360,114 +2599,114 @@
       "display_name": "OpenAdapt Flow",
       "id": "flow",
       "latest_admission": {
-        "admission_id_sha256": "sha256:d2983b86d5428c892421b191f6943a63cf4f9a0b1629e324d099f5df6fa5dcda",
-        "artifact_inventory_sha256": "sha256:ec3ef7c177c493bebee3da60f170b37793832e81066e9d9ee785d5fa225a5ac5",
+        "admission_id_sha256": "sha256:279d6e0a9728be2d6466106b07a23a45cb6dd8acf0c4f4bcc2047d09468cabb1",
+        "artifact_inventory_sha256": "sha256:642f2fb785203048678cdad07c38a990701d6a312d8f1bba9e1b097d49569707",
         "authority_state_sha256": "sha256:df5079141df68877c4b06f05b9fb9fdf279307b7629eb1f2dce12def4bd5e2fa",
         "claim_scope": "production_flow",
         "evidence_class": "remote-safe-synthetic",
         "expires_at": null,
-        "issued_at": "2026-09-02T18:24:25Z",
+        "issued_at": "2026-09-09T18:59:59Z",
         "issuer": {
           "environment": "production-release-admission",
           "ref": "refs/heads/main",
           "repository": "OpenAdaptAI/.github",
           "repository_id": "858454062",
           "repository_owner_id": "132681217",
-          "source_commit": "2c129702da718522cc257913207b6ed6f3b33b7c",
+          "source_commit": "26e98be1866f342e2cb8bae53f57254b3ad715cd",
           "workflow": ".github/workflows/issue-production-release-admission.yml"
         },
-        "not_before": "2026-09-02T18:24:25Z",
+        "not_before": "2026-09-09T18:59:59Z",
         "production_acceptance_summary_bundle_reference": {
           "kind": "production-acceptance-summary-sigstore-bundle",
           "object_media_type": "application/vnd.dev.sigstore.bundle.v0.3+json",
-          "object_path": "production-evidence/objects/sha256/e9/e9ecdee1fc3458906fc91f5760d215bb5bec3591a6ed9ae0b412114e24fcf8fb.production-acceptance-summary-sigstore-bundle.json",
+          "object_path": "production-evidence/objects/sha256/45/4528137325a9fcc6a07b1dc6a4e4eb6ac542d153b7660aff0f58d1ab5803d52e.production-acceptance-summary-sigstore-bundle.json",
           "object_schema_version": "application/vnd.dev.sigstore.bundle.v0.3+json",
-          "object_sha256": "sha256:e9ecdee1fc3458906fc91f5760d215bb5bec3591a6ed9ae0b412114e24fcf8fb",
-          "registry_entry_sha256": "sha256:7dc2fcab09f705356a22b058b9e7f078596bcdefdb697bef7315510d17931549",
-          "registry_head_sha256": "sha256:9a9f597b0d87674c4d36c022227201a5d8f3072237624346793692c3a863d12e",
-          "registry_revision": 1,
-          "registry_source_commit": "2c129702da718522cc257913207b6ed6f3b33b7c",
+          "object_sha256": "sha256:4528137325a9fcc6a07b1dc6a4e4eb6ac542d153b7660aff0f58d1ab5803d52e",
+          "registry_entry_sha256": "sha256:691ab41408c5eb46bfb0653b17fcb87455733898d1acb33b175bc510af0ebc62",
+          "registry_head_sha256": "sha256:f821ad5b1f342d62494f3d2204a0fc15b861b3ee4f8b7e6dbd0f3139a058df90",
+          "registry_revision": 7,
+          "registry_source_commit": "26e98be1866f342e2cb8bae53f57254b3ad715cd",
           "repository": "OpenAdaptAI/.github",
           "repository_id": "858454062",
           "repository_owner_id": "132681217",
           "schema_version": "openadapt.production-evidence-object-reference/v2",
-          "semantic_identity_sha256": "sha256:1b5606b9f4c14edd37ec134a9c716a070832b8709e3c2f9c6f4186ff514b7c82",
+          "semantic_identity_sha256": "sha256:65c5bf4d7b8e0159a1ede34440bd80c0287f4448027c54c44e6a09214ac9bf88",
           "size_bytes": 2789,
-          "subject_sha256": "sha256:3849fd4e2cae0d3a74964362e4850870bb68c23007d5eb818800159d3eb730d4"
+          "subject_sha256": "sha256:30eab7c62a55e988a543c1e21463676585171ba9e80afe71f518d89b04e53977"
         },
         "production_acceptance_summary_reference": {
           "kind": "production-acceptance-summary",
           "object_media_type": "application/vnd.openadapt.production-lifecycle-evidence-summary+json;version=3",
-          "object_path": "production-evidence/objects/sha256/38/3849fd4e2cae0d3a74964362e4850870bb68c23007d5eb818800159d3eb730d4.production-acceptance-summary.json",
+          "object_path": "production-evidence/objects/sha256/30/30eab7c62a55e988a543c1e21463676585171ba9e80afe71f518d89b04e53977.production-acceptance-summary.json",
           "object_schema_version": "openadapt.production-lifecycle-evidence-summary/v3",
-          "object_sha256": "sha256:3849fd4e2cae0d3a74964362e4850870bb68c23007d5eb818800159d3eb730d4",
-          "registry_entry_sha256": "sha256:932511112a7eb5f296b752953ac184516a47f7630643ecf70955af722e78ef68",
-          "registry_head_sha256": "sha256:9a9f597b0d87674c4d36c022227201a5d8f3072237624346793692c3a863d12e",
-          "registry_revision": 1,
-          "registry_source_commit": "2c129702da718522cc257913207b6ed6f3b33b7c",
+          "object_sha256": "sha256:30eab7c62a55e988a543c1e21463676585171ba9e80afe71f518d89b04e53977",
+          "registry_entry_sha256": "sha256:8b4d7accdc374e3859c552e934f1164ccb3c05b0ddbc711f855c4ad5e3bcd3cb",
+          "registry_head_sha256": "sha256:f821ad5b1f342d62494f3d2204a0fc15b861b3ee4f8b7e6dbd0f3139a058df90",
+          "registry_revision": 7,
+          "registry_source_commit": "26e98be1866f342e2cb8bae53f57254b3ad715cd",
           "repository": "OpenAdaptAI/.github",
           "repository_id": "858454062",
           "repository_owner_id": "132681217",
           "schema_version": "openadapt.production-evidence-object-reference/v2",
-          "semantic_identity_sha256": "sha256:cf65d1d351869c63e88d7188d1e78727994cc3f6e76c88f5643a61d168a84445",
-          "size_bytes": 14497,
+          "semantic_identity_sha256": "sha256:06b6ad85b2a88ab5f829a0d1b895d50a65e07c072f3fab1c8329b3320068133a",
+          "size_bytes": 14525,
           "subject_sha256": null
         },
         "publication_policy_sha256": "sha256:ed5ab69fe8127604ca674263cbc8c774b7cfd10754e90bfaa9b71ba573bce1d1",
         "publication_staging": {
           "assets": [
             {
-              "asset_id": "534029483",
+              "asset_id": "553219190",
               "kind": "python-wheel",
               "media_type": "application/zip",
-              "name": "openadapt_flow-1.34.0-py3-none-any.whl",
+              "name": "openadapt_flow-1.35.1-py3-none-any.whl",
               "publish_destinations": [
                 "github-release",
                 "pypi"
               ],
-              "sha256": "sha256:56d32818989cb3a92830080ead39e10b08718c55e00988117f22cbfeaac98854",
-              "size_bytes": 1928194,
+              "sha256": "sha256:cfbc89acc6a2e3bcb5502a4d1fb29e985a03149a7f14c32c259254676bb3f11d",
+              "size_bytes": 2129416,
               "uploader_id": "321543906",
               "uploader_login": "openadapt-release[bot]"
             },
             {
-              "asset_id": "534029484",
+              "asset_id": "553219189",
               "kind": "python-sdist",
               "media_type": "application/gzip",
-              "name": "openadapt_flow-1.34.0.tar.gz",
+              "name": "openadapt_flow-1.35.1.tar.gz",
               "publish_destinations": [
                 "github-release",
                 "pypi"
               ],
-              "sha256": "sha256:a941a70015fe91897e655bfc9bf83e6cf8fbcf8bd4e4c7206ffb133c505203f8",
-              "size_bytes": 20440838,
+              "sha256": "sha256:c5c6c437472b23999223b0d2473dbf21de2ca05274c270ae3854adeda6b07dca",
+              "size_bytes": 21135866,
               "uploader_id": "321543906",
               "uploader_login": "openadapt-release[bot]"
             }
           ],
           "draft": false,
-          "draft_release_id": "378603192",
+          "draft_release_id": "385710075",
           "immutable_releases": {
             "enabled": true,
             "enforced_by_owner": false
           },
           "immutable_releases_sha256": "sha256:07649aafb167237fecc138f5e93b48ddce5a69f4060da7130e3c78e59fd48581",
-          "observed_at": "2026-09-02T18:24:25Z",
+          "observed_at": "2026-09-09T18:40:27Z",
           "prerelease": false,
           "publication_mode": "already-published-pypi",
           "pypi_files": [
             {
-              "filename": "openadapt_flow-1.34.0-py3-none-any.whl",
+              "filename": "openadapt_flow-1.35.1-py3-none-any.whl",
               "packagetype": "bdist_wheel",
-              "sha256": "sha256:56d32818989cb3a92830080ead39e10b08718c55e00988117f22cbfeaac98854",
-              "size_bytes": 1928194,
+              "sha256": "sha256:cfbc89acc6a2e3bcb5502a4d1fb29e985a03149a7f14c32c259254676bb3f11d",
+              "size_bytes": 2129416,
               "yanked": false
             },
             {
-              "filename": "openadapt_flow-1.34.0.tar.gz",
+              "filename": "openadapt_flow-1.35.1.tar.gz",
               "packagetype": "sdist",
-              "sha256": "sha256:a941a70015fe91897e655bfc9bf83e6cf8fbcf8bd4e4c7206ffb133c505203f8",
-              "size_bytes": 20440838,
+              "sha256": "sha256:c5c6c437472b23999223b0d2473dbf21de2ca05274c270ae3854adeda6b07dca",
+              "size_bytes": 21135866,
               "yanked": false
             }
           ],
@@ -2478,12 +2717,12 @@
           "repository": "OpenAdaptAI/openadapt-flow",
           "repository_id": "1291376938",
           "schema_version": "openadapt.production-release-staging-evidence/v1",
-          "tag": "v1.34.0",
+          "tag": "v1.35.1",
           "tag_ref_state": {
             "exists": true,
-            "ref": "refs/tags/v1.34.0"
+            "ref": "refs/tags/v1.35.1"
           },
-          "tag_ref_state_sha256": "sha256:74c5665395ed98ba3fd1b3a284bab1e8089f7c79cfafb3f88548e8b1456c5782",
+          "tag_ref_state_sha256": "sha256:2efe31dddf8f57f3ba0986b364e1ee4caf962f0172faa902662b747edaa84fa0",
           "tag_rulesets": [
             {
               "bypass_actors": [
@@ -2511,7 +2750,7 @@
                   "type": "creation"
                 }
               ],
-              "ruleset_id": "10",
+              "ruleset_id": "22667117",
               "schema_version": "openadapt.production-release-tag-ruleset/v1",
               "target": "tag"
             },
@@ -2538,63 +2777,60 @@
                   "type": "non_fast_forward"
                 },
                 {
-                  "parameters": {
-                    "update_allows_fetch_and_merge": false
-                  },
                   "type": "update"
                 }
               ],
-              "ruleset_id": "11",
+              "ruleset_id": "22667137",
               "schema_version": "openadapt.production-release-tag-ruleset/v1",
               "target": "tag"
             }
           ],
-          "tag_rulesets_sha256": "sha256:b0fdf160d80ae7dc8ffd979b2ba101cee6b3e7cf139e8c5d32b5534cbc0f7f44",
-          "target_commitish": "30fc60e55778a0e0f92b9776117cafcfe2512249"
+          "tag_rulesets_sha256": "sha256:6d002021c7ade6bd0abd4c81ad3fbd8421be7d87116cc7d5a840951a1a2fe0fb",
+          "target_commitish": "44e99a48ebf048c18892aa17cef6ae594db0d0c2"
         },
-        "publication_staging_sha256": "sha256:861175c196cfe9455ce5f0536b6b1eabf55a990ced03349b865643f52316dedd",
+        "publication_staging_sha256": "sha256:ade70ba59e8ca9827d3f090559f02b31cdbc7f1198dbf526b9b483510ac0b6b1",
         "release": {
           "artifacts": [
             {
               "kind": "python-sdist",
               "media_type": "application/gzip",
-              "name": "openadapt_flow-1.34.0.tar.gz",
+              "name": "openadapt_flow-1.35.1.tar.gz",
               "publish_destinations": [
                 "github-release",
                 "pypi"
               ],
-              "sha256": "sha256:a941a70015fe91897e655bfc9bf83e6cf8fbcf8bd4e4c7206ffb133c505203f8",
-              "size_bytes": 20440838
+              "sha256": "sha256:c5c6c437472b23999223b0d2473dbf21de2ca05274c270ae3854adeda6b07dca",
+              "size_bytes": 21135866
             },
             {
               "kind": "python-wheel",
               "media_type": "application/zip",
-              "name": "openadapt_flow-1.34.0-py3-none-any.whl",
+              "name": "openadapt_flow-1.35.1-py3-none-any.whl",
               "publish_destinations": [
                 "github-release",
                 "pypi"
               ],
-              "sha256": "sha256:56d32818989cb3a92830080ead39e10b08718c55e00988117f22cbfeaac98854",
-              "size_bytes": 1928194
+              "sha256": "sha256:cfbc89acc6a2e3bcb5502a4d1fb29e985a03149a7f14c32c259254676bb3f11d",
+              "size_bytes": 2129416
             }
           ],
           "deployment_id": null,
           "deployment_sha256": null,
           "kind": "package",
           "schema_version": "openadapt.production-release-candidate/v1",
-          "source_commit": "30fc60e55778a0e0f92b9776117cafcfe2512249",
+          "source_commit": "44e99a48ebf048c18892aa17cef6ae594db0d0c2",
           "source_repository": "OpenAdaptAI/openadapt-flow",
           "source_repository_id": "1291376938",
-          "tag": "v1.34.0",
-          "version": "1.34.0"
+          "tag": "v1.35.1",
+          "version": "1.35.1"
         },
         "release_identity": {
           "channel": "production",
-          "previous_admission_sha256": null,
+          "previous_admission_sha256": "sha256:d2983b86d5428c892421b191f6943a63cf4f9a0b1629e324d099f5df6fa5dcda",
           "schema_version": "openadapt.monotonic-production-release/v1",
-          "sequence": 1
+          "sequence": 2
         },
-        "release_sha256": "sha256:f84c03c857bda8372d39bc30afcc2986247778c34b3f93a39ec9de5dd151a289",
+        "release_sha256": "sha256:32cae0917121cbcf657347ca023da15b5b3151db6656526df896e93e3377d49e",
         "revocation_state_sha256": "sha256:250ab430e467f5e584ebd2b1832976b42186b698da71d627ee1724c2b1da2457",
         "schema_version": "openadapt.qualification-release/v2",
         "signer_registry_sha256": "sha256:e243a23243b24986ed08812e284a1bd8c4993814149f02bcba79cc520e10ca14",

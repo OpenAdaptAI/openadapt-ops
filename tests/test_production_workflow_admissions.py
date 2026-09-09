@@ -17,9 +17,9 @@ assert SPEC is not None and SPEC.loader is not None
 MODULE = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(MODULE)
 
-PINNED_COMMIT = "34207373d1e21de90772e0343c1abfbf477483e0"
+PINNED_COMMIT = "5b48240494a250633eec8fcf99fab26553efd0c6"
 PINNED_LEDGER_SHA256 = (
-    "sha256:fa3b4cc4ed0ab62d8d4ff5705495ec0a82f0572654617a152fd9675818684150"
+    "sha256:ca24700ebf15acb3e7cd7c19b07d157c27ba90f2dd9705aa871c4015adf11857"
 )
 
 
@@ -42,7 +42,7 @@ def _source() -> dict:
 
 
 class ProductionWorkflowAdmissionsProjectionTests(unittest.TestCase):
-    def test_committed_projection_lists_seven_synthetic_admissions(self) -> None:
+    def test_committed_projection_retains_tutorial_and_flow_reference_records(self) -> None:
         source = json.loads(
             (ROOT / "production-workflow-admissions-source.json").read_text(
                 encoding="utf-8"
@@ -59,11 +59,16 @@ class ProductionWorkflowAdmissionsProjectionTests(unittest.TestCase):
         )
         self.assertEqual(projection["source"], source)
         self.assertEqual(projection["schema_version"], MODULE.OUTPUT_SCHEMA)
-        self.assertEqual(len(projection["admissions"]), 7)
+        self.assertEqual(len(projection["admissions"]), 8)
+        versions = [row["bundle_version"] for row in projection["admissions"]]
+        self.assertEqual(versions.count("0.0.0-synthetic"), 7)
+        self.assertEqual(versions.count("1.35.1-reference.1"), 1)
+        flow = next(row for row in projection["admissions"] if row["bundle_version"] == "1.35.1-reference.1")
+        self.assertEqual(flow["object_sha256"], "sha256:947224523757df41127be021fc66adee5746f07ff1a0e913319c5461e430e34d")
         for row in projection["admissions"]:
             self.assertEqual(row["kind"], "qualification-admission")
             self.assertEqual(row["evidence_class"], "remote-safe-synthetic")
-            self.assertEqual(row["bundle_version"], "0.0.0-synthetic")
+            self.assertIn(row["bundle_version"], {"0.0.0-synthetic", "1.35.1-reference.1"})
             self.assertEqual(row["verdict"], "accepted")
             self.assertIsNone(row["expires_at"])
         encoded = json.dumps(projection)
