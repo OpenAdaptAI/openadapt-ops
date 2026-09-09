@@ -73,9 +73,9 @@ An admission binds:
 The canonical admission verifier checks the signed evidence chain and the
 current authority, revocation, and signer state. It hashes the supplied release
 files against the admitted inventory. Publication checks depend on the recorded
-release mode. Healthy-path model calls,
-silent incorrect success, wrong-record effects, duplicate effects, collateral
-effects, and uncertain delivery must all remain zero.
+release mode. Healthy-path model calls, silent incorrect success, wrong-record
+effects, duplicate effects, collateral effects, and blind retry or replay after
+uncertain delivery must all remain zero.
 
 ## Current-state derivation
 
