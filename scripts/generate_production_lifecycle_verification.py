@@ -17,6 +17,7 @@ import os
 import subprocess
 import sys
 import tempfile
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Iterator
 
@@ -162,6 +163,52 @@ class CanonicalStore:
             raise VerificationError("signature bundle is not the exact adjacent entry")
         return self.read(reference)
 
+    def fetch(self, url: str, **_kwargs: Any) -> bytes:
+        prefix = "https://raw.githubusercontent.com/OpenAdaptAI/.github/"
+        if not isinstance(url, str) or not url.startswith(prefix):
+            raise VerificationError("offline verification refuses a non-canonical URL")
+        commit, separator, path = url[len(prefix):].partition("/")
+        exact_commit(commit)
+        if (
+            not separator or not path or "?" in path or "#" in path or "%" in path
+            or any(part in {"", ".", ".."} for part in path.split("/"))
+            or "\\" in path
+        ):
+            raise VerificationError("offline verification refuses a non-canonical path")
+        return (self.tree(commit) / path).read_bytes()
+
+    def verify_pair(self, reference: dict, bundle: dict, *, now: datetime) -> None:
+        """Run the pinned DSSE route at retained time from immutable Git bytes.
+
+        Authority v2 binds the raw signer registry digest. The canonical route
+        handles that distinction and proves its unique historical reverse
+        revocation link before it verifies the authority's outer signature.
+        """
+        self.pair(reference, bundle)
+        value = self.read(bundle)
+        envelope = value.get("dsseEnvelope")
+        if not isinstance(envelope, dict) or envelope.get("payloadType") != (
+            self.verifier.public_trust.STATEMENT_MEDIA_TYPE
+        ):
+            raise VerificationError("retained verification requires a public DSSE profile")
+
+        class RetainedTime(datetime):
+            @classmethod
+            def now(cls, tz=None):
+                return now.astimezone(tz) if tz is not None else now.replace(tzinfo=None)
+
+        previous_fetch, previous_datetime = self.verifier.fetch, self.verifier.datetime
+        try:
+            self.verifier.fetch = self.fetch
+            self.verifier.datetime = RetainedTime
+            pair = self.verifier.fetch_pair(reference, bundle)
+            self.verifier.verify_registered_signature(
+                reference, bundle, pair,
+                policy=json.loads(self.verifier.POLICY_PATH.read_bytes()),
+            )
+        finally:
+            self.verifier.fetch, self.verifier.datetime = previous_fetch, previous_datetime
+
     def current_state(self, commit: str) -> dict:
         registry, entries = self.registry(commit)
         result = {}
@@ -282,6 +329,19 @@ def validate_record(record: dict, latest: dict, store: CanonicalStore) -> None:
         revocation_state=store.read(record["current_state"]["revocation_reference"]),
         signer_registry=signer, now=instant,
     )
+    pairs = [
+        (reference, record["admission_bundle_reference"]),
+        (admission["production_acceptance_summary_reference"],
+         admission["production_acceptance_summary_bundle_reference"]),
+        *((summary[f"{kind}_reference"], summary[f"{kind}_bundle_reference"])
+          for kind in ("production_acceptance_manifest",
+                       "qualification_evidence_decision_receipt", "qualification_admission")),
+        *((record["current_state"][f"{kind}_reference"],
+           record["current_state"][f"{kind}_bundle_reference"])
+          for kind in ("authority", "revocation")),
+    ]
+    for regular, bundle in pairs:
+        store.verify_pair(regular, bundle, now=instant)
 
 
 def validate_document(document: dict, source: dict, latest: dict, store: CanonicalStore) -> None:

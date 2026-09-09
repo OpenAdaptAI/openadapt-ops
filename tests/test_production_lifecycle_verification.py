@@ -7,6 +7,7 @@ Full generation invokes that separate public verifier with actual release bytes.
 from __future__ import annotations
 
 import copy
+import base64
 import importlib.util
 import json
 import subprocess
@@ -15,6 +16,7 @@ import tempfile
 import unittest
 from pathlib import Path
 from types import SimpleNamespace
+from datetime import datetime, timezone
 from unittest.mock import Mock, patch
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -88,6 +90,14 @@ class RecordTests(unittest.TestCase):
         self.assertEqual(kwargs["verified_at"], self.receipt["verified_at"])
         self.store.verifier.trust.validate_release_evidence_chain.assert_called_once()
         self.store.verifier.trust.validate_admission_current_state.assert_called_once()
+        self.assertEqual(self.store.verify_pair.call_count, 7)
+        self.assertEqual({call.args[0]["id"] for call in self.store.verify_pair.call_args_list}, {
+            "latest", "summary", "production_acceptance_manifest-reference",
+            "qualification_evidence_decision_receipt-reference", "qualification_admission-reference",
+            "authority_reference", "revocation_reference",
+        })
+        self.assertTrue(all(call.kwargs == {"now": self.receipt["verified_at"]}
+                            for call in self.store.verify_pair.call_args_list))
 
     def test_latest_selection_never_falls_back_to_an_accepted_older_row(self) -> None:
         older = {"kind": "qualification-release", "id": "older"}
@@ -156,6 +166,47 @@ class RecordTests(unittest.TestCase):
 
 
 class CanonicalStoreTests(unittest.TestCase):
+    def test_offline_fetch_refuses_other_origins_mutable_commits_and_paths(self) -> None:
+        store = module.CanonicalStore(Path("/unused"), None, {})
+        for url in (
+            "https://example.com/object.json",
+            "https://raw.githubusercontent.com/OpenAdaptAI/.github/main/object.json",
+            "https://raw.githubusercontent.com/OpenAdaptAI/.github/" + "a" * 40 + "/../secret",
+            "https://raw.githubusercontent.com/OpenAdaptAI/.github/" + "a" * 40 + "/%2e%2e/secret",
+        ):
+            with self.subTest(url=url), self.assertRaises(module.VerificationError):
+                store.fetch(url)
+
+    def test_outer_failure_restores_verifier_fetch_and_clock(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            policy = Path(directory) / "policy.json"
+            policy.write_text("{}")
+            original_fetch = Mock()
+            verifier = SimpleNamespace(
+                fetch=original_fetch, datetime=datetime, POLICY_PATH=policy,
+                public_trust=SimpleNamespace(STATEMENT_MEDIA_TYPE="public-dsse"),
+                fetch_pair=Mock(return_value=()),
+                verify_registered_signature=Mock(side_effect=ValueError("invalid signature")),
+            )
+            store = module.CanonicalStore(Path(directory), verifier, {})
+            store.pair = Mock()
+            store.read = Mock(return_value={"dsseEnvelope": {"payloadType": "public-dsse"}})
+            with self.assertRaisesRegex(ValueError, "invalid signature"):
+                store.verify_pair({}, {}, now=datetime(2026, 9, 9, tzinfo=timezone.utc))
+            self.assertIs(verifier.fetch, original_fetch)
+            self.assertIs(verifier.datetime, datetime)
+
+    def test_outer_verification_refuses_a_keyless_profile_without_dispatch(self) -> None:
+        verifier = SimpleNamespace(
+            public_trust=SimpleNamespace(STATEMENT_MEDIA_TYPE="public-dsse"), fetch_pair=Mock()
+        )
+        store = module.CanonicalStore(Path("/unused"), verifier, {})
+        store.pair = Mock()
+        store.read = Mock(return_value={"dsseEnvelope": {"payloadType": "keyless"}})
+        with self.assertRaisesRegex(module.VerificationError, "public DSSE profile"):
+            store.verify_pair({}, {}, now=datetime(2026, 9, 9, tzinfo=timezone.utc))
+        verifier.fetch_pair.assert_not_called()
+
     def test_current_state_uses_last_relevant_entries_and_adjacent_bundles(self) -> None:
         verifier = SimpleNamespace(evidence=SimpleNamespace(
             REFERENCE_SCHEMA="reference/v2", REPOSITORY="OpenAdaptAI/.github",
@@ -180,6 +231,90 @@ class CanonicalStoreTests(unittest.TestCase):
         self.assertEqual(state["authority_bundle_reference"], {"subject": "authority-current"})
         self.assertEqual(state["signer_registry_pointer"], {"id": "current-signer"})
         self.assertEqual(state["authority_reference"]["registry_source_commit"], "a" * 40)
+
+
+def check_retained_signed_pairs(tree: Path) -> None:
+    """Use the pinned upstream fixture's unchanged real public signatures."""
+    with module.canonical_verifier(tree) as verifier:
+        spec = importlib.util.spec_from_file_location(
+            "_canonical_signed_fixture", tree / "tests" / "test_registered_software_verifier.py"
+        )
+        fixture_module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(fixture_module)
+        fixture = fixture_module.RegisteredSoftwareVerifierTests()
+        fixture.setUp()
+        try:
+            with tempfile.TemporaryDirectory(prefix="ops-signed-fixture-") as directory:
+                root = Path(directory)
+                def store_files():
+                    for name, raw in fixture.files.items():
+                        path = root / name
+                        path.parent.mkdir(parents=True, exist_ok=True)
+                        path.write_bytes(raw)
+                    (root / "evidence-registry.json").write_bytes(fixture_module.canonical(fixture.registry))
+                    return module.CanonicalStore(root, verifier, {fixture_module.STORAGE_COMMIT: root})
+
+                instant = datetime(2026, 9, 9, 18, 50, tzinfo=timezone.utc)
+                store = store_files()
+                for digest in (fixture_module.RELEASE_SHA, fixture_module.AUTHORITY_SHA,
+                               fixture_module.REVOCATION_SHA):
+                    reference = fixture.reference(digest)
+                    store.verify_pair(reference, store.bundle(reference), now=instant)
+                reference = fixture.reference(fixture_module.RELEASE_SHA)
+                release = store.read(reference)
+                summary = json.loads((tree / release["production_acceptance_summary_reference"]["object_path"]).read_bytes())
+                qualification = json.loads((tree / summary["qualification_admission_reference"]["object_path"]).read_bytes())
+
+                def receipt(current_store):
+                    current_ref = fixture.reference(fixture_module.RELEASE_SHA)
+                    return verifier.verification_receipt(
+                        admission=release, admission_reference=current_ref,
+                        admission_bundle_reference=current_store.bundle(current_ref),
+                        summary=summary, qualification_admission=qualification,
+                        verified_at=instant, trust_state_source_commit=fixture_module.STORAGE_COMMIT,
+                    )
+
+                before = receipt(store)
+                fixture.replace_bundle(fixture_module.RELEASE_SHA, lambda bundle: (
+                    bundle["dsseEnvelope"]["signatures"][0].update(
+                        sig=base64.b64encode(bytes(64)).decode()
+                    )
+                ))
+                store = store_files()
+                after = receipt(store)
+                assert before["verification_id_sha256"] != after["verification_id_sha256"]
+                reference = fixture.reference(fixture_module.RELEASE_SHA)
+                bundle = store.bundle(reference)
+                # Byte, semantic identity, registry, adjacency, and receipt hashes
+                # have all been recomputed. Only the signature check rejects it.
+                store.pair(reference, bundle)
+                try:
+                    store.verify_pair(reference, bundle, now=instant)
+                except verifier.trust.TrustError as exc:
+                    assert "signature" in str(exc).lower(), str(exc)
+                else:
+                    raise AssertionError("corrupted registered outer signature was accepted")
+        finally:
+            fixture.doCleanups()
+
+
+class SignedPairIntegrationTests(unittest.TestCase):
+    def test_retained_signatures_and_rehashed_corrupt_bundle(self) -> None:
+        # Pin public fixture and verifier code together. Reuse the same dependency
+        # selection as the command; no private signing key or service is needed.
+        commit = "f0fb9cc812c0d1653b1ec2998749b078f244308e"
+        with tempfile.TemporaryDirectory(prefix="ops-signed-verifier-") as directory:
+            root = Path(directory)
+            tree = root / commit
+            module.projection.materialize_commit(commit, tree)
+            python = module.projection._validator_python(tree, root / "runtime")
+            result = subprocess.run(
+                [python, "-c", "import runpy,sys; from pathlib import Path; "
+                 "runpy.run_path(sys.argv[1])['check_retained_signed_pairs'](Path(sys.argv[2]))",
+                 str(Path(__file__).resolve()), str(tree)],
+                capture_output=True, text=True, check=False, timeout=120,
+            )
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
 
 class VerifierProcessTests(unittest.TestCase):
