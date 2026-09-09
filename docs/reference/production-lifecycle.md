@@ -70,9 +70,10 @@ An admission binds:
 - every failure-taxonomy and reliability count; and
 - an immutable evidence-retention record.
 
-The admission validator checks current PyPI metadata, immutable GitHub release
-metadata, or managed-evidence object metadata. It also verifies the GitHub
-artifact attestation for the acceptance summary. Healthy-path model calls,
+The canonical admission verifier checks the signed evidence chain and the
+current authority, revocation, and signer state. It hashes the supplied release
+files against the admitted inventory. Publication checks depend on the recorded
+release mode. Healthy-path model calls,
 silent incorrect success, wrong-record effects, duplicate effects, collateral
 effects, and uncertain delivery must all remain zero.
 
@@ -88,19 +89,53 @@ contains the exact source commit, input hashes, policy, and admission history.
 It doesn't store a static `production: true` flag. A consumer must use the
 pinned validator and derive the state at read time.
 
-The documentation build runs that pinned validator. It verifies the signed
-summary and its GitHub attestation before publishing the projection. At read
-time, the browser requires the current admissions file to match the projected
-digest. It then checks the signed summary, attestation bundle, retained
-manifest, and current artifact-authority metadata. A failed request removes the
-affected target from the active set.
+For V2 admissions, the build retains a result from the canonical release
+verifier in [production-lifecycle-verifications.json](../production-lifecycle-verifications.json).
+Each result binds the exact admission object, signature bundle, release files,
+and the trust state that the verifier checked. The generated result relies on
+the reviewed documentation build; its own hash isn't an independent signature.
+The build checks those retained bindings without changing the verification time.
 
-This site derives each target label from that exact current admission. It
-checks the current authority metadata for every admitted artifact and retained
-evidence object. The five public package versions must match their admitted
-PyPI releases. A record mismatch, expiry, revocation, artifact drift, or
-authority outage removes the affected target from the current Production set.
-The product-wide Production label appears only while all seven targets pass.
+At read time, the browser requires the live admissions ledger to match the
+projection. It then verifies the latest admission's object and bundle hashes
+against its generated result. Each signature statement in the evidence chain
+must still be within its time window, and each used signer must remain active.
+The browser reads the current canonical registry and
+requires the same authority, revocation, and signer objects, with valid time
+windows. An unrelated registry addition can leave those bindings intact. A new
+trust object requires a new verification result.
+
+Package checks read current PyPI and GitHub metadata. The default PyPI version
+must match the admitted version, and each admitted file must keep its hash and
+size and remain available without a yank. GitHub checks bind the release and
+asset IDs, uploader identity, and the tag's resolved source commit. Public tag
+ruleset fields must still match their recorded values.
+
+The `already-published-pypi` mode supports releases that predate GitHub release
+immutability. It doesn't require a release-app uploader or `immutable: true`.
+The `draft-before-tag` mode keeps those requirements. GitHub's repository
+immutability setting and ruleset bypass actors require authenticated access;
+the public page retains their issuance-time observations and makes no claim
+that it can read them in the browser.
+
+A failed request or changed binding removes the target's active label. A
+missing verification result never restores an older release. Cloud and Docs
+retain their deployment admissions; a retained deployment URL alone cannot
+prove current deployment state. Their active labels require a current public
+deployment observation. The product-wide Production label requires all seven
+targets to pass.
+
+To refresh a V2 result after updating the exact source descriptors, use the
+release files that the canonical verifier must check:
+
+```bash
+python scripts/generate_production_lifecycle_verification.py \
+  --target flow --artifact-root /path/to/verified/release-files
+python scripts/generate_production_lifecycle_verification.py --check
+```
+
+Generation fails without a successful canonical verification. Commit the
+result with its source pin and review it before publishing the site.
 
 An installation, release, or successful demo cannot create Production state
 without this complete evidence contract.

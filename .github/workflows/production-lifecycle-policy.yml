@@ -8,6 +8,8 @@ on:
     paths:
       - ".github/workflows/production-lifecycle-policy.yml"
       - "docs/production-lifecycle.json"
+      - "docs/production-lifecycle-verifications.json"
+      - "docs/javascripts/production-lifecycle.js"
       - "docs/production-workflow-admissions.json"
       - "docs/reference/production-lifecycle.md"
       - "docs/schemas/production-lifecycle-public.schema.json"
@@ -15,14 +17,19 @@ on:
       - "production-lifecycle-source.json"
       - "production-workflow-admissions-source.json"
       - "scripts/render_production_lifecycle.py"
+      - "scripts/generate_production_lifecycle_verification.py"
       - "scripts/render_production_workflow_admissions.py"
       - "tests/test_production_lifecycle_policy.py"
+      - "tests/test_production_lifecycle_verification.py"
+      - "tests/js/production_lifecycle.test.cjs"
       - "tests/test_production_workflow_admissions.py"
   push:
     branches: [main]
     paths:
       - ".github/workflows/production-lifecycle-policy.yml"
       - "docs/production-lifecycle.json"
+      - "docs/production-lifecycle-verifications.json"
+      - "docs/javascripts/production-lifecycle.js"
       - "docs/production-workflow-admissions.json"
       - "docs/reference/production-lifecycle.md"
       - "docs/schemas/production-lifecycle-public.schema.json"
@@ -30,8 +37,11 @@ on:
       - "production-lifecycle-source.json"
       - "production-workflow-admissions-source.json"
       - "scripts/render_production_lifecycle.py"
+      - "scripts/generate_production_lifecycle_verification.py"
       - "scripts/render_production_workflow_admissions.py"
       - "tests/test_production_lifecycle_policy.py"
+      - "tests/test_production_lifecycle_verification.py"
+      - "tests/js/production_lifecycle.test.cjs"
       - "tests/test_production_workflow_admissions.py"
 
 permissions:
@@ -52,14 +62,19 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Test fail-closed projection behavior
+        run: |
+          python3 -m unittest tests.test_production_lifecycle_policy tests.test_production_workflow_admissions tests.test_production_lifecycle_verification
+          node --test tests/js/production_lifecycle.test.cjs
+
       - name: Check exact canonical Production lifecycle projection
         run: python3 scripts/render_production_lifecycle.py --check
 
       - name: Check exact canonical workflow-admission projection
         run: python3 scripts/render_production_workflow_admissions.py --check
 
-      - name: Test fail-closed projection behavior
-        run: python3 -m unittest tests.test_production_lifecycle_policy tests.test_production_workflow_admissions
+      - name: Check retained canonical verification records
+        run: python3 scripts/generate_production_lifecycle_verification.py --check
 
   report-failure:
     needs: validate
