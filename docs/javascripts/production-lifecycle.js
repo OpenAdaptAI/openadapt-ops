@@ -703,7 +703,34 @@
       REFERENCE_FIELDS.every((key) => sameValue(expected[key], registry.entries[index + offset][key])));
   }
 
-  async function currentV2State(record, fetchImpl, now, fresh) {
+  function statementKeys(bundle, reference, now) {
+    const envelope = bundle?.dsseEnvelope;
+    if (!isObject(envelope) || !Array.isArray(envelope.signatures) || envelope.signatures.length !== 1) return null;
+    const statement = JSON.parse(atob(envelope.payload));
+    if (statement.schema_version !== "openadapt.production-public-trust-signing-statement/v1" ||
+      !activeWindow(statement, "not_before", now) ||
+      statement.object_sha256 !== reference.object_sha256 || statement.object_size_bytes !== reference.size_bytes ||
+      statement.object_kind !== reference.kind || statement.semantic_identity_sha256 !== reference.semantic_identity_sha256 ||
+      envelope.signatures[0].keyid !== statement.key_id || typeof statement.key_id !== "string") return null;
+    return [statement.key_id];
+  }
+
+  async function verifyV2Pair(reference, bundleReference, kind, fetchImpl, now) {
+    if (!isObject(reference) || !isObject(bundleReference) ||
+      bundleReference.subject_sha256 !== reference.object_sha256 ||
+      bundleReference.registry_source_commit !== reference.registry_source_commit) return null;
+    const [object, bundle] = await Promise.all([
+      verifiedObject(reference, kind, fetchImpl, now),
+      verifiedObject(bundleReference, `${kind}-sigstore-bundle`, fetchImpl, now),
+    ]);
+    const keys = bundle && statementKeys(bundle, reference, now);
+    if (!object || !keys) return null;
+    if (Object.prototype.hasOwnProperty.call(object, "expires_at") &&
+      !activeWindow(object, Object.prototype.hasOwnProperty.call(object, "not_before") ? "not_before" : "issued_at", now)) return null;
+    return { object, keys };
+  }
+
+  async function currentV2State(record, fetchImpl, now, fresh, evidenceKeys) {
     const state = record.current_state;
     const { registry, commit } = fresh;
     if (!hasExactKeys(state, ["authority_reference", "authority_bundle_reference", "revocation_reference",
@@ -730,13 +757,26 @@
       !activeWindow(revocation, "not_before", now, "current") || !activeWindow(signer, "generated_at", now) ||
       signer.revision !== pointer.registry_revision || !Array.isArray(signer.signers) ||
       !Array.isArray(revocation.revocations)) return false;
-    const usedKeys = new Set([authority.issuer_key_id, revocation.issuer_key_id]);
-    for (const bundle of [authorityBundle, revocationBundle]) {
-      if (bundle.dsseEnvelope) {
-        const statement = JSON.parse(atob(bundle.dsseEnvelope.payload));
-        if (!activeWindow(statement, "not_before", now)) return false;
-        for (const signature of bundle.dsseEnvelope.signatures) usedKeys.add(signature.keyid);
-      }
+    const receipt = record.verification_receipt;
+    const signerIdentity = await sha256(new TextEncoder().encode(
+      `OpenAdapt qualification signer registry v2\0${canonical(signer)}`));
+    if (pointer.registry_identity_sha256 !== signerIdentity ||
+      authority.signer_registry_sha256 !== pointer.object_sha256 ||
+      authority.signer_registry_identity_sha256 !== signerIdentity ||
+      authority.signer_registry_revision !== signer.revision ||
+      revocation.signer_registry_sha256 !== signerIdentity ||
+      revocation.authority_state_sha256 !== authority.authority_state_sha256 ||
+      receipt.signer_registry_sha256 !== signerIdentity ||
+      receipt.authority_state_sha256 !== authority.authority_state_sha256 ||
+      receipt.revocation_state_sha256 !== revocation.revocation_state_sha256 ||
+      state.authority_reference.semantic_identity_sha256 !== authority.authority_state_sha256 ||
+      state.revocation_reference.semantic_identity_sha256 !== revocation.revocation_state_sha256) return false;
+    const usedKeys = new Set([authority.issuer_key_id, revocation.issuer_key_id, ...evidenceKeys]);
+    for (const [bundle, reference] of [[authorityBundle, state.authority_reference],
+      [revocationBundle, state.revocation_reference]]) {
+      const keys = statementKeys(bundle, reference, now);
+      if (!keys) return false;
+      for (const key of keys) usedKeys.add(key);
     }
     for (const keyId of usedKeys) {
       const keys = signer.signers.filter((key) => key.key_id === keyId);
@@ -746,12 +786,13 @@
     }
     // Exact current bytes were cryptographically checked by the generator. A
     // different relevant object needs a new verification; registry append alone does not.
-    const receipt = record.verification_receipt;
     const subjectIds = new Set([receipt.admission_id_sha256, receipt.admission_object_sha256,
       receipt.qualification_admission_id_sha256, receipt.qualification_admission_object_sha256,
       receipt.acceptance_summary_object_sha256, receipt.acceptance_manifest_object_sha256,
       receipt.decision_receipt_object_sha256]);
-    return !revocation.revocations.some((item) => subjectIds.has(item.subject_id));
+    return !revocation.revocations.some((item) => subjectIds.has(item.subject_id) ||
+      (item.subject_kind === "qualification-signer-key" && signer.signers.some((key) =>
+        key.status === "active" && key.public_key_sha256 === item.subject_id)));
   }
 
   async function verifyV2Receipt(active, record, liveAdmissions, fetchImpl, now) {
@@ -760,12 +801,9 @@
       record.target !== active.targetId || !liveAdmissions.admissions.some((ref) => sameValue(ref, record.admission_reference))) return false;
     const ref = record.admission_reference;
     const bundleRef = record.admission_bundle_reference;
-    const [admission, bundle] = await Promise.all([
-      verifiedObject(ref, "qualification-release", fetchImpl, now),
-      verifiedObject(bundleRef, "qualification-release-sigstore-bundle", fetchImpl, now),
-    ]);
-    if (!admission || !bundle || !activeWindow(admission, "not_before", now) || !sameValue(admission, active.admission) ||
-      bundleRef.subject_sha256 !== ref.object_sha256 || bundleRef.registry_source_commit !== ref.registry_source_commit) return false;
+    const releasePair = await verifyV2Pair(ref, bundleRef, "qualification-release", fetchImpl, now);
+    const admission = releasePair?.object;
+    if (!admission || !activeWindow(admission, "not_before", now) || !sameValue(admission, active.admission)) return false;
     const receipt = record.verification_receipt;
     const v2 = active.targetId !== "flow";
     const fields = v2 ? [...RECEIPT_FIELDS, "release_kind", "deployment_id", "deployment_sha256"] : RECEIPT_FIELDS;
@@ -790,8 +828,30 @@
     delete projection.verification_id_sha256;
     const expected = await sha256(new TextEncoder().encode(
       `OpenAdapt qualification release verification receipt v${v2 ? 2 : 1}\0${canonical(projection)}`));
-    return expected === receipt.verification_id_sha256 && Object.values(record.current_state).every((item) =>
-      !item.registry_source_commit || item.registry_source_commit === receipt.trust_state_source_commit);
+    if (expected !== receipt.verification_id_sha256 || !Object.values(record.current_state).every((item) =>
+      !item.registry_source_commit || item.registry_source_commit === receipt.trust_state_source_commit)) return false;
+    const summaryPair = await verifyV2Pair(admission.production_acceptance_summary_reference,
+      admission.production_acceptance_summary_bundle_reference, "production-acceptance-summary", fetchImpl, now);
+    if (!summaryPair) return false;
+    const summary = summaryPair.object;
+    const dependencies = [
+      ["production_acceptance_manifest", "production-acceptance-manifest", "acceptance_manifest_object_sha256"],
+      ["qualification_evidence_decision_receipt", "qualification-evidence-decision-receipt", "decision_receipt_object_sha256"],
+      ["qualification_admission", "qualification-admission", "qualification_admission_object_sha256"],
+    ];
+    const pairs = await Promise.all(dependencies.map(async ([field, kind, receiptKey]) => {
+      const reference = summary[`${field}_reference`];
+      if (reference?.object_sha256 !== receipt[receiptKey]) return null;
+      return verifyV2Pair(reference, summary[`${field}_bundle_reference`], kind, fetchImpl, now);
+    }));
+    if (pairs.some((pair) => !pair)) return false;
+    const decision = pairs[1].object;
+    const qualification = pairs[2].object;
+    if (qualification.admission_id_sha256 !== receipt.qualification_admission_id_sha256 ||
+      qualification.workflow_version_id_sha256 !== receipt.workflow_version_id_sha256 ||
+      qualification.bundle_sha256 !== receipt.workflow_bundle_sha256 ||
+      qualification.admitted_runtime_sha256 !== receipt.admitted_runtime_sha256) return false;
+    return [...releasePair.keys, ...summaryPair.keys, ...pairs.flatMap((pair) => pair.keys), decision.issuer_key_id];
   }
 
   async function verifyV2Tag(active, fetchImpl, now) {
@@ -885,9 +945,11 @@
   async function verifyTargetV2(active, verification, liveAdmissions, fetchImpl, now) {
     try {
       const record = verification?.records.get(active.targetId);
-      if (!record || !await verifyV2Receipt(active, record, liveAdmissions, fetchImpl, now)) return false;
+      if (!record) return false;
+      const evidenceKeys = await verifyV2Receipt(active, record, liveAdmissions, fetchImpl, now);
+      if (!evidenceKeys) return false;
       const [state, artifacts] = await Promise.all([
-        currentV2State(record, fetchImpl, now, verification), verifyV2Artifacts(active, fetchImpl, now),
+        currentV2State(record, fetchImpl, now, verification, evidenceKeys), verifyV2Artifacts(active, fetchImpl, now),
       ]);
       return state && artifacts;
     } catch (_error) { return false; }

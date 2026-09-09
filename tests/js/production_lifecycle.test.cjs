@@ -873,7 +873,7 @@ function canonicalJson(value) {
   return JSON.stringify(value);
 }
 
-function makeVerifiedV2Fixture({ stateExpiry = null, signerExpiry = null, draftMode = false, stateNotBefore = "2026-09-02T18:24:25Z", keyRevokedAt = null } = {}) {
+function makeVerifiedV2Fixture({ stateExpiry = null, signerExpiry = null, draftMode = false, stateNotBefore = "2026-09-02T18:24:25Z", keyRevokedAt = null, mismatchedState = false, bundleExpiryKind = null, bundleStartKind = null, evidenceKeyRevokedAt = null } = {}) {
   const fixture = makeUntilRevokedFixture();
   const responses = new Map();
   const commit = fixture.projection.source.source_commit;
@@ -889,26 +889,46 @@ function makeVerifiedV2Fixture({ stateExpiry = null, signerExpiry = null, draftM
       kind, object_schema_version: value.schema_version ?? "fixture/v1",
       object_path: `production-evidence/objects/sha256/${sha.slice(7, 9)}/${sha.slice(7)}.${kind}.json`,
       object_sha256: sha, size_bytes: bytes.length, object_media_type: "application/json",
-      semantic_identity_sha256: sha, subject_sha256: subject, registry_entry_sha256: sha,
+      semantic_identity_sha256: value.authority_state_sha256 && kind === "qualification-authority-state-receipt" ? value.authority_state_sha256 :
+        (kind === "qualification-revocation-state-receipt" ? value.revocation_state_sha256 : sha), subject_sha256: subject, registry_entry_sha256: sha,
     };
     responses.set(`${base}/${ref.object_path}`, bytes);
     return ref;
   };
   const pair = (kind, value) => {
     const ref = object(kind, value);
-    return [ref, object(`${kind}-sigstore-bundle`, { fixture: kind }, ref.object_sha256)];
+    const key = evidenceKeyRevokedAt && !["qualification-authority-state-receipt", "qualification-revocation-state-receipt"].includes(kind)
+      ? "evidence-key" : "fixture-key";
+    const statement = { schema_version: "openadapt.production-public-trust-signing-statement/v1", key_id: key,
+      object_kind: kind, object_sha256: ref.object_sha256, object_size_bytes: ref.size_bytes,
+      semantic_identity_sha256: ref.semantic_identity_sha256,
+      not_before: kind === bundleStartKind ? "2026-09-02T19:30:00Z" : "2026-09-02T18:24:25Z",
+      expires_at: kind === bundleExpiryKind ? "2026-09-02T19:30:00Z" : null };
+    return [ref, object(`${kind}-sigstore-bundle`, { dsseEnvelope: { payload: Buffer.from(canonicalJson(statement)).toString("base64"),
+      signatures: [{ keyid: key, sig: "synthetic" }] } }, ref.object_sha256)];
   };
   const signer = { generated_at: "2026-09-02T18:24:25Z", expires_at: signerExpiry, revision: 1,
     signers: [{ key_id: "fixture-key", status: "active", revoked_at: keyRevokedAt }] };
+  if (evidenceKeyRevokedAt) signer.signers.push({ key_id: "evidence-key", status: "active", revoked_at: evidenceKeyRevokedAt });
   const signerBytes = Buffer.from(`${canonicalJson(signer)}\n`);
   const signerHash = digest(signerBytes);
-  const pointer = { object_sha256: signerHash, registry_identity_sha256: signerHash, registry_revision: 1,
+  const signerIdentity = digest(`OpenAdapt qualification signer registry v2\0${canonicalJson(signer)}`);
+  const pointer = { object_sha256: signerHash, registry_identity_sha256: signerIdentity, registry_revision: 1,
     object_path: `production-evidence/signer-registries/sha256/${signerHash.slice(7, 9)}/${signerHash.slice(7)}.qualification-signer-registry.json` };
   responses.set(`${base}/${pointer.object_path}`, signerBytes);
   const authority = { status: "active", not_before: stateNotBefore, expires_at: stateExpiry, issuer_key_id: "fixture-key" };
   const revocation = { status: "current", not_before: stateNotBefore, expires_at: stateExpiry, issuer_key_id: "fixture-key", revocations: [] };
+  const authorityIdentity = `sha256:${"2".repeat(64)}`;
+  const revocationIdentity = `sha256:${"3".repeat(64)}`;
+  Object.assign(authority, { authority_state_sha256: authorityIdentity, signer_registry_sha256: signerHash,
+    signer_registry_identity_sha256: signerIdentity, signer_registry_revision: 1 });
+  Object.assign(revocation, { revocation_state_sha256: revocationIdentity, authority_state_sha256: authorityIdentity,
+    signer_registry_sha256: signerIdentity });
+  if (mismatchedState) revocation.authority_state_sha256 = `sha256:${"9".repeat(64)}`;
   const [authorityRef, authorityBundle] = pair("qualification-authority-state-receipt", authority);
   const [revocationRef, revocationBundle] = pair("qualification-revocation-state-receipt", revocation);
+  authorityRef.semantic_identity_sha256 = authorityIdentity;
+  revocationRef.semantic_identity_sha256 = revocationIdentity;
   const registry = { repository: "OpenAdaptAI/.github", entries: [], signer_registry: pointer };
   const entry = (ref) => Object.fromEntries(["kind", "object_schema_version", "object_path", "object_sha256", "size_bytes", "object_media_type",
     "semantic_identity_sha256", "subject_sha256", "registry_entry_sha256"].map((key) => [key, ref[key]]));
@@ -927,9 +947,22 @@ function makeVerifiedV2Fixture({ stateExpiry = null, signerExpiry = null, draftM
     a.not_before = "2026-09-02T18:24:25Z";
     for (const key of ["admission_id_sha256", "release_sha256", "artifact_inventory_sha256", "publication_staging_sha256",
       "authority_state_sha256", "revocation_state_sha256", "signer_registry_sha256"]) a[key] = sha;
+    a.authority_state_sha256 = authorityIdentity;
+    a.revocation_state_sha256 = revocationIdentity;
+    a.signer_registry_sha256 = signerIdentity;
     a.release = { kind: "package", version: "1.2.3", tag: "v1.2.3", source_repository: repository,
       source_repository_id: "3", source_commit: COMMIT, artifacts: [artifact], deployment_id: null, deployment_sha256: null };
-    a.production_acceptance_summary_reference = { object_sha256: sha };
+    const [manifestRef, manifestBundle] = pair("production-acceptance-manifest", { target: id });
+    const [decisionRef, decisionBundle] = pair("qualification-evidence-decision-receipt", { target: id, issuer_key_id: "fixture-key" });
+    const [qualificationRef, qualificationBundle] = pair("qualification-admission", { target: id, admission_id_sha256: sha,
+      workflow_version_id_sha256: sha, bundle_sha256: sha, admitted_runtime_sha256: sha });
+    const [summaryRef, summaryBundle] = pair("production-acceptance-summary", {
+      target: id, production_acceptance_manifest_reference: manifestRef, production_acceptance_manifest_bundle_reference: manifestBundle,
+      qualification_evidence_decision_receipt_reference: decisionRef, qualification_evidence_decision_receipt_bundle_reference: decisionBundle,
+      qualification_admission_reference: qualificationRef, qualification_admission_bundle_reference: qualificationBundle,
+    });
+    a.production_acceptance_summary_reference = summaryRef;
+    a.production_acceptance_summary_bundle_reference = summaryBundle;
     a.publication_staging = { publication_mode: draftMode ? "draft-before-tag" : "already-published-pypi", draft_release_id: "42",
       release_author_login: draftMode ? "openadapt-release[bot]" : "prior-author", release_app_bot_user_id: "100",
       assets: [{ ...artifact, asset_id: "43", uploader_id: "100", uploader_login: draftMode ? "openadapt-release[bot]" : "prior-author" }],
@@ -946,8 +979,8 @@ function makeVerifiedV2Fixture({ stateExpiry = null, signerExpiry = null, draftM
       ...Object.fromEntries(["admission_id_sha256", "release_sha256", "artifact_inventory_sha256", "release_identity", "publication_staging_sha256",
         "authority_state_sha256", "revocation_state_sha256", "signer_registry_sha256"].map((key) => [key, a[key]])),
       ...Object.fromEntries(["source_repository", "source_repository_id", "source_commit", "version", "tag"].map((key) => [key, a.release[key]])),
-      draft_release_id: "42", acceptance_summary_object_sha256: sha, acceptance_manifest_object_sha256: sha,
-      decision_receipt_object_sha256: sha, qualification_admission_object_sha256: sha, qualification_admission_id_sha256: sha,
+      draft_release_id: "42", acceptance_summary_object_sha256: summaryRef.object_sha256, acceptance_manifest_object_sha256: manifestRef.object_sha256,
+      decision_receipt_object_sha256: decisionRef.object_sha256, qualification_admission_object_sha256: qualificationRef.object_sha256, qualification_admission_id_sha256: sha,
       workflow_version_id_sha256: sha, workflow_bundle_sha256: sha, admitted_runtime_sha256: sha,
       verified_at: "2026-09-02T19:00:00Z", expires_at: null, registry_source_commit: commit, registry_revision: 1,
       registry_head_sha256: ref.registry_head_sha256, trust_state_source_commit: commit,
@@ -1066,4 +1099,32 @@ test("current state with future activation or an effective key revocation refuse
     const fixture = makeVerifiedV2Fixture(options);
     assert.equal((await lifecycle.load(fixture.fetch, AFTER_ISSUE)).activeTargets.size, 0);
   }
+});
+
+
+test("jointly rehashed current objects must still match the admitted trust identities", async () => {
+  const fixture = makeVerifiedV2Fixture({ mismatchedState: true });
+  const state = await lifecycle.load(fixture.fetch, AFTER_ISSUE);
+  assert.equal(state.activeTargets.size, 0);
+});
+
+
+test("every exact dependency statement keeps its independent validity window", async () => {
+  for (const kind of ["qualification-release", "production-acceptance-summary", "production-acceptance-manifest",
+    "qualification-evidence-decision-receipt", "qualification-admission"]) {
+    const fixture = makeVerifiedV2Fixture({ bundleExpiryKind: kind });
+    const before = await lifecycle.load(fixture.fetch, Date.parse("2026-09-02T19:15:00Z"));
+    assert.equal(before.activeTargets.has("flow"), true, kind);
+    const after = await lifecycle.load(fixture.fetch, AFTER_ISSUE);
+    assert.equal(after.activeTargets.has("flow"), false, kind);
+    const future = makeVerifiedV2Fixture({ bundleStartKind: kind });
+    assert.equal((await lifecycle.load(future.fetch, Date.parse("2026-09-02T19:15:00Z"))).activeTargets.has("flow"), false, kind);
+  }
+});
+
+
+test("the current signer check includes keys used only by dependent evidence", async () => {
+  const fixture = makeVerifiedV2Fixture({ evidenceKeyRevokedAt: "2026-09-02T19:30:00Z" });
+  assert.equal((await lifecycle.load(fixture.fetch, Date.parse("2026-09-02T19:15:00Z"))).activeTargets.has("flow"), true);
+  assert.equal((await lifecycle.load(fixture.fetch, AFTER_ISSUE)).activeTargets.has("flow"), false);
 });
