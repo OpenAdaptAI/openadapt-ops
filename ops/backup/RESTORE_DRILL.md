@@ -4,6 +4,11 @@ This runbook owns the daily off-provider logical database backup in
 `.github/workflows/db-backup.yml`. It complements the complete database and
 private-Storage restore drill in `openadapt-cloud/docs/RUNBOOK_DATA_SAFETY.md`.
 
+For an operator-controlled recovery point before the hosted prerequisites are
+ready, use [the local capture and verification command](LOCAL_RECOVERY.md).
+That path keeps the existing workflow alerts open and makes no scheduled or
+off-device recovery claim.
+
 ## Current state
 
 The design target is:
