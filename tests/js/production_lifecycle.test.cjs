@@ -661,7 +661,7 @@ test("the committed ledger is not yet active before issued_at", () => {
   }
 });
 
-test("the committed ledger admits all seven until-revoked targets", () => {
+test("the committed ledger retains seven until-revoked candidates for current verification", () => {
   const committed = require("../../docs/production-lifecycle.json");
   const targets = lifecycle.validateProjection(committed);
   const afterIssue = Date.parse("2026-09-02T20:00:00Z");
@@ -683,7 +683,7 @@ test("the committed ledger admits all seven until-revoked targets", () => {
     assert.ok(derived, `${id} should derive an until-revoked admission`);
     assert.ok(
       lifecycle.deriveTarget(target, committed, afterThirtyDays),
-      `${id} must stay active past the retained 30-day v1 window`,
+      `${id} remains a candidate past the retained 30-day v1 window`,
     );
     if (expectedVersion[id]) {
       assert.equal(derived.releaseVersion, expectedVersion[id]);
@@ -792,15 +792,13 @@ function fetchUntilRevoked(fixture, options = {}) {
 
 const AFTER_ISSUE = Date.parse("2026-09-02T20:00:00Z");
 
-test("until-revoked object-refs keep retained policy hashes active", async () => {
+test("until-revoked rows without verification cannot bypass current authority checks", async () => {
   const fixture = makeUntilRevokedFixture();
   const state = await lifecycle.load(fetchUntilRevoked(fixture), AFTER_ISSUE);
 
   assert.ok(state?.activeTargets instanceof Map);
-  assert.deepEqual([...state.activeTargets.keys()].sort(), lifecycle.TARGET_IDS);
-  assert.equal(state.activeTargets.get("flow").untilRevoked, true);
-  assert.equal(state.activeTargets.get("flow").releaseLabel, "release 1.2.3");
-  assert.equal(state.defaultInstallVerified, true);
+  assert.equal(state.activeTargets.size, 0);
+  assert.equal(state.defaultInstallVerified, false);
 });
 
 test("until-revoked policy mismatch fails closed without a parseable policy", async () => {
@@ -843,7 +841,7 @@ test("until-revoked mismatch fails closed on expiry, revocation, or identity dri
   });
   const driftedState = await lifecycle.load(fetchUntilRevoked(drifted), AFTER_ISSUE);
   assert.equal(driftedState.activeTargets.has("flow"), false);
-  assert.equal(driftedState.activeTargets.size, 6);
+  assert.equal(driftedState.activeTargets.size, 0);
   assert.equal(driftedState.defaultInstallVerified, false);
 });
 
@@ -866,4 +864,206 @@ test("object-ref rows are not product targets and unknown rows fail closed", asy
     ),
     true,
   );
+});
+
+function canonicalJson(value) {
+  if (Array.isArray(value)) return `[${value.map(canonicalJson).join(",")}]`;
+  if (value && typeof value === "object") return `{${Object.keys(value).sort().map(
+    (key) => `${JSON.stringify(key)}:${canonicalJson(value[key])}`).join(",")}}`;
+  return JSON.stringify(value);
+}
+
+function makeVerifiedV2Fixture({ stateExpiry = null, signerExpiry = null, draftMode = false, stateNotBefore = "2026-09-02T18:24:25Z", keyRevokedAt = null } = {}) {
+  const fixture = makeUntilRevokedFixture();
+  const responses = new Map();
+  const commit = fixture.projection.source.source_commit;
+  const base = `https://raw.githubusercontent.com/OpenAdaptAI/.github/${commit}`;
+  const raw = (url, value) => responses.set(url, Buffer.from(`${canonicalJson(value)}\n`));
+  const object = (kind, value, subject = null) => {
+    const bytes = Buffer.from(`${canonicalJson(value)}\n`);
+    const sha = digest(bytes);
+    const ref = {
+      schema_version: "openadapt.production-evidence-object-reference/v2",
+      repository: "OpenAdaptAI/.github", repository_id: "1", repository_owner_id: "2",
+      registry_source_commit: commit, registry_revision: 1, registry_head_sha256: `sha256:${"a".repeat(64)}`,
+      kind, object_schema_version: value.schema_version ?? "fixture/v1",
+      object_path: `production-evidence/objects/sha256/${sha.slice(7, 9)}/${sha.slice(7)}.${kind}.json`,
+      object_sha256: sha, size_bytes: bytes.length, object_media_type: "application/json",
+      semantic_identity_sha256: sha, subject_sha256: subject, registry_entry_sha256: sha,
+    };
+    responses.set(`${base}/${ref.object_path}`, bytes);
+    return ref;
+  };
+  const pair = (kind, value) => {
+    const ref = object(kind, value);
+    return [ref, object(`${kind}-sigstore-bundle`, { fixture: kind }, ref.object_sha256)];
+  };
+  const signer = { generated_at: "2026-09-02T18:24:25Z", expires_at: signerExpiry, revision: 1,
+    signers: [{ key_id: "fixture-key", status: "active", revoked_at: keyRevokedAt }] };
+  const signerBytes = Buffer.from(`${canonicalJson(signer)}\n`);
+  const signerHash = digest(signerBytes);
+  const pointer = { object_sha256: signerHash, registry_identity_sha256: signerHash, registry_revision: 1,
+    object_path: `production-evidence/signer-registries/sha256/${signerHash.slice(7, 9)}/${signerHash.slice(7)}.qualification-signer-registry.json` };
+  responses.set(`${base}/${pointer.object_path}`, signerBytes);
+  const authority = { status: "active", not_before: stateNotBefore, expires_at: stateExpiry, issuer_key_id: "fixture-key" };
+  const revocation = { status: "current", not_before: stateNotBefore, expires_at: stateExpiry, issuer_key_id: "fixture-key", revocations: [] };
+  const [authorityRef, authorityBundle] = pair("qualification-authority-state-receipt", authority);
+  const [revocationRef, revocationBundle] = pair("qualification-revocation-state-receipt", revocation);
+  const registry = { repository: "OpenAdaptAI/.github", entries: [], signer_registry: pointer };
+  const entry = (ref) => Object.fromEntries(["kind", "object_schema_version", "object_path", "object_sha256", "size_bytes", "object_media_type",
+    "semantic_identity_sha256", "subject_sha256", "registry_entry_sha256"].map((key) => [key, ref[key]]));
+  registry.entries.push(...[authorityRef, authorityBundle, revocationRef, revocationBundle].map(entry));
+  const records = [];
+  const references = [];
+  for (const id of lifecycle.TARGET_IDS.filter((id) => V2_SPEC[id].releaseKind === "package")) {
+    const target = fixture.projection.targets.find((item) => item.id === id);
+    const a = target.latest_admission;
+    const repository = target.source_repository;
+    const api = `https://api.github.com/repos/${repository}`;
+    const sha = `sha256:${"1".repeat(64)}`;
+    const artifact = { name: `${id}-1.2.3-py3-none-any.whl`, kind: "python-wheel", sha256: sha, size_bytes: 12,
+      media_type: "application/zip", publish_destinations: ["github-release", "pypi"] };
+    a.schema_version = "openadapt.qualification-release/v2";
+    a.not_before = "2026-09-02T18:24:25Z";
+    for (const key of ["admission_id_sha256", "release_sha256", "artifact_inventory_sha256", "publication_staging_sha256",
+      "authority_state_sha256", "revocation_state_sha256", "signer_registry_sha256"]) a[key] = sha;
+    a.release = { kind: "package", version: "1.2.3", tag: "v1.2.3", source_repository: repository,
+      source_repository_id: "3", source_commit: COMMIT, artifacts: [artifact], deployment_id: null, deployment_sha256: null };
+    a.production_acceptance_summary_reference = { object_sha256: sha };
+    a.publication_staging = { publication_mode: draftMode ? "draft-before-tag" : "already-published-pypi", draft_release_id: "42",
+      release_author_login: draftMode ? "openadapt-release[bot]" : "prior-author", release_app_bot_user_id: "100",
+      assets: [{ ...artifact, asset_id: "43", uploader_id: "100", uploader_login: draftMode ? "openadapt-release[bot]" : "prior-author" }],
+      tag_rulesets: [{ ruleset_id: "10", name: "creation", target: "tag", enforcement: "active", conditions: {}, rules: [{ type: "creation" }] },
+        { ruleset_id: "11", name: "immutable", target: "tag", enforcement: "active", conditions: {}, rules: [{ type: "update" }] }] };
+    target.admission_history = [a];
+    const [ref, bundleRef] = pair("qualification-release", a);
+    references.push(ref);
+    registry.entries.push(entry(ref), entry(bundleRef));
+    const receipt = {
+      schema_version: `openadapt.qualification-release-verification-receipt/v${id === "flow" ? 1 : 2}`,
+      verification_id_sha256: sha, verdict: "verified", evidence_class: a.evidence_class, target: id, claim_scope: a.claim_scope,
+      admission_object_sha256: ref.object_sha256, admission_bundle_object_sha256: bundleRef.object_sha256,
+      ...Object.fromEntries(["admission_id_sha256", "release_sha256", "artifact_inventory_sha256", "release_identity", "publication_staging_sha256",
+        "authority_state_sha256", "revocation_state_sha256", "signer_registry_sha256"].map((key) => [key, a[key]])),
+      ...Object.fromEntries(["source_repository", "source_repository_id", "source_commit", "version", "tag"].map((key) => [key, a.release[key]])),
+      draft_release_id: "42", acceptance_summary_object_sha256: sha, acceptance_manifest_object_sha256: sha,
+      decision_receipt_object_sha256: sha, qualification_admission_object_sha256: sha, qualification_admission_id_sha256: sha,
+      workflow_version_id_sha256: sha, workflow_bundle_sha256: sha, admitted_runtime_sha256: sha,
+      verified_at: "2026-09-02T19:00:00Z", expires_at: null, registry_source_commit: commit, registry_revision: 1,
+      registry_head_sha256: ref.registry_head_sha256, trust_state_source_commit: commit,
+      ...(id === "flow" ? {} : { release_kind: "package", deployment_id: null, deployment_sha256: null }),
+    };
+    const projection = { ...receipt }; delete projection.verification_id_sha256;
+    receipt.verification_id_sha256 = digest(`OpenAdapt qualification release verification receipt v${id === "flow" ? 1 : 2}\0${canonicalJson(projection)}`);
+    records.push({ schema_version: "openadapt.public-production-lifecycle-verification/v1", target: id, admission_reference: ref,
+      admission_bundle_reference: bundleRef, verification_receipt: receipt,
+      current_state: { authority_reference: authorityRef, authority_bundle_reference: authorityBundle, revocation_reference: revocationRef,
+        revocation_bundle_reference: revocationBundle, signer_registry_pointer: pointer } });
+    raw(`${api}/releases/42`, { id: 42, tag_name: "v1.2.3", draft: false, prerelease: false, immutable: draftMode,
+      author: { login: a.publication_staging.release_author_login, id: 100 }, assets: [{ id: 43, name: artifact.name, size: 12,
+        digest: sha, state: "uploaded", uploader: { id: 100, login: a.publication_staging.assets[0].uploader_login } }] });
+    raw(`${api}/git/ref/tags/v1.2.3`, { ref: "refs/tags/v1.2.3", object: { type: "tag", sha: "e".repeat(40) } });
+    raw(`${api}/git/tags/${"e".repeat(40)}`, { sha: "e".repeat(40), object: { type: "commit", sha: COMMIT } });
+    raw(`https://pypi.org/pypi/${target.package_index_project}/json`, { info: { version: "1.2.3" }, releases: { "1.2.3": [{
+      filename: artifact.name, size: 12, packagetype: "bdist_wheel", yanked: false, digests: { sha256: sha.slice(7) },
+    }] } });
+    for (const rule of a.publication_staging.tag_rulesets) raw(`${api}/rulesets/${rule.ruleset_id}`, { ...rule, id: Number(rule.ruleset_id) });
+  }
+  fixture.live.admissions = references;
+  fixture.bytes = jsonBytes(fixture.live);
+  fixture.projection.source.files.admissions.sha256 = digest(fixture.bytes);
+  const document = { schema_version: "openadapt.public-production-lifecycle-verifications/v1", source_commit: commit, records };
+  const refresh = () => {
+    raw("/production-lifecycle-verifications.json", document);
+    raw(`${base}/evidence-registry.json`, registry);
+  };
+  refresh();
+  raw("https://api.github.com/repos/OpenAdaptAI/.github/git/ref/heads/main", { object: { sha: commit } });
+  const baseFetch = fetchUntilRevoked(fixture);
+  const fetch = async (url, options) => {
+    const bytes = responses.get(url.split("?")[0]);
+    return bytes ? { ...byteResponse(bytes), json: async () => JSON.parse(bytes) } : baseFetch(url, options);
+  };
+  const mutate = (url, change) => { const value = JSON.parse(responses.get(url)); change(value); raw(url, value); };
+  return { ...fixture, fetch, responses, registry, document, raw, mutate, refresh, base };
+}
+
+test("V2 packages require verified records and live authority/artifact checks, including mutable already-published releases", async () => {
+  const fixture = makeVerifiedV2Fixture();
+  const state = await lifecycle.load(fixture.fetch, AFTER_ISSUE);
+  assert.equal(state.activeTargets.size, 5);
+  assert.equal(state.activeTargets.get("flow").releaseVersion, "1.2.3");
+  assert.equal(state.defaultInstallVerified, true);
+  assert.equal(state.activeTargets.has("cloud"), false);
+  fixture.document.records = fixture.document.records.filter((record) => record.target !== "flow"); fixture.refresh();
+  const missing = await lifecycle.load(fixture.fetch, AFTER_ISSUE);
+  assert.equal(missing.activeTargets.has("flow"), false);
+  assert.equal(missing.defaultInstallVerified, false);
+});
+
+test("unchanged admission ledger cannot hide changed current trust references", async () => {
+  for (const kind of ["qualification-authority-state-receipt", "qualification-revocation-state-receipt", "signer_registry"]) {
+    const fixture = makeVerifiedV2Fixture();
+    if (kind === "signer_registry") fixture.registry.signer_registry = { ...fixture.registry.signer_registry, registry_revision: 2 };
+    else fixture.registry.entries.push({ ...fixture.registry.entries.find((entry) => entry.kind === kind), object_sha256: `sha256:${"9".repeat(64)}` });
+    fixture.refresh();
+    assert.equal((await lifecycle.load(fixture.fetch, AFTER_ISSUE)).activeTargets.size, 0, kind);
+  }
+  const unrelated = makeVerifiedV2Fixture();
+  unrelated.registry.entries.push({ kind: "unrelated-object", object_sha256: "irrelevant" }); unrelated.refresh();
+  assert.equal((await lifecycle.load(unrelated.fetch, AFTER_ISSUE)).activeTargets.size, 5);
+});
+
+test("exact verified state bytes still expire at consumption time", async () => {
+  for (const option of ["stateExpiry", "signerExpiry"]) {
+    const fixture = makeVerifiedV2Fixture({ [option]: "2026-09-02T19:30:00Z" });
+    assert.equal((await lifecycle.load(fixture.fetch, AFTER_ISSUE)).activeTargets.size, 0, option);
+  }
+});
+
+test("V2 public controls fail closed without substituting historical release observations", async () => {
+  const repo = "https://api.github.com/repos/OpenAdaptAI/openadapt-flow";
+  for (const [url, change] of [
+    ["https://pypi.org/pypi/openadapt-flow/json", (v) => { v.info.version = "1.2.4"; }],
+    ["https://pypi.org/pypi/openadapt-flow/json", (v) => { v.releases["1.2.3"][0].yanked = true; }],
+    ["https://pypi.org/pypi/openadapt-flow/json", (v) => { v.releases["1.2.3"][0].size += 1; }],
+    [`${repo}/releases/42`, (v) => { v.assets[0].digest = `sha256:${"9".repeat(64)}`; }],
+    [`${repo}/releases/42`, (v) => { v.assets[0].id += 1; }],
+    [`${repo}/releases/42`, (v) => { v.assets = []; }],
+    [`${repo}/git/tags/${"e".repeat(40)}`, (v) => { v.object.sha = "f".repeat(40); }],
+    [`${repo}/rulesets/11`, (v) => { v.enforcement = "disabled"; }],
+  ]) {
+    const fixture = makeVerifiedV2Fixture(); fixture.mutate(url, change);
+    const state = await lifecycle.load(fixture.fetch, AFTER_ISSUE);
+    assert.equal(state.activeTargets.has("flow"), false, url);
+    assert.equal(state.defaultInstallVerified, false, url);
+  }
+  const unavailable = makeVerifiedV2Fixture(); unavailable.responses.delete(`${repo}/rulesets/11`);
+  assert.equal((await lifecycle.load(unavailable.fetch, AFTER_ISSUE)).activeTargets.has("flow"), false);
+});
+
+test("draft-before-tag keeps the stronger post-publication immutability requirement", async () => {
+  const fixture = makeVerifiedV2Fixture({ draftMode: true });
+  assert.equal((await lifecycle.load(fixture.fetch, AFTER_ISSUE)).activeTargets.has("flow"), true);
+  fixture.mutate("https://api.github.com/repos/OpenAdaptAI/openadapt-flow/releases/42", (v) => { v.immutable = false; });
+  assert.equal((await lifecycle.load(fixture.fetch, AFTER_ISSUE)).activeTargets.has("flow"), false);
+});
+
+test("a stale or forged generated result cannot admit a different latest object", async () => {
+  for (const change of [
+    (f) => { f.document.source_commit = "e".repeat(40); },
+    (f) => { f.document.records.find((r) => r.target === "flow").verification_receipt.version = "1.2.4"; },
+    (f) => { f.document.records.find((r) => r.target === "flow").admission_bundle_reference.object_sha256 = `sha256:${"9".repeat(64)}`; },
+  ]) {
+    const fixture = makeVerifiedV2Fixture(); change(fixture); fixture.refresh();
+    assert.equal((await lifecycle.load(fixture.fetch, AFTER_ISSUE)).activeTargets.has("flow"), false);
+  }
+});
+
+
+test("current state with future activation or an effective key revocation refuses", async () => {
+  for (const options of [{ stateNotBefore: "2026-09-03T00:00:00Z" }, { keyRevokedAt: "2026-09-02T19:30:00Z" }]) {
+    const fixture = makeVerifiedV2Fixture(options);
+    assert.equal((await lifecycle.load(fixture.fetch, AFTER_ISSUE)).activeTargets.size, 0);
+  }
 });

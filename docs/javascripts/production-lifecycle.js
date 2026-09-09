@@ -299,8 +299,7 @@
       admission.verdict !== "accepted" ||
       admission.expires_at !== null ||
       admission.revoked_at != null ||
-      typeof admission.evidence_class !== "string" ||
-      admission.evidence_class.length === 0 ||
+      admission.evidence_class !== "remote-safe-synthetic" ||
       issuedAt === null ||
       issuedAt > now ||
       !isObject(identity) ||
@@ -335,6 +334,8 @@
       evidence: { class: admission.evidence_class },
       release,
       untilRevoked: true,
+      admission,
+      target,
     });
   }
 
@@ -642,6 +643,256 @@
     }
   }
 
+  // This is a build-time result from the canonical verifier, not a signature.
+  // The same-origin generated file is trusted only through the reviewed build.
+  const VERIFICATIONS_URL = "/production-lifecycle-verifications.json";
+  const CANONICAL_API = "https://api.github.com/repos/OpenAdaptAI/.github";
+  const CANONICAL_RAW = "https://raw.githubusercontent.com/OpenAdaptAI/.github";
+  const REFERENCE_FIELDS = ["kind", "object_schema_version", "object_path", "object_sha256",
+    "size_bytes", "object_media_type", "semantic_identity_sha256", "subject_sha256",
+    "registry_entry_sha256"];
+  const RECEIPT_FIELDS = ["schema_version", "verification_id_sha256", "verdict", "evidence_class",
+    "target", "claim_scope", "admission_object_sha256", "admission_bundle_object_sha256",
+    "admission_id_sha256", "release_sha256", "artifact_inventory_sha256", "release_identity",
+    "source_repository", "source_repository_id", "source_commit", "version", "tag",
+    "draft_release_id", "publication_staging_sha256", "authority_state_sha256",
+    "revocation_state_sha256", "signer_registry_sha256", "acceptance_summary_object_sha256",
+    "acceptance_manifest_object_sha256", "decision_receipt_object_sha256",
+    "qualification_admission_object_sha256", "qualification_admission_id_sha256",
+    "workflow_version_id_sha256", "workflow_bundle_sha256", "admitted_runtime_sha256",
+    "verified_at", "expires_at", "registry_source_commit", "registry_revision",
+    "registry_head_sha256", "trust_state_source_commit"];
+
+  function canonical(value) {
+    if (Array.isArray(value)) return `[${value.map(canonical).join(",")}]`;
+    if (isObject(value)) return `{${Object.keys(value).sort().map(
+      (key) => `${JSON.stringify(key)}:${canonical(value[key])}`).join(",")}}`;
+    return JSON.stringify(value);
+  }
+
+  function sameValue(left, right) { return canonical(left) === canonical(right); }
+
+  function validReference(ref, kind) {
+    return isObject(ref) && ref.kind === kind &&
+      ref.repository === "OpenAdaptAI/.github" && HEX40.test(ref.registry_source_commit) &&
+      DIGEST.test(ref.object_sha256) && Number.isInteger(ref.size_bytes) && ref.size_bytes > 0 &&
+      ref.object_path === `production-evidence/objects/sha256/${ref.object_sha256.slice(7, 9)}/${ref.object_sha256.slice(7)}.${kind}.json`;
+  }
+
+  async function verifiedObject(ref, kind, fetchImpl, now, commit = ref?.registry_source_commit) {
+    if (!validReference(ref, kind) || !HEX40.test(commit)) return null;
+    const bytes = await fetchBytes(fetchImpl, `${CANONICAL_RAW}/${commit}/${ref.object_path}`, now);
+    if (!bytes || bytes.length !== ref.size_bytes || await sha256(bytes) !== ref.object_sha256) return null;
+    const value = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(bytes));
+    return isObject(value) ? value : null;
+  }
+
+  function activeWindow(value, startKey, now, expectedStatus) {
+    const start = parseTimestamp(value?.[startKey]);
+    const end = value?.expires_at === null ? Infinity : parseTimestamp(value?.expires_at);
+    return start !== null && start <= now && end !== null && end > now &&
+      (expectedStatus === undefined || value.status === expectedStatus);
+  }
+
+  function lastPairMatches(registry, kind, ref, bundle) {
+    const indexes = registry.entries.map((entry, index) => entry.kind === kind ? index : -1).filter((i) => i >= 0);
+    if (!indexes.length) return false;
+    const index = indexes[indexes.length - 1];
+    return [ref, bundle].every((expected, offset) =>
+      isObject(expected) && isObject(registry.entries[index + offset]) &&
+      REFERENCE_FIELDS.every((key) => sameValue(expected[key], registry.entries[index + offset][key])));
+  }
+
+  async function currentV2State(record, fetchImpl, now, fresh) {
+    const state = record.current_state;
+    const { registry, commit } = fresh;
+    if (!hasExactKeys(state, ["authority_reference", "authority_bundle_reference", "revocation_reference",
+      "revocation_bundle_reference", "signer_registry_pointer"]) || !isObject(registry) ||
+      registry.repository !== "OpenAdaptAI/.github" || !Array.isArray(registry.entries) ||
+      !sameValue(registry.signer_registry, state.signer_registry_pointer)) return false;
+    for (const [label, kind] of [["authority", "qualification-authority-state-receipt"],
+      ["revocation", "qualification-revocation-state-receipt"]]) {
+      if (!lastPairMatches(registry, kind, state[`${label}_reference`], state[`${label}_bundle_reference`])) return false;
+    }
+    const [authority, revocation, authorityBundle, revocationBundle] = await Promise.all([
+      verifiedObject(state.authority_reference, "qualification-authority-state-receipt", fetchImpl, now, commit),
+      verifiedObject(state.revocation_reference, "qualification-revocation-state-receipt", fetchImpl, now, commit),
+      verifiedObject(state.authority_bundle_reference, "qualification-authority-state-receipt-sigstore-bundle", fetchImpl, now, commit),
+      verifiedObject(state.revocation_bundle_reference, "qualification-revocation-state-receipt-sigstore-bundle", fetchImpl, now, commit),
+    ]);
+    const pointer = state.signer_registry_pointer;
+    if (!isObject(pointer) || !DIGEST.test(pointer.object_sha256) ||
+      pointer.object_path !== `production-evidence/signer-registries/sha256/${pointer.object_sha256.slice(7, 9)}/${pointer.object_sha256.slice(7)}.qualification-signer-registry.json`) return false;
+    const signerBytes = await fetchBytes(fetchImpl, `${CANONICAL_RAW}/${commit}/${pointer.object_path}`, now);
+    if (!signerBytes || await sha256(signerBytes) !== pointer.object_sha256) return false;
+    const signer = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(signerBytes));
+    if (!authorityBundle || !revocationBundle || !activeWindow(authority, "not_before", now, "active") ||
+      !activeWindow(revocation, "not_before", now, "current") || !activeWindow(signer, "generated_at", now) ||
+      signer.revision !== pointer.registry_revision || !Array.isArray(signer.signers) ||
+      !Array.isArray(revocation.revocations)) return false;
+    const usedKeys = new Set([authority.issuer_key_id, revocation.issuer_key_id]);
+    for (const bundle of [authorityBundle, revocationBundle]) {
+      if (bundle.dsseEnvelope) {
+        const statement = JSON.parse(atob(bundle.dsseEnvelope.payload));
+        if (!activeWindow(statement, "not_before", now)) return false;
+        for (const signature of bundle.dsseEnvelope.signatures) usedKeys.add(signature.keyid);
+      }
+    }
+    for (const keyId of usedKeys) {
+      const keys = signer.signers.filter((key) => key.key_id === keyId);
+      if (keys.length !== 1 || keys[0].status !== "active" ||
+        (keys[0].revoked_at !== null && (parseTimestamp(keys[0].revoked_at) === null ||
+          parseTimestamp(keys[0].revoked_at) <= now))) return false;
+    }
+    // Exact current bytes were cryptographically checked by the generator. A
+    // different relevant object needs a new verification; registry append alone does not.
+    const receipt = record.verification_receipt;
+    const subjectIds = new Set([receipt.admission_id_sha256, receipt.admission_object_sha256,
+      receipt.qualification_admission_id_sha256, receipt.qualification_admission_object_sha256,
+      receipt.acceptance_summary_object_sha256, receipt.acceptance_manifest_object_sha256,
+      receipt.decision_receipt_object_sha256]);
+    return !revocation.revocations.some((item) => subjectIds.has(item.subject_id));
+  }
+
+  async function verifyV2Receipt(active, record, liveAdmissions, fetchImpl, now) {
+    if (!hasExactKeys(record, ["schema_version", "target", "admission_reference", "admission_bundle_reference",
+      "verification_receipt", "current_state"]) || record.schema_version !== "openadapt.public-production-lifecycle-verification/v1" ||
+      record.target !== active.targetId || !liveAdmissions.admissions.some((ref) => sameValue(ref, record.admission_reference))) return false;
+    const ref = record.admission_reference;
+    const bundleRef = record.admission_bundle_reference;
+    const [admission, bundle] = await Promise.all([
+      verifiedObject(ref, "qualification-release", fetchImpl, now),
+      verifiedObject(bundleRef, "qualification-release-sigstore-bundle", fetchImpl, now),
+    ]);
+    if (!admission || !bundle || !activeWindow(admission, "not_before", now) || !sameValue(admission, active.admission) ||
+      bundleRef.subject_sha256 !== ref.object_sha256 || bundleRef.registry_source_commit !== ref.registry_source_commit) return false;
+    const receipt = record.verification_receipt;
+    const v2 = active.targetId !== "flow";
+    const fields = v2 ? [...RECEIPT_FIELDS, "release_kind", "deployment_id", "deployment_sha256"] : RECEIPT_FIELDS;
+    if (!hasExactKeys(receipt, fields) || receipt.schema_version !== `openadapt.qualification-release-verification-receipt/v${v2 ? 2 : 1}` ||
+      receipt.verdict !== "verified" || receipt.target !== active.targetId || receipt.evidence_class !== "remote-safe-synthetic" ||
+      receipt.admission_object_sha256 !== ref.object_sha256 || receipt.admission_bundle_object_sha256 !== bundleRef.object_sha256 ||
+      receipt.registry_source_commit !== ref.registry_source_commit || receipt.registry_revision !== ref.registry_revision ||
+      receipt.registry_head_sha256 !== ref.registry_head_sha256 || !HEX40.test(receipt.trust_state_source_commit) ||
+      parseTimestamp(receipt.verified_at) === null || parseTimestamp(receipt.verified_at) > now) return false;
+    for (const key of ["claim_scope", "admission_id_sha256", "release_sha256", "artifact_inventory_sha256", "release_identity",
+      "publication_staging_sha256", "authority_state_sha256", "revocation_state_sha256", "signer_registry_sha256", "expires_at"]) {
+      if (!sameValue(receipt[key], admission[key])) return false;
+    }
+    for (const key of ["source_repository", "source_repository_id", "source_commit", "version", "tag"]) {
+      if (receipt[key] !== admission.release[key]) return false;
+    }
+    if (v2 && (receipt.release_kind !== admission.release.kind || receipt.deployment_id !== admission.release.deployment_id ||
+      receipt.deployment_sha256 !== admission.release.deployment_sha256)) return false;
+    if (receipt.draft_release_id !== admission.publication_staging.draft_release_id ||
+      receipt.acceptance_summary_object_sha256 !== admission.production_acceptance_summary_reference.object_sha256) return false;
+    const projection = { ...receipt };
+    delete projection.verification_id_sha256;
+    const expected = await sha256(new TextEncoder().encode(
+      `OpenAdapt qualification release verification receipt v${v2 ? 2 : 1}\0${canonical(projection)}`));
+    return expected === receipt.verification_id_sha256 && Object.values(record.current_state).every((item) =>
+      !item.registry_source_commit || item.registry_source_commit === receipt.trust_state_source_commit);
+  }
+
+  async function verifyV2Tag(active, fetchImpl, now) {
+    const release = active.release;
+    const base = `https://api.github.com/repos/${release.source_repository}`;
+    let ref = await fetchJson(fetchImpl, `${base}/git/ref/tags/${encodeURIComponent(release.tag)}`, now);
+    if (ref?.ref !== `refs/tags/${release.tag}`) return false;
+    let object = ref.object;
+    const seen = new Set();
+    for (let depth = 0; object?.type === "tag" && depth < 5; depth += 1) {
+      if (!HEX40.test(object.sha) || seen.has(object.sha)) return false;
+      seen.add(object.sha);
+      ref = await fetchJson(fetchImpl, `${base}/git/tags/${object.sha}`, now);
+      if (ref?.sha !== object.sha) return false;
+      object = ref.object;
+    }
+    return object?.type === "commit" && object.sha === release.source_commit;
+  }
+
+  async function verifyV2Artifacts(active, fetchImpl, now) {
+    const { release, admission } = active;
+    const staging = admission.publication_staging;
+    const artifacts = release.artifacts;
+    // Deployment manifests need a current public deployment observation. A
+    // retained URL or synthetic record alone cannot prove a running deployment.
+    if (release.kind !== "package" || !isObject(staging) || !Array.isArray(artifacts) || !artifacts.length ||
+      release.source_repository !== active.target.source_repository || !HEX40.test(release.source_commit) ||
+      !["already-published-pypi", "draft-before-tag"].includes(staging.publication_mode)) return false;
+    const repo = `https://api.github.com/repos/${release.source_repository}`;
+    const [metadata, pypi, tag] = await Promise.all([
+      fetchJson(fetchImpl, `${repo}/releases/${staging.draft_release_id}`, now),
+      fetchJson(fetchImpl, `https://pypi.org/pypi/${encodeURIComponent(PYPI_PROJECTS[active.targetId])}/json`, now),
+      verifyV2Tag(active, fetchImpl, now),
+    ]);
+    if (!tag || !metadata || String(metadata.id) !== staging.draft_release_id || metadata.tag_name !== release.tag ||
+      metadata.draft !== false || metadata.prerelease !== false || !Array.isArray(metadata.assets) ||
+      metadata.author?.login !== staging.release_author_login || !pypi || pypi.info?.version !== release.version ||
+      !Array.isArray(pypi.releases?.[release.version])) return false;
+    const draftMode = staging.publication_mode === "draft-before-tag";
+    if (draftMode && (metadata.immutable !== true || metadata.author?.login !== "openadapt-release[bot]" ||
+      String(metadata.author?.id) !== staging.release_app_bot_user_id)) return false;
+    const files = pypi.releases[release.version];
+    for (const artifact of artifacts) {
+      if (!hasExactKeys(artifact, ["name", "kind", "sha256", "size_bytes", "media_type", "publish_destinations"]) ||
+        !DIGEST.test(artifact.sha256) || !Number.isInteger(artifact.size_bytes) || artifact.size_bytes <= 0 ||
+        !Array.isArray(artifact.publish_destinations) || !artifact.publish_destinations.length) return false;
+      if (artifact.publish_destinations.includes("pypi")) {
+        const type = { "python-wheel": "bdist_wheel", "python-sdist": "sdist" }[artifact.kind];
+        if (!type || files.filter((file) => file.filename === artifact.name && file.size === artifact.size_bytes &&
+          file.packagetype === type && file.yanked === false && file.digests?.sha256 === artifact.sha256.slice(7)).length !== 1) return false;
+      }
+      if (artifact.publish_destinations.includes("github-release")) {
+        const retained = staging.assets?.filter((asset) => asset.name === artifact.name);
+        if (retained?.length !== 1) return false;
+        if (metadata.assets.filter((asset) => String(asset.id) === retained[0].asset_id && asset.name === artifact.name &&
+          asset.size === artifact.size_bytes && asset.digest === artifact.sha256 && asset.state === "uploaded" &&
+          String(asset.uploader?.id) === retained[0].uploader_id && asset.uploader?.login === retained[0].uploader_login &&
+          (!draftMode || asset.uploader.login === "openadapt-release[bot]")).length !== 1) return false;
+      }
+      if (artifact.publish_destinations.some((destination) => !["pypi", "github-release"].includes(destination))) return false;
+    }
+    if (!Array.isArray(staging.tag_rulesets) || staging.tag_rulesets.length !== 2) return false;
+    const checks = await Promise.all(staging.tag_rulesets.map(async (retained) => {
+      const ruleset = await fetchJson(fetchImpl, `${repo}/rulesets/${retained.ruleset_id}`, now);
+      // GitHub hides bypass actors from anonymous readers. Those actors and the
+      // immutable-releases setting remain authenticated issuance observations.
+      return ruleset && String(ruleset.id) === retained.ruleset_id &&
+        ["name", "target", "enforcement", "conditions", "rules"].every((key) => sameValue(ruleset[key], retained[key]));
+    }));
+    return checks.every(Boolean);
+  }
+
+  async function loadV2Verification(fetchImpl, now, projection) {
+    const [document, head] = await Promise.all([
+      fetchJson(fetchImpl, VERIFICATIONS_URL, now),
+      fetchJson(fetchImpl, `${CANONICAL_API}/git/ref/heads/main`, now),
+    ]);
+    const commit = head?.object?.sha;
+    if (!hasExactKeys(document, ["schema_version", "source_commit", "records"]) ||
+      document.schema_version !== "openadapt.public-production-lifecycle-verifications/v1" ||
+      document.source_commit !== projection.source.source_commit || !Array.isArray(document.records) || !HEX40.test(commit)) return null;
+    const records = new Map();
+    for (const record of document.records) {
+      if (!TARGET_IDS.includes(record?.target) || records.has(record.target)) return null;
+      records.set(record.target, record);
+    }
+    const registry = await fetchJson(fetchImpl, `${CANONICAL_RAW}/${commit}/evidence-registry.json`, now);
+    return { records, registry, commit };
+  }
+
+  async function verifyTargetV2(active, verification, liveAdmissions, fetchImpl, now) {
+    try {
+      const record = verification?.records.get(active.targetId);
+      if (!record || !await verifyV2Receipt(active, record, liveAdmissions, fetchImpl, now)) return false;
+      const [state, artifacts] = await Promise.all([
+        currentV2State(record, fetchImpl, now, verification), verifyV2Artifacts(active, fetchImpl, now),
+      ]);
+      return state && artifacts;
+    } catch (_error) { return false; }
+  }
+
   function verifyDefaultInstallAuthority(activeTargets) {
     return Object.keys(PYPI_PROJECTS).every((targetId) => activeTargets.has(targetId));
   }
@@ -694,12 +945,14 @@
         if (active) candidates.set(targetId, active);
       }
 
+      const verification = [...candidates.values()].some((active) => active.untilRevoked)
+        ? await loadV2Verification(fetchImpl, now, projection).catch(() => null) : null;
       const authorityChecks = await Promise.all(
         [...candidates.entries()].map(async ([targetId, active]) => [
           targetId,
           active,
           active.untilRevoked === true
-            ? true
+            ? await verifyTargetV2(active, verification, liveAdmissions, fetchImpl, now)
             : await verifyTargetAuthorities(active, fetchImpl, now),
         ]),
       );
