@@ -43,10 +43,14 @@ Production admission and still refuse an unqualified customer workflow.
 
 The public workflow ledger is
 [production-workflow-admissions.json](../production-workflow-admissions.json).
-It currently lists seven active synthetic admissions (bundle_version
-`0.0.0-synthetic`, evidence class remote-safe-synthetic). That isn't a
-customer workflow. The source pin is OpenAdaptAI/.github
-`34207373d1e21de90772e0343c1abfbf477483e0`.
+It retains remote-safe-synthetic workflow-admission records and each bundle's
+declared version. The projection includes tutorial bundles with
+`bundle_version` `0.0.0-synthetic`. Its source descriptor binds the exact
+OpenAdaptAI/.github commit and ledger hash.
+
+A retained row doesn't establish current qualification. Verify the exact
+workflow, admitted runtime, and current authority state before execution.
+Synthetic evidence does not qualify a customer workflow.
 
 ## Release admission
 
