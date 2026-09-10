@@ -1,7 +1,7 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-09-10 20:37 UTC*
+> *Last updated: 2026-09-10 20:48 UTC*
 
 
 
@@ -48,6 +48,8 @@
 ## openadapt-desktop
 
 
+- [ci: update release actions and use published design tokens](https://github.com/OpenAdaptAI/openadapt-desktop/pull/163) (#163), merged 2026-09-10
+
 - [fix: use canonical Oracle tiers in operator copy](https://github.com/OpenAdaptAI/openadapt-desktop/pull/159) (#159), merged 2026-09-03
 
 - [docs: state the current native release boundary](https://github.com/OpenAdaptAI/openadapt-desktop/pull/158) (#158), merged 2026-09-03
@@ -90,6 +92,8 @@
 - [fix: make cold Windows recording bounded](https://github.com/OpenAdaptAI/openadapt-capture/pull/133) (#133), merged 2026-09-03
 
 - [fix(release): prepare Capture 1.3.0 for Production qualification](https://github.com/OpenAdaptAI/openadapt-capture/pull/132) (#132), merged 2026-09-03
+
+- [chore(deps): support PyGObject 3.50 on older Linux libraries](https://github.com/OpenAdaptAI/openadapt-capture/pull/127) (#127), merged 2026-09-10
 
 
 
