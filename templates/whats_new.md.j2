@@ -10,7 +10,7 @@
 ## {{ repo_name }}
 
 {% for pr in prs %}
-- [{{ pr.title }}]({{ pr.url }}) (#{{ pr.number }}) — merged {{ pr.merged_at }}
+- [{{ pr.title }}]({{ pr.url }}) (#{{ pr.number }}), merged {{ pr.mergedAt[:10] }}
 {% endfor %}
 
 {% endfor %}
