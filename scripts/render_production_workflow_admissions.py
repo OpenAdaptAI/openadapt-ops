@@ -32,7 +32,7 @@ PROFILE_CLONE_URL = "https://github.com/OpenAdaptAI/.github.git"
 EXPECTED_FILE_KEYS = {"admissions"}
 EXPECTED_PATHS = {"admissions": "production-workflow-admissions.json"}
 REQUIRED_EVIDENCE_CLASS = "remote-safe-synthetic"
-REQUIRED_BUNDLE_VERSION = "0.0.0-synthetic"
+BUNDLE_VERSION = re.compile(r"^[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z]+(?:[.-][0-9A-Za-z]+)*)?$")
 PUBLIC_OBJECT_FIELDS = ("bundle_version", "evidence_class", "expires_at", "verdict")
 
 
@@ -241,9 +241,10 @@ def render(
                 f"workflow admission {index} evidence class is not "
                 f"{REQUIRED_EVIDENCE_CLASS}"
             )
-        if admission.get("bundle_version") != REQUIRED_BUNDLE_VERSION:
+        bundle_version = admission.get("bundle_version")
+        if not isinstance(bundle_version, str) or BUNDLE_VERSION.fullmatch(bundle_version) is None:
             raise RenderError(
-                f"workflow admission {index} is not the synthetic tutorial bundle"
+                f"workflow admission {index} bundle version is invalid"
             )
         serialized = json.dumps(admission, ensure_ascii=False)
         if "mockmed" in serialized.lower() or "production_acceptance" in admission:

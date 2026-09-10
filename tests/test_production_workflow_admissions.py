@@ -17,9 +17,9 @@ assert SPEC is not None and SPEC.loader is not None
 MODULE = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(MODULE)
 
-PINNED_COMMIT = "34207373d1e21de90772e0343c1abfbf477483e0"
+PINNED_COMMIT = "5b48240494a250633eec8fcf99fab26553efd0c6"
 PINNED_LEDGER_SHA256 = (
-    "sha256:fa3b4cc4ed0ab62d8d4ff5705495ec0a82f0572654617a152fd9675818684150"
+    "sha256:ca24700ebf15acb3e7cd7c19b07d157c27ba90f2dd9705aa871c4015adf11857"
 )
 
 
@@ -42,7 +42,7 @@ def _source() -> dict:
 
 
 class ProductionWorkflowAdmissionsProjectionTests(unittest.TestCase):
-    def test_committed_projection_lists_seven_synthetic_admissions(self) -> None:
+    def test_committed_projection_retains_tutorial_and_flow_reference_records(self) -> None:
         source = json.loads(
             (ROOT / "production-workflow-admissions-source.json").read_text(
                 encoding="utf-8"
@@ -59,11 +59,16 @@ class ProductionWorkflowAdmissionsProjectionTests(unittest.TestCase):
         )
         self.assertEqual(projection["source"], source)
         self.assertEqual(projection["schema_version"], MODULE.OUTPUT_SCHEMA)
-        self.assertEqual(len(projection["admissions"]), 7)
+        self.assertEqual(len(projection["admissions"]), 8)
+        versions = [row["bundle_version"] for row in projection["admissions"]]
+        self.assertEqual(versions.count("0.0.0-synthetic"), 7)
+        self.assertEqual(versions.count("1.35.1-reference.1"), 1)
+        flow = next(row for row in projection["admissions"] if row["bundle_version"] == "1.35.1-reference.1")
+        self.assertEqual(flow["object_sha256"], "sha256:947224523757df41127be021fc66adee5746f07ff1a0e913319c5461e430e34d")
         for row in projection["admissions"]:
             self.assertEqual(row["kind"], "qualification-admission")
             self.assertEqual(row["evidence_class"], "remote-safe-synthetic")
-            self.assertEqual(row["bundle_version"], "0.0.0-synthetic")
+            self.assertIn(row["bundle_version"], {"0.0.0-synthetic", "1.35.1-reference.1"})
             self.assertEqual(row["verdict"], "accepted")
             self.assertIsNone(row["expires_at"])
         encoded = json.dumps(projection)
@@ -145,6 +150,40 @@ class ProductionWorkflowAdmissionsProjectionTests(unittest.TestCase):
                     tree=tree,
                 )
 
+    def test_versioned_reference_bundle_preserves_the_public_evidence_boundary(self) -> None:
+        for version, evidence_class, extra, accepted in (
+            ("0.0.0-synthetic", "remote-safe-synthetic", {}, True),
+            ("1.35.1-reference.1", "remote-safe-synthetic", {}, True),
+            ("1.35.1-reference.1", "customer-production", {}, False),
+            ("1.35.1-reference.1", "remote-safe-synthetic", {"production_acceptance": {}}, False),
+            ("1.35.1-reference.1", "remote-safe-synthetic", {"name": "MockMed"}, False),
+            (None, "remote-safe-synthetic", {}, False),
+            ("customer workflow", "remote-safe-synthetic", {}, False),
+        ):
+            with self.subTest(version=version, evidence_class=evidence_class, extra=extra):
+                body = json.dumps({"bundle_version": version, "evidence_class": evidence_class,
+                                   "expires_at": None, "verdict": "accepted", **extra}).encode()
+                digest = MODULE._digest_bytes(body)
+                object_path = "production-evidence/objects/sha256/aa/test.qualification-admission.json"
+                row = {"kind": "qualification-admission", "object_path": object_path, "object_sha256": digest}
+                ledger = {"$schema": "schemas/production-workflow-admissions.schema.json",
+                          "schema_version": MODULE.LEDGER_SCHEMA,
+                          "policy_sha256": "sha256:" + "a" * 64, "admissions": [row]}
+                with tempfile.TemporaryDirectory() as directory:
+                    tree = Path(directory)
+                    target = tree / object_path
+                    target.parent.mkdir(parents=True)
+                    target.write_bytes(body)
+                    if not accepted:
+                        with self.assertRaises(MODULE.RenderError):
+                            MODULE.render(_source(), {"admissions": json.dumps(ledger).encode()}, tree=tree)
+                    else:
+                        result = MODULE.render(_source(), {"admissions": json.dumps(ledger).encode()}, tree=tree)
+                        self.assertEqual(result["admissions"], [{**row, "bundle_version": version,
+                                                                "evidence_class": evidence_class,
+                                                                "expires_at": None, "verdict": "accepted"}])
+                        self.assertNotIn("active", result["admissions"][0])
+
 
 class ProductionWorkflowAdmissionsCopyTests(unittest.TestCase):
     def test_llms_names_public_synthetic_ledger_not_a_customer_job(self) -> None:
@@ -155,12 +194,12 @@ class ProductionWorkflowAdmissionsCopyTests(unittest.TestCase):
             text,
         )
         self.assertIn("seven active target admissions", text)
-        self.assertIn("seven active synthetic admissions", text)
+        self.assertIn("A retained row doesn't establish current qualification", text)
         self.assertIn("0.0.0-synthetic", text)
         self.assertIn("remote-safe-synthetic", text)
         self.assertIn("production-workflow-admissions.json", text)
-        self.assertIn(PINNED_COMMIT, text)
-        self.assertIn("isn't a customer workflow", text)
+        self.assertIn("Synthetic evidence does not qualify a customer workflow", text)
+        self.assertNotIn("seven active synthetic admissions", text)
         self.assertNotIn("no target is actively admitted", text)
         self.assertNotIn("null expiry", text)
         self.assertNotIn("customer job is admitted", text.lower())
@@ -173,9 +212,9 @@ class ProductionWorkflowAdmissionsCopyTests(unittest.TestCase):
         collapsed = " ".join(text.split())
         self.assertIn("0.0.0-synthetic", text)
         self.assertIn("production-workflow-admissions.json", text)
-        self.assertIn(PINNED_COMMIT, text)
-        self.assertIn("isn't a customer workflow", collapsed)
-        self.assertIn("seven active synthetic admissions", collapsed)
+        self.assertIn("A retained row doesn't establish current qualification", collapsed)
+        self.assertIn("Synthetic evidence does not qualify a customer workflow", collapsed)
+        self.assertNotIn("seven active synthetic admissions", collapsed)
         self.assertIn("seven Production targets", text)
         self.assertNotIn("none is actively admitted", collapsed)
         self.assertNotIn("No target is actively admitted", text)
