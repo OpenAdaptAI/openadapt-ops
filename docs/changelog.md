@@ -18,15 +18,15 @@
 
 ## openadapt-flow
 
+- **[v1.35.1](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.35.1)** (2026-09-09)
+  Bug Fixes
+- **[v1.35.0](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.35.0)** (2026-09-04)
+  Bug Fixes
 - **[v1.34.0](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.34.0)** (2026-08-28)
   Bug Fixes
 - **[v1.33.0](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.33.0)** (2026-08-25)
   Bug Fixes
 - **[v1.32.0](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.32.0)** (2026-08-20)
-  Bug Fixes
-- **[v1.31.0](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.31.0)** (2026-08-09)
-  Bug Fixes
-- **[v1.30.0](https://github.com/OpenAdaptAI/openadapt-flow/releases/tag/v1.30.0)** (2026-08-05)
   Bug Fixes
 
 ## openadapt-desktop
@@ -57,6 +57,8 @@
 
 ## openadapt-evals
 
+- **[v0.97.1](https://github.com/OpenAdaptAI/openadapt-evals/releases/tag/v0.97.1)** (2026-09-03)
+  What's Changed
 - **[v0.97.0](https://github.com/OpenAdaptAI/openadapt-evals/releases/tag/v0.97.0)** (2026-09-03)
   What's Changed
 - **[v0.96.1](https://github.com/OpenAdaptAI/openadapt-evals/releases/tag/v0.96.1)** (2026-09-02)
@@ -64,8 +66,6 @@
 - **[v0.96.0](https://github.com/OpenAdaptAI/openadapt-evals/releases/tag/v0.96.0)** (2026-09-01)
   What's Changed
 - **[v0.94.0](https://github.com/OpenAdaptAI/openadapt-evals/releases/tag/v0.94.0)** (2026-08-26)
-  What's Changed
-- **[v0.93.0](https://github.com/OpenAdaptAI/openadapt-evals/releases/tag/v0.93.0)** (2026-08-26)
   What's Changed
 
 ## openadapt-capture
@@ -96,15 +96,15 @@
 
 ## openadapt-types
 
+- **[v0.18.0](https://github.com/OpenAdaptAI/openadapt-types/releases/tag/v0.18.0)** (2026-09-03)
+  Bug Fixes
+- **[v0.17.1](https://github.com/OpenAdaptAI/openadapt-types/releases/tag/v0.17.1)** (2026-09-03)
+  Bug Fixes
 - **[v0.17.0](https://github.com/OpenAdaptAI/openadapt-types/releases/tag/v0.17.0)** (2026-09-01)
   Features
 - **[v0.16.0](https://github.com/OpenAdaptAI/openadapt-types/releases/tag/v0.16.0)** (2026-09-01)
   Features
 - **[v0.15.0](https://github.com/OpenAdaptAI/openadapt-types/releases/tag/v0.15.0)** (2026-09-01)
-  Features
-- **[v0.14.0](https://github.com/OpenAdaptAI/openadapt-types/releases/tag/v0.14.0)** (2026-09-01)
-  Features
-- **[v0.13.0](https://github.com/OpenAdaptAI/openadapt-types/releases/tag/v0.13.0)** (2026-08-31)
   Features
 
 ## openadapt-grounding

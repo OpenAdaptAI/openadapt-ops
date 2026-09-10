@@ -2,6 +2,7 @@
 
 import json
 import pathlib
+import subprocess
 import sys
 
 import pytest
@@ -93,3 +94,32 @@ def test_generate_writes_artifact(tmp_path, mocker, monkeypatch):
 
     assert artifact == tmp_path / "whats-new.md"
     assert "openadapt-evals" in artifact.read_text()
+
+
+@pytest.mark.parametrize("failure", [
+    subprocess.TimeoutExpired("gh", 15),
+    FileNotFoundError("gh"),
+    subprocess.CompletedProcess(["gh"], 1, "", "private diagnostic"),
+    subprocess.CompletedProcess(["gh"], 0, "invalid json", ""),
+    subprocess.CompletedProcess(["gh"], 0, "{}", ""),
+])
+def test_failed_pr_fetch_preserves_existing_digest(tmp_path, monkeypatch, mocker, failure):
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    target = tmp_path / "whats-new.md"
+    target.write_text("previous published digest\n")
+    if isinstance(failure, Exception):
+        mocker.patch("generate_whats_new.subprocess.run", side_effect=failure)
+    else:
+        mocker.patch("generate_whats_new.subprocess.run", return_value=failure)
+    with pytest.raises(RuntimeError) as exc:
+        generate(repos=[{"name": "flow", "github": "OpenAdaptAI/openadapt-flow"}], docs_dir=tmp_path)
+    assert "private diagnostic" not in str(exc.value)
+    assert target.read_text() == "previous published digest\n"
+
+
+def test_cli_merge_date_reaches_generated_digest(tmp_path, monkeypatch, mocker):
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    payload = [{"number": 1, "title": "Release record", "url": "https://github.com/OpenAdaptAI/openadapt-flow/pull/1", "mergedAt": "2026-09-09T19:22:00Z"}]
+    mocker.patch("generate_whats_new.subprocess.run", return_value=subprocess.CompletedProcess(["gh"], 0, json.dumps(payload), ""))
+    generate(repos=[{"name": "flow", "github": "OpenAdaptAI/openadapt-flow"}], docs_dir=tmp_path)
+    assert "merged 2026-09-09" in (tmp_path / "whats-new.md").read_text()

@@ -34,11 +34,23 @@ def fetch_merged_prs(github_slug, days=7):
     ]
     try:
         result = subprocess.run(cmd, capture_output=True, text=True, timeout=15)
-        if result.returncode == 0:
-            return json.loads(result.stdout)
-    except (subprocess.TimeoutExpired, FileNotFoundError):
-        pass
-    return []
+    except (subprocess.TimeoutExpired, FileNotFoundError) as exc:
+        raise RuntimeError(
+            f"GitHub PR request failed for {github_slug}. "
+            "Refusing to replace the digest with an incomplete page."
+        ) from exc
+    if result.returncode != 0:
+        raise RuntimeError(
+            f"GitHub PR request failed for {github_slug}: exit {result.returncode}. "
+            "Refusing to replace the digest with an incomplete page."
+        )
+    try:
+        prs = json.loads(result.stdout)
+    except json.JSONDecodeError as exc:
+        raise RuntimeError(f"GitHub PR response was invalid for {github_slug}.") from exc
+    if not isinstance(prs, list):
+        raise RuntimeError(f"GitHub PR response was not a list for {github_slug}.")
+    return prs
 
 
 def llm_summarize(prs_text, days):
