@@ -71,10 +71,12 @@ def fetch(url: str, accept: str) -> bytes:
         raise FetchError(f"GET {url} -> timed out") from exc
 
 
-def fetch_canonical(provenance: dict, entry: dict) -> bytes:
-    # openadapt-web is private, so raw.githubusercontent.com 404s in Actions.
-    # A repo-scoped GITHUB_TOKEN cannot authenticate that host. Use the
-    # Contents API the same way openadapt-desktop does (PR 154).
+def fetch_canonical(provenance: dict, entry: dict, *, write: bool = False) -> bytes:
+    # Web publishes byte-identical token files during its build. Public reads
+    # work for Dependabot and fork PRs without private repository credentials.
+    # Writes still read canonical source and record its commit in provenance.
+    if not write:
+        return fetch(f"https://openadapt.ai/{entry['canonical_path']}", "text/plain")
     token = github_token()
     if token:
         url = contents_url(
@@ -119,7 +121,7 @@ def main() -> int:
             )
 
         try:
-            canonical = fetch_canonical(provenance, entry)
+            canonical = fetch_canonical(provenance, entry, write=arguments.write)
         except FetchError as exc:
             print(f"{name}: {exc}", file=sys.stderr)
             return 1
@@ -133,8 +135,8 @@ def main() -> int:
 
         if canonical_digest != vendored_digest:
             failures.append(
-                f"{name}: drifted from {provenance['canonical_repository']}@"
-                f"{provenance['canonical_branch']}.\n"
+                f"{name}: drifted from the published "
+                f"{provenance['canonical_repository']} palette.\n"
                 f"    canonical {entry['canonical_path']} is {canonical_digest}\n"
                 f"    the vendored copy is      {vendored_digest}\n"
                 f"    Run: python scripts/vendor_design_tokens.py --write"
@@ -164,8 +166,8 @@ def main() -> int:
         return 1
 
     print(
-        f"\nVendored design tokens match "
-        f"{provenance['canonical_repository']}@{provenance['canonical_branch']}."
+        f"\nVendored design tokens match the published "
+        f"{provenance['canonical_repository']} palette."
     )
     return 0
 

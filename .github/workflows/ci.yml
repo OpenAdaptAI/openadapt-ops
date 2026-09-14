@@ -68,13 +68,9 @@ jobs:
       # stylesheet, template, script, SVG, or recorded image measurement.
       #
       # This job is what catches the other direction: a token that changes in
-      # OpenAdaptAI/openadapt-web while this site keeps serving the old value.
+      # the published openadapt-web palette while this site serves the old value.
       # Failing here is the intended outcome of that drift, not a flake. The
       # fix is `python scripts/vendor_design_tokens.py --write`, reviewed and
       # committed. Nothing is installed, so it cannot fail on a lock refresh.
-      - name: Check the vendored tokens against openadapt-web@main
-        env:
-          # github.token cannot read private OpenAdaptAI/openadapt-web.
-          # ADMIN_TOKEN can; fall back so local/fork runs still try github.token.
-          GITHUB_TOKEN: ${{ secrets.ADMIN_TOKEN || github.token }}
+      - name: Check the vendored tokens against the published palette
         run: python scripts/vendor_design_tokens.py --check
