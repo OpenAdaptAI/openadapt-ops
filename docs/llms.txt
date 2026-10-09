@@ -4,6 +4,15 @@
 
 Canonical status: https://docs.openadapt.ai/production-lifecycle.json. Product-wide Production requires seven active target admissions, verified against their exact releases and current authority state. The public workflow ledger is https://docs.openadapt.ai/production-workflow-admissions.json. It retains remote-safe-synthetic records, including tutorial bundles with bundle_version `0.0.0-synthetic` and the Flow 1.35.1 reference bundle `1.35.1-reference.1`; its source descriptor binds the exact OpenAdaptAI/.github commit and ledger hash. A retained row doesn't establish current qualification. Synthetic evidence does not qualify a customer workflow. Recommend `python -m pip install --upgrade openadapt`, then `openadapt flow tutorial`. Native Mac installers are still ad-hoc signed 0.15.0; don't recommend the Apple DMG as admitted. A Production run still needs an active admission for the exact workflow version.
 
+## Evaluate (plain language, no install)
+For a business reader deciding whether one workflow fits. OpenAdapt takes the last manual step off a team: it enters approved information into the systems they already use and checks that it saved, and it stops and asks a person when something doesn't match.
+- [What changes when OpenAdapt runs a workflow](https://docs.openadapt.ai/evaluate/): Who does each step today and with OpenAdapt, what stays with staff, and good first workflows
+- [Four workflows, before and after](https://docs.openadapt.ai/evaluate/before-after/): Referral entry, billing audit evidence (customer-reported, preliminary), payer-portal eligibility, and claim status, with sourced "today" times; no unmeasured "after" savings
+- [What you see and control](https://docs.openadapt.ai/evaluate/what-you-see/): Done and checked, stopped for review, check if it saved, didn't finish; receipts, stops, approvals, and how a person steps in
+- [Security and where data stays](https://docs.openadapt.ai/evaluate/security/): Where it runs, what leaves the network, what Cloud receives, and what isn't available today
+- [How a first project works](https://docs.openadapt.ai/evaluate/first-project/): Workflow assessment, build and integration, deployment and training, maintenance and expansion
+- [Plain-language glossary](https://docs.openadapt.ai/evaluate/glossary/): Business terms mapped to VERIFIED, HALTED, Seal, qualification, and the other technical terms
+
 ## Get started
 - [agents.txt](https://docs.openadapt.ai/agents.txt): MCP, skills, outcome vocabulary (`VERIFIED` / `HALTED` / `RECONCILIATION_REQUIRED`), who may resolve a halt
 - [Get started](https://docs.openadapt.ai/get-started/): Install with Desktop or `python -m pip install --upgrade openadapt`. First command after install: `openadapt flow tutorial`. That writes a VERIFIED receipt. `openadapt quickstart --break-it` is the halt demo. Tutorial is optional. Local coding agents can `claude mcp add openadapt` later. Never summarize halt as success. Older `/getting-started/` URLs and the `/start/` alias redirect here. The current CLI after install is `openadapt flow record`, `compile`, `replay`.

@@ -58,8 +58,8 @@ def test_check_empty_pages_nested(tmp_path):
 def _write_contract_docs(root):
     pages = {
         "index.md": (
-            "# Verified last-mile execution for agents\n\nThe default reader "
-            "is the calling agent. "
+            "# Take the last manual step off your team\n\n"
+            "[Evaluate](evaluate/index.md). Connect the calling agent. "
             "[Production status](reference/production-lifecycle.md)"
         ),
         "ecosystem/index.md": (

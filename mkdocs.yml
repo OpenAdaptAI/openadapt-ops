@@ -1,8 +1,9 @@
 site_name: OpenAdapt Docs
 site_description: >-
-  OpenAdapt is a demonstration compiler. Record a GUI workflow once and compile
-  it into deterministic replay, re-resolve or propose governed repairs under
-  drift, verify real effects, and halt rather than guess.
+  OpenAdapt takes the last manual step off your team. It enters approved
+  information into the systems you already use, such as EMRs, payer portals,
+  and desktop and Citrix apps, and checks that it saved. When something doesn't
+  match, it stops and asks a person instead of guessing.
 site_url: https://docs.openadapt.ai
 # The header star/fork counter reads from repo_url. Point it at the flagship
 # repo so it reflects the project's real GitHub traction, not this docs repo.
@@ -119,8 +120,9 @@ extra:
     - icon: fontawesome/solid/rss
       link: https://blog.openadapt.ai
 
-# Top-level information architecture follows the five-section review:
-# Start, Build, Operate, Security, Internals. Pages keep their existing
+# Top-level information architecture: Evaluate (plain-language business path,
+# no install), then the five-section review: Start, Build, Operate, Security,
+# Internals. Pages keep their existing
 # on-disk paths (get-started/, concepts/, guides/, reference/, desktop/,
 # ecosystem/); only their grouping and cross-links change.
 #
@@ -129,6 +131,13 @@ not_in_nav: |
   /start/index.md
 nav:
   - Home: index.md
+  - Evaluate:
+    - evaluate/index.md
+    - Four workflows, before and after: evaluate/before-after.md
+    - What you see and control: evaluate/what-you-see.md
+    - Security and where data stays: evaluate/security.md
+    - How a first project works: evaluate/first-project.md
+    - Plain-language glossary: evaluate/glossary.md
   - Start:
     - get-started/index.md
     - Author a workflow: get-started/first-workflow.md

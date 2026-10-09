@@ -14,7 +14,8 @@ MKDOCS_FILE = ROOT / "mkdocs.yml"
 REQUIRED_PUBLIC_PAGES = {
     "index.md": (
         "reference/production-lifecycle.md",
-        "Verified last-mile execution for agents",
+        "Take the last manual step off your team",
+        "evaluate/index.md",
         "calling agent",
     ),
     "ecosystem/index.md": ("data-openadapt-production-target",),
