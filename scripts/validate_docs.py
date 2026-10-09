@@ -72,6 +72,16 @@ REQUIRED_PUBLIC_PAGES = {
         "redirect_to: /ecosystem/",
         "pip install openadapt",
     ),
+    # The plain-language run results must stay derived from the transaction
+    # outcome: only a proven no-effect outcome may say nothing was written.
+    "evaluate/what-you-see.md": (
+        "Stopped before saving",
+        "HALTED_BEFORE_EFFECT",
+        "Check the record",
+        "RECONCILIATION_REQUIRED",
+        "Didn't finish",
+        "FAILED_PLATFORM",
+    ),
 }
 
 REQUIRED_NAV_PAGES = set(REQUIRED_PUBLIC_PAGES) - {"packages/openadapt.md"}

@@ -19,8 +19,10 @@ cloud account.
 | Your cloud account | A machine in a cloud account you own | Any workflow, including patient data |
 | A computer we host ($29/month) | OpenAdapt's cloud | Browser workflows with non-regulated data only. It's not for patient data. |
 
-Desktop and Citrix workflows run on a computer you control. Our $29/month
-hosted computers don't take them. Prices are on the
+On a computer we host, the workflow runs in OpenAdapt's cloud, and that
+computer sees the pages it works on. That's why it's only for non-regulated
+data. Desktop and Citrix workflows run on a computer you control. Our
+$29/month hosted computers don't take them. Prices are on the
 [pricing page](https://openadapt.ai/pricing).
 
 ## What leaves your network
@@ -47,8 +49,9 @@ network.
 
 ## Passwords and patient data on disk
 
-- Passwords never go into recordings. The computer that runs the workflow
-  supplies them at run time from its environment or keychain.
+- Password fields are left out of recordings, along with any field you mark
+  as secret. The computer that runs the workflow supplies them at run time
+  from its environment or keychain.
 - To confirm it's in the right record, the automation keeps the identifiers it
   needs. They stay on your computer, protected by your disk encryption and
   access controls. You can also encrypt the automation itself with a key you

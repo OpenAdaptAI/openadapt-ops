@@ -7,23 +7,24 @@ description: >-
 
 # What you see and control
 
-Every run ends one of four ways, and each one tells your team what to do next.
+Every run ends in one of five ways. Each one tells your team what's known about
+the record and what to do next.
 
 | What you see | What it means | What your team does |
 |---|---|---|
 | Done and checked | It saved the entry and read the record back to confirm it. | Nothing. The receipt is the record of the work. |
-| Stopped for review | Something didn't match, so it stopped before saving and asked a person. | Answer the question, or fix the input and run it again. |
-| Check if it saved | It can't tell whether the save went through. | Look the record up before anyone retries. OpenAdapt won't retry on its own. |
-| Didn't finish | It couldn't complete the task and saved nothing it couldn't confirm. | Check the computer or the connection, then run it again. |
+| Stopped before saving | Something didn't match, so it stopped before changing anything and asked a person. Nothing was written. | Answer the question, or fix the input and run it again. |
+| Check the record | A save may have gone through, and OpenAdapt can't confirm it. | Look the record up before anyone runs it again. OpenAdapt won't retry on its own. |
+| Didn't finish | A problem with OpenAdapt, the computer, or the connection stopped it before anything was saved. | Fix the problem, then run it again. Tell us if it keeps happening. |
+| Finished, not checked | A practice run did the steps but didn't read the saved record back. | Use it for practice only. It never counts as done and checked. |
 
-"Done and checked" needs the record check. If a workflow has no second way to
-read the saved record, a finished run is reported as finished but not checked,
-and it never counts as "done and checked".
+OpenAdapt picks the result from what it can prove about the record. It says
+nothing was written only when it can show that no save happened. If it can't
+show that, the run ends "Check the record", even when it stopped early or lost
+its connection.
 
-<figure markdown="span">
-  ![The OpenAdapt Desktop app's workflow list. "Claims review handoff" shows 6 steps, one halt, and a last run of halted. "Invoice review handoff" shows 6 steps and a last run of verified.](../assets/ui/desktop-qualification-cockpit.png){ width="900" }
-  <figcaption>Synthetic recording. The Desktop app lists each workflow with how its last run ended. One stopped for review and one was done and checked.</figcaption>
-</figure>
+In live work, a run that can't read the saved record back never ends "Done and
+checked". It ends "Check the record", so a person confirms the save.
 
 ## The receipt
 
@@ -38,8 +39,8 @@ screenshots, typed values, or patient names, so it can't carry them.
 When a signature matters, for example to an auditor or to a partner's system,
 a run can carry a signed receipt that can be checked later at a verify link.
 Signed receipts come with Hosted or an Enterprise deployment, and only when
-the record check read the system itself, not just the screen. A local run on
-your own computer produces an unsigned report.
+the record check read the record from the system rather than from the screen.
+A local run on your own computer produces an unsigned report.
 
 ## When it stops
 
@@ -54,8 +55,9 @@ OpenAdapt stops instead of guessing when:
 - The screen shows something the recorded task didn't cover.
 
 It's set to stop when unsure, so some stops turn out to be fine. In our fault
-test on a test system, every check also stopped 9 of the 18 runs that had
-saved correctly, because the reply from the server never arrived
+test on a test system, each of the 3 checks we compared also stopped 9 of the
+18 runs that had saved correctly, because the reply from the server never
+arrived
 ([method and results](https://github.com/OpenAdaptAI/openadapt-flow/blob/aee094193b232f472f991be6fa9b33c3c4b3f9be/benchmark/effect_e2e/EFFECT_E2E.md)).
 Each of those stops said the save might have gone through, so a person looks
 the record up before anything is retried.
@@ -75,8 +77,8 @@ the record up before anything is retried.
 ## When a person steps in
 
 When a run stops, the person responsible gets one question on a computer, or
-on a phone if you set that up. They see the screen as it was when OpenAdapt stopped, and they pick an
-answer. OpenAdapt then checks the screen and the record again before it
+on a phone if you set that up. They see the screen as it was when OpenAdapt
+stopped, and they pick an answer. OpenAdapt then checks the screen and the record again before it
 continues. A person's answer doesn't count as "done and checked" on its own.
 The record check still has to pass.
 
@@ -99,9 +101,23 @@ and a count, not the patient's details.
 </div>
 
 ??? note "Technical details"
-    The four endings map to the execution outcomes `VERIFIED`, `HALTED`, and
-    `FAILED`, and to the transaction outcome `RECONCILIATION_REQUIRED`. A run
-    with no independent record check ends `COMPLETED_UNVERIFIED`. The signed
+    The plain result comes from the run's transaction outcome, not from the
+    execution outcome alone. A run whose execution outcome is `HALTED` or
+    `FAILED` can still have left a write, and then its transaction outcome is
+    `RECONCILIATION_REQUIRED`.
+
+    | Plain result | Transaction outcome |
+    |---|---|
+    | Done and checked | `VERIFIED` |
+    | Stopped before saving | `HALTED_BEFORE_EFFECT`, or `REJECTED_POLICY` when a gate such as the right-record check refused before anything was written |
+    | Check the record | `RECONCILIATION_REQUIRED`, whatever the execution outcome |
+    | Didn't finish | `FAILED_PLATFORM` |
+    | Finished, not checked | `COMPLETED_UNVERIFIED` (Demo profile only) |
+
+    A canceled run (`CANCELED`) also wrote nothing. A run that found and undid
+    a duplicate write ends `ROLLED_BACK`; confirm the record before you run it
+    again. The hosted Execute API reports these results as lowercase
+    `terminal_outcome` values, such as `halted_before_effect`. The signed
     receipt is the Seal.
 
     - [Run outcomes and halt reasons](../reference/run-outcomes.md)

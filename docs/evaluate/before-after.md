@@ -38,8 +38,8 @@ Today, in numbers:
 
 - A referral takes about 10 to 12 minutes of staff time to enter. A
   time-and-motion study at UCSF's pediatric access center measured 719 seconds
-  on average for a faxed referral, including phone calls to the referring
-  office and the patient ([JAMIA Open, 2020](https://pmc.ncbi.nlm.nih.gov/articles/PMC7660949/)).
+  on average for a faxed referral, including calls to the referrer or the
+  patient when information was missing ([JAMIA Open, 2020](https://pmc.ncbi.nlm.nih.gov/articles/PMC7660949/)).
   Calderdale and Huddersfield NHS Foundation Trust reported 10 minutes per
   referral to move the data into its patient record system
   ([HFMA case study, 2024](https://www.hfma.org.uk/system/files/2024-04/Using%20digital%20technologies%20to%20process%20admin%20tasks%20Case%20Study%20v7.pdf)).

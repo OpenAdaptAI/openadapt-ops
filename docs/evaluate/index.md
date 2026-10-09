@@ -20,12 +20,13 @@ Your staff, or the AI tools you already use, still decide what goes in.
 | Enter the information | A staff member types it into the EMR, portal, or desktop app | OpenAdapt types it into the same screens |
 | Confirm it saved | Someone sees "Saved" and moves on | OpenAdapt reads the saved record back and compares it with what it meant to enter |
 | Handle a mismatch | It may surface later, for example at booking or billing | OpenAdapt stops and asks a person |
-| Change your systems | Not needed | Not needed. There's no new integration to build in the EMR or portal. |
 
-To read the record back, OpenAdapt needs a second way to look at it, such as a
-report, an API, or a read-only login. We set that up with you in the first
-project. Without one, OpenAdapt can only re-check the same screen, and it
-labels that as a weaker check.
+You don't need to build a new integration in the EMR or portal. To read the
+record back, OpenAdapt needs a second way to look at it, such as a report, an
+API, or a read-only login. We set that up with you in the first project.
+Without one, OpenAdapt can only re-check the same screen. That's a weaker
+check, so the run can't end "Done and checked", and a person confirms the
+save instead.
 
 ## Why it reads the saved record back
 

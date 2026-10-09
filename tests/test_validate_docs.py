@@ -136,6 +136,11 @@ def _write_contract_docs(root):
             "# OpenAdapt package documentation moved\n\n"
             "`pip install openadapt`"
         ),
+        "evaluate/what-you-see.md": (
+            "# What you see and control\n\n"
+            "Stopped before saving is HALTED_BEFORE_EFFECT. Check the record is "
+            "RECONCILIATION_REQUIRED. Didn't finish is FAILED_PLATFORM."
+        ),
     }
     for relative_path, content in pages.items():
         path = root / relative_path
@@ -419,3 +424,23 @@ def test_retired_public_claims_allow_generated_history(tmp_path):
 
 def test_live_docs_carry_no_retired_public_claim():
     assert check_retired_public_claims() == []
+
+
+def test_product_docs_contract_requires_outcome_derived_results(tmp_path):
+    """The Evaluate results table must keep its transaction-outcome mapping."""
+    docs_dir = tmp_path / "docs"
+    pages = _write_contract_docs(docs_dir)
+    (docs_dir / "evaluate/what-you-see.md").write_text(
+        "# What you see and control\n\nStopped for review is HALTED."
+    )
+    mkdocs_file = tmp_path / "mkdocs.yml"
+    mkdocs_file.write_text(
+        "nav:\n  - Reference:\n"
+        + "".join(f"    - {path}\n" for path in pages)
+        + "    - Package and repository lifecycle: ecosystem/index.md\n"
+    )
+
+    issues = check_product_docs_contract(docs_dir, mkdocs_file)
+
+    assert any("RECONCILIATION_REQUIRED" in issue for issue in issues)
+    assert any("HALTED_BEFORE_EFFECT" in issue for issue in issues)
