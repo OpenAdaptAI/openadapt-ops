@@ -7,9 +7,10 @@ description: >-
 
 # Security and where data stays
 
-Your screens and records stay on a computer you control. OpenAdapt runs the
-automation on that computer, in your office, your data center, or your own
-cloud account.
+For work with patient data, OpenAdapt runs on a computer you control, in your
+office, your data center, or your own cloud account. Your screens and records
+stay on that computer. Our hosted plan is the one exception, and it's for
+browser work with non-regulated data only.
 
 ## Where it can run
 
@@ -33,8 +34,8 @@ all, and your IT team can test that with a script we provide.
 
 If you connect a computer to OpenAdapt Cloud to see run history:
 
-- Cloud receives each run's status, counts, identifiers, and fingerprints of
-  the evidence. When a run stops, it gets a coded description of the kind of
+- Cloud receives each run's status, counts, ID numbers for the run and the
+  workflow, and fingerprints of the evidence. When a run stops, it gets a coded description of the kind of
   problem.
 - From your runs, Cloud doesn't receive screenshots, typed values, or free
   text.

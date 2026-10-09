@@ -20,12 +20,13 @@ taxonomy, and caveats behind each supported claim.
 
 OpenAdapt Hosted has a public **$29/month** browser-workflow subscription; the
 [pricing page](https://openadapt.ai/pricing) lists what it includes. In July
-2026, three independent reversible production pre-payment trials verified
-tenant-bound Checkout creation and confirmed that unpaid sessions grant no
-entitlement. As of that July check, the first genuine customer transaction
-hadn't been observed yet. When it is, its signed-webhook activation, managed
-execution, usage, portal, and cancellation become continuing production
-evidence.
+2026, under the earlier Hosted price, three independent reversible
+production pre-payment trials verified tenant-bound Checkout creation and
+confirmed that unpaid sessions grant no entitlement. This appendix doesn't
+record a Checkout trial at the current price. As of that July check, the
+first genuine customer transaction hadn't been observed yet. When it is, its
+signed-webhook activation, managed execution, usage, portal, and cancellation
+become continuing production evidence.
 
 ## How to read this appendix
 

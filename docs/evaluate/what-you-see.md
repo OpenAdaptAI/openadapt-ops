@@ -7,8 +7,8 @@ description: >-
 
 # What you see and control
 
-Every run ends in one of five ways. Each one tells your team what's known about
-the record and what to do next.
+Each run ends with a result that tells your team what's known about the record
+and what to do next. These are the five results you'll see.
 
 | What you see | What it means | What your team does |
 |---|---|---|
@@ -16,7 +16,7 @@ the record and what to do next.
 | Stopped before saving | Something didn't match, so it stopped before changing anything and asked a person. Nothing was written. | Answer the question, or fix the input and run it again. |
 | Check the record | A save may have gone through, and OpenAdapt can't confirm it. | Look the record up before anyone runs it again. OpenAdapt won't retry on its own. |
 | Didn't finish | A problem with OpenAdapt, the computer, or the connection stopped it before anything was saved. | Fix the problem, then run it again. Tell us if it keeps happening. |
-| Finished, not checked | A practice run did the steps but didn't read the saved record back. | Use it for practice only. It never counts as done and checked. |
+| Finished, not checked | It did the steps but didn't read the saved record back, for example in a practice run. | Use it for practice only. It never counts as done and checked. |
 
 OpenAdapt picks the result from what it can prove about the record. It says
 nothing was written only when it can show that no save happened. If it can't
@@ -24,13 +24,13 @@ show that, the run ends "Check the record", even when it stopped early or lost
 its connection.
 
 In live work, a run that can't read the saved record back never ends "Done and
-checked". It ends "Check the record", so a person confirms the save.
+checked". If it may have saved, it ends "Check the record", so a person
+confirms the save.
 
 ## The receipt
 
 Each run leaves a record of what it entered and how it checked the result.
-The full report stays on the computer that ran the workflow, with your other
-records.
+The full report stays on the computer that ran the workflow.
 
 The shareable receipt is built from a fixed list of fields, such as the
 outcome, counts, and fingerprints of the evidence. It has no place for
@@ -78,19 +78,20 @@ the record up before anything is retried.
 
 When a run stops, the person responsible gets one question on a computer, or
 on a phone if you set that up. They see the screen as it was when OpenAdapt
-stopped, and they pick an answer. OpenAdapt then checks the screen and the record again before it
-continues. A person's answer doesn't count as "done and checked" on its own.
-The record check still has to pass.
+stopped, and they pick an answer. OpenAdapt then checks the screen and the
+record again before it continues. A person's answer doesn't count as "done and
+checked" on its own. The record check still has to pass.
 
-The screen image and the values stay on the computer that ran the workflow. If
-you use our hosted dashboard to watch for stops, it shows the kind of problem
-and a count, not the patient's details.
+The screen image and the values stay on the computer that ran the workflow. A
+phone sees them only through a page that this computer serves on your network.
+If you answer through our hosted dashboard instead, it shows the kind of
+problem and a few counts, with no screen image and no patient details.
 
 <div class="grid" markdown>
 
 <figure markdown="span">
   ![A phone screen titled "Open the intended patient record". The record identity didn't match, the action wasn't sent, and a screenshot shows the EMR when OpenAdapt stopped.](../assets/ui/mobile-decision-request.jpg){ width="260" }
-  <figcaption>Synthetic recording. A wrong-record stop, sent to a phone. Made-up patient data.</figcaption>
+  <figcaption>Synthetic recording. A wrong-record stop on a phone, served by the computer that ran the workflow. Made-up patient data.</figcaption>
 </figure>
 
 <figure markdown="span">

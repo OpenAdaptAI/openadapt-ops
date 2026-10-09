@@ -59,9 +59,9 @@ readiness test in your own Citrix environment during the first project. The
 record check needs a second way to read the referral, such as a report or a
 read-only login. Without one, OpenAdapt can't mark the entry done and checked.
 
-When we show this workflow, we use a synthetic EMR with made-up patients. We
-don't show any EMR vendor's product or branding, and naming an EMR in these
-docs doesn't imply a partnership.
+When we show this workflow, we use made-up patients in a test EMR, such as the
+open-source OpenEMR. We don't show any commercial EMR vendor's product or
+branding, and naming an EMR in these docs doesn't imply a partnership.
 
 What to measure: minutes per referral today, referrals per week, how many runs
 stop for review, and how long a stop takes to answer.

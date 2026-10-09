@@ -47,10 +47,10 @@ When something doesn't match, it stops and asks a person instead of guessing.
 5. If everything matches, the item is done and checked, and you get a receipt.
    If something doesn't match, it stops and asks a person.
 
-A normal run makes no AI model calls, and your screens and records stay on a
-computer you control. Read [Security and where data stays](evaluate/security.md)
-for the details, or the [glossary](evaluate/glossary.md) for the terms the
-technical pages use.
+A normal run makes no AI model calls. For work with patient data, your screens
+and records stay on a computer you control. Read
+[Security and where data stays](evaluate/security.md) for the details, or the
+[glossary](evaluate/glossary.md) for the terms the technical pages use.
 
 ---
 

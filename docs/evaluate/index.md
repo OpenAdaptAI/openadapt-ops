@@ -39,10 +39,10 @@ by hand, 3.7% didn't match the value the device sent electronically
 ([Mays and Mathias, JAMIA, 2019](https://pmc.ncbi.nlm.nih.gov/articles/PMC6351970)).
 
 A "Saved" message on screen doesn't prove the record changed, either. In
-OpenAdapt's own fault test, we injected save failures into a test system: 72 of
-90 runs left the record wrong, and a check that trusted the success message
-passed 54 of those 72. That's a test over a fixed list of faults, not a
-real-world error rate
+OpenAdapt's own fault test, we injected faults such as lost, partial, and
+duplicate saves into a test system. Of 90 runs, 72 left the record wrong, and a
+check that trusted the success message passed 54 of those 72. That's a test
+over a fixed list of faults, not a real-world error rate
 ([method and results](https://github.com/OpenAdaptAI/openadapt-flow/blob/aee094193b232f472f991be6fa9b33c3c4b3f9be/benchmark/effect_e2e/EFFECT_E2E.md)).
 
 <figure markdown="span">

@@ -26,7 +26,7 @@ never as "Stopped before saving" or "Didn't finish".
 | Stopped before saving | [`HALTED`](../reference/run-outcomes.md) with transaction outcome [`HALTED_BEFORE_EFFECT`](../reference/run-outcomes.md#transaction-outcomes) or `REJECTED_POLICY` | Something didn't match, so it stopped before changing anything and asked a person. Nothing was written. |
 | Check the record | [`RECONCILIATION_REQUIRED`](../reference/run-outcomes.md#transaction-outcomes) | A save may have gone through. A person checks the record before anything is retried. |
 | Didn't finish | [`FAILED`](../reference/run-outcomes.md) with transaction outcome `FAILED_PLATFORM` | A problem with OpenAdapt, the computer, or the connection stopped it before anything was saved. |
-| Finished, not checked | [`COMPLETED_UNVERIFIED`](../reference/run-outcomes.md) | A practice run did the steps but didn't read the saved record back. |
+| Finished, not checked | [`COMPLETED_UNVERIFIED`](../reference/run-outcomes.md) | It did the steps but didn't read the saved record back, for example in a practice run. |
 | Receipt, signed receipt | [Seal](../commercial/seal.md), receipt | A record of what was entered and how it was checked. It's called signed when the signature matters. |
 | Readiness test | [Qualification](../guides/qualify-a-workflow.md), admission | Testing the automation on your system with your cases before it goes live. |
 | Approved fix | [Governed repair](../concepts/self-healing.md), repair candidate | When a screen changes, OpenAdapt proposes a fix and a person approves it. |
