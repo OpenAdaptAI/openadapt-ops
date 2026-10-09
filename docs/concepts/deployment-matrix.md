@@ -15,7 +15,7 @@ schema. What differs across lanes is data handling, not substrate capability.
 Every substrate is a first-class target of the shared compiler, runner, and
 safety gates. Where each lane is available today differs, and the matrix states
 that plainly rather than implying uniform hosted availability. The public
-$500/month self-serve subscription runs the browser substrate in OpenAdapt's
+$29/month self-serve Hosted subscription runs the browser substrate in OpenAdapt's
 cloud. Windows, native macOS, native Linux, RDP, and Citrix/VDI run in a local,
 self-hosted, or customer-controlled boundary and can connect to Cloud for
 governed operation. An in-our-cloud desktop runner

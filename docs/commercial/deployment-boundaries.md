@@ -46,8 +46,8 @@ flowchart LR
 ### Lane 1: Managed browser
 
 - **What runs where:** OpenAdapt operates the control plane and the browser
-  runner. The public $500/month subscription covers approved browser
-  workflows, up to 10,000 runs/month.
+  runner. The public $29/month Hosted subscription covers approved browser
+  workflows. See the [pricing page](https://openadapt.ai/pricing).
 - **Where sensitive data lives:** this lane is for explicitly initiated,
   public-HTTPS, **non-regulated** targets. PHI/PII-bearing workloads do not
   belong in this lane and are not silently admitted to it.

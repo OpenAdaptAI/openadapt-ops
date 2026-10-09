@@ -7,7 +7,7 @@ description: >-
 # OpenAdapt Hosted
 
 OpenAdapt Hosted is the managed control plane for governed workflows. The
-public **$500/month** subscription covers approved browser workflows and adds
+public **$29/month** subscription covers approved browser workflows and adds
 account and organization management, managed execution of locally authored and
 attested bundles, artifact storage, structural run history, usage metering, and
 billing. The same compiler and governed runtime remain available under MIT for
@@ -18,7 +18,7 @@ available for explicitly initiated public, non-regulated browser sessions; use
 local recording and a reviewed sanitized derivative when source observations
 cannot enter the OpenAdapt-hosted boundary.
 
-[Start with OpenAdapt](https://openadapt.ai/pricing#cloud-preview){ .md-button .md-button--primary }
+[Start with OpenAdapt](https://openadapt.ai/pricing#hosted){ .md-button .md-button--primary }
 [Review the data boundary](security-review.md){ .md-button }
 
 Payment runs through Stripe, and the price shown on the website is the exact

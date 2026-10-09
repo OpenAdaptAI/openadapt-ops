@@ -18,12 +18,14 @@ It is intentionally more detailed than the product overview so operators and
 reviewers can inspect the task, environment, run count, oracle, failure
 taxonomy, and caveats behind each supported claim.
 
-OpenAdapt Hosted has a public **$500/month** browser-workflow subscription.
-Three independent reversible
-production pre-payment trials verified tenant-bound Checkout creation and
-confirmed that unpaid sessions grant no entitlement. The first genuine customer
-transaction will be observed through signed-webhook activation, managed
-execution, usage, portal, and cancellation as continuing production evidence.
+OpenAdapt Hosted has a public **$29/month** browser-workflow subscription; the
+[pricing page](https://openadapt.ai/pricing) lists what it includes. In July
+2026, three independent reversible production pre-payment trials verified
+tenant-bound Checkout creation and confirmed that unpaid sessions grant no
+entitlement. As of that July check, the first genuine customer transaction
+hadn't been observed yet. When it is, its signed-webhook activation, managed
+execution, usage, portal, and cancellation become continuing production
+evidence.
 
 ## How to read this appendix
 
@@ -34,6 +36,10 @@ bounded evidence. Availability never turns one fixture or qualification batch
 into a broad application-support claim. Before consequential use, qualify the
 exact workflow, application, environment, identity contract, effect oracle, and
 deployment boundary.
+
+The public Citrix evidence below uses a stand-in session, not a real Citrix
+ICA/HDX connection. For a Citrix deployment, the qualification runs in your
+own Citrix environment as part of the first workflow.
 
 The [interactive status viewer](https://openadapt.ai/artifacts/json?source=%2Fstatus.json)
 presents the same release, availability, evidence, and deployment dimensions;

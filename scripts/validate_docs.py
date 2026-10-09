@@ -32,7 +32,7 @@ REQUIRED_PUBLIC_PAGES = {
         "Qualification evidence",
         "Integrated product matrix",
         "Hosted execution",
-        "$500/month",
+        "$29/month",
         "Supported / public offer",
         "Hosted browser recorder",
         "`openadapt-flow` 1.8.0",
@@ -84,6 +84,22 @@ FIRST_WORKFLOW_FORBIDDEN_FLAGS = (
     "--break-it",
     "--simulate-rejected-write",
 )
+
+# Public claims that were corrected and must not return. Each one was live on
+# docs.openadapt.ai and contradicted the public site or its own evidence.
+# Generated history pages may quote the old text.
+RETIRED_PUBLIC_CLAIMS = {
+    "$500/month": "retired Cloud price; Hosted is $29/month on openadapt.ai/pricing",
+    "$500.00/month": "retired Cloud price; Hosted is $29/month on openadapt.ai/pricing",
+    "Every price and claim matches": "false claim; link the pricing page instead",
+    "openadapt.ai/#demo": "the home page has no #demo anchor; use app.openadapt.ai/demo",
+    "pricing#cloud-preview": "the pricing page has no #cloud-preview anchor; use #hosted",
+    "54 of 90 wrong": "misstated base; the fault test's screen check passed 54 of 72 wrong runs",
+}
+RETIRED_CLAIM_ALLOWLIST = {
+    "changelog.md",
+    "whats-new.md",
+}
 
 STALE_PRELAUNCH_MARKERS = {
     "Available for qualification",
@@ -368,6 +384,23 @@ def check_train_path_not_current_product(docs_dir=None):
     return issues
 
 
+def check_retired_public_claims(docs_dir=None):
+    """Fail if a corrected public claim (price, anchor, statistic) returns."""
+    docs_dir = pathlib.Path(docs_dir or DOCS_DIR)
+    issues = []
+    for path in sorted(docs_dir.rglob("*")):
+        if not path.is_file() or path.suffix not in {".md", ".txt"}:
+            continue
+        relative = path.relative_to(docs_dir).as_posix()
+        if relative in RETIRED_CLAIM_ALLOWLIST:
+            continue
+        text = path.read_text()
+        for claim, reason in RETIRED_PUBLIC_CLAIMS.items():
+            if claim in text:
+                issues.append(f"Retired public claim in {relative}: {claim!r} ({reason})")
+    return issues
+
+
 def check_retired_redirects(docs_dir=None):
     """Keep retired train-path and package-mirror URLs on a Flow-first redirect."""
     docs_dir = pathlib.Path(docs_dir or DOCS_DIR)
@@ -430,6 +463,7 @@ def validate():
     issues.extend(contract_issues)
 
     issues.extend(check_train_path_not_current_product())
+    issues.extend(check_retired_public_claims())
     issues.extend(check_retired_redirects())
 
     # Run mkdocs build

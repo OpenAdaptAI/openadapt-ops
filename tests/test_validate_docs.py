@@ -10,6 +10,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "scripts
 from validate_docs import (
     check_empty_pages,
     check_product_docs_contract,
+    check_retired_public_claims,
     check_retired_redirects,
     check_train_path_not_current_product,
 )
@@ -97,7 +98,7 @@ def _write_contract_docs(root):
         ),
         "get-started/what-works-today.md": (
             "# Qualification evidence\n\n## Integrated product matrix\n\n"
-            "Hosted execution is a Supported / public offer at $500/month. "
+            "Hosted execution is a Supported / public offer at $29/month. "
             "Hosted browser recorder evidence is bounded on `openadapt-flow` 1.8.0. "
             "Authenticated live health proves service identity. Three production "
             "pre-payment trials passed; the first genuine customer transaction "
@@ -382,3 +383,39 @@ def test_retired_redirect_missing_file_is_an_issue(tmp_path):
         in issue
         for issue in issues
     )
+
+
+def test_retired_public_claims_are_flagged(tmp_path):
+    """A corrected price, anchor, or statistic must not come back."""
+    (tmp_path / "commercial").mkdir()
+    (tmp_path / "commercial" / "index.md").write_text(
+        "# Offers\n\nEvery price and claim matches the pricing page. "
+        "OpenAdapt Cloud is $500.00/month."
+    )
+    (tmp_path / "index.md").write_text(
+        "# Home\n\n[Demo](https://openadapt.ai/#demo). "
+        "A screen check accepted 54 of 90 wrong results."
+    )
+    (tmp_path / "llms.txt").write_text("Hosted: $500/month")
+
+    issues = check_retired_public_claims(docs_dir=tmp_path)
+
+    joined = "\n".join(issues)
+    assert "commercial/index.md: 'Every price and claim matches'" in joined
+    assert "commercial/index.md: '$500.00/month'" in joined
+    assert "index.md: 'openadapt.ai/#demo'" in joined
+    assert "index.md: '54 of 90 wrong'" in joined
+    assert "llms.txt: '$500/month'" in joined
+
+
+def test_retired_public_claims_allow_generated_history(tmp_path):
+    """Generated history pages may quote a retired claim."""
+    (tmp_path / "changelog.md").write_text("# Changelog\n\nCloud moved off $500/month.")
+    (tmp_path / "whats-new.md").write_text("# What's new\n\nWas $500.00/month.")
+    (tmp_path / "index.md").write_text("# Home\n\nHosted is $29/month.")
+
+    assert check_retired_public_claims(docs_dir=tmp_path) == []
+
+
+def test_live_docs_carry_no_retired_public_claim():
+    assert check_retired_public_claims() == []

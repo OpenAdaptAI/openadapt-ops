@@ -2,8 +2,9 @@
 
 Answers for procurement, legal, and vendor-risk teams evaluating an OpenAdapt
 engagement. Security depth lives in the
-[security packet](security-packet.md); prices match the public
-[pricing page](https://openadapt.ai/pricing).
+[security packet](security-packet.md). Software prices come from the public
+[pricing page](https://openadapt.ai/pricing); service fees are set per
+workflow in a written proposal.
 
 ## Commercial
 
@@ -15,12 +16,14 @@ outcome; "do not automate" is a full-value deliverable. See the
 [Workflow Qualification Sprint](qualification-sprint.md) page.
 
 **Is there a subscription?**
-OpenAdapt Cloud is $500.00/month for managed browser execution of approved
-workflows on non-regulated data, up to 10,000 runs/month. It is a self-service
-developer and team offering, separate from enterprise qualification, and does
-not include a production SLA or regulated deployment.
+OpenAdapt Hosted is $29/month for managed browser execution of approved
+workflows on non-regulated data. It is a self-service developer and team
+offering, separate from enterprise qualification, and does not include a
+production SLA or regulated deployment. The
+[pricing page](https://openadapt.ai/pricing) lists what it includes.
 
 **What does production cost?**
+These are typical ranges, not quotes; your written proposal sets the fee.
 Supervised Production Pilots are typically $30,000 to $60,000; production
 contracts typically $48,000 to $120,000 per year depending on workflow family,
 environment, runners, evidence, support, and requalification scope. OEM

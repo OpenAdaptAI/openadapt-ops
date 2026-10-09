@@ -78,7 +78,7 @@ Full detail and diagram: [deployment boundaries](deployment-boundaries.md).
 | Fully local / air-gapped on-prem | Customer workstation or server | Nothing at run time; signed updates enter on operator-pulled media. |
 | Customer-controlled runner (BYOC) | Customer VM or cloud account | Sanitized, manifested artifact derivatives and minimized control metadata only; raw frames and PHI/PII stay inside the boundary. |
 | Hosted control plane + local execution | Execution local; accounts, versions, and history managed | Operator-approved sanitized derivatives, minimized halt descriptors, hash-bound attestations. |
-| Managed browser runner (Cloud, $500/month) | OpenAdapt's cloud | For explicitly initiated, public-HTTPS, **non-regulated** workloads only. Not a lane for PHI/PII. |
+| Managed browser runner (Hosted, $29/month) | OpenAdapt's cloud | For explicitly initiated, public-HTTPS, **non-regulated** workloads only. Not a lane for PHI/PII. |
 
 Sensitive live observations never route into the shared managed boundary; a
 recording that was sanitized for upload does not make runtime data sanitized,
