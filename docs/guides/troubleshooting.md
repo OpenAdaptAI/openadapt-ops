@@ -17,10 +17,14 @@ dialog. The app looks like it is recording but captures nothing.
 
 === "macOS"
 
-    Grant **both** Screen Recording and Accessibility, then **restart the app**:
+    Grant Screen Recording, Accessibility, and Input Monitoring, then **restart
+    the app**:
 
     - **System Settings → Privacy & Security → Screen Recording** → OpenAdapt on.
     - **System Settings → Privacy & Security → Accessibility** → OpenAdapt on.
+    - **System Settings → Privacy & Security → Input Monitoring** → OpenAdapt on.
+      Without it, a desktop recording doesn't start and reports "Input
+      Monitoring permission is required".
     - Quit and reopen OpenAdapt; macOS only applies a newly granted Screen
       Recording permission after a restart.
 
