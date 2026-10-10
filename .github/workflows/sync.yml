@@ -40,7 +40,26 @@ jobs:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
+      # GitHub starts no workflow for an event raised with this workflow's own
+      # GITHUB_TOKEN. The auto-sync pull request's required checks then sit in
+      # action_required, never report, and auto-merge never fires: the pull
+      # request opened on 2026-09-21 waited weeks that way. A GitHub App
+      # installation token raises ordinary events, so the checks run. Checkout
+      # persists it for the branch push, and the PR step uses it for `gh`. A
+      # same-repo push opens no pull request and keeps the default token.
+      - name: Mint the docs sync app token
+        id: app_token
+        if: ${{ github.event_name != 'push' && vars.DOCS_SYNC_APP_CLIENT_ID != '' }}
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ vars.DOCS_SYNC_APP_CLIENT_ID }}
+          private-key: ${{ secrets.DOCS_SYNC_APP_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
+
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          token: ${{ steps.app_token.outputs.token || github.token }}
 
       - uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
         with:
@@ -100,8 +119,9 @@ jobs:
         id: docs_pr
         if: ${{ success() && github.event_name != 'push' }}
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ steps.app_token.outputs.token }}
           BRANCH: docs/auto-sync
+          STUCK_AFTER_DAYS: 8
         run: |
           set -uo pipefail
           git config user.name "github-actions[bot]"
@@ -118,6 +138,26 @@ jobs:
           fi
           git commit -m "docs: auto-sync generated documentation"
 
+          # Read the open pull request before this push replaces its head. If
+          # it is old and the head the previous run pushed never got a single
+          # check, its required checks are not running and auto-merge cannot
+          # fire. Fail the run after the deploy instead of reusing it quietly.
+          PR_URL=""
+          if [ -n "${GH_TOKEN}" ]; then
+            PR_JSON=$(gh pr list --head "${BRANCH}" --base main --state open \
+              --json url,createdAt,statusCheckRollup --jq '.[0] // {}')
+            PR_URL=$(jq -r '.url // empty' <<< "${PR_JSON}")
+            if [ -n "${PR_URL}" ]; then
+              CREATED=$(jq -r '.createdAt' <<< "${PR_JSON}")
+              CHECKS=$(jq '.statusCheckRollup | length' <<< "${PR_JSON}")
+              AGE_DAYS=$(( ( $(date +%s) - $(date -d "${CREATED}" +%s) ) / 86400 ))
+              if [ "${AGE_DAYS}" -ge "${STUCK_AFTER_DAYS}" ] && [ "${CHECKS}" -eq 0 ]; then
+                echo "stuck=true" >> "$GITHUB_OUTPUT"
+                echo "::error::${PR_URL} has been open ${AGE_DAYS} days and no check has reported on its head, so auto-merge cannot fire."
+              fi
+            fi
+          fi
+
           # The concurrency group serialises this workflow, and nothing else
           # writes this branch, so overwriting it rebases the pending sync onto
           # current main instead of stacking stale generated commits.
@@ -131,10 +171,8 @@ jobs:
           already ran the test suite, `scripts/validate_docs.py`, and a strict
           MkDocs build against exactly this content.
 
-          Auto-merge (squash) is requested, so it lands once the required checks
-          pass. If those checks never report, close and reopen this PR once:
-          GitHub does not start a workflow for an event raised by the Actions
-          token, and reopening it by hand does.
+          The docs sync GitHub App opens and pushes it, so the required checks
+          run. Auto-merge (squash) is requested, so it lands once they pass.
 
           Nothing here is hand-edited. To change it, change the generator under
           `scripts/`.
@@ -142,8 +180,16 @@ jobs:
 
           echo "changed=true" >> "$GITHUB_OUTPUT"
 
-          PR_URL=$(gh pr list --head "${BRANCH}" --base main --state open \
-            --json url --jq '.[0].url // empty')
+          # Without the app token, a pull request would raise events that start
+          # no checks. Keep the recorded branch and the deploy, and fail the run
+          # after the deploy.
+          if [ -z "${GH_TOKEN}" ]; then
+            echo "app_missing=true" >> "$GITHUB_OUTPUT"
+            echo "pr_url=" >> "$GITHUB_OUTPUT"
+            echo "::error::DOCS_SYNC_APP_CLIENT_ID is not set, so no pull request with running checks can carry ${BRANCH} to main."
+            exit 0
+          fi
+
           if [ -z "${PR_URL}" ]; then
             gh pr create \
               --base main \
@@ -184,12 +230,23 @@ jobs:
       # New content that reaches the site but never reaches `main` leaves the
       # published site ahead of its own source, and the next same-repo docs
       # push would rebuild without it. Fail the run so the gap is visible.
+      - name: Confirm the auto-sync pull request can merge
+        if: ${{ steps.docs_pr.outputs.app_missing == 'true' || steps.docs_pr.outputs.stuck == 'true' }}
+        env:
+          BRANCH: docs/auto-sync
+        run: |
+          echo "::error::The generated docs source on ${BRANCH} cannot reach main on its own."
+          echo "GitHub starts no checks for a pull request raised with the workflow's GITHUB_TOKEN."
+          echo "Install the docs sync GitHub App on this repository with Contents and Pull requests write access."
+          echo "Set the DOCS_SYNC_APP_CLIENT_ID variable and the DOCS_SYNC_APP_PRIVATE_KEY secret."
+          echo "Then approve the pending checks on the open auto-sync pull request, or close and reopen it once."
+          exit 1
+
       - name: Confirm the generated source is queued for main
-        if: ${{ steps.docs_pr.outputs.changed == 'true' && steps.docs_pr.outputs.pr_url == '' }}
+        if: ${{ steps.docs_pr.outputs.changed == 'true' && steps.docs_pr.outputs.app_missing != 'true' && steps.docs_pr.outputs.pr_url == '' }}
         env:
           BRANCH: docs/auto-sync
         run: |
           echo "::error::The generated docs source sits on ${BRANCH} with no pull request to main."
-          echo "GitHub Actions may not create pull requests in this repository."
-          echo "Enable Settings > Actions > General > Allow GitHub Actions to create and approve pull requests."
+          echo "Check that the docs sync GitHub App is installed on this repository with Pull requests write access."
           exit 1
