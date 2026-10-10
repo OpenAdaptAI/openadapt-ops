@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
+
+import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -81,6 +84,60 @@ def test_health_probe_uses_the_strict_contract_and_a_durable_issue() -> None:
     assert "human-decision delivery component" in workflow
     assert "issues: write" in workflow
     assert "Production health check is failing" in workflow
+
+
+def test_health_cadence_claims_say_github_schedules_are_best_effort() -> None:
+    # GitHub starts scheduled runs on a best-effort basis. On 2026-10-09 the
+    # health check's last 100 scheduled runs were a median of 285 minutes
+    # apart, not the 30 minutes the cron asks for. A bare cadence promise
+    # tells operators that an outage is noticed far sooner than it is.
+    cadence = re.compile(r"every \d+ minutes", re.IGNORECASE)
+    # A table row or a prose paragraph is one claim; the qualifier must sit
+    # in the same claim as the cadence.
+    claims = []
+    for block in read("ops/PRODUCTION_OPERATIONS.md").split("\n\n"):
+        if block.lstrip().startswith("|"):
+            claims.extend(block.splitlines())
+        else:
+            claims.append(" ".join(block.split()))
+    cadence_claims = [claim for claim in claims if cadence.search(claim)]
+    assert cadence_claims
+    for claim in cadence_claims:
+        assert "best-effort" in claim, claim
+
+    header = read(".github/workflows/prod-health-alert.yml").split("\non:", 1)[0]
+    claim = header.split("# Cadence:", 1)[1].split("\n#\n", 1)[0]
+    assert cadence.search(claim)
+    assert "best-effort" in claim
+    assert "not a real-time pager" in claim
+    assert "bounds detection latency" not in header
+
+
+def test_a_passing_health_probe_pings_the_external_monitor() -> None:
+    steps = yaml.safe_load(read(".github/workflows/prod-health-alert.yml"))["jobs"][
+        "probe"
+    ]["steps"]
+    probe = next(
+        i
+        for i, step in enumerate(steps)
+        if "check_production_readiness.py" in step.get("run", "")
+    )
+    ping = next(
+        i
+        for i, step in enumerate(steps)
+        if "PROD_HEALTH_PING_URL" in step.get("env", {})
+    )
+    assert probe < ping
+    # Default success() condition: a failed or skipped probe sends no ping,
+    # so the external monitor alerts after its grace period.
+    assert "if" not in steps[ping]
+    assert steps[ping]["env"]["PROD_HEALTH_PING_URL"] == (
+        "${{ secrets.PROD_HEALTH_PING_URL }}"
+    )
+    # A ping outage must not fail the probe job, or the durable issue would
+    # report a healthy service as failing.
+    assert "|| echo" in steps[ping]["run"]
+    assert "PROD_HEALTH_PING_URL" in read("ops/PRODUCTION_OPERATIONS.md")
 
 
 def test_backup_jobs_keep_distinct_failure_and_freshness_issues() -> None:

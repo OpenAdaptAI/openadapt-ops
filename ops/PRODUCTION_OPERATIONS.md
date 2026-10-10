@@ -9,16 +9,25 @@ must pass qualification.
 
 | Check | Schedule | Proof | Durable signal |
 |---|---:|---|---|
-| Production health | Every 30 minutes | HTTP 200, `no-store`, fresh `checked_at`, live mode, active encrypted writer, and every required component | One GitHub issue and optional Telegram alert |
+| Production health | Requested every 30 minutes; GitHub runs it best-effort, a median of 285 minutes apart on 2026-10-09 | HTTP 200, `no-store`, fresh `checked_at`, live mode, active encrypted writer, and every required component | One GitHub issue and optional Telegram alert |
 | Database backup | Daily | An encrypted archive no larger than 5 GiB, one S3 PutObject, a redacted manifest, and a matching S3-validated full-object SHA-256 | One GitHub issue |
 | Database backup freshness | Hourly | A complete S3 pair from the last 24 hours, a valid manifest digest, a matching object size, and the same full-object SHA-256 | One GitHub issue |
 | Default branch sweep | Daily | The newest applicable run for every owned repository | One GitHub issue |
 | Published version claims | Daily | Documentation claims against current package indexes | One GitHub issue |
 
-These checks use GitHub Actions. GitHub can delay a schedule or disable it after
-60 days without repository activity. Use one external monitor for the health
-workflow and the backup-freshness workflow. A successful old run is not current
-proof.
+These checks use GitHub Actions, which starts scheduled runs best-effort. The
+health check requests a run every 30 minutes, but its 100 scheduled runs up to
+2026-10-09 were a median of 285 minutes apart (112 to 565). GitHub can
+also disable a schedule after 60 days without repository activity. On its own,
+the health workflow isn't a real-time pager: an outage can go unnoticed for
+hours.
+
+Use one external monitor for the health workflow and the backup-freshness
+workflow. After each passing health run, the workflow pings the URL in the
+`PROD_HEALTH_PING_URL` repository secret. Point that secret at a dead-man's
+switch check, which alerts when no ping arrives within its grace period. A late
+run, a missing run, and a failing run all stop the pings. A successful old run
+is not current proof.
 
 ## Deployment gate
 
@@ -118,6 +127,10 @@ this order:
 9. Select the primary operator, the secondary operator, the support hours, and
    the response targets for human halts.
 10. Configure an external monitor for the production health and backup freshness
-   schedules.
+   schedules. For health, create a dead-man's switch check and save its ping
+   URL as the `PROD_HEALTH_PING_URL` repository secret. Set the grace period to
+   the detection time you need, and pair it with a trigger outside GitHub, such
+   as an external scheduler that dispatches the workflow. Otherwise GitHub's
+   own delays set off the alert.
 11. Complete the first genuine customer transaction when an authorized customer
    is available. Do not create a founder self-charge as evidence.
