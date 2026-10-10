@@ -102,8 +102,22 @@ jobs:
       - name: Verify retained lifecycle results before publication
         run: uv run python scripts/generate_production_lifecycle_verification.py --check
 
+      # mkdocs.yml reads the PostHog settings at build time, and the theme
+      # override emits PostHog only when the key is set. The project key ships
+      # to every browser, so it is an Actions variable, not a secret. Pull
+      # request builds in ci.yml never set it and stay analytics-free.
       - name: Build MkDocs site
-        run: uv run mkdocs build --strict
+        env:
+          NEXT_PUBLIC_POSTHOG_KEY: ${{ vars.NEXT_PUBLIC_POSTHOG_KEY }}
+          NEXT_PUBLIC_POSTHOG_HOST: ${{ vars.NEXT_PUBLIC_POSTHOG_HOST || 'https://us.i.posthog.com' }}
+        run: |
+          uv run mkdocs build --strict
+          if [ -z "${NEXT_PUBLIC_POSTHOG_KEY}" ]; then
+            echo "::notice::NEXT_PUBLIC_POSTHOG_KEY is not set, so the published docs load no PostHog."
+          elif ! grep -q "posthog.init" site/index.html; then
+            echo "::error::NEXT_PUBLIC_POSTHOG_KEY is set, but the built site has no PostHog init."
+            exit 1
+          fi
 
       # Persist exactly the generated source that passed the gates before
       # publishing it. This workflow never pushes to `main`: the generated
