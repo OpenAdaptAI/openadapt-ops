@@ -167,3 +167,31 @@ def test_troubleshooting_names_the_uncertain_push_result() -> None:
     section = next(s for s in _sections(text) if s.startswith("The offline queue is stuck"))
     for required in ("delivery_uncertain", "reconcile", "exit code"):
         assert required in section, required
+
+
+# --- Connector failure signals are disclosed, with the opt-out ---
+#
+# openadapt-flow's customer-hosted connector adds a categorical failure signal
+# (openadapt_flow/failure_signals.py) to the run callback of every run that
+# doesn't succeed. It is on unless DO_NOT_TRACK=1 or OPENADAPT_TELEMETRY=0. A
+# blanket "no telemetry in the run path" claim is false for that path.
+
+FAILURE_SIGNAL_SCHEMA = "openadapt.automation-failure-signal/v1"
+_BLANKET_NO_TELEMETRY = (
+    "The local engine has no telemetry",
+    "no telemetry, analytics, license check, or update ping anywhere in the run",
+)
+
+
+def test_subprocessors_page_discloses_connector_failure_signals() -> None:
+    text = (DOCS / "commercial/subprocessors.md").read_text(encoding="utf-8")
+    for required in (FAILURE_SIGNAL_SCHEMA, "DO_NOT_TRACK=1", "OPENADAPT_TELEMETRY=0"):
+        assert required in text, required
+
+
+def test_docs_drop_the_blanket_no_telemetry_claim() -> None:
+    problems = []
+    for page in _doc_pages():
+        joined = " ".join(page.read_text(encoding="utf-8").split())
+        problems += [f"{page.relative_to(ROOT)}: {claim}" for claim in _BLANKET_NO_TELEMETRY if claim in joined]
+    assert problems == []

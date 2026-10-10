@@ -28,9 +28,28 @@ As read from the hosted control plane's deployment configuration:
 | GlitchTip | Error monitoring for the control plane (when enabled) | Control-plane error reports. |
 | Google Analytics | Web analytics on the public website and docs | Page-view analytics on public pages only. |
 
-The local engine has no telemetry, analytics, license check, or update ping in
-the run path; analytics providers above apply to OpenAdapt's own hosted pages,
-not to your workflows.
+The analytics providers above apply to OpenAdapt's own hosted pages, not to
+your workflows.
+
+## What runs send to OpenAdapt
+
+A standalone local replay sends nothing to OpenAdapt. It has no telemetry,
+analytics, license check, or update ping.
+
+A customer-hosted connector that reports runs to the hosted control plane sends
+a run callback for every run, because the control plane needs it to record the
+run. For each run that doesn't succeed, the callback also carries a categorical
+failure signal (schema `openadapt.automation-failure-signal/v1`):
+
+- What it holds: the failure kind, substrate, resolution rung, identity state,
+  effect tier, delivery state, execution profile, outcome, runtime version,
+  model-call count, network-call class, and a timestamp rounded down to the
+  hour.
+- What it never holds: report content, screenshots, OCR text, parameters,
+  application names, or operator text.
+- It's on by default. To leave it out, set `DO_NOT_TRACK=1` or
+  `OPENADAPT_TELEMETRY=0` on the connector host. The run callback itself is
+  still sent.
 
 ## Hosted retention and deletion
 

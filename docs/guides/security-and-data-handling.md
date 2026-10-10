@@ -28,9 +28,12 @@ model in the loop and no cloud dependency:
 
 - **Zero outbound calls on a healthy replay.** The engine is deterministic and
   model-free by default: `runtime.allow_model_grounding` defaults to `false`,
-  and with no VLM endpoint configured a replay makes no outbound calls. There
-  is no telemetry, analytics, license check, or update ping anywhere in the run
-  path. ([ON_PREM.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/ON_PREM.md))
+  and with no VLM endpoint configured a replay makes no outbound calls. A local
+  replay has no telemetry, analytics, license check, or update ping. A
+  customer-hosted connector that reports to the hosted control plane adds a
+  categorical failure signal to runs that don't succeed, unless you opt out
+  ([what runs send](../commercial/subprocessors.md#what-runs-send-to-openadapt)).
+  ([ON_PREM.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/ON_PREM.md))
 - **Model assistance is an explicit opt-in, and it points where you say.** When
   an operator enables model grounding, inference goes to the endpoint the
   deployment configures, designed as an
