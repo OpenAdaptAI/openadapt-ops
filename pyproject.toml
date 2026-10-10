@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Documentation and operations tooling for OpenAdapt"
 requires-python = ">=3.10"
 dependencies = [
-    "mkdocs-material>=9.5",
+    "mkdocs-material>=9.7.7",
     # Security floors for transitive documentation/runtime dependencies. Keep
     # these explicit so a future lock refresh cannot select an affected build.
     "pymdown-extensions>=11.0.1",
