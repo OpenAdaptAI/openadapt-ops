@@ -1075,7 +1075,23 @@
     return true;
   }
 
+  function showsLifecycle(document) {
+    return [
+      "[data-openadapt-production-target]",
+      "[data-openadapt-production-product]",
+    ].some((selector) => document.querySelectorAll(selector).length > 0);
+  }
+
   async function refresh(document, fetchImpl, now = Date.now()) {
+    // The script loads on every docs page and runs again on each instant
+    // navigation. Verification makes unauthenticated GitHub API requests,
+    // which share a small per-IP hourly limit, so spend them only on a page
+    // that shows lifecycle status. Advancing the generation still discards
+    // a verification that started on the page the reader just left.
+    if (!showsLifecycle(document)) {
+      refreshGeneration += 1;
+      return false;
+    }
     return refreshWithLoader(document, () => load(fetchImpl, now));
   }
 
