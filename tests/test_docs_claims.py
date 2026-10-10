@@ -189,6 +189,36 @@ def test_subprocessors_page_discloses_connector_failure_signals() -> None:
         assert required in text, required
 
 
+# Every key of the v1 envelope that automation_failure_signal() returns in
+# openadapt-flow 1.35.1, and the words the disclosure uses for it. A reader
+# checking what leaves their boundary needs the whole list, including fields
+# that are always `unknown` today.
+FAILURE_SIGNAL_FIELDS = {
+    "failure_kind": "failure kind",
+    "substrate": "substrate",
+    "action_kind": "action kind",
+    "risk_class": "risk class",
+    "resolution_rung": "resolution rung",
+    "identity_state": "identity state",
+    "effect_tier": "effect tier",
+    "delivery_state": "delivery state",
+    "execution_profile": "execution profile",
+    "outcome": "outcome",
+    "runtime_version": "runtime version",
+    "model_calls": "model-call count",
+    "external_network_calls": "network-call class",
+    "occurred_at": "timestamp",
+}
+
+
+def test_failure_signal_disclosure_names_every_envelope_field() -> None:
+    text = (DOCS / "commercial/subprocessors.md").read_text(encoding="utf-8")
+    section = next(s for s in _sections(text) if s.startswith("What runs send to OpenAdapt"))
+    holds = next(s for s in _sentences(section) if "What it holds" in s)
+    missing = [field for field, words in FAILURE_SIGNAL_FIELDS.items() if words not in holds]
+    assert missing == []
+
+
 def test_docs_drop_the_blanket_no_telemetry_claim() -> None:
     problems = []
     for page in _doc_pages():

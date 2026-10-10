@@ -41,8 +41,9 @@ a run callback for every run, because the control plane needs it to record the
 run. For each run that doesn't succeed, the callback also carries a categorical
 failure signal (schema `openadapt.automation-failure-signal/v1`):
 
-- What it holds: the failure kind, substrate, resolution rung, identity state,
-  effect tier, delivery state, execution profile, outcome, runtime version,
+- What it holds: the failure kind, substrate, action kind and risk class
+  (both sent as `unknown` today), resolution rung, identity state, effect
+  tier, delivery state, execution profile, outcome, runtime version,
   model-call count, network-call class, and a timestamp rounded down to the
   hour.
 - What it never holds: report content, screenshots, OCR text, parameters,
