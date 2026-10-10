@@ -60,8 +60,7 @@ flowchart LR
   (workstation, server, VM, or customer cloud account). A customer-owned cloud
   runner and storage boundary can use the existing
   [bring your own cloud (BYOC)](../reference/glossary.md#byoc) connector. This
-  is the standard lane for regulated or sensitive workflows, including the
-  published RVU audit case study deployment shape.
+  is the standard lane for regulated or sensitive workflows.
 - **Where sensitive data lives:** live frames, OCR text, injected parameters,
   and verifier values stay inside the customer boundary. If PHI appears on
   screen at run time, it never leaves.

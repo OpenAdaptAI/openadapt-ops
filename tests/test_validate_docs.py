@@ -402,6 +402,10 @@ def test_retired_public_claims_are_flagged(tmp_path):
         "A screen check accepted 54 of 90 wrong results."
     )
     (tmp_path / "llms.txt").write_text("Hosted: $500/month")
+    (tmp_path / "evaluate").mkdir()
+    (tmp_path / "evaluate" / "example.md").write_text(
+        "# Example\n\n[Case](https://openadapt.ai/customers/example)."
+    )
 
     issues = check_retired_public_claims(docs_dir=tmp_path)
 
@@ -411,6 +415,7 @@ def test_retired_public_claims_are_flagged(tmp_path):
     assert "index.md: 'openadapt.ai/#demo'" in joined
     assert "index.md: '54 of 90 wrong'" in joined
     assert "llms.txt: '$500/month'" in joined
+    assert "evaluate/example.md: 'openadapt.ai/customers/'" in joined
 
 
 def test_retired_public_claims_allow_generated_history(tmp_path):

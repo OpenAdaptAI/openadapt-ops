@@ -2,19 +2,18 @@
 title: Four workflows, before and after
 description: >-
   Referral entry, billing audit evidence, eligibility checks, and claim status,
-  each shown as today versus with OpenAdapt, with sourced time figures.
+  each shown as today versus with OpenAdapt, with sourced time figures where a
+  published study exists.
 ---
 
 # Four workflows, before and after
 
 Each example shows who does which step today and who does it with OpenAdapt.
-The "today" times come from published studies, and each one names its source
-and year. The volumes are assumptions, so replace them with your own.
+Where a published study measured the "today" time, we cite its source and year.
+The volumes are assumptions, so replace them with your own.
 
-Three of these workflows don't have a measured "after" time from an OpenAdapt
-deployment yet, so we don't show one. We measure it in your first project
-instead. The billing audit has a customer-reported result, and it's labeled
-preliminary.
+We don't show an "after" time for these workflows. We measure it with your own
+cases in your first project.
 
 To estimate what a task costs your team today:
 
@@ -68,35 +67,26 @@ stop for review, and how long a stop takes to answer.
 
 ## 2. Billing audit evidence
 
-Customer-reported, preliminary.
-
-A US cardiology electrophysiology practice audits its RVU credits every month.
-It compares the procedures documented in charts with the procedure codes and
-RVUs it was credited for, and follows up on anything missing.
+Some practices audit their billing every month. They compare the procedures
+documented in charts with the procedure codes on the month's billing report,
+and follow up on anything missing.
 
 | Step | Today | With OpenAdapt |
 |---|---|---|
-| Load the month's RVU report | Physician or staff | OpenAdapt loads the report spreadsheets |
+| Load the month's billing report | Physician or billing staff | OpenAdapt loads the report spreadsheet |
 | Collect the clinical notes | Open each chart in the EMR, one patient and service date at a time | OpenAdapt opens the charts and collects the notes |
-| Compare documented procedures with credited codes | By hand, in a spreadsheet | OpenAdapt compares them and builds a row-by-row workbook |
-| Write up missing credits | By hand | OpenAdapt drafts a copy-ready email for billing follow-up |
-| Decide what to submit | Physician | No change. The physician reviews each flagged item with its saved evidence. |
+| Compare documented procedures with billed codes | By hand, in a spreadsheet | OpenAdapt lines them up row by row in a workbook |
+| Write up missing codes | By hand | OpenAdapt drafts a list for billing follow-up |
+| Decide what to submit | Physician or billing staff | No change. A person reviews each flagged item with its saved evidence. |
 
-The physician reported that the automation saved several hours of chart review
-each month and helped recover about $75,000 a year in billables that would
-otherwise have been missed. These figures are preliminary and under review
-pending final customer confirmation. Read the
-[customer case](https://openadapt.ai/customers/rvu-audit-heart-care).
-OpenAdapt describes this as a founding-team case, so it isn't an independent
-reference.
+We didn't find a published time study for this audit, so this example has no
+"today" time.
 
 This workflow reads records and produces a report. It doesn't write into the
 EMR.
 
-Measured on synthetic data: on a 2,880-case synthetic version of this audit,
-2,856 cases finished done and checked, 18 stopped for review, and 6 didn't
-finish. None reported a wrong result as done. The customer case page lists
-these figures.
+What to measure: charts reviewed per month, minutes per chart, how many items
+the audit flags, and how many runs stop for review.
 
 ## 3. Eligibility check in a payer portal (US)
 

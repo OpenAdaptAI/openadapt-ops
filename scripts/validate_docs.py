@@ -105,6 +105,7 @@ RETIRED_PUBLIC_CLAIMS = {
     "openadapt.ai/#demo": "the home page has no #demo anchor; use app.openadapt.ai/demo",
     "pricing#cloud-preview": "the pricing page has no #cloud-preview anchor; use #hosted",
     "54 of 90 wrong": "misstated base; the fault test's screen check passed 54 of 72 wrong runs",
+    "openadapt.ai/customers/": "withdrawn customer case page; the docs publish no customer results",
 }
 RETIRED_CLAIM_ALLOWLIST = {
     "changelog.md",

@@ -75,7 +75,7 @@ A task is a good first candidate when most of these are true:
 
 - [Four workflows, before and after](before-after.md) shows referral entry,
   billing audit evidence, eligibility checks, and claim status, with sourced
-  time figures.
+  time figures where a published study exists.
 - [What you see and control](what-you-see.md) covers how runs end, receipts,
   stops, and approvals.
 - [Security and where data stays](security.md) is the page to share with your

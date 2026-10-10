@@ -59,10 +59,6 @@ the evidence supports a "do not automate" decision.
 
 These documents follow the same rules as the public site:
 
-- Customer results name the workflow and the result actually reported. See the
-  [RVU audit customer case](https://openadapt.ai/customers/rvu-audit-heart-care).
-  Its figures are preliminary and under review pending final customer
-  confirmation.
 - No claimed certifications. SOC 2 status is stated plainly in the
   [security packet](security-packet.md).
 - Bounded evidence stays bounded. Qualification evidence for one workflow,
