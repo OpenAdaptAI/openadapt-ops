@@ -27,7 +27,7 @@ is a subcommand of `openadapt flow`.
 | [`approve`](#approve) | Mark a durably-paused run's escalation approved | 0 on success, 1 if none |
 | [`teach`](#teach) | Resolve a halted run from a fix demonstration, governed | 0 if promoted, 1 if refused, 2 on bad inputs |
 | [`explain`](#explain) | Read a completed run directory and say, in plain language, what happened and what to run next | 0 |
-| [`repair`](#repair) | Move a proposed repair through review, test campaigns, human approval, canary, and rollback | 0 on success, 1 on a refusal |
+| [`repair`](#repair) | Move a proposed repair through review, test campaigns, human approval, canary, and rollback | 0 on success, 1 on a refusal, 2 if `register` can't find the candidate |
 | [`lint`](#lint) | Report a bundle's coverage gaps | nonzero by severity |
 | [`certify`](#certify) | Enforce a safety policy, refuse the bundle if it fails | 2 on failure |
 | [`seal`](#seal) | Copy, encrypt, integrity-check, and atomically publish a deployment candidate | 0 on success, 2 on refusal |
@@ -87,7 +87,7 @@ There's no universal default backend:
 | Flag | Description |
 |---|---|
 | `--backend {web,windows,macos,linux,rdp,citrix}` | Select the released adapter: browser, Windows UIA, exact native macOS window, exact Linux AT-SPI window, RDP transport/window, or the dedicated Citrix Workspace-window preset. |
-| `--agent-url URL` | Base URL of the in-guest Windows (WAA) agent for `--backend windows` (e.g. `http://localhost:5001`). Replay and run only; `record` refuses it. Overrides `backend.agent_url` |
+| `--agent-url URL` | Base URL of the in-guest Windows (WAA) agent for `--backend windows` (e.g. `http://localhost:5001`). Replay, run, and resume only; `record` refuses it. Overrides `backend.agent_url` |
 | `--macos-app APP` | Exact owner application for `--backend macos` (for example `TextEdit`). |
 | `--macos-window-title TITLE` | Window-title substring for `--backend macos`; ambiguous matches are refused. |
 | `--linux-app APP` | Exact AT-SPI application name for `--backend linux` (for example `gedit`). |
@@ -512,7 +512,8 @@ lifecycle. Each subcommand takes its own flags; run
 | `stage`, `canary`, `canary-record` | Stage both bundles by content hash, activate the candidate for a bounded canary window, and record canary runs. A regression reverts to the prior bundle. |
 | `rollback` | Restore the prior bundle as the active one. |
 
-Exits `0` on success and `1` on a refusal.
+Exits `0` on success, `1` on a refusal, and `2` when `register` can't find the
+proposed candidate.
 
 ## lint
 
