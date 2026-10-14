@@ -16,16 +16,13 @@ authorized transaction
   -> Seal (verified | halt | reconciliation_required)
 ```
 
-The one CLI story:
-
-```bash
-openadapt-flow replay bundle --seal
-```
-
-A sealed verified run prints `VERIFIED`, a seal id, and
-`https://openadapt.ai/seals/{id}`. That route is synthetic and non-PHI only.
-`--seal` on replay is the intended Seal command. `openadapt flow seal`
-encrypts a bundle for deployment.
+The Seal comes back from Execute. The public CLI doesn't issue one yet.
+`openadapt-flow replay` in Flow 1.35.1 has no Seal option, and a replay option
+that issues a Seal is planned. A sealed verified run is designed to show
+`VERIFIED`, a seal id, and `https://openadapt.ai/seals/{id}`. That route is
+synthetic and non-PHI only. `openadapt flow seal SOURCE --out DESTINATION` is
+a different command. It copies a bundle and encrypts its workflow and template
+evidence with `OPENADAPT_BUNDLE_KEY` for deployment. It doesn't issue a Seal.
 
 !!! note "Private pilot. Not a public API."
     This page describes the private-pilot product contract. It is not an

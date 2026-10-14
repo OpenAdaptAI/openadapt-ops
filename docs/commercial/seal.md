@@ -72,13 +72,14 @@ share a service account.
 
 ## CLI story
 
-On a qualified synthetic bundle with a tier-2 oracle, the intended command is:
+The public CLI doesn't issue a Seal yet. Execute issues it as the terminal
+receipt of `POST /api/v1/executions`, which is open to approved pilot partners
+only. `openadapt-flow replay` in Flow 1.35.1 has no option that issues a Seal.
 
-```bash
-openadapt-flow replay bundle --seal
-```
-
-A sealed verified run prints `VERIFIED`, a seal id, and the public verify URL:
+A replay option that issues a Seal is planned, for a qualified synthetic bundle
+with a tier-2 oracle. This page will name the Flow release that ships it. A
+sealed verified run is designed to print `VERIFIED`, a seal id, and the public
+verify URL:
 
 ```text
 VERIFIED
@@ -86,11 +87,10 @@ seal_id  receipt_12345678
 verify   https://openadapt.ai/seals/receipt_12345678
 ```
 
-`--seal` on replay issues that proof. `openadapt flow seal` encrypts a bundle
-for deployment.
-
-The same verb is available as `openadapt flow replay bundle --seal`. Use the
-standalone `openadapt-flow` form when you installed the engine package.
+`openadapt flow seal SOURCE --out DESTINATION` is a different command. It
+copies a bundle to a new directory and encrypts its workflow and template
+evidence with `OPENADAPT_BUNDLE_KEY` for deployment. It doesn't run the
+workflow or issue a Seal.
 
 The verify route is `https://openadapt.ai/seals/{id}`. Synthetic fixtures only
 on that page.

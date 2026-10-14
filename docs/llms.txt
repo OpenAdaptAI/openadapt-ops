@@ -19,7 +19,7 @@ For a business reader deciding whether one workflow fits. OpenAdapt takes the la
 - [Qualification evidence](https://docs.openadapt.ai/get-started/what-works-today/): Accepted substrate results, exact environments, and deployment boundaries
 - [Author a workflow](https://docs.openadapt.ai/get-started/first-workflow/): A person or a local agent they watch records, compiles, lints, and replays. A named human admits and reads the report on your own web app. Authority, not daily operator.
 - [What you get](https://docs.openadapt.ai/get-started/what-you-get/): The workflow bundle, the run report, and what each artifact is for
-- [The Seal](https://docs.openadapt.ai/commercial/seal/): Signed proof of a verified, halted, or reconciling run. `openadapt-flow replay bundle --seal`. Public verify at `https://openadapt.ai/seals/{id}` (synthetic only)
+- [The Seal](https://docs.openadapt.ai/commercial/seal/): Signed proof of a verified, halted, or reconciling run. Execute issues it for approved pilot partners. The public CLI doesn't issue a Seal yet, and `openadapt flow seal` only encrypts a bundle for deployment. Public verify at `https://openadapt.ai/seals/{id}` (synthetic only)
 
 ## Desktop app
 - [Install and first run](https://docs.openadapt.ai/desktop/install/): Desktop cockpit for record, compile, replay, and teach; a first-class front end over the same engine as the openadapt flow CLI
