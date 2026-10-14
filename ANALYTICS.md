@@ -10,7 +10,8 @@ The site reports into two destinations that share one event taxonomy across all
 OpenAdapt web properties:
 
 - **PostHog** (product analytics), and
-- **Google Analytics 4** (Material's native integration).
+- **Google Analytics 4** (Material's native integration, with the script
+  replaced by `overrides/partials/integrations/analytics/google.html`).
 
 Tracked events:
 
@@ -49,9 +50,18 @@ never set them, so they emit no PostHog.
 
 - **No PHI or PII.** These are public documentation pages only.
 - **Do-Not-Track is respected.** When the browser sends a Do-Not-Track signal,
-  PostHog is never loaded or initialized.
+  neither PostHog nor Google Analytics is loaded or initialized. For Google
+  Analytics that means no gtag.js request and no `config` command, so no `_ga`
+  cookies.
+- **Google signals are off.** Every Google Analytics `config` command sets
+  `allow_google_signals: false` and `allow_ad_personalization_signals: false`.
+- **No consent banner yet.** Visitors who don't send Do-Not-Track get Google
+  Analytics, and its `_ga` cookies, without being asked first. The marketing
+  site has no consent banner either. Adding one (Material's `extra.consent`)
+  is an open decision.
 - **Conservative capture.** Search records only `query_length` (never the raw
-  query), and outbound links record only host + path (never the query string).
+  query) in both PostHog and Google Analytics, and outbound links record only
+  host + path (never the query string).
 - **PostHog `person_profiles: 'identified_only'`** so anonymous visitors do not
   create person profiles.
 - **No secrets committed.** Keys are provided only through build-time env vars.
