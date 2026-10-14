@@ -111,7 +111,8 @@ an unverifiable consequential write isn't silently accepted.
 Screen confirmation is oracle tier 0. A second session or independent UI read
 is tier 1. Neither mints a production Seal. A system-of-record read (API,
 database, file, ack) is tier 2. A counterparty artifact is tier 3. Charge
-those two. `--break-it` on `qualify` is the fail-closed test: a fake success
-banner must halt and the store must stay unchanged. See
-[The Seal](../commercial/seal.md). A tier-2 read is also the only thing that
-earns a training reward: [Seal as an RL reward](../commercial/seal-reward.md).
+those two. `openadapt flow tutorial --break-it` is the fail-closed demo: a fake
+success banner must halt and the store must stay unchanged. `qualify propose`
+and `qualify accept` run the proposed oracle against the same kind of fault on
+their own. See [The Seal](../commercial/seal.md). A tier-2 read is also the
+only thing that earns a training reward: [Seal as an RL reward](../commercial/seal-reward.md).

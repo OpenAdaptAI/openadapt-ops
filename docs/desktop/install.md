@@ -22,9 +22,9 @@ you explicitly push it to a [cloud workspace](connect-to-cloud.md).
 
 Get the installer from
 [openadapt.ai/download](https://openadapt.ai/download). The page detects your OS
-and architecture and offers the right build. Release `desktop-v0.15.0` ships
-the complete Windows, macOS, and Linux installer set with
-`SHA256SUMS`, a CycloneDX SBOM, per-platform metadata, and build-provenance
+and architecture and offers the right build. The current build is the GitHub
+pre-release `desktop-v0.15.0`. It ships installers for Windows, macOS, and Linux
+with `SHA256SUMS`, a CycloneDX SBOM, per-platform metadata, and build-provenance
 attestations.
 
 | OS | Installer |
@@ -56,20 +56,24 @@ runner executes them inside its own boundary.
 
 === "macOS"
 
-    OpenAdapt needs two permissions to record: **Screen Recording** (to capture
-    the screen) and **Accessibility** (to observe and replay mouse and keyboard
-    input).
+    OpenAdapt needs three permissions to record: **Screen Recording** (to
+    capture the screen), **Accessibility** (to observe and replay mouse and
+    keyboard input), and **Input Monitoring** (to record keyboard and mouse
+    input from desktop apps).
 
     1. Open **System Settings** (on macOS 12 Monterey and earlier this is
        **System Preferences → Security & Privacy → Privacy**).
     2. Go to **Privacy & Security → Screen Recording**. Toggle **OpenAdapt on**.
     3. Go to **Privacy & Security → Accessibility**. Toggle **OpenAdapt on**.
-    4. **Quit and reopen OpenAdapt.** macOS applies a newly granted Screen
+    4. Go to **Privacy & Security → Input Monitoring**. Toggle **OpenAdapt on**.
+       You can also select **Request access** next to Input Monitoring in the
+       app's first-run screen.
+    5. **Quit and reopen OpenAdapt.** macOS applies a newly granted Screen
        Recording permission only after the app restarts. This is a macOS
        requirement, not an app bug.
 
     If OpenAdapt is not listed, click **+**, then add it from `/Applications`.
-    If a recording still comes out blank, confirm **both** toggles are on and
+    If a recording still comes out blank, confirm all three toggles are on and
     that you restarted the app after granting Screen Recording.
 
 === "Windows"
@@ -96,10 +100,14 @@ show your screen (not a blank or black image), permissions are correct and you
 are ready to record a real workflow.
 
 - **Blank / black frames on macOS** → Screen Recording is not granted, or you
-  did not restart the app after granting it. Redo step 3.
+  did not restart the app after granting it. Redo
+  [step 2](#2-grant-os-permissions).
 - **Clicks not captured on macOS** → Accessibility is not granted.
+- **"Input Monitoring permission is required" on macOS** → the recording
+  didn't start because Input Monitoring is not granted. Turn it on in
+  [step 2](#2-grant-os-permissions), then start the recording again.
 - **One specific window is blank on Windows** → that window is elevated; see the
-  UAC note in step 3.
+  UAC note in [step 2](#2-grant-os-permissions).
 
 The [troubleshooting guide](../guides/troubleshooting.md) covers these and other
 first-week failures.

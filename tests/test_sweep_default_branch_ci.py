@@ -15,9 +15,10 @@ months, failed again on a push at 00:04Z, and were switched to
 call all three permanently stale and would also miss the next dispatched failure.
 """
 
+import base64
 import pathlib
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT / "scripts"))
@@ -26,6 +27,7 @@ from sweep_default_branch_ci import (  # noqa: E402
     FAILING,
     GREEN,
     IN_FLIGHT,
+    NOT_A_FAILURE,
     NOT_PUSH_GATED,
     RETIRED,
     STALE_GREEN,
@@ -34,6 +36,9 @@ from sweep_default_branch_ci import (  # noqa: E402
     is_push_gated,
     is_scheduled,
     render,
+    schedule_expiry_warning,
+    should_alert,
+    sweep_repository,
     token_sees_private,
 )
 
@@ -144,6 +149,135 @@ def test_a_red_github_managed_workflow_is_a_failure():
     assert classify(run(conclusion="failure"), workflow=managed, source=None) == FAILING
 
 
+def test_an_inactivity_disabled_workflow_is_failing():
+    """openadapt-herald's weekly digest, 2026-07-13 to at least 2026-10-09.
+
+    GitHub disabled the scheduled workflow after 60 days without repository
+    activity and never turns it back on. Calling that "retired" let the sweep
+    pass for weeks while the digest had stopped. Nobody chose to stop it, so it
+    is a failure whatever its last run concluded.
+    """
+    disabled = {"id": 1, "state": "disabled_inactivity", "path": ".github/workflows/x.yml"}
+    for conclusion in ("success", "failure"):
+        outcome, explanation = classify_run(
+            run(conclusion=conclusion), disabled, SCHEDULE_ONLY, None, HEAD, NOW, 6.0
+        )
+        assert outcome not in NOT_A_FAILURE, conclusion
+        assert "60 days" in explanation
+        assert "gh workflow enable x.yml" in explanation
+
+
+def test_a_schedule_near_the_inactivity_limit_warns():
+    """Evals, capture and tray were 4 to 5 weeks from the same 60-day limit."""
+    # Last commit 50 days before now: GitHub disables the schedule in 10 days.
+    warning = schedule_expiry_warning(ACTIVE, SCHEDULE_ONLY, "2026-06-08T12:00:00Z", NOW)
+    assert warning is not None
+    assert "2026-08-07" in warning
+    # Last commit 10 days before now: 50 days remain, so nothing to say yet.
+    assert schedule_expiry_warning(ACTIVE, SCHEDULE_ONLY, "2026-07-18T12:00:00Z", NOW) is None
+    # Only a schedule expires, and only an active one can still be saved.
+    assert schedule_expiry_warning(ACTIVE, PUSH_GATED, "2026-06-08T12:00:00Z", NOW) is None
+    disabled = {**ACTIVE, "state": "disabled_manually"}
+    assert schedule_expiry_warning(disabled, SCHEDULE_ONLY, "2026-06-08T12:00:00Z", NOW) is None
+
+
+class _FakeReader:
+    """Canned GitHub reads, keyed by the request path without its query."""
+
+    def __init__(self, responses):
+        self.responses = responses
+        self.calls = 0
+
+    def get(self, path):
+        self.calls += 1
+        return self.responses.get(path.split("?", 1)[0])
+
+
+def _encoded(source):
+    return {"content": base64.b64encode(source.encode()).decode()}
+
+
+def _repository_responses(slug, workflows, runs, last_commit_at, sources):
+    responses = {
+        f"repos/{slug}/actions/workflows": {"workflows": workflows},
+        f"repos/{slug}/actions/runs": {"workflow_runs": runs},
+        f"repos/{slug}/commits/main": {
+            "sha": HEAD,
+            "commit": {"committer": {"date": last_commit_at}},
+        },
+    }
+    for path, source in sources.items():
+        responses[f"repos/{slug}/contents/{path}"] = _encoded(source)
+    return responses
+
+
+def test_the_sweep_reports_an_auto_disabled_workflow_missing_from_the_run_feed():
+    """Only active workflows got a run top-up, so a disabled one could vanish."""
+    slug = "OpenAdaptAI/openadapt-herald"
+    digest = {
+        "id": 7,
+        "name": "weekly-digest",
+        "state": "disabled_inactivity",
+        "path": ".github/workflows/release-announce.yml",
+        "html_url": "https://github.com/OpenAdaptAI/openadapt-herald/blob/main/x.yml",
+    }
+    reader = _FakeReader(
+        _repository_responses(slug, [digest], [], "2026-07-28T00:00:00Z", {})
+    )
+    result = sweep_repository(
+        reader, {"full_name": slug, "default_branch": "main", "private": False}, 6.0
+    )
+    assert [entry["workflow"] for entry in result["failures"]] == ["weekly-digest"]
+    assert "60 days" in result["failures"][0]["explanation"]
+
+
+def test_the_sweep_warns_before_a_public_schedule_is_disabled():
+    slug = "OpenAdaptAI/openadapt-evals"
+    path = ".github/workflows/evidence-freshness.yml"
+    nightly = {"id": 3, "name": "evidence-freshness", "state": "active", "path": path}
+    green = run(name="evidence-freshness", workflow_id=3, head_sha=OLD, path=path)
+    # 50 days before the real clock, so about 10 days remain.
+    last_commit = (datetime.now(timezone.utc) - timedelta(days=50)).strftime(
+        "%Y-%m-%dT%H:%M:%SZ"
+    )
+    responses = _repository_responses(
+        slug, [nightly], [green], last_commit, {path: SCHEDULE_ONLY}
+    )
+
+    public = sweep_repository(
+        _FakeReader(responses), {"full_name": slug, "default_branch": "main"}, 6.0
+    )
+    assert public["failures"] == []
+    assert [entry["workflow"] for entry in public["warnings"]] == ["evidence-freshness"]
+
+    # The 60-day rule applies to public repositories only.
+    private = sweep_repository(
+        _FakeReader(responses),
+        {"full_name": slug, "default_branch": "main", "private": True},
+        6.0,
+    )
+    assert private["warnings"] == []
+
+
+def test_a_warning_alone_raises_the_alert_and_is_reported():
+    class _Reader:
+        calls = 0
+
+    warned = [{
+        "repo": "OpenAdaptAI/openadapt-evals", "branch": "main", "failures": [],
+        "notes": [], "unreadable": False,
+        "warnings": [{"workflow": "evidence-freshness", "outcome": "schedule-expiring",
+                      "explanation": "GitHub disables this schedule around 2026-11-02",
+                      "url": ""}],
+    }]
+    assert should_alert(warned)
+    assert not should_alert([{**warned[0], "warnings": []}])
+    body = render(warned, _Reader(), "", 6.0)
+    assert "1 scheduled workflow will stop" in body
+    assert "evidence-freshness" in body
+    assert "2026-11-02" in body
+
+
 # --------------------------------------------------------------------------
 # It must stay quiet on what is not a failure
 # --------------------------------------------------------------------------
@@ -166,8 +300,9 @@ def test_a_deleted_workflow_is_retired_not_failing():
     assert outcome == RETIRED
 
 
-def test_a_disabled_workflow_is_retired_not_failing():
-    disabled = {"id": 1, "state": "disabled_inactivity", "path": ".github/workflows/x.yml"}
+def test_a_manually_disabled_workflow_is_retired():
+    """Someone turned it off on purpose; its last run is history."""
+    disabled = {"id": 1, "state": "disabled_manually", "path": ".github/workflows/x.yml"}
     assert classify(run(conclusion="failure"), workflow=disabled) == RETIRED
 
 

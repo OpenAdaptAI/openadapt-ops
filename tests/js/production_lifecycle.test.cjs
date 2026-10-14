@@ -591,6 +591,55 @@ test("an older delayed refresh cannot overwrite a newer negative state", async (
   assert.equal(product.textContent, lifecycle.PRODUCT_REQUIREMENT);
 });
 
+test("a page without lifecycle elements makes no lifecycle requests", async () => {
+  // The module loads on every docs page and refreshes on every instant
+  // navigation. Only a page that shows lifecycle status may spend the
+  // reader's unauthenticated GitHub API allowance.
+  const document = { querySelectorAll: () => [] };
+  const urls = [];
+  const countingFetch = async (url) => {
+    urls.push(url);
+    return { ok: false };
+  };
+
+  assert.equal(await lifecycle.refresh(document, countingFetch, NOW), false);
+  assert.deepEqual(urls, []);
+});
+
+test("a page with a lifecycle element still verifies and renders", async () => {
+  const fetchImpl = fetchFixture(makeFixture());
+  const urls = [];
+  const countingFetch = async (url, options) => {
+    urls.push(url);
+    return fetchImpl(url, options);
+  };
+  const target = {
+    dataset: { openadaptProductionTarget: "flow" },
+    ownerDocument: { createElement: () => ({ textContent: "" }) },
+    parts: [],
+    set textContent(value) {
+      this.parts = value === "" ? [] : [value];
+    },
+    get textContent() {
+      return this.parts
+        .map((part) => (typeof part === "string" ? part : part.textContent))
+        .join("");
+    },
+    append(...parts) {
+      this.parts.push(...parts);
+    },
+  };
+  const document = {
+    querySelectorAll(selector) {
+      return selector === "[data-openadapt-production-target]" ? [target] : [];
+    },
+  };
+
+  assert.equal(await lifecycle.refresh(document, countingFetch, NOW), true);
+  assert.ok(urls.length > 0);
+  assert.match(target.textContent, /^Production: release 1\.2\.3\. /);
+});
+
 test("product-wide Production requires all seven verified targets", () => {
   const product = { textContent: "" };
   const document = {

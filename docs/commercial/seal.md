@@ -42,8 +42,11 @@ Screen confirmation and persisted-state reacquisition map to 0. Tier 3 has no
 `EffectStrengthV1` member yet; it is a stronger independent artifact, not a
 banner on the acting screen.
 
-`--break-it` on `openadapt-flow qualify` is the fail-closed test. A fake success
-banner must halt. The store must stay unchanged.
+`openadapt flow tutorial --break-it` (or `openadapt quickstart --break-it`) is
+the fail-closed demo. A fake success banner must halt, and the store must stay
+unchanged. During qualification, `qualify propose` and `qualify accept` run the
+proposed oracle against the same kind of fault on their own. An oracle that
+doesn't catch it can't be accepted.
 
 A Seal that points at a screenshot hash is a liability. Do not mint production
 `verified` below tier 2.

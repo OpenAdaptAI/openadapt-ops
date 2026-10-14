@@ -6,8 +6,8 @@ which system of record to verify writes against, whether an API actuation tier
 exists, whether the run is durable, and which policy certifies it.
 `deployment.yaml` is the documented schema for that wiring.
 
-`record`, `compile`, `certify`, `replay`, `run`, and `resume` all read it (via
-`--config`), so one file drives every stage. Direct CLI flags override individual
+`certify`, `replay`, `run`, and `resume` all read it (via `--config`), so one
+file drives certification and every run. Direct CLI flags override individual
 fields.
 
 !!! note "Every section is optional"

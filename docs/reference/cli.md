@@ -15,6 +15,7 @@ is a subcommand of `openadapt flow`.
 |---|---|---|
 | [`record`](#record) | Record your own app on any [substrate](#backend) (browser via `--url`; Windows, macOS, Linux, RDP, or Citrix via `--backend`) | 0 |
 | [`demo-record`](#demo-record) | Serve the sample app and record the canonical demo | 0 |
+| [`tutorial`](#tutorial) | Run the bundled tutorial end to end against a local system of record and write a local receipt | 0 if `VERIFIED`, 1 on any other outcome, 2 if refused before running |
 | [`compile`](#compile) | Compile a recording into a workflow bundle | 0 |
 | [`induce`](#induce) | Induce a parameterized program from **multiple** recordings | 0 if certified, 2 if underdetermined |
 | [`for-each`](#for-each) | Author a data-driven **loop** bundle: run one demonstration once per worklist record | 0 on success, nonzero on a mapping error |
@@ -25,24 +26,39 @@ is a subcommand of `openadapt flow`.
 | [`resume`](#resume) | Resume a durably-paused run from its last checkpoint | 0 on success, 1/3 otherwise |
 | [`approve`](#approve) | Mark a durably-paused run's escalation approved | 0 on success, 1 if none |
 | [`teach`](#teach) | Resolve a halted run from a fix demonstration, governed | 0 if promoted, 1 if refused, 2 on bad inputs |
+| [`explain`](#explain) | Read a completed run directory and say, in plain language, what happened and what to run next | 0 |
+| [`repair`](#repair) | Move a proposed repair through review, test campaigns, human approval, canary, and rollback | 0 on success, 1 on a refusal, 2 if `register` can't find the candidate |
 | [`lint`](#lint) | Report a bundle's coverage gaps | nonzero by severity |
 | [`certify`](#certify) | Enforce a safety policy, refuse the bundle if it fails | 2 on failure |
 | [`seal`](#seal) | Copy, encrypt, integrity-check, and atomically publish a deployment candidate | 0 on success, 2 on refusal |
+| [`scaffold-verifier`](#scaffold-verifier) | Draft an effect-oracle contract from a recording's or bundle's write-shaped steps | 0 when the draft is written |
 | [`qualify`](#qualify) | Review, test, explain, and certify a versioned qualification project | nonzero on refusal |
+| [`propose-qualification`](#qualify) | Alias of `qualify propose` | Same as `qualify propose` |
 | [`disambiguate`](#disambiguate) | Surface and resolve compile-time ambiguities | 2 if a consequential ambiguity is unresolved |
 | [`connect`](#connect) | Pair this computer to a Cloud workspace (launcher command, needs OpenAdapt 1.7+) | 0/1 |
 | [`login`](#login) | Validate a hosted ingest token and remember the host | 0/1 |
 | [`push`](#push) | Explicitly upload a recording or bundle to a control plane | 0/1 |
 | [`validate-hosted`](#validate-hosted) | Bind local validation evidence to a one-time hosted challenge | 0/1 |
+| [`sanitize`](#sanitize) | Create a verified, PHI-scrubbed derivative without changing the original | 0/1 |
+| [`review-sanitized`](#sanitize) | Compare original and derivative in a loopback-only local viewer | 0/1 |
+| [`approve-sanitized`](#sanitize) | Approve and freeze the reviewed derivative as an immutable archive | 0/1 |
+| [`materialize-approved`](#sanitize) | Rebuild an approved derivative from its archive and existing approval record | 0/1 |
 | [`report-break`](#report-break) | Send a scrubbed, schema-minimized halt descriptor | 0/1 |
+| [`report-run`](#report-run) | Send a PHI-free success summary of a completed run, or write a local receipt | 0/1 |
 | [`visualize`](#visualize) | Render a compiled bundle, a compose parent, or a process parent | 0 |
 | [`bench`](#bench) | Replay a bundle N times against the sample app and aggregate | 0 if all pass |
 | [`benchmark`](#benchmark) | Compare compiled replay vs a computer-use agent | 0 |
 | [`emit-skill`](#emit) | Emit an Agent Skills folder for a bundle | 0 |
 | [`emit-mcp`](#emit) | Emit a standalone MCP `server.py` for a bundle | 0 |
+| [`console`](#operator-verbs) | Operator: serve the localhost-only operator console | See `--help` |
+| [`connector`](#operator-verbs) | Operator: enroll a customer-hosted connector and run governed jobs on it | See `--help` |
+| [`business-decisions`](#operator-verbs) | Operator: relay typed business decisions for a customer runner; never acts | See `--help` |
+| [`admit`](#operator-verbs) | Operator: read the published release-admission ledger | See `--help` |
+| [`serve-execute`](#operator-verbs) | Developer: host the Execute v1 HTTP and MCP contract locally | See `--help` |
+| [`serve-reward`](#operator-verbs) | Developer: score training episodes by reading the system of record | See `--help` |
 
 !!! tip "One config wires a real deployment"
-    `record`, `compile`, `certify`, `replay`, `run`, and `resume` all accept
+    `certify`, `replay`, `run`, and `resume` all accept
     `--config deployment.yaml`, which wires the backend, effect verification, API
     actuation, durable runtime, and policy in one place. See the
     [deployment configuration](deployment-config.md) reference. Direct flags
@@ -53,14 +69,25 @@ is a subcommand of `openadapt flow`.
 `record`, `replay`, `run`, and `resume` all accept a **backend selector** that
 chooses what the workflow drives: a browser, native Windows/macOS/Linux
 desktop, RDP session, or Citrix Workspace window. It overrides the `backend` section of a
-[`--config`](deployment-config.md). With no flag the default is `web`, which
-reproduces the historical browser behavior. See
+[`--config`](deployment-config.md). See
 [Backends, where it runs](../concepts/backends.md) for the substrate model.
+
+There's no universal default backend:
+
+- `record` with no `--backend` and no `--url` captures on this OS (`windows`,
+  `macos`, or `linux`). `--url` without `--backend` selects `web`.
+- `replay`, `run`, and `resume` use `backend.kind` from `--config`, or else the
+  surface the bundle was recorded on. A bundle recorded on one surface refuses
+  to run on another unless you pass `--allow-surface-override`.
+- The Standard and Regulated profiles refuse to start when nothing selects the
+  surface. Pass `--backend` or set `backend.kind` in `--config`.
+- In the Demo posture, a run with no selected surface falls back to the browser
+  (or your last-used Demo target) and prints a notice saying so.
 
 | Flag | Description |
 |---|---|
 | `--backend {web,windows,macos,linux,rdp,citrix}` | Select the released adapter: browser, Windows UIA, exact native macOS window, exact Linux AT-SPI window, RDP transport/window, or the dedicated Citrix Workspace-window preset. |
-| `--agent-url URL` | Base URL of the in-guest Windows (WAA) agent for `--backend windows` (e.g. `http://localhost:5001`). Overrides `backend.agent_url` |
+| `--agent-url URL` | Base URL of the in-guest Windows (WAA) agent for `--backend windows` (e.g. `http://localhost:5001`). Replay, run, and resume only; `record` refuses it. Overrides `backend.agent_url` |
 | `--macos-app APP` | Exact owner application for `--backend macos` (for example `TextEdit`). |
 | `--macos-window-title TITLE` | Window-title substring for `--backend macos`; ambiguous matches are refused. |
 | `--linux-app APP` | Exact AT-SPI application name for `--backend linux` (for example `gedit`). |
@@ -70,6 +97,7 @@ reproduces the historical browser behavior. See
 | `--rdp-window OWNER` | Exact local remote-display window owner/process for `rdp` or `citrix` (`Citrix Viewer` on macOS; `wfica32` on Windows by default for Citrix). |
 | `--rdp-window-title TITLE` | Exact local RDP/Citrix client-window title used to disambiguate multiple owner matches. |
 | `--rdp-readiness-text TEXT` | Stable text that must be visible before input. Required for governed Citrix `run`. |
+| `--allow-surface-override` | Run a bundle on a different surface than the one it was recorded on. Off by default; the run report records the override. |
 
 ```bash
 # Drive a native Windows app through the in-session agent
@@ -99,10 +127,12 @@ openadapt flow run bundle --backend citrix \
 ## record
 
 Record what you do on your own app. The [backend selector](#backend) chooses the
-substrate: `--backend web` (the default) opens a headed browser on the app at
-`--url`; the native and remote selectors record Windows, macOS, Linux, RDP, or
-Citrix through their exact target flags. The example below records the web
-substrate.
+substrate: `--backend web` (or `--url` with no `--backend`) opens a headed
+browser on the app at `--url`; the native and remote selectors record Windows,
+macOS, Linux, RDP, or Citrix through their exact target flags. With neither
+`--backend` nor `--url`, `record` captures on this OS. The Standard and
+Regulated profiles refuse to record without `--backend`. The example below
+records the web substrate.
 
 ```bash
 openadapt flow record --backend web --url https://your.app --out rec
@@ -110,7 +140,7 @@ openadapt flow record --backend web --url https://your.app --out rec
 
 | Flag | Description |
 |---|---|
-| `--url` | URL of the app to record against. **Required for `--backend web`** (the default); other substrates target through the [backend selector](#backend) instead. |
+| `--url` | URL of the app to record against. **Required for `--backend web`**, and selects web when you omit `--backend`. Other substrates target through the [backend selector](#backend) instead. |
 | `--out` (required) | Recording output directory |
 | `--secret FIELD` | Mark a typed field (by name or id) as a **secret**: never persisted, injected at replay from `OPENADAPT_FLOW_SECRET_<FIELD>`. `input[type=password]` is always secret. Repeatable. |
 | `--param FIELD` | Record a typed field as a **parameter**: its demonstrated value becomes the default, overridable at replay with `--param`. Repeatable. |
@@ -133,6 +163,29 @@ openadapt flow demo-record --out rec
 | `--drift` | Comma-separated drift modes to record against |
 | `--headed` | Run the browser headed |
 | `--record-video DIR` | Opt-in: capture a WebM of the recording session (default off) |
+
+## tutorial
+
+Run the bundled tutorial end to end against a real local system of record:
+record, compile, certify, replay under governance, and check the write out of
+band. It then writes a shareable local receipt. See
+[Get started](../get-started/index.md).
+
+```bash
+openadapt flow tutorial
+openadapt flow tutorial --break-it
+```
+
+| Flag | Description |
+|---|---|
+| `--out` | Directory for the tutorial's recording, bundle, and run (default: `tutorials/tutorial-<UTC timestamp>`) |
+| `--name` | Workflow name for the compiled bundle (default `local-quickstart`) |
+| `--headed` | Run the browser headed |
+| `--guided` | Record the demonstration yourself, then watch a paced governed replay |
+| `--interactive-record` | Perform the demonstration yourself in a headed browser |
+| `--presentation-delay SECONDS` | Pause before each scripted action and replay step (0 to 5 seconds) |
+| `--no-receipt` | Skip writing the local receipt; the run and its report are unchanged |
+| `--break-it` | After the clean `VERIFIED` run, rerun the same bundle against a backend that rejects the write after the app shows its success banner. The run must halt; its evidence lands in `<out>/run-broken/REPORT.md`. |
 
 ## compile
 
@@ -429,6 +482,39 @@ underdetermined or would weaken a safety invariant; nothing is written and the
 base bundle stays halting), `2` when inputs are unusable (no halt in the report,
 no base bundle, or a malformed fix).
 
+## explain
+
+Read a completed run directory and print a plain-language summary: what
+happened, why the outcome is the safe one, and the next suggested command. It's
+read-only.
+
+```bash
+openadapt flow explain runs/replay-20260712-140233
+```
+
+| Flag | Description |
+|---|---|
+| `run_dir` (positional) | Completed run directory (holds `report.json`) |
+
+## repair
+
+Promote a proposed repair (a healed or taught bundle) through a governed
+lifecycle. Each subcommand takes its own flags; run
+`openadapt flow repair <subcommand> --help`.
+
+| Subcommand | What it does |
+|---|---|
+| `register` | Register a prior and proposed bundle pair as a candidate. Refuses any contract weakening without a new qualification revision. |
+| `list`, `show`, `status` | List candidates, show one candidate's diff and campaigns, or show the active-bundle pointer and its lineage. |
+| `review` | Record a human review of the candidate's diff. |
+| `campaign` | Run the `replay` campaign (healthy drift cases must all pass) or the `fault` campaign (ambiguity, wrong-record, stale-target, dialog, and verifier-failure cases must all be refused). |
+| `approve` | Human approval. Refuses unless the diff was reviewed and both campaigns passed. |
+| `stage`, `canary`, `canary-record` | Stage both bundles by content hash, activate the candidate for a bounded canary window, and record canary runs. A regression reverts to the prior bundle. |
+| `rollback` | Restore the prior bundle as the active one. |
+
+Exits `0` on success, `1` on a refusal, and `2` when `register` can't find the
+proposed candidate.
+
 ## lint
 
 Report a bundle's coverage gaps (unarmed clicks, vacuous postconditions,
@@ -492,6 +578,21 @@ openadapt flow certify bundle-prod --config deployment.yaml
 Exits `0` after verified publication and `2` on refusal. Key custody and
 rotation remain deployment responsibilities.
 
+## scaffold-verifier
+
+Draft an effect-oracle contract (`effect_contract.yaml`) from the write-shaped
+steps of a recording or bundle. The output is a draft that a person must edit
+and approve; it refuses a demonstration with no consequential step.
+
+```bash
+openadapt flow scaffold-verifier recordings/patient-intake --out contracts/
+```
+
+| Flag | Description |
+|---|---|
+| `source` (positional) | Recording directory or workflow bundle directory |
+| `-o`, `--out DIR` | Directory for the drafted `effect_contract.yaml` (default: beside the input) |
+
 ## qualify
 
 Create and operate a versioned qualification project for one compiled workflow,
@@ -518,6 +619,8 @@ openadapt flow qualify certify bundle \
 | Subcommand | What it does |
 |---|---|
 | `schema` | Print the machine-readable qualification project schema. |
+| `propose` | Draft application, environment, identity, and effect pins from the compiled demo, and run the proposed oracle against a break-it fault. A missing pin halts; nothing is guessed. `propose-qualification` is an alias. |
+| `accept` | Confirm every proposed pin in one command. It succeeds only after the proposed oracle catches the break-it fault; refusing a pin halts. |
 | `init` | Bind a bundle to its target surface, application/version, environment, runtime, required runner capabilities, and minimum verification tier. |
 | `inspect` | Show graph, action inventory, coverage, case state, requalification conditions, and certification readiness. |
 | `set-risk` | Assign `read_only`, `state_changing`, `consequential`, or `irreversible` to one action, with an explanation. |
@@ -536,7 +639,8 @@ openadapt flow qualify certify bundle \
 `wrong_identity`, `stale_identity`, `weak_effect`, or `missing_effect`; its
 expected outcome is one of `verified`, `completed_unverified`, `halted`,
 `failed`, or `rolled_back`. Use each subcommand's `--help` for its complete
-identity-signal, screen-region, effect, and runner-signing options.
+identity-signal, screen-region, effect, and runner-signing options, and
+`openadapt flow qualify --help` for every subcommand.
 
 Qualification does not copy secret values into the bundle. Case inputs and raw
 evidence remain in the local evidence root; imported receipts are accepted only
@@ -700,13 +804,15 @@ of being copied unchanged. The destination is evaluated separately: a verified
 customer endpoint may accept data its policy permits; an unknown endpoint is
 refused. Compilation alone is never a de-identification claim.
 
-## sanitize, review-sanitized, approve-sanitized
+## sanitize, review-sanitized, approve-sanitized, materialize-approved {#sanitize}
 
 `sanitize` creates a separate derivative and `openadapt.sanitization/v1`
 manifest without modifying the source. `review-sanitized` serves a loopback-only
 original-versus-derivative viewer with no remote assets. `approve-sanitized`
 records the reviewer and freezes an immutable archive; later modification
-invalidates the approval.
+invalidates the approval. `materialize-approved` rebuilds an approved
+derivative from its archive and the existing approval record, then runs the
+same approval gate. It approves nothing.
 
 ```bash
 openadapt flow sanitize PATH --kind recording --out DERIVATIVE
@@ -723,6 +829,8 @@ openadapt flow approve-sanitized DERIVATIVE --original PATH --reviewer IDENTITY
 | `review-sanitized --no-open` | Print the local URL rather than opening a browser. |
 | `approve-sanitized --original` | Required sensitive source used to verify derivative provenance. |
 | `approve-sanitized --reviewer` | Required identity written into the approval record. |
+| `materialize-approved --archive`, `--approval`, `--out` | Required: the `.approved.zip` archive, its existing approval record, and a new, empty output directory. |
+| `materialize-approved --expect-archive-sha256` | Pin the archive to a digest you already trust. |
 
 A bundle whose sanitation changed load-bearing identity evidence is not accepted
 as executable. Parameterize the sensitive value before compilation, or execute
@@ -749,6 +857,29 @@ openadapt flow report-break runs/<halted-run> \
 
 See [Hosted browser execution](../guides/hosted.md) for the launch candidate,
 sanitation protocol, and destination-aware boundary.
+
+## report-run
+
+The success counterpart of `report-break`. Read a completed run's `report.json`
+and send a PHI-free summary (validated categories, bounded counts and
+durations) so the control plane can show locally reported runs. The recording
+stays local. With `--receipt DIR`, it writes a shareable local receipt instead
+and contacts no host.
+
+```bash
+openadapt flow report-run runs/<completed-run> --workflow-id <id>
+openadapt flow report-run runs/<completed-run> --receipt receipts/
+```
+
+| Flag | Description |
+|---|---|
+| `run_dir` | Completed run directory containing `report.json`. |
+| `--workflow-id` | Hosted workflow id. When omitted, the summary binds to the exact pushed bundle's digest. |
+| `--backend` | Substrate the run executed on. |
+| `--destination-kind`, `--trusted-host` | Trust class of the destination, and the exact allowed customer-managed origin. |
+| `--host`, `--token` | Override the configured control plane and token. |
+| `--receipt DIR` | Write a local receipt (`receipt.png`, `.json`, `.md`) and contact no host. |
+| `--production` | With `--receipt`: mark a real production run. A production receipt must be sanitized and approved before it leaves your boundary. |
 
 ## visualize
 
@@ -834,3 +965,17 @@ openadapt flow emit-mcp   bundle --out server.py
 |---|---|
 | `bundle` (positional) | Workflow bundle directory |
 | `--out` (required) | Output folder (skill) or file path (MCP `server.py`) |
+
+## Operator and developer verbs {#operator-verbs}
+
+These verbs run services or deployment plumbing rather than a workflow step.
+Run `openadapt flow <verb> --help` for their flags.
+
+| Verb | What it does |
+|---|---|
+| `console` | Serve the operator console on `127.0.0.1`: bundles, run reports, halt evidence, and skill-library lineage. Read-only unless `--allow-actions`. Needs the `console` extra. |
+| `connector` | `enroll` this machine with a control plane, then `run` governed jobs on it. PHI stays on your side; see [what runs send](../commercial/subprocessors.md#what-runs-send-to-openadapt). |
+| `business-decisions` | `serve` an outbound-only relay for typed business decisions on a customer runner. It never resumes a run or acts. |
+| `admit` | `status` reads the published release-admission ledger. It never signs or issues an admission. |
+| `serve-execute` | Host the Execute v1 HTTP and MCP contract locally, for development. Its receipts are self-signed, not production receipts. Needs the `execute` extra. |
+| `serve-reward` | Score training episodes by reading the system of record through an independent check, for development. Its receipts are self-signed. Needs the `reward` extra. |

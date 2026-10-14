@@ -35,7 +35,7 @@ Ported from ``bin/oa-green``, not re-derived:
   failure as "the newest run" permanently::
 
       workflow file gone from the default branch -> RETIRED
-      workflow disabled                          -> RETIRED
+      workflow disabled by a person              -> RETIRED
       schedule trigger remains                   -> genuinely NOT GREEN
       no change or schedule trigger left         -> NOT PUSH-GATED
       otherwise                                  -> genuinely NOT GREEN
@@ -47,6 +47,16 @@ RETIRED and NOT PUSH-GATED are never reported as failures. A scheduled workflow
 is live even when it has no push or pull-request trigger. A daily issue that
 cries wolf gets muted, and a muted alert is worse than none -- that is the same
 mechanism that let a red badge sit for five months.
+
+SCHEDULES GITHUB DISABLES
+-------------------------
+GitHub disables a public repository's scheduled workflows after 60 days without
+repository activity (state ``disabled_inactivity``) and never re-enables them.
+Nobody chose that, so it is a failure whatever the last run concluded, not a
+retirement. ``openadapt-herald``'s weekly digest stopped this way on 2026-07-13
+while this sweep reported it as retired and passed. A schedule within 14 days
+of that limit, counted from the last commit to the default branch, is reported
+as a warning so someone can act before it stops.
 
 TWO CORRECTIONS TO ``oa-green``
 -------------------------------
@@ -134,7 +144,7 @@ import re
 import sys
 import urllib.error
 import urllib.request
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 API_ROOT = "https://api.github.com"
 ORG = "OpenAdaptAI"
@@ -153,8 +163,14 @@ NOT_PUSH_GATED = "not-push-gated"
 IN_FLIGHT = "in-flight"
 FAILING = "failing"
 
+SCHEDULE_EXPIRING = "schedule-expiring"
+
 #: Never reported as a failure. Frozen history, not a live signal.
 NOT_A_FAILURE = frozenset({GREEN, STALE_GREEN, RETIRED, NOT_PUSH_GATED, IN_FLIGHT})
+
+#: GitHub's limit for a public repository's schedules, and how early to warn.
+INACTIVITY_LIMIT_DAYS = 60
+EXPIRY_WARNING_DAYS = 14
 
 
 class Reader:
@@ -247,6 +263,61 @@ def is_github_managed(path: str) -> bool:
     return path.startswith("dynamic/")
 
 
+def auto_disabled_explanation(workflow: dict) -> str:
+    """Why an inactivity-disabled workflow is a failure, and how to clear it."""
+    file_name = (workflow.get("path") or "").rsplit("/", 1)[-1] or "<workflow file>"
+    return (
+        f"auto-disabled by GitHub after {INACTIVITY_LIMIT_DAYS} days without repository "
+        "activity, so its schedule no longer runs and GitHub never turns it back on. "
+        "If it is still "
+        f"wanted, run `gh workflow enable {file_name}`; if not, disable it on purpose "
+        "so this sweep treats it as retired"
+    )
+
+
+def inactivity_deadline(last_commit_at: str) -> datetime:
+    """When GitHub disables a public repository's schedules, at the earliest."""
+    return _parse_time(last_commit_at) + timedelta(days=INACTIVITY_LIMIT_DAYS)
+
+
+def inactivity_deadline_is_near(
+    last_commit_at: str | None, now: datetime, warning_days: float = EXPIRY_WARNING_DAYS
+) -> bool:
+    if not last_commit_at:
+        return False
+    remaining = (inactivity_deadline(last_commit_at) - now).total_seconds() / 86400
+    return remaining <= warning_days
+
+
+def schedule_expiry_warning(
+    workflow: dict,
+    workflow_source: str | None,
+    last_commit_at: str | None,
+    now: datetime,
+    warning_days: float = EXPIRY_WARNING_DAYS,
+) -> str | None:
+    """Say when GitHub will soon disable this workflow's schedule. Pure; no I/O.
+
+    ``last_commit_at`` is the newest commit on the default branch. GitHub counts
+    other repository activity too, so the date is a conservative estimate.
+    Returns ``None`` when the workflow is not an active schedule or more than
+    ``warning_days`` remain.
+    """
+    if workflow.get("state") != "active" or not workflow_source:
+        return None
+    if not is_scheduled(workflow_source):
+        return None
+    if not inactivity_deadline_is_near(last_commit_at, now, warning_days):
+        return None
+    deadline = inactivity_deadline(last_commit_at)
+    last_commit = _parse_time(last_commit_at)
+    return (
+        f"GitHub disables this schedule around {deadline:%Y-%m-%d}, "
+        f"{INACTIVITY_LIMIT_DAYS} days after the last commit to the default branch "
+        f"({last_commit:%Y-%m-%d}), unless the repository has activity before then"
+    )
+
+
 def classify_run(
     run: dict,
     workflow: dict | None,
@@ -268,6 +339,11 @@ def classify_run(
     """
     sha = (run.get("head_sha") or "")[:7]
     started = _parse_time(run["created_at"])
+
+    if workflow is not None and workflow.get("state") == "disabled_inactivity":
+        # GitHub stopped the schedule; nobody retired it. Whatever the last run
+        # concluded, the workflow no longer runs.
+        return FAILING, auto_disabled_explanation(workflow)
 
     if run.get("status") != "completed":
         hours = (now - started).total_seconds() / 3600
@@ -303,7 +379,8 @@ def classify_run(
         return FAILING, f"newest run concluded {conclusion} on `{sha}`"
 
     if workflow is not None and workflow.get("state") not in (None, "active"):
-        # A disabled workflow cannot run at all, so this run is necessarily past.
+        # Disabled on purpose or deleted: it cannot run at all, so this run
+        # is necessarily past.
         return RETIRED, f"workflow {workflow['state']}; the {conclusion} run is frozen history"
 
     retirement: str | None = None
@@ -418,6 +495,7 @@ def sweep_repository(reader: Reader, repo: dict, running_grace_hours: float) -> 
         "branch": branch,
         "failures": [],
         "notes": [],
+        "warnings": [],
         "unreadable": False,
     }
 
@@ -428,12 +506,28 @@ def sweep_repository(reader: Reader, repo: dict, running_grace_hours: float) -> 
     workflows = {entry["id"]: entry for entry in inventory.get("workflows", [])}
 
     active_ids = [wid for wid, entry in workflows.items() if entry.get("state") == "active"]
-    newest = newest_run_per_workflow(reader, slug, branch, active_ids)
-    if not newest:
+    auto_disabled_ids = [
+        wid for wid, entry in workflows.items() if entry.get("state") == "disabled_inactivity"
+    ]
+    newest = newest_run_per_workflow(reader, slug, branch, active_ids + auto_disabled_ids)
+    for workflow_id in auto_disabled_ids:
+        if workflow_id in newest:
+            continue  # classified with its newest run below
+        entry = workflows[workflow_id]
+        result["failures"].append(
+            {
+                "workflow": entry.get("name") or entry.get("path", ""),
+                "outcome": FAILING,
+                "explanation": auto_disabled_explanation(entry),
+                "url": entry.get("html_url", ""),
+            }
+        )
+    if not newest and not active_ids:
         return result
 
     head = reader.get(f"repos/{slug}/commits/{branch}")
     head_sha = (head or {}).get("sha", "")
+    last_commit_at = ((head or {}).get("commit") or {}).get("committer", {}).get("date")
     now = datetime.now(timezone.utc)
 
     source_cache: dict[str, str | None] = {}
@@ -460,6 +554,26 @@ def sweep_repository(reader: Reader, repo: dict, running_grace_hours: float) -> 
                 commits[0]["commit"]["committer"]["date"] if commits else None
             )
         return changed_cache[path]
+
+    # GitHub's 60-day rule applies to public repositories only. Workflow files
+    # are read only when the deadline is close, so a busy repository costs
+    # nothing extra.
+    if not repo.get("private") and inactivity_deadline_is_near(last_commit_at, now):
+        for workflow_id in active_ids:
+            entry = workflows[workflow_id]
+            path = entry.get("path", "")
+            if not path or is_github_managed(path):
+                continue
+            warning = schedule_expiry_warning(entry, workflow_source(path), last_commit_at, now)
+            if warning:
+                result["warnings"].append(
+                    {
+                        "workflow": entry.get("name") or path,
+                        "outcome": SCHEDULE_EXPIRING,
+                        "explanation": warning,
+                        "url": entry.get("html_url", ""),
+                    }
+                )
 
     for workflow_id, run in sorted(newest.items(), key=lambda item: item[1]["name"]):
         workflow = workflows.get(workflow_id)
@@ -504,6 +618,11 @@ def sweep_repository(reader: Reader, repo: dict, running_grace_hours: float) -> 
     return result
 
 
+def should_alert(results: list[dict]) -> bool:
+    """Open or keep the issue for a failure or for a schedule about to stop."""
+    return any(result["failures"] or result.get("warnings") for result in results)
+
+
 def render(
     results: list[dict],
     reader: Reader,
@@ -516,6 +635,7 @@ def render(
         (r for r in results if not r["failures"] and r["notes"]), key=lambda r: r["repo"]
     )
     unreadable = sorted((r for r in results if r["unreadable"]), key=lambda r: r["repo"])
+    expiring = sorted((r for r in results if r.get("warnings")), key=lambda r: r["repo"])
 
     scope = "repositories we own" if sees_private else "PUBLIC repositories we own"
     lines = [
@@ -523,6 +643,14 @@ def render(
         "green default branch.**",
         "",
     ]
+    if expiring:
+        count = sum(len(result["warnings"]) for result in expiring)
+        noun = "workflow" if count == 1 else "workflows"
+        lines += [
+            f"**{count} scheduled {noun} will stop within {EXPIRY_WARNING_DAYS} days "
+            "unless the repository has activity.**",
+            "",
+        ]
 
     if not sees_private:
         # Say what was NOT looked at. A count that silently omits half the
@@ -557,6 +685,25 @@ def render(
             lines.append(f"- **{entry['workflow']}** — {entry['explanation']}{link}")
         for entry in result["notes"]:
             lines.append(f"- _{entry['workflow']}: {entry['outcome']} — {entry['explanation']}_")
+        lines.append("")
+
+    if expiring:
+        lines += [
+            "### Schedules GitHub will disable soon",
+            "",
+            f"GitHub disables a public repository's scheduled workflows after "
+            f"{INACTIVITY_LIMIT_DAYS} days without repository activity and never turns them "
+            "back on. Commit to the default branch to keep a schedule running, or disable "
+            "a schedule that is no longer wanted on purpose.",
+            "",
+        ]
+        for result in expiring:
+            for entry in result["warnings"]:
+                link = f" ([workflow]({entry['url']}))" if entry["url"] else ""
+                lines.append(
+                    f"- **{result['repo']}**, {entry['workflow']}: "
+                    f"{entry['explanation']}{link}"
+                )
         lines.append("")
 
     if noted:
@@ -626,6 +773,7 @@ def main(argv: list[str] | None = None) -> int:
 
     results = [sweep_repository(reader, repo, args.running_grace_hours) for repo in repositories]
     failing = [result for result in results if result["failures"]]
+    alert = should_alert(results)
     body = render(
         results,
         reader,
@@ -637,7 +785,9 @@ def main(argv: list[str] | None = None) -> int:
     print(body)
     print(
         f"\nswept {len(results)} repositories in {reader.calls} API reads; "
-        f"{len(failing)} not green",
+        f"{len(failing)} not green; "
+        f"{sum(len(result['warnings']) for result in results)} schedules near GitHub's "
+        "inactivity limit",
         file=sys.stderr,
     )
 
@@ -646,8 +796,8 @@ def main(argv: list[str] | None = None) -> int:
             handle.write(body + "\n")
     if args.github_output:
         with open(args.github_output, "a", encoding="utf-8") as handle:
-            handle.write(f"alert={'true' if failing else 'false'}\n")
-            handle.write(f"clear={'false' if failing else 'true'}\n")
+            handle.write(f"alert={'true' if alert else 'false'}\n")
+            handle.write(f"clear={'false' if alert else 'true'}\n")
     return 0
 
 

@@ -17,10 +17,14 @@ dialog. The app looks like it is recording but captures nothing.
 
 === "macOS"
 
-    Grant **both** Screen Recording and Accessibility, then **restart the app**:
+    Grant Screen Recording, Accessibility, and Input Monitoring, then **restart
+    the app**:
 
     - **System Settings → Privacy & Security → Screen Recording** → OpenAdapt on.
     - **System Settings → Privacy & Security → Accessibility** → OpenAdapt on.
+    - **System Settings → Privacy & Security → Input Monitoring** → OpenAdapt on.
+      Without it, a desktop recording doesn't start and reports "Input
+      Monitoring permission is required".
     - Quit and reopen OpenAdapt; macOS only applies a newly granted Screen
       Recording permission after a restart.
 
@@ -74,8 +78,21 @@ token, or the durable upload queue is holding items to retry.
 
 !!! note
     The tray/desktop sync surface is part of the
-    [desktop app](../desktop/install.md); from the CLI, a
-    failed `push` exits nonzero and is safe to re-run.
+    [desktop app](../desktop/install.md). From the CLI, a failed `push` exits
+    `1`, and the next step depends on the message:
+
+    - `push failed: ...` (with `--json`, `"status": "failed"` and
+      `delivery.certainty` `not_accepted`): the server didn't accept the
+      artifact. Fix the cause, then run `push` again.
+    - `Push delivery is uncertain` (with `--json`,
+      `"status": "delivery_uncertain"` and `"next_action": "reconcile"`): the
+      server may have received the artifact. Don't run `push` again yet.
+      Reconcile the artifact in the hosted control plane first (the CLI prints
+      its SHA-256 when it knows it), and push again only if the server doesn't
+      have it.
+
+    Both cases have the same exit code, so a script must read the message or
+    the `--json` status to tell them apart.
 
 **Fix.**
 

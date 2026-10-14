@@ -42,12 +42,13 @@ evidence proves about the **business effect** when a run stops.
 ## Effect-verifier verdicts
 
 Each declared effect on a consequential step gets an independent read of the
-system of record, recorded per effect in the report's evidence:
+system of record, recorded per effect in the report's evidence. Base any re-run
+on the run's `transaction_outcome`, never on a single verdict.
 
 | Verdict | Meaning | What to do next |
 |---|---|---|
 | `confirmed` | The verifier independently observed the intended effect in the system of record. | Nothing; this is what `VERIFIED` is built from. |
-| `refuted` | The verifier affirmatively observed the effect is **absent** (or wrong). The run halts. | The write did not land as intended. If the observed effect is `absent`, the run maps to `HALTED_BEFORE_EFFECT` and is safe to re-run after fixing the cause; if `conflicting`, reconcile the duplicate/wrong record first. |
+| `refuted` | The verifier affirmatively observed the effect is **absent** (or wrong). The run halts. | This effect didn't land as intended. A refuted verdict with observed `absent` proves only that this one effect is missing. Before re-running, check the run's `transaction_outcome`. Re-run after fixing the cause only if it's `HALTED_BEFORE_EFFECT`, which needs every consequential step in the run proven absent or stopped before delivery. If it's `RECONCILIATION_REQUIRED` (for example, an earlier step's write was confirmed or never verified, or a declared effect has no evidence), reconcile first. If the observed effect is `conflicting`, reconcile the duplicate or wrong record first. |
 | `indeterminate` | The verifier could not establish presence or absence (unreachable, ambiguous read). The run halts; an unreachable verifier is **never** treated as success. | Check verifier connectivity and configuration (`--effects-kind`, `--effects-base-url`). Treat the write as uncertain: reconcile before re-running. |
 
 The evidence also records what the verifier **observed** about the record,

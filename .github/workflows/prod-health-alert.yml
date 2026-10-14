@@ -9,10 +9,15 @@ name: Production health alert
 # spread over ~2 minutes, the run fails and a durable issue opens or updates.
 # Optional Telegram alert fires when the crier bot secrets exist in this repo.
 #
-# Cadence: every 30 minutes = 48 runs/day of a <1-minute job. The repo
-# is public, so Actions minutes are free; even metered this would be
-# under ~50 min/day. 30 min bounds detection latency without turning
-# one transient blip into a page (the in-run retry absorbs blips).
+# Cadence: the cron requests a run every 30 minutes (48 runs/day of a
+# <1-minute job; the repo is public, so Actions minutes are free). GitHub
+# starts scheduled runs best-effort: on 2026-10-09 the last 100 scheduled
+# runs were a median of 285 minutes apart (112 to 565). On its own this
+# workflow is not a real-time pager, and an outage can go unnoticed for
+# hours. The in-run retry absorbs transient blips. To bound detection
+# time, a passing run pings an external dead-man's switch
+# (PROD_HEALTH_PING_URL), which alerts when no passing run arrives within
+# its grace period. See ops/PRODUCTION_OPERATIONS.md.
 #
 # Caveats (documented, not hidden):
 # - GitHub auto-disables scheduled workflows after 60 days WITHOUT
@@ -68,6 +73,22 @@ jobs:
           done
           echo "::error::${url} did not prove the complete live readiness contract after ${attempts} attempts over ~2 minutes."
           exit 1
+
+      - name: Ping the external dead-man's switch (optional; runs only when its secret exists)
+        env:
+          PROD_HEALTH_PING_URL: ${{ secrets.PROD_HEALTH_PING_URL }}
+        run: |
+          set -u
+          if [ -z "${PROD_HEALTH_PING_URL}" ]; then
+            echo '::warning::PROD_HEALTH_PING_URL is not set, so nothing outside GitHub notices a late, missing, or failing run.'
+            exit 0
+          fi
+          # A ping outage must not fail this job: the durable issue would
+          # then report a healthy service as failing. The external monitor
+          # alerts on its own when pings stop arriving.
+          curl -fsS -m 10 --retry 3 -o /dev/null "${PROD_HEALTH_PING_URL}" \
+            && echo 'External monitor pinged.' \
+            || echo '::warning::The external monitor ping failed; it alerts if no later ping arrives.'
 
       - name: Telegram alert (optional — runs only when crier secrets exist)
         if: ${{ failure() }}

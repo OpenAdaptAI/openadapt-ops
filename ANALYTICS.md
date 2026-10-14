@@ -32,7 +32,10 @@ together.
 ## Environment variables (set at BUILD time)
 
 Analytics is a static build, so keys are read when `mkdocs build` runs, not at
-page-serve time. Set these in the docs deploy/CI environment:
+page-serve time. The deploy workflow (`.github/workflows/sync.yml`) reads the
+PostHog values from Actions variables with the same names and fails
+if a set key doesn't reach the built HTML. Pull request builds in `ci.yml`
+never set them, so they emit no PostHog.
 
 - `NEXT_PUBLIC_POSTHOG_KEY`: PostHog project key. Reuse the SAME key as the
   marketing site so everything lands in one PostHog project. When this is unset,

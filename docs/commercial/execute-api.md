@@ -26,8 +26,11 @@ mints a production Seal only at tier 2 or 3.
 | 2 | System-of-record read (API, DB, file, ack) | Yes. |
 | 3 | Counterparty artifact (payer status, legal export) | Yes. |
 
-`--break-it` on `openadapt-flow qualify` is the fail-closed test. A fake
-success banner must halt. The store must stay unchanged.
+`openadapt flow tutorial --break-it` (or `openadapt quickstart --break-it`) is
+the fail-closed demo. A fake success banner must halt, and the store must stay
+unchanged. During qualification, `qualify propose` and `qualify accept` run the
+proposed oracle against the same kind of fault on their own. An oracle that
+doesn't catch it can't be accepted.
 
 ## Attended operation
 

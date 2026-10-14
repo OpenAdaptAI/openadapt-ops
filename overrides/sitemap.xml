@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+{#-
+  MkDocs' default sitemap template, plus one rule: a page with `redirect_to`
+  in its front matter is a stub that overrides/main.html marks `noindex` and
+  refreshes to its target, so it is left out of the sitemap.
+#}
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{%- for file in pages -%}
+    {% if not file.page.is_link and (file.page.abs_url or file.page.canonical_url) and not (file.page.meta and file.page.meta.redirect_to) %}
+    <url>
+         <loc>{% if file.page.canonical_url %}{{ file.page.canonical_url|e }}{% else %}{{ file.page.abs_url|e }}{% endif %}</loc>
+         {% if file.page.update_date %}<lastmod>{{file.page.update_date}}</lastmod>{% endif %}
+    </url>
+    {%- endif -%}
+{% endfor %}
+</urlset>
