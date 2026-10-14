@@ -1,0 +1,58 @@
+{
+  "$comment": "PyPI JSON metadata (info.version, info.requires_python, and the openadapt-* entries of info.requires_dist) for the newest openadapt and openadapt-flow releases, fetched 2026-10-14. docs/reference/compatibility.md must match it; refresh it when the daily PyPI check reports drift.",
+  "openadapt": {
+    "version": "1.16.0",
+    "requires_python": "<3.13,>=3.10",
+    "requires_dist": [
+      "openadapt-flow[browser,hosted]<2.0.0,>=1.29.0",
+      "openadapt-capture<2.0.0,>=1.2.0; extra == \"all\"",
+      "openadapt-evals>=0.1.0; extra == \"all\"",
+      "openadapt-flow<2.0.0,>=1.29.0; extra == \"all\"",
+      "openadapt-flow[browser]<2.0.0,>=1.29.0; extra == \"all\"",
+      "openadapt-flow[capture]<2.0.0,>=1.29.0; extra == \"all\"",
+      "openadapt-flow[linux]<2.0.0,>=1.29.0; sys_platform == \"linux\" and extra == \"all\"",
+      "openadapt-flow[macos]<2.0.0,>=1.29.0; sys_platform == \"darwin\" and extra == \"all\"",
+      "openadapt-flow[privacy]<2.0.0,>=1.29.0; extra == \"all\"",
+      "openadapt-flow[rdp]<2.0.0,>=1.29.0; extra == \"all\"",
+      "openadapt-flow[windows]<2.0.0,>=1.29.0; extra == \"all\"",
+      "openadapt-grounding>=0.1.0; extra == \"all\"",
+      "openadapt-ml>=0.2.0; extra == \"all\"",
+      "openadapt-retrieval>=0.1.0; extra == \"all\"",
+      "openadapt-viewer>=0.1.0; extra == \"all\"",
+      "openadapt-flow[browser]<2.0.0,>=1.29.0; extra == \"browser\"",
+      "openadapt-capture<2.0.0,>=1.2.0; extra == \"capture\"",
+      "openadapt-flow[capture]<2.0.0,>=1.29.0; extra == \"capture\"",
+      "openadapt-capture<2.0.0,>=1.2.0; extra == \"core\"",
+      "openadapt-evals>=0.1.0; extra == \"core\"",
+      "openadapt-flow[capture]<2.0.0,>=1.29.0; extra == \"core\"",
+      "openadapt-ml>=0.2.0; extra == \"core\"",
+      "openadapt-viewer>=0.1.0; extra == \"core\"",
+      "openadapt-evals>=0.1.0; extra == \"evals\"",
+      "openadapt-flow<2.0.0,>=1.29.0; extra == \"flow\"",
+      "openadapt-grounding>=0.1.0; extra == \"grounding\"",
+      "openadapt-flow[linux]<2.0.0,>=1.29.0; sys_platform == \"linux\" and extra == \"linux\"",
+      "openadapt-flow[macos]<2.0.0,>=1.29.0; sys_platform == \"darwin\" and extra == \"macos\"",
+      "openadapt-ml>=0.2.0; extra == \"ml\"",
+      "openadapt-flow[privacy]<2.0.0,>=1.29.0; extra == \"privacy\"",
+      "openadapt-flow[rdp]<2.0.0,>=1.29.0; extra == \"rdp\"",
+      "openadapt-retrieval>=0.1.0; extra == \"retrieval\"",
+      "openadapt-viewer>=0.1.0; extra == \"viewer\"",
+      "openadapt-flow[windows]<2.0.0,>=1.29.0; extra == \"windows\""
+    ]
+  },
+  "openadapt-flow": {
+    "version": "1.35.1",
+    "requires_python": "<3.13,>=3.10",
+    "requires_dist": [
+      "openadapt-types<0.18.0,>=0.17.0",
+      "openadapt-capture>=1.2.0; extra == \"capture\"",
+      "openadapt-types<0.18.0,>=0.17.0; extra == \"console\"",
+      "openadapt-types<0.18.0,>=0.17.0; extra == \"dev\"",
+      "openadapt-types<0.18.0,>=0.17.0; extra == \"execute\"",
+      "openadapt-grounding>=0.1.0; extra == \"grounding\"",
+      "openadapt-types<0.18.0,>=0.17.0; extra == \"interop\"",
+      "openadapt-privacy[presidio]>=1.0.0; extra == \"privacy\"",
+      "openadapt-types<0.18.0,>=0.17.0; extra == \"reward\""
+    ]
+  }
+}

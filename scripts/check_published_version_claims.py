@@ -20,14 +20,20 @@ Offline checks (run on every pull request; no network, cannot be flaky):
    registered as ``pypi-latest``. This is the specific sentence shape that went
    wrong; adding another one now requires declaring that it must track PyPI.
 3. ``docs/changelog.md`` parses and every tracked repository has releases.
+4. The compatibility table in ``docs/reference/compatibility.md`` names every
+   tracked package and the supported Python range.
 
 Network checks (run daily; PyPI is the authority):
 
-4. Every ``pypi-latest`` claim's version equals PyPI's newest release.
-5. The newest ``vX.Y.Z`` entry in each tracked section of ``docs/changelog.md``
+5. Every ``pypi-latest`` claim's version equals PyPI's newest release.
+6. The newest ``vX.Y.Z`` entry in each tracked section of ``docs/changelog.md``
    equals PyPI's newest release for that package. The changelog is the docs'
    always-live statement of "what the current release is", so it is guarded
    structurally rather than by phrase.
+7. Every range in the compatibility table equals what the newest ``openadapt``
+   and ``openadapt-flow`` releases require (``requires_dist`` and
+   ``requires_python``). The table once said Flow >=1.7 and types 0.9 while
+   the releases required Flow >=1.29 and types 0.17.
 
 A changelog entry BEHIND PyPI is stale docs and fails. One AHEAD of PyPI is a
 release whose PyPI upload has not landed yet and warns. An unreachable PyPI
@@ -56,6 +62,7 @@ ROOT = Path(__file__).resolve().parents[1]
 REGISTRY_PATH = ROOT / "docs" / "published-version-claims.json"
 CHANGELOG_PATH = ROOT / "docs" / "changelog.md"
 DOCS_DIR = ROOT / "docs"
+COMPATIBILITY_PATH = DOCS_DIR / "reference" / "compatibility.md"
 PYPI_URL_TEMPLATE = "https://pypi.org/pypi/{package}/json"
 HTTP_TIMEOUT_SECONDS = 30
 
@@ -76,6 +83,31 @@ PUBLICATION_CLAIM_PATTERNS = (
 CHANGELOG_SECTION = re.compile(r"^##\s+(?P<name>\S+)\s*$")
 CHANGELOG_ENTRY = re.compile(r"^-\s+\*\*\[(?P<tag>[^\]]+)\]")
 SEMVER_TAG = re.compile(r"^v(?P<version>\d+\.\d+\.\d+)$")
+
+# Which released metadata each package range in the compatibility table must
+# equal: (package whose requires_dist states it, extras that must all state
+# the same range; None is the base install). The launcher decides the Flow and
+# Capture ranges a user gets; Flow decides the types and privacy ranges.
+COMPATIBILITY_SOURCES: dict[str, tuple[str, tuple[str | None, ...]]] = {
+    "openadapt-flow": ("openadapt", (None,)),
+    "openadapt-capture": ("openadapt", ("capture",)),
+    "openadapt-privacy": ("openadapt-flow", ("privacy",)),
+    "openadapt-types": (
+        "openadapt-flow",
+        (None, "console", "execute", "interop", "reward"),
+    ),
+}
+# The supported Python range is the engine's.
+COMPATIBILITY_PYTHON_SOURCE = "openadapt-flow"
+COMPATIBILITY_HEADING = "## Current compatibility contract"
+TABLE_RANGE = re.compile(
+    r"`(?P<name>[a-z][a-z0-9-]*)(?:\[[^\]]*\])?\s+(?P<spec>[<>=!~][^`]*)`"
+)
+REQUIREMENT = re.compile(
+    r"^(?P<name>[A-Za-z0-9._-]+)\s*(?:\[[^\]]*\])?\s*(?P<spec>[^;]*?)\s*"
+    r"(?:;\s*(?P<marker>.+))?$"
+)
+SPEC_CLAUSE = re.compile(r"(?P<op>>=|<=|==|!=|~=|>|<)\s*(?P<version>\d+(?:\.\d+)*)")
 
 
 class Report:
@@ -231,18 +263,164 @@ def check_changelog_structure(
     return claimed
 
 
+def parse_compatibility_table(text: str) -> list[tuple[str, str]]:
+    """Return (component, compatible range) for each row of the contract table."""
+    if COMPATIBILITY_HEADING not in text:
+        return []
+    section = text.split(COMPATIBILITY_HEADING, 1)[1].split("\n## ", 1)[0]
+    rows = []
+    for line in section.splitlines():
+        cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
+        if not line.lstrip().startswith("|") or len(cells) < 2:
+            continue
+        if cells[0] == "Component" or set(cells[0]) <= {"-", ":"}:
+            continue
+        rows.append((cells[0], cells[1]))
+    return rows
+
+
+def check_compatibility_structure(text: str, report: Report) -> None:
+    """The contract table exists and names every tracked range."""
+    rows = parse_compatibility_table(text)
+    if not rows:
+        report.error(
+            f"docs/reference/compatibility.md has no {COMPATIBILITY_HEADING!r} "
+            "table, so its ranges cannot be compared with the released metadata"
+        )
+        return
+    named = {match.group("name") for _, cell in rows for match in TABLE_RANGE.finditer(cell)}
+    for package in sorted(set(COMPATIBILITY_SOURCES) - named):
+        report.error(
+            f"docs/reference/compatibility.md: the compatibility table has no "
+            f"`{package}` range, but readers need the range the released "
+            "packages require"
+        )
+    if not any(component == "Python" for component, _ in rows):
+        report.error("docs/reference/compatibility.md: the compatibility table has no Python row")
+
+
+def _spec_meaning(spec: str) -> frozenset[tuple[str, tuple[int, ...]]]:
+    """A specifier as a set of (operator, release) with trailing zeros dropped."""
+    clauses = set()
+    for match in SPEC_CLAUSE.finditer(spec):
+        release = [int(part) for part in match.group("version").split(".")]
+        while len(release) > 1 and release[-1] == 0:
+            release.pop()
+        clauses.add((match.group("op"), tuple(release)))
+    return frozenset(clauses)
+
+
+def _released_ranges(requires_dist: list[str], package: str) -> dict[str | None, str]:
+    """Map each extra (None for the base install) to its range for ``package``."""
+    ranges: dict[str | None, str] = {}
+    for line in requires_dist:
+        match = REQUIREMENT.match(line.strip())
+        if not match or match.group("name").lower() != package:
+            continue
+        extra = re.search(r"extra\s*==\s*[\"']([^\"']+)[\"']", match.group("marker") or "")
+        ranges[extra.group(1) if extra else None] = match.group("spec")
+    return ranges
+
+
+def _python_range(requires_python: str) -> str:
+    """``>=3.10,<3.13`` as the table writes it: ``3.10-3.12``."""
+    lower = upper = None
+    for match in SPEC_CLAUSE.finditer(requires_python):
+        release = tuple(int(part) for part in match.group("version").split("."))
+        if match.group("op") == ">=":
+            lower = release
+        elif match.group("op") == "<" and len(release) >= 2:
+            upper = (release[0], release[1] - 1)
+    if lower is None:
+        return requires_python
+    start = ".".join(str(part) for part in lower[:2])
+    if upper is None:
+        return f"{start} and newer"
+    return f"{start}-{upper[0]}.{upper[1]}"
+
+
+def check_compatibility_table(text: str, metadata: dict, report: Report) -> None:
+    """Every documented range equals what the newest releases require.
+
+    ``metadata`` maps a package name to its PyPI ``info`` fields
+    (``requires_dist`` and ``requires_python``).
+    """
+    def label(source: str, extra: str | None) -> str:
+        return f"{source}[{extra}]" if extra else source
+
+    expected: dict[str, str] = {}
+    for package, (source, extras) in COMPATIBILITY_SOURCES.items():
+        ranges = _released_ranges(metadata[source].get("requires_dist") or [], package)
+        missing = [label(source, extra) for extra in extras if extra not in ranges]
+        if missing:
+            report.error(
+                f"compatibility table: {', '.join(missing)} no longer requires "
+                f"{package}; update the table row that says it does"
+            )
+            continue
+        meanings = {_spec_meaning(ranges[extra]) for extra in extras}
+        if len(meanings) > 1:
+            stated = ", ".join(f"{label(source, extra)} {ranges[extra]}" for extra in extras)
+            report.error(
+                f"compatibility table: {source} now pins different {package} "
+                f"ranges ({stated}), so one table row can't state them"
+            )
+            continue
+        expected[package] = ranges[extras[0]]
+
+    for component, cell in parse_compatibility_table(text):
+        if component == "Python":
+            want = _python_range(metadata[COMPATIBILITY_PYTHON_SOURCE].get("requires_python") or "")
+            if cell != want:
+                report.error(
+                    f"compatibility table: Python says {cell!r}, but "
+                    f"{COMPATIBILITY_PYTHON_SOURCE} requires Python {want}"
+                )
+            continue
+        for match in TABLE_RANGE.finditer(cell):
+            package, spec = match.group("name"), match.group("spec").strip()
+            if package not in expected:
+                continue
+            if _spec_meaning(spec) != _spec_meaning(expected[package]):
+                source = COMPATIBILITY_SOURCES[package][0]
+                report.error(
+                    f"compatibility table row {component!r}: `{package} {spec}` "
+                    f"differs from the newest {source} release, which requires "
+                    f"{package}{expected[package]}"
+                )
+
+
 # --------------------------------------------------------------------------
 # Network checks
 # --------------------------------------------------------------------------
 
 
-def fetch_latest_version(package: str) -> str:
+def fetch_package_info(package: str) -> dict:
     request = urllib.request.Request(
         PYPI_URL_TEMPLATE.format(package=package),
         headers={"User-Agent": "openadapt-docs-version-claim-checker"},
     )
     with urllib.request.urlopen(request, timeout=HTTP_TIMEOUT_SECONDS) as response:
-        return json.load(response)["info"]["version"]
+        return json.load(response)["info"]
+
+
+def fetch_latest_version(package: str) -> str:
+    return fetch_package_info(package)["version"]
+
+
+def check_compatibility_against_pypi(
+    report: Report, require_network: bool, path: Path = COMPATIBILITY_PATH
+) -> None:
+    sources = sorted({source for source, _ in COMPATIBILITY_SOURCES.values()})
+    metadata = {}
+    for package in sources:
+        try:
+            metadata[package] = fetch_package_info(package)
+        except (urllib.error.URLError, TimeoutError, KeyError) as exc:
+            emit = report.error if require_network else report.warning
+            emit(f"could not fetch PyPI metadata for {package}: {exc}")
+            return
+    check_compatibility_table(path.read_text(encoding="utf-8"), metadata, report)
 
 
 def compare_claim_to_pypi(
@@ -322,11 +500,13 @@ def main() -> int:
     check_claim_locations(registry, report)
     scan_for_unregistered_claims(registry, report)
     changelog_claims = check_changelog_structure(registry, report)
+    check_compatibility_structure(COMPATIBILITY_PATH.read_text(encoding="utf-8"), report)
 
     if not args.offline:
         check_against_pypi(
             registry, changelog_claims, report, require_network=args.require_network
         )
+        check_compatibility_against_pypi(report, require_network=args.require_network)
 
     for warning in report.warnings:
         print(f"WARNING: {warning}")

@@ -53,11 +53,12 @@ REQUIRED_PUBLIC_PAGES = {
         "source of truth",
         "Noncanonical documentation trees",
     ),
+    # The ranges themselves are compared with the released package metadata
+    # by scripts/check_published_version_claims.py, so only structure is
+    # required here.
     "reference/compatibility.md": (
         "pip install openadapt",
-        "`openadapt-flow >=1.7,<2`",
-        "`openadapt-flow >=1.22,<2` + `openadapt-capture >=1.1.0`",
-        "`openadapt-capture >=1.1.0`",
+        "## Current compatibility contract",
         "Production deployments should pin the exact versions",
     ),
     "reference/production-lifecycle.md": (
