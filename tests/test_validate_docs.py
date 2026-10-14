@@ -120,8 +120,7 @@ def _write_contract_docs(root):
         ),
         "reference/compatibility.md": (
             "# Versions and compatibility\n\n`pip install openadapt`\n\n"
-            "`openadapt-flow >=1.7,<2`\n\n"
-            "`openadapt-flow >=1.22,<2` + `openadapt-capture >=1.1.0`\n\n"
+            "## Current compatibility contract\n\n"
             "Production deployments should pin the exact versions."
         ),
         "reference/production-lifecycle.md": (

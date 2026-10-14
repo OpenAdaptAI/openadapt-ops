@@ -38,7 +38,7 @@ switching, and sign-out.
 | Surface | Availability | Boundary |
 |---|---|---|
 | Local browser record -> compile -> managed execute | **Included in the managed subscription** | Governed authoring and validation remain local; managed execution uses the qualified browser substrate. |
-| Hosted browser record -> compileable workflow | **Available for approved sessions** | The retained non-simulated provider qualification used `openadapt-flow` 1.8.0; the current managed-runtime manifest pins Flow 1.31.0 artifact identity. A runtime pin does not prove live deployment or hosted workflow acceptance. This is a separate raw-observation boundary, not the reviewed-derivative upload lane. |
+| Hosted browser record -> compileable workflow | **Available for approved sessions** | The retained non-simulated provider qualification used `openadapt-flow` 1.8.0. As of 2026-10-14, the managed-runtime manifest pins Flow 1.34.0 artifact identity; the [deployment matrix](../concepts/deployment-matrix.md) lists its hashes. A runtime pin does not prove live deployment or hosted workflow acceptance. This is a separate raw-observation boundary, not the reviewed-derivative upload lane. |
 | Account, organization, onboarding | **Included in the managed subscription** | Checkout and sign-in bind the subscription to an isolated organization. |
 | Structural run history and reports | **Included in the managed subscription** | Safety depends on the workflow's configured identity, effect, and policy checks. Repair and validation remain local. |
 | Checkout, portal, entitlements, metering | **Included in the managed subscription** | Live Stripe Checkout, signed webhooks, entitlements, usage, and the billing portal form one managed subscription contract. |
@@ -64,10 +64,10 @@ demo. A qualified hosted browser session produced PNG frames, accepted and
 retained input evidence, assembled a native recording, created one compileable
 workflow idempotently, enforced its resource limits, and removed the ephemeral
 qualification data. That retained qualification used an `openadapt-flow` 1.8.0
-worker. The managed-runtime manifest pins the Flow 1.31.0 artifact identity. A
-pin does not prove that the build is live or that a hosted workflow passed
-acceptance. The public readiness endpoint separately verifies the configured
-live dependencies, including authentication, storage, runner, compiler,
+worker. As of 2026-10-14, the managed-runtime manifest pins the Flow 1.34.0
+artifact identity. A pin does not prove that the build is live or that a
+hosted workflow passed acceptance. The public readiness endpoint separately
+verifies the configured live dependencies, including authentication, storage, runner, compiler,
 runtime-validation trust, runtime boundary, bundle protection, recorder,
 callbacks, scheduling, human-decision Web Push, retention, security events,
 secret encryption, validation policy, and billing. Readiness is dependency

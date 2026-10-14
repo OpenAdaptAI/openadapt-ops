@@ -1,0 +1,70 @@
+{#-
+  Google Analytics for docs.openadapt.ai.
+
+  This replaces Material for MkDocs' partials/integrations/analytics/google.html
+  (9.7.7, MIT License, Copyright (c) 2016-2025 Martin Donath). Material still
+  emits the call to __md_analytics(); this file only changes what it does:
+
+  - Do-Not-Track: when the browser sends it, nothing loads. No gtag.js request
+    and no `config` command, so no _ga cookies. Same check as PostHog in
+    overrides/main.html.
+  - Google signals and ad personalization signals are off on every `config`
+    command, as the OpenAdapt privacy policy says.
+  - Search sends only the query length, never the query text (ANALYTICS.md).
+
+  tests/test_docs_google_analytics.py builds the site and runs this script.
+  Recheck it against Material's partial when mkdocs-material is upgraded.
+-#}
+{% if config.extra.analytics %}
+  {% set property = config.extra.analytics.property | d("", true) %}
+{% endif %}
+<script id="__analytics">
+  function __md_analytics() {
+    // Check each signal on its own: a browser can expose more than one, and
+    // one that reads "0" or "unspecified" must not hide another that reads "1".
+    var signals = [navigator.doNotTrack, window.doNotTrack, navigator.msDoNotTrack];
+    for (var i = 0; i < signals.length; i++) {
+      if (signals[i] == "1" || signals[i] == "yes") { return; }
+    }
+
+    var settings = {
+      allow_google_signals: false,
+      allow_ad_personalization_signals: false
+    };
+    function gtag() { dataLayer.push(arguments); }
+    window.dataLayer = window.dataLayer || [];
+    gtag("js", new Date());
+    gtag("config", "{{ property }}", settings);
+
+    document.addEventListener("DOMContentLoaded", function () {
+      if (document.forms.search) {
+        document.forms.search.query.addEventListener("blur", function () {
+          if (this.value) { gtag("event", "search", { query_length: this.value.length }); }
+        });
+      }
+      document$.subscribe(function () {
+        var feedback = document.forms.feedback;
+        if (typeof feedback === "undefined") { return; }
+        for (var button of feedback.querySelectorAll("[type=submit]")) {
+          button.addEventListener("click", function (ev) {
+            ev.preventDefault();
+            var value = this.getAttribute("data-md-value");
+            gtag("event", "feedback", { page: document.location.pathname, data: value });
+            feedback.firstElementChild.disabled = true;
+            var note = feedback.querySelector(".md-feedback__note [data-md-value='" + value + "']");
+            if (note) { note.hidden = false; }
+          });
+        }
+        feedback.hidden = false;
+      });
+      location$.subscribe(function (url) {
+        gtag("config", "{{ property }}", Object.assign({ page_path: url.pathname }, settings));
+      });
+    });
+
+    var script = document.createElement("script");
+    script.async = true;
+    script.src = "https://www.googletagmanager.com/gtag/js?id={{ property }}";
+    document.getElementById("__analytics").insertAdjacentElement("afterEnd", script);
+  }
+</script>

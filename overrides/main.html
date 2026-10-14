@@ -70,8 +70,10 @@
 
   Google Analytics is wired through Material's native `extra.analytics` block
   (see mkdocs.yml), which already handles pageviews and the built-in `search`
-  event, including under `navigation.instant`. This partial adds PostHog and a
-  small shared-taxonomy event layer on top.
+  event, including under `navigation.instant`. Its script is replaced by
+  partials/integrations/analytics/google.html, which honors Do-Not-Track,
+  turns Google signals off, and sends only the search query length. This
+  partial adds PostHog and a small shared-taxonomy event layer on top.
 
   The PostHog script is emitted only when NEXT_PUBLIC_POSTHOG_KEY is present at
   BUILD time (mkdocs `!ENV` substitution). When the key is unset (local builds

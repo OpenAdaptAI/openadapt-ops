@@ -18,6 +18,7 @@ on:
   pull_request:
     paths:
       - 'docs/published-version-claims.json'
+      - 'docs/reference/compatibility.md'
       - 'scripts/check_published_version_claims.py'
       - '.github/workflows/published-version-claims.yml'
 

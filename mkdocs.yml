@@ -100,7 +100,9 @@ extra:
   # Analytics. See ANALYTICS.md (repo root) for the full data-handling notes.
   # Google Analytics is env-driven; the fallback keeps the existing measurement
   # ID working when GOOGLE_ANALYTICS_KEY is unset. GA measurement IDs are public
-  # (non-secret), so committing the fallback is fine.
+  # (non-secret), so committing the fallback is fine. The GA script itself is
+  # overrides/partials/integrations/analytics/google.html: it honors
+  # Do-Not-Track and turns Google signals off.
   analytics:
     provider: google
     property: !ENV [GOOGLE_ANALYTICS_KEY, "G-CJ01Y19XJN"]
