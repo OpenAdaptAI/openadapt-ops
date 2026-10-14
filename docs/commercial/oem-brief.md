@@ -25,12 +25,15 @@ a different command. It copies a bundle and encrypts its workflow and template
 evidence with `OPENADAPT_BUNDLE_KEY` for deployment. It doesn't issue a Seal.
 
 !!! note "Private pilot. Not a public API."
-    This page describes the private-pilot product contract. It is not an
+    This page describes the private-pilot product contract. It is not a
     self-service integration recipe and it does not publish partner access,
-    credentials, an SDK, or a webhook URL. `openadapt-types` 0.9.0 publishes
-    the shared async Execute schema, OpenAPI document, and signed decision
-    contract. OpenAdapt Cloud provides private execution, customer-runner
-    coordination, and receipt delivery for approved pilot partners.
+    credentials, an SDK, or a webhook URL. The `openadapt-types` package
+    publishes the shared async Execute schema, OpenAPI document, and signed
+    decision contract.
+    [Versions and compatibility](../reference/compatibility.md) gives the
+    range to install. OpenAdapt Cloud provides private execution,
+    customer-runner coordination, and receipt delivery for approved pilot
+    partners.
 
 ## What a partner gets
 
@@ -214,9 +217,10 @@ states, but it does not receive these screenshots.
 or review the full
 [attended-decision contract](../concepts/halt-learn-loop.md#where-a-halt-goes-the-attended-decision).
 
-The released public contract for this round trip is
-`openadapt-types` 0.9.0. It defines the async Execute schema and OpenAPI
-document, plus signed, PHI-safe decision tasks and receipts. Flow and Cloud use
+The public contract for this round trip is the `openadapt-types` package, in
+the range that [Versions and compatibility](../reference/compatibility.md)
+gives. It defines the async Execute schema and OpenAPI document, plus signed,
+PHI-safe decision tasks and receipts. Flow and Cloud use
 this contract for the decision relay and private-pilot execution. The partner
 event stream does not contain raw screenshots or live record data.
 
