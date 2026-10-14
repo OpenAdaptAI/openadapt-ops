@@ -142,11 +142,15 @@ name, parameters, or a model. If the class is unavailable, it uses `record` or
 ## Attended and unattended operation
 
 The private pilot runs attended. A person is signed in to the target
-application, and the runner acts inside that session. A consequential write
-pauses at `decision_required` until an authorized person answers, and the
-runner rechecks live identity and workflow state before it continues. The
+application, and the runner acts inside that session. When the runner can't
+prove a required condition, the run pauses at `decision_required` until an
+authorized person answers, and the runner rechecks live identity and workflow
+state before it continues. The
 [attended decisions](#attended-decisions-and-mobile-delivery) section below
 describes that round trip.
+
+In early access, a person reviews every entry before it is saved. That's how
+we run the private pilot today; the runtime doesn't enforce it yet.
 
 That person stays the legal actor. A Seal records that the configured
 authorization, identity, postcondition, and effect contracts passed for one
