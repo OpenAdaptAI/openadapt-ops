@@ -64,10 +64,10 @@ demo. A qualified hosted browser session produced PNG frames, accepted and
 retained input evidence, assembled a native recording, created one compileable
 workflow idempotently, enforced its resource limits, and removed the ephemeral
 qualification data. That retained qualification used an `openadapt-flow` 1.8.0
-worker. As of 2026-10-14, the
-managed-runtime manifest pins the Flow 1.34.0 artifact identity. A pin does
-not prove that the build is live or that a hosted workflow passed acceptance. The public readiness endpoint separately verifies the configured
-live dependencies, including authentication, storage, runner, compiler,
+worker. As of 2026-10-14, the managed-runtime manifest pins the Flow 1.34.0
+artifact identity. A pin does not prove that the build is live or that a
+hosted workflow passed acceptance. The public readiness endpoint separately
+verifies the configured live dependencies, including authentication, storage, runner, compiler,
 runtime-validation trust, runtime boundary, bundle protection, recorder,
 callbacks, scheduling, human-decision Web Push, retention, security events,
 secret encryption, validation policy, and billing. Readiness is dependency

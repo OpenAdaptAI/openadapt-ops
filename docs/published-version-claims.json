@@ -65,7 +65,7 @@
         },
         {
           "file": "docs/guides/hosted.md",
-          "context": "managed-runtime manifest pins the Flow 1.34.0 artifact identity"
+          "context": "managed-runtime manifest pins the Flow 1.34.0\nartifact identity"
         },
         {
           "file": "docs/get-started/what-works-today.md",
