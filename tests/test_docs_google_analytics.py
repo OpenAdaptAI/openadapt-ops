@@ -94,3 +94,25 @@ def test_the_override_names_the_locked_material_version() -> None:
     locked = [pkg["version"] for pkg in lock["package"] if pkg["name"] == "mkdocs-material"]
     named = re.findall(r"analytics/google\.html\s+\(([0-9][0-9.]*)", OVERRIDE.read_text())
     assert named == locked
+
+
+def test_one_signal_that_is_off_does_not_hide_another_that_is_on(page: Path) -> None:
+    # A browser can expose more than one Do-Not-Track property. "0" or
+    # "unspecified" on one of them must not mask "1" on another.
+    for signals in (
+        {"navigator.doNotTrack": "0", "window.doNotTrack": "1"},
+        {"navigator.doNotTrack": "unspecified", "navigator.msDoNotTrack": "1"},
+    ):
+        result = _run(page, signals)
+        assert result["inserted"] == [], signals
+        assert result["dataLayer"] == [], signals
+
+
+def test_search_sends_only_the_query_length(page: Path) -> None:
+    # ANALYTICS.md promises that search records only `query_length`. Material's
+    # own script sent the query text as `search_term`.
+    result = _run(page, {})
+    query = result["searchQuery"]
+    searches = [entry for entry in result["dataLayer"] if entry[:2] == ["event", "search"]]
+    assert searches == [["event", "search", {"query_length": len(query)}]], result
+    assert query not in json.dumps(result["dataLayer"]), result

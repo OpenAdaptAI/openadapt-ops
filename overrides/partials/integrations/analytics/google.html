@@ -20,8 +20,12 @@
 {% endif %}
 <script id="__analytics">
   function __md_analytics() {
-    var dnt = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
-    if (dnt == "1" || dnt == "yes") { return; }
+    // Check each signal on its own: a browser can expose more than one, and
+    // one that reads "0" or "unspecified" must not hide another that reads "1".
+    var signals = [navigator.doNotTrack, window.doNotTrack, navigator.msDoNotTrack];
+    for (var i = 0; i < signals.length; i++) {
+      if (signals[i] == "1" || signals[i] == "yes") { return; }
+    }
 
     var settings = {
       allow_google_signals: false,

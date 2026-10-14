@@ -8,9 +8,9 @@
 //
 // It runs every inline <script> in <head> that mentions __md_analytics, in
 // page order: Material's definition (or this repo's override of it) and the
-// call that Material emits, then fires DOMContentLoaded and one instant
-// navigation. It reports the script URLs the page inserted and the gtag
-// commands it queued.
+// call that Material emits, then fires DOMContentLoaded, one instant
+// navigation, and one search (the search box loses focus holding SEARCH_QUERY).
+// It reports the script URLs the page inserted and the gtag commands it queued.
 
 const { readFileSync } = require("node:fs");
 const vm = require("node:vm");
@@ -22,8 +22,12 @@ const scripts = [...head.matchAll(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/scri
   .map((match) => match[1])
   .filter((source) => source.includes("__md_analytics"));
 
+// A query a reader might type. Google Analytics must never receive its text.
+const SEARCH_QUERY = "private search words";
+
 const inserted = [];
 const loaded = [];
+const blurred = [];
 function element() {
   return {
     insertAdjacentElement(_position, node) {
@@ -36,7 +40,13 @@ const document = {
   getElementById: () => element(),
   getElementsByTagName: () => [{ parentNode: { insertBefore: (node) => inserted.push(node.src) } }],
   addEventListener: (type, listener) => type === "DOMContentLoaded" && loaded.push(listener),
-  forms: {},
+  forms: {
+    search: {
+      query: {
+        addEventListener: (type, listener) => type === "blur" && blurred.push(listener),
+      },
+    },
+  },
 };
 const navigator = {};
 const context = { document, navigator, location: { pathname: "/" }, console };
@@ -55,10 +65,14 @@ context.location$ = { subscribe: (next) => next({ pathname: "/evaluate/" }) };
 for (const listener of loaded) {
   listener();
 }
+for (const listener of blurred) {
+  listener.call({ value: SEARCH_QUERY });
+}
 
 process.stdout.write(
   JSON.stringify({
     scripts: scripts.length,
+    searchQuery: SEARCH_QUERY,
     inserted,
     dataLayer: (context.dataLayer || []).map((entry) => Array.from(entry)),
   }),
