@@ -21,6 +21,27 @@
   {% elif page.canonical_url %}
     <link rel="canonical" href="{{ page.canonical_url }}">
   {% endif %}
+  {# Open Graph and card tags, so a docs link shared in email or chat shows
+     the page title and the same description as the meta tag above. No image:
+     the card falls back to text until a reviewed preview image exists. #}
+  {% set og_description = (page.meta.description if page.meta and page.meta.description else config.site_description) %}
+  {% if page.meta and page.meta.title %}
+    {% set og_title = page.meta.title %}
+  {% elif page and page.title %}
+    {% set og_title = page.title | striptags %}
+  {% else %}
+    {% set og_title = config.site_name %}
+  {% endif %}
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="{{ config.site_name | e }}">
+  <meta property="og:title" content="{{ og_title | e }}">
+  {% if og_description %}
+    <meta property="og:description" content="{{ og_description | e }}">
+  {% endif %}
+  {% if page.canonical_url %}
+    <meta property="og:url" content="{{ page.canonical_url }}">
+  {% endif %}
+  <meta name="twitter:card" content="summary">
   {% if page.meta and page.meta.redirect_to %}
     <meta http-equiv="refresh" content="0; url={{ page.meta.redirect_to }}">
     <meta name="robots" content="noindex,follow">

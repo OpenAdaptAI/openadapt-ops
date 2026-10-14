@@ -1,20 +1,40 @@
 # Commercial offers
 
-This section explains how to qualify and deploy one workflow. Every price and
-claim matches the public
-[pricing page](https://openadapt.ai/pricing) and the
-[qualification evidence appendix](../get-started/what-works-today.md).
+This section explains how to qualify and deploy one workflow. If you're
+deciding whether OpenAdapt fits a workflow at all, start with
+[Evaluate](../evaluate/index.md).
 
-## Ways to work with OpenAdapt
+## Software
 
-| Offer | Price | What it is |
+The public [pricing page](https://openadapt.ai/pricing) is the source for
+software prices. This table restates it.
+
+| Plan | Price | What it includes |
 |---|---|---|
-| Community | Free (MIT) | Local runtime and qualification tools for self-directed use. No account required. |
+| Local | $0 (MIT) | The engine on your machine. Record, compile, and replay. No account. |
+| Hosted | $29/month | We run the machine for approved browser workflows on non-regulated data: a managed runner, a dashboard and run history, an API key and verify URL, and agent access. |
+| Enterprise | Talk to us | One app and one environment, qualified, with identity and effect checks; a customer-controlled or dedicated runner; a BAA and a private verify URL; and Citrix, VDI, volume, and SLA terms. |
+
+Hosted isn't a lane for PHI or PII. Workflows that touch regulated data run on
+a machine you control. See [Deployment boundaries](deployment-boundaries.md).
+
+## Services
+
+We scope implementation and ongoing maintenance per workflow, separately from
+software hosting. A written proposal sets the deliverables, responsibilities,
+acceptance criteria, and fees before the build starts.
+[How a first project works](../evaluate/first-project.md) walks through the
+steps.
+
+| Offer | Typical range | What it is |
+|---|---|---|
 | [Workflow Qualification Sprint](qualification-sprint.md) | From $15,000 (native, RDP, and Citrix scopes typically $25,000 to $40,000) | Fixed-scope paid qualification of one workflow, ending in a signed go/no-go report. |
-| OpenAdapt Cloud | $500.00/month | Managed self-service browser execution for non-regulated data, up to 10,000 runs/month. Separate from enterprise qualification. |
 | Supervised Production Pilot | Typically $30,000 to $60,000 | Prove the qualified workflow on representative production cases and leave with an acceptance report. |
 | Production | Typically $48,000 to $120,000/year | Annual scope covering the qualified workflow family, environment, runners, evidence, support, and requalification. |
 | OEM / embedding | Typically $75,000 to $150,000/year plus scoped integration | Embed verified execution in another product. See the [OpenAdapt Execute private-pilot guide](oem-brief.md). |
+
+These ranges are typical, not quotes. Your proposal sets the fee for your
+workflow.
 
 The Workflow Qualification Sprint comes first. A successful qualification can
 move to a supervised pilot and then to production. The sprint remains paid when
@@ -39,8 +59,6 @@ the evidence supports a "do not automate" decision.
 
 These documents follow the same rules as the public site:
 
-- Customer results name the workflow and the result actually reported. See the
-  [RVU audit customer case](https://openadapt.ai/customers/rvu-audit-heart-care).
 - No claimed certifications. SOC 2 status is stated plainly in the
   [security packet](security-packet.md).
 - Bounded evidence stays bounded. Qualification evidence for one workflow,

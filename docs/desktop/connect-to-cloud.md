@@ -23,9 +23,9 @@ a recording → see it in the dashboard.
     [the hosted option](../guides/hosted.md).
 
 !!! info "Hosted subscription"
-    OpenAdapt Hosted is a public $500/month subscription for approved browser
+    OpenAdapt Hosted is a public $29/month subscription for approved browser
     workflows. Start at the
-    [Cloud plan](https://openadapt.ai/pricing#cloud-preview), then use the same
+    [Hosted plan](https://openadapt.ai/pricing#hosted), then use the same
     workspace and ingest-token mechanism below.
 
 ## 1. Create or sign in to your workspace

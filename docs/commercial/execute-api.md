@@ -34,10 +34,12 @@ doesn't catch it can't be accepted.
 
 ## Attended operation
 
-A person stays the legal actor. A Seal is not a physician signature.
-Consequential writes pause at `decision_required` so an authorized operator
-can finish the signed task on phone or desktop. OpenAdapt does not type a
-person's password, reuse a person's login, or share a service account.
+A person stays the legal actor. A Seal is not a physician signature. When the
+runner can't prove a required condition, the run pauses at `decision_required`
+so an authorized operator can finish the signed task on phone or desktop. In
+early access, a person reviews every entry before it is saved. That's how we
+run early-access work today; Execute doesn't enforce it yet. OpenAdapt does not
+type a person's password, reuse a person's login, or share a service account.
 
 ## Choose where execution runs
 

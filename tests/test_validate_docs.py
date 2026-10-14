@@ -10,6 +10,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "scripts
 from validate_docs import (
     check_empty_pages,
     check_product_docs_contract,
+    check_retired_public_claims,
     check_retired_redirects,
     check_train_path_not_current_product,
 )
@@ -58,8 +59,8 @@ def test_check_empty_pages_nested(tmp_path):
 def _write_contract_docs(root):
     pages = {
         "index.md": (
-            "# Verified last-mile execution for agents\n\nThe default reader "
-            "is the calling agent. "
+            "# Take the last manual step off your team\n\n"
+            "[Evaluate](evaluate/index.md). Connect the calling agent. "
             "[Production status](reference/production-lifecycle.md)"
         ),
         "ecosystem/index.md": (
@@ -97,7 +98,7 @@ def _write_contract_docs(root):
         ),
         "get-started/what-works-today.md": (
             "# Qualification evidence\n\n## Integrated product matrix\n\n"
-            "Hosted execution is a Supported / public offer at $500/month. "
+            "Hosted execution is a Supported / public offer at $29/month. "
             "Hosted browser recorder evidence is bounded on `openadapt-flow` 1.8.0. "
             "Authenticated live health proves service identity. Three production "
             "pre-payment trials passed; the first genuine customer transaction "
@@ -134,6 +135,11 @@ def _write_contract_docs(root):
             "---\nredirect_to: /ecosystem/\n---\n\n"
             "# OpenAdapt package documentation moved\n\n"
             "`pip install openadapt`"
+        ),
+        "evaluate/what-you-see.md": (
+            "# What you see and control\n\n"
+            "Stopped before saving is HALTED_BEFORE_EFFECT. Check the record is "
+            "RECONCILIATION_REQUIRED. Didn't finish is FAILED_PLATFORM."
         ),
     }
     for relative_path, content in pages.items():
@@ -382,3 +388,64 @@ def test_retired_redirect_missing_file_is_an_issue(tmp_path):
         in issue
         for issue in issues
     )
+
+
+def test_retired_public_claims_are_flagged(tmp_path):
+    """A corrected price, anchor, or statistic must not come back."""
+    (tmp_path / "commercial").mkdir()
+    (tmp_path / "commercial" / "index.md").write_text(
+        "# Offers\n\nEvery price and claim matches the pricing page. "
+        "OpenAdapt Cloud is $500.00/month."
+    )
+    (tmp_path / "index.md").write_text(
+        "# Home\n\n[Demo](https://openadapt.ai/#demo). "
+        "A screen check accepted 54 of 90 wrong results."
+    )
+    (tmp_path / "llms.txt").write_text("Hosted: $500/month")
+    (tmp_path / "evaluate").mkdir()
+    (tmp_path / "evaluate" / "example.md").write_text(
+        "# Example\n\n[Case](https://openadapt.ai/customers/example)."
+    )
+
+    issues = check_retired_public_claims(docs_dir=tmp_path)
+
+    joined = "\n".join(issues)
+    assert "commercial/index.md: 'Every price and claim matches'" in joined
+    assert "commercial/index.md: '$500.00/month'" in joined
+    assert "index.md: 'openadapt.ai/#demo'" in joined
+    assert "index.md: '54 of 90 wrong'" in joined
+    assert "llms.txt: '$500/month'" in joined
+    assert "evaluate/example.md: 'openadapt.ai/customers/'" in joined
+
+
+def test_retired_public_claims_allow_generated_history(tmp_path):
+    """Generated history pages may quote a retired claim."""
+    (tmp_path / "changelog.md").write_text("# Changelog\n\nCloud moved off $500/month.")
+    (tmp_path / "whats-new.md").write_text("# What's new\n\nWas $500.00/month.")
+    (tmp_path / "index.md").write_text("# Home\n\nHosted is $29/month.")
+
+    assert check_retired_public_claims(docs_dir=tmp_path) == []
+
+
+def test_live_docs_carry_no_retired_public_claim():
+    assert check_retired_public_claims() == []
+
+
+def test_product_docs_contract_requires_outcome_derived_results(tmp_path):
+    """The Evaluate results table must keep its transaction-outcome mapping."""
+    docs_dir = tmp_path / "docs"
+    pages = _write_contract_docs(docs_dir)
+    (docs_dir / "evaluate/what-you-see.md").write_text(
+        "# What you see and control\n\nStopped for review is HALTED."
+    )
+    mkdocs_file = tmp_path / "mkdocs.yml"
+    mkdocs_file.write_text(
+        "nav:\n  - Reference:\n"
+        + "".join(f"    - {path}\n" for path in pages)
+        + "    - Package and repository lifecycle: ecosystem/index.md\n"
+    )
+
+    issues = check_product_docs_contract(docs_dir, mkdocs_file)
+
+    assert any("RECONCILIATION_REQUIRED" in issue for issue in issues)
+    assert any("HALTED_BEFORE_EFFECT" in issue for issue in issues)

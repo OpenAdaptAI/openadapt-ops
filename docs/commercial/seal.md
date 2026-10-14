@@ -54,10 +54,14 @@ A Seal that points at a screenshot hash is a liability. Do not mint production
 ## Attended and unattended operation
 
 Attended is the mode available now. A person is already signed in to the
-target application and the runner acts inside that session. A consequential
-write pauses at `decision_required`. The operator answers from the local
-console or the authenticated phone surface. The runner then reacquires focus,
-a fresh observation, identity, and the target before it continues.
+target application and the runner acts inside that session. When the runner
+can't prove a required condition, the run pauses at `decision_required`. The
+operator answers from the local console or the authenticated phone surface.
+The runner then reacquires focus, a fresh observation, identity, and the
+target before it continues.
+
+In early access, a person reviews every entry before it is saved. That's how
+we run early-access work today; the runtime doesn't enforce it yet.
 
 That person stays the legal actor. A Seal is not a physician signature.
 

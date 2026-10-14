@@ -1,61 +1,64 @@
 ---
 title: OpenAdapt documentation
 description: >-
-  Verified last-mile execution for agents. Compile a demonstration into a
-  program an agent can invoke. Healthy runs make no model calls.
+  OpenAdapt takes the last manual step off your team. It enters approved
+  information into the systems you already use and checks that it saved. When
+  something doesn't match, it stops and asks a person instead of guessing.
 hide:
   - toc
 ---
 
-# Verified last-mile execution for agents
+# Take the last manual step off your team
 
 <p class="oa-lede">
-Compile a demonstration into a program an agent can invoke. Healthy runs make
-no model calls. Uncertainty escalates. Humans audit. Your chat calls OpenAdapt,
-which runs the clicks on this computer.
+OpenAdapt enters approved information into the systems you already use, such
+as EMRs, payer portals, and desktop and Citrix apps, and checks that it saved.
+When something doesn't match, it stops and asks a person instead of guessing.
 </p>
 
-[Install OpenAdapt](get-started/index.md){ .md-button .md-button--primary }
-[See how the compiler works](concepts/demonstration-compiler.md){ .md-button }
-[Author a workflow](get-started/first-workflow.md){ .md-button }
+<div class="grid cards" markdown>
 
-!!! info "What the calling agent may do / must not do"
-    **May:** bind declared parameters, invoke a compiled program, read
-    `VERIFIED` / `HALTED` / `RECONCILIATION_REQUIRED`, supply a missing
-    declared parameter, retry a retryable transport failure, escalate.
+-   [__Evaluate it for one workflow (no install)__](evaluate/index.md)
 
-    **Must not:** summarize halt as success, resolve an identity or effect
-    contradiction, teach by emitting guessed clicks, or be the sole source of
-    a production demonstration.
+    See what changes in your team's day, what you control, where your data
+    stays, and how a first project runs, in plain language.
 
-    Machine contract: [agents.txt](agents.txt). Outcome vocab:
-    [Run outcomes](reference/run-outcomes.md).
+-   [__Install and run it yourself__](get-started/index.md)
 
----
+    The engine is free and open source (MIT). Install the Desktop app, or run
+    `pip install openadapt` with Python 3.10 to 3.12, and try the tutorial on
+    your own computer.
 
-## Where OpenAdapt fits
+</div>
 
-OpenAdapt is the governed last mile an agent calls when the next write has no
-API. A person or a local agent they watch demonstrates. A named human
-admits the program. The calling agent operates it. The human returns for
-identity, effect, and judgment halt, then samples seals.
-
-A strong first workflow has these traits:
-
-- A person or a local agent they watch can demonstrate the task from start to finish.
-- The inputs are mostly structured and the business intent stays stable.
-- The application has no practical write API for the required step.
-- A wrong action has an operational, financial, or compliance cost.
-- Another system, account, or session can check the result.
-- The work repeats often enough to justify qualification.
-
-OpenAdapt supports automation teams, BPOs, service providers, and software
-companies that operate browser, native desktop, RDP, Citrix, or other virtual
-desktop applications. The daily user is the agent those teams already run.
+[Watch a recorded run on OpenEMR with synthetic data](https://app.openadapt.ai/demo){ .md-button }
 
 ---
 
-## What the compiler produces
+## What happens in one run
+
+1. Someone on your team does the task once while OpenAdapt records it.
+2. OpenAdapt turns the recording into a fixed set of steps. Your team tests
+   it on your own cases before it handles real work.
+3. For each item, it opens the record, checks that it's the right patient or
+   account, and enters the approved information.
+4. It reads the saved record back through a second path, such as a report, an
+   API, or a read-only login, and compares it with what it meant to enter.
+5. If everything matches, the item is done and checked, and you get a receipt.
+   If something doesn't match, it stops and asks a person.
+
+A normal run makes no AI model calls. For work with patient data, your screens
+and records stay on a computer you control. Read
+[Security and where data stays](evaluate/security.md) for the details, or the
+[glossary](evaluate/glossary.md) for the terms the technical pages use.
+
+---
+
+## For developers, IT, and AI agent teams
+
+The rest of this page uses the technical terms. OpenAdapt compiles a
+demonstration into a program that a person or an agent can invoke. Healthy runs
+make no model calls. Uncertainty escalates to a person.
 
 <div class="grid cards" markdown>
 
@@ -84,24 +87,6 @@ desktop applications. The daily user is the agent those teams already run.
     [Run outcomes](reference/run-outcomes.md)
 
 </div>
-
----
-
-## How one workflow runs
-
-```mermaid
-flowchart LR
-    A([Author]) --> B[[Compile]]
-    B --> C[[Qualify]]
-    C --> D[[Run]]
-    D --> E{Result verified?}
-    E -->|yes| F([VERIFIED])
-    E -->|no or uncertain| G([HALTED + report])
-    D -->|interface changed| H[[Re-resolve from evidence]]
-    H -->|resolved| D
-    H -->|repair needed| I[[Review repair]]
-    I --> C
-```
 
 The healthy path follows the approved program with no generative-model API
 calls. When the interface changes, OpenAdapt first uses the evidence retained
@@ -147,7 +132,7 @@ declared verifier, run counts, failure categories, and limits for each claim.
 The visual demo helps you understand a run. The result verifier and retained
 report determine its outcome.
 
-[Watch the real-application demo](https://openadapt.ai/#demo){ .md-button .md-button--primary }
+[Watch the real-application demo](https://app.openadapt.ai/demo){ .md-button .md-button--primary }
 [Review qualification evidence](get-started/what-works-today.md){ .md-button }
 [Read the benchmark methods](https://github.com/OpenAdaptAI/openadapt-flow/tree/main/benchmark){ .md-button }
 
@@ -155,9 +140,39 @@ report determine its outcome.
 
 ---
 
+## Connect an AI agent
+
+OpenAdapt is the governed last mile an agent calls when the next write has no
+API. A person or a local agent they watch demonstrates. A named human admits
+the program. The calling agent operates it. The human returns for identity,
+effect, and judgment halts, then samples seals.
+
+OpenAdapt supports automation teams, BPOs, service providers, and software
+companies that operate browser, native desktop, RDP, Citrix, or other virtual
+desktop applications.
+
+!!! info "What the calling agent may do / must not do"
+    **May:** bind declared parameters, invoke a compiled program, read
+    `VERIFIED` / `HALTED` / `RECONCILIATION_REQUIRED`, supply a missing
+    declared parameter, retry a retryable transport failure, escalate.
+
+    **Must not:** summarize halt as success, resolve an identity or effect
+    contradiction, teach by emitting guessed clicks, or be the sole source of
+    a production demonstration.
+
+    Machine contract: [agents.txt](agents.txt). Outcome vocab:
+    [Run outcomes](reference/run-outcomes.md).
+
+---
+
 ## Choose your next step
 
 <div class="grid cards" markdown>
+
+-   [__Evaluate one workflow__](evaluate/index.md)
+
+    What changes for your team, four worked examples, and how a first project
+    runs. No install needed.
 
 -   [__Install OpenAdapt__](get-started/index.md)
 
@@ -167,16 +182,10 @@ report determine its outcome.
 
     A person or a local agent they watch records one browser workflow.
     A named human admits the compiled program and inspects the report.
-    Authority, not daily operator.
 
 -   [__Prepare a production workflow__](guides/qualify-a-workflow.md)
 
     Define the identities, results, failure cases, policy, and deployment
     boundary for one exact workflow.
-
--   [__Review the commercial offer__](commercial/qualification-sprint.md)
-
-    See the scope, inputs, evidence, and deliverables for a paid Workflow
-    Qualification Sprint.
 
 </div>
