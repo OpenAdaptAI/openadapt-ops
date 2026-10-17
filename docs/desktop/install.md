@@ -16,7 +16,14 @@ you explicitly push it to a [cloud workspace](connect-to-cloud.md).
     The desktop app and the [`openadapt flow` CLI](../reference/cli.md) drive the
     same engine; the app is a graphical front end over the same compiler and
     governed runtime. To stay in a terminal, start with the
-    [five-minute tour](../get-started/index.md) and skip this page.
+    [command-line track](../get-started/cli.md) and skip this page.
+
+!!! warning "Grant the OS permissions before your first recording"
+    On macOS, the app needs Screen Recording, Accessibility, and Input
+    Monitoring, and a restart after you grant Screen Recording. Without them,
+    recordings come out blank with no error. On Windows, an app that runs as
+    administrator needs OpenAdapt to run as administrator too. The steps are in
+    [Grant OS permissions](#2-grant-os-permissions).
 
 ## 1. Download and install
 

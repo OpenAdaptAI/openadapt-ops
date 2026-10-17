@@ -100,3 +100,7 @@ A halt becomes a bounded question in front of a person, answerable from a phone
 on your own network. What that person's answer does, and what it does not
 authorize, is the
 [attended decision path](halt-learn-loop.md#where-a-halt-goes-the-attended-decision).
+
+## Try it
+
+- [Arm identity before consequential actions](../guides/qualify-a-workflow.md#arm-identity-before-consequential-actions): during qualification.

@@ -174,3 +174,7 @@ versioned captures rather than depending on a public demo route.
 - [OpenAdapt Flow](https://github.com/OpenAdaptAI/openadapt-flow) for the
   local runtime that validates the decision contract and performs the later
   revalidation.
+
+## Try it
+
+- [Qualify a workflow](../guides/qualify-a-workflow.md): a business decision is reviewed with the rest of the workflow during qualification.

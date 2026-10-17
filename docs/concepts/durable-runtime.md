@@ -113,3 +113,7 @@ engine re-verifies live state, is the
 See the [Run a deployment](../guides/run-a-deployment.md) guide for a worked
 durable run, and the [CLI reference](../reference/cli.md#resume) for `resume` /
 `approve` exit codes.
+
+## Try it
+
+- [Durable runs pause and resume](../guides/run-a-deployment.md#durable-runs-pause-and-resume): a worked durable run.

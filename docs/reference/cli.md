@@ -149,7 +149,7 @@ openadapt flow record --backend web --url https://your.app --out rec
 ## demo-record
 
 Serve the bundled sample app locally and record the canonical triage demo. Good
-for the [five-minute tour](../get-started/index.md).
+for the [command-line track](../get-started/cli.md).
 
 ```bash
 openadapt flow demo-record --out rec
@@ -169,7 +169,7 @@ openadapt flow demo-record --out rec
 Run the bundled tutorial end to end against a real local system of record:
 record, compile, certify, replay under governance, and check the write out of
 band. It then writes a shareable local receipt. See
-[Get started](../get-started/index.md).
+[Get started on the command line](../get-started/cli.md).
 
 ```bash
 openadapt flow tutorial

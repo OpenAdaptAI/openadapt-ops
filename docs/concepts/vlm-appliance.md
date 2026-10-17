@@ -61,3 +61,7 @@ designed to run on your infrastructure with no external model calls or payload
 persistence. Enforce and test its network and retention policy for the actual
 deployment; architecture alone does not prove either property. See
 [Deploy on-prem](../guides/deploy-on-prem.md).
+
+## Try it
+
+- [Deploy on-prem](../guides/deploy-on-prem.md): run the appliance inside your boundary.

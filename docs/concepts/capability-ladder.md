@@ -53,3 +53,8 @@ browser can, in principle, retarget to a desktop or RDP backend by recompiling
 the same semantic transitions to whatever rung that surface supports, each
 satisfying the same contract. The [workflow-program IR](workflow-ir.md) is the
 schema that makes one meaning, many implementations, expressible.
+
+## Try it
+
+- [Record your own app](../guides/record-your-app.md): record with the structural evidence the ladder uses.
+- [Troubleshooting over-halting](../guides/troubleshooting.md#it-halts-too-much-over-halting-on-citrix-pixel-only): when a pixel-only surface halts too often.

@@ -158,3 +158,7 @@ These results qualify the substrate mechanisms for their named tasks. The
 commits, environments, oracles, refusal checks, and failure taxonomies. Backend
 expansion does not require a different bundle or safety model: the same ladder
 and gates apply while each workflow is qualified in its real environment.
+
+## Try it
+
+- [Recording on Windows, RDP and Citrix](../guides/record-windows-rdp-citrix.md): show a task in a native or remote app.

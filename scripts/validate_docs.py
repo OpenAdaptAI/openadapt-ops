@@ -19,14 +19,25 @@ REQUIRED_PUBLIC_PAGES = {
         "calling agent",
     ),
     "ecosystem/index.md": ("data-openadapt-production-target",),
+    # Get started is three tracks. The index routes to them; each track keeps
+    # the markers for its own entry point.
     "get-started/index.md": (
+        "cli.md",
+        "agent-mcp.md",
+        "desktop/install.md",
+        "tutorial",
+        "first-workflow.md",
+    ),
+    "get-started/cli.md": (
         "pip install",
         "openadapt flow tutorial",
         "--break-it",
-        "tutorial",
-        "first-workflow.md",
+        "RECONCILIATION_REQUIRED",
+    ),
+    "get-started/agent-mcp.md": (
         "claude mcp add openadapt",
         "Never summarize halt as success",
+        "not_sure_if_saved",
     ),
     "get-started/what-works-today.md": (
         "Qualification evidence",
@@ -287,9 +298,10 @@ def check_product_docs_contract(docs_dir=None, mkdocs_file=None):
     nav_config = yaml.safe_load(nav_section) or {}
     # The package/repository catalog must stay nested under the reference-style
     # engineering section rather than promoted to a package-first top level. The
-    # five-section IA renamed that section "Internals"; accept either name so the
-    # guard tracks intent, not a specific label.
-    catalog_section_names = {"Reference", "Internals"}
+    # five-section IA renamed that section "Internals", and the Diataxis IA
+    # moved it to "Contributing & research"; accept any of these so the guard
+    # tracks intent (not a package-first top level), not a specific label.
+    catalog_section_names = {"Reference", "Internals", "Contributing & research"}
     reference_entries = [
         item
         for entry in nav_config.get("nav", [])
@@ -306,7 +318,7 @@ def check_product_docs_contract(docs_dir=None, mkdocs_file=None):
     if not catalog_is_under_reference:
         issues.append(
             "Package and repository lifecycle catalog must remain under the "
-            "Reference/Internals section"
+            "Reference, Internals, or Contributing & research section"
         )
 
     public_text = "\n".join(

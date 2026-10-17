@@ -11,11 +11,21 @@ Run outcomes: https://docs.openadapt.ai/reference/run-outcomes/
 
 ## How to call
 
+Walkthrough for agents: https://docs.openadapt.ai/get-started/agent-mcp/
+
 ```
-claude mcp add openadapt -- \
-  uvx --from 'openadapt-agent[tutorial]' openadapt-agent \
-  serve --allow-run
+claude mcp add openadapt -- uvx --python 3.12 openadapt-agent serve
 ```
+
+That is the sandbox. To have the real engine drive the synthetic MockMed app:
+
+```
+claude mcp add openadapt -- uvx --python 3.12 --from 'openadapt-agent[tutorial]' openadapt-agent serve
+```
+
+Your own compiled workflows: `openadapt-agent serve --mode production --bundles DIR --runs-dir RUNS`. `--allow-run` is the older form of `--mode production`.
+
+The engine on its own:
 
 ```
 python -m pip install --upgrade openadapt
@@ -23,13 +33,15 @@ openadapt flow tutorial
 openadapt quickstart --break-it
 ```
 
-`--allow-run` is an explicit opt-in. Never summarize halt as success.
+Never summarize halt as success.
 
 ## Outcome vocabulary
 
-`VERIFIED` | `HALTED` | `RECONCILIATION_REQUIRED` | `REFUSED` | `TIMEOUT` | `ERROR`
+MCP `outcome`: `done` | `needs_review` | `not_sure_if_saved` | `did_not_run`, and `running` while a run is in progress. Branch on `outcome` and `safe_to_retry`.
 
-`VERIFIED` means the independent check passed. Halt is not success. If delivery is uncertain after an action may have been dispatched, the outcome is `RECONCILIATION_REQUIRED`. Do not blindly retry.
+Engine `transaction_outcome`: `VERIFIED` | `HALTED_BEFORE_EFFECT` | `RECONCILIATION_REQUIRED` | `REJECTED_POLICY` | `CANCELED` | `FAILED_PLATFORM` | `COMPLETED_UNVERIFIED` | `ROLLED_BACK`. Engine `execution_outcome`: `VERIFIED` | `COMPLETED_UNVERIFIED` | `HALTED` | `FAILED` | `ROLLED_BACK`.
+
+`VERIFIED` (`done`) means the declared result checks passed through a read independent of the acting screen. Halt is not success. If delivery is uncertain after an action may have been dispatched, the outcome is `RECONCILIATION_REQUIRED` (`not_sure_if_saved`). Do not retry it; a person checks the record.
 
 Read `report.json` and the seal. `REPORT.md` is for humans.
 

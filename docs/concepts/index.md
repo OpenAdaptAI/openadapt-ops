@@ -78,16 +78,12 @@ jump to what you need.
     A parent receipt over independently admitted capabilities. Handoffs copy
     effect facts. Compose sequences recordings; process points at admissions.
 
--   [__Backends: where it runs__](backends.md)
-
-    Browser (Playwright), native Windows (UIA), native macOS, native Linux
-    (AT-SPI), RDP, and Citrix/VDI use one backend protocol. Each surface uses
-    the same bundle, identity, result, and policy contracts. Each workflow is
-    qualified in its real environment.
-
 -   [__The on-prem VLM appliance__](vlm-appliance.md)
 
     Optional local grounding and identity. When deployed on-prem, observations
     remain inside that declared customer boundary.
 
 </div>
+
+Each backend's status is in [Backends, where it runs](backends.md), under
+Reference.

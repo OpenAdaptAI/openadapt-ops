@@ -79,3 +79,8 @@ The IR is how OpenAdapt gets from "replay this one demonstration safely" to
 "run this program safely across the variation the real world throws at it." How
 a program is *recovered* from more than one demonstration is
 [multi-trace induction](multi-trace-induction.md).
+
+## Try it
+
+- [Run a workflow for each record](../guides/data-driven-loops.md): author a loop over a worklist.
+- [Induce a program from multiple traces](../guides/induce-a-program.md): recover branches and parameters from several demonstrations.

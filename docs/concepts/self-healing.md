@@ -96,3 +96,8 @@ rescue a step whose **effect** is wrong: a duplicate write or partial save
 shows unchanged pixels, so there is nothing to heal. That is the job of
 [effect verification](effect-verification.md). Clicking the wrong record is
 the job of [the identity gate](identity-gate.md). They stay separate.
+
+## Try it
+
+- [`repair` in the CLI reference](../reference/cli.md#repair): review a proposed repair.
+- [Troubleshooting](../guides/troubleshooting.md): first-week failures and their causes.

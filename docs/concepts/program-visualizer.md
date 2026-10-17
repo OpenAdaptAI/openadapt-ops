@@ -286,3 +286,8 @@ Before you approve a program or a run view, check these items:
 - A repair appears as a candidate version with a review path.
 - A terminal graph state does not appear as a verified business outcome.
 - A remote or public view contains only fields allowed by its projection.
+
+## Try it
+
+- [Review the compiled graph](../guides/qualify-a-workflow.md#review-the-compiled-graph-and-every-action): as the first step of qualification.
+- [`visualize` in the CLI reference](../reference/cli.md#visualize): every output format and flag.

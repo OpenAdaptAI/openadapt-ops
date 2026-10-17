@@ -122,11 +122,16 @@ extra:
     - icon: fontawesome/solid/rss
       link: https://blog.openadapt.ai
 
-# Top-level information architecture: Evaluate (plain-language business path,
-# no install), then the five-section review: Start, Build, Operate, Security,
-# Internals. Pages keep their existing
-# on-disk paths (get-started/, concepts/, guides/, reference/, desktop/,
-# ecosystem/); only their grouping and cross-links change.
+# Information architecture (Diataxis). Evaluate is the plain-language business
+# path, with no install. Get started has three separate tracks: the command
+# line, the Desktop app, and an agent over MCP. Concepts explain, How-to guides
+# instruct, and Reference describes. Security & enterprise holds the review,
+# data-handling, and commercial pages. Contributing & research keeps
+# contributor and research pages out of the customer sections.
+#
+# Every page appears in exactly one section. Pages keep their on-disk paths, so
+# no published URL changes; only their grouping does. A page that does move
+# leaves a `redirect_to` stub at its old path (see overrides/main.html).
 #
 # Guessed-path alias. Built so /start/ redirects; keep it off the nav.
 not_in_nav: |
@@ -140,85 +145,96 @@ nav:
     - Security and where data stays: evaluate/security.md
     - How a first project works: evaluate/first-project.md
     - Plain-language glossary: evaluate/glossary.md
-  - Start:
+  - Get started:
     - get-started/index.md
+    - Command line: get-started/cli.md
+    - Desktop app: desktop/install.md
+    - Connect an agent over MCP: get-started/agent-mcp.md
     - Author a workflow: get-started/first-workflow.md
     - What you get: get-started/what-you-get.md
-    - Desktop application: desktop/install.md
-  - Build:
+  - Concepts:
     - concepts/index.md
-    - All how-to guides: guides/index.md
-    - The demonstration compiler: concepts/demonstration-compiler.md
-    - The workflow-program IR: concepts/workflow-ir.md
-    - Record your own app: guides/record-your-app.md
-    - Recording on Windows, RDP and Citrix: guides/record-windows-rdp-citrix.md
-    - Induce a program from multiple traces: guides/induce-a-program.md
-    - Multi-trace induction: concepts/multi-trace-induction.md
-    - Run a workflow for each record: guides/data-driven-loops.md
-    - Visualize a compiled program: concepts/program-visualizer.md
-    - A task that spans two apps: guides/compose-multi-application.md
-    - Parameters and secrets: guides/parameters-and-secrets.md
-    - The capability ladder: concepts/capability-ladder.md
-    - Write and enforce a policy: guides/policy-and-certification.md
-    - Qualify a workflow: guides/qualify-a-workflow.md
-    - Process contracts: concepts/process-contract.md
-    - Policy and certify: concepts/policy-and-certify.md
-    - Effect verification: concepts/effect-verification.md
-    - The identity gate: concepts/identity-gate.md
-    - Qualification-owned entity language: concepts/qualification-owned-entity-language.md
-  - Operate:
-    - Run a deployment: guides/run-a-deployment.md
-    - Read and audit run reports: guides/run-reports.md
-    - Run outcomes and halt reasons: reference/run-outcomes.md
-    - Human judgment in a workflow: concepts/human-judgment.md
-    - Workflow catalog and halt map: guides/workflow-catalog.md
-    - Attend a paused run and teach a correction: concepts/halt-learn-loop.md
-    - Governed self-healing: concepts/self-healing.md
-    - Durable runtime: concepts/durable-runtime.md
-    - Deploy on-prem: guides/deploy-on-prem.md
-    - The on-prem VLM appliance: concepts/vlm-appliance.md
-    - The hosted option: guides/hosted.md
-    - Connect to a cloud workspace: desktop/connect-to-cloud.md
-    - Troubleshooting: guides/troubleshooting.md
-  - Security:
-    - Security and deployment review: guides/security-review.md
-    - Account security and privileged access: guides/account-security.md
-    - Qualification evidence: get-started/what-works-today.md
-    - Regulated execution: concepts/regulated-execution.md
-    - Settings and policy governance: concepts/settings-governance.md
-    - Security and data handling: guides/security-and-data-handling.md
-    - PHI handling in one page: commercial/phi-handling.md
-    - Vulnerability disclosure: commercial/vulnerability-disclosure.md
-  - Commercial:
-    - commercial/index.md
-    - Qualification Sprint: commercial/qualification-sprint.md
-    - Scope and prerequisite checklist: commercial/scope-checklist.md
-    - Qualification report outline: commercial/qualification-report-outline.md
-    - Acceptance matrix template: commercial/acceptance-matrix.md
-    - Security packet: commercial/security-packet.md
-    - Subprocessors and data retention: commercial/subprocessors.md
-    - Deployment boundaries: commercial/deployment-boundaries.md
-    - External Citrix zero-install brief: commercial/citrix-external-brief.md
-    - The Seal: commercial/seal.md
-    - Seal as an RL reward: commercial/seal-reward.md
-    - OpenAdapt Execute private-pilot guide: commercial/oem-brief.md
-    - Integrate OpenAdapt Execute: commercial/execute-api.md
-    - Procurement FAQ: commercial/procurement-faq.md
-  - Internals:
-    - The substrate model: concepts/substrate-model.md
-    - The deployment matrix: concepts/deployment-matrix.md
-    - Backends, where it runs: concepts/backends.md
+    - How a workflow is built:
+      - The demonstration compiler: concepts/demonstration-compiler.md
+      - The workflow-program IR: concepts/workflow-ir.md
+      - Multi-trace induction: concepts/multi-trace-induction.md
+      - Read a compiled program: concepts/program-visualizer.md
+      - Process contracts: concepts/process-contract.md
+      - The capability ladder: concepts/capability-ladder.md
+    - How a run is checked:
+      - The identity gate: concepts/identity-gate.md
+      - Effect verification: concepts/effect-verification.md
+      - Policy and certify: concepts/policy-and-certify.md
+      - Regulated execution: concepts/regulated-execution.md
+      - Settings and policy governance: concepts/settings-governance.md
+      - Qualification-owned entity language: concepts/qualification-owned-entity-language.md
+    - When a run stops:
+      - Human judgment in a workflow: concepts/human-judgment.md
+      - Attended decisions and the halt-learn loop: concepts/halt-learn-loop.md
+      - Governed self-healing: concepts/self-healing.md
+      - Durable runtime: concepts/durable-runtime.md
+    - Where it runs:
+      - The substrate model: concepts/substrate-model.md
+      - The deployment matrix: concepts/deployment-matrix.md
+      - The on-prem VLM appliance: concepts/vlm-appliance.md
+  - How-to guides:
+    - guides/index.md
+    - Record and compile:
+      - Record your own app: guides/record-your-app.md
+      - Recording on Windows, RDP and Citrix: guides/record-windows-rdp-citrix.md
+      - Induce a program from multiple traces: guides/induce-a-program.md
+      - Run a workflow for each record: guides/data-driven-loops.md
+      - A task that spans two apps: guides/compose-multi-application.md
+      - Parameters and secrets: guides/parameters-and-secrets.md
+    - Qualify and certify:
+      - Write and enforce a policy: guides/policy-and-certification.md
+      - Qualify a workflow: guides/qualify-a-workflow.md
+    - Run and operate:
+      - Run a deployment: guides/run-a-deployment.md
+      - Read and audit run reports: guides/run-reports.md
+      - Workflow catalog and halt map: guides/workflow-catalog.md
+      - Deploy on-prem: guides/deploy-on-prem.md
+      - The hosted option: guides/hosted.md
+      - Connect to a cloud workspace: desktop/connect-to-cloud.md
+      - Troubleshooting: guides/troubleshooting.md
+  - Reference:
     - reference/index.md
     - openadapt flow CLI: reference/cli.md
-    - Versions and compatibility: reference/compatibility.md
-    - Deployment configuration: reference/deployment-config.md
-    - Production admission: reference/production-lifecycle.md
+    - Run outcomes and halt reasons: reference/run-outcomes.md
     - The bundle format: reference/bundle-format.md
+    - Deployment configuration: reference/deployment-config.md
     - Configuration and env vars: reference/configuration.md
+    - Backends, where it runs: concepts/backends.md
+    - Integrate OpenAdapt Execute: commercial/execute-api.md
+    - Versions and compatibility: reference/compatibility.md
     - Glossary: reference/glossary.md
-    - Product components and release admission: ecosystem/index.md
-    - Documentation source of truth: reference/documentation-governance.md
     - What's New: whats-new.md
     - Changelog: changelog.md
+  - Security & enterprise:
+    - Security and deployment review: guides/security-review.md
+    - Security and data handling: guides/security-and-data-handling.md
+    - Account security and privileged access: guides/account-security.md
+    - PHI handling in one page: commercial/phi-handling.md
+    - Qualification evidence: get-started/what-works-today.md
+    - Production admission: reference/production-lifecycle.md
+    - Vulnerability disclosure: commercial/vulnerability-disclosure.md
+    - Commercial:
+      - commercial/index.md
+      - Qualification Sprint: commercial/qualification-sprint.md
+      - Scope and prerequisite checklist: commercial/scope-checklist.md
+      - Qualification report outline: commercial/qualification-report-outline.md
+      - Acceptance matrix template: commercial/acceptance-matrix.md
+      - Security packet: commercial/security-packet.md
+      - Subprocessors and data retention: commercial/subprocessors.md
+      - Deployment boundaries: commercial/deployment-boundaries.md
+      - External Citrix zero-install brief: commercial/citrix-external-brief.md
+      - The Seal: commercial/seal.md
+      - OpenAdapt Execute private-pilot guide: commercial/oem-brief.md
+      - Procurement FAQ: commercial/procurement-faq.md
+  - Contributing & research:
+    - contributing/index.md
+    - Product components and release admission: ecosystem/index.md
+    - Documentation source of truth: reference/documentation-governance.md
+    - Seal as an RL reward: commercial/seal-reward.md
   - Blog ↗: https://blog.openadapt.ai
   - OpenAdapt.ai ↗: https://openadapt.ai

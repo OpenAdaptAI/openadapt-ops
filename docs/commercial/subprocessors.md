@@ -54,28 +54,13 @@ failure signal (schema `openadapt.automation-failure-signal/v1`):
 
 ## Hosted retention and deletion
 
-The hosted service applies a **versioned, explicitly configured retention
-policy**; there is no implicit retention duration. The policy names its
-version and sets explicit windows for recordings, reports, and run metadata
-(run metadata is never retained shorter than reports), plus a backup recovery
-window and a maximum restore-drill age.
-
-Current behavior:
-
-- **Scheduled deletion is fail-closed.** Destructive scheduled retention
-  refuses to run without a recent receipt proving a complete database **and**
-  private object storage restore into an isolated scratch environment.
-- **Legal holds pause eligible deletion** for the held organization.
-- **Tenant erasure is organization-scoped** and produces an append-only,
-  PHI/PII-free receipt with identifiers, counts, and digests, never deleted
-  payloads.
-- The public [readiness endpoint](https://app.openadapt.ai/api/health/ready)
-  reports the configured retention component separately from the
-  destructive-operation gate.
-
-The concrete day windows are deployment configuration, reviewed with the
-policy version; request the current policy version and its windows directly
-rather than citing this page.
+The hosted service applies a versioned, explicitly configured retention policy
+with no implicit retention duration. Scheduled deletion is fail-closed until a
+complete restore drill has passed, legal holds pause deletion, and tenant
+erasure is organization-scoped with a PHI/PII-free receipt. The concrete day
+windows are deployment configuration: request the current policy version and
+its windows directly. The full description is in
+[Hosted retention, deletion, and recovery](../guides/security-and-data-handling.md#hosted-retention-deletion-and-recovery).
 
 ## Data-flow summary
 

@@ -16,93 +16,141 @@ as EMRs, payer portals, and desktop and Citrix apps, and checks that it saved.
 When something doesn't match, it stops and asks a person instead of guessing.
 </p>
 
+## What it is
+
+OpenAdapt is a demonstration compiler with a governed runtime. A person or an
+agent shows the task in the real app. OpenAdapt compiles one or more
+demonstrations into an inspectable program, and a person accepts it before it
+does real work. A person, Desktop, or an AI agent then runs that program. A
+normal run makes no AI model calls. The engine is open source under the MIT
+license.
+
+```mermaid
+flowchart LR
+    D["Demonstrate<br/>a person or an agent<br/>shows the task"]
+    C["Compile and certify<br/>a program a person<br/>reviews and admits"]
+    E["Execute and verify<br/>right-record check before typing,<br/>independent record check after saving"]
+    D --> C --> E
+    E -.->|"something doesn't match"| P["Stop and ask a person"]
+```
+
+`VERIFIED` means the declared result checks passed through a read that is
+independent of the acting screen. The strongest read goes to the system of
+record itself: its API, database, file export, or document. A separate
+read-only session of the app is weaker, because it reads through the same
+interface the run used. A "Saved" message on the acting screen doesn't count. [Effect verification](concepts/effect-verification.md)
+explains why.
+
+## Try it
+
+The bundled tutorial runs on a synthetic app on your computer. It needs
+Python 3.10 to 3.12, no account, and no app of your own.
+
+```bash
+python -m pip install --upgrade openadapt
+openadapt flow tutorial
+openadapt quickstart --break-it
+```
+
+The first run ends `VERIFIED` and writes a local receipt. The second shows a
+saved banner while the store rejects the write, and the run halts instead of
+reporting success. [Get started on the command line](get-started/cli.md) has
+the uv installer and what each run writes.
+
+## Choose your path
+
 <div class="grid cards" markdown>
 
--   [__Evaluate it for one workflow (no install)__](evaluate/index.md)
+-   [__Evaluate one workflow__](evaluate/index.md)
 
-    See what changes in your team's day, what you control, where your data
-    stays, and how a first project runs, in plain language.
+    For a business reader: what changes for your team, four worked examples,
+    and how a first project runs. No install.
 
--   [__Install and run it yourself__](get-started/index.md)
+-   [__Install and try it__](get-started/index.md)
 
-    The engine is free and open source (MIT). Install the Desktop app, or run
-    `uvx --python 3.12 openadapt flow tutorial` to try the tutorial on your own
-    computer.
+    Three tracks: the command line, the Desktop app, or an agent connected
+    over MCP. Each installs the same engine.
+
+-   [__Connect an AI agent__](get-started/agent-mcp.md)
+
+    Call a compiled workflow as one MCP tool and branch on its outcome.
+
+-   [__Review security__](guides/security-review.md)
+
+    For IT and security reviewers: execution boundaries, data flow,
+    encryption, release integrity, and a review checklist.
+
+-   [__Prepare a production workflow__](guides/qualify-a-workflow.md)
+
+    Bind identity and effect checks, run representative and fault cases,
+    certify, and admit one exact workflow version.
+
+-   [__Look something up__](reference/index.md)
+
+    The CLI, run outcomes, the bundle format, deployment configuration, and
+    the glossary.
 
 </div>
 
-[Watch a recorded run on OpenEMR with synthetic data](https://app.openadapt.ai/demo){ .md-button }
+## When it fits
 
----
+OpenAdapt fits a task when most of these are true:
 
-## What happens in one run
+- The team does it the same way many times a week.
+- What to enter is already decided, by a person, a form, or an AI agent.
+- The target app has no practical API for the write. It can be a web app, a
+  native Windows, macOS, or Linux app, or an app reached over RDP or Citrix.
+- A wrong entry costs money, time, or compliance trouble.
+- There's a second way to read the saved record, such as an API, a database,
+  a report, or a read-only login.
 
-1. A person or an agent shows the task while OpenAdapt records it.
-2. OpenAdapt turns the recording into a fixed set of steps. Your team tests
-   it on your own cases before it handles real work.
-3. For each item, it opens the record, checks that it's the right patient or
-   account, and enters the approved information.
-4. It reads the saved record back through a second path, such as a report, an
-   API, or a read-only login, and compares it with what it meant to enter.
-5. If everything matches, the item is done and checked, and you get a receipt.
-   If something doesn't match, it stops and asks a person.
+It doesn't fit when a direct API or batch interface can already make the
+change, when the result can't be checked and the risk doesn't allow a
+screen-only check, or when the task needs judgment that can't be reduced to
+checkable rules. [Qualification evidence](get-started/what-works-today.md)
+lists what has been tested on each surface and its limits, and the
+[Production admission](reference/production-lifecycle.md) page defines a
+qualified workflow.
 
-A normal run makes no AI model calls. For work with patient data, your screens
-and records stay on a computer you control. Read
-[Security and where data stays](evaluate/security.md) for the details, or the
-[glossary](evaluate/glossary.md) for the terms the technical pages use.
+## Who approves what
 
----
+A person admits each compiled program version before it handles real work, and
+reviews any proposed repair before it's promoted. Approval of individual items
+is a setting of the run, not a fixed rule:
 
-## For developers, IT, and AI agent teams
+- `each_item`, the default under the Standard and Regulated profiles: the run
+  waits before each save until a person approves it in Desktop.
+- `not_gated`: no per-item pause. It must be set explicitly, and the run report
+  records it. Cloud-dispatched runs use this mode.
+- `problems_only` asks a person only about items that fail a check. The engine
+  has it, but a customer can't turn it on yet.
 
-The rest of this page uses the technical terms. OpenAdapt compiles a
-demonstration into a program that a person or an agent can invoke. Healthy runs
-make no model calls. Uncertainty escalates to a person.
+Every run still stops and asks a person when an identity, result, or policy
+check fails. See [What you see and control](evaluate/what-you-see.md).
 
-<div class="grid cards" markdown>
+## The caller contract
 
--   __An inspectable program__
+A calling agent, Desktop, or a script reads one result per run. The plain label
+and the MCP `outcome` both come from the engine's `transaction_outcome`, which
+states what is known about the business write. The coarser
+`execution_outcome` (`VERIFIED`, `COMPLETED_UNVERIFIED`, `HALTED`, `FAILED`, or
+`ROLLED_BACK`) doesn't say on its own whether anything was written.
 
-    The compiler turns the demonstrated actions into explicit steps,
-    parameters, guards, and expected state changes. You can review the program
-    before it runs.
+| `transaction_outcome` | Label people see | MCP `outcome` | What the caller may do |
+|---|---|---|---|
+| `VERIFIED` | Done and checked | `done` | Mark the request complete. Don't send it again. |
+| `HALTED_BEFORE_EFFECT` | Stopped before saving | `needs_review` | Don't start the same work again. A person decides. |
+| `REJECTED_POLICY`, `CANCELED` | Stopped before saving | `did_not_run`, or `needs_review` while a person holds the run | Fix the cause. Resend only when `safe_to_retry` is true. |
+| `FAILED_PLATFORM` | Didn't finish | `did_not_run`, or `needs_review` while a person holds the run | Fix the setup. Resend only when `safe_to_retry` is true. |
+| `RECONCILIATION_REQUIRED`, `ROLLED_BACK` | Check the record | `not_sure_if_saved` | Never retry. A person checks the record. |
+| `COMPLETED_UNVERIFIED` | Finished, not checked | `not_sure_if_saved` | Don't treat it as success. Add a record check. |
 
-    [The demonstration compiler](concepts/demonstration-compiler.md)
-
--   __Evidence for each consequential step__
-
-    A step can carry structural selectors, accessibility data, visual anchors,
-    identity requirements, and a declared result check. The available evidence
-    depends on the application surface.
-
-    [The capability ladder](concepts/capability-ladder.md)
-
--   __A typed outcome and report__
-
-    `VERIFIED` means the declared result check passed. A run that cannot meet
-    its identity, result, policy, or state requirements stops and records the
-    reason.
-
-    [Run outcomes](reference/run-outcomes.md)
-
-</div>
-
-The healthy path follows the approved program with no generative-model API
-calls. When the interface changes, OpenAdapt first uses the evidence retained
-from the demonstration. A configured model can propose a repair when policy
-permits. The repaired version passes the same review and qualification gates
-before promotion.
-
-OpenAdapt separates action delivery from result verification. A save message
-on the acting screen does not prove that the intended record changed. A
-workflow can verify the result through an API, database, document store,
-read-only session, or persisted-state reacquisition.
-
-[Read about effect verification](concepts/effect-verification.md){ .md-button }
-[Read about identity checks](concepts/identity-gate.md){ .md-button }
-
----
+The calling agent may bind declared parameters, invoke a compiled program,
+supply a missing declared parameter, retry a retryable transport failure with
+the same request id, and escalate. It must not summarize a halt as success,
+resolve an identity or effect contradiction itself, or invent clicks to work
+around a stop. The machine contract is in [agents.txt](agents.txt), and every
+outcome and halt reason is in [Run outcomes](reference/run-outcomes.md).
 
 ## Where it runs
 
@@ -112,80 +160,10 @@ read-only session, or persisted-state reacquisition.
 | Windows, macOS, Linux | Local or customer-controlled | Native accessibility data plus retained visual evidence |
 | RDP, Citrix, VDI | Local or customer-controlled | Window-scoped pixels, keyboard, mouse, OCR, and visual anchors |
 
-Each workflow is qualified against its exact application, environment,
-identity rules, result verifier, and deployment boundary. The
-[qualification evidence](get-started/what-works-today.md) records the supported
-scope and its limits.
-
 Sensitive runtime observations stay inside the declared execution boundary.
-Only an approved, sanitized derivative can cross that boundary.
+Only an approved, sanitized derivative can cross it. See
+[the deployment matrix](concepts/deployment-matrix.md) and
+[Security and data handling](guides/security-and-data-handling.md).
 
-[Compare deployment options](concepts/deployment-matrix.md){ .md-button }
-[Review security and data handling](guides/security-and-data-handling.md){ .md-button }
-
----
-
-## Inspect the evidence
-
-The public references include the source demonstration, compiled replay,
-declared verifier, run counts, failure categories, and limits for each claim.
-The visual demo helps you understand a run. The result verifier and retained
-report determine its outcome.
-
-[Watch the real-application demo](https://app.openadapt.ai/demo){ .md-button .md-button--primary }
-[Review qualification evidence](get-started/what-works-today.md){ .md-button }
-[Read the benchmark methods](https://github.com/OpenAdaptAI/openadapt-flow/tree/main/benchmark){ .md-button }
-
+[Watch a recorded run on OpenEMR with synthetic data](https://app.openadapt.ai/demo){ .md-button }
 [Check the current Production status](reference/production-lifecycle.md){ .md-button }
-
----
-
-## Connect an AI agent
-
-OpenAdapt is the governed last mile an agent calls when the next write has no
-API. A person or a local agent they watch demonstrates. A named human admits
-the program. The calling agent operates it. The human returns for identity,
-effect, and judgment halts, then samples seals.
-
-OpenAdapt supports automation teams, BPOs, service providers, and software
-companies that operate browser, native desktop, RDP, Citrix, or other virtual
-desktop applications.
-
-!!! info "What the calling agent may do / must not do"
-    **May:** bind declared parameters, invoke a compiled program, read
-    `VERIFIED` / `HALTED` / `RECONCILIATION_REQUIRED`, supply a missing
-    declared parameter, retry a retryable transport failure, escalate.
-
-    **Must not:** summarize halt as success, resolve an identity or effect
-    contradiction, teach by emitting guessed clicks, or be the sole source of
-    a production demonstration.
-
-    Machine contract: [agents.txt](agents.txt). Outcome vocab:
-    [Run outcomes](reference/run-outcomes.md).
-
----
-
-## Choose your next step
-
-<div class="grid cards" markdown>
-
--   [__Evaluate one workflow__](evaluate/index.md)
-
-    What changes for your team, four worked examples, and how a first project
-    runs. No install needed.
-
--   [__Install OpenAdapt__](get-started/index.md)
-
-    Desktop or pip on this computer. Tutorial is optional.
-
--   [__Author a workflow__](get-started/first-workflow.md)
-
-    A person or a local agent they watch records one browser workflow.
-    A named human admits the compiled program and inspects the report.
-
--   [__Prepare a production workflow__](guides/qualify-a-workflow.md)
-
-    Define the identities, results, failure cases, policy, and deployment
-    boundary for one exact workflow.
-
-</div>

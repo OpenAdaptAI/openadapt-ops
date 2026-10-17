@@ -422,3 +422,8 @@ supplies the one thing a machine cannot (an observation about the world) and
 the engine keeps the rest: re-reading live state, checking identity and
 effects, and refusing. A halt reaches a phone in seconds, and it still cannot
 turn into a wrong write because somebody was in a hurry.
+
+## Try it
+
+- [Read and audit run reports](../guides/run-reports.md): find where and why a run stopped.
+- [`teach` in the CLI reference](../reference/cli.md#teach): promote a demonstrated correction.

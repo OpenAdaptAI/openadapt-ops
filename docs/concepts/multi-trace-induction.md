@@ -91,3 +91,7 @@ OpenAdapt spent enormous effort making a *single trace* safe: the
 [effect verification](effect-verification.md). That work is necessary, and it
 still leaves the trace under-specified. Induction recovers the intended
 program. Quarantine withholds a program when it cannot.
+
+## Try it
+
+- [Induce a program from multiple traces](../guides/induce-a-program.md): record the same task more than once and run `induce`.

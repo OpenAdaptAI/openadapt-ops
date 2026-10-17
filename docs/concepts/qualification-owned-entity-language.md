@@ -87,3 +87,7 @@ sealed version before deployment.
 See [Qualify a workflow](../guides/qualify-a-workflow.md) for the full
 qualification process and [attended decisions](halt-learn-loop.md) for the
 operator path.
+
+## Try it
+
+- [Safe entity language for attended decisions](../guides/qualify-a-workflow.md#safe-entity-language-for-attended-decisions): define it while you qualify a workflow.

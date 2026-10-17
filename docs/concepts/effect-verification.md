@@ -116,3 +116,8 @@ success banner must halt and the store must stay unchanged. `qualify propose`
 and `qualify accept` run the proposed oracle against the same kind of fault on
 their own. See [The Seal](../commercial/seal.md). A tier-2 read is also the
 only thing that earns a training reward: [Seal as an RL reward](../commercial/seal-reward.md).
+
+## Try it
+
+- [Make the tutorial stop on purpose](../get-started/cli.md#make-it-stop-on-purpose): watch a refuted write halt.
+- [Verify writes against the system of record](../guides/run-a-deployment.md#verify-writes-against-the-system-of-record): wire a verifier in a deployment.

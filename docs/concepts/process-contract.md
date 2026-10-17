@@ -70,3 +70,7 @@ See [Read a compiled program](program-visualizer.md) and
 
 RFC-0001 is the name of this contract. Qualify each child first:
 [Qualify a workflow](../guides/qualify-a-workflow.md).
+
+## Try it
+
+- [A task that spans two apps](../guides/compose-multi-application.md): sequence two recordings, then author a process parent.

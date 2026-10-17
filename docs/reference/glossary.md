@@ -2,6 +2,30 @@
 
 Short definitions for terms used across OpenAdapt.
 
+The three terms people confuse most are defined here:
+[qualification](#qualification) is evidence that one workflow works in its
+environment, [certification](#certification) is the gate that checks a bundle
+against a [policy](#policy), and [admission](#admission) is the signed record
+that lets one exact qualified version run in Production. The
+[Production admission](production-lifecycle.md#qualified-workflow) page holds
+the contract that binds them. For the same terms in plain language, see the
+[plain-language glossary](../evaluate/glossary.md).
+
+<!-- TODO: link the engine's canonical qualify/certify/policy definitions,
+docs/QUALIFICATION_TERMS.md in OpenAdaptAI/openadapt-flow, once
+openadapt-flow PR #532 merges. It isn't on openadapt-flow main yet. -->
+
+## Admission
+
+A signed record that lets one exact, sealed workflow version run in
+Production. It binds the organization and workflow identity, the bundle
+version and digest, the runtime release, the application and environment, the
+input and action contracts, the policy, the identity and effect checks, and an
+expiry and revocation state. A Production run refuses an absent, expired,
+revoked, or mismatched admission. A changed bundle or bound contract needs a
+new [qualification](#qualification) and admission. See
+[Production admission](production-lifecycle.md).
+
 ## BYOC
 
 **Bring your own cloud (BYOC)** is the existing OpenAdapt connector and
