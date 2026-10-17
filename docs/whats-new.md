@@ -1,12 +1,14 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-10-17 23:20 UTC*
+> *Last updated: 2026-10-17 23:54 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [fix(flow): list the folded contract schemas in public-artifacts.json and gate it in CI](https://github.com/OpenAdaptAI/OpenAdapt/pull/1206) (#1206), merged 2026-10-17
 
 - [feat(flow): read-back verifiers taught by demonstration, with assurance grades](https://github.com/OpenAdaptAI/OpenAdapt/pull/1203) (#1203), merged 2026-10-17
 
@@ -17,6 +19,8 @@
 - [fix: CLI help and built-in URLs point at the docs glossary and the monorepo](https://github.com/OpenAdaptAI/OpenAdapt/pull/1200) (#1200), merged 2026-10-17
 
 - [perf(demo): faster native OCR start and a working OCR prewarm (carry-over of openadapt-flow#535)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1199) (#1199), merged 2026-10-17
+
+- [feat(verify-run): judge any executor's write from the system of record, aligned with RFC-0002](https://github.com/OpenAdaptAI/OpenAdapt/pull/1198) (#1198), merged 2026-10-17
 
 - [docs(readme): pipeline diagram and package table](https://github.com/OpenAdaptAI/OpenAdapt/pull/1196) (#1196), merged 2026-10-17
 
@@ -43,10 +47,6 @@
 - [ci(secret-scan): fingerprint the 38 reviewed test-literal findings from the monorepo import branches](https://github.com/OpenAdaptAI/OpenAdapt/pull/1182) (#1182), merged 2026-10-17
 
 - [docs(architecture): a person or an agent shows the task](https://github.com/OpenAdaptAI/OpenAdapt/pull/1181) (#1181), merged 2026-10-17
-
-- [refactor(monorepo): fold openadapt-types and openadapt-agent into openadapt-flow, with shims (stacked on #1178, draft)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1179) (#1179), merged 2026-10-17
-
-- [build(monorepo): import openadapt-flow, openadapt-types and openadapt-agent with history (phase 1, draft)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1178) (#1178), merged 2026-10-17
 
 
 
@@ -130,6 +130,8 @@
 ## openadapt-capture
 
 
+- [ci(release): gate releases on a hosted Linux Xvfb lane](https://github.com/OpenAdaptAI/openadapt-capture/pull/166) (#166), merged 2026-10-17
+
 - [chore(release): finish 1.3.0 with shadow mode](https://github.com/OpenAdaptAI/openadapt-capture/pull/160) (#160), merged 2026-10-17
 
 - [chore(deps): let Dependabot update uv.lock by using the uv ecosystem](https://github.com/OpenAdaptAI/openadapt-capture/pull/159) (#159), merged 2026-10-17
@@ -167,8 +169,6 @@
 - [chore(deps): bump actions/upload-artifact from 7.0.1 to 7.0.2](https://github.com/OpenAdaptAI/openadapt-capture/pull/141) (#141), merged 2026-10-17
 
 - [fix: stop extension input after recording and harden CI checks](https://github.com/OpenAdaptAI/openadapt-capture/pull/140) (#140), merged 2026-10-14
-
-- [chore(deps): bump python-semantic-release/publish-action from 10.6.2 to 10.7.0](https://github.com/OpenAdaptAI/openadapt-capture/pull/139) (#139), merged 2026-10-17
 
 
 
