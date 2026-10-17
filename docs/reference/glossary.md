@@ -142,7 +142,7 @@ instead of clicking into the wrong record. See
 How a Seal checks the business effect. Tier 0 is visual / OCR. Tier 1 is a
 second session or independent UI read. Tier 2 is a system-of-record read (API,
 database, file, ack). Tier 3 is a counterparty artifact. Production Seals mint
-only at 2 and 3. Charge those two. See [The Seal](../commercial/seal.md).
+only at 2 and 3. See [The Seal](../commercial/seal.md).
 
 ## Reconciliation
 
