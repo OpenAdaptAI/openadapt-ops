@@ -6,9 +6,9 @@ description: >-
 
 # Run a workflow
 
-`openadapt flow replay` is for rehearsal: it runs every step, never checks
-the record, and ends `COMPLETED_UNVERIFIED` at best. `openadapt flow run` is
-the governed path. Before the first step it checks the program against its
+`openadapt flow replay` performs every step against the app you point it at,
+including saves. It never checks the record and ends `COMPLETED_UNVERIFIED` at
+best. `openadapt flow run` is the governed path. Before the first step it checks the program against its
 policy and, under the Standard and Regulated profiles, its seal and
 production admission. It refuses to start when a check fails.
 

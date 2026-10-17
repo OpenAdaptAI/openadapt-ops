@@ -52,7 +52,7 @@ page lists the commands in `openadapt` 1.17.0 and `openadapt-flow` 2.1.0.
 | [`propose-qualification`](#check) | Same as `qualify propose`. |
 | [`seal`](#check) | Writes an encrypted copy of a bundle using `OPENADAPT_BUNDLE_KEY`. |
 | [`admit`](#check) | Reads the public release-admission list. It never signs anything. |
-| [`replay`](#run) | Rehearses a bundle. Never checks the record. |
+| [`replay`](#run) | Performs every step of a bundle against a real app. Never checks the record. |
 | [`run`](#run) | Runs a bundle under a profile, with every gate. |
 | [`resume`](#run) | Continues a paused durable run from its last confirmed step. |
 | [`approve`](#run) | Records a decision that lets a paused run resume. |
