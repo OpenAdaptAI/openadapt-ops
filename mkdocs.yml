@@ -151,6 +151,7 @@ nav:
     - The demonstration compiler: concepts/demonstration-compiler.md
     - The workflow-program IR: concepts/workflow-ir.md
     - Record your own app: guides/record-your-app.md
+    - Recording on Windows, RDP and Citrix: guides/record-windows-rdp-citrix.md
     - Induce a program from multiple traces: guides/induce-a-program.md
     - Multi-trace induction: concepts/multi-trace-induction.md
     - Run a workflow for each record: guides/data-driven-loops.md
