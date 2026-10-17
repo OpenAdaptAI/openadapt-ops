@@ -152,6 +152,7 @@ nav:
     - Connect an agent over MCP: get-started/agent-mcp.md
     - Author a workflow: get-started/first-workflow.md
     - What you get: get-started/what-you-get.md
+    - Packages: get-started/packages.md
   - Concepts:
     - concepts/index.md
     - How a workflow is built:

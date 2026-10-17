@@ -78,3 +78,5 @@ use the local MCP command in [Connect an agent over MCP](agent-mcp.md).
   change business data.
 - [What you get](what-you-get.md) explains the compiled bundle and the run
   report.
+- [Packages](packages.md) lists what each OpenAdapt package does and how it
+  installs.
