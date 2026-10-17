@@ -7,7 +7,7 @@ and `openadapt flow ...` command written as code (fenced blocks and inline
 code spans) and checks its subcommand and long options against the argparse
 parser of the pinned Flow release.
 
-`tests/fixtures/flow_cli_1.35.1.json` holds that parser's subcommands and long
+`tests/fixtures/flow_cli_2.1.0.json` holds that parser's subcommands and long
 options. When the docs move to a newer Flow release, regenerate the fixture
 from that release's `openadapt_flow.__main__.build_parser()`: for each
 subparser, record the sorted `option_strings` that start with `--`, keyed by
@@ -22,8 +22,15 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 DOCS = ROOT / "docs"
-FIXTURE = ROOT / "tests/fixtures/flow_cli_1.35.1.json"
+FIXTURE = ROOT / "tests/fixtures/flow_cli_2.1.0.json"
 
+# Options that exist on OpenAdapt `main` but not in the pinned release. A page
+# may show them only where it labels them as unreleased; each entry names the
+# page that does. Remove an entry when the release that ships it is pinned.
+UNRELEASED_OPTIONS = {
+    # docs/how-to/certify-and-qualify.md: the one-command qualification campaign.
+    "qualify": {"--verify", "--out", "--certify"},
+}
 # Regenerated from other repositories' release notes; they quote history.
 GENERATED_PAGES = {DOCS / "changelog.md", DOCS / "whats-new.md"}
 
@@ -105,7 +112,7 @@ def _problems(text: str, global_options: set[str], commands: dict[str, set[str]]
             if not token.startswith("--"):
                 continue
             option = token.split("=", 1)[0].rstrip(".,;:)")
-            if option not in commands[command] | global_options:
+            if option not in commands[command] | global_options | UNRELEASED_OPTIONS.get(command, set()):
                 problems.append(f"line {number}: `{command}` has no `{option}` option in `{code}`")
     return problems
 

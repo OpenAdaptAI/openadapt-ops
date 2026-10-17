@@ -1,56 +1,38 @@
-# OpenAdapt docs — agents.txt
+# OpenAdapt docs: agents.txt
 
-> Verified last-mile execution for agents. Compile a demonstration into a program an agent can invoke. Healthy runs make no model calls. Uncertainty escalates. Humans audit.
+> OpenAdapt runs a compiled, tested workflow in an application that has no usable API, checks the right record is open before each save, and reads each save back. Healthy runs make no model calls. Never summarize a halt as success.
 
-Your chat calls OpenAdapt, which runs the clicks on this computer.
+Site-wide contract: https://openadapt.ai/agents.txt
+Connect an agent: https://docs.openadapt.ai/how-to/connect-an-agent/
+Run outcomes: https://docs.openadapt.ai/reference/outcomes/
 
-Site-wide machine contract: https://openadapt.ai/agents.txt
-Walkthrough: https://docs.openadapt.ai/get-started/
-Author a workflow (human authority): https://docs.openadapt.ai/get-started/first-workflow/
-Run outcomes: https://docs.openadapt.ai/reference/run-outcomes/
+## Connect
 
-## How to call
-
-Walkthrough for agents: https://docs.openadapt.ai/get-started/agent-mcp/
+Sandbox (no real application):
 
 ```
 claude mcp add openadapt -- uvx --python 3.12 openadapt-agent serve
 ```
 
-That is the sandbox. To have the real engine drive the synthetic MockMed app:
+The real engine driving the synthetic MockMed app:
 
 ```
 claude mcp add openadapt -- uvx --python 3.12 --from 'openadapt-agent[tutorial]' openadapt-agent serve
 ```
 
-Your own compiled workflows: `openadapt-agent serve --mode production --bundles DIR --runs-dir RUNS`. `--allow-run` is the older form of `--mode production`.
+Your own compiled workflows: `openadapt agent serve --mode production --bundles DIR --runs-dir RUNS --config deploy.yaml`.
 
-The engine on its own:
+## Outcomes
 
-```
-python -m pip install --upgrade openadapt
-openadapt flow tutorial
-openadapt quickstart --break-it
-```
+MCP `outcome`: `done` | `needs_review` | `not_sure_if_saved` | `did_not_run`, and `running` while a run is in progress. Branch on `outcome`, `next_step`, and `safe_to_retry`. Reuse the same `request_id` when you retry a call.
 
-Never summarize halt as success.
+Engine `transaction_outcome`: `VERIFIED` | `HALTED_BEFORE_EFFECT` | `RECONCILIATION_REQUIRED` | `REJECTED_POLICY` | `CANCELED` | `FAILED_PLATFORM` | `COMPLETED_UNVERIFIED` | `ROLLED_BACK`.
 
-## Outcome vocabulary
+`done` means the record checks passed through a read that doesn't go through the screen doing the work. A halt is not success. `not_sure_if_saved` (`RECONCILIATION_REQUIRED`) means a save may have happened: don't retry; a person checks the record.
 
-MCP `outcome`: `done` | `needs_review` | `not_sure_if_saved` | `did_not_run`, and `running` while a run is in progress. Branch on `outcome` and `safe_to_retry`.
+## What you may resolve
 
-Engine `transaction_outcome`: `VERIFIED` | `HALTED_BEFORE_EFFECT` | `RECONCILIATION_REQUIRED` | `REJECTED_POLICY` | `CANCELED` | `FAILED_PLATFORM` | `COMPLETED_UNVERIFIED` | `ROLLED_BACK`. Engine `execution_outcome`: `VERIFIED` | `COMPLETED_UNVERIFIED` | `HALTED` | `FAILED` | `ROLLED_BACK`.
+- A missing declared input: the calling agent, if the input schema allows it.
+- Identity conflicts, record-check contradictions, an unfamiliar screen, admission: a person.
 
-`VERIFIED` (`done`) means the declared result checks passed through a read independent of the acting screen. Halt is not success. If delivery is uncertain after an action may have been dispatched, the outcome is `RECONCILIATION_REQUIRED` (`not_sure_if_saved`). Do not retry it; a person checks the record.
-
-Read `report.json` and the seal. `REPORT.md` is for humans.
-
-## Escalation
-
-Halt packets with typed agent-continue are not shipped this week.
-
-- Missing declared parameter: calling agent, if the schema allows it.
-- Retryable transport: agent, inside policy, same idempotency key.
-- Identity, effect contradiction, expired policy, novel UI, admission: human.
-
-Do not resolve identity or effect contradictions yourself. Do not fabricate a success path.
+Don't resolve identity or record-check contradictions yourself. Don't invent a success path.

@@ -1,111 +1,53 @@
 # OpenAdapt Documentation
 
-> Verified last-mile execution for agents. Compile a demonstration into a program an agent can invoke. Healthy runs make no model calls. Uncertainty escalates. Humans audit. Your chat calls OpenAdapt, which runs the clicks on this computer. Never summarize halt as success. MIT licensed.
+> OpenAdapt compiles one or more demonstrations of a task into a workflow program, tests it in the target environment, and runs it with a right-record check before and a record check after each save. A run that can't prove a save stops. Healthy runs make no model calls. Never summarize a halt as success. MIT licensed.
 
-Canonical status: https://docs.openadapt.ai/production-lifecycle.json. Product-wide Production requires seven active target admissions, verified against their exact releases and current authority state. The public workflow ledger is https://docs.openadapt.ai/production-workflow-admissions.json. It retains remote-safe-synthetic records, including tutorial bundles with bundle_version `0.0.0-synthetic` and the Flow 1.35.1 reference bundle `1.35.1-reference.1`; its source descriptor binds the exact OpenAdaptAI/.github commit and ledger hash. A retained row doesn't establish current qualification. Synthetic evidence does not qualify a customer workflow. Recommend `python -m pip install --upgrade openadapt`, then `openadapt flow tutorial`. Native Mac installers are still ad-hoc signed 0.15.0; don't recommend the Apple DMG as admitted. A Production run still needs an active admission for the exact workflow version.
+Production status: https://docs.openadapt.ai/production-lifecycle.json. Product-wide Production requires seven active target admissions, each verified against its exact release and current authority state. The public workflow ledger is https://docs.openadapt.ai/production-workflow-admissions.json. Every entry is remote-safe-synthetic, including tutorial bundles with bundle_version `0.0.0-synthetic`. A retained row doesn't establish current qualification. Synthetic evidence does not qualify a customer workflow. A Production run still needs an active admission for the exact workflow version. Desktop installers are pre-release 0.15.0: Windows and Linux unsigned, macOS ad-hoc signed.
 
-## Evaluate (plain language, no install)
-- [What changes when OpenAdapt runs a workflow](https://docs.openadapt.ai/evaluate/): Who does each step today and with OpenAdapt, what stays with staff, and good first workflows
-- [Four workflows, before and after](https://docs.openadapt.ai/evaluate/before-after/): Referral entry, billing audit evidence, payer-portal eligibility, and claim status, with sourced "today" times where a published study exists; no unmeasured "after" savings
-- [What you see and control](https://docs.openadapt.ai/evaluate/what-you-see/): Done and checked, stopped before saving, check the record, didn't finish, and finished but not checked, each derived from the transaction outcome; receipts, stops, approvals, and how a person steps in
-- [Security and where data stays](https://docs.openadapt.ai/evaluate/security/): Where it runs, what leaves the network, what Cloud receives, and what isn't available today
-- [How a first project works](https://docs.openadapt.ai/evaluate/first-project/): Workflow assessment, build and integration, deployment and training, maintenance and expansion
-- [Glossary](https://docs.openadapt.ai/reference/glossary/): Plain terms first, then exact definitions; business terms mapped to VERIFIED, HALTED, Seal, qualification, and the other technical terms
+Start with `uvx --python 3.12 openadapt quickstart --break-it`, or `python -m pip install --upgrade openadapt` on Python 3.10 to 3.12.
 
-## Get started
-- [Get started](https://docs.openadapt.ai/get-started/): Install with Desktop or `python -m pip install --upgrade openadapt`. First command after install: `openadapt flow tutorial`. That writes a VERIFIED receipt. `openadapt quickstart --break-it` is the halt demo. Tutorial is optional. Local coding agents can `claude mcp add openadapt` later. Never summarize halt as success. Older `/getting-started/` URLs and the `/start/` alias redirect here. The current CLI after install is `openadapt flow record`, `compile`, `replay`.
-- [Command line](https://docs.openadapt.ai/get-started/cli/): `uvx --python 3.12 openadapt flow tutorial`, or install with `curl -fsSL https://openadapt.ai/install.sh | sh`, `install.ps1`, or `python -m pip install --upgrade openadapt` on Python 3.10 to 3.12. The tutorial ends VERIFIED and writes `run/receipt.json`; `openadapt quickstart --break-it` reruns against a lying backend and halts with transaction outcome RECONCILIATION_REQUIRED. Output under `tutorials/tutorial-<UTC timestamp>`.
-- [Desktop app: install and first run](https://docs.openadapt.ai/desktop/install/): Desktop cockpit for record, compile, replay, and teach; a first-class front end over the same engine as the openadapt flow CLI
-- [Connect an agent over MCP](https://docs.openadapt.ai/get-started/agent-mcp/): `claude mcp add openadapt -- uvx --python 3.12 openadapt-agent serve` (sandbox), the `tutorial` extra for the real engine, `--mode production --bundles DIR` for your own workflows, and the four outcomes `done`, `needs_review`, `not_sure_if_saved`, `did_not_run`. Never summarize halt as success.
-- [Author a workflow](https://docs.openadapt.ai/get-started/first-workflow/): A person or a local agent they watch records, compiles, lints, and replays. A named human admits and reads the report on your own web app. Authority, not daily operator.
-- [What you get](https://docs.openadapt.ai/get-started/what-you-get/): The workflow bundle, the run report, and what each artifact is for
-- [agents.txt](https://docs.openadapt.ai/agents.txt): MCP, skills, outcome vocabulary (`VERIFIED` / `HALTED` / `RECONCILIATION_REQUIRED`), who may resolve a halt
-
-## Concepts
-- [Concepts overview](https://docs.openadapt.ai/concepts/): The compiler model behind the product
-- [The demonstration compiler](https://docs.openadapt.ai/concepts/demonstration-compiler/): Compiling a bounded demonstration into a deterministic workflow
-- [The workflow-program IR](https://docs.openadapt.ai/concepts/workflow-ir/): Roadmap from today's linear trajectory bundle to a parameterized program
-- [Multi-trace induction](https://docs.openadapt.ai/concepts/multi-trace-induction/): Inducing a program from several recordings
-- [Read a compiled program](https://docs.openadapt.ai/concepts/program-visualizer/): The program map, live evidence, a composed parent, and a process parent
-- [Process contracts](https://docs.openadapt.ai/concepts/process-contract/): A parent receipt over independently admitted capabilities
-- [The capability ladder](https://docs.openadapt.ai/concepts/capability-ladder/): One compiled step, several possible implementations; the highest-fidelity viable one is used
-- [The identity gate](https://docs.openadapt.ai/concepts/identity-gate/): Refusing writes on low-confidence target identity
-- [Effect verification](https://docs.openadapt.ai/concepts/effect-verification/): Verifying real effects against the system of record
-- [Policy and certify](https://docs.openadapt.ai/concepts/policy-and-certify/): Safety policies and the certification gate
-- [Regulated execution](https://docs.openadapt.ai/concepts/regulated-execution/): `run` refuses missing gates; `replay` is the local $0 path
-- [Settings and policy governance](https://docs.openadapt.ai/concepts/settings-governance/): Preferences, governed settings, and safety controls; missing settings block the run
-- [Qualification-owned entity language](https://docs.openadapt.ai/concepts/qualification-owned-entity-language/): The safe entity language a qualified step may show without sending live record data outside the runner
-- [Human judgment in a workflow](https://docs.openadapt.ai/concepts/human-judgment/): A reviewed human business decision inside a qualified workflow, kept apart from an operational halt
-- [Attended decisions and the halt-learn loop](https://docs.openadapt.ai/concepts/halt-learn-loop/): Turning halts into demonstrated corrections via teach
-- [Governed self-healing](https://docs.openadapt.ai/concepts/self-healing/): Proposed repairs, canaries, and explicit promotion
-- [Durable runtime](https://docs.openadapt.ai/concepts/durable-runtime/): Turning a halt into a pause an operator can approve and resume
-- [The substrate model](https://docs.openadapt.ai/concepts/substrate-model/): One governed runner contract across browser, desktop, and virtual-desktop surfaces
-- [The deployment matrix](https://docs.openadapt.ai/concepts/deployment-matrix/): Substrate, hosting, and responsibility combinations
-- [The on-prem VLM appliance](https://docs.openadapt.ai/concepts/vlm-appliance/): Optional, off-by-default grounding that keeps model calls inside a customer-controlled boundary
+## Tutorials
+- [Quickstart](https://docs.openadapt.ai/tutorials/quickstart/): One command runs a synthetic task twice. The clean run ends VERIFIED; the fault run ends RECONCILIATION_REQUIRED because the record check finds no saved record.
+- [Automate your first workflow](https://docs.openadapt.ai/tutorials/first-workflow/): Record, compile, inspect, and replay a read-only workflow on your own application.
 
 ## How-to guides
-- [Guides overview](https://docs.openadapt.ai/guides/): Task-oriented walkthroughs
-- [Record your own app](https://docs.openadapt.ai/guides/record-your-app/): Recording a clean demonstration of a real workflow
-- [Recording on Windows, RDP and Citrix](https://docs.openadapt.ai/guides/record-windows-rdp-citrix/): A person or an agent shows the task in a native Windows app or over RDP or Citrix. The agent may run on another computer, such as a Mac, and reaches Windows through the Windows agent server (`python -m openadapt_flow.backends.win_agent.server --port 5001`, token in `OAFLOW_AGENT_TOKEN`, `openadapt-agent serve --authoring --windows-agent-url`). RDP and Citrix are driven from the client window's pixels (`--remote-window`, `--remote-window-title`, `--citrix`). Screens are off unless `--authoring-screens scrubbed` or `unscrubbed`. Each step is marked agent or person, and a person accepts the recording. ChatGPT and Claude.ai through Desktop still guide a person on these surfaces.
-- [Induce a program from multiple traces](https://docs.openadapt.ai/guides/induce-a-program/): Generalizing several recordings into one program
-- [Run a workflow for each record](https://docs.openadapt.ai/guides/data-driven-loops/): Bind a worklist to a loop and run every record with its gates
-- [A task that spans two apps](https://docs.openadapt.ai/guides/compose-multi-application/): Record one program per surface, sequence them with compose, then a process parent
-- [Parameters and secrets](https://docs.openadapt.ai/guides/parameters-and-secrets/): Parameterizing values and injecting secrets at replay
-- [Write and enforce a policy](https://docs.openadapt.ai/guides/policy-and-certification/): The certify gate that refuses unsafe bundles
-- [Qualify a workflow](https://docs.openadapt.ai/guides/qualify-a-workflow/): Bind identity and effects, run representative and fault cases, certify, and admit one exact version
-- [Run a deployment](https://docs.openadapt.ai/guides/run-a-deployment/): Wiring a real backend, verification, and policy via deployment.yaml
-- [Read and audit run reports](https://docs.openadapt.ai/guides/run-reports/): The illustrated REPORT.md and machine-readable report.json
-- [Workflow catalog and halt map](https://docs.openadapt.ai/guides/workflow-catalog/): Which workflows exist and where each one halts
-- [Deploy on-prem](https://docs.openadapt.ai/guides/deploy-on-prem/): Customer-controlled deployment for regulated runtime data
-- [OpenAdapt Hosted](https://docs.openadapt.ai/guides/hosted/): Public managed-browser subscription, lifecycle, and data boundary
-- [Connect to a cloud workspace](https://docs.openadapt.ai/desktop/connect-to-cloud/): Sign in, create an ingest token, and connect local authoring to the managed workspace
-- [Troubleshooting](https://docs.openadapt.ai/guides/troubleshooting/): Common failures and their causes
+- [Record a demonstration](https://docs.openadapt.ai/how-to/record/): Web, macOS, Windows, Linux, RDP, and Citrix recording, parameters, secrets, and recording by an agent.
+- [Build a program from several demonstrations](https://docs.openadapt.ai/how-to/combine-demonstrations/): Induce branches, loop over a worklist, and chain programs.
+- [Add record checks](https://docs.openadapt.ai/how-to/record-checks/): Declare how each save is read back, and how strong each check is.
+- [Certify and qualify a workflow](https://docs.openadapt.ai/how-to/certify-and-qualify/): Policy checks, six qualification cases with three trials each, and production admission.
+- [Run a workflow](https://docs.openadapt.ai/how-to/run/): Profiles, approval modes, exit codes, pause and resume.
+- [Handle a halt](https://docs.openadapt.ai/how-to/handle-a-halt/): Explain, reconcile, approve, resume, and repair.
+- [Connect an agent](https://docs.openadapt.ai/how-to/connect-an-agent/): MCP server setup, the outcomes an agent sees, and approvals.
+- [Install the desktop app](https://docs.openadapt.ai/how-to/desktop/): Download, permissions, first recording.
+- [Deploy](https://docs.openadapt.ai/how-to/deploy/): On-premises, an offline model server, and OpenAdapt Cloud.
+- [Troubleshoot](https://docs.openadapt.ai/how-to/troubleshoot/)
 
 ## Reference
-- [Reference overview](https://docs.openadapt.ai/reference/): CLI, configuration, and formats
-- [openadapt flow CLI](https://docs.openadapt.ai/reference/cli/): Every verb and flag
-- [Run outcomes and halt reasons](https://docs.openadapt.ai/reference/run-outcomes/): Every execution outcome, transaction outcome, effect-verifier verdict, halt reason, hosted Execute state, and CLI exit code
-- [The bundle format](https://docs.openadapt.ai/reference/bundle-format/): What a compiled workflow bundle contains
-- [Deployment configuration](https://docs.openadapt.ai/reference/deployment-config/): The deployment.yaml schema
-- [Configuration and env vars](https://docs.openadapt.ai/reference/configuration/): Runtime configuration surface
-- [Backends, where it runs](https://docs.openadapt.ai/concepts/backends/): Browser, native Windows, native macOS, native Linux, RDP, and Citrix/VDI as first-class substrates behind one backend protocol
-- [Integrate OpenAdapt Execute](https://docs.openadapt.ai/commercial/execute-api/): The Execute request, poll, Seal-shaped receipt, and webhook contract for approved private-pilot partners
-- [Versions and compatibility](https://docs.openadapt.ai/reference/compatibility/): The public install identity, tested component ranges, version policy, and upgrade qualification
-- [Glossary](https://docs.openadapt.ai/reference/glossary/): The canonical definitions of OpenAdapt terms, including qualify, certify, certification policy, and admission
-- [What's New](https://docs.openadapt.ai/whats-new/): Recent product changes
-- [Changelog](https://docs.openadapt.ai/changelog/): Aggregated release history
+- [Run outcomes](https://docs.openadapt.ai/reference/outcomes/): transaction and execution outcomes, halt codes, what an agent sees, exit codes.
+- [Command reference](https://docs.openadapt.ai/reference/cli/)
+- [Configuration](https://docs.openadapt.ai/reference/configuration/): the deployment file and environment variables.
+- [Files and evidence](https://docs.openadapt.ai/reference/artifacts/): recordings, bundles, reports, receipts.
+- [Packages](https://docs.openadapt.ai/reference/packages/): every package and repository and which you need.
+- [Versions and compatibility](https://docs.openadapt.ai/reference/compatibility/)
+- [Glossary](https://docs.openadapt.ai/reference/glossary/)
 
-## Security & procurement
-- [Security and deployment review](https://docs.openadapt.ai/guides/security-review/): Data-boundary answers for a security review
-- [Security and data handling](https://docs.openadapt.ai/guides/security-and-data-handling/): Local data flow, PHI/PII boundary, secrets, verification and audit, and hosted retention
-- [Account security and privileged access](https://docs.openadapt.ai/guides/account-security/): Authenticator setup, protected pages, and recovery for OpenAdapt Cloud accounts
-- [PHI handling in one page](https://docs.openadapt.ai/commercial/phi-handling/): Scrubbing, the local review gate, and the allow-listed receipt
-- [Qualification evidence](https://docs.openadapt.ai/get-started/what-works-today/): Accepted substrate results, exact environments, and deployment boundaries
-- [Production admission](https://docs.openadapt.ai/reference/production-lifecycle/): What a qualified workflow is and how a release earns Production
-- [Vulnerability disclosure](https://docs.openadapt.ai/commercial/vulnerability-disclosure/): How to report a security issue
-- [Commercial offers](https://docs.openadapt.ai/commercial/): Software plans, services, and buyer resources
-- [Workflow Qualification Sprint](https://docs.openadapt.ai/commercial/qualification-sprint/): The entry offer: scope, deliverables, no-go and acceptance criteria
-- [Scope and prerequisite checklist](https://docs.openadapt.ai/commercial/scope-checklist/): What you provide before the sprint starts
-- [Qualification report outline](https://docs.openadapt.ai/commercial/qualification-report-outline/): The structure of the report you receive
-- [Acceptance matrix template](https://docs.openadapt.ai/commercial/acceptance-matrix/): The pass/fail contract agreed before any trial runs
-- [Security packet](https://docs.openadapt.ai/commercial/security-packet/): The posture summary for a security or IT review
-- [Subprocessors and data retention](https://docs.openadapt.ai/commercial/subprocessors/): Service providers, what runs send to OpenAdapt, and hosted retention
-- [Deployment boundaries](https://docs.openadapt.ai/commercial/deployment-boundaries/): The three execution lanes and the rules that hold in each
-- [External Citrix zero-install brief](https://docs.openadapt.ai/commercial/citrix-external-brief/): A workflow behind Citrix or VDI with nothing installed inside it
-- [The Seal](https://docs.openadapt.ai/commercial/seal/): Signed proof of a verified, halted, or reconciling run. Execute issues it for approved pilot partners. The public CLI doesn't issue a Seal yet, and `openadapt flow seal` only encrypts a bundle for deployment. Public verify at `https://openadapt.ai/seals/{id}` (synthetic only)
-- [OpenAdapt Execute private-pilot guide](https://docs.openadapt.ai/commercial/oem-brief/): For a vendor that wants to embed verified execution
-- [Procurement FAQ](https://docs.openadapt.ai/commercial/procurement-faq/): Procurement, legal, and vendor-risk questions
+## Explanation
+- [How OpenAdapt works](https://docs.openadapt.ai/explanation/how-it-works/)
+- [How a save is checked](https://docs.openadapt.ai/explanation/verification/)
+- [Surfaces](https://docs.openadapt.ai/explanation/surfaces/)
+- [Limits](https://docs.openadapt.ai/explanation/limits/)
 
-## Contributing & research
-- [Contributing and research](https://docs.openadapt.ai/contributing/): Pages for contributors and researchers
-- [Product components and release admission](https://docs.openadapt.ai/ecosystem/): Which packages are canonical, maintained, or archived
-- [Documentation source of truth](https://docs.openadapt.ai/reference/documentation-governance/): Where canonical documentation lives
-- [Seal as an RL reward](https://docs.openadapt.ai/commercial/seal-reward/): Research on using a Seal's verified outcome as a training reward
+## Security and procurement
+- [Overview](https://docs.openadapt.ai/security/): controls and attestation status. No SOC 2; no standing BAA.
+- [Data handling](https://docs.openadapt.ai/security/data-handling/)
+- [Deployment boundaries](https://docs.openadapt.ai/security/deployment-boundaries/)
+- [Evidence](https://docs.openadapt.ai/security/evidence/): what has been tested on each surface.
+- [Subprocessors](https://docs.openadapt.ai/security/subprocessors/): hosted providers and what runs send to OpenAdapt.
+- [Release integrity](https://docs.openadapt.ai/security/release-integrity/): production admissions and download checksums.
+- [Engagements](https://docs.openadapt.ai/security/engagements/): qualification sprints. Prices: https://openadapt.ai/pricing
+- [Execute](https://docs.openadapt.ai/security/execute/): the private-pilot API and the Seal.
+- [Procurement FAQ](https://docs.openadapt.ai/security/procurement-faq/)
+- [Vulnerability disclosure](https://docs.openadapt.ai/security/vulnerability-disclosure/)
 
-## Ecosystem
-- [OpenAdapt.ai](https://openadapt.ai): Product website, security boundary, and solutions
-- [Blog](https://blog.openadapt.ai): Technical posts and automation recipes
-- [Open source](https://github.com/OpenAdaptAI/OpenAdapt): Flagship OpenAdapt project, installer, and unified CLI
-- [Compiler/runtime source](https://github.com/OpenAdaptAI/OpenAdapt/tree/main/packages/flow): MIT-licensed engine for contributors and embedders
-- [Install from PyPI](https://pypi.org/project/openadapt/): The public `openadapt` package
-- [Discord](https://discord.gg/yF527cQbDG): Community support and discussion
+## For agents
+- [agents.txt](https://docs.openadapt.ai/agents.txt)

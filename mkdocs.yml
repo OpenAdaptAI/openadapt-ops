@@ -1,9 +1,8 @@
 site_name: OpenAdapt Docs
 site_description: >-
-  OpenAdapt takes the last manual step off your team. It enters approved
-  information into the systems you already use, such as EMRs, payer portals,
-  and desktop and Citrix apps, and checks that it saved. When something doesn't
-  match, it stops and asks a person instead of guessing.
+  OpenAdapt compiles one or more demonstrations of a task into a workflow
+  program, tests it in the target environment, and runs it with a check before
+  and after each save. A run that can't prove a save stops.
 site_url: https://docs.openadapt.ai
 # The header star/fork counter reads from repo_url. Point it at the flagship
 # repo so it reflects the project's real GitHub traction, not this docs repo.
@@ -72,6 +71,117 @@ extra_javascript:
 
 plugins:
   - search
+  # Every page from the previous layout redirects to its new home.
+  - redirects:
+      redirect_maps:
+        LEGACY_FREEZE.md: index.md
+        architecture.md: explanation/how-it-works.md
+        cli.md: reference/cli.md
+        commercial/acceptance-matrix.md: security/engagements.md
+        commercial/citrix-external-brief.md: explanation/surfaces.md
+        commercial/deployment-boundaries.md: security/deployment-boundaries.md
+        commercial/execute-api.md: security/execute.md
+        commercial/index.md: security/engagements.md
+        commercial/oem-brief.md: security/execute.md
+        commercial/phi-handling.md: security/data-handling.md
+        commercial/procurement-faq.md: security/procurement-faq.md
+        commercial/qualification-report-outline.md: security/engagements.md
+        commercial/qualification-sprint.md: security/engagements.md
+        commercial/scope-checklist.md: security/engagements.md
+        commercial/seal-reward.md: security/execute.md#the-seal
+        commercial/seal.md: security/execute.md#the-seal
+        commercial/security-packet.md: security/index.md
+        commercial/subprocessors.md: security/subprocessors.md
+        commercial/vulnerability-disclosure.md: security/vulnerability-disclosure.md
+        concepts/backends.md: explanation/surfaces.md
+        concepts/capability-ladder.md: explanation/surfaces.md
+        concepts/demonstration-compiler.md: explanation/how-it-works.md
+        concepts/deployment-matrix.md: security/deployment-boundaries.md
+        concepts/durable-runtime.md: how-to/run.md
+        concepts/effect-verification.md: explanation/verification.md
+        concepts/halt-learn-loop.md: how-to/handle-a-halt.md
+        concepts/human-judgment.md: how-to/run.md
+        concepts/identity-gate.md: explanation/verification.md
+        concepts/index.md: explanation/how-it-works.md
+        concepts/multi-trace-induction.md: how-to/combine-demonstrations.md
+        concepts/policy-and-certify.md: how-to/certify-and-qualify.md
+        concepts/process-contract.md: how-to/combine-demonstrations.md
+        concepts/program-visualizer.md: tutorials/first-workflow.md
+        concepts/qualification-owned-entity-language.md: security/execute.md
+        concepts/regulated-execution.md: how-to/run.md
+        concepts/self-healing.md: how-to/handle-a-halt.md
+        concepts/settings-governance.md: reference/configuration.md
+        concepts/substrate-model.md: explanation/surfaces.md
+        concepts/vlm-appliance.md: how-to/deploy.md
+        concepts/workflow-ir.md: explanation/how-it-works.md
+        contributing/index.md: reference/packages.md
+        desktop/connect-to-cloud.md: how-to/deploy.md
+        desktop/install.md: how-to/desktop.md
+        ecosystem/index.md: reference/packages.md
+        evaluate/before-after.md: index.md
+        evaluate/first-project.md: security/engagements.md
+        evaluate/glossary.md: reference/glossary.md
+        evaluate/index.md: index.md
+        evaluate/security.md: security/index.md
+        evaluate/what-you-see.md: reference/outcomes.md
+        get-started/agent-mcp.md: how-to/connect-an-agent.md
+        get-started/cli.md: tutorials/quickstart.md
+        get-started/first-workflow.md: tutorials/first-workflow.md
+        get-started/index.md: tutorials/quickstart.md
+        get-started/packages.md: reference/packages.md
+        get-started/what-works-today.md: security/evidence.md
+        get-started/what-you-get.md: reference/artifacts.md
+        getting-started/index.md: tutorials/quickstart.md
+        getting-started/installation.md: tutorials/quickstart.md
+        getting-started/permissions.md: how-to/desktop.md
+        getting-started/quickstart.md: tutorials/quickstart.md
+        guides/account-security.md: how-to/deploy.md
+        guides/compose-multi-application.md: how-to/combine-demonstrations.md
+        guides/data-driven-loops.md: how-to/combine-demonstrations.md
+        guides/deploy-on-prem.md: how-to/deploy.md
+        guides/hosted.md: how-to/deploy.md
+        guides/index.md: how-to/record.md
+        guides/induce-a-program.md: how-to/combine-demonstrations.md
+        guides/parameters-and-secrets.md: how-to/record.md
+        guides/policy-and-certification.md: how-to/certify-and-qualify.md
+        guides/qualify-a-workflow.md: how-to/certify-and-qualify.md
+        guides/record-windows-rdp-citrix.md: how-to/record.md
+        guides/record-your-app.md: how-to/record.md
+        guides/run-a-deployment.md: how-to/run.md
+        guides/run-reports.md: reference/artifacts.md
+        guides/security-and-data-handling.md: security/data-handling.md
+        guides/security-review.md: security/index.md
+        guides/troubleshooting.md: how-to/troubleshoot.md
+        guides/workflow-catalog.md: how-to/connect-an-agent.md
+        legacy/freeze.md: index.md
+        packages/capture.md: reference/packages.md
+        packages/evals.md: reference/packages.md
+        packages/grounding.md: reference/packages.md
+        packages/index.md: reference/packages.md
+        packages/ml.md: reference/packages.md
+        packages/openadapt-agent.md: reference/packages.md
+        packages/openadapt-bootstrap.md: reference/packages.md
+        packages/openadapt-capture.md: reference/packages.md
+        packages/openadapt-desktop.md: reference/packages.md
+        packages/openadapt-evals.md: reference/packages.md
+        packages/openadapt-flow.md: reference/packages.md
+        packages/openadapt-grounding.md: reference/packages.md
+        packages/openadapt-ml.md: reference/packages.md
+        packages/openadapt-privacy.md: reference/packages.md
+        packages/openadapt-retrieval.md: reference/packages.md
+        packages/openadapt-types.md: reference/packages.md
+        packages/openadapt-viewer.md: reference/packages.md
+        packages/openadapt.md: reference/packages.md
+        packages/privacy.md: reference/packages.md
+        packages/retrieval.md: reference/packages.md
+        packages/viewer.md: reference/packages.md
+        reference/bundle-format.md: reference/artifacts.md
+        reference/deployment-config.md: reference/configuration.md
+        reference/documentation-governance.md: reference/packages.md
+        reference/index.md: reference/cli.md
+        reference/production-lifecycle.md: security/release-integrity.md
+        reference/run-outcomes.md: reference/outcomes.md
+        start/index.md: tutorials/quickstart.md
 
 markdown_extensions:
   - toc:
@@ -122,120 +232,55 @@ extra:
     - icon: fontawesome/solid/rss
       link: https://blog.openadapt.ai
 
-# Information architecture (Diataxis). Evaluate is the plain-language business
-# path, with no install. Get started has three separate tracks: the command
-# line, the Desktop app, and an agent over MCP. Concepts explain, How-to guides
-# instruct, and Reference describes. Security & procurement holds the review,
-# data-handling, and commercial pages. Contributing & research keeps
-# contributor and research pages out of the customer sections.
+# Information architecture (Diataxis). Developers is split into Tutorials
+# (learning by doing), How-to guides (one task each), Reference (facts to look
+# up), and Explanation (why it works this way). Security & procurement is a
+# separate section for reviewers who won't install anything.
 #
-# Every page appears in exactly one section. Pages keep their on-disk paths, so
-# no published URL changes; only their grouping does. A page that does move
-# leaves a `redirect_to` stub at its old path (see overrides/main.html).
-#
-# Guessed-path alias. Built so /start/ redirects; keep it off the nav.
-not_in_nav: |
-  /start/index.md
-  /evaluate/glossary.md
+# Every page appears in exactly one section. Old URLs redirect through the
+# mkdocs-redirects map in `plugins` above.
 nav:
   - Home: index.md
-  - Evaluate:
-    - evaluate/index.md
-    - Four workflows, before and after: evaluate/before-after.md
-    - What you see and control: evaluate/what-you-see.md
-    - Security and where data stays: evaluate/security.md
-    - How a first project works: evaluate/first-project.md
-  - Get started:
-    - get-started/index.md
-    - Command line: get-started/cli.md
-    - Desktop app: desktop/install.md
-    - Connect an agent over MCP: get-started/agent-mcp.md
-    - Author a workflow: get-started/first-workflow.md
-    - What you get: get-started/what-you-get.md
-    - Packages: get-started/packages.md
-  - Concepts:
-    - concepts/index.md
-    - How a workflow is built:
-      - The demonstration compiler: concepts/demonstration-compiler.md
-      - The workflow-program IR: concepts/workflow-ir.md
-      - Multi-trace induction: concepts/multi-trace-induction.md
-      - Read a compiled program: concepts/program-visualizer.md
-      - Process contracts: concepts/process-contract.md
-      - The capability ladder: concepts/capability-ladder.md
-    - How a run is checked:
-      - The identity gate: concepts/identity-gate.md
-      - Effect verification: concepts/effect-verification.md
-      - Policy and certify: concepts/policy-and-certify.md
-      - Regulated execution: concepts/regulated-execution.md
-      - Settings and policy governance: concepts/settings-governance.md
-      - Qualification-owned entity language: concepts/qualification-owned-entity-language.md
-    - When a run stops:
-      - Human judgment in a workflow: concepts/human-judgment.md
-      - Attended decisions and the halt-learn loop: concepts/halt-learn-loop.md
-      - Governed self-healing: concepts/self-healing.md
-      - Durable runtime: concepts/durable-runtime.md
-    - Where it runs:
-      - The substrate model: concepts/substrate-model.md
-      - The deployment matrix: concepts/deployment-matrix.md
-      - The on-prem VLM appliance: concepts/vlm-appliance.md
-  - How-to guides:
-    - guides/index.md
-    - Record and compile:
-      - Record your own app: guides/record-your-app.md
-      - Recording on Windows, RDP and Citrix: guides/record-windows-rdp-citrix.md
-      - Induce a program from multiple traces: guides/induce-a-program.md
-      - Run a workflow for each record: guides/data-driven-loops.md
-      - A task that spans two apps: guides/compose-multi-application.md
-      - Parameters and secrets: guides/parameters-and-secrets.md
-    - Qualify and certify:
-      - Write and enforce a policy: guides/policy-and-certification.md
-      - Qualify a workflow: guides/qualify-a-workflow.md
-    - Run and operate:
-      - Run a deployment: guides/run-a-deployment.md
-      - Read and audit run reports: guides/run-reports.md
-      - Workflow catalog and halt map: guides/workflow-catalog.md
-      - Deploy on-prem: guides/deploy-on-prem.md
-      - The hosted option: guides/hosted.md
-      - Connect to a cloud workspace: desktop/connect-to-cloud.md
-      - Troubleshooting: guides/troubleshooting.md
-  - Reference:
-    - reference/index.md
-    - openadapt flow CLI: reference/cli.md
-    - Run outcomes and halt reasons: reference/run-outcomes.md
-    - The bundle format: reference/bundle-format.md
-    - Deployment configuration: reference/deployment-config.md
-    - Configuration and env vars: reference/configuration.md
-    - Backends, where it runs: concepts/backends.md
-    - Integrate OpenAdapt Execute: commercial/execute-api.md
-    - Versions and compatibility: reference/compatibility.md
-    - Glossary: reference/glossary.md
-    - What's New: whats-new.md
-    - Changelog: changelog.md
+  - Developers:
+      - Tutorials:
+          - Quickstart: tutorials/quickstart.md
+          - Automate your first workflow: tutorials/first-workflow.md
+      - How-to guides:
+          - Record a demonstration: how-to/record.md
+          - Build from several demonstrations: how-to/combine-demonstrations.md
+          - Add record checks: how-to/record-checks.md
+          - Certify and qualify: how-to/certify-and-qualify.md
+          - Run a workflow: how-to/run.md
+          - Handle a halt: how-to/handle-a-halt.md
+          - Connect an agent: how-to/connect-an-agent.md
+          - Install the desktop app: how-to/desktop.md
+          - Deploy: how-to/deploy.md
+          - Troubleshoot: how-to/troubleshoot.md
+      - Reference:
+          - Run outcomes: reference/outcomes.md
+          - Commands: reference/cli.md
+          - Configuration: reference/configuration.md
+          - Files and evidence: reference/artifacts.md
+          - Packages: reference/packages.md
+          - Versions and compatibility: reference/compatibility.md
+          - Glossary: reference/glossary.md
+          - Changelog: changelog.md
+          - What's new: whats-new.md
+      - Explanation:
+          - How OpenAdapt works: explanation/how-it-works.md
+          - How a save is checked: explanation/verification.md
+          - Surfaces: explanation/surfaces.md
+          - Limits: explanation/limits.md
   - Security & procurement:
-    - Security and deployment review: guides/security-review.md
-    - Security and data handling: guides/security-and-data-handling.md
-    - Account security and privileged access: guides/account-security.md
-    - PHI handling in one page: commercial/phi-handling.md
-    - Qualification evidence: get-started/what-works-today.md
-    - Production admission: reference/production-lifecycle.md
-    - Vulnerability disclosure: commercial/vulnerability-disclosure.md
-    - Commercial:
-      - commercial/index.md
-      - Qualification Sprint: commercial/qualification-sprint.md
-      - Scope and prerequisite checklist: commercial/scope-checklist.md
-      - Qualification report outline: commercial/qualification-report-outline.md
-      - Acceptance matrix template: commercial/acceptance-matrix.md
-      - Security packet: commercial/security-packet.md
-      - Subprocessors and data retention: commercial/subprocessors.md
-      - Deployment boundaries: commercial/deployment-boundaries.md
-      - External Citrix zero-install brief: commercial/citrix-external-brief.md
-      - The Seal: commercial/seal.md
-      - OpenAdapt Execute private-pilot guide: commercial/oem-brief.md
-      - Procurement FAQ: commercial/procurement-faq.md
-  - Contributing & research:
-    - contributing/index.md
-    - Product components and release admission: ecosystem/index.md
-    - Documentation source of truth: reference/documentation-governance.md
-    - Seal as an RL reward: commercial/seal-reward.md
-  - Blog ↗: https://blog.openadapt.ai
+      - Overview: security/index.md
+      - Data handling: security/data-handling.md
+      - Deployment boundaries: security/deployment-boundaries.md
+      - Evidence: security/evidence.md
+      - Subprocessors: security/subprocessors.md
+      - Release integrity: security/release-integrity.md
+      - Engagements: security/engagements.md
+      - Execute: security/execute.md
+      - Account security: security/account-security.md
+      - Procurement FAQ: security/procurement-faq.md
+      - Vulnerability disclosure: security/vulnerability-disclosure.md
   - OpenAdapt.ai ↗: https://openadapt.ai

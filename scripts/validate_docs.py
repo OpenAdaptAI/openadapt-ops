@@ -12,57 +12,45 @@ DOCS_DIR = ROOT / "docs"
 MKDOCS_FILE = ROOT / "mkdocs.yml"
 
 REQUIRED_PUBLIC_PAGES = {
+    # The home page routes developers and reviewers, states the demonstration
+    # model plainly, and points at the live release status and the limits.
     "index.md": (
-        "reference/production-lifecycle.md",
-        "Take the last manual step off your team",
-        "evaluate/index.md",
-        "calling agent",
+        "one or more demonstrations",
+        "tutorials/quickstart.md",
+        "how-to/connect-an-agent.md",
+        "security/release-integrity.md",
+        "explanation/limits.md",
     ),
-    "ecosystem/index.md": ("data-openadapt-production-target",),
-    # Get started is three tracks. The index routes to them; each track keeps
-    # the markers for its own entry point.
-    "get-started/index.md": (
-        "cli.md",
-        "agent-mcp.md",
-        "desktop/install.md",
-        "tutorial",
-        "first-workflow.md",
-    ),
-    "get-started/cli.md": (
+    # Fault-first onboarding: the first run shows a refused false success.
+    "tutorials/quickstart.md": (
         "pip install",
-        "openadapt flow tutorial",
         "--break-it",
         "RECONCILIATION_REQUIRED",
     ),
-    "get-started/agent-mcp.md": (
+    "how-to/connect-an-agent.md": (
         "claude mcp add openadapt",
-        "Never summarize halt as success",
+        "Never summarize a halt as success",
         "not_sure_if_saved",
     ),
-    "get-started/what-works-today.md": (
-        "Qualification evidence",
-        "Integrated product matrix",
-        "Hosted execution",
-        "$29/month",
-        "Supported / public offer",
-        "Hosted browser recorder",
-        "`openadapt-flow` 1.8.0",
-        "Authenticated live health",
-        "production pre-payment trials",
-        "first genuine customer",
+    "security/index.md": ("Attestation status", "SOC 2"),
+    # Nothing raw is uploaded: a person reviews a sanitized copy, the upload is
+    # bound to its hash, and content the sanitizer can't handle is refused.
+    "security/data-handling.md": (
+        "sanitized copy",
+        "viewer that listens only on this computer",
+        "SHA-256",
+        "refuse the whole copy",
     ),
-    "guides/hosted.md": (
-        "sanitized derivative",
-        "local viewer",
-        "cryptographic derivative hash",
-        "Unknown or unresolved content",
-        "Destination-aware decisions",
-        "production fails closed instead of silently using mock mode",
-    ),
-    "guides/security-review.md": ("Data-boundary answers", "Updates and rollback"),
-    "reference/documentation-governance.md": (
-        "source of truth",
-        "Noncanonical documentation trees",
+    # Release admission evidence and the live per-target state.
+    "security/release-integrity.md": (
+        "data-openadapt-production-target",
+        "at least three trials per task per condition",
+        "silent-incorrect-success",
+        "over-halt",
+        "active signed admission",
+        "RECONCILIATION_REQUIRED",
+        "without a blind",
+        "0.0.0-synthetic",
     ),
     # The ranges themselves are compared with the released package metadata
     # by scripts/check_published_version_claims.py, so only structure is
@@ -70,33 +58,23 @@ REQUIRED_PUBLIC_PAGES = {
     "reference/compatibility.md": (
         "pip install openadapt",
         "## Current compatibility contract",
-        "Production deployments should pin the exact versions",
+        "Pin the exact versions",
     ),
-    "reference/production-lifecycle.md": (
-        "at least three trials per task per condition",
-        "silent-incorrect-success",
-        "over-halt",
-        "active signed admission",
-        "RECONCILIATION_REQUIRED",
-        "without a blind",
-    ),
-    "packages/openadapt.md": (
-        "redirect_to: /ecosystem/",
-        "pip install openadapt",
-    ),
-    # The plain-language run results must stay derived from the transaction
-    # outcome: only a proven no-effect outcome may say nothing was written.
-    "evaluate/what-you-see.md": (
-        "Stopped before saving",
+    # Run results stay derived from the transaction outcome: only a proven
+    # no-effect outcome may say nothing was written.
+    "reference/outcomes.md": (
         "HALTED_BEFORE_EFFECT",
-        "Check the record",
         "RECONCILIATION_REQUIRED",
-        "Didn't finish",
         "FAILED_PLATFORM",
     ),
 }
 
-REQUIRED_NAV_PAGES = set(REQUIRED_PUBLIC_PAGES) - {"packages/openadapt.md"}
+REQUIRED_NAV_PAGES = set(REQUIRED_PUBLIC_PAGES)
+
+FIRST_WORKFLOW_PAGE = "tutorials/first-workflow.md"
+INSTALL_IDENTITY_PAGES = ("tutorials/quickstart.md", "tutorials/first-workflow.md")
+PACKAGES_PAGE = "reference/packages.md"
+RELEASE_STATUS_PAGE = "security/release-integrity.md"
 
 FIRST_WORKFLOW_CONTRACT = {
     "first_workflow_scope": "read_only",
@@ -111,8 +89,8 @@ FIRST_WORKFLOW_FORBIDDEN_FLAGS = (
 # docs.openadapt.ai and contradicted the public site or its own evidence.
 # Generated history pages may quote the old text.
 RETIRED_PUBLIC_CLAIMS = {
-    "$500/month": "retired Cloud price; Hosted is $29/month on openadapt.ai/pricing",
-    "$500.00/month": "retired Cloud price; Hosted is $29/month on openadapt.ai/pricing",
+    "$500/month": "retired Cloud price; link openadapt.ai/pricing instead",
+    "$500.00/month": "retired Cloud price; link openadapt.ai/pricing instead",
     "Every price and claim matches": "false claim; link the pricing page instead",
     "openadapt.ai/#demo": "the home page has no #demo anchor; use app.openadapt.ai/demo",
     "pricing#cloud-preview": "the pricing page has no #cloud-preview anchor; use #hosted",
@@ -139,15 +117,14 @@ STATIC_MATURITY_PATTERN = re.compile(
     re.IGNORECASE,
 )
 TARGET_STATE_DOC_PATHS = {
-    "concepts/deployment-matrix.md",
-    "desktop/connect-to-cloud.md",
-    "desktop/install.md",
-    "get-started/what-works-today.md",
-    "guides/hosted.md",
-    "guides/security-and-data-handling.md",
-    "guides/security-review.md",
     "index.md",
-    "reference/production-lifecycle.md",
+    "how-to/deploy.md",
+    "how-to/desktop.md",
+    "security/data-handling.md",
+    "security/deployment-boundaries.md",
+    "security/evidence.md",
+    "security/index.md",
+    "security/release-integrity.md",
 }
 PRODUCTION_TARGET_IDS = {
     "agent",
@@ -159,36 +136,34 @@ PRODUCTION_TARGET_IDS = {
     "openadapt",
 }
 
-# Old docs.openadapt.ai URLs that taught capture-then-train or mirrored a
-# research README as if it were the product. Each file must keep serving a
-# Flow-first redirect so a crawler that still holds the URL drops the old
-# snippet. Do not put these in the nav. `start/index.md` is a guessed-path
-# alias, not a retired train-path page: people type /start on docs and must
-# land on get-started, not a third onboarding tree.
+# Old docs.openadapt.ai URLs that taught capture-then-train, mirrored a
+# research README as if it were the product, or were guessed paths. Each must
+# keep redirecting, through the mkdocs-redirects map in mkdocs.yml, to the
+# current page, so a crawler that still holds the URL drops the old snippet.
 RETIRED_REDIRECTS = {
-    "architecture.md": "/concepts/",
-    "cli.md": "/reference/cli/",
-    "getting-started/index.md": "/get-started/",
-    "getting-started/installation.md": "/get-started/",
-    "getting-started/permissions.md": "/desktop/install/",
-    "getting-started/quickstart.md": "/get-started/",
-    "start/index.md": "/get-started/",
-    "LEGACY_FREEZE.md": "/get-started/",
-    "legacy/freeze.md": "/get-started/",
-    "packages/capture.md": "/ecosystem/",
-    "packages/evals.md": "/ecosystem/",
-    "packages/grounding.md": "/ecosystem/",
-    "packages/index.md": "/ecosystem/",
-    "packages/ml.md": "/ecosystem/",
-    "packages/openadapt-bootstrap.md": "/ecosystem/",
-    "packages/openadapt-evals.md": "/ecosystem/",
-    "packages/openadapt-grounding.md": "/ecosystem/",
-    "packages/openadapt-ml.md": "/ecosystem/",
-    "packages/openadapt-retrieval.md": "/ecosystem/",
-    "packages/openadapt-viewer.md": "/ecosystem/",
-    "packages/privacy.md": "/ecosystem/",
-    "packages/retrieval.md": "/ecosystem/",
-    "packages/viewer.md": "/ecosystem/",
+    "architecture.md": "explanation/how-it-works.md",
+    "cli.md": "reference/cli.md",
+    "getting-started/index.md": "tutorials/quickstart.md",
+    "getting-started/installation.md": "tutorials/quickstart.md",
+    "getting-started/permissions.md": "how-to/desktop.md",
+    "getting-started/quickstart.md": "tutorials/quickstart.md",
+    "start/index.md": "tutorials/quickstart.md",
+    "LEGACY_FREEZE.md": "index.md",
+    "legacy/freeze.md": "index.md",
+    "packages/capture.md": "reference/packages.md",
+    "packages/evals.md": "reference/packages.md",
+    "packages/grounding.md": "reference/packages.md",
+    "packages/index.md": "reference/packages.md",
+    "packages/ml.md": "reference/packages.md",
+    "packages/openadapt-bootstrap.md": "reference/packages.md",
+    "packages/openadapt-evals.md": "reference/packages.md",
+    "packages/openadapt-grounding.md": "reference/packages.md",
+    "packages/openadapt-ml.md": "reference/packages.md",
+    "packages/openadapt-retrieval.md": "reference/packages.md",
+    "packages/openadapt-viewer.md": "reference/packages.md",
+    "packages/privacy.md": "reference/packages.md",
+    "packages/retrieval.md": "reference/packages.md",
+    "packages/viewer.md": "reference/packages.md",
 }
 
 # Phrases that describe the retired train-a-VLM happy path as current product.
@@ -246,6 +221,23 @@ def _frontmatter(content):
     return metadata if isinstance(metadata, dict) else {}
 
 
+def _flat(text):
+    return " ".join(text.split())
+
+
+def _nav_sections(entries, trail=()):
+    """Yield (section names, page path) for every page in a nav tree."""
+    for entry in entries or []:
+        if isinstance(entry, str):
+            yield trail, entry
+        elif isinstance(entry, dict):
+            for name, value in entry.items():
+                if isinstance(value, list):
+                    yield from _nav_sections(value, trail + (name,))
+                elif isinstance(value, str):
+                    yield trail, value
+
+
 def check_product_docs_contract(docs_dir=None, mkdocs_file=None):
     """Keep sync/deploy from erasing product truth or restoring package-first IA."""
     docs_dir = pathlib.Path(docs_dir or DOCS_DIR)
@@ -257,14 +249,14 @@ def check_product_docs_contract(docs_dir=None, mkdocs_file=None):
         if not page.exists():
             issues.append(f"Missing required product page: {relative_path}")
             continue
-        content = page.read_text()
+        content = _flat(page.read_text())
         for marker in markers:
-            if marker not in content:
+            if _flat(marker) not in content:
                 issues.append(f"Missing product marker in {relative_path}: {marker}")
 
-    first_workflow = docs_dir / "get-started" / "first-workflow.md"
+    first_workflow = docs_dir / FIRST_WORKFLOW_PAGE
     if not first_workflow.is_file():
-        issues.append("Missing required product page: get-started/first-workflow.md")
+        issues.append(f"Missing required product page: {FIRST_WORKFLOW_PAGE}")
     else:
         first_workflow_text = first_workflow.read_text()
         first_workflow_metadata = _frontmatter(first_workflow_text)
@@ -287,38 +279,23 @@ def check_product_docs_contract(docs_dir=None, mkdocs_file=None):
         return issues
 
     nav = mkdocs_file.read_text()
-    for relative_path in REQUIRED_NAV_PAGES:
-        if relative_path not in nav:
-            issues.append(f"Required product page missing from navigation: {relative_path}")
     if "\n  - Packages:" in nav:
-        issues.append("Package-first top-level navigation is forbidden; use Ecosystem/Reference")
+        issues.append("Package-first top-level navigation is forbidden; use Reference")
     # MkDocs permits Python-specific YAML tags in extension configuration.
     # Parse only the final nav section with the safe loader.
     nav_section = nav[nav.index("\nnav:") + 1 :] if "\nnav:" in nav else nav
     nav_config = yaml.safe_load(nav_section) or {}
-    # The package/repository catalog must stay nested under the reference-style
-    # engineering section rather than promoted to a package-first top level. The
-    # five-section IA renamed that section "Internals", and the Diataxis IA
-    # moved it to "Contributing & research"; accept any of these so the guard
-    # tracks intent (not a package-first top level), not a specific label.
-    catalog_section_names = {"Reference", "Internals", "Contributing & research"}
-    reference_entries = [
-        item
-        for entry in nav_config.get("nav", [])
-        if isinstance(entry, dict)
-        for name, items in entry.items()
-        if name in catalog_section_names and isinstance(items, list)
-        for item in items
-    ]
-    catalog_is_under_reference = any(
-        item == "ecosystem/index.md"
-        or (isinstance(item, dict) and "ecosystem/index.md" in item.values())
-        for item in reference_entries
+    nav_pages = dict(
+        (page, trail) for trail, page in _nav_sections(nav_config.get("nav", []))
     )
-    if not catalog_is_under_reference:
+    for relative_path in sorted(REQUIRED_NAV_PAGES | {FIRST_WORKFLOW_PAGE}):
+        if relative_path not in nav_pages:
+            issues.append(f"Required product page missing from navigation: {relative_path}")
+    # The package map is reference material: it must stay inside a Reference
+    # section, never promoted to its own top-level tab.
+    if "Reference" not in nav_pages.get(PACKAGES_PAGE, ()):
         issues.append(
-            "Package and repository lifecycle catalog must remain under the "
-            "Reference, Internals, or Contributing & research section"
+            f"The packages map ({PACKAGES_PAGE}) must remain under a Reference section"
         )
 
     public_text = "\n".join(
@@ -336,10 +313,7 @@ def check_product_docs_contract(docs_dir=None, mkdocs_file=None):
         "Package names during the transition",
         "pip install openadapt-flow",
     ):
-        for relative_path in (
-            "get-started/index.md",
-            "get-started/first-workflow.md",
-        ):
+        for relative_path in INSTALL_IDENTITY_PAGES:
             page = docs_dir / relative_path
             if page.exists() and marker in page.read_text():
                 issues.append(
@@ -349,9 +323,8 @@ def check_product_docs_contract(docs_dir=None, mkdocs_file=None):
         if marker in public_text:
             issues.append(f"Stale prelaunch copy: {marker}")
 
-    # The seven product targets derive their state at read time. Supporting
-    # repositories still need an explicit Support/Beta/Experimental/Research
-    # state, so this guard applies only to current target-state pages.
+    # The seven product targets derive their state at read time, so pages
+    # that describe them carry no static maturity word.
     for relative in sorted(TARGET_STATE_DOC_PATHS):
         path = docs_dir / relative
         if not path.is_file():
@@ -362,12 +335,12 @@ def check_product_docs_contract(docs_dir=None, mkdocs_file=None):
                 f"Static product-target maturity label in {relative}: {match.group(0)}"
             )
 
-    ecosystem = docs_dir / "ecosystem/index.md"
-    if ecosystem.is_file():
-        ecosystem_text = ecosystem.read_text()
+    status_page = docs_dir / RELEASE_STATUS_PAGE
+    if status_page.is_file():
+        status_text = status_page.read_text()
         target_ids = re.findall(
             r'data-openadapt-production-target="([a-z-]+)"',
-            ecosystem_text,
+            status_text,
         )
         if len(target_ids) != len(PRODUCTION_TARGET_IDS) or set(target_ids) != (
             PRODUCTION_TARGET_IDS
@@ -376,15 +349,6 @@ def check_product_docs_contract(docs_dir=None, mkdocs_file=None):
                 "Product component table must bind each of the seven targets "
                 "to one admission-derived state cell"
             )
-        for line in ecosystem_text.splitlines():
-            if "data-openadapt-production-target=" not in line:
-                continue
-            match = STATIC_MATURITY_PATTERN.search(line)
-            if match:
-                issues.append(
-                    "Static product-target maturity label in ecosystem/index.md: "
-                    f"{match.group(0)}"
-                )
 
     return issues
 
@@ -425,32 +389,36 @@ def check_retired_public_claims(docs_dir=None):
     return issues
 
 
-def check_retired_redirects(docs_dir=None):
-    """Keep retired train-path and package-mirror URLs on a Flow-first redirect."""
+def redirect_map(mkdocs_file=None):
+    """Return the mkdocs-redirects ``redirect_maps`` from mkdocs.yml."""
+    mkdocs_file = pathlib.Path(mkdocs_file or MKDOCS_FILE)
+    if not mkdocs_file.is_file():
+        return {}
+    config = yaml.load(mkdocs_file.read_text(), Loader=yaml.BaseLoader) or {}
+    for plugin in config.get("plugins", []) or []:
+        if isinstance(plugin, dict) and "redirects" in plugin:
+            return dict((plugin["redirects"] or {}).get("redirect_maps") or {})
+    return {}
+
+
+def check_retired_redirects(docs_dir=None, mkdocs_file=None):
+    """Keep retired and moved URLs redirecting to a page that exists."""
     docs_dir = pathlib.Path(docs_dir or DOCS_DIR)
+    redirects = redirect_map(mkdocs_file)
     issues = []
     for relative, dest in sorted(RETIRED_REDIRECTS.items()):
-        page = docs_dir / relative
-        if not page.is_file():
+        actual = redirects.get(relative)
+        if actual is None:
+            issues.append(f"Missing redirect for retired route: {relative}")
+        elif actual.split("#", 1)[0] != dest:
             issues.append(
-                f"Missing Flow-first redirect for retired route: {relative}"
+                f"Retired route {relative} must redirect to {dest}; found: {actual!r}"
             )
-            continue
-        meta = _frontmatter(page.read_text())
-        if meta.get("redirect_to") != dest:
-            issues.append(
-                f"Retired route {relative} must redirect_to {dest}; "
-                f"found: {meta.get('redirect_to')!r}"
-            )
-    packages = docs_dir / "packages"
-    if packages.is_dir():
-        for page in sorted(packages.glob("*.md")):
-            meta = _frontmatter(page.read_text())
-            if meta.get("redirect_to") != "/ecosystem/":
-                relative = page.relative_to(docs_dir).as_posix()
-                issues.append(
-                    f"Package page {relative} must redirect_to: /ecosystem/"
-                )
+    for relative, dest in sorted(redirects.items()):
+        if (docs_dir / relative).exists():
+            issues.append(f"Redirect source is also a page: {relative}")
+        if not (docs_dir / dest.split("#", 1)[0]).is_file():
+            issues.append(f"Redirect {relative} points at a missing page: {dest}")
     return issues
 
 

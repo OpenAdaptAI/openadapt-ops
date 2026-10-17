@@ -682,7 +682,7 @@ test("the ecosystem page uses the runtime target fallback label", () => {
   );
 
   const ecosystem = readFileSync(
-    resolve(__dirname, "../../docs/ecosystem/index.md"),
+    resolve(__dirname, "../../docs/security/release-integrity.md"),
     "utf8",
   );
   const targetSpans = [

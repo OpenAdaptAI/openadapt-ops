@@ -13,18 +13,17 @@ from validate_docs import (
     check_retired_public_claims,
     check_retired_redirects,
     check_train_path_not_current_product,
+    redirect_map,
 )
 
 
-def test_product_catalog_binds_all_admitted_targets_to_live_state():
+def test_release_status_binds_all_admitted_targets_to_live_state():
     root = pathlib.Path(__file__).resolve().parent.parent
-    content = (root / "docs" / "ecosystem" / "index.md").read_text()
+    content = (root / "docs" / "security" / "release-integrity.md").read_text()
 
     for target in ("agent", "capture", "cloud", "desktop", "docs", "flow", "openadapt"):
         assert f'data-openadapt-production-target="{target}"' in content
     assert content.count("data-openadapt-production-target=") == 7
-    assert "**Experimental**" in content
-    assert "**Research**" in content
 
 
 def test_check_empty_pages_finds_issues(tmp_path):
@@ -56,47 +55,24 @@ def test_check_empty_pages_nested(tmp_path):
     assert "tiny.md" in issues[0]
 
 
+TARGETS = ("agent", "capture", "cloud", "desktop", "docs", "flow", "openadapt")
+
+
 def _write_contract_docs(root):
     pages = {
         "index.md": (
-            "# Take the last manual step off your team\n\n"
-            "[Evaluate](evaluate/index.md). Connect the calling agent. "
-            "[Production status](reference/production-lifecycle.md)"
+            "# OpenAdapt\n\nOne or more demonstrations: one or more demonstrations. "
+            "[Quickstart](tutorials/quickstart.md), "
+            "[an agent](how-to/connect-an-agent.md), "
+            "[release status](security/release-integrity.md), "
+            "[limits](explanation/limits.md)."
         ),
-        "ecosystem/index.md": (
-            "# Product components and release admission\n\n"
-            + "\n".join(
-                f'<span data-openadapt-production-target="{target}">'
-                "No current verified Production admission.</span>"
-                for target in (
-                    "agent",
-                    "capture",
-                    "cloud",
-                    "desktop",
-                    "docs",
-                    "flow",
-                    "openadapt",
-                )
-            )
-            + "\n\nopenadapt-privacy is **Experimental**. "
-            "openadapt-evals is **Research**."
+        "tutorials/quickstart.md": (
+            "# Quickstart\n\n`pip install openadapt`, then "
+            "`openadapt quickstart --break-it`. The halted rerun reads "
+            "`RECONCILIATION_REQUIRED`."
         ),
-        "get-started/index.md": (
-            "# Get started\n\nChoose [the command line](cli.md), "
-            "[Desktop](../desktop/install.md), or [an agent](agent-mcp.md). "
-            "The bundled workflow is a tutorial. Continue in "
-            "[Your first workflow](first-workflow.md)."
-        ),
-        "get-started/cli.md": (
-            "# Command line\n\nInstall with `pip install openadapt`, then "
-            "`openadapt flow tutorial` and `openadapt quickstart --break-it`. "
-            "The halted rerun reads `RECONCILIATION_REQUIRED`."
-        ),
-        "get-started/agent-mcp.md": (
-            "# Agent over MCP\n\n`claude mcp add openadapt`. Never summarize "
-            "halt as success. Never retry `not_sure_if_saved`."
-        ),
-        "get-started/first-workflow.md": (
+        "tutorials/first-workflow.md": (
             "---\n"
             "first_workflow_scope: read_only\n"
             "first_write_admission: qualification_required\n"
@@ -104,50 +80,39 @@ def _write_contract_docs(root):
             "# Your first workflow\n\nInstall with `pip install openadapt` and "
             "record a bounded workflow."
         ),
-        "get-started/what-works-today.md": (
-            "# Qualification evidence\n\n## Integrated product matrix\n\n"
-            "Hosted execution is a Supported / public offer at $29/month. "
-            "Hosted browser recorder evidence is bounded on `openadapt-flow` 1.8.0. "
-            "Authenticated live health proves service identity. Three production "
-            "pre-payment trials passed; the first genuine customer transaction "
-            "extends the evidence."
+        "how-to/connect-an-agent.md": (
+            "# Connect an agent\n\n`claude mcp add openadapt`. Never summarize "
+            "a halt as success. Never retry `not_sure_if_saved`."
         ),
-        "guides/hosted.md": (
-            "# Hosted browser execution\n\nA sanitized derivative is inspected in "
-            "a local viewer and bound to a cryptographic derivative hash. "
-            "Unknown or unresolved content is refused. "
-            "## Destination-aware decisions\n\nProduction documentation explains why "
-            "production fails closed instead of silently using mock mode."
+        "security/index.md": "# Security\n\n## Attestation status\n\nNo SOC 2 report.",
+        "security/data-handling.md": (
+            "# Data handling\n\nA person reviews the sanitized copy in a viewer "
+            "that listens only on this computer. Cloud checks the SHA-256. Files it "
+            "can't handle refuse the whole copy."
         ),
-        "guides/security-review.md": (
-            "# Data-boundary answers\n\n## Updates and rollback\n"
-        ),
-        "reference/documentation-governance.md": (
-            "# Documentation source of truth\n\n"
-            "## Noncanonical documentation trees\n"
+        "security/release-integrity.md": (
+            "# Release integrity\n\n"
+            + "\n".join(
+                f'<span data-openadapt-production-target="{target}">'
+                "No current verified Production admission.</span>"
+                for target in TARGETS
+            )
+            + "\n\nEvidence needs at least three trials per task per\ncondition, "
+            "silent-incorrect-success and over-halt counts, and uncertain-delivery "
+            "trials that end RECONCILIATION_REQUIRED without a blind retry. A run "
+            "needs an active signed admission. Tutorial rows are 0.0.0-synthetic."
         ),
         "reference/compatibility.md": (
             "# Versions and compatibility\n\n`pip install openadapt`\n\n"
             "## Current compatibility contract\n\n"
-            "Production deployments should pin the exact versions."
+            "Pin the exact versions a workflow was qualified on."
         ),
-        "reference/production-lifecycle.md": (
-            "# Production admission\n\nA qualified workflow requires an active signed "
-            "admission and at least three trials per task per condition. Report "
-            "each silent-incorrect-success and over-halt count. Expected "
-            "uncertain-delivery faults return RECONCILIATION_REQUIRED without a blind "
-            "retry."
+        "reference/outcomes.md": (
+            "# Run outcomes\n\nStopped before saving is HALTED_BEFORE_EFFECT. "
+            "Check the record is RECONCILIATION_REQUIRED. Didn't finish is "
+            "FAILED_PLATFORM."
         ),
-        "packages/openadapt.md": (
-            "---\nredirect_to: /ecosystem/\n---\n\n"
-            "# OpenAdapt package documentation moved\n\n"
-            "`pip install openadapt`"
-        ),
-        "evaluate/what-you-see.md": (
-            "# What you see and control\n\n"
-            "Stopped before saving is HALTED_BEFORE_EFFECT. Check the record is "
-            "RECONCILIATION_REQUIRED. Didn't finish is FAILED_PLATFORM."
-        ),
+        "reference/packages.md": "# Packages\n\n`pip install openadapt`",
     }
     for relative_path, content in pages.items():
         path = root / relative_path
@@ -156,15 +121,23 @@ def _write_contract_docs(root):
     return pages
 
 
+def _write_nav(tmp_path, pages, packages_section="Reference"):
+    mkdocs_file = tmp_path / "mkdocs.yml"
+    mkdocs_file.write_text(
+        "nav:\n  - Developers:\n      - Guides:\n"
+        + "".join(
+            f"          - {path}\n" for path in pages if path != "reference/packages.md"
+        )
+        + f"      - {packages_section}:\n"
+        + "          - Packages: reference/packages.md\n"
+    )
+    return mkdocs_file
+
+
 def test_product_docs_contract_passes_for_product_first_nav(tmp_path):
     docs_dir = tmp_path / "docs"
     pages = _write_contract_docs(docs_dir)
-    mkdocs_file = tmp_path / "mkdocs.yml"
-    mkdocs_file.write_text(
-        "nav:\n  - Reference:\n"
-        + "".join(f"    - {path}\n" for path in pages)
-        + "    - Package and repository lifecycle: ecosystem/index.md\n"
-    )
+    mkdocs_file = _write_nav(tmp_path, pages)
 
     assert check_product_docs_contract(docs_dir, mkdocs_file) == []
 
@@ -181,7 +154,7 @@ def test_product_docs_contract_rejects_wrong_first_workflow_contract(
 ):
     docs_dir = tmp_path / "docs"
     pages = _write_contract_docs(docs_dir)
-    first_workflow = docs_dir / "get-started/first-workflow.md"
+    first_workflow = docs_dir / "tutorials/first-workflow.md"
     content = first_workflow.read_text()
     expected = {
         "first_workflow_scope": "read_only",
@@ -190,12 +163,7 @@ def test_product_docs_contract_rejects_wrong_first_workflow_contract(
     first_workflow.write_text(
         content.replace(f"{field}: {expected}", f"{field}: {bad_value}")
     )
-    mkdocs_file = tmp_path / "mkdocs.yml"
-    mkdocs_file.write_text(
-        "nav:\n  - Reference:\n"
-        + "".join(f"    - {path}\n" for path in pages)
-        + "    - Package and repository lifecycle: ecosystem/index.md\n"
-    )
+    mkdocs_file = _write_nav(tmp_path, pages)
 
     issues = check_product_docs_contract(docs_dir, mkdocs_file)
 
@@ -214,16 +182,11 @@ def test_product_docs_contract_rejects_failure_demo_in_first_workflow(
 ):
     docs_dir = tmp_path / "docs"
     pages = _write_contract_docs(docs_dir)
-    first_workflow = docs_dir / "get-started/first-workflow.md"
+    first_workflow = docs_dir / "tutorials/first-workflow.md"
     first_workflow.write_text(
         first_workflow.read_text() + f"\n`openadapt quickstart {flag}`\n"
     )
-    mkdocs_file = tmp_path / "mkdocs.yml"
-    mkdocs_file.write_text(
-        "nav:\n  - Reference:\n"
-        + "".join(f"    - {path}\n" for path in pages)
-        + "    - Package and repository lifecycle: ecosystem/index.md\n"
-    )
+    mkdocs_file = _write_nav(tmp_path, pages)
 
     issues = check_product_docs_contract(docs_dir, mkdocs_file)
 
@@ -237,31 +200,25 @@ def test_product_docs_contract_rejects_failure_demo_in_first_workflow(
 def test_product_docs_contract_rejects_missing_page_and_package_first_nav(tmp_path):
     docs_dir = tmp_path / "docs"
     pages = _write_contract_docs(docs_dir)
-    (docs_dir / "guides/security-review.md").unlink()
+    (docs_dir / "security/index.md").unlink()
     mkdocs_file = tmp_path / "mkdocs.yml"
     mkdocs_file.write_text(
         "nav:\n  - Packages:\n"
         + "".join(f"    - {path}\n" for path in pages)
-        + "  - Reference:\n"
-        + "    - Package and repository lifecycle: ecosystem/index.md\n"
     )
 
     issues = check_product_docs_contract(docs_dir, mkdocs_file)
     assert any("Missing required product page" in issue for issue in issues)
     assert any("Package-first top-level navigation" in issue for issue in issues)
+    assert any("must remain under a Reference section" in issue for issue in issues)
 
 
 def test_product_docs_contract_rejects_stale_prelaunch_copy(tmp_path):
     docs_dir = tmp_path / "docs"
     pages = _write_contract_docs(docs_dir)
-    hosted = docs_dir / "guides/hosted.md"
+    hosted = docs_dir / "security/data-handling.md"
     hosted.write_text(hosted.read_text() + "\nBeta launch candidate\n")
-    mkdocs_file = tmp_path / "mkdocs.yml"
-    mkdocs_file.write_text(
-        "nav:\n  - Reference:\n"
-        + "".join(f"    - {path}\n" for path in pages)
-        + "    - Package and repository lifecycle: ecosystem/index.md\n"
-    )
+    mkdocs_file = _write_nav(tmp_path, pages)
 
     issues = check_product_docs_contract(docs_dir, mkdocs_file)
 
@@ -271,14 +228,9 @@ def test_product_docs_contract_rejects_stale_prelaunch_copy(tmp_path):
 def test_product_docs_contract_rejects_not_actively_admitted_label(tmp_path):
     docs_dir = tmp_path / "docs"
     pages = _write_contract_docs(docs_dir)
-    hosted = docs_dir / "guides/hosted.md"
+    hosted = docs_dir / "security/data-handling.md"
     hosted.write_text(hosted.read_text() + "\nNot actively admitted\n")
-    mkdocs_file = tmp_path / "mkdocs.yml"
-    mkdocs_file.write_text(
-        "nav:\n  - Reference:\n"
-        + "".join(f"    - {path}\n" for path in pages)
-        + "    - Package and repository lifecycle: ecosystem/index.md\n"
-    )
+    mkdocs_file = _write_nav(tmp_path, pages)
 
     issues = check_product_docs_contract(docs_dir, mkdocs_file)
 
@@ -288,59 +240,56 @@ def test_product_docs_contract_rejects_not_actively_admitted_label(tmp_path):
 def test_product_docs_contract_rejects_static_maturity_copy(tmp_path):
     docs_dir = tmp_path / "docs"
     pages = _write_contract_docs(docs_dir)
-    hosted = docs_dir / "guides/hosted.md"
+    hosted = docs_dir / "security/data-handling.md"
     hosted.write_text(hosted.read_text() + "\nThe recorder is Experimental.\n")
-    mkdocs_file = tmp_path / "mkdocs.yml"
-    mkdocs_file.write_text(
-        "nav:\n  - Reference:\n"
-        + "".join(f"    - {path}\n" for path in pages)
-        + "    - Package and repository lifecycle: ecosystem/index.md\n"
-    )
+    mkdocs_file = _write_nav(tmp_path, pages)
 
     issues = check_product_docs_contract(docs_dir, mkdocs_file)
 
     assert any("Static product-target maturity label" in issue for issue in issues)
 
 
-def test_product_docs_contract_rejects_static_target_state_in_catalog(tmp_path):
+def test_product_docs_contract_rejects_static_target_state_on_status_page(tmp_path):
     docs_dir = tmp_path / "docs"
     pages = _write_contract_docs(docs_dir)
-    ecosystem = docs_dir / "ecosystem/index.md"
-    ecosystem.write_text(
-        ecosystem.read_text().replace(
+    status = docs_dir / "security/release-integrity.md"
+    status.write_text(
+        status.read_text().replace(
             '<span data-openadapt-production-target="agent">',
             '**Beta** <span data-openadapt-production-target="agent">',
         )
     )
-    mkdocs_file = tmp_path / "mkdocs.yml"
-    mkdocs_file.write_text(
-        "nav:\n  - Reference:\n"
-        + "".join(f"    - {path}\n" for path in pages)
-        + "    - Product components: ecosystem/index.md\n"
-    )
+    mkdocs_file = _write_nav(tmp_path, pages)
 
     issues = check_product_docs_contract(docs_dir, mkdocs_file)
 
     assert any(
-        "Static product-target maturity label in ecosystem/index.md" in issue
+        "Static product-target maturity label in security/release-integrity.md" in issue
         for issue in issues
     )
+
+
+def test_product_docs_contract_requires_all_seven_targets(tmp_path):
+    docs_dir = tmp_path / "docs"
+    pages = _write_contract_docs(docs_dir)
+    status = docs_dir / "security/release-integrity.md"
+    status.write_text(status.read_text().replace('data-openadapt-production-target="docs"', ""))
+    mkdocs_file = _write_nav(tmp_path, pages)
+
+    issues = check_product_docs_contract(docs_dir, mkdocs_file)
+
+    assert any("seven targets" in issue for issue in issues)
 
 
 def test_product_docs_contract_rejects_competing_install_identity(tmp_path):
     docs_dir = tmp_path / "docs"
     pages = _write_contract_docs(docs_dir)
-    first_workflow = docs_dir / "get-started/first-workflow.md"
+    first_workflow = docs_dir / "tutorials/first-workflow.md"
     first_workflow.write_text(
         first_workflow.read_text()
         + "\nPackage names during the transition: pip install openadapt-flow\n"
     )
-    mkdocs_file = tmp_path / "mkdocs.yml"
-    mkdocs_file.write_text(
-        "nav:\n  - Reference:\n"
-        + "".join(f"    - {path}\n" for path in pages)
-        + "    - Package and repository lifecycle: ecosystem/index.md\n"
-    )
+    mkdocs_file = _write_nav(tmp_path, pages)
 
     issues = check_product_docs_contract(docs_dir, mkdocs_file)
 
@@ -381,20 +330,41 @@ def test_real_docs_have_no_train_path_copy():
 
 def test_real_docs_keep_retired_flow_redirects():
     root = pathlib.Path(__file__).resolve().parent.parent
-    assert check_retired_redirects(root / "docs") == []
+    assert check_retired_redirects(root / "docs", root / "mkdocs.yml") == []
 
 
-def test_retired_redirect_missing_file_is_an_issue(tmp_path):
+def test_real_redirect_map_covers_every_retired_route():
+    root = pathlib.Path(__file__).resolve().parent.parent
+    assert len(redirect_map(root / "mkdocs.yml")) >= 100
+
+
+def test_retired_redirect_missing_entry_is_an_issue(tmp_path):
     docs_dir = tmp_path / "docs"
     docs_dir.mkdir()
+    mkdocs_file = tmp_path / "mkdocs.yml"
+    mkdocs_file.write_text("plugins:\n  - search\n")
 
-    issues = check_retired_redirects(docs_dir)
+    issues = check_retired_redirects(docs_dir, mkdocs_file)
 
     assert any(
-        "Missing Flow-first redirect for retired route: getting-started/quickstart.md"
-        in issue
+        "Missing redirect for retired route: getting-started/quickstart.md" in issue
         for issue in issues
     )
+
+
+def test_redirect_to_a_missing_page_is_an_issue(tmp_path):
+    docs_dir = tmp_path / "docs"
+    docs_dir.mkdir()
+    (docs_dir / "old.md").write_text("# Old page still here")
+    mkdocs_file = tmp_path / "mkdocs.yml"
+    mkdocs_file.write_text(
+        "plugins:\n  - redirects:\n      redirect_maps:\n        old.md: new.md\n"
+    )
+
+    issues = check_retired_redirects(docs_dir, mkdocs_file)
+
+    assert any("Redirect source is also a page: old.md" in issue for issue in issues)
+    assert any("points at a missing page: new.md" in issue for issue in issues)
 
 
 def test_retired_public_claims_are_flagged(tmp_path):
@@ -429,7 +399,7 @@ def test_retired_public_claims_allow_generated_history(tmp_path):
     """Generated history pages may quote a retired claim."""
     (tmp_path / "changelog.md").write_text("# Changelog\n\nCloud moved off $500/month.")
     (tmp_path / "whats-new.md").write_text("# What's new\n\nWas $500.00/month.")
-    (tmp_path / "index.md").write_text("# Home\n\nHosted is $29/month.")
+    (tmp_path / "index.md").write_text("# Home\n\nSee the pricing page.")
 
     assert check_retired_public_claims(docs_dir=tmp_path) == []
 
@@ -439,18 +409,13 @@ def test_live_docs_carry_no_retired_public_claim():
 
 
 def test_product_docs_contract_requires_outcome_derived_results(tmp_path):
-    """The Evaluate results table must keep its transaction-outcome mapping."""
+    """The outcomes page must keep its transaction-outcome mapping."""
     docs_dir = tmp_path / "docs"
     pages = _write_contract_docs(docs_dir)
-    (docs_dir / "evaluate/what-you-see.md").write_text(
-        "# What you see and control\n\nStopped for review is HALTED."
+    (docs_dir / "reference/outcomes.md").write_text(
+        "# Run outcomes\n\nStopped for review is HALTED."
     )
-    mkdocs_file = tmp_path / "mkdocs.yml"
-    mkdocs_file.write_text(
-        "nav:\n  - Reference:\n"
-        + "".join(f"    - {path}\n" for path in pages)
-        + "    - Package and repository lifecycle: ecosystem/index.md\n"
-    )
+    mkdocs_file = _write_nav(tmp_path, pages)
 
     issues = check_product_docs_contract(docs_dir, mkdocs_file)
 
@@ -458,31 +423,22 @@ def test_product_docs_contract_requires_outcome_derived_results(tmp_path):
     assert any("HALTED_BEFORE_EFFECT" in issue for issue in issues)
 
 
-def test_product_docs_contract_accepts_catalog_under_contributing(tmp_path):
+def test_product_docs_contract_rejects_packages_map_outside_reference(tmp_path):
     docs_dir = tmp_path / "docs"
     pages = _write_contract_docs(docs_dir)
-    mkdocs_file = tmp_path / "mkdocs.yml"
-    mkdocs_file.write_text(
-        "nav:\n  - Reference:\n"
-        + "".join(f"    - {path}\n" for path in pages if path != "ecosystem/index.md")
-        + "  - Contributing & research:\n"
-        + "    - Product components and release admission: ecosystem/index.md\n"
-    )
+    mkdocs_file = _write_nav(tmp_path, pages, packages_section="Guides 2")
 
-    assert check_product_docs_contract(docs_dir, mkdocs_file) == []
+    issues = check_product_docs_contract(docs_dir, mkdocs_file)
+
+    assert any("must remain under a Reference section" in issue for issue in issues)
 
 
 def test_product_docs_contract_rejects_mcp_track_without_halt_rule(tmp_path):
     docs_dir = tmp_path / "docs"
     pages = _write_contract_docs(docs_dir)
-    (docs_dir / "get-started/agent-mcp.md").write_text("# Agent over MCP\n")
-    mkdocs_file = tmp_path / "mkdocs.yml"
-    mkdocs_file.write_text(
-        "nav:\n  - Reference:\n"
-        + "".join(f"    - {path}\n" for path in pages)
-        + "    - Package and repository lifecycle: ecosystem/index.md\n"
-    )
+    (docs_dir / "how-to/connect-an-agent.md").write_text("# Connect an agent\n")
+    mkdocs_file = _write_nav(tmp_path, pages)
 
     issues = check_product_docs_contract(docs_dir, mkdocs_file)
 
-    assert any("Never summarize halt as success" in issue for issue in issues)
+    assert any("Never summarize a halt as success" in issue for issue in issues)

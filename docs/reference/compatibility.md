@@ -1,67 +1,49 @@
+---
+description: >-
+  Which package versions work together, the supported Python versions, and
+  how versions change.
+---
+
 # Versions and compatibility
 
-Most users install one product package:
+Most people install one package, `openadapt`. Its metadata picks compatible
+versions of the engine and the MCP server:
 
 ```bash
-pip install openadapt
-openadapt flow --help
+python -m pip install --upgrade openadapt
+openadapt version
 ```
-
-`openadapt` is the launcher and unified CLI. Its dependency metadata selects a
-compatible `openadapt-flow`, the canonical compiler and runtime. Installing the
-engine package directly is supported for contributors and embedders, but it is
-not a separate product onboarding path.
 
 ## Current compatibility contract
 
-These ranges are what the newest `openadapt` and `openadapt-flow` releases on
+These are the ranges the newest `openadapt` and `openadapt-flow` releases on
 PyPI require. A daily check compares this table with that metadata.
 
 | Component | Compatible range | Role |
 |---|---|---|
-| `openadapt` 1.x | `openadapt-flow >=2.0.0,<3` | Public installer and `openadapt flow …` CLI |
-| `openadapt-flow` 1.x + native capture | `openadapt-capture >=1.2.0,<2` | Canonical native demonstration recording for Windows, macOS, Linux, RDP, and Citrix |
-| Windows action-time UIA handoff | `openadapt-flow >=2.0.0,<3` + `openadapt-capture >=1.2.0,<2` | Retains the nearest actionable UIA node for native Windows compilation; RDP and Citrix remain externally black-box |
-| `openadapt-flow` 1.x + privacy extra | `openadapt-privacy[presidio] >=1.0` | Configured local scrub/redaction paths |
-| `openadapt-flow` 2.x base install and its interop, console, execute, and reward extras | `openadapt-types >=0.18,<0.19` | Field-exact runtime overlay, attended-decision boundary, and the async Execute request, status, webhook, and receipt contracts for approved private pilots |
-| Python | 3.10-3.12 | Supported runtime range for the current 1.x line |
+| `openadapt` 1.x | `openadapt-flow >=2.0.0,<3` | The `openadapt` command and its `openadapt flow` commands |
+| `openadapt` 1.x | `openadapt-agent >=2.1.0,<3` | The `openadapt agent` commands and the MCP server |
+| `openadapt-flow` 2.x with desktop recording | `openadapt-capture >=1.2.0,<2` | Recording on Windows, macOS, Linux, RDP, and Citrix |
+| Windows control details at recording time | `openadapt-flow >=2.0.0,<3` + `openadapt-capture >=1.2.0,<2` | Keeps the UI Automation details of each clicked control for native Windows apps |
+| `openadapt-flow` 2.x with the `privacy` extra | `openadapt-privacy[presidio] >=1.0` | Local scrubbing and redaction |
+| `openadapt-flow` 2.x and its interop, console, execute, and reward extras | `openadapt-types >=0.18,<0.19` | Shared data models, including the Execute request, status, webhook, and receipt |
+| Python | 3.10-3.12 | Supported runtime range |
 
-The package metadata is the executable source of truth for these ranges. CI
-installs the real optional packages at the bounded edges used by the engine,
-and release archives are validated before publication.
+On Python 3.13 and later, `pip install openadapt` installs only the launcher,
+because the engine and the MCP server require Python 3.12 or earlier. Use a
+3.12 environment or `uvx --python 3.12 openadapt`.
 
 ## Version policy
 
-- Public launcher and engine APIs follow semantic versioning. Breaking CLI,
-  bundle, or runtime-contract changes are reserved for a major release.
-- Optional 0.x schema packages may break at a minor release. Each consumer pins
-  the exact minor contract that it tests. Flow pins one `openadapt-types`
-  minor for its base install and every extra that uses it, so an Execute
-  client installed next to Flow uses the range in the table. The newest
-  `openadapt-types` release can be ahead of that range; install the range Flow
-  names.
-- Patch releases may ship immediately for security, safety, packaging, or
-  installation defects. Routine capability changes should be consolidated so
-  adopters see product releases rather than repository-level merge noise.
-- The supported open-source line is the latest stable 1.x launcher and a
-  compatible 1.x engine. Production deployments should pin the exact versions
-  that passed their workflow qualification, then rerun that qualification
-  before an upgrade.
+- The launcher and engine follow semantic versioning. Breaking changes to the
+  commands, the bundle format, or run contracts wait for a major release.
+- 0.x schema packages such as `openadapt-types` may break at a minor
+  release. Each package that uses one pins the exact minor version it tests,
+  so the newest `openadapt-types` can be ahead of the range above. Install the
+  range Flow names.
+- Patch releases can ship at any time for security, safety, or installation
+  fixes.
+- Pin the exact versions a workflow was qualified on in production, and
+  qualify again before an upgrade.
 
-Release history is filtered into the product [changelog](../changelog.md).
-Workflow-specific deployment records should additionally retain the exact
-launcher, engine, backend, policy, and bundle versions used for each accepted
-run.
-
-## Upgrade workflow
-
-```bash
-python -m pip install --upgrade openadapt
-openadapt flow --version
-openadapt flow lint bundle
-openadapt flow certify bundle --config deployment.yaml
-openadapt flow run bundle --config deployment.yaml --dry-run
-```
-
-Promote an upgrade only after the same task, environment, identity/effect
-oracles, and refusal cases used for the original workflow qualification pass.
+Release history is in the [changelog](../changelog.md).

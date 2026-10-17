@@ -13,8 +13,8 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-INSTALL = ROOT / "docs/desktop/install.md"
-TROUBLESHOOTING = ROOT / "docs/guides/troubleshooting.md"
+INSTALL = ROOT / "docs/how-to/desktop.md"
+TROUBLESHOOTING = ROOT / "docs/how-to/troubleshoot.md"
 
 MACOS_PERMISSIONS = ("Screen Recording", "Accessibility", "Input Monitoring")
 NUMBER_WORDS = {"one": 1, "two": 2, "three": 3, "four": 4}

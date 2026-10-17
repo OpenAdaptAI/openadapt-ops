@@ -1,202 +1,181 @@
-# Configuration and environment variables
+---
+description: >-
+  The deployment file's sections and the environment variables OpenAdapt
+  reads, with what each one controls.
+---
 
-OpenAdapt is configured mostly through environment variables. The deterministic
-replay path needs none; they enable secrets, scrubbing, the optional model
-appliance, and effect verification.
+# Configuration
 
-## Secrets
+## The deployment file
 
-| Variable | Purpose |
-|---|---|
-| `OPENADAPT_FLOW_SECRET_<FIELD>` | Injects a secret field's value at replay. `<FIELD>` is the recorded field name, upper-cased. A field marked `--secret` (and any `input[type=password]`) is never persisted, so its value **must** be supplied here at replay, or the run fails fast. |
+One YAML file wires a deployment. `certify`, `replay`, `run`, and `resume`
+all read it with `--config deploy.yaml`. Command-line options override single
+fields. Every section is optional: an empty file is a valid deployment that
+runs locally, checks no records, and makes no outbound calls.
+
+Start from a draft bound to one bundle:
 
 ```bash
-export OPENADAPT_FLOW_SECRET_PASSWORD='...'
+python -m openadapt_flow.cli_config init bundle --out deploy.yaml
 ```
 
-See [Parameters and secrets](../guides/parameters-and-secrets.md).
+`certify` and `run` refuse the draft until every field listed under
+`unresolved` is filled. The complete annotated example is
+[`deployment.example.yaml`](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/deployment.example.yaml).
 
-## Privacy and scrubbing
+Credentials are always the names of environment variables, never values.
 
-| Variable | Purpose |
-|---|---|
-| `OPENADAPT_FLOW_SCRUB` | `on` runs the PHI/PII sanitizer over `REPORT.md` and console logs on the persist and log path. Missing dependencies, invalid config, and processing errors fail closed. Requires the `privacy` extra (`pip install 'openadapt[privacy]'`) and the allowlisted spaCy model. |
+### `backend`
 
-The compiled bundle and `report.json` keep literal identifiers behind a
-documented boundary and are **not** scrubbed by this flag; they are the identity
-check and the audit trail. Sanitizer success is no proof that detectors found
-every identifier, so review artifacts before egress. See
-[Deploy on-prem](../guides/deploy-on-prem.md).
+Where the app is and how to drive it.
 
-## Encryption at rest
+```yaml
+backend:
+  url: https://app.example.org
+  headed: false
+  # kind: web | windows | macos | linux | rdp | citrix
+```
 
-| Variable | Purpose |
-|---|---|
-| `OPENADAPT_BUNDLE_KEY` | Passphrase used by encrypted bundle saves/loads and durable checkpoints. `run` requires an encrypted bundle by default. |
+The surface fields match the command-line surface options in the
+[command reference](cli.md#surface-options), for example `macos_app`,
+`linux_app`, `rdp_window`, and `browser_cdp_endpoint`.
 
-Encryption is opt-in: inject the key and run `openadapt flow seal SOURCE --out
-DESTINATION`; normal compile output is plaintext. The same key encrypts durable
-checkpoints written during run/resume. OpenAdapt provides the AEAD mechanism,
-not key custody, rotation, or recovery. See the [security and deployment
-review](../guides/security-review.md).
+#### Remote sessions and Citrix
 
-## The on-prem VLM appliance
+For `kind: rdp` with a local client window, and for `kind: citrix`, these
+fields bind the session and guard each input:
 
-| Variable | Purpose |
-|---|---|
-| `OPENADAPT_FLOW_VLM_URL` | Points the runtime at an on-prem VLM appliance. Unset (the default): no model tiers exist and the ladder has no grounder rung. Set: the grounding rung, identity veto, and state verifier come online, all fail-safe to halt. |
-
-The appliance is designed not to call external model services; enforce and test
-egress for the deployed image. See
-[The on-prem VLM appliance](../concepts/vlm-appliance.md).
-
-
-## Browser provisioning
-
-The base `pip install openadapt` package includes the Playwright driver used by
-web workflows and the bundled quickstart. The matching Chromium build downloads
-lazily on the first web action. Native desktop, RDP, and Citrix commands do not
-start Playwright or trigger a browser download.
-
-| Variable | Purpose |
-|---|---|
-| `OPENADAPT_FLOW_NO_AUTO_INSTALL` | Disables automatic browser provisioning. Set it when you manage the browser yourself (e.g. you ran `playwright install chromium` ahead of time in a controlled image). |
-
-## Hosted connectivity
-
-| Variable | Purpose |
-|---|---|
-| `OPENADAPT_INGEST_TOKEN` | Token used by `login`, `push`, `validate-hosted`, and `report-break` when no `--token` is passed. The OS keychain is the next preferred token source. |
-| `OPENADAPT_FLOW_DEPLOYMENT_KIND` | Default execution lane: `cloud`, `byoc`, or `regulated`. Independent of destination trust. |
-| `OPENADAPT_FLOW_DESTINATION_KIND` | Destination trust class: `openadapt-managed`, `customer-managed`, or `local`. |
-| `OPENADAPT_FLOW_TRUSTED_HOSTS` | Comma-separated exact HTTPS origins allowed for customer-managed upload. |
-| `OPENADAPT_FLOW_AUTO_APPROVE_SANITIZED` | Administrator policy switch for fully covered, stable derivatives. Human review remains the default. |
-| `OPENADAPT_FLOW_HOSTED_WORKFLOW_ID` | Opts a halting `replay`/`run` into the best-effort `report-break` hook for this workflow id. Off by default. |
-| `OPENADAPT_FLOW_ORG_ID` | Optional organization id carried by the break-report hook. |
-
-Every remote upload requires the approved immutable archive from the sanitation
-pipeline. `--attest-non-phi` is deprecated and refused; a declaration is not a
-privacy control. Customer-owned endpoints must be HTTPS and exact-origin
-allowlisted. Unknown destinations fail closed.
-
-These variables configure the client boundary for OpenAdapt Hosted. See
-[Hosted browser execution](../guides/hosted.md).
-
-The hosted control plane separately requires three server-side, comma-separated
-allowlists: `RUNTIME_VALIDATION_POLICIES`, `RUNTIME_VALIDATION_RISK_CLASSES`, and
-`RUNTIME_VALIDATION_COMPILER_VERSIONS`. The risk-class allowlist normally admits
-one or both engine-derived values, `low` and `consequential`; the
-compiler-version allowlist must name versions the runner actually deploys. Exact
-membership is required. An operator attestation cannot introduce a new policy,
-risk class, or compiler version.
-
-## Effect verification against a live system of record
-
-| Variable | Purpose |
-|---|---|
-| `OPENEMR_FHIR_BASE_URL` | Base URL of a FHIR R4 API for the `FhirEffectVerifier` to read the system of record. |
-| `OPENEMR_FHIR_TOKEN` | Bearer token for that FHIR API. |
-
-These enable [effect verification](../concepts/effect-verification.md) against a
-real FHIR server. The verifier is selected in a
-[deployment config](deployment-config.md) (`effects.kind: fhir`) or with the
-`--effects-kind` / `--effects-base-url` flags on `replay` / `run`; these
-variables supply its endpoint and credentials, keeping them out of the YAML.
-
-## The desktop in-session agent
-
-| Variable | Purpose |
-|---|---|
-| `OAFLOW_AGENT_TOKEN` | Optional bearer token for the [desktop in-session agent server](../concepts/backends.md#the-in-session-agent-the-session-0-problem). Its `/execute_windows` channel is remote code execution by contract; the server binds to loopback by default, and a token makes every request authenticate. Set it in any PHI/PII deployment that exposes the agent beyond loopback. |
-
-## The self-hosted phone portal
-
-These govern where the [attended decision portal](../concepts/halt-learn-loop.md#where-a-halt-goes-the-attended-decision)
-listens and what URL it advertises to a paired phone. Use it when your
-organization provides the HTTPS/VPN/ZTNA path to the runner. The runner shows a
-QR code. The phone displays a one-use pairing code, and the operator approves
-that code on the runner.
-
-| Variable | Default | Purpose |
+| Field | Default | Meaning |
 |---|---|---|
-| `OPENADAPT_PORTAL_INGRESS_MODE` | `loopback` | `loopback` (this computer only) or `customer_ingress` (published through your own HTTPS/VPN ingress). |
-| `OPENADAPT_PORTAL_PUBLIC_ORIGIN` | *(unset)* | The exact `https://` origin your reverse proxy, VPN, or ZTNA hostname publishes for this runner. Required for `customer_ingress`. |
-| `OPENADAPT_PORTAL_INGRESS_ACKNOWLEDGED` | `false` | Explicit record that your organization operates that ingress and has reviewed protected evidence reaching phones. Required for `customer_ingress`. |
-| `OPENADAPT_PORTAL_BIND_HOST` | *(unset)* | Optional **literal IP address** to bind, for when your ingress is not on this host. Left unset, the portal stays on `127.0.0.1` behind a same-host reverse proxy. |
-| `OPENADAPT_PORTAL_PORT` | `0` | `0` selects an ephemeral port. |
-| `OPENADAPT_PORTAL_CONSOLE_PORT` | `7863` | Loopback port for the supervised attended console the portal relays to. |
+| `rdp_window` | none | The exact local client process. Citrix defaults to `Citrix Viewer` on macOS and `wfica32` on Windows. |
+| `rdp_window_title` | none | The exact client window title. No match, or more than one, is refused. |
+| `rdp_max_frame_age_s` | `10.0` | The oldest screen capture an input may rely on. An older one stops the run before input. |
+| `rdp_readiness_text` | none | Stable text that must be on screen before input, such as a menu label. |
+| `rdp_readiness_min_ratio` | `0.85` | How closely the text read from the screen must match the readiness text, from `0.0` to `1.0`. |
+| `rdp_host`, `rdp_port` (`3389`) | none | A network RDP session instead of a local window. Only for `kind: rdp`. |
 
-!!! warning "Loopback is the default, and a phone cannot reach it"
-    Unconfigured, the portal binds `127.0.0.1` and advertises a loopback URL.
-    That is a complete, working configuration *on that computer*. The pairing
-    screen says a phone cannot reach it instead of minting a link that fails on
-    your network. Publishing **this** surface to a phone is an explicit decision
-    you make by standing up trusted TLS in front of the runner. See
-    [Deploy on-prem](../guides/deploy-on-prem.md#reaching-the-decision-portal-from-a-phone).
+Citrix is its own backend, not an alias for RDP. `kind: citrix` makes Flow
+build `CitrixWorkspaceBackend`, which binds the local Workspace or Viewer
+window and keeps that exact window through a run, a halt, and a resume.
 
-    **You do not have to.** The hosted lane below reaches a phone from anywhere
-    with nothing configured on your network; it carries less, and it says so.
+```yaml
+backend:
+  kind: citrix
+  rdp_window: wfica32                         # optional on Windows; the default
+  rdp_window_title: Claims - Citrix Workspace # bind one session
+  rdp_max_frame_age_s: 3.0
+  rdp_readiness_text: Claims queue
+  rdp_readiness_min_ratio: 0.90
+```
 
-## Cloud phone access with no inbound ingress
+`kind: citrix` rejects `rdp_host`; use `kind: rdp` for a network session.
+Governed Citrix `run` and `resume` require a nonblank `rdp_readiness_text`
+and refuse before any input without one. Choose text from the application's
+own frame, not from a record, so a lock screen, sign-in page, or other
+application doesn't match. Pin the window title and qualify the frame age and
+match ratio against the real session before any saves.
 
-The runner dials **out** to the control plane (no inbound port, no port
-forward, no certificate, no reverse proxy, no static address), so a phone
-reaches the queue from anywhere. In Cloud **Needs attention**, scan the QR
-code, sign in on the same Cloud origin, and optionally enable generic Web Push
-alerts. The QR code carries no session, runner credential, or decision
-authority. Turn the runner lane on in the deployment configuration, bound to
-the exact tenant and runner the control plane issued for this machine:
+### `actuation`
+
+Whether a step that has an API binding performs its save through the app's
+API instead of the screen. The record check still confirms it.
+
+```yaml
+actuation:
+  api: false
+  base_url: https://app.example.org
+  timeout_s: 5.0
+```
+
+### `effects`
+
+Where record checks read the saved record. `kind` is one of:
+
+| `kind` | Reads | Main fields |
+|---|---|---|
+| `none` | Nothing. Standard and Regulated refuse saves. | |
+| `rest` | A JSON records document over HTTP | `base_url`, `records_path`, `records_key`, `auth`, `path_params` |
+| `graphql` | One read-only GraphQL query | `graphql_query`, `graphql_variables`, `graphql_records_path` |
+| `fhir` | A FHIR R4 search | `base_url`, `resource_type`, `search_params`, `search_param_exprs`, `access_token_env` |
+| `sql` | One read-only `SELECT` | `sql_query`, `sql_query_params`, `sqlite_database` or `sql_driver` and `sql_connect_args`, `sql_password_env` |
+| `file` | A file or SFTP drop | `root`, `file_pattern`, `file_min_size`, `file_mtime_window_s`, `file_content_probe` |
+| `email` | A maildir or SMTP capture folder | `root`, `mail_pattern`, `file_mtime_window_s`, `file_content_probe` |
+| `document` | A report file whose contents are parsed | `root`, `file_pattern`, `document_format`, `document_field_paths` |
+| `document-hash` | A document store, by exact SHA-256 | `root`, `glob` |
+| `ui_readback` | The app's record page in a separate, signed-in, read-only browser session | `ui_readback.record_url`, `sign_in`, `row_selector`, `fields`, `identity` |
+
+`auth` takes exactly one of `bearer_env`, `header` with `value_env`, or
+`basic_env`. Values that come from run inputs are written
+`{param: name}`; fixed values are `{literal: value}`. Any kind can also set
+`evidence_redact_fields` or `evidence_keep_fields` to keep field values out
+of the evidence, and `timeout_s` and `poll_interval_s`.
+
+Which kinds count as strong enough for each profile is explained in
+[How a save is checked](../explanation/verification.md).
+
+### `runtime`
+
+```yaml
+runtime:
+  profile: regulated          # demo | standard | regulated
+  durable: true               # on by default under standard and regulated
+  approval_mode: each_item    # each_item | problems_only | not_gated
+  allow_model_grounding: false
+  pixel_verify_enabled: false
+  grounding_model:
+    enabled: false
+    provider: openai_compatible   # or anthropic
+    base_url: "http://vllm.internal:8000/v1"
+    model: "qwen2.5-vl-7b-instruct"
+    api_key_env: "OPENADAPT_FLOW_GROUNDING_API_KEY"
+  phi_grounding_allowlist: ["vllm.internal"]
+  phi_egress_attested: false
+```
+
+- `allow_model_grounding` is the only switch that lets a model component
+  receive screenshots. Configuring `grounding_model` doesn't turn it on.
+- When patient-data mode is on, a model endpoint is refused unless its host is
+  in `phi_grounding_allowlist`. Public model APIs stay blocked unless
+  `phi_egress_attested` is true.
+- `pixel_verify_enabled` lets the pixel right-record check confirm a match,
+  not only refuse one. Leave it off unless that check was validated for your
+  screens.
+
+### `human_decisions`
 
 ```yaml
 human_decisions:
   remote:
-    enabled: true
-    tenant_id: <from the control plane>
-    runner_id: <from the control plane>
-    # context_tier: remote_closed_context   # the default
+    enabled: false
+    # tenant_id: ...
+    # runner_id: ...
 ```
 
-| Variable | Purpose |
+Off by default, so decisions on paused runs are made at the computer. When
+enabled with both ids, the runner may relay a signed decision task with no
+patient data to the hosted phone view.
+
+### `policy`
+
+```yaml
+policy:
+  policy: clinical-write    # clinical-write | permissive | a path to a policy file
+```
+
+## Environment variables
+
+| Variable | What it controls |
 |---|---|
-| `OPENADAPT_RUNNER_TOKEN` | The per-runner credential the control plane issued. The desktop app stores it in the operating-system keychain when you connect this computer, and passes it to the engine; set it by hand only for a headless runner. |
-
-| Setting | Default | Purpose |
-|---|---|---|
-| `human_decisions.remote.enabled` | `false` | Must be literally `true`. A truthy string does not enable it. |
-| `human_decisions.remote.tenant_id` | *(unset)* | Required when enabled. |
-| `human_decisions.remote.runner_id` | *(unset)* | Required when enabled. |
-| `human_decisions.remote.context_tier` | `remote_closed_context` | `remote_closed_context` (what broke, as closed enums and bounded integers) or `remote_identifiers` (identifiers and counts only). `local_full` is refused by name; protected evidence never leaves the runner. |
-
-The execution profile applies its own ceiling, and the **weaker** of the two
-wins, so configuration cannot widen what a profile permits.
-
-!!! note "Every misconfiguration stops the console"
-    A missing runner credential, a deployment that did not enable remote
-    issuance, a read-only console, or a plaintext control-plane origin each
-    refuse to start instead of running a console whose phone lane is silently
-    absent. A lane that looks on and is not is worse than one that is plainly
-    off.
-
-Every widening step fails closed, and the portal **does not start** on an invalid
-combination instead of falling back to something more exposed:
-
-- A wildcard bind address (`0.0.0.0`, `::`, empty, `*`) is refused in **every**
-  mode. There is no "bind everything for testing" switch.
-- The public origin must be a bare `https://` origin: no plaintext, no path,
-  no query, no embedded credentials, and no self-signed bypass.
-- `OPENADAPT_PORTAL_BIND_HOST` must be a literal IP, not a hostname, and never
-  an unspecified or multicast address.
-- `customer_ingress` requires **both** a public origin and the acknowledgement.
-- Setting a public origin or bind host while the mode is still `loopback` is an
-  error, so a half-finished rollout cannot look configured when it is not.
-
-## Benchmark (agent arm only)
-
-| Variable | Purpose |
-|---|---|
-| `ANTHROPIC_API_KEY` | Required only for the **agent** arm of `openadapt flow benchmark`. The compiled arm and all normal replay make **no** model calls and need no key. |
-
-!!! warning "The agent arm costs money"
-    Only the benchmark's agent arm calls a hosted model. Run it with cost caps.
-    Nothing on the product's replay path requires an API key or incurs per-run
-    cost.
+| `OPENADAPT_FLOW_SECRET_<FIELD>` | The value of a secret field at run time |
+| `OPENADAPT_BUNDLE_KEY` | The key for encrypted bundles and checkpoints; required under Regulated |
+| `OPENADAPT_FLOW_SCRUB` | Scrubbing of identifiers from saved text: `auto` (default), `on`, or `off`. `on` stops with an error if the scrubber isn't installed. |
+| `OPENADAPT_FLOW_PHI_MODE` | Turns patient-data mode on; `OPENADAPT_FLOW_SCRUB=on` also does |
+| `OPENADAPT_FLOW_VLM_URL` | The address of an on-site model server |
+| `OPENADAPT_FLOW_BROWSER` | Which browser to use: `auto` (default), `chrome`, `msedge`, or `bundled` |
+| `OPENADAPT_HOME` | Where OpenAdapt keeps local state (default `~/.openadapt`) |
+| `OPENADAPT_AGENT_RUNS_DIR` | The MCP server's runs folder (default `~/.openadapt/runs`) |
+| `OAFLOW_AGENT_TOKEN` | The shared token for the Windows agent server |
+| `OPENADAPT_INGEST_TOKEN` | The Cloud ingest token, if not in the keychain |
+| `OPENADAPT_FLOW_REPORT_RUN` | `1` sends a run summary to Cloud after a successful run, like `--report` |
+| `OPENADAPT_CLOUD_EXECUTION_ID`, `OPENADAPT_EXECUTE_API_KEY` | Link a run to a Cloud Execute execution so it can get a Seal |
+| `DO_NOT_TRACK=1` or `OPENADAPT_TELEMETRY=0` | Leave the failure signal out of a Cloud connector's run callbacks |
