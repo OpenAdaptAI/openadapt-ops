@@ -27,7 +27,7 @@ read them, and keep them on an encrypted disk.
 
 ## Scrubbing
 
-Scrubbing uses [openadapt-privacy](https://github.com/OpenAdaptAI/openadapt-privacy),
+Scrubbing uses the `openadapt-privacy` package,
 which finds personal and health data with named-entity recognition, through
 one path in the engine:
 

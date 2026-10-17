@@ -36,7 +36,7 @@ def test_native_desktop_evidence_is_exact_and_bounded():
     assert "3/3 ambiguous-target refusals" in evidence
     assert "3/3 stale-target refusals" in evidence
     assert "3de5fc67acf3024a621f812c5a6ed9be07fac335" in evidence
-    assert "30059807758/job/89378981573" in evidence
+    assert "30059807758, job 89378981573" in evidence
     assert "doesn't establish Wayland or arbitrary third-party application support" in evidence
 
 
@@ -46,7 +46,7 @@ def test_remote_evidence_covers_rdp_lifecycle_and_citrix_contract():
     assert "Aardwolf 0.2.14 into a Parallels Windows 11 virtual machine" in evidence
     assert "3/3 healthy saves and 3/3 drift halts" in evidence
     assert "affedc5f1f0de533a0744deaa8e30a203c91c6b3" in evidence
-    assert "https://github.com/OpenAdaptAI/openadapt-flow/pull/177" in evidence
+    assert "packages/flow/benchmark/rdp_ladder/results.json" in evidence
     assert "not Aardwolf, a Windows app, or Citrix ICA/HDX" in evidence
 
     assert "`--backend citrix` path" in evidence
@@ -55,7 +55,8 @@ def test_remote_evidence_covers_rdp_lifecycle_and_citrix_contract():
     assert "`code_readiness_accepted: true` and `ica_hdx_accepted: false`" in evidence
     assert "not a counted real ICA/HDX batch" in evidence
     assert "f6faac5b900b78cbda5980de0e983a9f987285ac" in evidence
-    assert "https://github.com/OpenAdaptAI/openadapt-flow/pull/183" in evidence
+    assert "packages/flow/benchmark/citrix_workspace/results.json" in evidence
+    assert "github.com/OpenAdaptAI/openadapt-flow" not in evidence
 
 
 def test_public_managed_runner_and_customer_runtime_boundaries_remain_distinct():

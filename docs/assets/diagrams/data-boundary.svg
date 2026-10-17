@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 400" width="1000" height="400" role="img" aria-labelledby="db-title db-desc">
+  <title id="db-title">What stays on your computer and what can be shared</title>
+  <desc id="db-desc">On your computer or the runner you control stay the screenshots and recordings, typed values and record identifiers, credentials read from environment variables, and the compiled program and full run report. What can be shared holds no screenshots, typed values, or free text: the receipt has counts, digests, closed values, and versions, and the OpenAdapt Cloud dashboard gets the same kind of run summary and halt questions without images. Two things leave only when you turn them on: a sanitized copy that a person reviewed and approved, and screenshots sent to a model host when model grounding is on.</desc>
+  <defs>
+    <marker id="db-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#3e4c59"/>
+    </marker>
+    <style>
+      text { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; fill: #1f2933; font-size: 14px; }
+      .title { font-size: 16px; font-weight: 700; }
+      .head { font-size: 14.5px; font-weight: 700; }
+      .sub { fill: #3e4c59; }
+      .small { font-size: 13px; fill: #3e4c59; }
+      .line { stroke: #3e4c59; stroke-width: 1.6; fill: none; }
+    </style>
+  </defs>
+
+  <rect x="1" y="1" width="998" height="398" rx="12" fill="#ffffff" stroke="#d0d7de"/>
+
+  <!-- Local -->
+  <rect x="20" y="20" width="440" height="280" rx="10" fill="#eef3fb" stroke="#8fa8d6" stroke-width="1.5"/>
+  <text x="40" y="50" class="title">Stays on your computer or runner</text>
+  <text x="40" y="72" class="sub">The machine you control that runs the workflow</text>
+  <rect x="40" y="90" width="195" height="92" rx="8" fill="#ffffff" stroke="#5b7bb5"/>
+  <text x="54" y="116" class="head">Screenshots and</text>
+  <text x="54" y="136" class="head">recordings</text>
+  <rect x="245" y="90" width="195" height="92" rx="8" fill="#ffffff" stroke="#5b7bb5"/>
+  <text x="259" y="116" class="head">Typed values and</text>
+  <text x="259" y="136" class="head">record identifiers</text>
+  <rect x="40" y="192" width="195" height="92" rx="8" fill="#ffffff" stroke="#5b7bb5"/>
+  <text x="54" y="218" class="head">Credentials</text>
+  <text x="54" y="240" class="sub">Read from environment</text>
+  <text x="54" y="258" class="sub">variables at run time</text>
+  <rect x="245" y="192" width="195" height="92" rx="8" fill="#ffffff" stroke="#5b7bb5"/>
+  <text x="259" y="218" class="head">Program and full</text>
+  <text x="259" y="238" class="head">run report</text>
+  <text x="259" y="260" class="sub">bundle, report.json</text>
+
+  <!-- Boundary -->
+  <path d="M500,20 L500,300" stroke="#7b8794" stroke-width="2" stroke-dasharray="7 5"/>
+  <path d="M462,160 L536,160" class="line" marker-end="url(#db-arrow)"/>
+  <text x="470" y="150" class="small">metadata</text>
+
+  <!-- Shared -->
+  <rect x="540" y="20" width="440" height="280" rx="10" fill="#e8f5ed" stroke="#2f8a57" stroke-width="1.5"/>
+  <text x="560" y="50" class="title">Can be shared</text>
+  <text x="560" y="72" class="sub">No screenshots, typed values, or free text</text>
+  <rect x="560" y="90" width="400" height="92" rx="8" fill="#ffffff" stroke="#2f8a57"/>
+  <text x="574" y="116" class="head">Receipt</text>
+  <text x="574" y="138">Counts, digests, closed values, and versions:</text>
+  <text x="574" y="158">what was checked and how the run ended</text>
+  <rect x="560" y="192" width="400" height="92" rx="8" fill="#ffffff" stroke="#2f8a57"/>
+  <text x="574" y="218" class="head">OpenAdapt Cloud dashboard</text>
+  <text x="574" y="240">The same kind of run summary, and halt</text>
+  <text x="574" y="260">questions without images</text>
+
+  <!-- Opt-in -->
+  <rect x="20" y="318" width="960" height="66" rx="10" fill="#fff4e3" stroke="#b86e00" stroke-width="1.5"/>
+  <text x="40" y="344" class="head">Leaves only when you turn it on</text>
+  <text x="40" y="368">A sanitized copy that a person reviewed and approved · screenshots sent to a model host when model grounding is on</text>
+</svg>

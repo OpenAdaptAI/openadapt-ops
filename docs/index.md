@@ -69,6 +69,13 @@ The screen that did the work can show "Saved" when nothing was stored, so it
 never confirms a save on its own. [How a save is checked](explanation/verification.md)
 explains which read-backs count for which result.
 
+## What stays on your computer
+
+![On your computer or the runner you control stay the screenshots and recordings, typed values and record identifiers, credentials read from environment variables, and the compiled program and full run report. What can be shared holds no screenshots, typed values, or free text: the receipt has counts, digests, closed values, and versions, and the OpenAdapt Cloud dashboard gets the same kind of run summary and halt questions without images. Two things leave only when you turn them on: a sanitized copy that a person reviewed and approved, and screenshots sent to a model host when model grounding is on.](assets/diagrams/data-boundary.svg)
+
+[Data handling](security/data-handling.md) lists every artifact and where it
+can go.
+
 ## From demonstration to production
 
 ```mermaid
