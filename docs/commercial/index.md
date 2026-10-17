@@ -1,6 +1,6 @@
 # Commercial offers
 
-This section explains how to qualify and deploy one workflow. If you're
+This section explains how to [qualify](../reference/glossary.md#qualify) and deploy one workflow. If you're
 deciding whether OpenAdapt fits a workflow at all, start with
 [Evaluate](../evaluate/index.md).
 

@@ -6,7 +6,7 @@ description: >-
 
 # Qualify a workflow
 
-Qualification turns a compiled demonstration into a governed artifact tied to
+[Qualification](../reference/glossary.md#qualify) turns a compiled demonstration into a governed artifact tied to
 one application, version, execution surface, and environment. It is the review
 between **compiled** and **ready to deploy**.
 
