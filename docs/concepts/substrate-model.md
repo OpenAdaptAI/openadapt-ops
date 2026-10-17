@@ -47,9 +47,9 @@ compares **structured text** where `0` and `O` are distinct characters. The
 whole record → compile → replay loop runs in CI with no OS permissions. See
 [Backends](backends.md#web-playwright).
 
-## Native desktop and remote applications: the wedge
+## Native desktop and remote applications
 
-The differentiated work has no web UI and no usable API: a native Windows EMR, a
+This work has no web UI and no usable API: a native Windows EMR, a
 WinForms line-of-business app, a clinical tool published through Citrix. This is
 where a computer-use agent is otherwise the only option and where a wrong write
 is expensive.

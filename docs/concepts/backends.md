@@ -64,7 +64,7 @@ native Windows app through the in-session agent server below, and an RDP or
 Citrix session through the local client window's pixels. See
 [Recording on Windows, RDP and Citrix](../guides/record-windows-rdp-citrix.md).
 
-Desktop (and Citrix/VDI) is the **differentiated wedge**: the work that has no
+Desktop (and Citrix/VDI) is where OpenAdapt matters most: the work that has no
 web UI and no usable API, where a computer-use agent is the only alternative and
 a wrong write is expensive. Structured desktop text distinguishes an `O` from a
 `0` that OCR collapses, which is exactly what makes wrong-record writes

@@ -80,12 +80,13 @@ UIA, native macOS, native Linux AT-SPI, RDP, and Citrix/VDI
 
 ## When the app has no usable API
 
-Most enterprise software has no usable API for the workflow you actually run.
-The demonstration is the only interface that always exists: if a person can do
-it, it can be demonstrated. OpenAdapt treats that demonstration as the spec and
-compiles a durable, auditable, $0 replay from it. That is the wedge: API-less
-work too specific to buy an integration for and too repetitive to keep paying a
-person or an agent to redo.
+Much enterprise software has no usable API for the workflow you actually run.
+The screen is the one interface that always exists: if a person or an agent can
+do the task, it can be demonstrated. OpenAdapt treats one or more
+demonstrations as the spec and compiles a durable, auditable replay from them
+that makes no generative-model API calls. It fits work with no API that is too specific to buy
+an integration for and too repetitive to keep paying a person or an agent to
+redo.
 
 ## Where it goes next
 
