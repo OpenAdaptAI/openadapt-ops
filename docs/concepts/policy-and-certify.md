@@ -19,7 +19,7 @@ flowchart LR
 
 - **`lint`** reports a bundle's coverage gaps: clicks that act with no identity
   check, steps that assert nothing, writes left under-classified. Each finding
-  carries a severity. It exits nonzero when a finding reaches `error` (an
+  carries a severity. It exits nonzero once a finding reaches `error` (an
   unarmed or vacuous *irreversible* step); `--strict` also fails on warnings.
   `lint` is advice.
 - **`certify`** enforces a policy and **refuses** the bundle (exits nonzero)

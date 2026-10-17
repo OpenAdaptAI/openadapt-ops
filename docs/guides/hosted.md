@@ -159,7 +159,7 @@ openadapt flow validate-hosted \
   --target-url https://validation.example/login \
   --out triage.runtime-validation.json
 
-# 5. Consume the challenge by uploading the exact attested bundle a single time.
+# 5. Consume the challenge by uploading the exact attested bundle once.
 openadapt flow push bundle.sanitized --kind bundle --name "Triage" \
   --validation-attestation triage.runtime-validation.json
 ```

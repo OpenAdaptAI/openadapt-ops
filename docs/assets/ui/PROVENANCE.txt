@@ -36,7 +36,7 @@ mobile-decision-pending.jpg
   a4d4af28c3627de9356ef1ee09d78137e3a2d530edc3cfa68c0d242299288b46.
   Source: openadapt-web public/attended-decision/decision-pending.jpg. From the
   same capture sequence as the request. It shows the decision_pending state:
-  the signed answer was accepted, no runner receipt exists, and the
+  the signed answer was accepted once, no runner receipt exists, and the
   workflow remains paused.
 
 mobile-decision-result.jpg

@@ -1,6 +1,6 @@
 # The workflow catalog and halt map
 
-When you run more than one workflow, you need a portfolio view: what is
+Once you are running more than one workflow, you need a portfolio view: what is
 compiled, how each is doing, what it is worth, and where runs are getting stuck.
 The Cloud workspace has two read-only readouts for this: the workflow catalog and
 the step-level halt map.

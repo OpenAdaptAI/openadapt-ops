@@ -8,7 +8,7 @@ demonstration instead.
 ## Compile, don't re-reason
 
 The idea comes from programming languages. A demonstration is a source program.
-Compiling it produces an artifact that runs many times without paying the
+Compiling it once produces an artifact that runs many times without paying the
 cost of understanding it again.
 
 ```mermaid
@@ -19,7 +19,7 @@ flowchart LR
     end
     subgraph OpenAdapt["Demonstration compiler"]
         direction TB
-        b1[Demonstrate the task] --> b2[[compile]] --> b3[Deterministic bundle]
+        b1[Demonstrate] --> b2[[compile]] --> b3[Deterministic bundle]
         b3 --> b4[Replay N times deterministically]
     end
 ```
@@ -48,7 +48,7 @@ milliseconds.
 ## The record, compile, replay loop
 
 ```bash
-openadapt flow record  --url https://your.app --out rec   # demonstrate the task (web)
+openadapt flow record  --url https://your.app --out rec   # demonstrate (web)
 openadapt flow compile rec --out bundle --name my-task    # compile
 openadapt flow replay  bundle --url https://your.app      # replay, local, $0
 ```

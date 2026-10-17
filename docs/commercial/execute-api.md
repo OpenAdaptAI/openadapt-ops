@@ -261,7 +261,7 @@ verify the signed body `signature`; the signature is not an HTTP header.
 
 ### Delivery, order, and retry rules
 
-Webhook delivery can repeat. A delivery can arrive more than one time or
+Webhook delivery is at least once. A delivery can arrive more than once or
 after a later state notification.
 
 - Verify the signature before deduplication.

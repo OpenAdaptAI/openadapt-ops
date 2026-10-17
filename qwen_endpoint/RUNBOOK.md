@@ -17,7 +17,7 @@ scale-to-zero (idle GPU dies within 120 s, no warm pool).
 
 ## 0. One-time: create the auth secret (FOUNDER ONLY)
 
-Agents never create, read, or copy this token. The founder runs, a single time:
+Agents never create, read, or copy this token. The founder runs, once:
 
 ```bash
 python3 -c "import secrets;print(secrets.token_urlsafe(32))" | { read t; modal secret create qwen-endpoint-token TOKEN="$t"; security add-generic-password -s oa-qwen-endpoint-token -a modal -w "$t"; }
