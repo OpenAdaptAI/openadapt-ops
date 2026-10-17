@@ -60,12 +60,14 @@ conflicting records remain refusal conditions.
 
 ## Safe entity language for attended decisions
 
-The released `HumanDecisionTaskV2` schema and Cloud receiver define the target
-contract for an approved entity class and neutral fallback. Flow 1.30.0 emits
-only `HumanDecisionTaskV1`: it does not yet store or emit the V2
-qualification-bound entity class. Until the coordinated Flow and Desktop
-release, use the neutral `record` or `item` wording and do not edit a signed
-task or sealed artifact by hand.
+The released `HumanDecisionTaskV2` schema and Cloud receiver define the
+contract for an approved entity class and neutral fallback. Flow 2.1.0, the
+current release, emits `HumanDecisionTaskV2` as well as `HumanDecisionTaskV1`.
+It sends V2 when the remote decision peer declares the V2 schema in
+`human_decisions.remote.peer_task_schemas`, carrying the entity label from the
+current certified qualification project. Otherwise it sends V1 with the neutral
+`record` or `item` wording. Don't edit a signed task or sealed artifact by
+hand.
 
 The class is optional presentation metadata. It does not require a separate
 author role, and its absence does not block qualification, certification, or
