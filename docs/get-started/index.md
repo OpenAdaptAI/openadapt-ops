@@ -1,110 +1,80 @@
 ---
 description: >-
-  Install OpenAdapt on this computer with Desktop or pip. You can show
-  the task, or a local agent can click while you watch. A person admits.
-  Tutorial is optional.
+  Choose how to start with OpenAdapt: the command line, the Desktop app, or an
+  AI agent connected over MCP. Each track installs the same engine. Read the
+  operating-system permission notes first.
 ---
 
 # Get started
 
-You want an agent to do a job on this computer. Keep that job here.
+OpenAdapt has three ways in. They install the same engine and produce the same
+compiled programs, so you can start with one and add another later.
 
-You can show the clicks, or a local agent can click while you watch.
-A person admits the compiled program. OpenAdapt turns that into a
-program on this computer, and later an agent runs it and checks the
-work landed. Healthy repeats don't send your data to a model.
+| Track | Start here if | What you run first |
+|---|---|---|
+| [Command line](cli.md) | You work in a terminal, or you want to see a verified run in a few minutes. | The bundled tutorial, on a synthetic app. |
+| [Desktop app](../desktop/install.md) | You want a window to record, check, and run tasks, and to answer stopped runs. | A short test recording of your own screen. |
+| [Connect an agent over MCP](agent-mcp.md) | You have an AI agent, such as Claude Code or Cursor, that should call OpenAdapt as a tool. | A sandbox server that returns each outcome on demand. |
 
-OpenAdapt is a compiler. The chat is the IDE, and credentials stay on this
-computer. The core is free forever under MIT.
+Whichever track you pick, a person or an agent shows the task in the real app,
+OpenAdapt compiles it into a program from one or more demonstrations, and a
+person accepts that program before it does real work.
 
-## Install
+## Before you install: operating-system permissions
 
-Desktop and the CLI compile the same program.
+!!! warning "Grant permissions before your first recording"
+    Recording and replaying a desktop app needs operating-system permissions.
+    Without them, capture can return blank or black frames and input can go
+    nowhere, with no error dialog.
 
-### Desktop
+    - **macOS:** the Desktop app needs Screen Recording, Accessibility, and
+      Input Monitoring. To record a native app from the command line, grant
+      Screen Recording and Accessibility to your terminal app. Quit and reopen
+      the app after you grant Screen Recording. macOS applies it only after a
+      restart.
+    - **Windows:** ordinary windows need no prompt. If the target app runs as
+      administrator, run OpenAdapt as administrator too, or that window is
+      captured blank and ignores input.
+    - **Browser workflows and the bundled tutorial** run in a browser that
+      OpenAdapt starts, and need none of these permissions.
 
-Get the installer for this machine from
-[openadapt.ai/download](https://openadapt.ai/download). You can also start
-from [openadapt.ai/start](https://openadapt.ai/start). Open the app. Grant
-Screen Recording and Accessibility if asked.
+    The step-by-step settings are in
+    [Desktop app: grant OS permissions](../desktop/install.md#2-grant-os-permissions).
+    Blank capture and the Windows session-0 case are in
+    [Troubleshooting](../guides/troubleshooting.md).
 
-First-run permissions and checksums are in
-[Install Desktop](../desktop/install.md).
+Sign in to your apps on this computer, in the real app. Don't type passwords
+into a chat.
 
-### CLI
+## If you came from a job link
 
-Run the tutorial with one command. [uv](https://docs.astral.sh/uv/getting-started/installation/)
-fetches Python 3.12 for the run, whatever Python this computer has:
+A chat assistant such as ChatGPT can give you a job link of the form
+`openadapt.ai/j/{id}`. That page holds the brief for your AI and the install
+steps for this computer.
 
-```bash
-uvx --python 3.12 openadapt flow tutorial
-```
+1. Install OpenAdapt with one of the tracks above.
+2. Go back to the job tab. The job is still there.
+3. If the job page gives you a runner link for a recording job (it contains
+   `bind=oab_`), run this on the computer that has the app:
 
-To keep `openadapt` on PATH, use the isolated installer:
+   ```bash
+   openadapt-agent authoring connect '<runner link>'
+   ```
 
-```bash
-curl -fsSL https://openadapt.ai/install.sh | sh
-```
+   It asks you in the terminal before a chat account may drive this computer.
+   It isn't the launcher's `openadapt connect`, which pairs a computer with
+   OpenAdapt Cloud.
 
-On Python 3.10, 3.11, or 3.12, `python -m pip install --upgrade openadapt`
-also leaves `openadapt` on PATH.
+A chat in a web browser can't start a server on your computer, so it can't
+use the local MCP command in [Connect an agent over MCP](agent-mcp.md).
 
-## After install
+## After the first run
 
-If you came from a job page (`/j/{id}`), go back to that tab. It's already
-there. If a local coding agent is on this machine, it can call `openadapt`
-on PATH.
-
-Sign in on this computer, in the real app. Not in the chat.
-
-### Optional tutorial
-
-`openadapt flow tutorial` records a bundled tutorial and compiles it, then
-runs it locally. A healthy run writes a VERIFIED receipt. To see a halt
-when the on-screen banner disagrees with the record, run
-`openadapt quickstart --break-it`. The run stops because the independent
-read failed, and the store stays as it was. Add `--headed` if you want to
-watch the browser.
-
-Skip it if you already have a real task.
-
-The tutorial writes the recording, the compiled bundle, and the run
-receipt under its output directory (default
-`tutorials/tutorial-<UTC timestamp>`):
-
-- `<out>/recording/`
-- `<out>/bundle/`
-- `<out>/run/REPORT.md`
-- `<out>/run/receipt.json`
-
-```bash
-less <out>/run/REPORT.md
-openadapt flow visualize <out>/bundle --out graph.html
-openadapt flow lint <out>/bundle
-```
-
-## Local coding agents
-
-Claude Code and Cursor on this machine can use the local MCP command
-below. ChatGPT.com can't talk to localhost, so it can't use this
-command. For a hosted chat, stay on the job tab and put OpenAdapt on
-this computer. Don't send that chat your passwords.
-
-```bash
-claude mcp add openadapt -- \
-  uvx --from 'openadapt-agent[tutorial]' openadapt-agent \
-  serve --allow-run
-```
-
-`--allow-run` is an explicit opt-in. Halt, refused, timeout, and error come
-back as those outcomes. Never summarize halt as success.
-
-The machine contract is in [agents.txt](../agents.txt).
-
-## Next
-
-Author one real read-only task on your own app in
-[Author a workflow](first-workflow.md). Start with a lookup that doesn't
-change business data.
-
-More Desktop setup is in [Install Desktop](../desktop/install.md).
+- Optional: the bundled tutorial in the [command-line track](cli.md) shows a
+  verified run, then a run that stops because the record disagrees with the
+  screen.
+- Author one real task on your own app in
+  [Author a workflow](first-workflow.md). Start with a lookup that doesn't
+  change business data.
+- [What you get](what-you-get.md) explains the compiled bundle and the run
+  report.
