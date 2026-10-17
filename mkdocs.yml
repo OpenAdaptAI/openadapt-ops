@@ -136,6 +136,7 @@ extra:
 # Guessed-path alias. Built so /start/ redirects; keep it off the nav.
 not_in_nav: |
   /start/index.md
+  /evaluate/glossary.md
 nav:
   - Home: index.md
   - Evaluate:
@@ -144,7 +145,7 @@ nav:
     - What you see and control: evaluate/what-you-see.md
     - Security and where data stays: evaluate/security.md
     - How a first project works: evaluate/first-project.md
-    - Plain-language glossary: evaluate/glossary.md
+    - Glossary: reference/glossary.md
   - Get started:
     - get-started/index.md
     - Command line: get-started/cli.md

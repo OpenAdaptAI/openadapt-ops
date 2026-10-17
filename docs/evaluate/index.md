@@ -82,7 +82,7 @@ A task is a good first candidate when most of these are true:
   privacy or IT lead.
 - [How a first project works](first-project.md) goes from the first call to
   daily use.
-- The [plain-language glossary](glossary.md) maps these terms to the ones the
-  technical pages use.
+- The [glossary](../reference/glossary.md#in-plain-words) maps these terms to
+  the ones the technical pages use.
 
 To talk about one workflow, [tell us about it](https://openadapt.ai/services).
