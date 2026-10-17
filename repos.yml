@@ -18,10 +18,18 @@ repos:
     category: core
     changelog: true
 
+  # Flow, Agent, and Types live in the OpenAdapt monorepo under packages/.
+  # Each publishes to PyPI without a GitHub release, so the changelog reads the
+  # package's CHANGELOG.md. Their merged pull requests already appear in What's
+  # New under OpenAdapt, so these entries opt out of public_updates. The
+  # standalone openadapt-flow, openadapt-agent, and openadapt-types repositories
+  # are frozen.
   - name: openadapt-flow
-    github: OpenAdaptAI/openadapt-flow
+    github: OpenAdaptAI/OpenAdapt
     category: core
     changelog: true
+    changelog_file: packages/flow/CHANGELOG.md
+    public_updates: false
 
   - name: openadapt-cloud
     github: OpenAdaptAI/openadapt-cloud
@@ -40,9 +48,12 @@ repos:
     changelog: true
 
   - name: openadapt-agent
-    github: OpenAdaptAI/openadapt-agent
+    github: OpenAdaptAI/OpenAdapt
     category: core
-    changelog: true
+    # packages/agent has no CHANGELOG.md yet, and the frozen repository has no
+    # releases. Agent changes ship in Flow and are listed in its changelog.
+    changelog: false
+    public_updates: false
 
   - name: openadapt-ml
     github: OpenAdaptAI/openadapt-ml
@@ -68,10 +79,12 @@ repos:
     changelog: true
 
   - name: openadapt-types
-    github: OpenAdaptAI/openadapt-types
+    github: OpenAdaptAI/OpenAdapt
     category: library
     lifecycle: experimental
     changelog: true
+    changelog_file: packages/types/CHANGELOG.md
+    public_updates: false
 
   - name: openadapt-grounding
     github: OpenAdaptAI/openadapt-grounding

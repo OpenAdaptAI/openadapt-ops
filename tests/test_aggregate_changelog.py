@@ -7,7 +7,13 @@ import pytest
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent.parent / "scripts"))
 
-from aggregate_changelog import aggregate, fetch_releases, load_repos, summarize_body
+from aggregate_changelog import (
+    aggregate,
+    fetch_changelog_file,
+    fetch_releases,
+    load_repos,
+    summarize_body,
+)
 
 
 def test_aggregate_writes_changelog(tmp_path, mocker):
@@ -172,3 +178,82 @@ def test_summarize_body_keeps_informative_emphasised_line():
     """Only the licence sentence is boilerplate, not emphasis in general."""
     body = "## v2.0.0 (2026-07-27)\n\n_Breaking: the compile API moved._"
     assert summarize_body(body, "v2.0.0") == "_Breaking: the compile API moved._"
+
+
+CHANGELOG_MD = """# CHANGELOG
+
+<!-- version list -->
+
+## v2.1.0 (2026-10-16)
+
+### Features
+
+- A calling agent can demonstrate the fix ([#504](https://example.com/504)).
+
+### Tests
+
+- Something else.
+
+## v2.0.0 (2026-10-15)
+
+### Bug Fixes
+
+- Fixed a thing.
+
+## Unreleased notes
+
+- Not a release.
+"""
+
+
+def test_changelog_file_source_reads_release_entries(tmp_path, mocker):
+    """A repos.yml entry with changelog_file reads the package CHANGELOG.md
+    from the repository instead of its releases feed."""
+    mock_resp = mocker.Mock()
+    mock_resp.status_code = 200
+    mock_resp.text = CHANGELOG_MD
+    get = mocker.patch("aggregate_changelog.requests.get", return_value=mock_resp)
+
+    repos = [
+        {
+            "name": "openadapt-flow",
+            "github": "OpenAdaptAI/OpenAdapt",
+            "changelog": True,
+            "changelog_file": "packages/flow/CHANGELOG.md",
+        }
+    ]
+    aggregate(repos=repos, docs_dir=tmp_path)
+    content = (tmp_path / "changelog.md").read_text()
+
+    url = get.call_args.args[0]
+    assert url.endswith(
+        "/repos/OpenAdaptAI/OpenAdapt/contents/packages/flow/CHANGELOG.md?ref=main"
+    )
+    assert "## openadapt-flow" in content
+    assert (
+        "**[v2.1.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/"
+        "packages/flow/CHANGELOG.md#v210-2026-10-16)** (2026-10-16)" in content
+    )
+    assert "A calling agent can demonstrate the fix" in content
+    assert "Features" not in content
+    assert "v2.0.0" in content
+    assert "Fixed a thing." in content
+    assert "Not a release." not in content
+
+
+def test_changelog_file_source_refuses_a_failed_read(mocker):
+    mock_resp = mocker.Mock()
+    mock_resp.status_code = 404
+    mocker.patch("aggregate_changelog.requests.get", return_value=mock_resp)
+    with pytest.raises(RuntimeError, match="Refusing to replace the changelog"):
+        fetch_changelog_file(
+            "OpenAdaptAI/OpenAdapt", "packages/flow/CHANGELOG.md"
+        )
+
+
+def test_repos_yml_reads_monorepo_package_changelogs():
+    """Flow and Types changelogs come from the monorepo package files."""
+    by_name = {repo["name"]: repo for repo in load_repos()}
+    assert by_name["openadapt-flow"]["github"] == "OpenAdaptAI/OpenAdapt"
+    assert by_name["openadapt-flow"]["changelog_file"] == "packages/flow/CHANGELOG.md"
+    assert by_name["openadapt-types"]["changelog_file"] == "packages/types/CHANGELOG.md"

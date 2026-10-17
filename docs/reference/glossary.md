@@ -6,7 +6,7 @@ description: >-
 
 # Glossary
 
-Every page in these docs uses the terms below with these meanings. Where the
+<span id="in-plain-words"></span>Every page in these docs uses the terms below with these meanings. Where the
 engine uses a different name in its files or commands, that name follows in
 parentheses.
 
@@ -74,7 +74,7 @@ parentheses.
     can't be found. Off by default. When on, screenshots can leave the
     computer unless the model runs on your network.
 
-<span id="policy"></span>**Policy**
+<span id="policy"></span><span id="certification-policy"></span>**Policy**
 :   A set of rules a program must meet to run, such as "every save has a
     right-record check". Built in: `clinical-write` and `permissive`.
 

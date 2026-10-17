@@ -23,7 +23,7 @@ or Citrix: a CRM, a billing system, an insurance portal, or an electronic
 health record. The tutorials use a synthetic clinic app as the example. The
 engine is open source under the MIT license.
 
-## Start here
+## For developers
 
 <div class="grid cards" markdown>
 
@@ -33,9 +33,14 @@ engine is open source under the MIT license.
     uvx --python 3.12 openadapt quickstart --break-it
     ```
 
-    Without uv, on Python 3.10 to 3.12: `pip install openadapt`, then
-    `openadapt quickstart --break-it`. You don't need an account or an API
-    key. [Quickstart tutorial](tutorials/quickstart.md)
+    Or install it on Python 3.10 to 3.12 and run the engine tutorial:
+
+    ```bash
+    python -m pip install --upgrade openadapt
+    openadapt flow tutorial
+    ```
+
+    No account or API key. [Quickstart tutorial](tutorials/quickstart.md)
 
 -   __Give a workflow to your agent__
 

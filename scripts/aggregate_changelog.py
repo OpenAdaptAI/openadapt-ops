@@ -2,6 +2,8 @@
 
 import os
 import pathlib
+import re
+
 import requests
 import yaml
 
@@ -36,6 +38,78 @@ def fetch_releases(github_slug, per_page=5):
          "url": r["html_url"], "body": (r.get("body") or "").strip()[:400]}
         for r in resp.json() if not r.get("draft")
     ]
+
+
+# A release heading in a package CHANGELOG.md, as python-semantic-release
+# writes it: "## v2.1.0 (2026-10-16)".
+CHANGELOG_HEADING = re.compile(
+    r"^## (?P<tag>v\d+\.\d+\.\d+\S*) \((?P<date>\d{4}-\d{2}-\d{2})\)\s*$"
+)
+
+
+def _github_anchor(heading):
+    """The anchor GitHub gives a Markdown heading."""
+    text = re.sub(r"[^\w\- ]", "", heading.strip().lower())
+    return text.replace(" ", "-")
+
+
+def fetch_changelog_file(github_slug, path, ref="main", limit=5):
+    """Read release entries from a CHANGELOG.md in a repository.
+
+    Packages in the OpenAdapt monorepo publish to PyPI without a GitHub
+    release, so their release history is the package's CHANGELOG.md, not the
+    repository's releases feed (which belongs to the root launcher).
+    """
+    url = f"{GITHUB_API}/repos/{github_slug}/contents/{path}?ref={ref}"
+    headers = {"Accept": "application/vnd.github.raw+json"}
+    token = os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN")
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+    resp = requests.get(url, headers=headers, timeout=15)
+    if resp.status_code != 200:
+        raise RuntimeError(
+            f"GitHub contents request failed for {github_slug}/{path}: HTTP "
+            f"{resp.status_code}. Refusing to replace the changelog with an "
+            "empty generated page."
+        )
+    releases = []
+    current = None
+    for line in resp.text.splitlines():
+        match = CHANGELOG_HEADING.match(line)
+        if match:
+            if len(releases) == limit:
+                break
+            heading = line[3:]
+            current = {
+                "tag": match["tag"],
+                "date": match["date"],
+                "url": f"https://github.com/{github_slug}/blob/{ref}/{path}"
+                f"#{_github_anchor(heading)}",
+                "lines": [],
+            }
+            releases.append(current)
+        elif line.startswith("## "):
+            current = None
+        elif current is not None and not line.startswith("#"):
+            # Section headings ("### Features") say nothing about what
+            # shipped; keep the notes under them, without the list marker.
+            current["lines"].append(line[2:] if line.startswith("- ") else line)
+    return [
+        {
+            "tag": r["tag"],
+            "date": r["date"],
+            "url": r["url"],
+            "body": "\n".join(r["lines"]).strip()[:400],
+        }
+        for r in releases
+    ]
+
+
+def fetch_repo_releases(repo):
+    """Release entries for one repos.yml entry, from its configured source."""
+    if repo.get("changelog_file"):
+        return fetch_changelog_file(repo["github"], repo["changelog_file"])
+    return fetch_releases(repo["github"])
 
 
 # Boilerplate that python-semantic-release puts at the top of every release
@@ -92,7 +166,7 @@ def aggregate(repos=None, docs_dir=None):
         "> Release history across the OpenAdapt product repositories.\n",
     ]
     for repo in repos:
-        releases = fetch_releases(repo["github"])
+        releases = fetch_repo_releases(repo)
         if not releases:
             continue
         lines.append(f"\n## {repo['name']}\n")
