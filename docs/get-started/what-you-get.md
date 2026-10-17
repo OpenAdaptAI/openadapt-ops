@@ -44,7 +44,7 @@ steps with the reason.
 ## Emit for other agents
 
 Other agents can invoke a compiled bundle as a tool. Emit it as an
-[Agent Skill](https://github.com/OpenAdaptAI/openadapt-flow) or a standalone MCP
+[Agent Skill](https://github.com/OpenAdaptAI/OpenAdapt/tree/main/packages/flow) or a standalone MCP
 server:
 
 ```bash

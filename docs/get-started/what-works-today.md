@@ -102,4 +102,4 @@ Treat the matrix as a starting point, not an authorization. For each workflow:
    approve the exact derivative hash required by policy.
 
 The complete, evidence-linked failure inventory is maintained in
-[`openadapt-flow/docs/LIMITS.md`](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/LIMITS.md).
+[`packages/flow/docs/LIMITS.md`](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/LIMITS.md).

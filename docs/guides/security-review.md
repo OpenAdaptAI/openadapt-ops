@@ -216,6 +216,6 @@ code presence.
   HIPAA, PHIPA, or BAA status from architecture documentation.
 
 For implementation-level boundaries, use the engine's
-[`PRIVACY.md`](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/PRIVACY.md),
-[`SECURITY.md`](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/SECURITY.md),
-and [known limits](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/LIMITS.md).
+[`PRIVACY.md`](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/PRIVACY.md),
+[`SECURITY.md`](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/SECURITY.md),
+and [known limits](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/LIMITS.md).

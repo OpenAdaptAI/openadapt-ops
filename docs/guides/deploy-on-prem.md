@@ -40,7 +40,7 @@ stack locally:
 - **(Optional) an on-prem VLM appliance**: a LAN-only GPU box, off by default.
 
 The runnable scaffold ships in the engine repo under
-[`deploy/on-prem/`](https://github.com/OpenAdaptAI/openadapt-flow/tree/main/deploy/on-prem);
+[`deploy/on-prem/`](https://github.com/OpenAdaptAI/OpenAdapt/tree/main/packages/flow/deploy/on-prem);
 the compliance posture is in `deploy/on-prem/COMPLIANCE.md`.
 
 ## One config drives the deployment

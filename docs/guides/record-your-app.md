@@ -63,7 +63,7 @@ For a bundle that will do consequential writes, gate it behind a policy with
 
 A person or an agent can show the task. An AI agent records through the
 recording tools in
-[openadapt-agent](https://github.com/OpenAdaptAI/openadapt-agent#record-a-first-workflow)
+[openadapt-agent](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/agent/README.md#record-a-first-workflow)
 (`openadapt-agent serve --authoring`), in a browser, a native Windows app, or
 an RDP or Citrix session. Each step records whether the agent or a person did
 it, and a person accepts the recording. For Windows, RDP, and Citrix, see

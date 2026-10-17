@@ -21,9 +21,9 @@ MIT License. Two things cover it.
 
 2. **Contributor License Agreement (published, not yet enforced).** The
    canonical text is
-   [`openadapt-flow/CLA.md`](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/CLA.md)
+   [`packages/flow/CLA.md`](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CLA.md)
    for individuals, and
-   [`openadapt-flow/CCLA.md`](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/CCLA.md)
+   [`packages/flow/CCLA.md`](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CCLA.md)
    for companies whose employees contribute on company time. It gives MLDSAI
    Inc. an explicit copyright and patent license, which the MIT License alone
    doesn't provide, and it keeps the option of relicensing the combined work

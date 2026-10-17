@@ -33,16 +33,16 @@ model in the loop and no cloud dependency:
   customer-hosted connector that reports to the hosted control plane adds a
   categorical failure signal to runs that don't succeed, unless you opt out
   ([what runs send](../commercial/subprocessors.md#what-runs-send-to-openadapt)).
-  ([ON_PREM.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/ON_PREM.md))
+  ([ON_PREM.md](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/ON_PREM.md))
 - **Model assistance is an explicit opt-in, and it points where you say.** When
   an operator enables model grounding, inference goes to the endpoint the
   deployment configures, designed as an
   [on-prem, LAN-only VLM appliance](../concepts/vlm-appliance.md) with
   no retention: neither client nor server writes crops or screenshots to disk
-  or logs. ([PRIVACY.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/PRIVACY.md))
+  or logs. ([PRIVACY.md](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/PRIVACY.md))
 - **An empty deployment file is a complete deployment.** Fully local, zero
   egress is not a stripped-down mode; it is the default configuration.
-  ([ON_PREM.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/ON_PREM.md))
+  ([ON_PREM.md](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/ON_PREM.md))
 
 ```mermaid
 flowchart LR
@@ -67,21 +67,21 @@ your screens or records**:
   sanitizer cannot fully handle (databases, video, audio, nested archives,
   symlinks, unknown binaries) refuses the entire derivative rather than
   passing through.
-  ([SANITIZED_ARTIFACTS.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/SANITIZED_ARTIFACTS.md))
+  ([SANITIZED_ARTIFACTS.md](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/SANITIZED_ARTIFACTS.md))
 - **Halt reports are schema-minimal.** The hosted break-report channel carries
   a hashed, coarse halt descriptor: no intent, reason, error text,
   screenshots, DOM, field values, or report body. Free text is not
   auto-uploaded even when a scrubber is available.
-  ([PRIVACY.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/PRIVACY.md))
+  ([PRIVACY.md](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/PRIVACY.md))
 - **The contract is public and machine-checkable.** The manifest, approval, and
   ingest envelopes are published JSON Schemas
-  ([`schemas/`](https://github.com/OpenAdaptAI/openadapt-flow/tree/main/schemas)),
+  ([`schemas/`](https://github.com/OpenAdaptAI/OpenAdapt/tree/main/packages/flow/schemas)),
   so what crosses the boundary is inspectable before you connect anything.
 - **Unknown destinations are refused, not defaulted.** An egress destination
   must be explicitly classified (OpenAdapt-managed, customer-managed
   allowlisted host, or local loopback) before any policy applies; an unknown
   host is refused outright.
-  ([SANITIZED_ARTIFACTS.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/SANITIZED_ARTIFACTS.md))
+  ([SANITIZED_ARTIFACTS.md](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/SANITIZED_ARTIFACTS.md))
 
 ### When a halt is answered by a person
 
@@ -135,7 +135,7 @@ which component can see and transmit what.
 ## PHI/PII posture: scrubbed where shareable, refused where regulated
 
 OpenAdapt treats PHI/PII handling as an engineering surface with a published map.
-[PRIVACY.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/PRIVACY.md)
+[PRIVACY.md](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/PRIVACY.md)
 enumerates every path where PHI/PII is persisted, logged, or transmitted, and names
 the control on each. The posture in brief:
 
@@ -150,13 +150,13 @@ the control on each. The posture in brief:
   plaintext PHI/PII, and image redaction of persisted frames is implied: a
   compliance-pinned run cannot leave unredacted full-frame screenshots in the
   shareable report. The on-prem queue refuses to start unless scrub is `on`.
-  ([PRIVACY.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/PRIVACY.md),
-  [ON_PREM.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/ON_PREM.md))
+  ([PRIVACY.md](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/PRIVACY.md),
+  [ON_PREM.md](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/ON_PREM.md))
 - **No silent plaintext, ever.** In the default `auto` mode without the privacy
   extra installed, writing a report with identity-like free text emits a
   one-time `PlaintextPHIWarning`: an operator can never believe a run is
   de-identified when it is not.
-  ([PRIVACY.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/PRIVACY.md))
+  ([PRIVACY.md](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/PRIVACY.md))
 - **Encryption at rest, applied to the artifacts that matter.** The production
   `openadapt flow seal SOURCE --out DESTINATION` path, with
   `OPENADAPT_BUNDLE_KEY` injected from the deployment's secret manager, uses
@@ -169,21 +169,21 @@ the control on each. The posture in brief:
   inherited certification. A wrong key or a tampered ciphertext fails loudly,
   never partially. The identity band in a compiled bundle is a salted hash, not
   plaintext.
-  ([phi_at_rest.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/phi_at_rest.md))
+  ([phi_at_rest.md](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/phi_at_rest.md))
 - **Encryption in transit on the desktop control channel.** The Windows agent
   channel that carries live screenshots runs HTTPS with a per-run self-signed
   certificate and SHA-256 fingerprint pinning, plus an independent bearer
   token. The client fails closed: a plaintext URL to a non-loopback host raises
   at construction, and a wrong or unpinned certificate is rejected at the
   handshake.
-  ([phi_in_transit.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/phi_in_transit.md))
+  ([phi_in_transit.md](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/phi_in_transit.md))
 - **Honest boundaries where scrubbing would break safety.** The recorded
   identity evidence and the run's identity audit trail intentionally retain
   literal identifiers. Scrubbing them would defeat the wrong-record check they
   exist to power. Those artifacts are governed as PHI/PII-at-rest inside your
   boundary (filesystem controls, retention, full-disk encryption), and the map
   says so explicitly rather than pretending otherwise.
-  ([PRIVACY.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/PRIVACY.md))
+  ([PRIVACY.md](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/PRIVACY.md))
 
 ## Secrets: referenced, resolved at run time, never stored
 
@@ -200,7 +200,7 @@ the control on each. The posture in brief:
   package, real secrets live in the OS keychain or a root-only file and are
   referenced by environment-variable *name*. The config directory holds only
   the vendor **public** key.
-  ([ON_PREM.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/ON_PREM.md))
+  ([ON_PREM.md](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/ON_PREM.md))
 - **Hosted credentials prefer the OS keychain.** The hosted ingest token
   resolves from CLI flag, environment, then OS keychain; the CLI requires an
   explicit flag before it will use plaintext config storage.
@@ -208,7 +208,7 @@ the control on each. The posture in brief:
 - **Even the audit surface is secret-free.** Effect contracts are recorded in
   run reports as one-way SHA-256 digests, enough to prove that two runs wrote
   different records (or duplicated one) without exposing the underlying value.
-  ([openadapt_flow/runtime/effects](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/openadapt_flow/runtime/effects/effect.py))
+  ([openadapt_flow/runtime/effects](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/openadapt_flow/runtime/effects/effect.py))
 
 ## Verification and audit: prove the write, keep the evidence
 
@@ -220,29 +220,29 @@ you can hand to an auditor:
   carry typed effect contracts checked by an independent read (API/DB/FHIR),
   not the pixels. A non-confirmed verdict halts the run.
   ([Effect verification](../concepts/effect-verification.md),
-  [EFFECT_VERIFIER.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/design/EFFECT_VERIFIER.md))
+  [EFFECT_VERIFIER.md](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/design/EFFECT_VERIFIER.md))
 - **Governed-run authorization binding.** A governed run is admitted once, and
   the approval is bound to the sealed bundle's content digest, the exact
   parameter digest, the admitting policy, the identity-required steps, and the
   exact effect-contract hashes: single-use, halt-on-mismatch. An approval for
   one workflow can never become a reusable bypass for another.
-  ([GOVERNED_RUN_AUTHORIZATION.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/design/GOVERNED_RUN_AUTHORIZATION.md))
+  ([GOVERNED_RUN_AUTHORIZATION.md](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/design/GOVERNED_RUN_AUTHORIZATION.md))
 - **Every run produces an audit trail.** Human-readable `REPORT.md` (scrubbed)
   and machine-readable `report.json` expose resolution rungs, identity
   coverage, postconditions, effect verdicts, heals, and the halt reason. The
   identity check records recorded-vs-live evidence so an operator can prove a
   wrong-record halt fired.
   ([Read and audit run reports](run-reports.md),
-  [PRIVACY.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/PRIVACY.md))
+  [PRIVACY.md](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/PRIVACY.md))
 - **A tamper-evident index on-prem.** The on-prem package adds an append-only,
   hash-chained, PHI/PII-free audit log over runs and release changes; any silent
   edit breaks every subsequent hash and is caught by the attestation script.
-  ([ON_PREM.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/ON_PREM.md))
+  ([ON_PREM.md](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/ON_PREM.md))
 - **You can prove the no-egress posture, repeatedly.** `verify-airgap.sh` scans
   configuration and environment for any off-LAN URL or cloud key, actively
   probes that a public canary call *fails*, and walks the audit-log hash chain,
   a repeatable pre-flight for your own attestation.
-  ([ON_PREM.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/ON_PREM.md))
+  ([ON_PREM.md](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/ON_PREM.md))
 
 ## Hosted retention, deletion, and recovery
 
@@ -292,7 +292,7 @@ lives, not what is enforced.
 | Shape | Where execution happens | What crosses your boundary |
 |---|---|---|
 | **Fully local** | Your workstation or server. An empty deployment file means zero egress. | Nothing. No account, telemetry, or update ping in the run path. |
-| **On-prem appliance** | A host inside your network, with a local queue, hash-chained audit log, optional LAN-only VLM box, and operator-pulled signed updates verified against a pinned vendor public key. | Nothing at run time; updates enter on removable media, signature-verified, with blue/green install and rollback. ([Deploy on-prem](deploy-on-prem.md), [ON_PREM.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/ON_PREM.md)) |
+| **On-prem appliance** | A host inside your network, with a local queue, hash-chained audit log, optional LAN-only VLM box, and operator-pulled signed updates verified against a pinned vendor public key. | Nothing at run time; updates enter on removable media, signature-verified, with blue/green install and rollback. ([Deploy on-prem](deploy-on-prem.md), [ON_PREM.md](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/ON_PREM.md)) |
 | **Hosted control plane + local execution** | Governed authoring, validation, and repair remain local; the control plane manages accounts, workflow versions, run history, and billing. | Operator-approved sanitized derivatives, minimized halt descriptors, and hash-bound attestations, verified against published schemas. ([The hosted option](hosted.md)) |
 
 Hosted managed *browser* execution is a separate managed boundary
@@ -338,7 +338,7 @@ certificate pinning, fail-closed. At rest: opt-in AES-256-GCM sealing for the
 bundle, its screenshot crops, and checkpoints, layered on operator full-disk
 encryption. Key management (KMS, rotation, escrow) remains yours. OpenAdapt
 supplies the AEAD substrate, not a KMS.
-([phi_at_rest.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/phi_at_rest.md))
+([phi_at_rest.md](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/phi_at_rest.md))
 
 **What audit evidence do we get?**
 Per-run scrubbed `REPORT.md` + `report.json` with identity coverage, effect
@@ -351,7 +351,7 @@ digest-bound authorization records for governed runs.
 We describe controls, not certifications, in documentation. Request current
 legal and compliance artifacts directly; do not infer certification status from
 architecture pages. The engine's
-[SECURITY.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/SECURITY.md)
+[SECURITY.md](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/SECURITY.md)
 covers coordinated vulnerability disclosure (private advisories, acknowledgment
 target within 5 business days) and supply-chain posture (Actions pinned by
 commit SHA, Dependabot).
@@ -359,10 +359,10 @@ commit SHA, Dependabot).
 **How do we go deeper?**
 Work through [Security and deployment review](security-review.md), the full
 reviewer checklist and boundary table, alongside the engine's
-[PRIVACY.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/PRIVACY.md),
-[phi_at_rest.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/phi_at_rest.md),
-[phi_in_transit.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/phi_in_transit.md),
-and [known limits](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/LIMITS.md).
+[PRIVACY.md](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/PRIVACY.md),
+[phi_at_rest.md](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/phi_at_rest.md),
+[phi_in_transit.md](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/phi_in_transit.md),
+and [known limits](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/LIMITS.md).
 Engine controls are open source and directly reviewable. Hosted controls expose
 their public contracts and live readiness state; the hosted control-plane source
 remains proprietary.

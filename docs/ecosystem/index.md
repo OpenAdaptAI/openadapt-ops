@@ -21,10 +21,10 @@ contracts.
 | Component | Current release admission | Public role |
 |---|---|---|
 | [OpenAdapt](https://github.com/OpenAdaptAI/OpenAdapt) | <span data-openadapt-production-target="openadapt" aria-live="polite">No current verified Production admission.</span> | Installer, meta-package, and unified `openadapt flow` command. |
-| [OpenAdapt Flow](https://github.com/OpenAdaptAI/openadapt-flow) | <span data-openadapt-production-target="flow" aria-live="polite">No current verified Production admission.</span> | Canonical demonstration compiler and governed runtime for Browser, native Windows, native macOS, native Linux, RDP, and Citrix/VDI. |
+| [OpenAdapt Flow](https://github.com/OpenAdaptAI/OpenAdapt/tree/main/packages/flow) | <span data-openadapt-production-target="flow" aria-live="polite">No current verified Production admission.</span> | Canonical demonstration compiler and governed runtime for Browser, native Windows, native macOS, native Linux, RDP, and Citrix/VDI. |
 | [OpenAdapt Cloud](https://app.openadapt.ai/) | <span data-openadapt-production-target="cloud" aria-live="polite">No current verified Production admission.</span> | Managed control plane for organizations, exact-hash admission, browser runners, reports, billing, and usage. |
 | [OpenAdapt Desktop](https://github.com/OpenAdaptAI/openadapt-desktop) | <span data-openadapt-production-target="desktop" aria-live="polite">No current verified Production admission.</span> | Windows, macOS, and Linux cockpit for recording, compilation, qualification, replay, and local review. |
-| [OpenAdapt Agent](https://github.com/OpenAdaptAI/openadapt-agent) | <span data-openadapt-production-target="agent" aria-live="polite">No current verified Production admission.</span> | Governed bridge from MCP clients and Agent Skills to exact Flow bundles. |
+| [OpenAdapt Agent](https://github.com/OpenAdaptAI/OpenAdapt/tree/main/packages/agent) | <span data-openadapt-production-target="agent" aria-live="polite">No current verified Production admission.</span> | Governed bridge from MCP clients and Agent Skills to exact Flow bundles. |
 | [OpenAdapt Capture](https://github.com/OpenAdaptAI/openadapt-capture) | <span data-openadapt-production-target="capture" aria-live="polite">No current verified Production admission.</span> | Canonical native recorder for screen, mouse, keyboard, timing, window scope, and media. Windows UIA evidence is emitted with the captured action. The shared observer protocol defines the macOS Accessibility and Linux AT-SPI integration boundary. RDP and Citrix remain pixel-observed at the remote boundary. |
 | OpenAdapt documentation | <span data-openadapt-production-target="docs" aria-live="polite">No current verified Production admission.</span> | Version-bound product, operation, security, and qualification documentation at this site. |
 
@@ -41,7 +41,7 @@ Flow accepts its recording.
 | Repository | Lifecycle | Public role |
 |---|---|---|
 | [openadapt-privacy](https://github.com/OpenAdaptAI/openadapt-privacy) | **Experimental** | Optional PII/PHI sanitization for configured persistence, logs, and artifact egress. |
-| [openadapt-types](https://github.com/OpenAdaptAI/openadapt-types) | **Experimental** | Shared interoperability schemas for contributors and integrators. |
+| [openadapt-types](https://github.com/OpenAdaptAI/OpenAdapt/tree/main/packages/types) | **Experimental** | Shared interoperability schemas for contributors and integrators. |
 
 ## Evaluation and model development
 

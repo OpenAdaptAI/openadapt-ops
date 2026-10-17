@@ -169,9 +169,9 @@ versioned captures rather than depending on a public demo route.
 - [Workflow IR](workflow-ir.md) for graph nodes and controlled branches.
 - [Run outcomes and halt reasons](../reference/run-outcomes.md) for
   `decision_required` and terminal receipts.
-- [OpenAdapt Types](https://github.com/OpenAdaptAI/openadapt-types) for the
+- [OpenAdapt Types](https://github.com/OpenAdaptAI/OpenAdapt/tree/main/packages/types) for the
   portable task and answer-receipt schemas.
-- [OpenAdapt Flow](https://github.com/OpenAdaptAI/openadapt-flow) for the
+- [OpenAdapt Flow](https://github.com/OpenAdaptAI/OpenAdapt/tree/main/packages/flow) for the
   local runtime that validates the decision contract and performs the later
   revalidation.
 

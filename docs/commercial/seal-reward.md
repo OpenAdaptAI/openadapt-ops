@@ -12,7 +12,7 @@ noise, which is the failure this contract exists to stop.
 
 The contract types are `RewardContractV1`, `RewardCertificateV1`,
 `RewardOutcomeV1`, and `RewardEvidenceReceiptV1` in
-[`openadapt-types`](https://github.com/OpenAdaptAI/openadapt-types/blob/main/docs/REWARD.md).
+[`openadapt-types`](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/types/docs/REWARD.md).
 The pure scorer is `openadapt_types.score`.
 
 ## What runs where
@@ -307,7 +307,7 @@ openadapt-flow serve-reward --seed-mockmed --port 8788
 Until then, install the repository head:
 
 ```bash
-uv pip install "openadapt-flow[reward] @ git+https://github.com/OpenAdaptAI/openadapt-flow@main"
+uv pip install "openadapt-flow[reward] @ git+https://github.com/OpenAdaptAI/OpenAdapt#subdirectory=packages/flow@main"
 openadapt-flow serve-reward --seed-mockmed --port 8788
 ```
 
