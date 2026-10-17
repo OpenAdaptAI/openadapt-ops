@@ -52,6 +52,18 @@ jobs:
       - name: Build canonical documentation in strict mode
         run: uv run mkdocs build --strict
 
+      # Every internal link and #anchor in the built site, offline. With no
+      # network it can't flake, so it can gate a pull request. External links
+      # change without a commit here; link-check.yml checks them weekly.
+      - name: Check internal links and anchors in the built site
+        uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
+        with:
+          args: >-
+            --offline --include-fragments --no-progress
+            --root-dir ${{ github.workspace }}/site --index-files index.html
+            'site/**/*.html'
+          jobSummary: false
+
   design-tokens:
     name: Vendored design tokens match openadapt-web
     runs-on: ubuntu-latest
