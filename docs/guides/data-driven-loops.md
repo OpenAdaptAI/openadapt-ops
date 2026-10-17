@@ -5,7 +5,7 @@ day's claims. Demonstrate the task, then run it once per row of a worklist
 under the same governance as a single run. `for-each` authors that from one
 demonstration, and [`replay --worklist`](../reference/cli.md#replay) drives it.
 
-## Start from one demonstration
+## Start from a demonstration
 
 Record and compile the task, as you would for a single run:
 
