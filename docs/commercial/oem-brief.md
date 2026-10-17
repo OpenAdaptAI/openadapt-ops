@@ -282,7 +282,7 @@ commercial compatibility pack.
 
 | Layer | Availability | Role |
 |---|---|---|
-| OpenAdapt Flow | MIT-licensed | Local compiler, governed runtime, halt/teach, qualification tools. A compiled program is a cache. |
+| OpenAdapt Flow | MIT-licensed | Local compiler, governed runtime, halt/teach, qualification tools. Compile-once is a cache. |
 | `openadapt-types` | MIT-licensed | Shared Execute schema. The evidence receipt is the Seal. |
 | OpenAdapt Cloud foundation | Private and deployed | Tenant control plane, customer-runner coordination, signed decision relay. |
 | OpenAdapt Execute | Private pilot | `POST /v1/executions` issues Seals. Not a new repository. |

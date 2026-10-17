@@ -48,7 +48,7 @@ To mint one:
 1. In the dashboard, open **Settings → Ingest tokens**
    (`app.openadapt.ai/dashboard/settings/ingest`).
 2. Click **Create token** and give it a name (e.g. your machine name).
-3. **Copy the token now.** It is shown **a single time** and stored server-side only as a
+3. **Copy the token now.** It is shown **once** and stored server-side only as a
    hash. If you lose it, revoke it and mint a new one.
 
 The token is sent as `Authorization: Bearer <token>` on every call and resolves

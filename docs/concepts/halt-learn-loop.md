@@ -165,7 +165,7 @@ runner makes **outbound HTTPS requests only** to the control plane: no inbound
 port, no port forward, no certificate, no reverse proxy, no static address. It
 works behind NAT on an ordinary broadband line.
 
-1. Connect the desktop app to OpenAdapt Cloud. It registers this computer
+1. Connect the desktop app to OpenAdapt Cloud once. It registers this computer
    and stores its credential in the operating-system keychain.
 2. Turn on remote decisions in your deployment configuration, bound to the exact
    tenant and runner the control plane issued.
@@ -249,7 +249,7 @@ The rest of the shape follows from the same posture:
   pause capability, no tenant, run, or pause identifier.
 - The secret rides in the URL **fragment**, which browsers never transmit, so it
   cannot land in a reverse-proxy access log or a referrer header.
-- It is **claimable a single time**, atomically. A second phone scanning the same
+- It is **claimable exactly once**, atomically. A second phone scanning the same
   code is refused.
 - It expires shortly after it is shown, enforced server-side and re-checked at
   approval, against both a monotonic and a wall clock so neither a suspended

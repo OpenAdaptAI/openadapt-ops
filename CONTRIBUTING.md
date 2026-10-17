@@ -30,7 +30,7 @@ MIT License. Two things cover it.
    later.
 
    You don't agree to the CLA by opening a pull request. Nothing is implied.
-   You agree when you sign, either through the automated CLA check after that
+   You agree when you sign, either through the automated CLA check once that
    check is turned on for this repository, or by email. Until the check is on,
    the DCO sign-off and the MIT License are what govern your contribution.
 

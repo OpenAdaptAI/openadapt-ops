@@ -7,7 +7,7 @@ the same task, and refuses when the traces leave intent
 underdetermined. For the model behind this, see
 [Multi-trace induction](../concepts/multi-trace-induction.md).
 
-## Record the same task several times
+## Record the same task more than once
 
 Record the task a few times, varying the values you intend to be parameters (a
 different note, a different record) and keeping the intended path the same:
@@ -81,7 +81,7 @@ actuation, and durability are all configured.
 ## When one trace is enough
 
 If your task has no real conditionals or loops and only varies typed values, you
-do not need `induce`: record one demonstration and make the varying values
+do not need `induce`: record once and make the varying values
 [parameters](parameters-and-secrets.md). Reach for `induce` when the intent spans
 more than one path, or when you want held-out validation of the recovered
 program.

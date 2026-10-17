@@ -73,7 +73,7 @@ at tier 0 does not validate; the validator raises
 ## Wire a trainer
 
 The reward worker is `openadapt-flow serve-reward`. It runs inside the
-customer network, reads the system of record after each episode, and
+customer network, reads the system of record once after each episode, and
 signs a `RewardEvidenceReceiptV1` with a local Ed25519 key under
 `~/.openadapt/reward-ref/`. A trainer submits an episode descriptor and gets
 the receipt back. It never gets a credential for the store.
@@ -88,7 +88,7 @@ the receipt back. It never gets a credential for the store.
 Every route but `/health` needs `Authorization: Bearer <token>`. The envelope
 carries `issuer: self_signed`, `execute_seal: false`, `production_seal: false`,
 `flow_governed_policy: false`, `unscored`, and the receipt. The same
-`episode_id` twice returns 409; a reward is issued a single time. A descriptor that
+`episode_id` twice returns 409; a reward is issued once. A descriptor that
 names a different contract digest returns 422.
 
 The descriptor is the shape `openadapt_evals.reward.receipts.EpisodeDescriptor`

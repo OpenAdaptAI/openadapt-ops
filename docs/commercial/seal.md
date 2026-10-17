@@ -145,7 +145,7 @@ A partner embeds OpenAdapt through Execute and MCP.
 If Copilot, Power Automate, or another actuator already clicked, OpenAdapt can
 still emit the Seal for that action when asked.
 
-A compiled program is a cache when the job is stable. If a computer-use agent gets
+Compile-once is a cache when the job is stable. If a computer-use agent gets
 cheap, the run still has to prove identity and effect, or halt.
 
 Partner API contract: [Integrate OpenAdapt Execute](execute-api.md).

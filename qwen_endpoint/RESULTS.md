@@ -5,7 +5,7 @@ Status: **NOT DEPLOYED — blocked on the auth secret.**
 Preflight on 2026-08-12 found Modal auth present (`~/.modal.toml`, profile
 `abrichr`) but no Modal secret named `qwen-endpoint-token`. Per policy the
 agent does not create or handle the token; the founder command is in
-`RUNBOOK.md` section 0 (and in `NEEDS_YOU.md`). After the secret exists, run
+`RUNBOOK.md` section 0 (and in `NEEDS_YOU.md`). Once the secret exists, run
 RUNBOOK sections 1–2 and fill this file in.
 
 ## Endpoint

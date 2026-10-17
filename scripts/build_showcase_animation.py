@@ -77,7 +77,7 @@ PANEL_COPY = {
         "step": "1 of 3",
         "badge": None,
         "body": [
-            "A person does the task once.",
+            "A person or an agent shows the task.",
             "",
             "Task: insurance eligibility check.",
             "Look up a policyholder and a",
