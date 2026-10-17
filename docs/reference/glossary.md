@@ -1,19 +1,18 @@
 # Glossary
 
-Short definitions for terms used across OpenAdapt.
+This page is where OpenAdapt defines its terms. The README, the other docs
+pages and the package docs link here instead of defining them again. For the
+same terms in plain language, see the
+[plain-language glossary](../evaluate/glossary.md), which maps each plain term
+to an entry on this page.
 
-The three terms people confuse most are defined here:
-[qualification](#qualification) is evidence that one workflow works in its
-environment, [certification](#certification) is the gate that checks a bundle
-against a [policy](#policy), and [admission](#admission) is the signed record
-that lets one exact qualified version run in Production. The
-[Production admission](production-lifecycle.md#qualified-workflow) page holds
-the contract that binds them. For the same terms in plain language, see the
-[plain-language glossary](../evaluate/glossary.md).
-
-<!-- TODO: link the engine's canonical qualify/certify/policy definitions,
-docs/QUALIFICATION_TERMS.md in OpenAdaptAI/openadapt-flow, once
-openadapt-flow PR #532 merges. It isn't on openadapt-flow main yet. -->
+The three terms people confuse most are [qualify](#qualify),
+[certify](#certify) and [admission](#admission). Qualifying produces evidence
+that one workflow works in its environment. Certifying checks a bundle, or a
+qualification result, against a [certification policy](#certification-policy).
+An admission is the signed record that lets one exact qualified version run in
+Production. The [Production admission](production-lifecycle.md#qualified-workflow)
+page holds the contract that binds them.
 
 ## Admission
 
@@ -23,7 +22,7 @@ version and digest, the runtime release, the application and environment, the
 input and action contracts, the policy, the identity and effect checks, and an
 expiry and revocation state. A Production run refuses an absent, expired,
 revoked, or mismatched admission. A changed bundle or bound contract needs a
-new [qualification](#qualification) and admission. See
+new [qualification](#qualify) and admission. See
 [Production admission](production-lifecycle.md).
 
 ## BYOC
@@ -46,6 +45,12 @@ source code. It does not grant unrestricted access to OpenAdapt Cloud.
 See [Deployment boundaries](../commercial/deployment-boundaries.md) and
 [Integrate OpenAdapt Execute](../commercial/execute-api.md).
 
+## Bundle
+
+The compiled program and the files that travel with it: the workflow
+program, its effect contracts, and its metadata. A bundle is bound to one
+[substrate](#substrate). See [The bundle format](bundle-format.md).
+
 ## Capability ladder
 
 The ordered set of resolution strategies the replayer tries when re-finding a
@@ -55,15 +60,47 @@ grounding model. The healthy path resolves on a deterministic rung with zero
 model calls; a rung change is recorded in the run report. See
 [The capability ladder](../concepts/capability-ladder.md).
 
-## Certification
+## Certify
 
-The **enforced gate** over a bundle: `openadapt flow certify` evaluates a
-[policy](#policy) against the bundle and exits nonzero when it fails, so CI
-and deploy gates can refuse an unsafe bundle. Certification makes "runnable"
-distinct from "certified safe"; sealing a bundle expires certification
-inherited from its source. Contrast with [qualification](#qualification),
-which is evidence that the workflow behaves correctly on its target. See
-[Policy and certify](../concepts/policy-and-certify.md).
+<a id="certification"></a>
+
+To **certify** is to check a bundle against a
+[certification policy](#certification-policy) and refuse it when it fails.
+There are two ways to do it:
+
+- `openadapt flow certify` checks a bundle against a policy and exits nonzero
+  when it fails, so CI and deploy gates can refuse an unsafe bundle.
+- Certifying a [qualification](#qualify) result also checks the evidence. It
+  refuses unless every qualification case ran and passed and the bundle meets
+  every rule of the policy, and then signs the result under that policy. This
+  is the `--certify` option of `qualify` on Flow's `main` branch. It isn't in
+  a Flow release yet.
+
+Certification makes "runnable" distinct from "certified safe". Sealing a
+bundle expires certification inherited from its source. See
+[Policy and certify](../concepts/policy-and-certify.md) and the engine's
+[qualification terms](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/QUALIFICATION_TERMS.md#certify).
+
+## Certification policy
+
+<a id="policy"></a>
+
+A reviewable YAML document, or a built-in such as `clinical-write` or
+`permissive`, that states what a bundle must satisfy to be trusted: which
+steps must confirm the target before acting, which writes must be confirmed in
+the system of record, which steps need screen checks, and what needs a
+person's sign-off. Certification enforces it at the gate, and the run gate
+enforces it at execution. See
+[Write and enforce a policy](../guides/policy-and-certification.md) and the
+[policy rules](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/QUALIFICATION_TERMS.md#certification-policy).
+
+## Demonstration
+
+A recording of a task in the real app. A person or an agent shows the task
+while OpenAdapt watches. One or more demonstrations go into the compiler,
+which turns them into a [bundle](#bundle). See
+[The demonstration compiler](../concepts/demonstration-compiler.md) and
+[Multi-trace induction](../concepts/multi-trace-induction.md).
 
 ## Effect contract
 
@@ -114,15 +151,6 @@ effect conflicts with the requested result. The runner reads the required
 postcondition and independent effect again. It reports a reconciled result only
 when that read proves the effect; otherwise the run stays halted for review.
 
-## Policy
-
-A reviewable YAML document (or built-in, such as `clinical-write`) stating
-what a bundle must satisfy to be trusted: which risks need identity arming,
-what postconditions and effect strength writes require, and what is refused
-outright. A policy is enforced by [certification](#certification) at the gate
-and by the run gate at execution. See
-[Write and enforce a policy](../guides/policy-and-certification.md).
-
 ## Profile
 
 A named runtime posture (`demo`, `standard`, or `regulated`) that selects
@@ -132,15 +160,30 @@ outcome may be described. Only Standard and Regulated runs can report
 `VERIFIED`. See [Run outcomes](run-outcomes.md) and
 [Regulated execution](../concepts/regulated-execution.md).
 
-## Qualification
+## Qualify
 
-Structured **evidence** that one workflow behaves correctly on its target
-application and surface: representative cases plus deterministic fault cases
-that must halt, executed and recorded (`openadapt flow qualify`). A
-qualification belongs to the exact workflow, application, and environment; it
-is the artifact a pilot or deployment reviews. Contrast with
-[certification](#certification), the policy gate. See
-[Qualify a workflow](../guides/qualify-a-workflow.md).
+<a id="qualification"></a>
+
+To **qualify** a workflow is to run its compiled bundle against a
+representative case and a set of deliberate fault cases, several trials each,
+before it may run unattended on a real system (`openadapt flow qualify`). It
+passes only when the representative case completes and its write is confirmed
+by a read of the system of record, not the screen, and every fault case halts
+before anything is written.
+
+The result is a **qualification**: recorded evidence for the exact workflow,
+application, and environment it ran in. A different application version, a
+changed screen, or a different system of record needs a new qualification. A
+pass doesn't show that the workflow handles inputs or screens the cases didn't
+exercise. Qualifying is optional for read-only tasks. Contrast with
+[certify](#certify), the policy check. See
+[Qualify a workflow](../guides/qualify-a-workflow.md), and the engine's
+[qualification terms](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/QUALIFICATION_TERMS.md#qualify) for the fault cases and what gets signed.
+
+## Runner
+
+The computer that executes runs: one you control, or one OpenAdapt hosts. See
+[Deployment boundaries](../commercial/deployment-boundaries.md).
 
 ## Seal
 
@@ -152,10 +195,13 @@ free. Unsigned success is failure. See [The Seal](../commercial/seal.md).
 
 ## Substrate
 
-The surface a workflow is recorded and executed on: web (browser DOM), native
-Windows (UIA), macOS (AX), Linux (AT-SPI), or a remote display such as RDP or
-Citrix (pixels). The substrate determines what structural evidence exists for
-the capability ladder and the identity gate; bundles are surface-bound and a
-cross-surface run is never silent. See
+The surface a workflow is recorded and executed on: a web browser, native
+Windows, macOS or Linux, or a remote display such as RDP or Citrix. OpenAdapt
+reads every substrate from what is on screen. Where a substrate also exposes
+structure (the browser DOM, Windows UI Automation, macOS Accessibility, or
+Linux AT-SPI), that structure adds evidence for the
+[capability ladder](#capability-ladder) and the [identity gate](#identity-gate).
+RDP and Citrix give pixels only. Bundles are bound to one substrate, and a
+run never switches substrate silently. See
 [The substrate model](../concepts/substrate-model.md) and
 [backends](../concepts/backends.md).
