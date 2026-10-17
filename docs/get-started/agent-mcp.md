@@ -119,6 +119,6 @@ that chat your passwords.
 ## More
 
 - The full tool list, result fields, and security notes are in the
-  [openadapt-agent README](https://github.com/OpenAdaptAI/openadapt-agent#readme).
+  [openadapt-agent README](https://github.com/OpenAdaptAI/OpenAdapt/tree/main/packages/agent).
 - The machine-readable contract for agents is [agents.txt](../agents.txt).
 - Every engine outcome is in [Run outcomes](../reference/run-outcomes.md).

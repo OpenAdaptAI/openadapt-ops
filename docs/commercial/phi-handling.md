@@ -77,5 +77,5 @@ break-report descriptor (hashed, coarse, no free text).
 - [Security packet](security-packet.md): the reviewer summary.
 - [Subprocessors and hosted data retention](subprocessors.md)
 - [Regulated execution](../concepts/regulated-execution.md)
-- Engine [PRIVACY.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/PRIVACY.md):
+- Engine [PRIVACY.md](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/PRIVACY.md):
   the complete path-by-path PHI map.

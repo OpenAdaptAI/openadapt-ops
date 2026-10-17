@@ -7,7 +7,7 @@ version, review, and ship.
 !!! note "Authoritative schema"
     This page is conceptual. The exact, versioned schema lives in the engine
     repository (`DESIGN.md` for the shipping v0 IR, and
-    [`WORKFLOW_PROGRAM_IR.md`](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/design/WORKFLOW_PROGRAM_IR.md)
+    [`WORKFLOW_PROGRAM_IR.md`](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/design/WORKFLOW_PROGRAM_IR.md)
     for the program IR it evolves toward). Treat the repo as the source of truth
     for field names.
 

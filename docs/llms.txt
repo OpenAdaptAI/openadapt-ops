@@ -106,6 +106,6 @@ Canonical status: https://docs.openadapt.ai/production-lifecycle.json. Product-w
 - [OpenAdapt.ai](https://openadapt.ai): Product website, security boundary, and solutions
 - [Blog](https://blog.openadapt.ai): Technical posts and automation recipes
 - [Open source](https://github.com/OpenAdaptAI/OpenAdapt): Flagship OpenAdapt project, installer, and unified CLI
-- [Compiler/runtime source](https://github.com/OpenAdaptAI/openadapt-flow): MIT-licensed engine for contributors and embedders
+- [Compiler/runtime source](https://github.com/OpenAdaptAI/OpenAdapt/tree/main/packages/flow): MIT-licensed engine for contributors and embedders
 - [Install from PyPI](https://pypi.org/project/openadapt/): The public `openadapt` package
 - [Discord](https://discord.gg/yF527cQbDG): Community support and discussion

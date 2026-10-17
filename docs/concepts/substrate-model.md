@@ -93,7 +93,7 @@ coordinates.
     verifies with the highest-fidelity signal it exposes, and structured layers
     (a browser DOM, Windows UIA) resolve that class outright. Per-substrate
     behavior is detailed in
-    [LIMITS](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/LIMITS.md).
+    [LIMITS](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/LIMITS.md).
 
 ## Where the desktop substrate runs today
 

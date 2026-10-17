@@ -118,4 +118,4 @@ allow-list receipt — is one page: [PHI handling](phi-handling.md).
 - Identity coverage applies to armed steps; screen-only read-back on a no-API
   surface is labeled same-surface confirmation, not independent verification.
 - The engine's known limits are published and maintained in
-  [LIMITS.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/LIMITS.md).
+  [LIMITS.md](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/LIMITS.md).

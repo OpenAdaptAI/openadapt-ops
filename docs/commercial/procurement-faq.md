@@ -121,7 +121,7 @@ workflow's numbers come from your own qualification.
 
 **What are the known limitations?**
 Published and maintained in the engine's
-[LIMITS.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/LIMITS.md).
+[LIMITS.md](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/LIMITS.md).
 Identity checks cover armed steps; screen-only verification is labeled as
 same-surface; qualification evidence is bounded to the exact environment it
 names.

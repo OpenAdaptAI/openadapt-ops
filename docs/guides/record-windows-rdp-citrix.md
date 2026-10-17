@@ -16,7 +16,7 @@ There are two ways to show the task:
 - **A person** does the task while `openadapt flow record` or OpenAdapt
   Desktop records it. See [Record your own app](record-your-app.md).
 - **An AI agent** does the task through the recording tools in
-  [openadapt-agent](https://github.com/OpenAdaptAI/openadapt-agent#record-a-first-workflow)
+  [openadapt-agent](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/agent/README.md#record-a-first-workflow)
   (`openadapt-agent serve --authoring`). A person stays at the computer to sign
   in, type secrets, and accept the result.
 
@@ -71,7 +71,7 @@ curl http://127.0.0.1:5001/health
 
 `active_console_session` must be a session number other than `-1` or `0`. If
 it's `0`, the server started in the wrong session; start it again from a
-terminal on the desktop. [Its README](https://github.com/OpenAdaptAI/openadapt-flow/tree/main/openadapt_flow/backends/win_agent)
+terminal on the desktop. [Its README](https://github.com/OpenAdaptAI/OpenAdapt/tree/main/packages/flow/openadapt_flow/backends/win_agent)
 covers starting it at sign-in and the security details.
 
 ### The token

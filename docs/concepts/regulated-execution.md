@@ -91,7 +91,7 @@ nothing, and only a verified revision is promoted.
 ## What `run` still cannot know
 
 `run` makes safety mechanisms mandatory; it doesn't make them omniscient. The
-[LIMITS](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/LIMITS.md)
+[LIMITS](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/LIMITS.md)
 still apply:
 
 - **Identity coverage is a floor.** `run` can require N of M clicks armed, but

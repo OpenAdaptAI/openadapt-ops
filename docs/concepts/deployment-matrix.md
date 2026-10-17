@@ -197,7 +197,7 @@ pixels before delivery.
   and the [immutable report](https://github.com/OpenAdaptAI/openadapt-flow/blob/f6faac5b900b78cbda5980de0e983a9f987285ac/benchmark/citrix_workspace/results.json).
 
 Review [Qualification evidence](../get-started/what-works-today.md) and the engine's
-[published limits](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/LIMITS.md)
+[published limits](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/LIMITS.md)
 before selecting a workflow.
 
 ## Try it

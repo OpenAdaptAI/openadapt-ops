@@ -8,7 +8,7 @@ environment, and bundle it names. Field semantics follow the engine's run
 report schema (`REPORT.md` and `report.json`, see
 [run reports](../guides/run-reports.md)) and the published benchmark report
 conventions in
-[openadapt-flow](https://github.com/OpenAdaptAI/openadapt-flow) (for example
+[openadapt-flow](https://github.com/OpenAdaptAI/OpenAdapt/tree/main/packages/flow) (for example
 `benchmark/*/results.json`).
 
 ## 1. Identification and provenance
