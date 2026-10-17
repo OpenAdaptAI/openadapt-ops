@@ -246,11 +246,20 @@ you can hand to an auditor:
 
 ## Hosted retention, deletion, and recovery
 
-The hosted service applies a versioned retention policy to recordings, reports,
-run metadata, and the declared recovery window. Legal holds pause eligible
-deletion. Tenant erasure is organization-scoped and produces an append-only,
-PHI/PII-free receipt with identifiers, counts, and digests rather than deleted
-payloads.
+This is the single description of hosted retention. The security review and
+the subprocessor page link here.
+
+The hosted service applies a versioned, explicitly configured retention
+policy; there is no implicit retention duration. The policy names its version
+and sets explicit windows for recordings, reports, and run metadata (run
+metadata is never retained shorter than reports), plus a backup recovery
+window and a maximum restore-drill age. The concrete day windows are
+deployment configuration, reviewed with the policy version. Request the
+current policy version and its windows directly rather than citing this page.
+
+Legal holds pause eligible deletion for the held organization. Tenant erasure
+is organization-scoped and produces an append-only, PHI/PII-free receipt with
+identifiers, counts, and digests rather than deleted payloads.
 
 Destructive scheduled retention has a separate recovery gate: it refuses to run
 without a recent receipt proving a complete database **and private object
@@ -265,12 +274,12 @@ configured retention component separately from this destructive-operation gate.
 
 ## Release integrity
 
-The public Desktop `desktop-v0.15.0` release includes Windows, macOS, and Linux
-installers, `SHA256SUMS`, a CycloneDX SBOM, per-platform metadata, and GitHub
-build-provenance attestations. These prove source and build provenance, not
-publisher identity. Windows and Linux installers remain unsigned and macOS
-installers are ad-hoc signed; Apple Developer ID/notarization and Windows
-Authenticode require the corresponding external identities. Verify the
+Python releases and the Desktop installers publish checksums and build
+provenance. The Windows and Linux installers are unsigned and the macOS
+installers are ad-hoc signed. The full statement, including the SBOM and the
+signing gates, is in
+[Release and secure-development evidence](security-review.md#release-and-secure-development-evidence).
+Verify the
 [release assets](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/desktop-v0.15.0)
 before overriding an operating-system publisher warning.
 

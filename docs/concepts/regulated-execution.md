@@ -112,3 +112,7 @@ still apply:
   `run`.
 
 A deployment that has not closed these gaps cannot start a regulated run.
+
+## Try it
+
+- [Run a deployment](../guides/run-a-deployment.md): prepare, inspect, then `run` with one deployment file.

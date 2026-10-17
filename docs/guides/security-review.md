@@ -100,20 +100,14 @@ encryption.
 
 ## Hosted retention and recovery
 
-Hosted retention is enforced through a versioned policy for recordings,
-reports, run metadata, and the declared recovery window. Legal holds pause
-eligible deletion. Tenant erasure is organization-scoped and leaves an
-append-only, PHI/PII-free receipt containing resource identifiers, counts, and
-digests rather than deleted payloads.
-
-Scheduled destructive retention additionally requires a recent complete
-scratch-restore receipt. The shipped operator path exports roles, schema, data,
-and private Storage objects; performs a second exact source read; restores only
-to an explicitly confirmed scratch project; rehashes the full result; and then
-records the immutable receipt. Production currently has no qualifying provider
-recovery point or complete scratch-restore receipt, so this destructive path
-remains gated. The configured retention component being ready does **not** imply
-provider PITR, object-storage recovery, or a backup SLA.
+Hosted retention follows a versioned policy for recordings, reports, run
+metadata, and a declared recovery window. Legal holds pause deletion, tenant
+erasure leaves a PHI/PII-free receipt, and scheduled destructive retention
+stays gated until a complete scratch-restore receipt exists. Production has no
+qualifying provider recovery point or scratch-restore receipt today, so that
+path remains gated; this is not a claim of provider PITR or a backup SLA. The
+full description is in
+[Hosted retention, deletion, and recovery](security-and-data-handling.md#hosted-retention-deletion-and-recovery).
 
 ## Updates and rollback
 

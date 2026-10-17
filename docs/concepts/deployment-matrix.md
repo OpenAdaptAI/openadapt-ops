@@ -199,3 +199,8 @@ pixels before delivery.
 Review [Qualification evidence](../get-started/what-works-today.md) and the engine's
 [published limits](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/LIMITS.md)
 before selecting a workflow.
+
+## Try it
+
+- [Deploy on-prem](../guides/deploy-on-prem.md): keep runtime data in your network.
+- [The hosted option](../guides/hosted.md): the managed browser subscription.

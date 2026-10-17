@@ -94,3 +94,8 @@ cannot express conditionals, loops, or the failure branch it never took. The
 [workflow-program IR](workflow-ir.md) and
 [multi-trace induction](multi-trace-induction.md) are how OpenAdapt recovers the
 intended program from more than one trace.
+
+## Try it
+
+- [Get started on the command line](../get-started/cli.md): record, compile, and verify the bundled tutorial.
+- [Record your own app](../guides/record-your-app.md): compile a demonstration of your own web app.

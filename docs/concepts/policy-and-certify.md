@@ -68,3 +68,7 @@ worked example. At runtime, [`run`](regulated-execution.md) applies the same
 kind of gate: [identity](identity-gate.md) stops an unresolvable target,
 [effect verification](effect-verification.md) stops an unverifiable write, and
 [induction](multi-trace-induction.md) withholds an ambiguous program.
+
+## Try it
+
+- [Write and enforce a policy](../guides/policy-and-certification.md): lint, certify, and gate CI.

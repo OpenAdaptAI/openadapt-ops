@@ -41,3 +41,8 @@ safely blocks instead of quietly loosening a control.
 
 A preference stays easy to change. A safety control stays hard, with every
 governed change audited and every missing one refused.
+
+## Try it
+
+- [Run a deployment](../guides/run-a-deployment.md#one-config-wires-the-whole-run): where the governed settings live.
+- [Deployment configuration](../reference/deployment-config.md): the full schema.
