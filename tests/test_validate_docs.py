@@ -82,11 +82,19 @@ def _write_contract_docs(root):
             "openadapt-evals is **Research**."
         ),
         "get-started/index.md": (
-            "# Get started\n\nInstall with `pip install openadapt`, then "
-            "`openadapt flow tutorial` and `openadapt quickstart --break-it`. "
-            "`claude mcp add openadapt`. Never summarize halt as success. "
+            "# Get started\n\nChoose [the command line](cli.md), "
+            "[Desktop](../desktop/install.md), or [an agent](agent-mcp.md). "
             "The bundled workflow is a tutorial. Continue in "
             "[Your first workflow](first-workflow.md)."
+        ),
+        "get-started/cli.md": (
+            "# Command line\n\nInstall with `pip install openadapt`, then "
+            "`openadapt flow tutorial` and `openadapt quickstart --break-it`. "
+            "The halted rerun reads `RECONCILIATION_REQUIRED`."
+        ),
+        "get-started/agent-mcp.md": (
+            "# Agent over MCP\n\n`claude mcp add openadapt`. Never summarize "
+            "halt as success. Never retry `not_sure_if_saved`."
         ),
         "get-started/first-workflow.md": (
             "---\n"
@@ -448,3 +456,33 @@ def test_product_docs_contract_requires_outcome_derived_results(tmp_path):
 
     assert any("RECONCILIATION_REQUIRED" in issue for issue in issues)
     assert any("HALTED_BEFORE_EFFECT" in issue for issue in issues)
+
+
+def test_product_docs_contract_accepts_catalog_under_contributing(tmp_path):
+    docs_dir = tmp_path / "docs"
+    pages = _write_contract_docs(docs_dir)
+    mkdocs_file = tmp_path / "mkdocs.yml"
+    mkdocs_file.write_text(
+        "nav:\n  - Reference:\n"
+        + "".join(f"    - {path}\n" for path in pages if path != "ecosystem/index.md")
+        + "  - Contributing & research:\n"
+        + "    - Product components and release admission: ecosystem/index.md\n"
+    )
+
+    assert check_product_docs_contract(docs_dir, mkdocs_file) == []
+
+
+def test_product_docs_contract_rejects_mcp_track_without_halt_rule(tmp_path):
+    docs_dir = tmp_path / "docs"
+    pages = _write_contract_docs(docs_dir)
+    (docs_dir / "get-started/agent-mcp.md").write_text("# Agent over MCP\n")
+    mkdocs_file = tmp_path / "mkdocs.yml"
+    mkdocs_file.write_text(
+        "nav:\n  - Reference:\n"
+        + "".join(f"    - {path}\n" for path in pages)
+        + "    - Package and repository lifecycle: ecosystem/index.md\n"
+    )
+
+    issues = check_product_docs_contract(docs_dir, mkdocs_file)
+
+    assert any("Never summarize halt as success" in issue for issue in issues)
