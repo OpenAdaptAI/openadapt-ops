@@ -54,7 +54,9 @@ openadapt flow replay  bundle --url https://your.app      # replay, local, $0
 ```
 
 On the web substrate shown here, `record` opens a headed browser on your own app
-and captures what you do. The same loop records native Windows, macOS, or Linux
+and captures what you do. A person or an agent can show the task; an agent
+uses openadapt-agent's recording tools, on the web and on native Windows, RDP,
+and Citrix ([Recording on Windows, RDP and Citrix](../guides/record-windows-rdp-citrix.md)). The same loop records native Windows, macOS, or Linux
 applications and pixel-only RDP or Citrix sessions by choosing a
 [backend](backends.md) instead of a `--url`. Those native and remote
 demonstrations reuse `openadapt-capture` for screen, input, timing, and

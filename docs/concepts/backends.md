@@ -59,6 +59,11 @@ the captured window's coordinate space before compilation. RDP and Citrix
 recordings intentionally omit local client UIA: the remote application remains
 an externally observed pixel surface.
 
+A person or an agent can show the task on these surfaces. An agent records a
+native Windows app through the in-session agent server below, and an RDP or
+Citrix session through the local client window's pixels. See
+[Recording on Windows, RDP and Citrix](../guides/record-windows-rdp-citrix.md).
+
 Desktop (and Citrix/VDI) is the **differentiated wedge**: the work that has no
 web UI and no usable API, where a computer-use agent is the only alternative and
 a wrong write is expensive. Structured desktop text distinguishes an `O` from a

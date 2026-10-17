@@ -10,6 +10,11 @@ How-to guides for real deployments. Each assumes you have
 
     Point the recorder at your web app and compile a real workflow.
 
+-   [__Recording on Windows, RDP and Citrix__](record-windows-rdp-citrix.md)
+
+    Let a person or an agent show the task in a native Windows app or a
+    remote session. Covers the Windows agent server and its token.
+
 -   [__Parameters and secrets__](parameters-and-secrets.md)
 
     Vary values per run, and inject secrets that are never persisted.

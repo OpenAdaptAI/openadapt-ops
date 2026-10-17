@@ -59,6 +59,16 @@ For a bundle that will do consequential writes, gate it behind a policy with
 - **One clear path.** The compiler treats your demonstration as intent: one with
   dead ends compiles those dead ends in.
 
+## Let an agent show the task
+
+A person or an agent can show the task. An AI agent records through the
+recording tools in
+[openadapt-agent](https://github.com/OpenAdaptAI/openadapt-agent#record-a-first-workflow)
+(`openadapt-agent serve --authoring`), in a browser, a native Windows app, or
+an RDP or Citrix session. Each step records whether the agent or a person did
+it, and a person accepts the recording. For Windows, RDP, and Citrix, see
+[Recording on Windows, RDP and Citrix](record-windows-rdp-citrix.md).
+
 ## Handling variation
 
 If the same workflow runs with different values each time (a different note, a
