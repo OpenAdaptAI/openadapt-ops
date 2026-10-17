@@ -75,7 +75,7 @@ Canonical status: https://docs.openadapt.ai/production-lifecycle.json. Product-w
 - [What's New](https://docs.openadapt.ai/whats-new/): Recent product changes
 - [Changelog](https://docs.openadapt.ai/changelog/): Aggregated release history
 
-## Security & enterprise
+## Security & procurement
 - [Security and deployment review](https://docs.openadapt.ai/guides/security-review/): Data-boundary answers for a security review
 - [Security and data handling](https://docs.openadapt.ai/guides/security-and-data-handling/): Local data flow, PHI/PII boundary, secrets, verification and audit, and hosted retention
 - [Account security and privileged access](https://docs.openadapt.ai/guides/account-security/): Authenticator setup, protected pages, and recovery for OpenAdapt Cloud accounts

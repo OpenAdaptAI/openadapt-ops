@@ -95,10 +95,11 @@ the uv installer and what each run writes.
 
     Call a compiled workflow as one MCP tool and branch on its outcome.
 
--   [__Review security__](guides/security-review.md)
+-   [__Review security and procurement__](guides/security-review.md)
 
-    For IT and security reviewers: execution boundaries, data flow,
-    encryption, release integrity, and a review checklist.
+    For IT, security, and procurement reviewers: execution boundaries, data
+    flow, encryption, release integrity, a review checklist, and the
+    [procurement FAQ](commercial/procurement-faq.md).
 
 -   [__Prepare a production workflow__](guides/qualify-a-workflow.md)
 

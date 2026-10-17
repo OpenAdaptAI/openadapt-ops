@@ -125,7 +125,7 @@ extra:
 # Information architecture (Diataxis). Evaluate is the plain-language business
 # path, with no install. Get started has three separate tracks: the command
 # line, the Desktop app, and an agent over MCP. Concepts explain, How-to guides
-# instruct, and Reference describes. Security & enterprise holds the review,
+# instruct, and Reference describes. Security & procurement holds the review,
 # data-handling, and commercial pages. Contributing & research keeps
 # contributor and research pages out of the customer sections.
 #
@@ -145,7 +145,6 @@ nav:
     - What you see and control: evaluate/what-you-see.md
     - Security and where data stays: evaluate/security.md
     - How a first project works: evaluate/first-project.md
-    - Glossary: reference/glossary.md
   - Get started:
     - get-started/index.md
     - Command line: get-started/cli.md
@@ -211,7 +210,7 @@ nav:
     - Glossary: reference/glossary.md
     - What's New: whats-new.md
     - Changelog: changelog.md
-  - Security & enterprise:
+  - Security & procurement:
     - Security and deployment review: guides/security-review.md
     - Security and data handling: guides/security-and-data-handling.md
     - Account security and privileged access: guides/account-security.md

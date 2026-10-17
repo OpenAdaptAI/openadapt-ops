@@ -35,4 +35,4 @@ Step-by-step guides for one task each. They assume you have
 | [Troubleshooting](troubleshooting.md) | Fix blank capture, over-halting, a stuck queue, and the Windows session-0 case. |
 
 Security reviews, data handling, and account security are under
-[Security & enterprise](security-review.md).
+[Security & procurement](security-review.md).
