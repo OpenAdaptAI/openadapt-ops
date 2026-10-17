@@ -26,13 +26,33 @@ normal run makes no AI model calls. The engine is open source under the MIT
 license.
 
 ```mermaid
-flowchart LR
-    D["Demonstrate<br/>a person or an agent<br/>shows the task"]
-    C["Compile and certify<br/>a program a person<br/>reviews and admits"]
-    E["Execute and verify<br/>right-record check before typing,<br/>independent record check after saving"]
-    D --> C --> E
-    E -.->|"something doesn't match"| P["Stop and ask a person"]
+flowchart TD
+    D["One or more demonstrations:<br/>a person or an agent shows the task"] --> C["Compile an inspectable program"]
+    C --> CE["Certify: check it against a policy"]
+    CE --> Q["Qualify: test it on your system with your cases"]
+    Q --> I
+    subgraph RUN["Each run"]
+        direction LR
+        I["Identity check:<br/>right record?"] --> A["Act:<br/>enter the data"]
+        A --> E["Effect check:<br/>read the result back"]
+    end
+    E --> V(["VERIFIED"])
+    E --> R(["RECONCILIATION_REQUIRED"])
+    A --> R
+    I --> H(["HALTED"])
+    E --> H
+    V --> S["Receipt, or a signed Seal"]
+    H -.->|"a person resolves it<br/>and can show the fix"| C
 ```
+
+`HALTED` means a check failed, so the run stopped and asked a person.
+`RECONCILIATION_REQUIRED` means a save may have gone through, so a person
+checks the record before anything is retried.
+[Run outcomes](reference/run-outcomes.md) lists every outcome, and the
+[glossary](reference/glossary.md) defines each step. A fix that a person shows
+after a halt becomes a new candidate program. It must pass qualification again
+before it replaces the old one; see
+[the halt-learn loop](concepts/halt-learn-loop.md#the-learn-loop).
 
 `VERIFIED` means the declared result checks passed through a read that is
 independent of the acting screen. The strongest read goes to the system of

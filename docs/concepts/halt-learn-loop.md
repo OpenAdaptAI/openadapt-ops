@@ -310,7 +310,7 @@ only if it passes the qualification and safety gates.
 flowchart TD
     H([Run halts on an<br/>unhandled state]) --> T[Halt emits a<br/>learnable execution trace]
     T --> D[Operator demonstrates<br/>the resolving actions]
-    D --> I[Goverened induction:<br/>compile the fix as a<br/>guarded branch]
+    D --> I[Governed induction:<br/>compile the fix as a<br/>guarded branch]
     I --> G{Regression gate +<br/>held-out canary}
     G -->|weakens identity / effect /<br/>risk, or underdetermined| Q([Quarantine:<br/>stays halting])
     G -->|covers the new case,<br/>regresses nothing| P([Promote qualified<br/>candidate])
