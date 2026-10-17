@@ -68,7 +68,7 @@ uv run python scripts/metrics_weekly.py --stdout        # print, do not write
 No API key is required. Setting `GH_TOKEN` raises the GitHub rate limit only;
 it is never logged.
 
-**Weekly cadence:** run both scripts once per week, e.g. Monday 09:00 UTC,
+**Weekly cadence:** run both scripts weekly, e.g. Monday 09:00 UTC,
 right before the Monday docs sync:
 
 ```cron

@@ -1,13 +1,13 @@
 # Run a workflow for each record
 
 Most real work is a queue: forty referrals, a batch of loan applications, a
-day's claims. Demonstrate the task once, then run it once per row of a worklist
+day's claims. Demonstrate the task, then run it for each row of a worklist
 under the same governance as a single run. `for-each` authors that from one
 demonstration, and [`replay --worklist`](../reference/cli.md#replay) drives it.
 
 ## Start from one demonstration
 
-Record and compile the task once, as you would for a single run:
+Record and compile the task as you would for a single run:
 
 ```bash
 openadapt flow record --backend web --url https://your.app --out rec

@@ -57,7 +57,7 @@ When auditing a consequential run, check:
 4. **Were there model calls?** On a healthy deterministic run there should be
    none. Any call is recorded; understand why it happened.
 5. **Read the halt.** The report names the violated expectation. A halt is not
-   terminal: demonstrate the fix once and
+   terminal: demonstrate the fix and
    [`openadapt flow teach`](../reference/cli.md#teach) compiles it back into the
    workflow through the governed induction path, so it stops halting on that
    situation. See [The halt-learn loop](../concepts/halt-learn-loop.md).

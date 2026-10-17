@@ -37,7 +37,7 @@ When something doesn't match, it stops and asks a person instead of guessing.
 
 ## What happens in one run
 
-1. Someone on your team does the task once while OpenAdapt records it.
+1. A person or an agent shows the task while OpenAdapt records it.
 2. OpenAdapt turns the recording into a fixed set of steps. Your team tests
    it on your own cases before it handles real work.
 3. For each item, it opens the record, checks that it's the right patient or

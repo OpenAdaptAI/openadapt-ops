@@ -153,7 +153,7 @@ and [Process contracts](process-contract.md).
 
 ## Follow one live occurrence
 
-The same program node can run more than once inside a loop. A useful live view
+The same program node can run many times inside a loop. A useful live view
 must identify one occurrence. It should retain the graph id, state id, program
 scope, incoming edge, and event sequence when the runtime provides them. The UI
 must not identify an occurrence from a row number or animation time.
