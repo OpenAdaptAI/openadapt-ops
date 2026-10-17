@@ -52,7 +52,7 @@ disambiguate confusable glyphs. See
 
 **Fix.** Teach the halt instead of loosening the gate:
 
-- **`teach` the correction.** Demonstrate the fix once and `teach` compiles it
+- **`teach` the correction.** Demonstrate the fix and `teach` compiles it
   back into the workflow as a governed, guarded branch so that state stops
   halting, without weakening the wrong-record guarantee. See
   [the halt-learn loop](../concepts/halt-learn-loop.md) and

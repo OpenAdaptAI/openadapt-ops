@@ -23,7 +23,7 @@ data arrives late.
 
 ## Scheduled monitor setup
 
-`.github/workflows/azure-cost-guard.yml` runs once each day and only reports.
+`.github/workflows/azure-cost-guard.yml` runs daily and only reports.
 It becomes active when the repository secret `AZURE_CREDENTIALS` exists.
 
 Use a service-principal JSON credential for the target subscription with these

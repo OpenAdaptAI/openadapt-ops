@@ -9,7 +9,7 @@ first_write_admission: qualification_required
 # Author a workflow
 
 This is authority work. A person or a local agent they watch demonstrates
-the task once. A named human admits the compiled program. An agent
+the task. A named human admits the compiled program. An agent
 operates it later.
 
 Choose one small real task that doesn't change business data. A read-only lookup
@@ -114,7 +114,7 @@ openadapt flow record --backend web --url https://your.app --out rec
 (Omitting `--backend` defaults to `web` with a printed notice. Production
 profiles require it explicitly.)
 
-Perform the task once with a known test record. When the expected result is
+Perform the task with a known test record. When the expected result is
 visible, press ++ctrl+c++ or close the browser window. OpenAdapt writes the
 recording to `rec/`.
 

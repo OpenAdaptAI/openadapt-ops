@@ -1,6 +1,6 @@
 # The `openadapt flow` CLI
 
-Record a workflow once, compile it into a deterministic vision-anchored script,
+Record a workflow, compile it into a deterministic vision-anchored script,
 replay it locally, and resolve, repair, or halt under drift. Every command below
 is a subcommand of `openadapt flow`.
 
@@ -18,7 +18,7 @@ is a subcommand of `openadapt flow`.
 | [`tutorial`](#tutorial) | Run the bundled tutorial end to end against a local system of record and write a local receipt | 0 if `VERIFIED`, 1 on any other outcome, 2 if refused before running |
 | [`compile`](#compile) | Compile a recording into a workflow bundle | 0 |
 | [`induce`](#induce) | Induce a parameterized program from **multiple** recordings | 0 if certified, 2 if underdetermined |
-| [`for-each`](#for-each) | Author a data-driven **loop** bundle: run one demonstration once per worklist record | 0 on success, nonzero on a mapping error |
+| [`for-each`](#for-each) | Author a data-driven **loop** bundle: run one demonstration for each worklist record | 0 on success, nonzero on a mapping error |
 | [`compose`](#compose) | Author a parent sequencer from compiled child bundles and a handoff contract | 0 on success, nonzero on an authoring refusal |
 | [`process`](#process) | Author a ProcessContract parent over independently admitted capabilities | 0 on success, nonzero on an authoring refusal |
 | [`replay`](#replay) | Replay a bundle, locally and deterministically | 0 on success, 1 on failure |
@@ -227,7 +227,7 @@ Exits `0` when the program is **certified** (bundle written) and `2` when it is
 
 Author a data-driven **loop** from a single demonstration. `for-each` takes one
 compiled linear bundle and a worklist (CSV or JSON) and emits a `program: true`
-bundle whose loop runs the demonstrated body once per record, binding each
+bundle whose loop runs the demonstrated body for each record, binding each
 record's columns to the workflow's parameters. Every iteration keeps the linear
 bundle's gates: identity checks and effect verification run per record, the loop
 is bounded by a hard `--max-iterations` cap, and a refuted or ambiguous write
@@ -253,7 +253,7 @@ openadapt flow for-each bundle --records worklist.csv --out queue-bundle \
 The column-to-parameter mapping is explicit and validated. An unmapped column, a
 mapping onto an unknown or secret parameter, a bound parameter with no column and
 no demonstrated default, a ragged worklist, or a worklist longer than the bound
-all **fail loudly** and write no bundle. Once authored, drive the loop with
+all **fail loudly** and write no bundle. After authoring, drive the loop with
 [`replay --worklist`](#replay) or [`run --worklist`](#run).
 
 ## compose
@@ -453,7 +453,7 @@ escalation.
 
 ## teach
 
-Resolve a halted run: demonstrate the fix once, and `teach` compiles it back
+Resolve a halted run: demonstrate the fix, and `teach` compiles it back
 into the workflow through the governed induction path so that state never halts
 again. It induces the correction as a guarded exception branch, gates it against
 a regression check and a held-out canary, and writes an updated bundle **only**
@@ -529,7 +529,7 @@ openadapt flow lint bundle
 | `bundle` (positional) | Workflow bundle directory |
 | `--strict` | Exit nonzero on warnings too (default: only on errors) |
 
-Exits nonzero once a finding reaches `error` (an unarmed or vacuous
+Exits nonzero when a finding reaches `error` (an unarmed or vacuous
 *irreversible* step).
 
 ## certify
@@ -747,7 +747,7 @@ risk class, and challenge. The client also verifies the run report's workflow,
 bundle digest, source-recording provenance, parameter schema, and actual browser
 origin. Cloud verifies its configured exact policy, risk-class, and deployed
 compiler-version allowlists, and consumes the organization/token-bound challenge
-once when the bundle is accepted.
+when the bundle is accepted.
 
 This is operator self-attestation, not an independent test or certification. The
 ingest-token HMAC proves possession and detects mutation; it does not prove that

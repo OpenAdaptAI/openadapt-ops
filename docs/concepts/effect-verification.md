@@ -1,7 +1,7 @@
 # Effect verification
 
 A "Saved" banner can paint over an empty database. Effect verification confirms
-a write actually landed in the real record, exactly once, with the right values,
+a write actually landed in the real record, exactly one time, with the right values,
 by reading the record instead of the pixels.
 
 ## Five silent write faults
@@ -60,10 +60,10 @@ flowchart TD
 Two effect kinds cover the common cases:
 
 - `record_written`: a record matching a selector exists **exactly**
-  `expected_count` times (at-most-once).
+  `expected_count` times, and no more.
 - `field_equals`: a read-back of one field equals an expected value.
 
-An at-most-once key (`idempotency_key`) plumbs through a consequential write, so
+An idempotency key (`idempotency_key`) plumbs through a consequential write, so
 a double-submit that the server de-duplicates collapses to one row (CONFIRMED),
 while a non-idempotent double-submit lands two rows (REFUTED).
 

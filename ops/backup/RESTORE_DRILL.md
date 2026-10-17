@@ -201,7 +201,7 @@ one device loss makes all retained backups unreadable.
 
 ## Run and verify the first backup
 
-After the AWS and GitHub setup, dispatch the workflow once. Do not wait for the
+After the AWS and GitHub setup, dispatch the workflow a single time. Do not wait for the
 next schedule.
 
 ```sh

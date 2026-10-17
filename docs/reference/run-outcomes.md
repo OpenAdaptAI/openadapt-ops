@@ -105,9 +105,9 @@ Terminal outcomes mirror the engine taxonomy in lowercase: `verified`,
 | Command | Exit codes |
 |---|---|
 | [`replay`](cli.md#replay) | `0` success (`VERIFIED` under Standard/Regulated); `1` on a halt or failure. |
-| [`run`](cli.md#run) | Same as `replay` once admitted; `2` when an admission gate (certification, policy, profile requirement) refuses the run before it starts. |
+| [`run`](cli.md#run) | Same as `replay` after admission; `2` when an admission gate (certification, policy, profile requirement) refuses the run before it starts. |
 | [`tutorial`](../get-started/index.md) | `0` when `VERIFIED`; `1` on any other outcome; `2` when the tutorial is refused before running. |
-| [`lint`](cli.md#lint) | `0` clean (or advice only); `1` once a finding reaches `error` severity (`--strict`: also on warnings). |
+| [`lint`](cli.md#lint) | `0` clean (or advice only); `1` when a finding reaches `error` severity (`--strict`: also on warnings). |
 | [`certify`](cli.md#certify) | `0` pass; `2` when the bundle fails certification (the gate refusing an unsafe bundle). |
 | [`teach`](cli.md#teach) | `0` correction promoted; `1` governed refusal (nothing written); `2` unusable inputs. |
 

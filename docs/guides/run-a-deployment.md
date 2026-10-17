@@ -59,7 +59,7 @@ openadapt flow run bundle-prod --config deployment.yaml
 ```
 
 The `--dry-run` form prints every admission-gate verdict and never executes,
-pass or fail. Once admitted, `run` uses the identical executor as `replay`
+pass or fail. After admission, `run` uses the identical executor as `replay`
 (resolution ladder, identity gate, effect verification, durable checkpoints). The
 demo-only `--drift` teaching aid is not offered; the backend URL, system of
 record, actuation tier, durability, and policy come from the config. Direct flags

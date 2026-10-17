@@ -55,7 +55,7 @@ is no longer available:
 
 A recovery code does not grant a two-factor session or open the protected page.
 It restores the account to the enrollment path through normal reauthentication.
-Each code works once; if factor removal fails, Cloud restores the code instead
+Each code works a single time; if factor removal fails, Cloud restores the code instead
 of burning it on an incomplete recovery.
 
 ## Switch workspace or account

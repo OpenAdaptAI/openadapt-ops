@@ -12,7 +12,7 @@ openadapt flow lint bundle
 
 `lint` reports coverage gaps, each with a severity: clicks that act with no
 identity check, steps that assert nothing, writes left under-classified. It exits
-nonzero once a finding reaches `error` (an unarmed or vacuous *irreversible*
+nonzero when a finding reaches `error` (an unarmed or vacuous *irreversible*
 step). Add `--strict` to also fail on warnings:
 
 ```bash

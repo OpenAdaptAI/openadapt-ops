@@ -221,7 +221,7 @@ you can hand to an auditor:
   not the pixels. A non-confirmed verdict halts the run.
   ([Effect verification](../concepts/effect-verification.md),
   [EFFECT_VERIFIER.md](https://github.com/OpenAdaptAI/openadapt-flow/blob/main/docs/design/EFFECT_VERIFIER.md))
-- **Governed-run authorization binding.** A governed run is admitted once, and
+- **Governed-run authorization binding.** A governed run is admitted a single time, and
   the approval is bound to the sealed bundle's content digest, the exact
   parameter digest, the admitting policy, the identity-required steps, and the
   exact effect-contract hashes: single-use, halt-on-mismatch. An approval for

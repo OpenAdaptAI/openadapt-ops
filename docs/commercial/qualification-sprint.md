@@ -1,7 +1,7 @@
 # Workflow Qualification Sprint
 
 **Fixed-scope, paid qualification of one workflow. From $15,000. Ten-business-day
-target once access is confirmed.**
+target, counted from confirmed access.**
 
 ## What it is
 

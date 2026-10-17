@@ -1,7 +1,7 @@
 # Multi-trace induction
 
 One demonstration is **evidence**, not a **specification**: it shows what
-happened once, not what should happen every time. Multi-trace induction recovers
+happened on one run, not what should happen every time. Multi-trace induction recovers
 the intended program from more than one demonstration, and refuses to emit a
 workflow while intent stays ambiguous.
 

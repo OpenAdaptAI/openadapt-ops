@@ -19,7 +19,7 @@ never as "Stopped before saving" or "Didn't finish".
 | Plain term | Technical term | What it means |
 |---|---|---|
 | Workflow | Workflow | The task you hand off, such as entering a referral. |
-| Showing the task, recording | [Demonstration](../concepts/demonstration-compiler.md), recording, capture | A person does the task once while OpenAdapt watches. |
+| Showing the task, recording | [Demonstration](../concepts/demonstration-compiler.md), recording, capture | A person or an agent shows the task while OpenAdapt watches. |
 | The automation | [Compiled program](../concepts/demonstration-compiler.md), [bundle](../reference/bundle-format.md) | What OpenAdapt builds from the recording. Technical pages call it the program. |
 | Run | Run, replay | One time the automation does the task. |
 | Done and checked | [`VERIFIED`](../reference/run-outcomes.md) | It saved the entry and read the record back to confirm it. |
