@@ -1,6 +1,6 @@
 """The `openadapt flow` CLI reference must cover the shipped verbs.
 
-`FLOW_VERBS` is the top-level subcommand list of openadapt-flow 1.35.1, read
+`FLOW_VERBS` is the top-level subcommand list of openadapt-flow 2.1.0, read
 from its argparse parser. When a Flow release adds or removes a verb, refresh
 it from `openadapt-flow --help` (or from `build_parser()` in
 `openadapt_flow.__main__`) and document the change in docs/reference/cli.md.
@@ -15,6 +15,7 @@ ROOT = Path(__file__).resolve().parent.parent
 CLI_REFERENCE = ROOT / "docs/reference/cli.md"
 
 FLOW_VERBS = (
+    "demo",
     "record",
     "demo-record",
     "tutorial",
@@ -25,15 +26,19 @@ FLOW_VERBS = (
     "process",
     "replay",
     "run",
+    "attach-seal",
     "resume",
     "approve",
+    "item-approval",
     "bench",
     "benchmark",
+    "intake",
     "lint",
     "scaffold-verifier",
     "explain",
     "visualize",
     "seal",
+    "bind-record-checks",
     "certify",
     "qualify",
     "propose-qualification",
@@ -41,6 +46,7 @@ FLOW_VERBS = (
     "emit-skill",
     "emit-mcp",
     "teach",
+    "teach-branch",
     "repair",
     "connect",
     "login",
@@ -108,7 +114,7 @@ def test_reference_has_no_universal_web_default() -> None:
     assert "captures on this OS" in text
 
 
-# Verbs that accept `--config deployment.yaml` in openadapt-flow 1.35.1.
+# Verbs that accept `--config deployment.yaml` in openadapt-flow 2.1.0.
 # `record` and `compile` don't.
 CONFIG_VERBS = ("certify", "replay", "run", "resume")
 
@@ -116,7 +122,7 @@ CONFIG_VERBS = ("certify", "replay", "run", "resume")
 def test_docs_name_only_the_verbs_that_accept_config() -> None:
     listed = ", ".join(f"`{verb}`" for verb in CONFIG_VERBS[:-1])
     expected = f"{listed}, and `{CONFIG_VERBS[-1]}` all"
-    for page in (CLI_REFERENCE, ROOT / "docs/reference/deployment-config.md"):
+    for page in (CLI_REFERENCE, ROOT / "docs/reference/configuration.md"):
         text = " ".join(page.read_text(encoding="utf-8").split())
         assert "`record`, `compile`, `certify`" not in text, page.name
         assert expected in text, page.name

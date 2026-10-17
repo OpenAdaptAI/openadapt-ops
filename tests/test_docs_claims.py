@@ -30,7 +30,7 @@ def _doc_pages() -> list[Path]:
 def test_generated_pages_are_the_only_pages_left_out() -> None:
     assert all(page.is_file() for page in GENERATED_PAGES)
     scanned = set(_doc_pages())
-    assert DOCS / "reference/run-outcomes.md" in scanned
+    assert DOCS / "reference/outcomes.md" in scanned
     assert DOCS / "llms.txt" in scanned
 
 
@@ -178,7 +178,7 @@ def test_docs_never_call_every_failed_push_safe_to_rerun() -> None:
 
 
 def test_troubleshooting_names_the_uncertain_push_result() -> None:
-    text = (DOCS / "guides/troubleshooting.md").read_text(encoding="utf-8")
+    text = (DOCS / "how-to/troubleshoot.md").read_text(encoding="utf-8")
     section = next(s for s in _sections(text) if s.startswith("The offline queue is stuck"))
     for required in ("delivery_uncertain", "reconcile", "exit code"):
         assert required in section, required
@@ -199,13 +199,13 @@ _BLANKET_NO_TELEMETRY = (
 
 
 def test_subprocessors_page_discloses_connector_failure_signals() -> None:
-    text = (DOCS / "commercial/subprocessors.md").read_text(encoding="utf-8")
+    text = (DOCS / "security/subprocessors.md").read_text(encoding="utf-8")
     for required in (FAILURE_SIGNAL_SCHEMA, "DO_NOT_TRACK=1", "OPENADAPT_TELEMETRY=0"):
         assert required in text, required
 
 
 # Every key of the v1 envelope that automation_failure_signal() returns in
-# openadapt-flow 1.35.1, and the words the disclosure uses for it. A reader
+# openadapt-flow 2.1.0, and the words the disclosure uses for it. A reader
 # checking what leaves their boundary needs the whole list, including fields
 # that are always `unknown` today.
 FAILURE_SIGNAL_FIELDS = {
@@ -227,7 +227,7 @@ FAILURE_SIGNAL_FIELDS = {
 
 
 def test_failure_signal_disclosure_names_every_envelope_field() -> None:
-    text = (DOCS / "commercial/subprocessors.md").read_text(encoding="utf-8")
+    text = (DOCS / "security/subprocessors.md").read_text(encoding="utf-8")
     section = next(s for s in _sections(text) if s.startswith("What runs send to OpenAdapt"))
     holds = next(s for s in _sentences(section) if "What it holds" in s)
     missing = [field for field, words in FAILURE_SIGNAL_FIELDS.items() if words not in holds]

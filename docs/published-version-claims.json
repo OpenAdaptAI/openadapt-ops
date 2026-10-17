@@ -43,8 +43,8 @@
       "kind": "pinned-deployment",
       "package": "openadapt-flow",
       "version": "1.34.0",
-      "evidence": "openadapt-cloud origin/main 45fa1c80588b47a3708657625b369bbffe07c05a runner/runtime-version.json pins openadapt_flow 1.34.0 at release commit 30fc60e55778a0e0f92b9776117cafcfe2512249 (wheel sha256 56d32818989cb3a92830080ead39e10b08718c55e00988117f22cbfeaac98854; sdist sha256 a941a70015fe91897e655bfc9bf83e6cf8fbcf8bd4e4c7206ffb133c505203f8). Cloud has pinned 1.34.0 since c6c705d457d09f4628dd23a6fa26fbbdd87f87ff (2026-08-28). This records the configured artifact pin, not live deployment or hosted acceptance. The docs state it as of verified_on.",
-      "verified_on": "2026-10-14",
+      "evidence": "openadapt-cloud origin/main 4d653f37812fe568e15750d6f55bfa952e0641e9 runner/runtime-version.json pins openadapt_flow 1.34.0 at release commit 30fc60e55778a0e0f92b9776117cafcfe2512249 (wheel sha256 56d32818989cb3a92830080ead39e10b08718c55e00988117f22cbfeaac98854; sdist sha256 a941a70015fe91897e655bfc9bf83e6cf8fbcf8bd4e4c7206ffb133c505203f8). Cloud has pinned 1.34.0 since c6c705d457d09f4628dd23a6fa26fbbdd87f87ff (2026-08-28). This records the configured artifact pin, not live deployment or hosted acceptance. The docs state it as of verified_on.",
+      "verified_on": "2026-10-17",
       "artifact": {
         "release_commit": "30fc60e55778a0e0f92b9776117cafcfe2512249",
         "wheel_sha256": "56d32818989cb3a92830080ead39e10b08718c55e00988117f22cbfeaac98854",
@@ -52,86 +52,8 @@
       },
       "locations": [
         {
-          "file": "docs/concepts/deployment-matrix.md",
-          "context": "managed-runtime manifest pins Flow 1.34.0 at release"
-        },
-        {
-          "file": "docs/guides/security-review.md",
-          "context": "managed-runtime\nmanifest pins Flow 1.34.0 artifact identity"
-        },
-        {
-          "file": "docs/guides/hosted.md",
-          "context": "managed-runtime manifest pins Flow 1.34.0 artifact identity"
-        },
-        {
-          "file": "docs/guides/hosted.md",
-          "context": "managed-runtime manifest pins the Flow 1.34.0\nartifact identity"
-        },
-        {
-          "file": "docs/get-started/what-works-today.md",
-          "context": "managed-runtime manifest pins the Flow 1.34.0 runner/compiler artifact identity"
-        }
-      ]
-    },
-    {
-      "id": "hosted-recorder-qualification",
-      "kind": "historical",
-      "package": "openadapt-flow",
-      "version": "1.8.0",
-      "evidence": "The retained non-simulated hosted-recorder qualification was run on a Flow 1.8.0 worker. Frozen: bumping it would falsify what was measured.",
-      "verified_on": "2026-07-27",
-      "locations": [
-        {
-          "file": "docs/concepts/deployment-matrix.md",
-          "context": "qualification used a Flow 1.8.0 worker"
-        },
-        {
-          "file": "docs/guides/security-review.md",
-          "context": "was run on Flow 1.8.0"
-        },
-        {
-          "file": "docs/guides/hosted.md",
-          "context": "qualification used `openadapt-flow` 1.8.0"
-        },
-        {
-          "file": "docs/guides/hosted.md",
-          "context": "That retained qualification used an `openadapt-flow` 1.8.0"
-        },
-        {
-          "file": "docs/get-started/what-works-today.md",
-          "context": "hosted session on `openadapt-flow` 1.8.0"
-        }
-      ]
-    },
-    {
-      "id": "flow-current-release-replay-has-no-seal-option",
-      "kind": "pypi-latest",
-      "package": "openadapt-flow",
-      "version": "2.1.0",
-      "evidence": "The openadapt-flow 2.1.0 wheel on PyPI has no replay option that issues a Seal (no --*seal* argument in openadapt_flow/__main__.py). When a newer Flow publishes, re-check the replay options and update this version.",
-      "verified_on": "2026-10-17",
-      "locations": [
-        {
-          "file": "docs/commercial/seal.md",
-          "context": "`openadapt-flow replay` in Flow 2.1.0, the current release, has no option that"
-        },
-        {
-          "file": "docs/commercial/oem-brief.md",
-          "context": "`openadapt-flow replay` in Flow 2.1.0, the current release, has no Seal option,"
-        }
-      ]
-    },
-    {
-      "id": "flow-current-release-emits-human-decision-v2",
-      "kind": "pypi-latest",
-      "package": "openadapt-flow",
-      "version": "2.1.0",
-      "evidence": "The openadapt-flow 2.1.0 wheel on PyPI selects HumanDecisionTaskV2 in openadapt_flow/console/human_decisions.py when deployment.human_decisions.remote.peer_task_schemas declares the V2 schema, and HumanDecisionTaskV1 otherwise. When a newer Flow publishes, re-check and update this version.",
-      "verified_on": "2026-10-17",
-      "locations": [
-        {
-          "file": "docs/guides/qualify-a-workflow.md",
-          "context": "contract for an approved entity class and neutral fallback. Flow 2.1.0, the\ncurrent release, emits `HumanDecisionTaskV2`"
+          "file": "docs/security/evidence.md",
+          "context": "runtime manifest pins Flow 1.34.0\nat release commit"
         }
       ]
     }

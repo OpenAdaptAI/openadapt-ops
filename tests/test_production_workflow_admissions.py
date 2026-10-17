@@ -206,7 +206,7 @@ class ProductionWorkflowAdmissionsCopyTests(unittest.TestCase):
         self.assertNotIn("MockMed production_acceptance", text)
 
     def test_lifecycle_page_names_public_synthetic_ledger(self) -> None:
-        text = (ROOT / "docs" / "reference" / "production-lifecycle.md").read_text(
+        text = (ROOT / "docs" / "security" / "release-integrity.md").read_text(
             encoding="utf-8"
         )
         collapsed = " ".join(text.split())

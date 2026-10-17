@@ -1,117 +1,94 @@
 ---
 title: OpenAdapt documentation
 description: >-
-  OpenAdapt takes the last manual step off your team. It enters approved
-  information into the systems you already use and checks that it saved. When
-  something doesn't match, it stops and asks a person instead of guessing.
+  OpenAdapt compiles one or more demonstrations of a task into a workflow
+  program, tests it in the target environment, and runs it with a check
+  before and after each save. A run that can't prove a save stops.
 hide:
   - toc
 ---
 
-# Take the last manual step off your team
+# OpenAdapt
 
-<p class="oa-lede">
-OpenAdapt enters approved information into the systems you already use, such
-as EMRs, payer portals, and desktop and Citrix apps, and checks that it saved.
-When something doesn't match, it stops and asks a person instead of guessing.
-</p>
+OpenAdapt turns a repetitive task in an application without a usable API
+into a program that enters the data and then checks that it saved. A person
+or an agent shows the task in the real application. OpenAdapt compiles one or
+more demonstrations into a workflow program you can read, tests it in your
+environment, and runs it with new inputs. A healthy run makes no AI model
+calls. When a check fails, the run stops and asks a person instead of
+guessing.
 
-## What it is
+It drives web apps, Windows, macOS, and Linux apps, and apps reached over RDP
+or Citrix: a CRM, a billing system, an insurance portal, or an electronic
+health record. The tutorials use a synthetic clinic app as the example. The
+engine is open source under the MIT license.
 
-OpenAdapt is a demonstration compiler with a governed runtime. A person or an
-agent shows the task in the real app. OpenAdapt compiles one or more
-demonstrations into an inspectable program, and a person accepts it before it
-does real work. A person, Desktop, or an AI agent then runs that program. A
-normal run makes no AI model calls. The engine is open source under the MIT
-license.
-
-```mermaid
-flowchart TD
-    D["One or more demonstrations:<br/>a person or an agent shows the task"] --> C["Compile an inspectable program"]
-    C --> CE["Certify: check it against a policy"]
-    CE --> Q["Qualify: test it on your system with your cases"]
-    Q --> I
-    subgraph RUN["Each run"]
-        direction LR
-        I["Identity check:<br/>right record?"] --> A["Act:<br/>enter the data"]
-        A --> E["Effect check:<br/>read the result back"]
-    end
-    E --> V(["VERIFIED"])
-    E --> R(["RECONCILIATION_REQUIRED"])
-    A --> R
-    I --> H(["HALTED"])
-    E --> H
-    V --> S["Receipt, or a signed Seal"]
-    H -.->|"a person resolves it<br/>and can show the fix"| C
-```
-
-`HALTED` means a check failed, so the run stopped and asked a person.
-`RECONCILIATION_REQUIRED` means a save may have gone through, so a person
-checks the record before anything is retried.
-[Run outcomes](reference/run-outcomes.md) lists every outcome, and the
-[glossary](reference/glossary.md) defines each step. A fix that a person shows
-after a halt becomes a new candidate program. It must pass qualification again
-before it replaces the old one; see
-[the halt-learn loop](concepts/halt-learn-loop.md#the-learn-loop).
-
-`VERIFIED` means the declared result checks passed through a read that is
-independent of the acting screen. The strongest read goes to the system of
-record itself: its API, database, file export, or document. A separate
-read-only session of the app is weaker, because it reads through the same
-interface the run used. A "Saved" message on the acting screen doesn't count. [Effect verification](concepts/effect-verification.md)
-explains why.
-
-## Try it
-
-The bundled tutorial runs on a synthetic app on your computer. It needs
-Python 3.10 to 3.12, no account, and no app of your own.
-
-```bash
-python -m pip install --upgrade openadapt
-openadapt flow tutorial
-openadapt quickstart --break-it
-```
-
-The first run ends `VERIFIED` and writes a local receipt. The second shows a
-saved banner while the store rejects the write, and the run halts instead of
-reporting success. [Get started on the command line](get-started/cli.md) has
-the uv installer and what each run writes.
-
-## Choose your path
+## For developers
 
 <div class="grid cards" markdown>
 
--   [__Evaluate one workflow__](evaluate/index.md)
+-   __Run it in one command__
 
-    For a business reader: what changes for your team, four worked examples,
-    and how a first project runs. No install.
+    ```bash
+    uvx --python 3.12 openadapt quickstart --break-it
+    ```
 
--   [__Install and try it__](get-started/index.md)
+    Or install it on Python 3.10 to 3.12 and run the engine tutorial:
 
-    Three tracks: the command line, the Desktop app, or an agent connected
-    over MCP. Each installs the same engine.
+    ```bash
+    python -m pip install --upgrade openadapt
+    openadapt flow tutorial
+    ```
 
--   [__Connect an AI agent__](get-started/agent-mcp.md)
+    No account or API key. [Quickstart tutorial](tutorials/quickstart.md)
 
-    Call a compiled workflow as one MCP tool and branch on its outcome.
+-   __Give a workflow to your agent__
 
--   [__Review security and procurement__](guides/security-review.md)
+    ```bash
+    claude mcp add openadapt -- uvx --python 3.12 openadapt-agent serve
+    ```
 
-    For IT, security, and procurement reviewers: execution boundaries, data
-    flow, encryption, release integrity, a review checklist, and the
-    [procurement FAQ](commercial/procurement-faq.md).
-
--   [__Prepare a production workflow__](guides/qualify-a-workflow.md)
-
-    Bind identity and effect checks, run representative and fault cases,
-    certify, and admit one exact workflow version.
-
--   [__Look something up__](reference/index.md)
-
-    The CLI, run outcomes, the bundle format, deployment configuration, and
-    the glossary.
+    The MCP server gives an agent each compiled workflow as one tool call.
+    This starts a sandbox that needs no account.
+    [Connect an agent](how-to/connect-an-agent.md)
 
 </div>
+
+**Jump to:** [Command line](reference/cli.md) ·
+[How the compiler works](explanation/how-it-works.md#a-program-not-a-model-in-a-loop) ·
+[MCP server](how-to/connect-an-agent.md#serve-your-own-workflows) ·
+[Run outcomes](reference/outcomes.md) ·
+[Your first workflow](tutorials/first-workflow.md) ·
+[Security & procurement](security/index.md)
+
+## How a save is checked
+
+![On the acting surface, the app screen OpenAdapt types into, a run checks that the right record is on screen, then enters and saves. It then reads the record back. A screen read-back uses the app's UI in a separate session and is not independent. An independent read uses the system of record through its API, database, or file export, never through the UI. If the read matches, the run ends VERIFIED with a run report and a receipt; OpenAdapt Cloud signs a Seal only after an independent read. If it doesn't match or can't tell, the run ends RECONCILIATION_REQUIRED and a person checks the record. If the right-record check fails, the run ends HALTED_BEFORE_EFFECT before saving and asks a person.](assets/diagrams/record-check.svg)
+
+The screen that did the work can show "Saved" when nothing was stored, so it
+never confirms a save on its own. [How a save is checked](explanation/verification.md)
+explains which read-backs count for which result.
+
+## From demonstration to production
+
+```mermaid
+flowchart LR
+    S["Show the task<br/>(a person or an agent,<br/>one or more times)"] --> C["Compile<br/>a workflow program<br/>you can read"]
+    C --> P["Certify<br/>policy and lint checks"]
+    P --> Q["Qualify<br/>normal and fault cases<br/>in the target environment"]
+    Q --> A["Admit<br/>this exact version"]
+    A --> R["Run<br/>right-record check, action,<br/>record check at each save"]
+    R --> V(["VERIFIED<br/>report, receipt, Seal"])
+    R --> H(["Stopped<br/>HALTED_BEFORE_EFFECT"])
+    R --> U(["Not sure it saved<br/>RECONCILIATION_REQUIRED"])
+    H -.->|"a person or an agent<br/>shows the fix"| C
+    U -.-> K["A person checks<br/>the record"]
+```
+
+[How OpenAdapt works](explanation/how-it-works.md) walks through each stage.
+Terms are defined once, in the [glossary](reference/glossary.md). Which
+releases are admitted for production is on
+[Release integrity](security/release-integrity.md).
 
 ## When it fits
 
@@ -119,72 +96,17 @@ OpenAdapt fits a task when most of these are true:
 
 - The team does it the same way many times a week.
 - What to enter is already decided, by a person, a form, or an AI agent.
-- The target app has no practical API for the write. It can be a web app, a
-  native Windows, macOS, or Linux app, or an app reached over RDP or Citrix.
-- A wrong entry costs money, time, or compliance trouble.
-- There's a second way to read the saved record, such as an API, a database,
-  a report, or a read-only login.
+- The application has no practical API for the write.
+- A wrong entry is costly.
+- There is a second way to read the saved record, such as an API, a database,
+  a report, or a read-only sign-in.
 
-It doesn't fit when a direct API or batch interface can already make the
-change, when the result can't be checked and the risk doesn't allow a
-screen-only check, or when the task needs judgment that can't be reduced to
-checkable rules. [Qualification evidence](get-started/what-works-today.md)
-lists what has been tested on each surface and its limits, and the
-[Production admission](reference/production-lifecycle.md) page defines a
-qualified workflow.
+If the application already has an API for the task, call the API. The
+[limits page](explanation/limits.md) lists what OpenAdapt doesn't do.
 
-## Who approves what
+## What the packages are
 
-A person admits each compiled program version before it handles real work, and
-reviews any proposed repair before it's promoted. Approval of individual items
-is a setting of the run, not a fixed rule:
-
-- `each_item`, the default under the Standard and Regulated profiles: the run
-  waits before each save until a person approves it in Desktop.
-- `not_gated`: no per-item pause. It must be set explicitly, and the run report
-  records it. Cloud-dispatched runs use this mode.
-- `problems_only` asks a person only about items that fail a check. The engine
-  has it, but a customer can't turn it on yet.
-
-Every run still stops and asks a person when an identity, result, or policy
-check fails. See [What you see and control](evaluate/what-you-see.md).
-
-## The caller contract
-
-A calling agent, Desktop, or a script reads one result per run. The plain label
-and the MCP `outcome` both come from the engine's `transaction_outcome`, which
-states what is known about the business write. The coarser
-`execution_outcome` (`VERIFIED`, `COMPLETED_UNVERIFIED`, `HALTED`, `FAILED`, or
-`ROLLED_BACK`) doesn't say on its own whether anything was written.
-
-| `transaction_outcome` | Label people see | MCP `outcome` | What the caller may do |
-|---|---|---|---|
-| `VERIFIED` | Done and checked | `done` | Mark the request complete. Don't send it again. |
-| `HALTED_BEFORE_EFFECT` | Stopped before saving | `needs_review` | Don't start the same work again. A person decides. |
-| `REJECTED_POLICY`, `CANCELED` | Stopped before saving | `did_not_run`, or `needs_review` while a person holds the run | Fix the cause. Resend only when `safe_to_retry` is true. |
-| `FAILED_PLATFORM` | Didn't finish | `did_not_run`, or `needs_review` while a person holds the run | Fix the setup. Resend only when `safe_to_retry` is true. |
-| `RECONCILIATION_REQUIRED`, `ROLLED_BACK` | Check the record | `not_sure_if_saved` | Never retry. A person checks the record. |
-| `COMPLETED_UNVERIFIED` | Finished, not checked | `not_sure_if_saved` | Don't treat it as success. Add a record check. |
-
-The calling agent may bind declared parameters, invoke a compiled program,
-supply a missing declared parameter, retry a retryable transport failure with
-the same request id, and escalate. It must not summarize a halt as success,
-resolve an identity or effect contradiction itself, or invent clicks to work
-around a stop. The machine contract is in [agents.txt](agents.txt), and every
-outcome and halt reason is in [Run outcomes](reference/run-outcomes.md).
-
-## Where it runs
-
-| Surface | Execution options | Evidence available |
-|---|---|---|
-| Browser | Local, customer-controlled, or managed for approved workflows | DOM, accessibility, visual, geometry, and interaction evidence |
-| Windows, macOS, Linux | Local or customer-controlled | Native accessibility data plus retained visual evidence |
-| RDP, Citrix, VDI | Local or customer-controlled | Window-scoped pixels, keyboard, mouse, OCR, and visual anchors |
-
-Sensitive runtime observations stay inside the declared execution boundary.
-Only an approved, sanitized derivative can cross it. See
-[the deployment matrix](concepts/deployment-matrix.md) and
-[Security and data handling](guides/security-and-data-handling.md).
-
-[Watch a recorded run on OpenEMR with synthetic data](https://app.openadapt.ai/demo){ .md-button }
-[Check the current Production status](reference/production-lifecycle.md){ .md-button }
+On Python 3.10 to 3.12, `pip install openadapt` installs the `openadapt`
+command, the engine (`openadapt-flow`), and the MCP server
+(`openadapt-agent`). The [packages map](reference/packages.md) lists every
+package and repository and which ones you need.

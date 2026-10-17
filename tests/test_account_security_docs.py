@@ -4,9 +4,9 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-GUIDE = (ROOT / "docs" / "guides" / "account-security.md").read_text()
+GUIDE = (ROOT / "docs" / "security" / "account-security.md").read_text()
 GUIDE_PROSE = " ".join(GUIDE.split())
-CONNECT = (ROOT / "docs" / "desktop" / "connect-to-cloud.md").read_text()
+CONNECT = (ROOT / "docs" / "how-to" / "deploy.md").read_text()
 CONNECT_PROSE = " ".join(CONNECT.split())
 NAV = (ROOT / "mkdocs.yml").read_text()
 
@@ -38,6 +38,6 @@ def test_recovery_returns_to_enrollment_without_granting_privileged_access():
 
 def test_account_security_guide_is_in_the_security_navigation():
     assert (
-        "Account security and privileged access: guides/account-security.md"
+        "Account security: security/account-security.md"
         in NAV
     )
