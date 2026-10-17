@@ -35,9 +35,10 @@ flowchart LR
 ```
 
 `VERIFIED` means the declared result checks passed through a read that is
-independent of the acting screen: the system of record's API, database, file,
-or document, or a separate read-only session. A "Saved" message on the acting
-screen doesn't count. [Effect verification](concepts/effect-verification.md)
+independent of the acting screen. The strongest read goes to the system of
+record itself: its API, database, file export, or document. A separate
+read-only session of the app is weaker, because it reads through the same
+interface the run used. A "Saved" message on the acting screen doesn't count. [Effect verification](concepts/effect-verification.md)
 explains why.
 
 ## Try it
