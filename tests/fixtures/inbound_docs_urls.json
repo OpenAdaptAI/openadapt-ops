@@ -1,0 +1,690 @@
+{
+  "collected_on": "2026-10-17",
+  "how_collected": "Every docs.openadapt.ai URL in: the description and project URLs of every published release of openadapt, openadapt-flow, openadapt-agent, openadapt-types, openadapt-evals, openadapt-desktop, and openadapt-capture on PyPI; the README and package metadata of every OpenAdaptAI repository, the organization profile, and every file GitHub code search finds for docs.openadapt.ai in the organization (except this repository); the openadapt-web source and the pages in the openadapt.ai sitemap; and the live docs.openadapt.ai sitemap.",
+  "urls": [
+    {
+      "url": "/",
+      "sources": [
+        "GitHub OpenAdaptAI/.github",
+        "GitHub OpenAdaptAI/OpenAdapt",
+        "GitHub OpenAdaptAI/openadapt-agent",
+        "GitHub OpenAdaptAI/openadapt-blog",
+        "GitHub OpenAdaptAI/openadapt-desktop",
+        "GitHub OpenAdaptAI/openadapt-flow",
+        "GitHub OpenAdaptAI/openadapt-grounding",
+        "GitHub OpenAdaptAI/openadapt-ml",
+        "GitHub OpenAdaptAI/openadapt-ops",
+        "GitHub OpenAdaptAI/openadapt-tray",
+        "PyPI openadapt",
+        "PyPI openadapt-agent",
+        "PyPI openadapt-capture",
+        "PyPI openadapt-desktop",
+        "PyPI openadapt-evals",
+        "PyPI openadapt-flow",
+        "PyPI openadapt-types",
+        "a private OpenAdaptAI repository",
+        "docs.openadapt.ai sitemap",
+        "openadapt.ai"
+      ]
+    },
+    {
+      "url": "/VISUALIZE/",
+      "sources": [
+        "a private OpenAdaptAI repository"
+      ],
+      "skip": "Same as /visualize/ except for case. A page by that name was planned in a private document and never published; on a case-insensitive file system the two redirect stubs would collide."
+    },
+    {
+      "url": "/changelog/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/commercial/",
+      "sources": [
+        "a private OpenAdaptAI repository",
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/commercial/acceptance-matrix/",
+      "sources": [
+        "a private OpenAdaptAI repository",
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/commercial/citrix-external-brief/",
+      "sources": [
+        "a private OpenAdaptAI repository",
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/commercial/deployment-boundaries/",
+      "sources": [
+        "a private OpenAdaptAI repository",
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/commercial/execute-api/",
+      "sources": [
+        "a private OpenAdaptAI repository",
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/commercial/oem-brief/",
+      "sources": [
+        "GitHub OpenAdaptAI/OpenAdapt",
+        "PyPI openadapt",
+        "a private OpenAdaptAI repository",
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/commercial/phi-handling/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/commercial/procurement-faq/",
+      "sources": [
+        "a private OpenAdaptAI repository",
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/commercial/qualification-report-outline/",
+      "sources": [
+        "a private OpenAdaptAI repository",
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/commercial/qualification-sprint/",
+      "sources": [
+        "a private OpenAdaptAI repository",
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/commercial/qualification-sprint/#no-go-criteria",
+      "sources": [
+        "a private OpenAdaptAI repository"
+      ]
+    },
+    {
+      "url": "/commercial/scope-checklist/",
+      "sources": [
+        "a private OpenAdaptAI repository",
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/commercial/seal-reward/",
+      "sources": [
+        "GitHub OpenAdaptAI/OpenAdapt",
+        "GitHub OpenAdaptAI/openadapt-flow",
+        "a private OpenAdaptAI repository",
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/commercial/seal/",
+      "sources": [
+        "GitHub OpenAdaptAI/OpenAdapt",
+        "PyPI openadapt",
+        "a private OpenAdaptAI repository",
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/commercial/security-packet/",
+      "sources": [
+        "a private OpenAdaptAI repository",
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/commercial/subprocessors/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/commercial/vulnerability-disclosure/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/concepts/",
+      "sources": [
+        "GitHub OpenAdaptAI/OpenAdapt",
+        "a private OpenAdaptAI repository",
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/concepts/backends/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/concepts/capability-ladder/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/concepts/demonstration-compiler/",
+      "sources": [
+        "a private OpenAdaptAI repository",
+        "docs.openadapt.ai sitemap",
+        "openadapt.ai"
+      ]
+    },
+    {
+      "url": "/concepts/deployment-matrix/",
+      "sources": [
+        "a private OpenAdaptAI repository",
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/concepts/durable-runtime/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/concepts/effect-verification/",
+      "sources": [
+        "a private OpenAdaptAI repository",
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/concepts/execution-profiles/",
+      "sources": [
+        "a private OpenAdaptAI repository"
+      ]
+    },
+    {
+      "url": "/concepts/halt-learn-loop/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/concepts/halt-learn-loop/#a-qualified-entity-label-not-a-guessed-domain",
+      "sources": [
+        "GitHub OpenAdaptAI/OpenAdapt",
+        "GitHub OpenAdaptAI/openadapt-flow",
+        "a private OpenAdaptAI repository"
+      ],
+      "skip_anchor": "The live page has no heading with this id either. The URL still reaches the page that replaced it."
+    },
+    {
+      "url": "/concepts/human-judgment/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/concepts/identity-gate/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/concepts/multi-trace-induction/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/concepts/policy-and-certify/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/concepts/process-contract/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/concepts/program-visualizer/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/concepts/qualification-owned-entity-language/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/concepts/regulated-execution/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/concepts/self-healing/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/concepts/settings-governance/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/concepts/substrate-model/",
+      "sources": [
+        "GitHub OpenAdaptAI/OpenAdapt",
+        "PyPI openadapt",
+        "a private OpenAdaptAI repository",
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/concepts/vlm-appliance/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/concepts/workflow-ir/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/contributing/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/desktop/connect-to-cloud/",
+      "sources": [
+        "a private OpenAdaptAI repository",
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/desktop/install/",
+      "sources": [
+        "a private OpenAdaptAI repository",
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/ecosystem/",
+      "sources": [
+        "GitHub OpenAdaptAI/OpenAdapt",
+        "a private OpenAdaptAI repository",
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/evaluate/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/evaluate/before-after/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/evaluate/first-project/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/evaluate/security/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/evaluate/what-you-see/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/get-started/",
+      "sources": [
+        "GitHub OpenAdaptAI/.github",
+        "GitHub OpenAdaptAI/OpenAdapt",
+        "PyPI openadapt",
+        "a private OpenAdaptAI repository",
+        "docs.openadapt.ai sitemap",
+        "openadapt.ai"
+      ]
+    },
+    {
+      "url": "/get-started/agent-mcp/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/get-started/cli/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/get-started/first-workflow/",
+      "sources": [
+        "GitHub OpenAdaptAI/openadapt-blog",
+        "a private OpenAdaptAI repository",
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/get-started/packages/",
+      "sources": [
+        "GitHub OpenAdaptAI/OpenAdapt",
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/get-started/what-works-today/",
+      "sources": [
+        "GitHub OpenAdaptAI/OpenAdapt",
+        "PyPI openadapt",
+        "a private OpenAdaptAI repository",
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/get-started/what-you-get/",
+      "sources": [
+        "a private OpenAdaptAI repository",
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/getting-started/quickstart/",
+      "sources": [
+        "a private OpenAdaptAI repository"
+      ]
+    },
+    {
+      "url": "/guides/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/guides/account-security/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/guides/compose-multi-application/",
+      "sources": [
+        "GitHub OpenAdaptAI/OpenAdapt",
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/guides/data-driven-loops/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/guides/deploy-on-prem/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/guides/hosted/",
+      "sources": [
+        "a private OpenAdaptAI repository",
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/guides/induce-a-program/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/guides/parameters-and-secrets/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/guides/policy-and-certification/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/guides/qualify-a-workflow/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/guides/record-windows-rdp-citrix/",
+      "sources": [
+        "a private OpenAdaptAI repository",
+        "docs.openadapt.ai sitemap",
+        "openadapt.ai"
+      ]
+    },
+    {
+      "url": "/guides/record-your-app/",
+      "sources": [
+        "GitHub OpenAdaptAI/OpenAdapt",
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/guides/run-a-deployment/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/guides/run-reports/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/guides/security-and-data-handling/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/guides/security-review/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/guides/troubleshooting/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/guides/workflow-catalog/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/llms.txt",
+      "sources": [
+        "a private OpenAdaptAI repository"
+      ]
+    },
+    {
+      "url": "/migration",
+      "sources": [
+        "GitHub OpenAdaptAI/openadapt-evals"
+      ]
+    },
+    {
+      "url": "/packages/openadapt-agent/",
+      "sources": [
+        "a private OpenAdaptAI repository"
+      ]
+    },
+    {
+      "url": "/production-lifecycle.json",
+      "sources": [
+        "GitHub OpenAdaptAI/.github",
+        "GitHub OpenAdaptAI/OpenAdapt",
+        "GitHub OpenAdaptAI/openadapt-capture",
+        "PyPI openadapt",
+        "a private OpenAdaptAI repository"
+      ]
+    },
+    {
+      "url": "/reference/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/reference/bundle-format/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/reference/cli/",
+      "sources": [
+        "GitHub OpenAdaptAI/OpenAdapt",
+        "PyPI openadapt",
+        "a private OpenAdaptAI repository",
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/reference/compatibility/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/reference/configuration/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/reference/deployment-config/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/reference/documentation-governance/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/reference/glossary/",
+      "sources": [
+        "GitHub OpenAdaptAI/OpenAdapt",
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/reference/glossary/#qualify",
+      "sources": [
+        "GitHub OpenAdaptAI/OpenAdapt"
+      ]
+    },
+    {
+      "url": "/reference/production-lifecycle/",
+      "sources": [
+        "GitHub OpenAdaptAI/OpenAdapt",
+        "GitHub OpenAdaptAI/openadapt-flow",
+        "a private OpenAdaptAI repository",
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/reference/run-outcomes/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    },
+    {
+      "url": "/schemas/production-lifecycle-public.schema.json",
+      "sources": [
+        "GitHub OpenAdaptAI/OpenAdapt",
+        "a private OpenAdaptAI repository"
+      ]
+    },
+    {
+      "url": "/sitemap.xml",
+      "sources": [
+        "a private OpenAdaptAI repository"
+      ]
+    },
+    {
+      "url": "/start/",
+      "sources": [
+        "a private OpenAdaptAI repository"
+      ]
+    },
+    {
+      "url": "/telemetry",
+      "sources": [
+        "GitHub OpenAdaptAI/OpenAdapt"
+      ]
+    },
+    {
+      "url": "/visualize/",
+      "sources": [
+        "a private OpenAdaptAI repository"
+      ]
+    },
+    {
+      "url": "/what-works-today/",
+      "sources": [
+        "a private OpenAdaptAI repository"
+      ]
+    },
+    {
+      "url": "/whats-new/",
+      "sources": [
+        "docs.openadapt.ai sitemap"
+      ]
+    }
+  ]
+}

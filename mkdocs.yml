@@ -99,6 +99,7 @@ plugins:
         concepts/deployment-matrix.md: security/deployment-boundaries.md
         concepts/durable-runtime.md: how-to/run.md
         concepts/effect-verification.md: explanation/verification.md
+        concepts/execution-profiles.md: how-to/run.md#2-choose-a-profile
         concepts/halt-learn-loop.md: how-to/handle-a-halt.md
         concepts/human-judgment.md: how-to/run.md
         concepts/identity-gate.md: explanation/verification.md
@@ -154,6 +155,7 @@ plugins:
         guides/troubleshooting.md: how-to/troubleshoot.md
         guides/workflow-catalog.md: how-to/connect-an-agent.md
         legacy/freeze.md: index.md
+        migration.md: reference/packages.md
         packages/capture.md: reference/packages.md
         packages/evals.md: reference/packages.md
         packages/grounding.md: reference/packages.md
@@ -182,6 +184,9 @@ plugins:
         reference/production-lifecycle.md: security/release-integrity.md
         reference/run-outcomes.md: reference/outcomes.md
         start/index.md: tutorials/quickstart.md
+        telemetry.md: security/subprocessors.md
+        visualize.md: reference/cli.md#inspect
+        what-works-today.md: security/evidence.md
 
 markdown_extensions:
   - toc:

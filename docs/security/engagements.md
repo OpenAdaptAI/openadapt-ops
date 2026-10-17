@@ -95,6 +95,20 @@ A "go" also needs zero model calls on healthy runs, and every gap,
 exclusion, and condition that would require requalification listed in the
 report.
 
+## No-go criteria
+
+The report recommends against automating a workflow, and says why, when for
+example:
+
+- Nothing outside the screen can confirm the save, and the workflow's risk
+  doesn't allow a screen-only check.
+- The work needs judgment that can't be turned into checkable rules, record
+  identities, and expected results.
+- The application changes too often, with no test environment, for a
+  bounded requalification schedule.
+- An API or batch interface already does the job. The report says to use it.
+- The volume and value don't clear an agreed economic threshold.
+
 ## What you receive
 
 1. **A qualification report** with the signed decision:

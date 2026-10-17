@@ -32,7 +32,7 @@ fields in `report.json` say how it ended:
 |---|---|
 | `VERIFIED` | Same as the transaction outcome. |
 | `COMPLETED_UNVERIFIED` | The steps finished without the evidence to claim `VERIFIED`. |
-| `HALTED` | A check refused to act. This is a designed stop, not a crash. |
+| `HALTED` | A check stopped the run, before or after a save. This label alone doesn't say whether anything was saved; `transaction_outcome` does, for example `HALTED_BEFORE_EFFECT` or `RECONCILIATION_REQUIRED`. |
 | `FAILED` | Something outside the checks failed, such as a closed browser. |
 | `ROLLED_BACK` | Same as the transaction outcome. |
 

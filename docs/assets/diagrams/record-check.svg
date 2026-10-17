@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 490" width="1100" height="490" role="img" aria-labelledby="title desc">
+  <title id="title">How OpenAdapt checks a save</title>
+  <desc id="desc">On the acting surface, the app screen OpenAdapt types into, a run checks that the right record is on screen and then enters and saves. It then reads the record back. A screen read-back uses the app's UI in a separate session and is not independent. An independent read uses the system of record through its API, database, or file export, never through the UI. The acting screen alone never confirms a save. If the read matches, the run ends VERIFIED with a run report and a receipt, and OpenAdapt Cloud signs a Seal only after an independent read. If it doesn't match or can't tell, the run ends RECONCILIATION_REQUIRED and a person checks the record before any retry. If the right-record check fails, the run ends HALTED_BEFORE_EFFECT before saving and asks a person.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#3e4c59"/>
+    </marker>
+    <style>
+      text { font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; fill: #1f2933; font-size: 14px; }
+      .title { font-size: 16px; font-weight: 700; }
+      .head { font-size: 15px; font-weight: 700; }
+      .sub { fill: #3e4c59; }
+      .note { fill: #3e4c59; font-style: italic; }
+      .small { font-size: 13px; fill: #3e4c59; }
+      .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-size: 13.5px; }
+      .outcome { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-size: 15px; font-weight: 700; }
+      .line { stroke: #3e4c59; stroke-width: 1.6; fill: none; }
+    </style>
+  </defs>
+
+  <rect x="1" y="1" width="1098" height="488" rx="12" fill="#ffffff" stroke="#d0d7de"/>
+
+  <!-- Acting surface -->
+  <rect x="20" y="40" width="290" height="300" rx="10" fill="#eef3fb" stroke="#8fa8d6" stroke-width="1.5"/>
+  <text x="40" y="70" class="title">Acting surface</text>
+  <text x="40" y="96" class="sub">The app screen OpenAdapt types</text>
+  <text x="40" y="116" class="sub">into: a web page, a desktop app,</text>
+  <text x="40" y="136" class="sub">or an RDP or Citrix window</text>
+  <rect x="32" y="180" width="134" height="90" rx="8" fill="#ffffff" stroke="#5b7bb5" stroke-width="1.5"/>
+  <text x="44" y="216" class="head">1. Right-record</text>
+  <text x="44" y="238" class="head">check</text>
+  <rect x="186" y="180" width="112" height="90" rx="8" fill="#ffffff" stroke="#5b7bb5" stroke-width="1.5"/>
+  <text x="198" y="216" class="head">2. Enter and</text>
+  <text x="198" y="238" class="head">save</text>
+  <path d="M166,225 L182,225" class="line" marker-end="url(#arrow)"/>
+
+  <!-- Read-back -->
+  <text x="350" y="50" class="title">3. Read the record back</text>
+  <text x="350" y="72" class="sub">and compare it with the input</text>
+  <rect x="350" y="90" width="300" height="105" rx="10" fill="#f6f7f8" stroke="#7b8794" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <text x="366" y="116" class="head">Screen read-back</text>
+  <text x="366" y="138">The app's UI in a separate session</text>
+  <text x="366" y="158">Reads a screen, so not independent</text>
+  <text x="366" y="181" class="mono">screen_readback</text>
+  <rect x="350" y="215" width="300" height="125" rx="10" fill="#e8f5ed" stroke="#2f8a57" stroke-width="2"/>
+  <text x="366" y="241" class="head">Independent read</text>
+  <text x="366" y="263">The system of record: its API,</text>
+  <text x="366" y="283">database, or file export, never</text>
+  <text x="366" y="303">through the UI</text>
+  <text x="366" y="326" class="mono">independent_readback</text>
+  <text x="350" y="368" class="note">The acting screen alone never confirms a save.</text>
+  <path d="M298,225 L322,225 L322,142 L346,142" class="line" marker-end="url(#arrow)"/>
+  <path d="M322,225 L322,277 L346,277" class="line" marker-end="url(#arrow)"/>
+
+  <!-- Merge -->
+  <path d="M650,142 L690,142 M650,277 L690,277 M690,85 L690,300" class="line"/>
+  <path d="M690,85 L756,85" class="line" marker-end="url(#arrow)"/>
+  <path d="M690,300 L756,300" class="line" marker-end="url(#arrow)"/>
+  <text x="698" y="76" class="small">matches</text>
+  <text x="658" y="322" class="small">no match,</text>
+  <text x="658" y="338" class="small">or can't tell</text>
+
+  <!-- Outcomes -->
+  <rect x="760" y="45" width="320" height="80" rx="10" fill="#e8f5ed" stroke="#2f8a57" stroke-width="2"/>
+  <text x="776" y="76" class="outcome">VERIFIED</text>
+  <text x="776" y="102">Run report and a receipt</text>
+  <path d="M920,125 L920,156" class="line" marker-end="url(#arrow)"/>
+  <rect x="760" y="160" width="320" height="72" rx="10" fill="#ffffff" stroke="#2f8a57" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <text x="776" y="189" class="head">Signed Seal from OpenAdapt Cloud</text>
+  <text x="776" y="213">Only after an independent read</text>
+  <rect x="760" y="262" width="320" height="88" rx="10" fill="#fff4e3" stroke="#b86e00" stroke-width="2"/>
+  <text x="776" y="290" class="outcome">RECONCILIATION_REQUIRED</text>
+  <text x="776" y="314">Stops and asks a person, who</text>
+  <text x="776" y="334">checks the record before any retry</text>
+
+  <!-- Stop before saving -->
+  <path d="M99,270 L99,396" class="line" marker-end="url(#arrow)"/>
+  <text x="108" y="372" class="small">wrong record or</text>
+  <text x="108" y="388" class="small">unexpected screen</text>
+  <rect x="20" y="400" width="630" height="70" rx="10" fill="#fff4e3" stroke="#b86e00" stroke-width="2"/>
+  <text x="36" y="428" class="outcome">HALTED_BEFORE_EFFECT</text>
+  <text x="36" y="452">Stops before saving and asks a person. Nothing was written.</text>
+</svg>

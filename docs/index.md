@@ -10,23 +10,61 @@ hide:
 
 # OpenAdapt
 
-OpenAdapt gives an agent, a person, or a script a reliable way to finish a
-task in an application that has no usable API. A person or an agent shows the
-task in the real application. OpenAdapt compiles one or more of these
-demonstrations into a workflow program you can read. Before the program does
-real work, it is checked against a policy, tested against normal and faulty
-cases in the target environment, and admitted for that exact version.
+OpenAdapt turns a repetitive task in an application without a usable API
+into a program that enters the data and then checks that it saved. A person
+or an agent shows the task in the real application. OpenAdapt compiles one or
+more demonstrations into a workflow program you can read, tests it in your
+environment, and runs it with new inputs. A healthy run makes no AI model
+calls. When a check fails, the run stops and asks a person instead of
+guessing.
 
-When the program runs, each step that saves something does three things:
+It drives web apps, Windows, macOS, and Linux apps, and apps reached over RDP
+or Citrix: a CRM, a billing system, an insurance portal, or an electronic
+health record. The tutorials use a synthetic clinic app as the example. The
+engine is open source under the MIT license.
 
-1. It checks that the right record is on screen.
-2. It performs the action.
-3. It reads the result back from the system of record, such as the
-   application's API, a read-only database query, or a file export, and
-   compares it with what it entered.
+## Start here
 
-If any check fails, the run stops instead of guessing. A healthy run makes no
-AI model calls. The engine is open source under the MIT license.
+<div class="grid cards" markdown>
+
+-   __Run it in one command__
+
+    ```bash
+    uvx --python 3.12 openadapt quickstart --break-it
+    ```
+
+    Without uv, on Python 3.10 to 3.12: `pip install openadapt`, then
+    `openadapt quickstart --break-it`. You don't need an account or an API
+    key. [Quickstart tutorial](tutorials/quickstart.md)
+
+-   __Give a workflow to your agent__
+
+    ```bash
+    claude mcp add openadapt -- uvx --python 3.12 openadapt-agent serve
+    ```
+
+    The MCP server gives an agent each compiled workflow as one tool call.
+    This starts a sandbox that needs no account.
+    [Connect an agent](how-to/connect-an-agent.md)
+
+</div>
+
+**Jump to:** [Command line](reference/cli.md) ·
+[How the compiler works](explanation/how-it-works.md#a-program-not-a-model-in-a-loop) ·
+[MCP server](how-to/connect-an-agent.md#serve-your-own-workflows) ·
+[Run outcomes](reference/outcomes.md) ·
+[Your first workflow](tutorials/first-workflow.md) ·
+[Security & procurement](security/index.md)
+
+## How a save is checked
+
+![On the acting surface, the app screen OpenAdapt types into, a run checks that the right record is on screen, then enters and saves. It then reads the record back. A screen read-back uses the app's UI in a separate session and is not independent. An independent read uses the system of record through its API, database, or file export, never through the UI. If the read matches, the run ends VERIFIED with a run report and a receipt; OpenAdapt Cloud signs a Seal only after an independent read. If it doesn't match or can't tell, the run ends RECONCILIATION_REQUIRED and a person checks the record. If the right-record check fails, the run ends HALTED_BEFORE_EFFECT before saving and asks a person.](assets/diagrams/record-check.svg)
+
+The screen that did the work can show "Saved" when nothing was stored, so it
+never confirms a save on its own. [How a save is checked](explanation/verification.md)
+explains which read-backs count for which result.
+
+## From demonstration to production
 
 ```mermaid
 flowchart LR
@@ -43,45 +81,9 @@ flowchart LR
 ```
 
 [How OpenAdapt works](explanation/how-it-works.md) walks through each stage.
-Terms are defined once, in the [glossary](reference/glossary.md).
-
-## Try it in one command
-
-```bash
-uvx --python 3.12 openadapt quickstart --break-it
-```
-
-This runs a synthetic clinic task twice on your computer. The first run saves
-a note and confirms it through the app's read-only API. In the second run the
-app shows "saved" but the server drops the write, and OpenAdapt stops instead
-of reporting success. [The quickstart tutorial](tutorials/quickstart.md)
-explains the output line by line.
-
-## Choose where to start
-
-<div class="grid cards" markdown>
-
--   __Developers__
-
-    Install the engine, automate a workflow, connect an agent, and look up
-    commands and outcomes.
-
-    [Quickstart](tutorials/quickstart.md) ·
-    [Your first workflow](tutorials/first-workflow.md) ·
-    [Connect an agent](how-to/connect-an-agent.md) ·
-    [Command line](reference/cli.md)
-
--   __Security & procurement__
-
-    Where data lives, deployment boundaries, what has been tested, and how a
-    paid engagement works.
-
-    [Security overview](security/index.md) ·
-    [Data handling and PHI](security/data-handling.md) ·
-    [Release status](security/release-integrity.md) ·
-    [Procurement FAQ](security/procurement-faq.md)
-
-</div>
+Terms are defined once, in the [glossary](reference/glossary.md). Which
+releases are admitted for production is on
+[Release integrity](security/release-integrity.md).
 
 ## When it fits
 
@@ -89,8 +91,7 @@ OpenAdapt fits a task when most of these are true:
 
 - The team does it the same way many times a week.
 - What to enter is already decided, by a person, a form, or an AI agent.
-- The application has no practical API for the write. It can be a web app, a
-  Windows, macOS, or Linux app, or an app reached over RDP or Citrix.
+- The application has no practical API for the write.
 - A wrong entry is costly.
 - There is a second way to read the saved record, such as an API, a database,
   a report, or a read-only sign-in.
@@ -101,7 +102,6 @@ If the application already has an API for the task, call the API. The
 ## What the packages are
 
 On Python 3.10 to 3.12, `pip install openadapt` installs the `openadapt`
-command, the engine (`openadapt-flow`), and the agent bridge
-(`openadapt-agent`). The
-[packages map](reference/packages.md) lists every package and repository and
-which ones you need.
+command, the engine (`openadapt-flow`), and the MCP server
+(`openadapt-agent`). The [packages map](reference/packages.md) lists every
+package and repository and which ones you need.

@@ -12,6 +12,8 @@ never takes the screen's word for a save. A record check reads the record
 back and returns `confirmed`, `refuted`, or `indeterminate`. Only
 `confirmed` lets a run continue.
 
+![On the acting surface, the app screen OpenAdapt types into, a run checks that the right record is on screen, then enters and saves. It then reads the record back. A screen read-back uses the app's UI in a separate session and is not independent. An independent read uses the system of record through its API, database, or file export, never through the UI. If the read matches, the run ends VERIFIED with a run report and a receipt; OpenAdapt Cloud signs a Seal only after an independent read. If it doesn't match or can't tell, the run ends RECONCILIATION_REQUIRED and a person checks the record. If the right-record check fails, the run ends HALTED_BEFORE_EFFECT before saving and asks a person.](../assets/diagrams/record-check.svg)
+
 ## How strong a read-back is
 
 The engine ranks every read-back by how independent it is of the screen that
@@ -46,6 +48,25 @@ all at `independent_readback`. A workflow whose only read-back is
 
 **A Seal.** OpenAdapt Cloud signs a Seal only when the run was confirmed by
 a system-of-record read.
+
+## What a record check catches
+
+On 21 July 2026 we ran ten scenarios through the governed runtime against a
+local test system, 9 runs each, 90 runs in all. Nine scenarios were faults we
+injected into the save. In 72 runs the record ended up wrong: missing,
+partial, duplicated, on the wrong record, with other data overwritten, or
+with an extra write to another table. Three checks judged the same runs:
+
+| Check | Wrong records it reported as saved |
+|---|---|
+| The success banner on the screen | 54 of 72 |
+| A read of the record through the app's REST API | 9 of 72, all extra writes to a billing table that this read didn't cover |
+| A read-only SQL query over every table a save could change | 0 of 72 |
+
+Each check also stopped 9 of the 18 runs that saved correctly, because the
+reply to the save never reached the client. A record check catches what its
+read can see, so it should cover every table a save can change.
+[Method and per-fault results](https://github.com/OpenAdaptAI/openadapt-flow/blob/aee094193b232f472f991be6fa9b33c3c4b3f9be/benchmark/effect_e2e/EFFECT_E2E.md).
 
 ## How a save is approved
 
