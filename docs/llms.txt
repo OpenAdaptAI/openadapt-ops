@@ -10,7 +10,7 @@ Canonical status: https://docs.openadapt.ai/production-lifecycle.json. Product-w
 - [What you see and control](https://docs.openadapt.ai/evaluate/what-you-see/): Done and checked, stopped before saving, check the record, didn't finish, and finished but not checked, each derived from the transaction outcome; receipts, stops, approvals, and how a person steps in
 - [Security and where data stays](https://docs.openadapt.ai/evaluate/security/): Where it runs, what leaves the network, what Cloud receives, and what isn't available today
 - [How a first project works](https://docs.openadapt.ai/evaluate/first-project/): Workflow assessment, build and integration, deployment and training, maintenance and expansion
-- [Plain-language glossary](https://docs.openadapt.ai/evaluate/glossary/): Business terms mapped to VERIFIED, HALTED, Seal, qualification, and the other technical terms
+- [Glossary](https://docs.openadapt.ai/reference/glossary/): Plain terms first, then exact definitions; business terms mapped to VERIFIED, HALTED, Seal, qualification, and the other technical terms
 
 ## Get started
 - [Get started](https://docs.openadapt.ai/get-started/): Install with Desktop or `python -m pip install --upgrade openadapt`. First command after install: `openadapt flow tutorial`. That writes a VERIFIED receipt. `openadapt quickstart --break-it` is the halt demo. Tutorial is optional. Local coding agents can `claude mcp add openadapt` later. Never summarize halt as success. Older `/getting-started/` URLs and the `/start/` alias redirect here. The current CLI after install is `openadapt flow record`, `compile`, `replay`.
