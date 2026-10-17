@@ -8,9 +8,9 @@ description: >-
 # Plain-language glossary
 
 The Evaluate pages use plain terms. The technical pages use exact ones. This
-table maps one to the other, and each technical term links to the page that
-explains it. The full technical glossary is in
-[Reference](../reference/glossary.md).
+table maps one to the other. The technical terms are defined in the
+[glossary](../reference/glossary.md), and each one links to the page that
+explains it.
 
 The plain result of a run comes from its transaction outcome. A `HALTED` or
 `FAILED` run that may have written something is reported as "Check the record",
@@ -28,7 +28,7 @@ never as "Stopped before saving" or "Didn't finish".
 | Didn't finish | [`FAILED`](../reference/run-outcomes.md) with transaction outcome `FAILED_PLATFORM` | A problem with OpenAdapt, the computer, or the connection stopped it before anything was saved. |
 | Finished, not checked | [`COMPLETED_UNVERIFIED`](../reference/run-outcomes.md) | It did the steps but didn't read the saved record back, for example in a practice run. |
 | Receipt, signed receipt | [Seal](../commercial/seal.md), receipt | A record of what was entered and how it was checked. It's called signed when the signature matters. |
-| Readiness test | [Qualification](../guides/qualify-a-workflow.md), admission | Testing the automation on your system with your cases before it goes live. |
+| Readiness test | [Qualification](../reference/glossary.md#qualify), [admission](../reference/glossary.md#admission) | Testing the automation on your system with your cases before it goes live. |
 | Approved fix | [Governed repair](../concepts/self-healing.md), repair candidate | When a screen changes, OpenAdapt proposes a fix and a person approves it. |
 | Screen changes | Drift, [re-resolve](../concepts/capability-ladder.md) | The app looks different. OpenAdapt finds the same field again or stops. |
 | Right-record check | [Identity gate](../concepts/identity-gate.md), wrong-patient defense | It confirms it's in the right patient's chart before typing. |

@@ -71,7 +71,7 @@ Canonical status: https://docs.openadapt.ai/production-lifecycle.json. Product-w
 - [Backends, where it runs](https://docs.openadapt.ai/concepts/backends/): Browser, native Windows, native macOS, native Linux, RDP, and Citrix/VDI as first-class substrates behind one backend protocol
 - [Integrate OpenAdapt Execute](https://docs.openadapt.ai/commercial/execute-api/): The Execute request, poll, Seal-shaped receipt, and webhook contract for approved private-pilot partners
 - [Versions and compatibility](https://docs.openadapt.ai/reference/compatibility/): The public install identity, tested component ranges, version policy, and upgrade qualification
-- [Glossary](https://docs.openadapt.ai/reference/glossary/): Technical terms, including qualification, certification, and policy
+- [Glossary](https://docs.openadapt.ai/reference/glossary/): The canonical definitions of OpenAdapt terms, including qualify, certify, certification policy, and admission
 - [What's New](https://docs.openadapt.ai/whats-new/): Recent product changes
 - [Changelog](https://docs.openadapt.ai/changelog/): Aggregated release history
 

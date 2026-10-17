@@ -14,7 +14,7 @@ the `openadapt` package and run as `openadapt flow`.
 | [Backends, where it runs](../concepts/backends.md) | Browser, native Windows, native macOS, native Linux, RDP, and Citrix/VDI behind one backend protocol, with each one's status. |
 | [Integrate OpenAdapt Execute](../commercial/execute-api.md) | The Execute request, poll, Seal-shaped receipt, and webhook contract for approved private-pilot partners. |
 | [Versions and compatibility](compatibility.md) | The public install identity, tested component ranges, version policy, and upgrade qualification. |
-| [Glossary](glossary.md) | Technical terms, including qualification, certification, policy, and admission. |
+| [Glossary](glossary.md) | The canonical definitions of OpenAdapt terms, including qualify, certify, certification policy, and admission. |
 | [What's New](../whats-new.md) and [Changelog](../changelog.md) | Recent product changes and the aggregated release history. |
 
 The package and repository catalog, the documentation source of truth, and the
