@@ -21,7 +21,8 @@ uvx --python 3.12 openadapt flow tutorial
 ```
 
 The tutorial starts MockMed on this computer, records the bundled
-demonstration in a headless browser, compiles it, certifies the bundle, and
+demonstration in a headless browser, compiles it,
+[certifies](../reference/glossary.md#certify) the [bundle](../reference/glossary.md#bundle), and
 runs it under the Standard profile. It then reads the saved record back
 through MockMed's read-only system-of-record API, which is independent of the
 screen. If the browser that OpenAdapt drives isn't installed yet, the first

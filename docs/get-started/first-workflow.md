@@ -9,7 +9,7 @@ first_write_admission: qualification_required
 # Author a workflow
 
 This is authority work. A person or a local agent they watch demonstrates
-the task. A named human admits the compiled program. An agent
+the task. A named human [admits](../reference/glossary.md#admission) the compiled program. An agent
 operates it later.
 
 Choose one small real task that doesn't change business data. A read-only lookup
