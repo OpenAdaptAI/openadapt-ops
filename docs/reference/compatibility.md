@@ -19,11 +19,11 @@ PyPI require. A daily check compares this table with that metadata.
 
 | Component | Compatible range | Role |
 |---|---|---|
-| `openadapt` 1.x | `openadapt-flow >=1.29,<2` | Public installer and `openadapt flow …` CLI |
+| `openadapt` 1.x | `openadapt-flow >=2.0.0,<3` | Public installer and `openadapt flow …` CLI |
 | `openadapt-flow` 1.x + native capture | `openadapt-capture >=1.2.0,<2` | Canonical native demonstration recording for Windows, macOS, Linux, RDP, and Citrix |
-| Windows action-time UIA handoff | `openadapt-flow >=1.29,<2` + `openadapt-capture >=1.2.0,<2` | Retains the nearest actionable UIA node for native Windows compilation; RDP and Citrix remain externally black-box |
+| Windows action-time UIA handoff | `openadapt-flow >=2.0.0,<3` + `openadapt-capture >=1.2.0,<2` | Retains the nearest actionable UIA node for native Windows compilation; RDP and Citrix remain externally black-box |
 | `openadapt-flow` 1.x + privacy extra | `openadapt-privacy[presidio] >=1.0` | Configured local scrub/redaction paths |
-| `openadapt-flow` 1.x base install and its interop, console, execute, and reward extras | `openadapt-types >=0.17,<0.18` | Field-exact runtime overlay, attended-decision boundary, and the async Execute request, status, webhook, and receipt contracts for approved private pilots |
+| `openadapt-flow` 2.x base install and its interop, console, execute, and reward extras | `openadapt-types >=0.18,<0.19` | Field-exact runtime overlay, attended-decision boundary, and the async Execute request, status, webhook, and receipt contracts for approved private pilots |
 | Python | 3.10-3.12 | Supported runtime range for the current 1.x line |
 
 The package metadata is the executable source of truth for these ranges. CI
