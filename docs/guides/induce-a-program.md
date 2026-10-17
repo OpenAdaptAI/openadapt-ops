@@ -78,10 +78,10 @@ confirms each write against the system of record. A production worklist run is
 usually a [deployment run](run-a-deployment.md) with `--config`, so effects,
 actuation, and durability are all configured.
 
-## When one trace is enough
+## When you do not need induce
 
 If your task has no real conditionals or loops and only varies typed values, you
-do not need `induce`: record once and make the varying values
+do not need `induce`: one or more demonstrations work, and you make the varying values
 [parameters](parameters-and-secrets.md). Reach for `induce` when the intent spans
 more than one path, or when you want held-out validation of the recovered
 program.
