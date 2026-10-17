@@ -47,10 +47,6 @@ all at `independent_readback`. A workflow whose only read-back is
 **A Seal.** OpenAdapt Cloud signs a Seal only when the run was confirmed by
 a system-of-record read.
 
-A change under review would make a rank-1 read the requirement for
-`VERIFIED` under every production profile. The rule above is what
-`openadapt-flow` 2.1.0 and `main` enforce.
-
 ## How a save is approved
 
 Checking a save and approving one are separate. The approval mode decides

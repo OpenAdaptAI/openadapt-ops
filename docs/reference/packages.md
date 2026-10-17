@@ -31,8 +31,9 @@ source.
 
 `openadapt-flow`, `openadapt-agent`, and `openadapt-types` are developed in
 one repository, [OpenAdapt](https://github.com/OpenAdaptAI/OpenAdapt), under
-`packages/`. The former separate repositories for those three are being
-archived; file issues and pull requests in OpenAdapt.
+`packages/`. The former `openadapt-agent` and `openadapt-types` repositories
+are archived, and the former `openadapt-flow` repository is frozen. File issues
+and pull requests in OpenAdapt.
 
 On the `main` branch, the agent and types code has moved into
 `openadapt-flow` (as `openadapt_flow.agent` and `openadapt_flow.contracts`).
