@@ -74,7 +74,8 @@ share a service account.
 
 The public CLI doesn't issue a Seal yet. Execute issues it as the terminal
 receipt of `POST /api/v1/executions`, which is open to approved pilot partners
-only. `openadapt-flow replay` in Flow 1.35.1 has no option that issues a Seal.
+only. `openadapt-flow replay` in Flow 2.1.0, the current release, has no option that
+issues a Seal.
 
 A replay option that issues a Seal is planned, for a qualified synthetic bundle
 with a tier-2 oracle. This page will name the Flow release that ships it. A

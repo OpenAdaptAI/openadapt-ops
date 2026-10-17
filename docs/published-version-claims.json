@@ -102,6 +102,38 @@
           "context": "hosted session on `openadapt-flow` 1.8.0"
         }
       ]
+    },
+    {
+      "id": "flow-current-release-replay-has-no-seal-option",
+      "kind": "pypi-latest",
+      "package": "openadapt-flow",
+      "version": "2.1.0",
+      "evidence": "The openadapt-flow 2.1.0 wheel on PyPI has no replay option that issues a Seal (no --*seal* argument in openadapt_flow/__main__.py). When a newer Flow publishes, re-check the replay options and update this version.",
+      "verified_on": "2026-10-17",
+      "locations": [
+        {
+          "file": "docs/commercial/seal.md",
+          "context": "`openadapt-flow replay` in Flow 2.1.0, the current release, has no option that"
+        },
+        {
+          "file": "docs/commercial/oem-brief.md",
+          "context": "`openadapt-flow replay` in Flow 2.1.0, the current release, has no Seal option,"
+        }
+      ]
+    },
+    {
+      "id": "flow-current-release-emits-human-decision-v2",
+      "kind": "pypi-latest",
+      "package": "openadapt-flow",
+      "version": "2.1.0",
+      "evidence": "The openadapt-flow 2.1.0 wheel on PyPI selects HumanDecisionTaskV2 in openadapt_flow/console/human_decisions.py when deployment.human_decisions.remote.peer_task_schemas declares the V2 schema, and HumanDecisionTaskV1 otherwise. When a newer Flow publishes, re-check and update this version.",
+      "verified_on": "2026-10-17",
+      "locations": [
+        {
+          "file": "docs/guides/qualify-a-workflow.md",
+          "context": "contract for an approved entity class and neutral fallback. Flow 2.1.0, the\ncurrent release, emits `HumanDecisionTaskV2`"
+        }
+      ]
     }
   ]
 }

@@ -17,7 +17,8 @@ authorized transaction
 ```
 
 The Seal comes back from Execute. The public CLI doesn't issue one yet.
-`openadapt-flow replay` in Flow 1.35.1 has no Seal option, and a replay option
+`openadapt-flow replay` in Flow 2.1.0, the current release, has no Seal option,
+and a replay option
 that issues a Seal is planned. A sealed verified run is designed to show
 `VERIFIED`, a seal id, and `https://openadapt.ai/seals/{id}`. That route is
 synthetic and non-PHI only. `openadapt flow seal SOURCE --out DESTINATION` is
