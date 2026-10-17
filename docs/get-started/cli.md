@@ -75,6 +75,107 @@ sets another one.
 | `<out>/run/report.json` | The same report, for programs. |
 | `<out>/run/receipt.json` | The local receipt. It's written only for a `VERIFIED` run, next to `receipt.md` and `receipt.png`. |
 
+### What these look like
+
+These excerpts come from one real tutorial run with `openadapt` 1.17.0. Your
+run has different digests, IDs, and timings. `…` marks where a file is
+trimmed.
+
+**`receipt.png`**, the shareable picture of the receipt:
+
+![The receipt image from a VERIFIED tutorial run: 6 of 6 steps ok, 0 model calls, 2 of 2 effects confirmed, effect evidence independent_system](../assets/screenshots/tutorial-receipt.webp){ width="420" loading="lazy" }
+
+**`report.json`**, with the outcome, one step, and its effect checks. The
+`results` list has one entry per step; this is the last one, which saves the
+encounter. Both effect checks are REST reads of MockMed's record store, not
+reads of the screen.
+
+```json
+{
+  "workflow_name": "local-quickstart",
+  "execution_profile": "standard",
+  "execution_outcome": "VERIFIED",
+  "transaction_outcome": "VERIFIED",
+  "production_eligible": true,
+  "outcome_envelope": {
+    "version": "openadapt.execution-outcome/v1",
+    "outcome": "VERIFIED",
+    "required_contracts": {"authorization": 1, "identity": 5, "postcondition": 9, "effect": 2},
+    "passed_contracts": {"authorization": 1, "identity": 5, "postcondition": 9, "effect": 2},
+    …
+  },
+  "effect_journal": [
+    {
+      "step_id": "step_005",
+      "intent": "click 'Save Encounter'",
+      "consequential": true,
+      "attempt_state": "delivered",
+      "observed_effect": "present",
+      "effect_verified": true,
+      "verification_performed": true,
+      …
+    }
+  ],
+  "results": [
+    …
+    {
+      "step_id": "step_005",
+      "intent": "click 'Save Encounter'",
+      "ok": true,
+      "risk": "irreversible",
+      "resolution": {"rung": "structural", "confidence": 1.0, …},
+      "identity": {"status": "verified", "mode": "structured", …},
+      "postconditions_ok": true,
+      "effect_verified": true,
+      "effect_results": [
+        "[rest] record_written: CONFIRMED — exactly 1 record(s) match the target selector",
+        "[rest] field_equals: CONFIRMED — field 'note' equals the expected value"
+      ],
+      "effect_evidence": [
+        {
+          "substrate": "rest",
+          "final_verdict": "confirmed",
+          "observed_effect": "present",
+          "endpoint_scope": "loopback",
+          …
+        },
+        …
+      ],
+      …
+    }
+  ],
+  "heal_count": 0,
+  "model_calls": 0,
+  "external_network_calls": "none",
+  …
+}
+```
+
+**`receipt.json`**, the counts behind the image. It's built from a fixed list
+of fields, so it holds no screenshot, typed value, parameter, or URL.
+
+```json
+{
+  "schema_version": "openadapt.run-receipt/v2",
+  "outcome": "VERIFIED",
+  "transaction_outcome": "VERIFIED",
+  "profile": "standard",
+  "steps_ok": 6,
+  "steps_total": 6,
+  "effects_confirmed": 2,
+  "effects_required": 2,
+  "effect_tier_reached": "independent_system",
+  "identity_armed": 5,
+  "identity_required": 5,
+  "model_calls": 0,
+  "external_network_calls": "none",
+  "provenance": "synthetic-tutorial",
+  "bundle_digest": "ce210aa3c6e9e32744e7447fd0a5d3620b78d569defbf169b4593b661b7e4866",
+  "receipt_digest": "6bc908e5ec202be0669e71c86e9b0f2cebbbf88685fcaebb6f50c74e3a8b7850",
+  …
+}
+```
+
 Read the report, draw the compiled program, and list its coverage gaps:
 
 ```bash
