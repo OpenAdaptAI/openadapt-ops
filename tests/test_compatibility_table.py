@@ -8,7 +8,7 @@ got a resolver conflict. The page called the package metadata the source of
 truth, but nothing compared the two.
 
 `tests/fixtures/pypi_compatibility_metadata.json` is the PyPI metadata of the
-newest `openadapt` and `openadapt-flow` releases on 2026-10-14. The daily run
+newest `openadapt` and `openadapt-flow` releases on 2026-10-16. The daily run
 of scripts/check_published_version_claims.py compares the table with live PyPI
 instead; when it reports drift, correct the table and refresh the fixture.
 """
@@ -41,10 +41,10 @@ def _table(*rows: str) -> str:
 
 
 CURRENT_ROWS = (
-    "| `openadapt` 1.x | `openadapt-flow >=1.29,<2` | Installer |",
+    "| `openadapt` 1.x | `openadapt-flow >=2.0.0,<3` | Installer |",
     "| Native capture | `openadapt-capture >=1.2.0,<2` | Recording |",
     "| Privacy extra | `openadapt-privacy[presidio] >=1.0` | Redaction |",
-    "| Flow base install and extras | `openadapt-types >=0.17,<0.18` | Contracts |",
+    "| Flow base install and extras | `openadapt-types >=0.18,<0.19` | Contracts |",
     "| Python | 3.10-3.12 | Runtime |",
 )
 
@@ -66,7 +66,7 @@ def test_a_current_table_passes():
 
 def test_ranges_compare_by_meaning_not_spelling():
     rows = list(CURRENT_ROWS)
-    rows[0] = "| `openadapt` 1.x | `openadapt-flow <2.0.0,>=1.29.0` | Installer |"
+    rows[0] = "| `openadapt` 1.x | `openadapt-flow <3.0.0,>=2.0.0` | Installer |"
     assert _errors(_table(*rows)) == []
 
 
@@ -77,7 +77,7 @@ def test_the_stale_ranges_that_shipped_fail():
     rows[3] = "| Execute clients | `openadapt-types >=0.9,<0.10` | Contracts |"
     errors = _errors(_table(*rows))
     assert len(errors) == 3, errors
-    assert any("openadapt-flow >=1.7,<2" in error and ">=1.29.0" in error for error in errors)
+    assert any("openadapt-flow >=1.7,<2" in error and ">=2.0.0" in error for error in errors)
     assert any("openadapt-capture >=1.1.0" in error for error in errors)
     assert any("openadapt-types >=0.9,<0.10" in error for error in errors)
 

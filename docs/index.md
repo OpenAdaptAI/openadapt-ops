@@ -26,8 +26,8 @@ When something doesn't match, it stops and asks a person instead of guessing.
 -   [__Install and run it yourself__](get-started/index.md)
 
     The engine is free and open source (MIT). Install the Desktop app, or run
-    `pip install openadapt` with Python 3.10 to 3.12, and try the tutorial on
-    your own computer.
+    `uvx --python 3.12 openadapt flow tutorial` to try the tutorial on your own
+    computer.
 
 </div>
 

@@ -83,7 +83,9 @@ Use the tab for your shell:
     The built-in driver uses X11; Wayland requires an operator-approved XDG
     portal session.
 
-For an isolated command-line installation, run
+To run the walkthrough's tutorial with no install step on any Python, run
+`uvx --python 3.12 openadapt flow tutorial`. For an isolated command-line
+installation, run
 `curl -fsSL https://openadapt.ai/install.sh | sh`. It installs the same base
 package with [uv](https://docs.astral.sh/uv/).
 

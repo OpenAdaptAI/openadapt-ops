@@ -19,8 +19,7 @@ computer. The core is free forever under MIT.
 
 ## Install
 
-Python 3.10 through 3.12 for pip. Desktop and the CLI compile the same
-program.
+Desktop and the CLI compile the same program.
 
 ### Desktop
 
@@ -34,18 +33,21 @@ First-run permissions and checksums are in
 
 ### CLI
 
+Run the tutorial with one command. [uv](https://docs.astral.sh/uv/getting-started/installation/)
+fetches Python 3.12 for the run, whatever Python this computer has:
+
 ```bash
-python -m pip install --upgrade openadapt
+uvx --python 3.12 openadapt flow tutorial
 ```
 
-If you don't want to touch the Python you already have, use the isolated
-installer:
+To keep `openadapt` on PATH, use the isolated installer:
 
 ```bash
 curl -fsSL https://openadapt.ai/install.sh | sh
 ```
 
-Either command leaves `openadapt` on PATH.
+On Python 3.10, 3.11, or 3.12, `python -m pip install --upgrade openadapt`
+also leaves `openadapt` on PATH.
 
 ## After install
 
