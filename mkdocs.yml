@@ -270,6 +270,7 @@ nav:
           - Review a repair: cloud/review-a-repair.md
           - How hosted runs queue: cloud/hosted-runs.md
       - Reference:
+          - What OpenAdapt can do: reference/capabilities.md
           - Run outcomes: reference/outcomes.md
           - Commands: reference/cli.md
           - All Flow commands: reference/flow-commands.md

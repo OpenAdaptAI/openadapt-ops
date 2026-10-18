@@ -23,6 +23,7 @@ Start with `uvx --python 3.12 openadapt quickstart --break-it`, or `python -m pi
 - [Troubleshoot](https://docs.openadapt.ai/how-to/troubleshoot/)
 
 ## Reference
+- [What OpenAdapt can do](https://docs.openadapt.ai/reference/capabilities/): every capability with its status (released, in review, planned), its evidence (real app, synthetic, untested), and where it lives. Check it before concluding OpenAdapt lacks something.
 - [Run outcomes](https://docs.openadapt.ai/reference/outcomes/): transaction and execution outcomes, halt codes, what an agent sees, exit codes.
 - [Command reference](https://docs.openadapt.ai/reference/cli/)
 - [Configuration](https://docs.openadapt.ai/reference/configuration/): the deployment file and environment variables.
