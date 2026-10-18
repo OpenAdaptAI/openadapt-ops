@@ -1,7 +1,7 @@
 # What's New
 
 > *Pull requests merged in the last 7 days across the OpenAdapt repositories, grouped by the release that contains them.*
-> *Last updated: 2026-10-18 15:52 UTC*
+> *Last updated: 2026-10-18 16:00 UTC*
 
 Items under **Merged, not released yet** are on a repository's `main` branch only. They are not in any published package or installer yet.
 
@@ -26,12 +26,15 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 - [feat(flow): lift look-alike identity stops against a complete known-ID list](https://github.com/OpenAdaptAI/OpenAdapt/pull/1223) (#1223), merged 2026-10-18
 - [feat(flow): unattended on-prem service with health checks, restart and egress audit](https://github.com/OpenAdaptAI/OpenAdapt/pull/1222) (#1222), merged 2026-10-18
 - [fix(flow): the drift oracle never rescues a postcondition on an irreversible or effect-bearing step](https://github.com/OpenAdaptAI/OpenAdapt/pull/1217) (#1217), merged 2026-10-18
-- [feat(flow): offline Seals by default, batched timestamps, strict no-outbound mode](https://github.com/OpenAdaptAI/OpenAdapt/pull/1216) (#1216), merged 2026-10-18
+
+### Released in openadapt-agent 2.2.1
+
+- [agent: user-scope install, what happens next, job box for hosted chats](https://github.com/OpenAdaptAI/OpenAdapt/pull/1230) (#1230), merged 2026-10-18
 
 ### Merged, not released yet
 
+- [ci(release-package): find a draft GitHub Release by listing releases](https://github.com/OpenAdaptAI/OpenAdapt/pull/1256) (#1256), merged 2026-10-18
 - [fix(manifest): pin openadapt-privacy v1.1.2 to its rewritten commit](https://github.com/OpenAdaptAI/OpenAdapt/pull/1243) (#1243), merged 2026-10-18
-- [agent: user-scope install, what happens next, job box for hosted chats](https://github.com/OpenAdaptAI/OpenAdapt/pull/1230) (#1230), merged 2026-10-18, openadapt-agent
 
 ## openadapt-desktop
 

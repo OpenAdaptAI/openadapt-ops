@@ -7,13 +7,13 @@
 
 - **[openadapt-flow-v2.2.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-flow-v2.2.0)** (2026-10-18)
   First release from the [OpenAdapt monorepo](https://github.com/OpenAdaptAI/OpenAdapt) (`packages/flow`). The shared contracts (`openadapt_flow.contracts`) and the MCP agent server (`openadapt_flow.agent`) now ship inside this package; `openadapt-types` and `openadapt-agent` are thin compatibility packages over them.
+- **[openadapt-agent-v2.2.1](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-agent-v2.2.1)** (2026-10-18)
+  First release from the [OpenAdapt monorepo](https://github.com/OpenAdaptAI/OpenAdapt) (`packages/agent`). The MCP agent server now lives in `openadapt_flow.agent`; this package is a compatibility package over it, so `openadapt-agent` and `import openadapt_agent` keep working. It requires `openadapt-flow>=2.2.0,<3`.
 - **[v1.17.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.17.0)** (2026-10-16)
   Breaking Changes
 - **[v1.16.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.16.0)** (2026-08-26)
   Bug Fixes
 - **[v1.15.1](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.15.1)** (2026-08-26)
-  Bug Fixes
-- **[v1.15.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.15.0)** (2026-08-26)
   Bug Fixes
 
 ## openadapt-flow
