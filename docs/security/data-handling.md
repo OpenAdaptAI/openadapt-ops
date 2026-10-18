@@ -79,7 +79,9 @@ application they drive.
 | `run --cloud-execution-id`, `attach-seal` | OpenAdapt Cloud | The execution id and the run's receipt, to get a Seal |
 | `connect`, `login` | OpenAdapt Cloud | A pairing code or an ingest token |
 | `push` | OpenAdapt Cloud | The approved sanitized bytes only |
-| `openadapt seal keys pin` | `app.openadapt.ai/api/public/seal-keys`, or `--url` Nothing; it downloads the public keys. `openadapt seal verify` connects only when you give it a URL. |
+| `openadapt seal keys pin` | `app.openadapt.ai/api/public/seal-keys`, or `--url` | Nothing; it downloads the public keys. `openadapt seal verify` connects only when you give it a URL. |
+| `console --remote-decisions`, with `human_decisions.remote.enabled` | OpenAdapt Cloud | A signed task: IDs, digests, fixed codes, counts, and expiry. No screenshot or free text. See [Answer a halt from a phone](../how-to/answer-from-a-phone.md). |
+| The desktop decision portal, when your organization publishes it with `customer_ingress` | A paired phone, through your own HTTPS ingress | Screen crops and halt detail. Nothing goes to OpenAdapt Cloud. |
 | `openadapt agent authoring connect` | `openadapt.ai`, outgoing HTTPS only | The link it claims, then it polls for authoring requests |
 
 Commands are `openadapt flow` commands unless the table names another one.
