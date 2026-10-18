@@ -31,46 +31,11 @@ number of model calls, and whether screenshots could have left the computer.
 `REPORT.md` is the same information to read. `openadapt flow explain` turns
 it into a short account with the next command to run.
 
-## The receipt
+## The receipt and the Seal
 
 A `VERIFIED` run writes `receipt.json` (schema `openadapt.run-receipt/v2`)
-and an image of it. From the quickstart:
+and `receipt.png`: counts, digests, and versions, no record values. A run
+tracked by Cloud Execute can also carry Cloud's signature on it, the Seal, in
+`report.json` as `execute_receipt`. See
+[Receipts, Seals, and countersigning](receipts-and-seals.md).
 
-```json
-{
-  "outcome": "VERIFIED",
-  "transaction_outcome": "VERIFIED",
-  "profile": "standard",
-  "substrate": "web",
-  "steps_ok": 6, "steps_total": 6,
-  "identity_confirmed": 5, "identity_required": 5,
-  "effects_confirmed": 2, "effects_required": 2,
-  "effect_tier_reached": "independent_system",
-  "model_calls": 0,
-  "external_network_calls": "none",
-  "bundle_digest": "d9b3102c…",
-  "provenance": "synthetic-tutorial"
-}
-```
-
-A stopped run gets no receipt, only its local report.
-
-## The Seal
-
-A Seal is OpenAdapt Cloud's Ed25519 signature on the receipt of a run that
-Cloud Execute tracked. A run gets one when it ends `VERIFIED` with a record
-check that read the system of record, and it was started with
-`--cloud-execution-id` and `OPENADAPT_EXECUTE_API_KEY` set. Flow then fetches
-the signed receipt into `report.json` as `execute_receipt`.
-`openadapt flow attach-seal RUN_DIR --execution-id ID` does the same later.
-
-To check a Seal offline, pin Cloud's public keys once, comparing the printed
-fingerprint with the one OpenAdapt publishes:
-
-```bash
-openadapt seal keys pin
-openadapt seal verify runs/<run>/report.json
-```
-
-`seal verify` also accepts a receipt file or a webhook body, and `--json`
-prints the result as JSON. It never fetches keys while it checks.

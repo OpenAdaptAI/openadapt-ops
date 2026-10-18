@@ -23,7 +23,9 @@ python -m openadapt_flow.cli_config init bundle --out deploy.yaml
 `unresolved` is filled. The complete annotated example is
 [`deployment.example.yaml`](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/deployment.example.yaml).
 
-Credentials are always the names of environment variables, never values.
+Credentials are names of environment variables, except the three backend
+fields marked below, which hold values. Keep a file that sets them as private
+as the credentials.
 
 ### `backend`
 
@@ -36,9 +38,23 @@ backend:
   # kind: web | windows | macos | linux | rdp | citrix
 ```
 
-The surface fields match the command-line surface options in the
-[command reference](cli.md#surface-options), for example `macos_app`,
-`linux_app`, `rdp_window`, and `browser_cdp_endpoint`.
+| Field | For | Meaning |
+|---|---|---|
+| `kind` | all | `web` (default), `windows`, `macos`, `linux`, `rdp`, or `citrix` |
+| `url`, `headed` | `web` | The app's address, and whether the browser is visible (default `false`) |
+| `browser_cdp_endpoint` | `web` | A loopback DevTools address of a running, signed-in Chrome, such as `http://127.0.0.1:9222`. The run attaches to its one tab on the `url` origin and detaches afterwards. |
+| `browser_page_url` | `web` | The exact address of the tab to bind when more than one is on the origin |
+| `agent_url` | `windows` | The Windows agent's address. Required. |
+| `agent_token` | `windows` | The agent's shared token. A value. |
+| `agent_tls_pin` | `windows` | SHA-256 fingerprint of the agent's TLS certificate. Any other certificate fails the connection. |
+| `macos_app`, `macos_window_title` | `macos` | The owning app (required), and a title that picks one window. Ambiguous matches are refused. |
+| `linux_app`, `linux_window_title` | `linux` | The exact accessibility app name and window title. Both required. |
+| `linux_allow_physical_input` | `linux` | Allow pointer and keyboard input bound to the window when the target has no accessibility action (default `false`) |
+| `rdp_host`, `rdp_port`, `rdp_domain` | `rdp` | A network RDP session (port default `3389`) |
+| `rdp_username`, `rdp_password` | `rdp` | The session's sign-in. Values. |
+
+The same fields are command-line options; see the
+[command reference](cli.md#surface-options).
 
 #### Remote sessions and Citrix
 
@@ -53,6 +69,8 @@ fields bind the session and guard each input:
 | `rdp_readiness_text` | none | Stable text that must be on screen before input, such as a menu label. |
 | `rdp_readiness_min_ratio` | `0.85` | How closely the text read from the screen must match the readiness text, from `0.0` to `1.0`. |
 | `rdp_host`, `rdp_port` (`3389`) | none | A network RDP session instead of a local window. Only for `kind: rdp`. |
+| `rdp_application_marker`, `rdp_application_version_marker`, `rdp_environment_marker`, `rdp_session_marker` | none | Stable text read from the session for qualification, such as the application name and version. Compared with the qualified environment, not kept in evidence. |
+| `remote_frame_contract` | none | Regions of the session's screen that change on their own, such as a clock, left out when OpenAdapt checks that the screen has settled |
 
 Citrix is its own backend, not an alias for RDP. `kind: citrix` makes Flow
 build `CitrixWorkspaceBackend`, which binds the local Workspace or Viewer
@@ -67,6 +85,22 @@ backend:
   rdp_readiness_text: Claims queue
   rdp_readiness_min_ratio: 0.90
 ```
+
+A `remote_frame_contract` names the exact frame size and its regions as
+`[x, y, width, height]`:
+
+```yaml
+backend:
+  remote_frame_contract:
+    schema_version: openadapt.remote-frame-contract/v1
+    frame_width: 1920
+    frame_height: 1080
+    volatile_regions: [[1780, 1040, 140, 40]]   # the session clock
+    protected_regions: []                       # never masked
+```
+
+A size that doesn't match the live frame, or a changing region that overlaps
+a target, an identity check, or a record check, stops the run before input.
 
 `kind: citrix` rejects `rdp_host`; use `kind: rdp` for a network session.
 Governed Citrix `run` and `resume` require a nonblank `rdp_readiness_text`
@@ -103,6 +137,8 @@ Where record checks read the saved record. `kind` is one of:
 | `document` | A report file whose contents are parsed | `root`, `file_pattern`, `document_format`, `document_field_paths` |
 | `document-hash` | A document store, by exact SHA-256 | `root`, `glob` |
 | `ui_readback` | The app's record page in a separate, signed-in, read-only browser session | `ui_readback.record_url`, `sign_in`, `row_selector`, `fields`, `identity` |
+| `onscreen` | The saved value on the acting screen, read with OCR | `readback_region`, `readback_min_ratio` (default `0.9`) |
+| a plugin kind | Whatever the installed verifier reads | `options`, `option_params`, `secret_env` |
 
 `auth` takes exactly one of `bearer_env`, `header` with `value_env`, or
 `basic_env`. Values that come from run inputs are written
@@ -110,8 +146,40 @@ Where record checks read the saved record. `kind` is one of:
 `evidence_redact_fields` or `evidence_keep_fields` to keep field values out
 of the evidence, and `timeout_s` and `poll_interval_s`.
 
+A plugin's `options` hold plain settings; a key that names a credential,
+such as `password`, is refused. Put credentials in `secret_env`, which maps
+a slot name to an environment variable name.
+
+To offer more than one read, list them under `candidates` instead of `kind`.
+OpenAdapt builds every candidate before input and uses the strongest one; it
+never switches to another after the save:
+
+```yaml
+effects:
+  candidates:
+    - kind: file
+      root: /exports/claims
+      file_pattern: "claim-*.json"
+    - kind: document
+      root: /exports/reports
+      file_pattern: "*.json"
+      document_format: json
+```
+
 Which kinds count as strong enough for each profile is explained in
 [How a save is checked](../explanation/verification.md).
+
+### `identity` and `idempotency`
+
+```yaml
+identity:
+  require_fresh_frame: true          # check identity on a fresh screen capture
+  record_id_env: OPENADAPT_RECORD_ID # the variable that holds the record id
+idempotency:
+  key_env: OPENADAPT_IDEMPOTENCY_KEY # the variable that holds the run's idempotency key
+```
+
+Both name environment variables; the file never holds a record id or a key.
 
 ### `runtime`
 
@@ -120,6 +188,8 @@ runtime:
   profile: regulated          # demo | standard | regulated
   durable: true               # on by default under standard and regulated
   approval_mode: each_item    # each_item | problems_only | not_gated
+  require_settled: false      # forced on under standard and regulated
+  layout_drift_check: null    # null: on for rdp and citrix, off elsewhere
   allow_model_grounding: false
   pixel_verify_enabled: false
   grounding_model:
@@ -137,6 +207,11 @@ runtime:
 - When patient-data mode is on, a model endpoint is refused unless its host is
   in `phi_grounding_allowlist`. Public model APIs stay blocked unless
   `phi_egress_attested` is true.
+- `require_settled` waits for a settled screen before every action.
+- `layout_drift_check` compares the screen's resolution, fonts, and layout
+  with the recording before each recorded click, and stops the run when they
+  differ, for example `font_size_changed` or `landmark_missing`. Bundles
+  compiled before 2.2.0 carry no fingerprint and need recompiling to use it.
 - `pixel_verify_enabled` lets the pixel right-record check confirm a match,
   not only refuse one. Leave it off unless that check was validated for your
   screens.
@@ -157,7 +232,8 @@ enabled with both ids, the attended console started with `--remote-decisions`
 relays a signed decision task with no screenshot and no patient data to
 OpenAdapt Cloud, where a signed-in member answers it from a phone.
 `context_tier` sets how much the task says about why the run stopped; neither
-value can carry an image. See [Answer a halt from a phone](../how-to/answer-from-a-phone.md).
+value can carry an image. `peer_task_schemas` lists the task versions the
+hosted side accepts. See [Answer a halt from a phone](../how-to/answer-from-a-phone.md).
 
 ### `policy`
 
@@ -174,11 +250,20 @@ policy:
 | `OPENADAPT_BUNDLE_KEY` | The key for encrypted bundles and checkpoints; required under Regulated |
 | `OPENADAPT_FLOW_SCRUB` | Scrubbing of identifiers from saved text: `auto` (default), `on`, or `off`. `on` stops with an error if the scrubber isn't installed. |
 | `OPENADAPT_FLOW_PHI_MODE` | Turns patient-data mode on; `OPENADAPT_FLOW_SCRUB=on` also does |
-| `OPENADAPT_FLOW_VLM_URL` | The address of an on-site model server |
-| `OPENADAPT_FLOW_NO_AUTO_INSTALL` | `1` skips the Chromium download on the first browser run, for computers without internet access |
+| `OPENADAPT_FLOW_VLM_URL`, `OPENADAPT_FLOW_VLM_TOKEN`, `OPENADAPT_FLOW_VLM_TIMEOUT` | The address of an on-site model server, its bearer token, and the request timeout in seconds (default `2.0`) |
+| `OPENADAPT_FLOW_BROWSER` | Which browser web runs use: `auto` (default: installed Chrome, then Edge, then Playwright's Chromium), `chrome`, `msedge`, or `bundled` |
+| `OPENADAPT_FLOW_NO_AUTO_INSTALL` | `1` skips the Chromium download when no installed browser is used, for computers without internet access |
+| `OPENADAPT_FLOW_OCR` | The OCR engine: `auto` (default, RapidOCR), `rapidocr`, or `native` (Apple Vision or Windows OCR, with the `native-ocr` extra) |
 | `OPENADAPT_HOME` | Where OpenAdapt keeps local state (default `~/.openadapt`) |
 | `OPENADAPT_AGENT_RUNS_DIR` | The MCP server's runs folder (default `~/.openadapt/runs`) |
-| `OAFLOW_AGENT_TOKEN` | The shared token for the Windows agent server |
+| `OAFLOW_AGENT_TOKEN` | The shared token for the Windows agent server, and for `openadapt agent serve --windows-agent-url` |
+| `OAFLOW_AGENT_CERTFILE`, `OAFLOW_AGENT_KEYFILE` | The Windows agent server's TLS certificate and key |
+| `OPENADAPT_AGENT_SANDBOX_DIR` | The MCP server's sandbox folder (default `~/.openadapt/agent-sandbox`) |
+| `OPENADAPT_AGENT_BUNDLES_DIR`, `OPENADAPT_AGENT_ALLOW_RUN`, `OPENADAPT_AGENT_ALLOW_ATTENDED_ACTIONS`, `OPENADAPT_AGENT_DEPLOYMENT_CONFIG`, `OPENADAPT_AGENT_POLICY`, `OPENADAPT_AGENT_HEADED`, `OPENADAPT_AGENT_BUNDLE_KEY` | Settings for the MCP server when it's installed as a desktop extension; each maps to the matching `serve` option, and the key to `OPENADAPT_BUNDLE_KEY` |
+| `OPENADAPT_APPROVER_WEBHOOK_SECRET` | The key that signs approval requests sent to `--approver-webhook` |
+| `OPENADAPT_SEAL_KEYS_PATH`, `OPENADAPT_SEAL_KEYS_JSON` | Pinned Seal keys, as a file or inline JSON (default `~/.openadapt/seal-keys.json`) |
+| `OPENADAPT_COUNTERSIGN_VAULT` | Where `countersign` keeps field values and salts (default `~/.openadapt/countersign-vault`) |
+| `OPENADAPT_EXCEPTION_RETENTION_DAYS` | How long closed exceptions are kept (default 2,190, at least 183) |
 | `OPENADAPT_INGEST_TOKEN` | The Cloud ingest token, if not in the keychain |
 | `OPENADAPT_FLOW_REPORT_RUN` | `1` sends a run summary to Cloud after a successful run, like `--report` |
 | `OPENADAPT_CLOUD_EXECUTION_ID`, `OPENADAPT_EXECUTE_API_KEY` | Link a run to a Cloud Execute execution so it can get a Seal |

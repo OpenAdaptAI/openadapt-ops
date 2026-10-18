@@ -128,24 +128,93 @@ request again never enters the values twice; it returns the earlier result.
 
 Each save waits for approval unless the operator starts the server with
 another `--approval-mode`. While it waits, the agent gets `needs_review` with
-the reason `waiting_for_approval`.
+the reason `waiting_for_approval`. `get_approval_mode` tells the agent which
+mode applies and whether it may answer; no tool changes the mode.
 
-In openadapt-agent 2.2.0, the server has no approval tools. A person answers
-on the computer that runs OpenAdapt with `openadapt flow item-approval`; see
-[Run a workflow](run.md#3-choose-how-saves-are-approved).
+By default a person answers, on the computer that runs OpenAdapt; see
+[Run a workflow](run.md#answer-a-waiting-save). To let your agent answer,
+start the server with `--delegate-approvals AGENT_ID`, an opaque id such as
+`agent:intake-bot`. The agent then gets two more tools:
 
-The `main` branch, not yet released, adds three tools:
-
-- `get_approval_mode` reports the server's approval mode and whether the
-  agent may answer.
-- `list_approval_requests` lists a run's waiting saves, without values or
+- `list_approval_requests` lists a run's waiting saves: each `request_id`,
+  `request_sha256`, step, step class, and expiry, without values or
   screenshots.
 - `answer_approval_request` approves or declines one of them.
 
-The last two appear only when the operator starts the server with
-`serve --delegate-approvals AGENT_ID`. Flow accepts the agent's answer only
-where the run's approver policy allows an agent for that step, and records the
-agent as the approver. By default, only a person may answer.
+Flow accepts the agent's answer only where the run's approver policy allows
+an agent for that step class, and records the agent as the approver. Without
+a policy, or for a clinical write without the customer's opt-in, the answer
+is refused and a person answers. See
+[Let an agent or system answer](run.md#let-an-agent-or-system-answer).
+
+## Tools
+
+Which tools the agent gets depends on how the server starts.
+
+| Tool | What it does | Offered when |
+|---|---|---|
+| `list_workflows` | Lists each workflow's name, purpose, what done means, and inputs | Always |
+| `run_workflow` | Runs a workflow with your inputs and `request_id`, waiting up to `wait_seconds` | The sandbox, `--mode production`, or `--mode attended` |
+| `get_run` | Gets a run's result, waiting up to `wait_seconds` while it runs | Always |
+| `get_approval_mode` | Reports the approval mode and whether the agent may answer | `--mode production` or `attended` |
+| `list_approval_requests`, `answer_approval_request` | List and answer waiting saves | Also `--delegate-approvals` |
+| `get_repair_screen`, `teach_repair` | Get the screen where a run stopped, and show the one click past it | Also `--repair-access`; see [Handle a halt](handle-a-halt.md) |
+| `get_workflow` | One workflow's structure and certification result, without recorded values | `--bundles` |
+| `get_run_report` | A count-only summary of a stored run; `get_run` is preferred | `--bundles` |
+| `list_needs_attention`, `get_attention_item` | Stopped runs and the decisions allowed on each; reload one before deciding | `--bundles` |
+| `reject_attention`, `teach_attention`, `escalate_attention` | End a stopped run, ask for a corrective demonstration, or keep it paused for a colleague | `--mode attended` |
+| `continue_attention`, `skip_attention` | After a person finishes the step in the app, check it and resume; or take a skip path the workflow declares | `--mode attended` with `--config` |
+| `run_<workflow>` | One older run tool per workflow. It takes no `request_id`, so a retry can enter the values twice. Use `run_workflow`. | `--mode production` or `attended` |
+
+`serve --authoring` offers a separate set for recording with an agent; see
+[Record a demonstration](record.md#an-agent-records):
+
+| Tool | What it does |
+|---|---|
+| `observe` | Returns the pinned window's structure, without screenshots, text values, titles, or URLs |
+| `start_record` | Starts a recording on the pinned browser, window, or remote session |
+| `click` | Clicks one observed node, or `x`,`y` pixels |
+| `type` | Types text the agent chose. Not for secrets or for what a person types. |
+| `pause_for_input` | Pauses so a person types in the app, such as a sign-in. The agent never sees the value. |
+| `continue_input` | Ends the pause. In Desktop, its overlay's **Continue** does this. |
+| `halt`, `stop_record` | Stop the session without compiling |
+| `compile` | Compiles the recording into a draft bundle |
+| `admit` | Asks the person to accept the draft in a form the client shows. No agent argument accepts it. |
+| `get_command_result` | Returns the last authoring result |
+| `set_coach`, `get_coach` | Set and read a short hint shown to the person |
+| `bind_status` | Reports the local session's status |
+
+## Server options
+
+`openadapt agent serve --help` lists every flag; the
+[command help](../reference/cli-help.md#openadapt-agent-serve) has the full
+text. The agent can't change any of them.
+
+| Flag | What it does |
+|---|---|
+| `--mode sandbox`, `production`, or `attended` | What the agent gets; see [Serve your own workflows](#serve-your-own-workflows). `sandbox` is the default without `--bundles`. |
+| `--bundles DIR` | One bundle, or a folder of bundles |
+| `--url URL`, `--config YAML`, `--policy NAME-OR-PATH` | The app, the deployment file, and the policy passed to every run |
+| `--runs-dir DIR` | Where runs and evidence go (default `OPENADAPT_AGENT_RUNS_DIR`, else `~/.openadapt/runs`) |
+| `--timeout SECONDS` | How long one run may work (default 600). Time waiting for an approval doesn't count. |
+| `--approval-mode MODE` | The approval mode for every run; see [Approvals](#approvals) |
+| `--delegate-approvals AGENT_ID` | Lets the agent answer waiting saves where the approver policy allows |
+| `--repair-access FILE`, `--repair-dir DIR`, `--hold-on-halt SECONDS` | Screen access for repairs, where repair records live, and how long a halted browser page stays open (default 300) |
+| `--allow-attended-actions` | Part of `--mode attended`: the decision tools for stopped runs |
+| `--headed` | Shows the browser; a person needs it to continue or skip a stopped web run |
+| `--authoring` | The recording tools above. `--url` with `--headed` opens a new browser with no saved sign-ins. |
+| `--windows-agent-url URL` | With `--authoring`: record a native Windows app through the Windows agent server. The token comes from `OAFLOW_AGENT_TOKEN`. |
+| `--remote-window APP`, `--citrix`, `--remote-window-title TITLE` | With `--authoring`: record in an RDP or Citrix client window, from pixels |
+| `--authoring-screens off`, `scrubbed`, or `unscrubbed` | With `--authoring`: whether the agent may see the pinned window. `scrubbed` removes identifiers first and shares nothing if that fails. Default `off`. |
+| `--sandbox-engine auto`, `flow`, or `simulated` | Whether the sandbox drives MockMed in a hidden browser (`flow`, needs the `tutorial` extra) or simulates it |
+| `--allow-protected-export` | Sends recorded values, reports, and output to the agent. See [Security](#security). |
+| `--allow-model-grounding` | Allows a configured model grounder; screenshots can leave the computer |
+| `--allow-url-override` | Lets callers pass a `url` per call |
+| `--allow-synthetic-recorded-defaults` | Demo only: omitted inputs reuse recorded values |
+| `--flow-cli CMD`, `--extra-run-arg ARG` | Change how Flow is called. Either can relax Flow's checks. |
+
+`--allow-run` is an older name for `--mode production`, or `--mode sandbox`
+without `--bundles`. `--tutorial` is an older name for `--mode sandbox`.
 
 ## Write an Agent Skill
 

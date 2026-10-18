@@ -37,7 +37,11 @@ import tempfile
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 
 #: The released openadapt-flow the docs describe.
-FLOW_VERSION = "2.1.0"
+FLOW_VERSION = "2.2.0"
+#: Until FLOW_VERSION is on PyPI, build it from this OpenAdapt commit instead,
+#: which holds everything the release ships. Set it to None on release day and
+#: rerun `snapshot`; the snapshot must not change.
+FLOW_SOURCE: str | None = None
 SNAPSHOT = ROOT / "tests" / "fixtures" / f"flow_cli_{FLOW_VERSION}.json"
 PAGE = ROOT / "docs" / "reference" / "flow-commands.md"
 CURATED_PAGE = ROOT / "docs" / "reference" / "cli.md"
@@ -108,7 +112,7 @@ def fetch_released_snapshot(version: str = FLOW_VERSION) -> dict:
             [
                 "uv", "pip", "install", "--quiet", "--python", str(python),
                 "--index-url", "https://pypi.org/simple",
-                f"openadapt-flow=={version}",
+                FLOW_SOURCE or f"openadapt-flow=={version}",
             ],
             check=True,
         )
@@ -117,15 +121,16 @@ def fetch_released_snapshot(version: str = FLOW_VERSION) -> dict:
             check=True, capture_output=True, text=True,
         )
     data = json.loads(result.stdout)
-    if data["flow_version"] != version:
+    if FLOW_SOURCE is None and data["flow_version"] != version:
         raise SystemExit(
             f"PyPI installed openadapt-flow {data['flow_version']}, not {version}"
         )
     return {
         "flow_version": version,
         "source": (
-            f"argparse parser of openadapt-flow {version} from PyPI "
-            "(openadapt_flow.__main__.build_parser), long options only. "
+            f"argparse parser of openadapt-flow {version} from "
+            + ("OpenAdapt main, before the release, " if FLOW_SOURCE else "PyPI ")
+            + "(openadapt_flow.__main__.build_parser), long options only. "
             "Written by scripts/flow_cli_reference.py snapshot."
         ),
         "global_options": data["global_options"],

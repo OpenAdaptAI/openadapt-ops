@@ -37,10 +37,10 @@ REQUIREMENTS = ROOT / "cli-reference/requirements.txt"
 # Options that exist on OpenAdapt `main` but not in the pinned release. A page
 # may show them only where it labels them as unreleased; each entry names the
 # page that does. Remove an entry when the release that ships it is pinned.
-UNRELEASED_OPTIONS = {
-    # docs/how-to/certify-and-qualify.md: the one-command qualification campaign.
-    "qualify": {"--verify", "--out", "--certify"},
-}
+UNRELEASED_OPTIONS: dict[str, set[str]] = {}
+# Flow rewrites `qualify <bundle> ...` to `qualify campaign <bundle> ...`
+# (`_qualify_default_form`), so that form takes the campaign's options.
+DEFAULT_SUBCOMMANDS = {"qualify": "qualify campaign"}
 # Regenerated from other repositories' release notes; they quote history.
 # The command help page is generated from the pinned parsers themselves.
 GENERATED_PAGES = {
@@ -129,6 +129,14 @@ def _problems(
         if command not in commands:
             problems.append(f"line {number}: unknown subcommand `{command}` in `{code}`")
             continue
+        default = DEFAULT_SUBCOMMANDS.get(command)
+        if (
+            default in commands
+            and len(tokens) > 1
+            and not tokens[1].startswith("-")
+            and f"{command} {tokens[1]}" not in commands
+        ):
+            command = default
         for token in tokens[1:]:
             if f"{command} {token}" in commands:
                 command = f"{command} {token}"
@@ -185,8 +193,12 @@ def test_documented_flow_commands_use_only_shipped_options() -> None:
 
 
 def _pins() -> dict[str, str]:
+    """{name: version} for `name==version` and `name @ URL  # release VERSION` lines."""
     pins = {}
     for line in REQUIREMENTS.read_text(encoding="utf-8").splitlines():
+        if " @ " in line:
+            pins[line.split(" @ ", 1)[0].strip()] = line.rsplit("  # release ", 1)[1].strip()
+            continue
         line = line.split("#", 1)[0].strip()
         if line:
             name, _, version = line.partition("==")

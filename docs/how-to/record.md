@@ -129,12 +129,26 @@ calls `compile`, which writes the bundle to
 person's answer accepts the bundle. A client that can't show forms can't
 accept a bundle. The authoring server doesn't turn on runs.
 
-An agent can also record on native Windows apps, through the Windows agent
-server, and in RDP and Citrix client windows, from pixels alone. This is on the
-`main` branch and not yet in a release. Its tests run against a mock Windows
-server and stand-in client windows; no recording against a real Windows, RDP,
-or Citrix session is on record yet. See
+An agent can also record on a native Windows app, through the Windows agent
+server, or in an RDP or Citrix client window, from pixels alone:
+
+```bash
+openadapt agent serve --authoring --windows-agent-url http://localhost:5001
+openadapt agent serve --authoring --remote-window "Microsoft Remote Desktop"
+openadapt agent serve --authoring --citrix --authoring-screens scrubbed
+```
+
+The Windows agent server's token comes from `OAFLOW_AGENT_TOKEN`.
+`--remote-window-title` picks one window when the client has several. In a
+remote session the agent clicks pixels and presses keys, so it needs
+`--authoring-screens scrubbed` or `unscrubbed` to see the window; `scrubbed`
+removes identifiers first and shares nothing if that fails. These paths are
+tested against a mock Windows server and stand-in client windows; no
+recording against a real Windows, RDP, or Citrix session is on record yet.
+See
 [Recording on Windows, RDP and Citrix](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/RECORDING_ON_WINDOWS_RDP_CITRIX.md).
+
+[Connect an agent](connect-an-agent.md#tools) lists every authoring tool.
 
 ## One program per surface
 

@@ -45,7 +45,8 @@ openadapt flow run bundle --profile standard --config deploy.yaml \
 ## 3. Choose how saves are approved
 
 Each run has an approval mode. It decides whether the run waits for an
-answer before each save.
+answer before each save. Approval modes are separate from admission, which
+happens once per workflow before production runs.
 
 | Mode | Before each save |
 |---|---|
@@ -54,19 +55,18 @@ answer before each save.
 | `not_gated` | No pause. The run report records that the run wasn't gated. |
 
 `openadapt flow run` uses `each_item` unless `--approval-mode` or
-`runtime.approval_mode` names another mode. The MCP server passes the mode its
-operator set with `serve --approval-mode`; callers can't change it. Runs that
-OpenAdapt Cloud dispatches pass `not_gated` explicitly, and their reports say
-so. A run that waits
-longer than `--approval-wait` (default 900 seconds, at most 14,400) stops
-before the save.
+`runtime.approval_mode` names another mode, under every profile. The MCP
+server passes the mode its operator set with `serve --approval-mode`; callers
+can't change it. Runs that OpenAdapt Cloud dispatches pass `not_gated`
+explicitly, and their reports say so. A run that waits longer than
+`--approval-wait` (default 900 seconds, at most 14,400) stops before the
+save; `resume` can still use an answer given later.
 
-Approval modes are separate from admission, which happens once per workflow
-before production runs.
+### Answer a waiting save
 
-In openadapt-flow 2.1.0, a person answers a waiting save on the computer that
-runs it. `show` prints the waiting requests as JSON, including each
-`request_id` and `request_sha256`:
+`show` prints the run's waiting requests as JSON, including each
+`request_id` and `request_sha256`. A person answers one with `approve` or
+`decline`:
 
 ```bash
 openadapt flow item-approval show RUN_DIR
@@ -76,13 +76,59 @@ openadapt flow item-approval approve RUN_DIR --request-id ID \
 ```
 
 `decline` takes the same options plus `--reason`: `wrong_values`,
-`wrong_record`, or `screen_problem`. Version 2.1.0 accepts only
-`--decided-by human` and `--route desktop_run_it`. `--unauthenticated`
-records the answer without a name; to name the approver instead, pass their
-OpenAdapt Cloud user id with `--approver-id` and how they signed in with
-`--auth-method cloud_aal2` or `cloud_aal1`. The next OpenAdapt Desktop
-build adds an approval form for this; the released installer doesn't have it
-yet. See [Install the desktop app](desktop.md#approving-saves).
+`wrong_record`, or `screen_problem`. `--unauthenticated` records the answer
+without a name; to name the approver instead, pass their OpenAdapt Cloud user
+id with `--approver-id` and how they signed in with `--auth-method cloud_aal2`
+or `cloud_aal1`. OpenAdapt Desktop shows the same request as a form
+in its next build; see [Install the desktop app](desktop.md#approving-saves).
+
+### Let an agent or system answer
+
+By default only a person may answer. An approver policy lets an agent, a
+rule, or a system answer some kinds of save. Pass it with
+`--approver-policy` on `run`, `resume`, or `qualify run-case`:
+
+```json
+{
+  "schema_version": "openadapt.approver-policy/v1",
+  "allowed": {
+    "read_only": ["person", "agent"],
+    "reversible": ["person", "agent"],
+    "consequential": ["person", "agent"],
+    "irreversible": ["person"],
+    "clinical_write": ["person"]
+  }
+}
+```
+
+The policy names every step class: `read_only`, `reversible`,
+`consequential`, `irreversible`, and `clinical_write`. A `clinical_write`
+save takes a non-person approver only when `clinical_write_opt_in_sha256`
+pins the customer's signed opt-in. Under the `clinical-write` and
+`regulated` policies, every save is a clinical write. An unreadable policy
+means person-only.
+
+A delegated approver answers in one of three ways:
+
+- **At the command line.** `item-approval approve` or `decline` with
+  `--decided-by automation`, `--delegate-kind agent` or `system`,
+  `--delegate-id ID`, and `--route local_cli`. `--on-behalf-of` names the
+  organization or person it acts for.
+- **Over MCP.** With `serve --delegate-approvals AGENT_ID`, the agent uses
+  `list_approval_requests` and `answer_approval_request`; see
+  [Connect an agent](connect-an-agent.md#approvals).
+- **By webhook.** `--approver-webhook URL` with `--approver-webhook-id ID`
+  asks an https endpoint about each waiting save. `--approver-webhook-kind`
+  is `system` (the default) or `agent`. Each message is signed with
+  HMAC-SHA256 using `OPENADAPT_APPROVER_WEBHOOK_SECRET`, in the
+  `X-OpenAdapt-Signature` header. It carries ids, the step class, the mode,
+  digests, and the expiry, never the step's words, a screenshot, or a value.
+  The reply must be signed and say `approve`, `decline` with a reason, or
+  `pending`. Any failure leaves the save to a person.
+
+The run checks every answer against the policy, and the report records who
+or what approved, by which route. A person can always answer instead.
+OpenAdapt Desktop and Cloud don't show delegated approvers yet.
 
 ## 4. Read the result
 

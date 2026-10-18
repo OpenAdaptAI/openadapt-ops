@@ -74,7 +74,7 @@ application they drive.
 | `record`, `replay`, `run`, `resume` | The record check's endpoint, and the API in `actuation:` when one is set | The record check's query, and the values an API save writes |
 | The same, with model grounding on | The model endpoint | Screenshots. Under patient-data mode, only to hosts on `phi_grounding_allowlist`. |
 | The same, with `OPENADAPT_FLOW_VLM_URL` set | A model server on your network | Crops and screenshots. Identity crops sent to it aren't scrubbed. |
-| The first browser run on a computer | Playwright's download server, once | A request for Chromium; nothing from the workflow. `OPENADAPT_FLOW_NO_AUTO_INSTALL=1` skips the download. |
+| The first browser run on a computer with no Chrome or Edge, or with `OPENADAPT_FLOW_BROWSER=bundled` | Playwright's download server, once | A request for Chromium; nothing from the workflow. `OPENADAPT_FLOW_NO_AUTO_INSTALL=1` skips the download. |
 | `run --report`, `report-run`, `report-break`, `connector` | OpenAdapt Cloud | Counts, digests, and closed values. See [Subprocessors](subprocessors.md#what-runs-send-to-openadapt). |
 | `run --cloud-execution-id`, `attach-seal` | OpenAdapt Cloud | The execution id and the run's receipt, to get a Seal |
 | `connect`, `login` | OpenAdapt Cloud | A pairing code or an ingest token |
@@ -82,18 +82,16 @@ application they drive.
 | `openadapt seal keys pin` | `app.openadapt.ai/api/public/seal-keys`, or `--url` | Nothing; it downloads the public keys. `openadapt seal verify` connects only when you give it a URL. |
 | `console --remote-decisions`, with `human_decisions.remote.enabled` | OpenAdapt Cloud | A signed task: IDs, digests, fixed codes, counts, and expiry. No screenshot or free text. See [Answer a halt from a phone](../how-to/answer-from-a-phone.md). |
 | The desktop decision portal, when your organization publishes it with `customer_ingress` | A paired phone, through your own HTTPS ingress | Screen crops and halt detail. Nothing goes to OpenAdapt Cloud. |
+| `countersign add`, `countersign timestamp-baseline` | Sigstore's public timestamp service by default, or the service named by `--tsa-url` | A 32-byte digest and a random nonce; no record content, names, or identifiers. `--no-timestamp` on `add` sends nothing. |
 | `openadapt agent authoring connect` | `openadapt.ai`, outgoing HTTPS only | The link it claims, then it polls for authoring requests |
 
 Commands are `openadapt flow` commands unless the table names another one.
 
-On the `main` branch, not yet released, `countersign add` and
-`countersign timestamp-baseline` ask a timestamp service to date a record.
-By default that is Sigstore's public service,
-`https://timestamp.sigstore.dev/api/v1/timestamp`. Only a 32-byte digest
-and a random nonce are sent; no record content, names, or
-identifiers. `--tsa-url URL` points them at another RFC 3161 timestamp
-service, and `--tsa-cert PEM` pins its certificate. `--no-timestamp` sends
-nothing. No other `countersign` command connects to the network.
+The default timestamp service is
+`https://timestamp.sigstore.dev/api/v1/timestamp`. `--tsa-cert PEM` pins
+the certificate of another service. No other `countersign` command connects
+to the network; see
+[Receipts, Seals, and countersigning](../reference/receipts-and-seals.md#the-timestamp-service).
 
 ## Encryption
 

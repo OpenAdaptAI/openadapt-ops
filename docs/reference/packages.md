@@ -28,12 +28,11 @@ source.
 
 ## How the engine packages fit together
 
-On the `main` branch, the agent and types code is part of `openadapt-flow`
-(as `openadapt_flow.agent` and `openadapt_flow.contracts`). The
-`openadapt-agent` and `openadapt-types` packages keep their names, imports,
-and commands working. The released versions on PyPI, `openadapt-flow` 2.1.0
-and `openadapt-agent` 2.2.0, are still separate packages and install
-`openadapt-types` separately.
+From `openadapt-flow` 2.2.0, the agent and types code is part of
+`openadapt-flow`, as `openadapt_flow.agent` and `openadapt_flow.contracts`.
+The `openadapt-agent` and `openadapt-types` packages keep their names,
+imports, and commands working, and each installs `openadapt-flow`. New code
+should import `openadapt_flow.contracts`.
 
 ## Research
 
