@@ -17,16 +17,26 @@ needs Python 3.10 to 3.12.
 
 ## Try the sandbox
 
-The sandbox has one workflow, `add_triage_note`, and needs no account. In
-Claude Code:
+The sandbox has one workflow, `add_triage_note`, on MockMed, a synthetic
+clinic app. It needs no account. In Claude Code, register the server:
 
 ```bash
-claude mcp add openadapt -- uvx --python 3.12 openadapt-agent serve
+claude mcp add --scope user openadapt -- uvx --python 3.12 openadapt-agent serve
 ```
 
-Start `claude` in the same folder and ask: "Use OpenAdapt to add the triage
-note 'Synthetic: recheck blood pressure in 2 weeks' with request id
-demo-0001." The agent calls `list_workflows`, then `run_workflow`, and gets:
+This only registers the server. It prints `Added stdio MCP server openadapt
+... to user config` and nothing else. Claude Code starts the server the next
+time you run `claude`. `--scope user` makes it available in every folder;
+without it, Claude Code saves it for the current folder only.
+
+Then:
+
+1. Run `claude`.
+2. Optional: type `/mcp` to check that `openadapt` is connected.
+3. Ask: "Use the OpenAdapt sandbox to run add_triage_note with the note
+   'Synthetic: recheck blood pressure in 2 weeks' and request id demo-0001."
+
+The agent calls `list_workflows`, then `run_workflow`. The result includes:
 
 ```json
 {
@@ -35,21 +45,27 @@ demo-0001." The agent calls `list_workflows`, then `run_workflow`, and gets:
   "safe_to_retry": false,
   "next_step": "none",
   "proof": "simulated",
-  "model_calls": 0
+  "model_calls": 0,
+  "what_happened": "Simulated sandbox result (no app was opened): Saved the change and read the record back to confirm it."
 }
-```
-
-This sandbox simulates each run. To have the engine drive the MockMed test app
-in a hidden browser, install the `tutorial` extra instead:
-
-```bash
-claude mcp remove openadapt
-claude mcp add openadapt -- uvx --python 3.12 --from 'openadapt-agent[tutorial]' openadapt-agent serve
 ```
 
 Add `sandbox_case` to the inputs to see each outcome: `normal`,
 `duplicate_record`, `false_saved_banner`, `timeout_after_save`, or
-`app_offline`.
+`app_offline`. Use a new request id for each try; the same id returns the
+earlier result.
+
+This sandbox simulates each run. To have the engine drive MockMed in a
+hidden browser, install the `tutorial` extra instead, then restart `claude`:
+
+```bash
+claude mcp remove openadapt
+claude mcp add --scope user openadapt -- uvx --python 3.12 --from 'openadapt-agent[tutorial]' openadapt-agent serve
+```
+
+The first run records the workflow once, so it can return `running`; the
+agent then calls `get_run`. A run that passes returns `done` with
+`"proof": "local"`.
 
 For any client that reads an `mcpServers` file, such as Claude Desktop or
 Cursor:
@@ -140,8 +156,20 @@ values, so keep that copy as private as the recording.
 
 ## Agents in ChatGPT or Claude on the web
 
-A web chat can't start a server on your computer. To record from one, start
-at [openadapt.ai/start](https://openadapt.ai/start). When it gives you a
-runner link, run `openadapt agent authoring connect '<runner link>'` on the
-computer that has the app. It polls openadapt.ai over outgoing HTTPS and asks
-you in the terminal before a chat account may drive it.
+A web chat can't start a server on your computer. To record from one:
+
+1. On [openadapt.ai](https://openadapt.ai/#job-box), type the job under
+   **What job do you want to automate?** and click **Get a job page**.
+2. On the job page, click **Connect this computer**. Its **Open OpenAdapt**
+   link is the runner link (`openadapt://runner?pack=...&bind=oab_...`). It
+   opens OpenAdapt Desktop if you have it. The link works once and expires
+   after five minutes if nobody claims it.
+3. Without Desktop, copy that link and run this on the computer that has the
+   app:
+
+    ```bash
+    openadapt agent authoring connect '<runner link>'
+    ```
+
+It polls openadapt.ai over outgoing HTTPS and asks you in the terminal before
+a chat account may drive it.

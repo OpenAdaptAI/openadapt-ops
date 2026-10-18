@@ -11,13 +11,15 @@ Run outcomes: https://docs.openadapt.ai/reference/outcomes/
 Sandbox (no real application):
 
 ```
-claude mcp add openadapt -- uvx --python 3.12 openadapt-agent serve
+claude mcp add --scope user openadapt -- uvx --python 3.12 openadapt-agent serve
 ```
+
+This only registers the server. Claude Code starts it at the next `claude` session. Then ask it to run the sandbox workflow `add_triage_note` with a made-up note and a request id.
 
 The real engine driving the synthetic MockMed app:
 
 ```
-claude mcp add openadapt -- uvx --python 3.12 --from 'openadapt-agent[tutorial]' openadapt-agent serve
+claude mcp add --scope user openadapt -- uvx --python 3.12 --from 'openadapt-agent[tutorial]' openadapt-agent serve
 ```
 
 Your own compiled workflows: `openadapt agent serve --mode production --bundles DIR --runs-dir RUNS --config deploy.yaml`.
