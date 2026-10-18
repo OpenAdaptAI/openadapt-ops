@@ -1,7 +1,7 @@
 # What's New
 
 > *Pull requests merged in the last 7 days across the OpenAdapt repositories, grouped by the release that contains them.*
-> *Last updated: 2026-10-18 17:54 UTC*
+> *Last updated: 2026-10-18 20:37 UTC*
 
 Items under **Merged, not released yet** are on a repository's `main` branch only. They are not in any published package or installer yet.
 
@@ -20,19 +20,16 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 - [Flow: person-signed approver grants, no self-approval, one-tap phone approval on the decision portal](https://github.com/OpenAdaptAI/OpenAdapt/pull/1234) (#1234), merged 2026-10-18
 - [feat(flow): record --verify proposes system-of-record checks from what the demonstration changed](https://github.com/OpenAdaptAI/OpenAdapt/pull/1233) (#1233), merged 2026-10-18
 - [fix(flow): close five fail-open gaps in JIT admission, approvals and fix-up passes](https://github.com/OpenAdaptAI/OpenAdapt/pull/1232) (#1232), merged 2026-10-18
-- [feat(flow): qualify on the deployment surface and halt when lookups are missing](https://github.com/OpenAdaptAI/OpenAdapt/pull/1231) (#1231), merged 2026-10-18
-- [feat(flow): headless FreeRDP transport with fixed session profile and session pool](https://github.com/OpenAdaptAI/OpenAdapt/pull/1226) (#1226), merged 2026-10-18
-- [feat(flow): detect font and layout drift and halt with a named reason](https://github.com/OpenAdaptAI/OpenAdapt/pull/1225) (#1225), merged 2026-10-18
-
-### Released in openadapt-agent 2.2.1
-
-- [agent: user-scope install, what happens next, job box for hosted chats](https://github.com/OpenAdaptAI/OpenAdapt/pull/1230) (#1230), merged 2026-10-18
 
 ### Merged, not released yet
 
+- [docs: code signing policy for SignPath Foundation](https://github.com/OpenAdaptAI/OpenAdapt/pull/1278) (#1278), merged 2026-10-18
+- [ci: scan the checked-out history, not every branch](https://github.com/OpenAdaptAI/OpenAdapt/pull/1272) (#1272), merged 2026-10-18
+- [feat(privacy): scrub everything that leaves the machine by default](https://github.com/OpenAdaptAI/OpenAdapt/pull/1262) (#1262), merged 2026-10-18, openadapt-flow
 - [test(cli): fake an old agent under the openadapt_flow.agent alias too](https://github.com/OpenAdaptAI/OpenAdapt/pull/1259) (#1259), merged 2026-10-18
 - [feat(flow): show the values a save writes on the phone (presentation.fields)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1257) (#1257), merged 2026-10-18, openadapt-flow
 - [ci(release-package): find a draft GitHub Release by listing releases](https://github.com/OpenAdaptAI/OpenAdapt/pull/1256) (#1256), merged 2026-10-18
+- [benchmark: commit the OpenEMR referral timing data and its figures](https://github.com/OpenAdaptAI/OpenAdapt/pull/1251) (#1251), merged 2026-10-18, openadapt-flow
 - [fix(manifest): pin openadapt-privacy v1.1.2 to its rewritten commit](https://github.com/OpenAdaptAI/OpenAdapt/pull/1243) (#1243), merged 2026-10-18
 - [docs: fix approval-mode default, agent approval tools, and launcher serve help](https://github.com/OpenAdaptAI/OpenAdapt/pull/1238) (#1238), merged 2026-10-18, openadapt-flow
 
