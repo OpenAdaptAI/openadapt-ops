@@ -1,37 +1,34 @@
 # What's New
 
 > *Pull requests merged in the last 7 days across the OpenAdapt repositories, grouped by the release that contains them.*
-> *Last updated: 2026-10-18 20:37 UTC*
+> *Last updated: 2026-10-18 23:32 UTC*
 
 Items under **Merged, not released yet** are on a repository's `main` branch only. They are not in any published package or installer yet.
 
 ## OpenAdapt
 
-### Released in openadapt-flow 2.2.0
-
-- [fix(identity): only a read that contradicts the record is final](https://github.com/OpenAdaptAI/OpenAdapt/pull/1254) (#1254), merged 2026-10-18
-- [fix(identity): a read of a different record is final](https://github.com/OpenAdaptAI/OpenAdapt/pull/1252) (#1252), merged 2026-10-18
-- [feat(flow): one check-level ladder for how well a save was checked](https://github.com/OpenAdaptAI/OpenAdapt/pull/1250) (#1250), merged 2026-10-18
-- [feat(jit): let the recording agent admit its own draft when the policy allows it](https://github.com/OpenAdaptAI/OpenAdapt/pull/1249) (#1249), merged 2026-10-18
-- [fix(flow): don't start the OCR prewarm for --help, and wait for it at exit](https://github.com/OpenAdaptAI/OpenAdapt/pull/1242) (#1242), merged 2026-10-18
-- [docs(flow): generic on-prem docs; every run is gated by default](https://github.com/OpenAdaptAI/OpenAdapt/pull/1237) (#1237), merged 2026-10-18
-- [Copy: describe the break-it run as a failed save, not an app that lies](https://github.com/OpenAdaptAI/OpenAdapt/pull/1236) (#1236), merged 2026-10-18
-- [feat(flow): SMART Backend Services (private_key_jwt) token source for fhir record checks](https://github.com/OpenAdaptAI/OpenAdapt/pull/1235) (#1235), merged 2026-10-18
-- [Flow: person-signed approver grants, no self-approval, one-tap phone approval on the decision portal](https://github.com/OpenAdaptAI/OpenAdapt/pull/1234) (#1234), merged 2026-10-18
-- [feat(flow): record --verify proposes system-of-record checks from what the demonstration changed](https://github.com/OpenAdaptAI/OpenAdapt/pull/1233) (#1233), merged 2026-10-18
-- [fix(flow): close five fail-open gaps in JIT admission, approvals and fix-up passes](https://github.com/OpenAdaptAI/OpenAdapt/pull/1232) (#1232), merged 2026-10-18
-
 ### Merged, not released yet
 
+- [ci: cancel superseded scan runs on pull requests](https://github.com/OpenAdaptAI/OpenAdapt/pull/1295) (#1295), merged 2026-10-18
+- [fix(flow): re-observe once before halting on an identity mismatch](https://github.com/OpenAdaptAI/OpenAdapt/pull/1293) (#1293), merged 2026-10-18, openadapt-flow
+- [test(flow): route reads the first screen from a desktop or remote surface](https://github.com/OpenAdaptAI/OpenAdapt/pull/1288) (#1288), merged 2026-10-18, openadapt-flow
+- [feat(agent): authoring pins the app a deployment file names](https://github.com/OpenAdaptAI/OpenAdapt/pull/1287) (#1287), merged 2026-10-18, openadapt-flow
+- [feat(flow): build a working record check from the app's own reads](https://github.com/OpenAdaptAI/OpenAdapt/pull/1284) (#1284), merged 2026-10-18, openadapt-flow
+- [docs(flow): backend parity matrix and a --url regression test](https://github.com/OpenAdaptAI/OpenAdapt/pull/1282) (#1282), merged 2026-10-18, openadapt-flow
 - [docs: code signing policy for SignPath Foundation](https://github.com/OpenAdaptAI/OpenAdapt/pull/1278) (#1278), merged 2026-10-18
 - [ci: scan the checked-out history, not every branch](https://github.com/OpenAdaptAI/OpenAdapt/pull/1272) (#1272), merged 2026-10-18
+- [feat(capture): move plots, narration and profiling into extras](https://github.com/OpenAdaptAI/OpenAdapt/pull/1271) (#1271), merged 2026-10-18
+- [refactor(types): make openadapt-types the pydantic-only leaf again](https://github.com/OpenAdaptAI/OpenAdapt/pull/1270) (#1270), merged 2026-10-18, openadapt-flow
+- [build(monorepo): release openadapt-capture from the monorepo](https://github.com/OpenAdaptAI/OpenAdapt/pull/1268) (#1268), merged 2026-10-18
+- [build(monorepo): fold openadapt-desktop into packages/desktop (with history, CI)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1267) (#1267), merged 2026-10-18
+- [build(monorepo): fold openadapt-privacy into packages/privacy (with history)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1266) (#1266), merged 2026-10-18
+- [feat(flow): deterministic variant router over separately admitted bundles](https://github.com/OpenAdaptAI/OpenAdapt/pull/1264) (#1264), merged 2026-10-18, openadapt-flow
+- [feat(flow): change ledger, write-ordering lint and declared undo after a stop](https://github.com/OpenAdaptAI/OpenAdapt/pull/1263) (#1263), merged 2026-10-18, openadapt-flow
 - [feat(privacy): scrub everything that leaves the machine by default](https://github.com/OpenAdaptAI/OpenAdapt/pull/1262) (#1262), merged 2026-10-18, openadapt-flow
 - [test(cli): fake an old agent under the openadapt_flow.agent alias too](https://github.com/OpenAdaptAI/OpenAdapt/pull/1259) (#1259), merged 2026-10-18
+- [feat(flow): guarded save around any agent's write](https://github.com/OpenAdaptAI/OpenAdapt/pull/1258) (#1258), merged 2026-10-18, openadapt-flow
 - [feat(flow): show the values a save writes on the phone (presentation.fields)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1257) (#1257), merged 2026-10-18, openadapt-flow
 - [ci(release-package): find a draft GitHub Release by listing releases](https://github.com/OpenAdaptAI/OpenAdapt/pull/1256) (#1256), merged 2026-10-18
-- [benchmark: commit the OpenEMR referral timing data and its figures](https://github.com/OpenAdaptAI/OpenAdapt/pull/1251) (#1251), merged 2026-10-18, openadapt-flow
-- [fix(manifest): pin openadapt-privacy v1.1.2 to its rewritten commit](https://github.com/OpenAdaptAI/OpenAdapt/pull/1243) (#1243), merged 2026-10-18
-- [docs: fix approval-mode default, agent approval tools, and launcher serve help](https://github.com/OpenAdaptAI/OpenAdapt/pull/1238) (#1238), merged 2026-10-18, openadapt-flow
 
 ## openadapt-desktop
 
