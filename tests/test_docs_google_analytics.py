@@ -14,6 +14,7 @@ browser in Node (tests/js/docs_google_analytics_harness.cjs).
 from __future__ import annotations
 
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -32,9 +33,12 @@ GTAG = "https://www.googletagmanager.com/gtag/js?id="
 @pytest.fixture(scope="module")
 def page(tmp_path_factory: pytest.TempPathFactory) -> Path:
     site = tmp_path_factory.mktemp("site")
+    # Without a PostHog key, so only the Google Analytics scripts run here.
+    env = {k: v for k, v in os.environ.items() if not k.startswith("NEXT_PUBLIC_POSTHOG_")}
     subprocess.run(
         [sys.executable, "-m", "mkdocs", "build", "--quiet", "--site-dir", str(site)],
         cwd=ROOT,
+        env=env,
         check=True,
         capture_output=True,
         text=True,

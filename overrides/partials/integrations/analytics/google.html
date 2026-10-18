@@ -5,6 +5,9 @@
   (9.7.7, MIT License, Copyright (c) 2016-2025 Martin Donath). Material still
   emits the call to __md_analytics(); this file only changes what it does:
 
+  - Production hostnames only: nothing loads unless location.hostname is in
+    mkdocs.yml `extra.analytics_hosts`, or when navigator.webdriver is true
+    (partials/integrations/analytics/openadapt-gate.html, shared with PostHog).
   - Do-Not-Track: when the browser sends it, nothing loads. No gtag.js request
     and no `config` command, so no _ga cookies. Same check as PostHog in
     overrides/main.html.
@@ -20,6 +23,9 @@
 {% endif %}
 <script id="__analytics">
   function __md_analytics() {
+    // Production hostnames only, and never under automation.
+    {% include "partials/integrations/analytics/openadapt-gate.html" %}
+
     // Check each signal on its own: a browser can expose more than one, and
     // one that reads "0" or "unspecified" must not hide another that reads "1".
     var signals = [navigator.doNotTrack, window.doNotTrack, navigator.msDoNotTrack];

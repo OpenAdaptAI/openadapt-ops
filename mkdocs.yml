@@ -221,6 +221,11 @@ extra:
   analytics:
     provider: google
     property: !ENV [GOOGLE_ANALYTICS_KEY, "G-CJ01Y19XJN"]
+  # GA4 and PostHog load only on these hostnames (an allowlist), and never
+  # when navigator.webdriver is true. Previews, localhost and 127.0.0.1
+  # record nothing. See overrides/partials/integrations/analytics/openadapt-gate.html.
+  analytics_hosts:
+    - docs.openadapt.ai
   # PostHog is read at BUILD time. When NEXT_PUBLIC_POSTHOG_KEY is unset (local
   # builds and CI), posthog_key is "" and overrides/main.html emits no PostHog
   # script at all. Reuses the same env var names and host as the marketing site

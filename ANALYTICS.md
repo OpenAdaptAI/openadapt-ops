@@ -49,6 +49,21 @@ never set them, so they emit no PostHog.
 ## Privacy properties
 
 - **No PHI or PII.** These are public documentation pages only.
+- **Production hostname only.** Google Analytics and PostHog load only when
+  the page is on a hostname listed in `mkdocs.yml` `extra.analytics_hosts`
+  (today just `docs.openadapt.ai`). It is an allowlist: GitHub Pages and
+  Netlify previews, `localhost`, `127.0.0.1`, `mkdocs serve` and any other
+  host load nothing, and with no list nothing loads anywhere. In October 2026
+  crawls and QA runs on those hosts were a large share of what GA counted.
+- **Nothing under automation.** When `navigator.webdriver` is true
+  (Playwright, Puppeteer, Selenium, headless test modes) neither tracker
+  loads. Both checks live in
+  `overrides/partials/integrations/analytics/openadapt-gate.html`, shared by
+  the GA and PostHog scripts, and `tests/test_docs_analytics_hosts.py` runs
+  them against a built page. Scripts of ours that crawl or screenshot the docs
+  should still abort requests to `googletagmanager.com`,
+  `google-analytics.com` and `*.posthog.com`, because a script can turn
+  `navigator.webdriver` off.
 - **Do-Not-Track is respected.** When the browser sends a Do-Not-Track signal,
   neither PostHog nor Google Analytics is loaded or initialized. For Google
   Analytics that means no gtag.js request and no `config` command, so no `_ga`
