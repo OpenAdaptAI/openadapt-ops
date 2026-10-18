@@ -40,11 +40,16 @@ description: >-
 
 - **RDP and Citrix.** With only pixels, identifiers with confusable
   characters can't always be read with confidence, so runs stop more than in
-  a browser. In our tests on pixel-only screens, the right-record check
-  stopped the right patient 44 to 49 times in 100 when the record number had
-  look-alike characters, such as `O` and `0`
-  ([source](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/benchmark/safety_gallery)). Those are extra stops, not wrong
-  entries. Teach the specific case, or use a surface with structure where the
+  a browser. On pixel-only screens the right-record check stops whenever the
+  right patient's own record number has look-alike characters, such as `O`
+  and `0`. On our test corpora that was 47 to 61 in 100 correct-patient
+  checks, re-measured 17 October 2026
+  ([identity evidence](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/validation/IDENTITY_EVIDENCE.md)). Those are
+  extra stops, not wrong entries. A confirmed export of the system's record
+  numbers (`runtime.known_ids`, openadapt-flow 2.2.0) lifts a stop when
+  exactly one listed number fits; on a rendered record list, stops on the
+  right row fell from 176 to 3 in 280 clicks whose neighboring row wasn't a
+  look-alike twin ([results](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/benchmark/known_ids/KNOWN_IDS.md)). Teach the specific case, or use a surface with structure where the
   app offers one. Don't lower the check.
 - **First runs of a new recording.** Expect `lint` warnings and
   `clinical-write` refusals until record checks and right-record checks are
@@ -60,7 +65,7 @@ qualification.
 
 | Surface | On record | What it doesn't show |
 |---|---|---|
-| Browser | OpenEMR referral entry, 14 to 15 Oct 2026: 62 of 63 saved and read back 12 of 12 fields, 9 of 9 possible duplicates with no new chart, 0 model calls ([run data](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/benchmark/openemr_referral_timing/README.md)) | One workflow on a local test copy with synthetic patients. The read-back was our test setup's, so the engine labeled the runs finished, not checked. No commercial EMR tested. |
+| Browser | OpenEMR referral entry, 14 to 15 Oct 2026: of 63 new-patient referrals, 62 saved and read back 12 of 12 fields; 9 of 9 possible duplicates with no new chart, 0 model calls ([run data](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/benchmark/openemr_referral_timing/README.md)) | One workflow on a local test copy with synthetic patients. The read-back was our test setup's, so the engine labeled the runs finished, not checked. No commercial EMR tested. |
 | Windows | 3 of 3 saves in our WinForms app confirmed in SQLite; 3 of 3 refusals each for stale and ambiguous targets; 0 model calls ([report](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/benchmark/windows_uia/results.json)) | Our own app on one Windows 11 ARM VM snapshot. RDP and Citrix recordings don't use local UI Automation. |
 | macOS | 3 of 3 TextEdit saves matched byte for byte; refused an ambiguous two-window target without changing either file ([adjudication](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/benchmark/macos_native/textedit_counted_3plus1_b1b61a5_20260717.adjudication.json)) | One macOS 15.7.3 host and one app. The original report reads failed because of cleanup warnings; the adjudication accepts the saves and the refusal. |
 | Linux (X11) | In required CI on Ubuntu 24.04: a GTK3 app, 3 confirmed saves, 3 ambiguous-target and 3 stale-target refusals | Our own app on Xvfb. No Wayland, no third-party apps. |
