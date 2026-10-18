@@ -149,11 +149,15 @@ human_decisions:
     enabled: false
     # tenant_id: ...
     # runner_id: ...
+    # context_tier: remote_closed_context   # or remote_identifiers
 ```
 
 Off by default, so decisions on paused runs are made at the computer. When
-enabled with both ids, the runner may relay a signed decision task with no
-patient data to the hosted phone view.
+enabled with both ids, the attended console started with `--remote-decisions`
+relays a signed decision task with no screenshot and no patient data to
+OpenAdapt Cloud, where a signed-in member answers it from a phone.
+`context_tier` sets how much the task says about why the run stopped; neither
+value can carry an image. See [Answer a halt from a phone](../how-to/answer-from-a-phone.md).
 
 ### `policy`
 
@@ -171,7 +175,7 @@ policy:
 | `OPENADAPT_FLOW_SCRUB` | Scrubbing of identifiers from saved text: `auto` (default), `on`, or `off`. `on` stops with an error if the scrubber isn't installed. |
 | `OPENADAPT_FLOW_PHI_MODE` | Turns patient-data mode on; `OPENADAPT_FLOW_SCRUB=on` also does |
 | `OPENADAPT_FLOW_VLM_URL` | The address of an on-site model server |
-| `OPENADAPT_FLOW_BROWSER` | Which browser to use: `auto` (default), `chrome`, `msedge`, or `bundled` |
+| `OPENADAPT_FLOW_NO_AUTO_INSTALL` | `1` skips the Chromium download on the first browser run, for computers without internet access |
 | `OPENADAPT_HOME` | Where OpenAdapt keeps local state (default `~/.openadapt`) |
 | `OPENADAPT_AGENT_RUNS_DIR` | The MCP server's runs folder (default `~/.openadapt/runs`) |
 | `OAFLOW_AGENT_TOKEN` | The shared token for the Windows agent server |
