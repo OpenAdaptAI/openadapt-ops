@@ -7,6 +7,11 @@ import sys
 
 import yaml
 
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+
+import check_private_names  # noqa: E402
+import flow_cli_reference  # noqa: E402
+
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 DOCS_DIR = ROOT / "docs"
 MKDOCS_FILE = ROOT / "mkdocs.yml"
@@ -422,6 +427,30 @@ def check_retired_redirects(docs_dir=None, mkdocs_file=None):
     return issues
 
 
+def check_private_name_list():
+    """No customer or prospect name in the public docs.
+
+    The list comes from a CI secret or a private file, never this repository.
+    Without it the check is skipped; with it, a hit or a bad list fails.
+    """
+    status, problems = check_private_names.check()
+    if status == "skipped":
+        print(
+            "Private name check skipped: no list in "
+            f"{check_private_names.ENV_PATTERNS} or "
+            f"{check_private_names.ENV_PATTERNS_FILE}."
+        )
+    return [f"Private name check: {problem}" for problem in problems]
+
+
+def check_flow_cli_reference():
+    """The command reference covers every command of the released Flow."""
+    return [
+        f"Flow command reference: {problem}"
+        for problem in flow_cli_reference.check_page()
+    ]
+
+
 def run_mkdocs_build(strict=False):
     """Run mkdocs build and return (success, output).
 
@@ -457,6 +486,8 @@ def validate():
     issues.extend(check_train_path_not_current_product())
     issues.extend(check_retired_public_claims())
     issues.extend(check_retired_redirects())
+    issues.extend(check_flow_cli_reference())
+    issues.extend(check_private_name_list())
 
     # Run mkdocs build
     success, output = run_mkdocs_build(strict=True)

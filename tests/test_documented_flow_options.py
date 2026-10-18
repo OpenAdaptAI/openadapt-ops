@@ -7,22 +7,25 @@ and `openadapt flow ...` command written as code (fenced blocks and inline
 code spans) and checks its subcommand and long options against the argparse
 parser of the pinned Flow release.
 
-`tests/fixtures/flow_cli_2.1.0.json` holds that parser's subcommands and long
-options. When the docs move to a newer Flow release, regenerate the fixture
-from that release's `openadapt_flow.__main__.build_parser()`: for each
-subparser, record the sorted `option_strings` that start with `--`, keyed by
-the space-joined subcommand path (for example `qualify propose`).
+`tests/fixtures/flow_cli_<version>.json` holds that parser's subcommands and
+long options, keyed by the space-joined subcommand path (for example
+`qualify propose`). `scripts/flow_cli_reference.py snapshot` writes it from the
+release on PyPI.
 """
 
 from __future__ import annotations
 
 import json
 import re
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 DOCS = ROOT / "docs"
-FIXTURE = ROOT / "tests/fixtures/flow_cli_2.1.0.json"
+
+sys.path.insert(0, str(ROOT / "scripts"))
+
+from flow_cli_reference import SNAPSHOT as FIXTURE  # noqa: E402
 
 # Options that exist on OpenAdapt `main` but not in the pinned release. A page
 # may show them only where it labels them as unreleased; each entry names the
