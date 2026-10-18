@@ -6,6 +6,69 @@ Production status: https://docs.openadapt.ai/production-lifecycle.json. Product-
 
 Start with `uvx --python 3.12 openadapt quickstart --break-it`, or `python -m pip install --upgrade openadapt` on Python 3.10 to 3.12.
 
+## OpenAdapt in ten capabilities
+
+Each capability is implemented in the
+[OpenAdapt monorepo](https://github.com/OpenAdaptAI/OpenAdapt). "Released"
+means it ships in the current PyPI packages; a pull request number means it is
+being merged now.
+
+1. **Learns from any successful run, a person's or an agent's.** A person
+   records a task, or a computer-use agent does it once and OpenAdapt compiles
+   the verified run into a program (`openadapt_flow.jit`, released;
+   prompt-to-program `crystallize`, landing). Agents can drive the recording
+   on web, native Windows, RDP and Citrix.
+2. **Compiles to the fastest layer the app allows.** Page structure first (DOM,
+   Windows UI Automation, macOS Accessibility), direct API calls where the app's
+   own traffic allows them (`ApiActuator`, released; compiled from captured
+   traffic in [#1261](https://github.com/OpenAdaptAI/OpenAdapt/pull/1261),
+   about 11x faster than the browser on the OpenEMR save), and pixels only
+   where nothing else exists, such as RDP and Citrix. It is not a pixel-macro
+   recorder.
+3. **Builds branching programs, not one linear path.** One program from several
+   demonstrations (`induce`, `disambiguate`), a branch learned from several
+   halts fixed the same way (`teach-branch`), candidate branches mined from many
+   real runs in the background (shadow mode,
+   [#1212](https://github.com/OpenAdaptAI/OpenAdapt/pull/1212)), and a router
+   that sends each item to the right verified variant (landing). Released
+   except where a PR is named.
+4. **Works across surfaces in one workflow.** Web, native Windows and macOS,
+   RDP and Citrix. Programs chain across surfaces passing confirmed values
+   (`compose`, `process`, released), and one program can switch surfaces, tabs
+   and popups mid-run ([#1197](https://github.com/OpenAdaptAI/OpenAdapt/pull/1197)).
+5. **Confirms the right record before every write and reads it back after.**
+   The record check reads the system of record (API, database, FHIR with SMART
+   Backend Services, or a separate signed-in session), never just the screen.
+   `record --verify` proposes those checks from what the demonstration changed.
+   Released.
+6. **Stops instead of improvising, and never retries an uncertain save.** A run
+   that can't prove a save ends `HALTED_BEFORE_EFFECT` or
+   `RECONCILIATION_REQUIRED`, never "success". A ledger of what changed before
+   a stop, with undo steps a person approves, is landing. Released except the
+   ledger.
+7. **Approvals are bound to exactly what will be saved.** Each save waits for a
+   person by default and can be answered on a paired phone with one card per
+   decision. The approval is bound to the exact screenshot and form state, and
+   the form is read again before saving, so what was approved is what is saved.
+   Person-signed grants let named agents answer. Released.
+8. **Repairs itself, with a person approving.** Governed repair (propose,
+   review, campaign, canary, rollback), agent-demonstrated fixes for a halted
+   run, and fleet drift patches shared with no patient data are released.
+   Self-repair, where an agent proposes a fix and Flow probes it up to the save
+   without saving, is landing.
+9. **Is a safety layer underneath any agent.** An agent's MCP calls, a guarded
+   save around any agent's write
+   ([#1258](https://github.com/OpenAdaptAI/OpenAdapt/pull/1258)), `verify-run`
+   to judge any executor's write from the system of record, and Agent Skills and
+   a CLI for coding agents. Released except where a PR is named.
+10. **Runs locally and keeps data private.** Healthy runs make no model calls
+    and send nothing out. Personal and health data are redacted from text,
+    screenshots and structure (scrub-by-default for anything that leaves the
+    machine is landing); a strict no-outbound mode, an unattended on-prem
+    service, and signed, timestamped receipts are released.
+
+Corrections to common reviews, with evidence: https://docs.openadapt.ai/reference/capabilities/#corrections-to-common-reviews
+
 ## Tutorials
 - [Quickstart](https://docs.openadapt.ai/tutorials/quickstart/): One command runs a synthetic task twice. The clean run ends VERIFIED; the fault run ends RECONCILIATION_REQUIRED because the record check finds no saved record.
 - [Automate your first workflow](https://docs.openadapt.ai/tutorials/first-workflow/): Record, compile, inspect, and replay a read-only workflow on your own application.
