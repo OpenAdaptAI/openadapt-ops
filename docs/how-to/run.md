@@ -71,12 +71,16 @@ runs it. `show` prints the waiting requests as JSON, including each
 ```bash
 openadapt flow item-approval show RUN_DIR
 openadapt flow item-approval approve RUN_DIR --request-id ID \
-  --request-sha256 SHA256 --decided-by human --route desktop_run_it
+  --request-sha256 SHA256 --decided-by human --route desktop_run_it \
+  --unauthenticated
 ```
 
 `decline` takes the same options plus `--reason`: `wrong_values`,
 `wrong_record`, or `screen_problem`. Version 2.1.0 accepts only
-`--decided-by human` and `--route desktop_run_it`. The next OpenAdapt Desktop
+`--decided-by human` and `--route desktop_run_it`. `--unauthenticated`
+records the answer without a name; to name the approver instead, pass their
+OpenAdapt Cloud user id with `--approver-id` and how they signed in with
+`--auth-method cloud_aal2` or `cloud_aal1`. The next OpenAdapt Desktop
 build adds an approval form for this; the released installer doesn't have it
 yet. See [Install the desktop app](desktop.md#approving-saves).
 
