@@ -40,7 +40,12 @@ jobs:
       - name: Run tests
         run: uv run pytest tests/ -q
 
+      # The customer and prospect name list is private. It reaches CI only as
+      # the DOCS_PRIVATE_NAME_PATTERNS secret; see scripts/README.md. Without
+      # it (a fork's pull request), the name check is skipped with a notice.
       - name: Validate product documentation contract
+        env:
+          DOCS_PRIVATE_NAME_PATTERNS: ${{ secrets.DOCS_PRIVATE_NAME_PATTERNS }}
         run: uv run python scripts/validate_docs.py
 
       # Offline half only: structure and the claim registry. The PyPI
@@ -51,6 +56,11 @@ jobs:
 
       - name: Build canonical documentation in strict mode
         run: uv run mkdocs build --strict
+
+      - name: Check the built site for private names
+        env:
+          DOCS_PRIVATE_NAME_PATTERNS: ${{ secrets.DOCS_PRIVATE_NAME_PATTERNS }}
+        run: uv run python scripts/check_private_names.py --site site
 
       # Every internal link and #anchor in the built site, offline. With no
       # network it can't flake, so it can gate a pull request. External links
@@ -64,6 +74,21 @@ jobs:
             'site/**/*.html'
           jobSummary: false
 
+  flow-cli-release:
+    name: Command reference matches the released Flow CLI
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+
+      # Installs the pinned openadapt-flow release from PyPI in a throwaway
+      # environment and compares its parser with the committed snapshot that
+      # docs/reference/flow-commands.md is generated from. A PyPI release is
+      # immutable, so this fails only when the snapshot or the pin changed.
+      - name: Compare the snapshot with openadapt-flow on PyPI
+        run: python3 scripts/flow_cli_reference.py check-pypi
+
   cli-reference:
     name: Command help matches the pinned releases
     runs-on: ubuntu-latest
@@ -74,18 +99,18 @@ jobs:
 
       # Installs exactly the releases in cli-reference/requirements.txt in a
       # throwaway environment, regenerates docs/reference/cli-help.md and the
-      # CLI fixtures from their parsers, and fails if the committed copies
-      # differ. The fix is to rerun the script and commit what it writes.
+      # agent CLI fixture from the launcher and agent parsers, and fails if the
+      # committed copies differ. The fix is to rerun the script and commit.
       - name: Install the pinned releases
         run: |
           uv venv --python 3.12 "$RUNNER_TEMP/cli-ref"
           uv pip install --python "$RUNNER_TEMP/cli-ref/bin/python" -r cli-reference/requirements.txt
 
-      - name: Regenerate the command help and fixtures
+      - name: Regenerate the command help and fixture
         run: '"$RUNNER_TEMP/cli-ref/bin/python" scripts/generate_cli_reference.py'
 
       - name: Fail on drift
-        run: git diff --exit-code -- docs/reference/cli-help.md tests/fixtures/flow_cli.json tests/fixtures/agent_cli.json
+        run: git diff --exit-code -- docs/reference/cli-help.md tests/fixtures/agent_cli.json
 
   design-tokens:
     name: Vendored design tokens match openadapt-web

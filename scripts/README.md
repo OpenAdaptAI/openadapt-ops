@@ -7,11 +7,37 @@ script says otherwise, install the dev environment first:
 uv sync --locked --extra dev
 ```
 
-## Command help reference
+## Docs build checks
 
-`generate_cli_reference.py` writes `docs/reference/cli-help.md` and the CLI
-fixtures in `tests/fixtures/` from the parsers of the versions pinned in
-`cli-reference/requirements.txt`. It runs in its own environment, not the dev
+### `flow_cli_reference.py`: the command reference follows the Flow release
+
+`docs/reference/flow-commands.md` is generated from the argparse parser of the
+`openadapt-flow` release on PyPI named by `FLOW_VERSION` (now 2.1.0), never
+from OpenAdapt `main`. The parser is saved as
+`tests/fixtures/flow_cli_<version>.json`, and the tests that check documented
+commands and options read the same file.
+
+```bash
+python scripts/flow_cli_reference.py snapshot    # install the release from PyPI, rewrite snapshot + page
+python scripts/flow_cli_reference.py render      # rewrite the page from the committed snapshot
+python scripts/flow_cli_reference.py check       # offline: page matches snapshot, every command listed
+python scripts/flow_cli_reference.py check-pypi  # online: snapshot matches the release on PyPI
+```
+
+`validate_docs.py` runs `check`, and fails when a released command or
+subcommand is missing from the reference. The `flow-cli-release` CI job runs
+`check-pypi`. The tests also require every top-level verb in the table on
+`docs/reference/cli.md`.
+
+To move to a new Flow release: set `FLOW_VERSION`, run `snapshot`, describe
+new commands in `cli.md`, and commit.
+
+### `generate_cli_reference.py`: launcher and agent help follow their releases
+
+`generate_cli_reference.py` writes `docs/reference/cli-help.md` and
+`tests/fixtures/agent_cli.json` from the launcher and agent parsers of the
+versions pinned in `cli-reference/requirements.txt`. The Flow pin there must
+equal `FLOW_VERSION` in `flow_cli_reference.py`. It runs in its own environment, not the dev
 one:
 
 ```bash
@@ -23,6 +49,44 @@ uv pip install --python /tmp/cli-ref/bin/python -r cli-reference/requirements.tx
 The `cli-reference` CI job reruns it and fails when the committed files
 differ. To move the docs to a new release, change the pin, rerun it, and
 update `docs/reference/cli.md` for the commands that changed.
+
+### `check_private_names.py`: no customer or prospect names
+
+Customer and prospect names must never appear in the public docs, and the list
+of those names must not be in this public repository either. The check reads
+the list at run time from:
+
+- `DOCS_PRIVATE_NAME_PATTERNS`: one case-insensitive regular expression per
+  line; blank lines and lines starting with `#` are ignored; or
+- `DOCS_PRIVATE_NAME_PATTERNS_FILE`: a path to a file in that format, for
+  example one in a private repository checkout.
+
+In CI, the list is the `DOCS_PRIVATE_NAME_PATTERNS` repository secret. It is
+passed to `validate_docs.py`, to the built-site scan in `ci.yml` and
+`sync.yml`, and to `generate_whats_new.py`, which keeps the existing digest
+instead of publishing a PR title that matches. To set or update the secret
+from the private list (keep the file outside this checkout):
+
+```bash
+gh secret set DOCS_PRIVATE_NAME_PATTERNS -R OpenAdaptAI/openadapt-ops < /path/to/private-names.txt
+```
+
+Behavior:
+
+- No list (a fork's pull request, or a local build without the variables): the
+  check prints a notice and passes. `--require` makes it fail instead.
+- A list: any match in `docs/`, `mkdocs.yml`, `overrides/`, `templates/`,
+  `prompts/`, `README.md`, or the built `site/` fails. So does a list that is
+  empty, unreadable, or has an invalid pattern.
+- A hit prints the file, line, and pattern number only. The matched text and
+  the pattern never reach the log.
+
+Run it locally before a push:
+
+```bash
+DOCS_PRIVATE_NAME_PATTERNS_FILE=/path/to/private-names.txt \
+  uv run python scripts/check_private_names.py --site site
+```
 
 ## Assistant visibility
 

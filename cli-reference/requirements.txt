@@ -5,6 +5,9 @@
 # they are, the pins build them from OpenAdapt main, which holds everything
 # the 2.2.0 release ships. On release day, replace both lines with
 # openadapt-flow==2.2.0 and openadapt-agent==2.2.1.
+#
+# The Flow pin must name the same version as FLOW_VERSION in
+# scripts/flow_cli_reference.py.
 openadapt==1.17.0
 openadapt-flow @ git+https://github.com/OpenAdaptAI/OpenAdapt@9104577e603e030f89318ead9cd9d586d439aefe#subdirectory=packages/flow  # release 2.2.0
 openadapt-agent @ git+https://github.com/OpenAdaptAI/OpenAdapt@9104577e603e030f89318ead9cd9d586d439aefe#subdirectory=packages/agent  # release 2.2.1
