@@ -111,4 +111,6 @@ bundle, policy, run report, and target to a one-time Cloud challenge before
 `push --kind bundle` accepts it. A run reports to Cloud only with `--report`,
 and that report has no screens, text, or field values.
 
-For prices, see [openadapt.ai/pricing](https://openadapt.ai/pricing).
+Stop alerts, the online Seal check, repair review, and the hosted run queue
+are described in [OpenAdapt Cloud](../cloud/index.md). For prices, see
+[openadapt.ai/pricing](https://openadapt.ai/pricing).
