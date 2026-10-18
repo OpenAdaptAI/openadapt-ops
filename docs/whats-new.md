@@ -1,7 +1,7 @@
 # What's New
 
 > *Pull requests merged in the last 7 days across the OpenAdapt repositories, grouped by the release that contains them.*
-> *Last updated: 2026-10-18 16:18 UTC*
+> *Last updated: 2026-10-18 16:56 UTC*
 
 Items under **Merged, not released yet** are on a repository's `main` branch only. They are not in any published package or installer yet.
 
@@ -24,8 +24,6 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 - [feat(flow): headless FreeRDP transport with fixed session profile and session pool](https://github.com/OpenAdaptAI/OpenAdapt/pull/1226) (#1226), merged 2026-10-18
 - [feat(flow): detect font and layout drift and halt with a named reason](https://github.com/OpenAdaptAI/OpenAdapt/pull/1225) (#1225), merged 2026-10-18
 - [feat(flow): lift look-alike identity stops against a complete known-ID list](https://github.com/OpenAdaptAI/OpenAdapt/pull/1223) (#1223), merged 2026-10-18
-- [feat(flow): unattended on-prem service with health checks, restart and egress audit](https://github.com/OpenAdaptAI/OpenAdapt/pull/1222) (#1222), merged 2026-10-18
-- [fix(flow): the drift oracle never rescues a postcondition on an irreversible or effect-bearing step](https://github.com/OpenAdaptAI/OpenAdapt/pull/1217) (#1217), merged 2026-10-18
 
 ### Released in openadapt-agent 2.2.1
 
@@ -33,8 +31,10 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 
 ### Merged, not released yet
 
+- [test(cli): fake an old agent under the openadapt_flow.agent alias too](https://github.com/OpenAdaptAI/OpenAdapt/pull/1259) (#1259), merged 2026-10-18
 - [ci(release-package): find a draft GitHub Release by listing releases](https://github.com/OpenAdaptAI/OpenAdapt/pull/1256) (#1256), merged 2026-10-18
 - [fix(manifest): pin openadapt-privacy v1.1.2 to its rewritten commit](https://github.com/OpenAdaptAI/OpenAdapt/pull/1243) (#1243), merged 2026-10-18
+- [docs: fix approval-mode default, agent approval tools, and launcher serve help](https://github.com/OpenAdaptAI/OpenAdapt/pull/1238) (#1238), merged 2026-10-18, openadapt-flow
 
 ## openadapt-desktop
 
@@ -116,10 +116,10 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 - [ci: name the failed release step in the release-health issue](https://github.com/OpenAdaptAI/openadapt-capture/pull/145) (#145), merged 2026-10-14
 - [docs: lead the README with a quick start; fix Linux X RECORD startup and CLI setup errors](https://github.com/OpenAdaptAI/openadapt-capture/pull/144) (#144), merged 2026-10-14
 - [chore(deps): bump actions/download-artifact from 8.0.1 to 8.0.2](https://github.com/OpenAdaptAI/openadapt-capture/pull/142) (#142), merged 2026-10-17
-- [chore(deps): bump actions/upload-artifact from 7.0.1 to 7.0.2](https://github.com/OpenAdaptAI/openadapt-capture/pull/141) (#141), merged 2026-10-17
 
 ### Merged, not released yet
 
+- [docs: say this repository moved to the OpenAdapt monorepo](https://github.com/OpenAdaptAI/openadapt-capture/pull/168) (#168), merged 2026-10-18
 - [ci(release): publish GitHub Releases with gh and the release App](https://github.com/OpenAdaptAI/openadapt-capture/pull/167) (#167), merged 2026-10-18
 
 ## openadapt-privacy
