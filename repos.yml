@@ -17,6 +17,22 @@ repos:
     github: OpenAdaptAI/OpenAdapt
     category: core
     changelog: true
+    # What's New groups merged PRs by the release that contains them. The
+    # launcher is tagged v<version>; each package under packages/ is tagged
+    # <pypi-project>-v<version> by release-package.yml. A PR belongs to the
+    # package path with the most changed files.
+    releases:
+      tag_prefix: v
+      paths:
+        - path: packages/flow/
+          package: openadapt-flow
+          tag_prefix: openadapt-flow-v
+        - path: packages/agent/
+          package: openadapt-agent
+          tag_prefix: openadapt-agent-v
+        - path: packages/types/
+          package: openadapt-types
+          tag_prefix: openadapt-types-v
 
   # Flow, Agent, and Types live in the OpenAdapt monorepo under packages/.
   # Each publishes to PyPI without a GitHub release, so the changelog reads the
