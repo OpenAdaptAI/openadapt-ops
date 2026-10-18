@@ -149,11 +149,15 @@ human_decisions:
     enabled: false
     # tenant_id: ...
     # runner_id: ...
+    # context_tier: remote_closed_context   # or remote_identifiers
 ```
 
 Off by default, so decisions on paused runs are made at the computer. When
-enabled with both ids, the runner may relay a signed decision task with no
-patient data to the hosted phone view.
+enabled with both ids, the attended console started with `--remote-decisions`
+relays a signed decision task with no screenshot and no patient data to
+OpenAdapt Cloud, where a signed-in member answers it from a phone.
+`context_tier` sets how much the task says about why the run stopped; neither
+value can carry an image. See [Answer a halt from a phone](../how-to/answer-from-a-phone.md).
 
 ### `policy`
 

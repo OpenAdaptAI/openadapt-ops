@@ -255,12 +255,20 @@ nav:
           - Build from several demonstrations: how-to/combine-demonstrations.md
           - Add record checks: how-to/record-checks.md
           - Certify and qualify: how-to/certify-and-qualify.md
+          - Add a human decision: how-to/add-a-business-decision.md
           - Run a workflow: how-to/run.md
           - Handle a halt: how-to/handle-a-halt.md
+          - Answer a halt from a phone: how-to/answer-from-a-phone.md
           - Connect an agent: how-to/connect-an-agent.md
           - Install the desktop app: how-to/desktop.md
           - Deploy: how-to/deploy.md
           - Troubleshoot: how-to/troubleshoot.md
+      - OpenAdapt Cloud:
+          - cloud/index.md
+          - Get told when a run stops: cloud/stop-alerts.md
+          - Check a Seal online: cloud/verify-a-seal.md
+          - Review a repair: cloud/review-a-repair.md
+          - How hosted runs queue: cloud/hosted-runs.md
       - Reference:
           - Run outcomes: reference/outcomes.md
           - Commands: reference/cli.md

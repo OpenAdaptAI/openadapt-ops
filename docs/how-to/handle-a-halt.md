@@ -36,9 +36,10 @@ openadapt flow resume runs/<run-dir> --require-approval
 
 `approve` records who decided and which option they chose (`--resolution`).
 `resume` checks the live screen, the record, and the target again before it
-continues, and never repeats a confirmed save. In OpenAdapt Desktop and in
-the hosted phone view, the same pause offers only the actions that fit that
-halt, such as resume, skip, reject, teach, escalate, or reconcile.
+continues, and never repeats a confirmed save. In OpenAdapt Desktop and on a
+phone, the same pause offers only the actions that fit that halt, such as
+resume, skip, reject, teach, escalate, or reconcile. See
+[Answer a halt from a phone](answer-from-a-phone.md).
 
 ## 3. Teach the program the fix
 
