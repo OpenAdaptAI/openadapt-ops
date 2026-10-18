@@ -32,6 +32,24 @@ subcommand is missing from the reference. The `flow-cli-release` CI job runs
 To move to a new Flow release: set `FLOW_VERSION`, run `snapshot`, describe
 new commands in `cli.md`, and commit.
 
+### `generate_cli_reference.py`: launcher and agent help follow their releases
+
+`generate_cli_reference.py` writes `docs/reference/cli-help.md` and
+`tests/fixtures/agent_cli.json` from the launcher and agent parsers of the
+versions pinned in `cli-reference/requirements.txt`. The Flow pin there must
+equal `FLOW_VERSION` in `flow_cli_reference.py`. It runs in its own environment, not the dev
+one:
+
+```bash
+uv venv --python 3.12 /tmp/cli-ref
+uv pip install --python /tmp/cli-ref/bin/python -r cli-reference/requirements.txt
+/tmp/cli-ref/bin/python scripts/generate_cli_reference.py
+```
+
+The `cli-reference` CI job reruns it and fails when the committed files
+differ. To move the docs to a new release, change the pin, rerun it, and
+update `docs/reference/cli.md` for the commands that changed.
+
 ### `check_private_names.py`: no customer or prospect names
 
 Customer and prospect names must never appear in the public docs, and the list

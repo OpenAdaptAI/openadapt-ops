@@ -16,6 +16,8 @@ Every command takes `--help`, which is the authority for its options. This
 page lists the commands in `openadapt` 1.17.0 and `openadapt-flow` 2.1.0.
 [All Flow commands](flow-commands.md) lists every Flow command and subcommand
 with its long options, generated from the released package.
+[Launcher and agent help](cli-help.md) has the full `--help` text of every
+`openadapt` and `openadapt agent` command.
 
 ## Launcher commands
 

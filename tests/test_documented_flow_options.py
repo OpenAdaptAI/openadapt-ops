@@ -1,4 +1,4 @@
-"""Every documented `openadapt-flow` command must parse in the pinned release.
+"""Every documented Flow and agent command must parse in the pinned release.
 
 The docs once told readers to run `openadapt-flow replay bundle --seal`, a
 planned flag that no Flow release has. Following that proof step ended in
@@ -11,6 +11,10 @@ parser of the pinned Flow release.
 long options, keyed by the space-joined subcommand path (for example
 `qualify propose`). `scripts/flow_cli_reference.py snapshot` writes it from the
 release on PyPI.
+
+The same check covers `openadapt-agent ...` and `openadapt agent ...` against
+`tests/fixtures/agent_cli.json`, which `scripts/generate_cli_reference.py`
+writes from the version pinned in `cli-reference/requirements.txt`.
 """
 
 from __future__ import annotations
@@ -25,7 +29,10 @@ DOCS = ROOT / "docs"
 
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from flow_cli_reference import SNAPSHOT as FIXTURE  # noqa: E402
+from flow_cli_reference import FLOW_VERSION, SNAPSHOT as FIXTURE  # noqa: E402
+
+AGENT_FIXTURE = ROOT / "tests/fixtures/agent_cli.json"
+REQUIREMENTS = ROOT / "cli-reference/requirements.txt"
 
 # Options that exist on OpenAdapt `main` but not in the pinned release. A page
 # may show them only where it labels them as unreleased; each entry names the
@@ -35,7 +42,12 @@ UNRELEASED_OPTIONS = {
     "qualify": {"--verify", "--out", "--certify"},
 }
 # Regenerated from other repositories' release notes; they quote history.
-GENERATED_PAGES = {DOCS / "changelog.md", DOCS / "whats-new.md"}
+# The command help page is generated from the pinned parsers themselves.
+GENERATED_PAGES = {
+    DOCS / "changelog.md",
+    DOCS / "whats-new.md",
+    DOCS / "reference/cli-help.md",
+}
 
 _FENCE = re.compile(r"^\s*(```|~~~)")
 _INLINE = re.compile(r"`([^`\n]+)`")
@@ -44,12 +56,15 @@ _INLINE = re.compile(r"`([^`\n]+)`")
 _COMMAND = re.compile(
     r"(?:^|[;&|(]\s*|\$\s+|\buv run\s+)(?:openadapt-flow|openadapt flow)\s+(.*)$"
 )
+_AGENT_COMMAND = re.compile(
+    r"(?:^|[;&|(]\s*|\$\s+|\buv run\s+)(?:openadapt-agent|openadapt agent)\s+(.*)$"
+)
 _END_OF_COMMAND = re.compile(r"\s(?:\||&&|;|#|>)\s")
 _SUBCOMMAND = re.compile(r"^[a-z][a-z-]*$")
 
 
-def _cli() -> tuple[set[str], dict[str, set[str]]]:
-    data = json.loads(FIXTURE.read_text(encoding="utf-8"))
+def _cli(fixture: Path = FIXTURE) -> tuple[set[str], dict[str, set[str]]]:
+    data = json.loads(fixture.read_text(encoding="utf-8"))
     commands = {name: set(options) for name, options in data["commands"].items()}
     return set(data["global_options"]), commands
 
@@ -86,11 +101,11 @@ def _code_snippets(text: str) -> list[tuple[int, str]]:
     return snippets
 
 
-def _flow_commands(text: str) -> list[tuple[int, str, list[str]]]:
+def _flow_commands(text: str, pattern: re.Pattern = _COMMAND) -> list[tuple[int, str, list[str]]]:
     """Return (line number, code, tokens after the program name) per command."""
     found = []
     for number, code in _code_snippets(text):
-        match = _COMMAND.search(code.strip())
+        match = pattern.search(code.strip())
         if not match:
             continue
         tokens = _END_OF_COMMAND.split(f" {match.group(1)} ", maxsplit=1)[0].split()
@@ -101,9 +116,15 @@ def _flow_commands(text: str) -> list[tuple[int, str, list[str]]]:
     return found
 
 
-def _problems(text: str, global_options: set[str], commands: dict[str, set[str]]) -> list[str]:
+def _problems(
+    text: str,
+    global_options: set[str],
+    commands: dict[str, set[str]],
+    pattern: re.Pattern = _COMMAND,
+    unreleased: dict[str, set[str]] = UNRELEASED_OPTIONS,
+) -> list[str]:
     problems = []
-    for number, code, tokens in _flow_commands(text):
+    for number, code, tokens in _flow_commands(text, pattern):
         command = tokens[0]
         if command not in commands:
             problems.append(f"line {number}: unknown subcommand `{command}` in `{code}`")
@@ -115,7 +136,7 @@ def _problems(text: str, global_options: set[str], commands: dict[str, set[str]]
             if not token.startswith("--"):
                 continue
             option = token.split("=", 1)[0].rstrip(".,;:)")
-            if option not in commands[command] | global_options | UNRELEASED_OPTIONS.get(command, set()):
+            if option not in commands[command] | global_options | unreleased.get(command, set()):
                 problems.append(f"line {number}: `{command}` has no `{option}` option in `{code}`")
     return problems
 
@@ -159,5 +180,38 @@ def test_documented_flow_commands_use_only_shipped_options() -> None:
     problems = []
     for page in pages:
         for problem in _problems(page.read_text(encoding="utf-8"), global_options, commands):
+            problems.append(f"{page.relative_to(ROOT)} {problem}")
+    assert problems == [], "\n".join(problems)
+
+
+def _pins() -> dict[str, str]:
+    pins = {}
+    for line in REQUIREMENTS.read_text(encoding="utf-8").splitlines():
+        line = line.split("#", 1)[0].strip()
+        if line:
+            name, _, version = line.partition("==")
+            pins[name.strip()] = version.strip()
+    return pins
+
+
+def test_agent_fixture_and_flow_pin_match_the_pinned_versions() -> None:
+    pins = _pins()
+    data = json.loads(AGENT_FIXTURE.read_text(encoding="utf-8"))
+    assert data["program"] == "openadapt-agent"
+    assert data["version"] == pins["openadapt-agent"], f"regenerate {AGENT_FIXTURE.name}"
+    # The agent help is generated with the Flow release the Flow reference describes.
+    assert pins["openadapt-flow"] == FLOW_VERSION
+
+
+def test_documented_agent_commands_use_only_shipped_options() -> None:
+    global_options, commands = _cli(AGENT_FIXTURE)
+    pages = _doc_pages()
+    assert sum(
+        len(_flow_commands(page.read_text(encoding="utf-8"), _AGENT_COMMAND)) for page in pages
+    ) > 5
+    problems = []
+    for page in pages:
+        text = page.read_text(encoding="utf-8")
+        for problem in _problems(text, global_options, commands, _AGENT_COMMAND, {}):
             problems.append(f"{page.relative_to(ROOT)} {problem}")
     assert problems == [], "\n".join(problems)

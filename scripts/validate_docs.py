@@ -105,6 +105,7 @@ RETIRED_PUBLIC_CLAIMS = {
 RETIRED_CLAIM_ALLOWLIST = {
     "changelog.md",
     "whats-new.md",
+    "reference/cli-help.md",
 }
 
 STALE_PRELAUNCH_MARKERS = {
@@ -198,6 +199,7 @@ FORBIDDEN_TRAIN_PATH_PHRASES = (
 TRAIN_PATH_ALLOWLIST = {
     "changelog.md",
     "whats-new.md",
+    "reference/cli-help.md",
 }
 
 
