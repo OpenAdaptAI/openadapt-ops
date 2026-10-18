@@ -1,12 +1,16 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-10-18 00:24 UTC*
+> *Last updated: 2026-10-18 01:25 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [docs(flow): remove site-specific references from the RDP backend notes](https://github.com/OpenAdaptAI/OpenAdapt/pull/1213) (#1213), merged 2026-10-18
+
+- [feat(flow): Countersigned and Timestamped Seals (Sigstore TSA by default)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1210) (#1210), merged 2026-10-18
 
 - [ci(release-package): tag and publish an immutable GitHub Release after PyPI](https://github.com/OpenAdaptAI/OpenAdapt/pull/1208) (#1208), merged 2026-10-18
 
@@ -43,10 +47,6 @@
 - [perf(demo): installed browser, one browser process, early OpenCV load (carry-over of openadapt-flow#528)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1189) (#1189), merged 2026-10-17
 
 - [feat(repair): propose a branch after a step is repaired more than once (carry-over of openadapt-agent#76)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1188) (#1188), merged 2026-10-17
-
-- [feat(approval): approver identity, approver policy, approval record (carry-over of openadapt-types#49)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1187) (#1187), merged 2026-10-17
-
-- [feat(qualify): declarative qualify from verify.yaml (carry-over of openadapt-flow#532)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1186) (#1186), merged 2026-10-17
 
 
 
@@ -130,6 +130,8 @@
 ## openadapt-capture
 
 
+- [ci(release): publish GitHub Releases with gh and the release App](https://github.com/OpenAdaptAI/openadapt-capture/pull/167) (#167), merged 2026-10-18
+
 - [ci(release): gate releases on a hosted Linux Xvfb lane](https://github.com/OpenAdaptAI/openadapt-capture/pull/166) (#166), merged 2026-10-17
 
 - [chore(release): finish 1.3.0 with shadow mode](https://github.com/OpenAdaptAI/openadapt-capture/pull/160) (#160), merged 2026-10-17
@@ -168,12 +170,12 @@
 
 - [chore(deps): bump actions/upload-artifact from 7.0.1 to 7.0.2](https://github.com/OpenAdaptAI/openadapt-capture/pull/141) (#141), merged 2026-10-17
 
-- [fix: stop extension input after recording and harden CI checks](https://github.com/OpenAdaptAI/openadapt-capture/pull/140) (#140), merged 2026-10-14
-
 
 
 ## openadapt-privacy
 
+
+- [fix(scan): remove site-specific tokens from the forbidden-path list](https://github.com/OpenAdaptAI/openadapt-privacy/pull/24) (#24), merged 2026-10-18
 
 - [docs: lead the README with what the package does and a quick start](https://github.com/OpenAdaptAI/openadapt-privacy/pull/23) (#23), merged 2026-10-14
 

@@ -70,6 +70,8 @@
 
 ## openadapt-capture
 
+- **[v1.3.0](https://github.com/OpenAdaptAI/openadapt-capture/releases/tag/v1.3.0)** (2026-10-18)
+  _This release uses the MIT License._
 - **[v1.2.2](https://github.com/OpenAdaptAI/openadapt-capture/releases/tag/v1.2.2)** (2026-07-28)
   Bug Fixes
 - **[v1.2.1](https://github.com/OpenAdaptAI/openadapt-capture/releases/tag/v1.2.1)** (2026-07-27)
@@ -78,11 +80,11 @@
   Bug Fixes
 - **[v1.1.1](https://github.com/OpenAdaptAI/openadapt-capture/releases/tag/v1.1.1)** (2026-07-25)
   Bug Fixes
-- **[v1.1.0](https://github.com/OpenAdaptAI/openadapt-capture/releases/tag/v1.1.0)** (2026-07-25)
-  Bug Fixes
 
 ## openadapt-privacy
 
+- **[v1.1.3](https://github.com/OpenAdaptAI/openadapt-privacy/releases/tag/v1.1.3)** (2026-10-18)
+  Bug Fixes
 - **[v1.1.2](https://github.com/OpenAdaptAI/openadapt-privacy/releases/tag/v1.1.2)** (2026-10-14)
   Bug Fixes
 - **[v1.1.1](https://github.com/OpenAdaptAI/openadapt-privacy/releases/tag/v1.1.1)** (2026-10-14)
@@ -90,8 +92,6 @@
 - **[v1.1.0](https://github.com/OpenAdaptAI/openadapt-privacy/releases/tag/v1.1.0)** (2026-09-01)
   Features
 - **[v1.0.4](https://github.com/OpenAdaptAI/openadapt-privacy/releases/tag/v1.0.4)** (2026-08-28)
-  Bug Fixes
-- **[v1.0.3](https://github.com/OpenAdaptAI/openadapt-privacy/releases/tag/v1.0.3)** (2026-08-19)
   Bug Fixes
 
 ## openadapt-types
