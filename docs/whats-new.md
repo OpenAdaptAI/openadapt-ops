@@ -1,12 +1,16 @@
 # What's New
 
 > *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
-> *Last updated: 2026-10-17 23:54 UTC*
+> *Last updated: 2026-10-18 00:24 UTC*
 
 
 
 ## OpenAdapt
 
+
+- [ci(release-package): tag and publish an immutable GitHub Release after PyPI](https://github.com/OpenAdaptAI/OpenAdapt/pull/1208) (#1208), merged 2026-10-18
+
+- [feat(flow): openadapt_flow.jit wraps a computer-use agent with an admitted, compiled program](https://github.com/OpenAdaptAI/OpenAdapt/pull/1207) (#1207), merged 2026-10-18
 
 - [fix(flow): list the folded contract schemas in public-artifacts.json and gate it in CI](https://github.com/OpenAdaptAI/OpenAdapt/pull/1206) (#1206), merged 2026-10-17
 
@@ -44,14 +48,12 @@
 
 - [feat(qualify): declarative qualify from verify.yaml (carry-over of openadapt-flow#532)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1186) (#1186), merged 2026-10-17
 
-- [ci(secret-scan): fingerprint the 38 reviewed test-literal findings from the monorepo import branches](https://github.com/OpenAdaptAI/OpenAdapt/pull/1182) (#1182), merged 2026-10-17
-
-- [docs(architecture): a person or an agent shows the task](https://github.com/OpenAdaptAI/OpenAdapt/pull/1181) (#1181), merged 2026-10-17
-
 
 
 ## openadapt-desktop
 
+
+- [feat: opt-in, local shadow mode with a notice, status indicators, and draft offers](https://github.com/OpenAdaptAI/openadapt-desktop/pull/205) (#205), merged 2026-10-18
 
 - [feat(needs-you): show the field diff on a Check the record stop](https://github.com/OpenAdaptAI/openadapt-desktop/pull/203) (#203), merged 2026-10-17
 
@@ -90,8 +92,6 @@
 - [ci: bump the actions group across 1 directory with 10 updates](https://github.com/OpenAdaptAI/openadapt-desktop/pull/183) (#183), merged 2026-10-17
 
 - [fix: patch lock advisories, gate Deploy, and fix admission CI](https://github.com/OpenAdaptAI/openadapt-desktop/pull/180) (#180), merged 2026-10-14
-
-- [feat: Tasks, Needs you, and Results with Show it, Check it, Run it](https://github.com/OpenAdaptAI/openadapt-desktop/pull/179) (#179), merged 2026-10-14
 
 
 
