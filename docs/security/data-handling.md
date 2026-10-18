@@ -72,6 +72,8 @@ is the gate.
 | A model server on your network | When `OPENADAPT_FLOW_VLM_URL` is set | Crops and screenshots, within your network. Identity crops sent to it aren't scrubbed. |
 | Cloud reports | With `--report`, `report-break`, or a Cloud connector | Counts, digests, and closed values. See [Subprocessors](subprocessors.md#what-runs-send-to-openadapt). |
 | Cloud uploads | `push` of an approved sanitized copy | The approved bytes only |
+| Phone decisions through Cloud | With `human_decisions.remote.enabled` and `--remote-decisions` | A signed task: IDs, digests, fixed codes, counts, and expiry. No screenshot or free text. See [Answer a halt from a phone](../how-to/answer-from-a-phone.md). |
+| Desktop decision portal | When your organization publishes it with `customer_ingress` | Screen crops and halt detail, to a paired phone through your own HTTPS ingress. Nothing goes to OpenAdapt Cloud. |
 
 ## Encryption
 

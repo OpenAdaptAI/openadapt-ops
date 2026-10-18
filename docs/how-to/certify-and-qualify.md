@@ -156,6 +156,12 @@ In the released version, the same cases run one at a time:
 
 OpenAdapt Desktop prepares the inputs that `qualify run-case` takes.
 
+## Add a human decision
+
+If the workflow has a point where a person must choose between reviewed
+paths, add a business decision before you qualify. See
+[Add a human decision during qualification](add-a-business-decision.md).
+
 ## Admission
 
 `qualify --certify` signs a *local* admission with a local test key, and
