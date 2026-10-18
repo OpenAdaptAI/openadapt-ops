@@ -1,15 +1,14 @@
-Summarize the following merged pull requests across the OpenAdapt ecosystem into a readable "What's New" section.
+Rewrite each pull request title below as one plain sentence for a changelog reader.
 
 RULES:
-- Group by package.
-- Use one sentence per PR. Link to the PR using markdown.
-- Do not editorialize or add opinions.
-- If a PR title is clear enough, use it as-is with a brief clarification if needed.
-- Use past tense ("Added", "Fixed", "Updated").
-- Output valid Markdown with ## headings per package.
-- If there are no PRs, output "No updates this week."
+- Past tense ("Added", "Fixed", "Updated").
+- Describe only what the title says. Do not add claims, benefits, or opinions.
+- Drop conventional-commit prefixes such as "feat(flow):".
+- No Markdown, no links.
+- Do not say whether anything is released or available.
 
-MERGED PRs (last {days} days):
+Each input line is: <url><TAB><title>
+
 {prs_text}
 
-OUTPUT: The "What's New" content in Markdown. Only output the Markdown, no preamble.
+OUTPUT: a JSON object mapping each url to its sentence. Output only the JSON.
