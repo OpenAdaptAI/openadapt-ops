@@ -40,13 +40,35 @@ description: >-
 
 - **RDP and Citrix.** With only pixels, identifiers with confusable
   characters can't always be read with confidence, so runs stop more than in
-  a browser. Teach the specific case, or use a surface with structure where
-  the app offers one. Don't lower the check.
+  a browser. In our tests on pixel-only screens, the right-record check
+  stopped the right patient 44 to 49 times in 100 when the record number had
+  look-alike characters, such as `O` and `0`
+  ([source](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/benchmark/safety_gallery)). Those are extra stops, not wrong
+  entries. Teach the specific case, or use a surface with structure where the
+  app offers one. Don't lower the check.
 - **First runs of a new recording.** Expect `lint` warnings and
   `clinical-write` refusals until record checks and right-record checks are
   complete.
 - **Screens that change between finding a target and acting**, such as a
   late notification. The step stops rather than click a stale target.
+
+## Limits by surface
+
+Each row is what's on record for that surface and what that evidence doesn't
+show. A given application on a given surface still needs its own
+qualification.
+
+| Surface | On record | What it doesn't show |
+|---|---|---|
+| Browser | OpenEMR referral entry, 14 to 15 Oct 2026: 62 of 63 saved and read back 12 of 12 fields, 9 of 9 possible duplicates with no new chart, 0 model calls ([run data](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/benchmark/openemr_referral_timing/README.md)) | One workflow on a local test copy with synthetic patients. The read-back was our test setup's, so the engine labeled the runs finished, not checked. No commercial EMR tested. |
+| Windows | 3 of 3 saves in our WinForms app confirmed in SQLite; 3 of 3 refusals each for stale and ambiguous targets; 0 model calls ([report](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/benchmark/windows_uia/results.json)) | Our own app on one Windows 11 ARM VM snapshot. RDP and Citrix recordings don't use local UI Automation. |
+| macOS | 3 of 3 TextEdit saves matched byte for byte; refused an ambiguous two-window target without changing either file ([adjudication](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/benchmark/macos_native/textedit_counted_3plus1_b1b61a5_20260717.adjudication.json)) | One macOS 15.7.3 host and one app. The original report reads failed because of cleanup warnings; the adjudication accepts the saves and the refusal. |
+| Linux (X11) | In required CI on Ubuntu 24.04: a GTK3 app, 3 confirmed saves, 3 ambiguous-target and 3 stale-target refusals | Our own app on Xvfb. No Wayland, no third-party apps. |
+| RDP | Windows 11 VM over Aardwolf: 3 of 3 file writes confirmed by a separate guest check ([report](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/benchmark/rdp/results_82a658a_20260718.sanitized.json)). Record, compile and replay over FreeRDP: 3 of 3 saves, 3 of 3 stops under drift ([report](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/benchmark/rdp_ladder/results.json)) | The FreeRDP run used a synthetic Linux app, not a Windows app, and drift wasn't captured over a WAN. Pixel-only, so the false-stop rate above applies. |
+| Citrix | 3 confirmed saves and 3 stops under severe drift on a stand-in window with no DOM; 0 model calls ([report](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/benchmark/citrix_workspace/results.json)) | No run over a real Citrix ICA/HDX connection is on record. Each Citrix deployment is qualified in its own environment. Pixel-only, so the false-stop rate above applies. |
+
+The full failure inventory, with evidence for each entry, is in
+[`packages/flow/docs/LIMITS.md`](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/LIMITS.md).
 
 ## Surfaces and lanes still being proven
 
