@@ -75,6 +75,10 @@
   turns Google signals off, and sends only the search query length. This
   partial adds PostHog and a small shared-taxonomy event layer on top.
 
+  Both run only on the hostnames in mkdocs.yml `extra.analytics_hosts`, and
+  never when navigator.webdriver is true
+  (partials/integrations/analytics/openadapt-gate.html).
+
   The PostHog script is emitted only when NEXT_PUBLIC_POSTHOG_KEY is present at
   BUILD time (mkdocs `!ENV` substitution). When the key is unset (local builds
   and CI), the entire PostHog block is absent from the generated HTML: a hard
@@ -89,6 +93,10 @@
        web properties report together. -->
   <script>
     (function () {
+      // Production hostnames only, and never under automation. Skipping init
+      // leaves `posthog` undefined, so the event layer below no-ops.
+      {% include "partials/integrations/analytics/openadapt-gate.html" %}
+
       // Respect Do-Not-Track: never load or initialize PostHog when the visitor
       // has asked not to be tracked. Skipping init leaves `posthog` undefined,
       // so the event layer below simply no-ops.

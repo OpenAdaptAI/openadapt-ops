@@ -1,13 +1,16 @@
 "use strict";
 
-// Run the Google Analytics scripts of a built docs page against a stub
-// browser and print what they did as JSON.
+// Run the analytics scripts of a built docs page against a stub browser and
+// print what they did as JSON.
 //
 // Usage: node docs_google_analytics_harness.cjs PAGE.html SIGNALS_JSON
-// SIGNALS_JSON sets Do-Not-Track, for example {"navigator.doNotTrack": "1"}.
+// SIGNALS_JSON sets browser state, for example {"navigator.doNotTrack": "1"},
+// {"location.hostname": "localhost"} or {"navigator.webdriver": true}. The
+// page is on docs.openadapt.ai, with no automation, unless it says otherwise.
 //
-// It runs every inline <script> in <head> that mentions __md_analytics, in
-// page order: Material's definition (or this repo's override of it) and the
+// It runs every inline <script> in <head> that mentions __md_analytics or
+// calls posthog.init (present only when the site was built with a PostHog
+// key), in page order: Material's definition (or this repo's override of it) and the
 // call that Material emits, then fires DOMContentLoaded, one instant
 // navigation, and one search (the search box loses focus holding SEARCH_QUERY).
 // It reports the script URLs the page inserted and the gtag commands it queued.
@@ -20,7 +23,7 @@ const signals = JSON.parse(signalsJson || "{}");
 const head = readFileSync(page, "utf8").split("</head>")[0];
 const scripts = [...head.matchAll(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/g)]
   .map((match) => match[1])
-  .filter((source) => source.includes("__md_analytics"));
+  .filter((source) => source.includes("__md_analytics") || source.includes("posthog.init("));
 
 // A query a reader might type. Google Analytics must never receive its text.
 const SEARCH_QUERY = "private search words";
@@ -49,11 +52,13 @@ const document = {
   },
 };
 const navigator = {};
-const context = { document, navigator, location: { pathname: "/" }, console };
+const location = { pathname: "/", hostname: "docs.openadapt.ai" };
+const context = { document, navigator, location, console };
 context.window = context;
 for (const [path, value] of Object.entries(signals)) {
   const [owner, name] = path.split(".");
-  (owner === "navigator" ? navigator : context)[name] = value;
+  const target = { navigator, location }[owner] || context;
+  target[name] = value;
 }
 vm.createContext(context);
 for (const source of scripts) {
@@ -75,5 +80,6 @@ process.stdout.write(
     searchQuery: SEARCH_QUERY,
     inserted,
     dataLayer: (context.dataLayer || []).map((entry) => Array.from(entry)),
+    posthogInit: Boolean(context.posthog && context.posthog._i && context.posthog._i.length),
   }),
 );

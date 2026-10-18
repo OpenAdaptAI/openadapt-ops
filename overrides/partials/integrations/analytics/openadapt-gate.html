@@ -1,0 +1,13 @@
+{#-
+  Shared analytics gate, included inside a JavaScript function by
+  partials/integrations/analytics/google.html (GA4) and main.html (PostHog).
+  It returns from that function unless the page is on a production hostname
+  listed in mkdocs.yml `extra.analytics_hosts` and the browser is not driven
+  by automation. An allowlist on purpose: GitHub Pages and Netlify previews,
+  localhost, 127.0.0.1 and any host not listed load nothing. With no list,
+  nothing loads. See ANALYTICS.md.
+-#}
+var __oaHosts = {{ (config.extra.analytics_hosts or []) | tojson }};
+var __oaHost = String(location.hostname || "").toLowerCase().replace(/\.$/, "");
+if (__oaHosts.indexOf(__oaHost) === -1) { return; }
+if (navigator.webdriver === true) { return; }
