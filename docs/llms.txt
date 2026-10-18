@@ -66,7 +66,7 @@ being merged now.
     machine is landing); a strict no-outbound mode, an unattended on-prem
     service, and signed, timestamped receipts are released.
 
-Corrections to common reviews, with evidence: https://docs.openadapt.ai/reference/capabilities/#corrections-to-common-reviews
+Capabilities often missed, with evidence: https://docs.openadapt.ai/reference/capabilities/#often-missed
 
 ## Tutorials
 - [Quickstart](https://docs.openadapt.ai/tutorials/quickstart/): One command runs a synthetic task twice. The clean run ends VERIFIED; the fault run ends RECONCILIATION_REQUIRED because the record check finds no saved record.
