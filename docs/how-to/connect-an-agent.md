@@ -128,8 +128,24 @@ request again never enters the values twice; it returns the earlier result.
 
 Each save waits for approval unless the operator starts the server with
 another `--approval-mode`. While it waits, the agent gets `needs_review` with
-the reason `waiting_for_approval`. A person answers on the computer that runs
-OpenAdapt. In version 2.2.0, the server has no tool that approves a save.
+the reason `waiting_for_approval`.
+
+In openadapt-agent 2.2.0, the server has no approval tools. A person answers
+on the computer that runs OpenAdapt with `openadapt flow item-approval`; see
+[Run a workflow](run.md#3-choose-how-saves-are-approved).
+
+The `main` branch, not yet released, adds three tools:
+
+- `get_approval_mode` reports the server's approval mode and whether the
+  agent may answer.
+- `list_approval_requests` lists a run's waiting saves, without values or
+  screenshots.
+- `answer_approval_request` approves or declines one of them.
+
+The last two appear only when the operator starts the server with
+`serve --delegate-approvals AGENT_ID`. Flow accepts the agent's answer only
+where the run's approver policy allows an agent for that step, and records the
+agent as the approver. By default, only a person may answer.
 
 ## Write an Agent Skill
 

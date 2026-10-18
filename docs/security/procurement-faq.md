@@ -62,9 +62,11 @@ log. See [Files and evidence](../reference/artifacts.md).
 ## Operation
 
 **Does a person approve every save?**
-That's the default: every run waits for a person to approve each save in
-OpenAdapt Desktop unless the deployment chooses a different approval mode.
-Runs dispatched from OpenAdapt Cloud don't wait on a person per save; they
+Not necessarily. Each workflow is certified and admitted once before it runs
+in production. Separately, the approval mode decides whether a run pauses
+before each save: `openadapt flow run` pauses (`each_item`) unless the
+deployment chooses another mode. Runs dispatched from OpenAdapt Cloud don't
+pause per save; they
 rely on certification, the right-record check, and the record check, and
 stop when any of them can't confirm. See
 [Verification](../explanation/verification.md#how-a-save-is-approved).

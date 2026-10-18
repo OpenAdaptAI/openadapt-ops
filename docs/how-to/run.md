@@ -49,7 +49,7 @@ answer before each save.
 
 | Mode | Before each save |
 |---|---|
-| `each_item` | The run waits until a person approves that save in OpenAdapt Desktop, then saves exactly what the person saw. |
+| `each_item` | The run waits until that save is approved, then saves exactly what was approved. |
 | `problems_only` | Only problems go to a person. This mode isn't available to customers yet: until it is configured, every save still asks. |
 | `not_gated` | No pause. The run report records that the run wasn't gated. |
 
@@ -60,6 +60,25 @@ OpenAdapt Cloud dispatches pass `not_gated` explicitly, and their reports say
 so. A run that waits
 longer than `--approval-wait` (default 900 seconds, at most 14,400) stops
 before the save.
+
+Approval modes are separate from admission, which happens once per workflow
+before production runs.
+
+In openadapt-flow 2.1.0, a person answers a waiting save on the computer that
+runs it. `show` prints the waiting requests as JSON, including each
+`request_id` and `request_sha256`:
+
+```bash
+openadapt flow item-approval show RUN_DIR
+openadapt flow item-approval approve RUN_DIR --request-id ID \
+  --request-sha256 SHA256 --decided-by human --route desktop_run_it
+```
+
+`decline` takes the same options plus `--reason`: `wrong_values`,
+`wrong_record`, or `screen_problem`. Version 2.1.0 accepts only
+`--decided-by human` and `--route desktop_run_it`. The next OpenAdapt Desktop
+build adds an approval form for this; the released installer doesn't have it
+yet. See [Install the desktop app](desktop.md#approving-saves).
 
 ## 4. Read the result
 
