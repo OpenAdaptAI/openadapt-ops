@@ -1,7 +1,7 @@
 # What's New
 
 > *Pull requests merged in the last 7 days across the OpenAdapt repositories, grouped by the release that contains them.*
-> *Last updated: 2026-10-18 16:00 UTC*
+> *Last updated: 2026-10-18 16:18 UTC*
 
 Items under **Merged, not released yet** are on a repository's `main` branch only. They are not in any published package or installer yet.
 
@@ -50,7 +50,6 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 - [docs(readme): an agent can drive recording in native Windows apps and over RDP/Citrix](https://github.com/OpenAdaptAI/openadapt-desktop/pull/199) (#199), merged 2026-10-17
 - [build: upgrade to React 19](https://github.com/OpenAdaptAI/openadapt-desktop/pull/198) (#198), merged 2026-10-17
 - [build: bump Tauri JS and Rust dependencies together](https://github.com/OpenAdaptAI/openadapt-desktop/pull/197) (#197), merged 2026-10-17
-- [ci: bump the actions group across 1 directory with 10 updates](https://github.com/OpenAdaptAI/openadapt-desktop/pull/183) (#183), merged 2026-10-17
 
 ### Released in openadapt-desktop 0.17.1
 
@@ -67,10 +66,11 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 - [chore: sync the published source policy](https://github.com/OpenAdaptAI/openadapt-desktop/pull/187) (#187), merged 2026-10-14
 - [fix: never call a saving task read-only; run Check it signed in](https://github.com/OpenAdaptAI/openadapt-desktop/pull/185) (#185), merged 2026-10-14
 - [feat: a person approves each save; Check it runs the local drill campaign; problems-only switch](https://github.com/OpenAdaptAI/openadapt-desktop/pull/184) (#184), merged 2026-10-14
-- [fix: patch lock advisories, gate Deploy, and fix admission CI](https://github.com/OpenAdaptAI/openadapt-desktop/pull/180) (#180), merged 2026-10-14
 
 ### Merged, not released yet
 
+- [feat(portal): one swipe card per decision for paused runs and saves](https://github.com/OpenAdaptAI/openadapt-desktop/pull/212) (#212), merged 2026-10-18
+- [Portal: relay Flow's save-approval tasks to the paired phone](https://github.com/OpenAdaptAI/openadapt-desktop/pull/207) (#207), merged 2026-10-18
 - [feat: opt-in, local shadow mode with a notice, status indicators, and draft offers](https://github.com/OpenAdaptAI/openadapt-desktop/pull/205) (#205), merged 2026-10-18
 
 ## openadapt-ml
