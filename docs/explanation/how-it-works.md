@@ -45,8 +45,9 @@ Each step that changes a record is guarded three ways:
 2. **The action** itself: the click or the typing, on a target found the
    same way it was found in the demonstration.
 3. **After saving**, a record check reads the saved record back through a
-   different path from the screen, such as the app's API or database. A
-   success banner on screen doesn't count.
+   different path from the screen, such as the app's API or database. The
+   success message on screen doesn't count: it shows that a save happened,
+   not what was stored.
 
 If any check fails or can't tell, the run stops. When it stops before the
 save, nothing was written. When the save may have gone through but couldn't

@@ -82,8 +82,8 @@ The acceptance matrix uses at least three trials per row. A typical set:
 | Small layout drift | Theme, position, or label changes | Verified, with the change logged for review |
 | Large layout drift | A redesign beyond what the program can find | Stopped |
 | Duplicate save | The same write happens twice | Reconciled or stopped; one record remains |
-| False "saved" | The screen says saved; the system rejected it | Stopped |
-| Partial save | The application dropped a field | Stopped |
+| Rejected save | The write is rejected after the form is submitted | Stopped |
+| Partial save | A field doesn't reach the record | Stopped |
 | Record check unreachable | The API fails or a token expires | Stopped; never read as "no record" |
 | Unexpected dialog | A pop-up appears mid-run | Stopped |
 | Focus stolen | Another window takes focus before an action | Stopped before input |

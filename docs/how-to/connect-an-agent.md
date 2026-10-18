@@ -50,9 +50,9 @@ The agent calls `list_workflows`, then `run_workflow`. The result includes:
 }
 ```
 
-Add `sandbox_case` to the inputs to see each outcome: `normal`,
-`duplicate_record`, `false_saved_banner`, `timeout_after_save`, or
-`app_offline`. Use a new request id for each try. A used id returns the
+Add `sandbox_case` to the inputs to see each outcome. The tool's input
+schema lists every case, among them `normal`, `duplicate_record`,
+`timeout_after_save`, and `app_offline`. Use a new request id for each try. A used id returns the
 earlier result, or `did_not_run` with `request_id_conflict` if the inputs
 changed.
 
