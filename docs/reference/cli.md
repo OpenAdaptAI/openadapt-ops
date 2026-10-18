@@ -56,7 +56,9 @@ with its long options, generated from the released package.
 | [`qualify`](#check) | Manages and runs a bundle's qualification against normal and fault cases. |
 | [`propose-qualification`](#check) | Same as `qualify propose`. |
 | [`verify-run`](#check) | Reads the system of record and rules on a save that an agent, a script, or a person reported. |
+| [`known-ids`](#check) | Admits a system-of-record export as the known-ID list that look-alike identity checks use. |
 | [`countersign`](#check) | Timestamps, countersigns, and discloses fields of a Seal, and exports a dossier. |
+| [`local-seal`](#check) | Signs offline Seals with this machine's key. |
 | [`seal`](#check) | Writes an encrypted copy of a bundle using `OPENADAPT_BUNDLE_KEY`. |
 | [`admit`](#check) | Reads the public release-admission list. It never signs anything. |
 | [`replay`](#run) | Performs every step of a bundle against a real app. Never checks the record. |
@@ -64,6 +66,7 @@ with its long options, generated from the released package.
 | [`resume`](#run) | Continues a paused durable run from its last confirmed step. |
 | [`approve`](#run) | Records a decision that lets a paused run resume. |
 | [`item-approval`](#run) | Lists, approves, or declines the saves a run is waiting on. |
+| [`approver-grant`](#run) | Signs or checks a grant that lets named agents or systems answer saves. |
 | [`explain`](#inspect) | Explains a finished run in plain words, with the next command. |
 | [`triage`](#run) | Orders verified saves for review and proposes one batch approval. |
 | [`attach-seal`](#run) | Adds Cloud's signed receipt to a `VERIFIED` run report. |
@@ -72,6 +75,7 @@ with its long options, generated from the released package.
 | [`teach`](#repair) | Turns a fix demonstration for a halted run into a guarded branch. |
 | [`teach-branch`](#repair) | Learns a guarded branch from two or more halts fixed the same way. |
 | [`repair`](#repair) | Moves a repaired bundle through review, campaigns, approval, staging, canary, and rollback. |
+| [`fleet`](#repair) | Sets fleet drift patches, opt-in per app family. |
 | [`jit`](#agents) | Reviews, admits, or rejects a draft bundle compiled from a computer-use agent's run. |
 | [`emit-skill`](#agents) | Writes an Agent Skill for a bundle. |
 | [`emit-mcp`](#agents) | Writes a standalone MCP `server.py` for a bundle. |
@@ -90,6 +94,8 @@ with its long options, generated from the released package.
 | [`console`](#operate) | Serves a local operator page over bundles, runs, and halts. Read-only unless `--allow-actions`. |
 | [`business-decisions`](#operate) | Relays typed business decisions on a customer runner. It never resumes or acts. |
 | [`serve-execute`](#operate) | Serves the Execute API locally. Its receipts are signed with a local key and aren't Seals. |
+| [`service`](#operate) | Runs the unattended on-prem service, with health checks and restart. |
+| [`no-outbound`](#operate) | Lists and edits the allow list for strict no-outbound mode. |
 | [`serve-reward`](#operate) | Scores training episodes by reading the system of record. Its receipts aren't Seals. |
 
 `certify`, `replay`, `run`, and `resume` all accept `--config deploy.yaml`.

@@ -1,6 +1,6 @@
 {
   "flow_version": "2.2.0",
-  "source": "argparse parser of openadapt-flow 2.2.0 from OpenAdapt main, before the release, (openadapt_flow.__main__.build_parser), long options only. Written by scripts/flow_cli_reference.py snapshot.",
+  "source": "argparse parser of openadapt-flow 2.2.0 from PyPI (openadapt_flow.__main__.build_parser), long options only. Written by scripts/flow_cli_reference.py snapshot.",
   "global_options": [
     "--help",
     "--version"
@@ -25,6 +25,19 @@
       "--help",
       "--original",
       "--reviewer"
+    ],
+    "approver-grant": [
+      "--help"
+    ],
+    "approver-grant sign": [
+      "--help",
+      "--key",
+      "--key-dir",
+      "--out"
+    ],
+    "approver-grant verify": [
+      "--help",
+      "--key-dir"
     ],
     "attach-seal": [
       "--cloud-url",
@@ -294,6 +307,64 @@
     "explain": [
       "--help"
     ],
+    "fleet": [
+      "--fleet-dir",
+      "--help"
+    ],
+    "fleet allow": [
+      "--admin",
+      "--app-family",
+      "--domain",
+      "--export",
+      "--help",
+      "--import"
+    ],
+    "fleet disallow": [
+      "--app-family",
+      "--domain",
+      "--export",
+      "--help",
+      "--import"
+    ],
+    "fleet policy": [
+      "--help"
+    ],
+    "fleet policy keygen": [
+      "--help",
+      "--out",
+      "--unencrypted"
+    ],
+    "fleet policy sign": [
+      "--approver-id",
+      "--approver-name",
+      "--approver-title",
+      "--attest-security-official",
+      "--authorised-at",
+      "--draft",
+      "--help",
+      "--key",
+      "--out",
+      "--security-official-name",
+      "--security-official-title"
+    ],
+    "fleet policy verify": [
+      "--help",
+      "--policy"
+    ],
+    "fleet roles": [
+      "--approver",
+      "--author",
+      "--help",
+      "--public-key"
+    ],
+    "fleet simulate": [
+      "--help",
+      "--out"
+    ],
+    "fleet status": [
+      "--help",
+      "--json"
+    ],
     "for-each": [
       "--help",
       "--loop-var",
@@ -402,9 +473,58 @@
       "--help",
       "--key-dir"
     ],
+    "known-ids": [
+      "--help"
+    ],
+    "known-ids confirm": [
+      "--by",
+      "--column",
+      "--confirmation",
+      "--exported-at",
+      "--help",
+      "--source",
+      "--yes"
+    ],
+    "known-ids status": [
+      "--column",
+      "--confirmation",
+      "--help",
+      "--max-age-hours"
+    ],
     "lint": [
       "--help",
       "--strict"
+    ],
+    "local-seal": [
+      "--help",
+      "--home"
+    ],
+    "local-seal batch": [
+      "--help"
+    ],
+    "local-seal file": [
+      "--help",
+      "--kind",
+      "--out",
+      "--run-id"
+    ],
+    "local-seal key": [
+      "--help"
+    ],
+    "local-seal proof": [
+      "--help"
+    ],
+    "local-seal run": [
+      "--help"
+    ],
+    "local-seal submit": [
+      "--help",
+      "--tsa-url"
+    ],
+    "local-seal verify": [
+      "--help",
+      "--keys",
+      "--seal"
     ],
     "login": [
       "--allow-plaintext-token",
@@ -421,6 +541,27 @@
       "--expect-archive-sha256",
       "--help",
       "--out"
+    ],
+    "no-outbound": [
+      "--help"
+    ],
+    "no-outbound allow": [
+      "--file",
+      "--help"
+    ],
+    "no-outbound allow add": [
+      "--help",
+      "--port"
+    ],
+    "no-outbound allow derive": [
+      "--help"
+    ],
+    "no-outbound allow list": [
+      "--help",
+      "--json"
+    ],
+    "no-outbound allow remove": [
+      "--help"
     ],
     "process": [
       "--admission",
@@ -632,6 +773,7 @@
       "--run-dir",
       "--run-id",
       "--save-healed-to",
+      "--started-by",
       "--url"
     ],
     "qualify schema": [
@@ -691,6 +833,7 @@
       "--task",
       "--until-cmd",
       "--url",
+      "--verify",
       "--window",
       "--window-title",
       "--with-check"
@@ -856,6 +999,7 @@
       "--rdp-window-title",
       "--report",
       "--require-approval",
+      "--started-by",
       "--url"
     ],
     "review-sanitized": [
@@ -928,6 +1072,7 @@
       "--report",
       "--run-dir",
       "--save-healed-to",
+      "--started-by",
       "--strict-templates",
       "--url",
       "--worklist"
@@ -963,6 +1108,62 @@
       "--port",
       "--seed-mockmed",
       "--token"
+    ],
+    "service": [
+      "--help"
+    ],
+    "service boot-check": [
+      "--account",
+      "--help",
+      "--root"
+    ],
+    "service egress-audit": [
+      "--help",
+      "--interval",
+      "--pid",
+      "--root",
+      "--samples"
+    ],
+    "service health": [
+      "--help",
+      "--label",
+      "--max-age",
+      "--restart-on-fail",
+      "--root",
+      "--stuck-after"
+    ],
+    "service notices": [
+      "--ack",
+      "--all",
+      "--by",
+      "--help",
+      "--root"
+    ],
+    "service pf": [
+      "--help"
+    ],
+    "service pf check": [
+      "--help",
+      "--pf-conf",
+      "--user"
+    ],
+    "service pf render": [
+      "--allow-file",
+      "--help",
+      "--out",
+      "--user"
+    ],
+    "service restart": [
+      "--help",
+      "--label"
+    ],
+    "service run": [
+      "--allow-outbound",
+      "--help",
+      "--max-cycles",
+      "--poll-seconds",
+      "--queue-script",
+      "--root"
     ],
     "teach": [
       "--bundle",
@@ -1097,6 +1298,9 @@
     "admit status": "Print admitted vs not-admitted for Flow from the public ledger. Never mints a signature.",
     "approve": "Record an authenticated approval (approver / resolution / bundle version) authorizing a durably-paused run to resume",
     "approve-sanitized": "Approve and freeze the exact reviewed derivative as an immutable archive",
+    "approver-grant": "Sign or check a grant that lets named agents or systems answer some saves. Only a registered person signs, at a terminal",
+    "approver-grant sign": "Sign a grant with your policy-signer key",
+    "approver-grant verify": "Check a signed grant against the registry",
     "attach-seal": "Attach Cloud's signed Execute receipt (the Seal) to a VERIFIED run report",
     "bench": "Replay a bundle N times against MockMed and aggregate",
     "benchmark": "Benchmark compiled replay vs. a Claude computer-use agent on the MockMed triage task (agent arm needs an Anthropic API key and costs real money)",
@@ -1125,12 +1329,22 @@
     "countersign resolve": "Resolve an exception with a later verified Seal that links to it",
     "countersign timestamp-baseline": "Timestamp a baseline read before the executor runs",
     "countersign verify": "Check a Seal offline and show executor, verification tier, timestamps, and disclosures",
-    "demo": "See the proof in one command: a checked run and a run where the app lies, side by side on one page (fake clinic data, no AI calls)",
+    "demo": "See the proof in one command: a checked run and a run whose save fails, side by side on one page (fake clinic data, no AI calls)",
     "demo-record": "Serve MockMed and record the canonical triage demo",
     "disambiguate": "Surface compile-time multiple-choice questions for an ambiguous demo and apply the answers as guards/params (ask, don't guess)",
     "emit-mcp": "Emit a standalone MCP server.py for a bundle",
     "emit-skill": "Emit an Agent Skills folder for a bundle",
     "explain": "Plain-language read of a completed run dir: what happened, why the outcome is the safe one, and the next suggested command (read-only)",
+    "fleet": "Fleet drift patch settings: opt-in per app family, roles, and the signed promotion policy. Off for every app by default.",
+    "fleet allow": "Allow patch export and/or import for an app family or domain",
+    "fleet disallow": "Remove an app family or domain from the allowlist",
+    "fleet policy": "Sign or verify the promotion policy",
+    "fleet policy keygen": "Create a policy approver key (PEM, 0600)",
+    "fleet policy sign": "Sign a policy draft as a policy approver",
+    "fleet policy verify": "Verify the signed policy against roles.json",
+    "fleet roles": "Add a workflow author or a policy approver (never both)",
+    "fleet simulate": "Run the three-tenant local simulator",
+    "fleet status": "Show opt-in, roles, policy and trust",
     "for-each": "Author a DATA-DRIVEN LOOP bundle: wrap an existing single-demonstration bundle's linear body in a LOOP that runs once per record of a worklist (CSV/JSON), binding each record's columns to the workflow's parameters. Emits a program:true bundle the runtime executes bounded, $0, identity-gated and effect-verified per record",
     "induce": "Induce a parameterized PROGRAM bundle from MULTIPLE recordings (multi-trace induction: infer params / loops / branches). REFUSES (nonzero exit, no bundle) when intent is underdetermined, printing a record-next worklist of missing demonstrations",
     "intake": "Fill a workflow's parameters from a referral PDF, fax image, or email",
@@ -1146,9 +1360,26 @@
     "jit review": "Confirm the parameters, then record that you reviewed every step",
     "jit sign-policy": "Sign an admission policy with your policy-signer key",
     "jit status": "Print the state, steps and what admission needs",
+    "known-ids": "Admit a system-of-record export as the known-ID list, and check it",
+    "known-ids confirm": "Confirm the export's source and completeness (recorded)",
+    "known-ids status": "Would replay accept this list now?",
     "lint": "Report a bundle's coverage gaps (unarmed clicks, vacuous postconditions, under-classified risk); exits nonzero by severity",
+    "local-seal": "Offline Seals signed with this machine's key; optional batched timestamps",
+    "local-seal batch": "Fold queued Seals into one Merkle batch (local)",
+    "local-seal file": "Seal any file: a record, an export, an audit report",
+    "local-seal key": "Print this machine's public Seal key for pinning",
+    "local-seal proof": "Show the batch, root and inclusion proof for a Seal",
+    "local-seal run": "Seal a run directory's report.json",
+    "local-seal submit": "Timestamp every unsent batch root (sends one 32-byte digest per batch)",
+    "local-seal verify": "Verify a run directory, or a file with --seal",
     "login": "Validate an ingest token against the hosted control plane and store it in the OS keychain",
     "materialize-approved": "Rebuild an approved derivative from its archive and approval record",
+    "no-outbound": "Strict no-outbound mode: list and edit the allow list",
+    "no-outbound allow": "The allow-list file",
+    "no-outbound allow add": "Allow an IP address or private CIDR range by hand",
+    "no-outbound allow derive": "Allow only the host(s) a remote-desktop session profile connects to",
+    "no-outbound allow list": "Show every allowed address and where it came from",
+    "no-outbound allow remove": "Remove an address or range",
     "process": "Author a ProcessContract parent from independently admitted capabilities. Each --child needs a --admission envelope. certify/run the output directory; replay refuses it.",
     "propose-qualification": "Draft a production-shaped qualification contract from a compiled demo. Alias of `qualify propose`.",
     "pull": "Download a packaged workflow bundle by name",
@@ -1204,6 +1435,16 @@
     "seal": "Copy a bundle to a new path, encrypt its workflow and template evidence with OPENADAPT_BUNDLE_KEY, verify integrity, and publish it atomically",
     "serve-execute": "Host the public Execute v1 HTTP+MCP contract locally. Receipts are self-signed with a local key. They are not OpenAdapt production Seals. Needs `pip install 'openadapt-flow[execute]'`",
     "serve-reward": "Score training episodes by reading the system of record through an independent oracle. Receipts are self-signed reward receipts, not Execute Seals. Needs `pip install 'openadapt-flow[reward]'`",
+    "service": "Unattended on-prem service: run, health, restart, egress audit",
+    "service boot-check": "After a restart: wait for the service account to sign in; alert if late",
+    "service egress-audit": "Sample the service process tree's sockets; exit 0 only if no peer is off the machine",
+    "service health": "Check the service; exit 1 when unhealthy",
+    "service notices": "List or acknowledge service notices",
+    "service pf": "macOS pf rules for the service account (text only)",
+    "service pf check": "Check a rendered anchor (and pf.conf)",
+    "service pf render": "Render the anchor from the allow list",
+    "service restart": "Ask the service manager to restart the service",
+    "service run": "Run the queue loop (what launchd/systemd keeps alive)",
     "teach": "Self-serve HALT -> LEARN: resolve a halted run from a fix demonstration. Induces the correction as a guarded exception branch, gates + validates it, and writes an updated bundle ONLY if it passes (governed refusal otherwise; nonzero exit)",
     "teach-branch": "Learn a guarded branch from two or more halts resolved the same way. The branch keys on the screen text they share (narrowed by an enum parameter when normal runs show that text too) and is written as a repair candidate that needs approval",
     "triage": "Order verified saves for review and propose one batch approval",

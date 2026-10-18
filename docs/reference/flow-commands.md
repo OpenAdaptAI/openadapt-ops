@@ -41,6 +41,19 @@ Approve and freeze the exact reviewed derivative as an immutable archive
 |---|---|
 | `openadapt flow approve-sanitized` | `--original`, `--reviewer` |
 
+## `approver-grant`
+
+Sign or check a grant that lets named agents or systems answer some saves. Only a registered person signs, at a terminal
+
+| Command | Long options |
+|---|---|
+| `openadapt flow approver-grant` |   |
+| `openadapt flow approver-grant sign` | `--key`, `--key-dir`, `--out` |
+| `openadapt flow approver-grant verify` | `--key-dir` |
+
+- `approver-grant sign`: Sign a grant with your policy-signer key
+- `approver-grant verify`: Check a signed grant against the registry
+
 ## `attach-seal`
 
 Attach Cloud's signed Execute receipt (the Seal) to a VERIFIED run report
@@ -181,7 +194,7 @@ Timestamp, countersign, selectively disclose, and export a dispute dossier for a
 
 ## `demo`
 
-See the proof in one command: a checked run and a run where the app lies, side by side on one page (fake clinic data, no AI calls)
+See the proof in one command: a checked run and a run whose save fails, side by side on one page (fake clinic data, no AI calls)
 
 | Command | Long options |
 |---|---|
@@ -226,6 +239,33 @@ Plain-language read of a completed run dir: what happened, why the outcome is th
 | Command | Long options |
 |---|---|
 | `openadapt flow explain` |   |
+
+## `fleet`
+
+Fleet drift patch settings: opt-in per app family, roles, and the signed promotion policy. Off for every app by default.
+
+| Command | Long options |
+|---|---|
+| `openadapt flow fleet` | `--fleet-dir` |
+| `openadapt flow fleet allow` | `--admin`, `--app-family`, `--domain`, `--export`, `--import` |
+| `openadapt flow fleet disallow` | `--app-family`, `--domain`, `--export`, `--import` |
+| `openadapt flow fleet policy` |   |
+| `openadapt flow fleet policy keygen` | `--out`, `--unencrypted` |
+| `openadapt flow fleet policy sign` | `--approver-id`, `--approver-name`, `--approver-title`, `--attest-security-official`, `--authorised-at`, `--draft`, `--key`, `--out`, `--security-official-name`, `--security-official-title` |
+| `openadapt flow fleet policy verify` | `--policy` |
+| `openadapt flow fleet roles` | `--approver`, `--author`, `--public-key` |
+| `openadapt flow fleet simulate` | `--out` |
+| `openadapt flow fleet status` | `--json` |
+
+- `fleet allow`: Allow patch export and/or import for an app family or domain
+- `fleet disallow`: Remove an app family or domain from the allowlist
+- `fleet policy`: Sign or verify the promotion policy
+- `fleet policy keygen`: Create a policy approver key (PEM, 0600)
+- `fleet policy sign`: Sign a policy draft as a policy approver
+- `fleet policy verify`: Verify the signed policy against roles.json
+- `fleet roles`: Add a workflow author or a policy approver (never both)
+- `fleet simulate`: Run the three-tenant local simulator
+- `fleet status`: Show opt-in, roles, policy and trust
 
 ## `for-each`
 
@@ -289,6 +329,19 @@ Review, admit or reject a DRAFT compiled from a computer-use agent run
 - `jit sign-policy`: Sign an admission policy with your policy-signer key
 - `jit status`: Print the state, steps and what admission needs
 
+## `known-ids`
+
+Admit a system-of-record export as the known-ID list, and check it
+
+| Command | Long options |
+|---|---|
+| `openadapt flow known-ids` |   |
+| `openadapt flow known-ids confirm` | `--by`, `--column`, `--confirmation`, `--exported-at`, `--source`, `--yes` |
+| `openadapt flow known-ids status` | `--column`, `--confirmation`, `--max-age-hours` |
+
+- `known-ids confirm`: Confirm the export's source and completeness (recorded)
+- `known-ids status`: Would replay accept this list now?
+
 ## `lint`
 
 Report a bundle's coverage gaps (unarmed clicks, vacuous postconditions, under-classified risk); exits nonzero by severity
@@ -296,6 +349,29 @@ Report a bundle's coverage gaps (unarmed clicks, vacuous postconditions, under-c
 | Command | Long options |
 |---|---|
 | `openadapt flow lint` | `--strict` |
+
+## `local-seal`
+
+Offline Seals signed with this machine's key; optional batched timestamps
+
+| Command | Long options |
+|---|---|
+| `openadapt flow local-seal` | `--home` |
+| `openadapt flow local-seal batch` |   |
+| `openadapt flow local-seal file` | `--kind`, `--out`, `--run-id` |
+| `openadapt flow local-seal key` |   |
+| `openadapt flow local-seal proof` |   |
+| `openadapt flow local-seal run` |   |
+| `openadapt flow local-seal submit` | `--tsa-url` |
+| `openadapt flow local-seal verify` | `--keys`, `--seal` |
+
+- `local-seal batch`: Fold queued Seals into one Merkle batch (local)
+- `local-seal file`: Seal any file: a record, an export, an audit report
+- `local-seal key`: Print this machine's public Seal key for pinning
+- `local-seal proof`: Show the batch, root and inclusion proof for a Seal
+- `local-seal run`: Seal a run directory's report.json
+- `local-seal submit`: Timestamp every unsent batch root (sends one 32-byte digest per batch)
+- `local-seal verify`: Verify a run directory, or a file with --seal
 
 ## `login`
 
@@ -312,6 +388,25 @@ Rebuild an approved derivative from its archive and approval record
 | Command | Long options |
 |---|---|
 | `openadapt flow materialize-approved` | `--approval`, `--archive`, `--expect-archive-sha256`, `--out` |
+
+## `no-outbound`
+
+Strict no-outbound mode: list and edit the allow list
+
+| Command | Long options |
+|---|---|
+| `openadapt flow no-outbound` |   |
+| `openadapt flow no-outbound allow` | `--file` |
+| `openadapt flow no-outbound allow add` | `--port` |
+| `openadapt flow no-outbound allow derive` |   |
+| `openadapt flow no-outbound allow list` | `--json` |
+| `openadapt flow no-outbound allow remove` |   |
+
+- `no-outbound allow`: The allow-list file
+- `no-outbound allow add`: Allow an IP address or private CIDR range by hand
+- `no-outbound allow derive`: Allow only the host(s) a remote-desktop session profile connects to
+- `no-outbound allow list`: Show every allowed address and where it came from
+- `no-outbound allow remove`: Remove an address or range
 
 ## `process`
 
@@ -372,7 +467,7 @@ Qualify: before a compiled workflow may run unattended on a real system, run it 
 | `openadapt flow qualify propose` | `--out`, `--policy-pack`, `--proposer`, `--recording` |
 | `openadapt flow qualify report` | `--evidence-root`, `--json`, `--policy` |
 | `openadapt flow qualify run` | `--evidence-root`, `--results` |
-| `openadapt flow qualify run-case` | `--agent-url`, `--allow-surface-override`, `--api-actuator`, `--api-base-url`, `--approval-mode`, `--approval-wait`, `--approver-policy`, `--approver-webhook`, `--approver-webhook-id`, `--approver-webhook-kind`, `--backend`, `--browser-cdp-endpoint`, `--browser-page-url`, `--campaign-id`, `--case-id`, `--config`, `--dry-run`, `--durable`, `--effects-base-url`, `--effects-kind`, `--effects-root`, `--fault-driver`, `--headed`, `--inputs`, `--linux-allow-physical-input`, `--linux-app`, `--linux-window-title`, `--macos-app`, `--macos-window-title`, `--qualification-campaign-authority-file`, `--rdp-host`, `--rdp-readiness-text`, `--rdp-window`, `--rdp-window-title`, `--run-dir`, `--run-id`, `--save-healed-to`, `--url` |
+| `openadapt flow qualify run-case` | `--agent-url`, `--allow-surface-override`, `--api-actuator`, `--api-base-url`, `--approval-mode`, `--approval-wait`, `--approver-policy`, `--approver-webhook`, `--approver-webhook-id`, `--approver-webhook-kind`, `--backend`, `--browser-cdp-endpoint`, `--browser-page-url`, `--campaign-id`, `--case-id`, `--config`, `--dry-run`, `--durable`, `--effects-base-url`, `--effects-kind`, `--effects-root`, `--fault-driver`, `--headed`, `--inputs`, `--linux-allow-physical-input`, `--linux-app`, `--linux-window-title`, `--macos-app`, `--macos-window-title`, `--qualification-campaign-authority-file`, `--rdp-host`, `--rdp-readiness-text`, `--rdp-window`, `--rdp-window-title`, `--run-dir`, `--run-id`, `--save-healed-to`, `--started-by`, `--url` |
 | `openadapt flow qualify schema` |   |
 | `openadapt flow qualify set-effect` | `--effect-index`, `--path`, `--step`, `--tier` |
 | `openadapt flow qualify set-identity` | `--canonical-ladder`, `--quorum`, `--signal`, `--signal-expected`, `--signal-extract`, `--signal-param`, `--signal-region`, `--step` |
@@ -412,7 +507,7 @@ Record YOUR workflow interactively: a headed browser (--backend web --url), or t
 
 | Command | Long options |
 |---|---|
-| `openadapt flow record` | `--agent-url`, `--allow-surface-override`, `--backend`, `--browser-cdp-endpoint`, `--browser-page-url`, `--headless`, `--identifier`, `--linux-allow-physical-input`, `--linux-app`, `--linux-window-title`, `--macos-app`, `--macos-window-title`, `--out`, `--param`, `--profile`, `--rdp-host`, `--rdp-readiness-text`, `--rdp-window`, `--rdp-window-title`, `--secret`, `--task`, `--until-cmd`, `--url`, `--window`, `--window-title`, `--with-check` |
+| `openadapt flow record` | `--agent-url`, `--allow-surface-override`, `--backend`, `--browser-cdp-endpoint`, `--browser-page-url`, `--headless`, `--identifier`, `--linux-allow-physical-input`, `--linux-app`, `--linux-window-title`, `--macos-app`, `--macos-window-title`, `--out`, `--param`, `--profile`, `--rdp-host`, `--rdp-readiness-text`, `--rdp-window`, `--rdp-window-title`, `--secret`, `--task`, `--until-cmd`, `--url`, `--verify`, `--window`, `--window-title`, `--with-check` |
 
 ## `repair`
 
@@ -475,7 +570,7 @@ Resume a durably-paused run from its last verified checkpoint (never re-running 
 
 | Command | Long options |
 |---|---|
-| `openadapt flow resume` | `--agent-url`, `--allow-surface-override`, `--api-actuator`, `--api-base-url`, `--approval-mode`, `--approval-wait`, `--approver-policy`, `--approver-webhook`, `--approver-webhook-id`, `--approver-webhook-kind`, `--attest-audit-log`, `--attest-contract`, `--attest-pre-state`, `--attest-sign-key`, `--backend`, `--browser-cdp-endpoint`, `--browser-page-url`, `--config`, `--durable`, `--effects-base-url`, `--effects-kind`, `--effects-root`, `--headed`, `--linux-allow-physical-input`, `--linux-app`, `--linux-window-title`, `--macos-app`, `--macos-window-title`, `--managed-dispatch-file`, `--param`, `--params-file`, `--qualification-authority-file`, `--qualification-campaign-authority-file`, `--rdp-host`, `--rdp-readiness-text`, `--rdp-window`, `--rdp-window-title`, `--report`, `--require-approval`, `--url` |
+| `openadapt flow resume` | `--agent-url`, `--allow-surface-override`, `--api-actuator`, `--api-base-url`, `--approval-mode`, `--approval-wait`, `--approver-policy`, `--approver-webhook`, `--approver-webhook-id`, `--approver-webhook-kind`, `--attest-audit-log`, `--attest-contract`, `--attest-pre-state`, `--attest-sign-key`, `--backend`, `--browser-cdp-endpoint`, `--browser-page-url`, `--config`, `--durable`, `--effects-base-url`, `--effects-kind`, `--effects-root`, `--headed`, `--linux-allow-physical-input`, `--linux-app`, `--linux-window-title`, `--macos-app`, `--macos-window-title`, `--managed-dispatch-file`, `--param`, `--params-file`, `--qualification-authority-file`, `--qualification-campaign-authority-file`, `--rdp-host`, `--rdp-readiness-text`, `--rdp-window`, `--rdp-window-title`, `--report`, `--require-approval`, `--started-by`, `--url` |
 
 ## `review-sanitized`
 
@@ -491,7 +586,7 @@ Execute a bundle under a deployment config (--config): the replay path wired for
 
 | Command | Long options |
 |---|---|
-| `openadapt flow run` | `--agent-url`, `--allow-model-grounding`, `--allow-surface-override`, `--allow-trusted-code`, `--allow-unencrypted`, `--api-actuator`, `--api-base-url`, `--approval-mode`, `--approval-wait`, `--approve-unverified-writes`, `--approver-policy`, `--approver-webhook`, `--approver-webhook-id`, `--approver-webhook-kind`, `--attest-audit-log`, `--attest-contract`, `--attest-pre-state`, `--attest-sign-key`, `--backend`, `--browser-cdp-endpoint`, `--browser-page-url`, `--cloud-execution-id`, `--code-runtime-environment-digest`, `--code-trust`, `--config`, `--dry-run`, `--durable`, `--effects-base-url`, `--effects-kind`, `--effects-root`, `--execute-environment-id`, `--execute-token`, `--execute-url`, `--explain`, `--headed`, `--hold-on-halt`, `--linux-allow-physical-input`, `--linux-app`, `--linux-window-title`, `--macos-app`, `--macos-window-title`, `--managed-dispatch-file`, `--param`, `--params-file`, `--pin-digest`, `--pin-version`, `--policy`, `--process-environment-id`, `--process-receipt-issuer-key-id`, `--process-receipt-private-key`, `--process-runner-id`, `--profile`, `--qualification-authority-file`, `--qualification-trust`, `--rdp-host`, `--rdp-readiness-text`, `--rdp-window`, `--rdp-window-title`, `--record-video`, `--report`, `--run-dir`, `--save-healed-to`, `--strict-templates`, `--url`, `--worklist` |
+| `openadapt flow run` | `--agent-url`, `--allow-model-grounding`, `--allow-surface-override`, `--allow-trusted-code`, `--allow-unencrypted`, `--api-actuator`, `--api-base-url`, `--approval-mode`, `--approval-wait`, `--approve-unverified-writes`, `--approver-policy`, `--approver-webhook`, `--approver-webhook-id`, `--approver-webhook-kind`, `--attest-audit-log`, `--attest-contract`, `--attest-pre-state`, `--attest-sign-key`, `--backend`, `--browser-cdp-endpoint`, `--browser-page-url`, `--cloud-execution-id`, `--code-runtime-environment-digest`, `--code-trust`, `--config`, `--dry-run`, `--durable`, `--effects-base-url`, `--effects-kind`, `--effects-root`, `--execute-environment-id`, `--execute-token`, `--execute-url`, `--explain`, `--headed`, `--hold-on-halt`, `--linux-allow-physical-input`, `--linux-app`, `--linux-window-title`, `--macos-app`, `--macos-window-title`, `--managed-dispatch-file`, `--param`, `--params-file`, `--pin-digest`, `--pin-version`, `--policy`, `--process-environment-id`, `--process-receipt-issuer-key-id`, `--process-receipt-private-key`, `--process-runner-id`, `--profile`, `--qualification-authority-file`, `--qualification-trust`, `--rdp-host`, `--rdp-readiness-text`, `--rdp-window`, `--rdp-window-title`, `--record-video`, `--report`, `--run-dir`, `--save-healed-to`, `--started-by`, `--strict-templates`, `--url`, `--worklist` |
 
 ## `sanitize`
 
@@ -532,6 +627,33 @@ Score training episodes by reading the system of record through an independent o
 | Command | Long options |
 |---|---|
 | `openadapt flow serve-reward` | `--contract`, `--data-dir`, `--host`, `--port`, `--seed-mockmed`, `--token` |
+
+## `service`
+
+Unattended on-prem service: run, health, restart, egress audit
+
+| Command | Long options |
+|---|---|
+| `openadapt flow service` |   |
+| `openadapt flow service boot-check` | `--account`, `--root` |
+| `openadapt flow service egress-audit` | `--interval`, `--pid`, `--root`, `--samples` |
+| `openadapt flow service health` | `--label`, `--max-age`, `--restart-on-fail`, `--root`, `--stuck-after` |
+| `openadapt flow service notices` | `--ack`, `--all`, `--by`, `--root` |
+| `openadapt flow service pf` |   |
+| `openadapt flow service pf check` | `--pf-conf`, `--user` |
+| `openadapt flow service pf render` | `--allow-file`, `--out`, `--user` |
+| `openadapt flow service restart` | `--label` |
+| `openadapt flow service run` | `--allow-outbound`, `--max-cycles`, `--poll-seconds`, `--queue-script`, `--root` |
+
+- `service boot-check`: After a restart: wait for the service account to sign in; alert if late
+- `service egress-audit`: Sample the service process tree's sockets; exit 0 only if no peer is off the machine
+- `service health`: Check the service; exit 1 when unhealthy
+- `service notices`: List or acknowledge service notices
+- `service pf`: macOS pf rules for the service account (text only)
+- `service pf check`: Check a rendered anchor (and pf.conf)
+- `service pf render`: Render the anchor from the allow list
+- `service restart`: Ask the service manager to restart the service
+- `service run`: Run the queue loop (what launchd/systemd keeps alive)
 
 ## `teach`
 

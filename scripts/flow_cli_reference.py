@@ -41,10 +41,7 @@ FLOW_VERSION = "2.2.0"
 #: Until FLOW_VERSION is on PyPI, build it from this OpenAdapt commit instead,
 #: which holds everything the release ships. Set it to None on release day and
 #: rerun `snapshot`; the snapshot must not change.
-FLOW_SOURCE: str | None = (
-    "openadapt-flow @ git+https://github.com/OpenAdaptAI/OpenAdapt"
-    "@9104577e603e030f89318ead9cd9d586d439aefe#subdirectory=packages/flow"
-)
+FLOW_SOURCE: str | None = None
 SNAPSHOT = ROOT / "tests" / "fixtures" / f"flow_cli_{FLOW_VERSION}.json"
 PAGE = ROOT / "docs" / "reference" / "flow-commands.md"
 CURATED_PAGE = ROOT / "docs" / "reference" / "cli.md"
