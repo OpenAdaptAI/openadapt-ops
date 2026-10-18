@@ -5,6 +5,8 @@
 
 ## OpenAdapt
 
+- **[openadapt-flow-v2.2.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-flow-v2.2.0)** (2026-10-18)
+  First release from the [OpenAdapt monorepo](https://github.com/OpenAdaptAI/OpenAdapt) (`packages/flow`). The shared contracts (`openadapt_flow.contracts`) and the MCP agent server (`openadapt_flow.agent`) now ship inside this package; `openadapt-types` and `openadapt-agent` are thin compatibility packages over them.
 - **[v1.17.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.17.0)** (2026-10-16)
   Breaking Changes
 - **[v1.16.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.16.0)** (2026-08-26)
@@ -13,11 +15,11 @@
   Bug Fixes
 - **[v1.15.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.15.0)** (2026-08-26)
   Bug Fixes
-- **[v1.14.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.14.0)** (2026-08-22)
-  Build System
 
 ## openadapt-flow
 
+- **[v2.2.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v220-2026-10-18)** (2026-10-18)
+  First release from the [OpenAdapt monorepo](https://github.com/OpenAdaptAI/OpenAdapt) (`packages/flow`). The shared contracts (`openadapt_flow.contracts`) and the MCP agent server (`openadapt_flow.agent`) now ship inside this package; `openadapt-types` and `openadapt-agent` are thin compatibility packages over them.
 - **[v2.1.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v210-2026-10-16)** (2026-10-16)
   A calling agent can demonstrate the fix for a halted run; the result is a governed repair candidate (review, replay and fault campaigns, human approval) with provenance, scrubbed-screen evidence and the screen-share mode recorded. `run --hold-on-halt` keeps a halted browser page open for that repair ([#504](https://github.com/OpenAdaptAI/openadapt-flow/pull/504)).
 - **[v2.0.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v200-2026-10-15)** (2026-10-15)
@@ -26,8 +28,6 @@
   Repeat secret-boundary checks before and after each screenshot attempt while login frames change.
 - **[v1.35.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v1350-2026-09-02)** (2026-09-02)
   Bind updated process graph schema ([#444](https://github.com/OpenAdaptAI/openadapt-flow/pull/444),
-- **[v1.34.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v1340-2026-08-28)** (2026-08-28)
-  Type hosted runner release bindings
 
 ## openadapt-desktop
 
@@ -96,6 +96,8 @@
 
 ## openadapt-types
 
+- **[v0.23.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/types/CHANGELOG.md#v0230-2026-10-18)** (2026-10-18)
+  First release from the [OpenAdapt monorepo](https://github.com/OpenAdaptAI/OpenAdapt) (`packages/types`). The models now live in `openadapt_flow.contracts`; this package re-exports them, so `import openadapt_types` keeps working. It requires `openadapt-flow>=2.2.0,<3`.
 - **[v0.22.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/types/CHANGELOG.md#v0220-2026-10-17)** (2026-10-17)
   **readme**: A person or an agent shows the task; drop 'once'
 - **[v0.21.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/types/CHANGELOG.md#v0210-2026-10-15)** (2026-10-15)
@@ -104,8 +106,6 @@
   Sync the published source policy ([#42](https://github.com/OpenAdaptAI/openadapt-types/pull/42),
 - **[v0.19.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/types/CHANGELOG.md#v0190-2026-10-14)** (2026-10-14)
   Add plain run results and a shared vocabulary lint
-- **[v0.18.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/types/CHANGELOG.md#v0180-2026-09-03)** (2026-09-03)
-  **reward**: Refuse the certificate claims this version cannot check
 
 ## openadapt-grounding
 
