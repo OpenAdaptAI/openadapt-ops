@@ -7,15 +7,18 @@ description: >-
 # Install the desktop app
 
 OpenAdapt Desktop is a graphical front end for the same engine the
-`openadapt flow` commands use. You record, compile, replay, review, and
-approve saves on your own computer. Nothing leaves the computer unless you
+`openadapt flow` commands use. You record, review, teach, and run workflows
+on your own computer. Nothing leaves the computer unless you
 connect it to [OpenAdapt Cloud](deploy.md#openadapt-cloud).
 
 ## 1. Download and install
 
 Get the installer from [openadapt.ai/download](https://openadapt.ai/download).
 The page detects your operating system and offers the right build. The
-current build is the GitHub pre-release `desktop-v0.15.0`:
+current build is the GitHub pre-release `desktop-v0.15.0`. It includes
+openadapt-flow 1.27.1. Its sidebar has **Workflows**, **Record**, **Runner**,
+**Phone**, and **Settings**. **Runner** runs workflows that OpenAdapt Cloud sends
+to this computer; it's off until you turn it on.
 
 | Operating system | Installer |
 |---|---|
@@ -70,9 +73,11 @@ Record a few seconds of any app, then stop. If the frames show your screen,
 the permissions are right. If they're blank, recheck step 2 and restart the
 app. [Troubleshoot](troubleshoot.md) covers other first-week problems.
 
-## Approving saves in Desktop
+## Approving saves
 
-When a run waits for approval before a save (the `each_item` mode), Desktop
-shows the filled form in **Run it**. Approve it to save exactly what you see,
-or decline with a reason: wrong values, wrong record, or a screen problem.
-See [Run a workflow](run.md#3-choose-how-saves-are-approved).
+`desktop-v0.15.0` predates per-save approval, so its runs don't pause before
+a save. In the next Desktop build, when a run waits before a save, Desktop
+shows the filled form. You approve it to save exactly what you see, or decline
+with a reason. Until then, answer waiting saves from `openadapt flow` runs
+with `openadapt flow item-approval`; see
+[Run a workflow](run.md#3-choose-how-saves-are-approved).

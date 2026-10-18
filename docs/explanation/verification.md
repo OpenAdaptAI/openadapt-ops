@@ -72,12 +72,14 @@ read can see, so it should cover every table a save can change.
 
 ## How a save is approved
 
-Checking a save and approving one are separate. The approval mode decides
+Checking a save and approving one are separate, and both are separate from
+admission, which happens once per workflow. The approval mode decides
 whether a run waits for an answer before each save:
 
-- `each_item`: the run waits before each save until a person approves the
-  filled form in OpenAdapt Desktop. This is what `openadapt flow run` uses
-  unless another mode is set.
+- `each_item`: the run waits before each save until the filled form is
+  approved. This is what `openadapt flow run` uses unless another mode is
+  set. [Run a workflow](../how-to/run.md#3-choose-how-saves-are-approved)
+  shows how to answer.
 - `problems_only`: only saves that fail a check go to a person. It isn't
   available to customers yet; until it is configured, every save still asks.
 - `not_gated`: no pause. Runs that OpenAdapt Cloud dispatches use this, and

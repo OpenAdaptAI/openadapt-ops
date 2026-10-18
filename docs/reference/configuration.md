@@ -175,7 +175,7 @@ policy:
 | `OPENADAPT_FLOW_SCRUB` | Scrubbing of identifiers from saved text: `auto` (default), `on`, or `off`. `on` stops with an error if the scrubber isn't installed. |
 | `OPENADAPT_FLOW_PHI_MODE` | Turns patient-data mode on; `OPENADAPT_FLOW_SCRUB=on` also does |
 | `OPENADAPT_FLOW_VLM_URL` | The address of an on-site model server |
-| `OPENADAPT_FLOW_BROWSER` | Which browser to use: `auto` (default), `chrome`, `msedge`, or `bundled` |
+| `OPENADAPT_FLOW_NO_AUTO_INSTALL` | `1` skips the Chromium download on the first browser run, for computers without internet access |
 | `OPENADAPT_HOME` | Where OpenAdapt keeps local state (default `~/.openadapt`) |
 | `OPENADAPT_AGENT_RUNS_DIR` | The MCP server's runs folder (default `~/.openadapt/runs`) |
 | `OAFLOW_AGENT_TOKEN` | The shared token for the Windows agent server |
