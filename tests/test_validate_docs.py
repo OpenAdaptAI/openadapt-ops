@@ -81,7 +81,7 @@ def _write_contract_docs(root):
             "record a bounded workflow."
         ),
         "how-to/connect-an-agent.md": (
-            "# Connect an agent\n\n`claude mcp add openadapt`. Never summarize "
+            "# Connect an agent\n\n`claude mcp add --scope user openadapt`. Never summarize "
             "a halt as success. Never retry `not_sure_if_saved`."
         ),
         "security/index.md": "# Security\n\n## Attestation status\n\nNo SOC 2 report.",

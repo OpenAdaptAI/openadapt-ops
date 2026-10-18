@@ -45,12 +45,13 @@ engine is open source under the MIT license.
 -   __Give a workflow to your agent__
 
     ```bash
-    claude mcp add openadapt -- uvx --python 3.12 openadapt-agent serve
+    claude mcp add --scope user openadapt -- uvx --python 3.12 openadapt-agent serve
     ```
 
     The MCP server gives an agent each compiled workflow as one tool call.
-    This starts a sandbox that needs no account.
-    [Connect an agent](how-to/connect-an-agent.md)
+    This registers a sandbox that needs no account. Then run `claude` and
+    ask it to run the OpenAdapt sandbox workflow `add_triage_note`.
+    [Try the sandbox](how-to/connect-an-agent.md#try-the-sandbox)
 
 </div>
 

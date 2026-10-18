@@ -28,7 +28,7 @@ REQUIRED_PUBLIC_PAGES = {
         "RECONCILIATION_REQUIRED",
     ),
     "how-to/connect-an-agent.md": (
-        "claude mcp add openadapt",
+        "claude mcp add --scope user openadapt",
         "Never summarize a halt as success",
         "not_sure_if_saved",
     ),
