@@ -1,7 +1,7 @@
 # What's New
 
 > *Pull requests merged in the last 7 days across the OpenAdapt repositories, grouped by the release that contains them.*
-> *Last updated: 2026-10-18 03:45 UTC*
+> *Last updated: 2026-10-18 04:13 UTC*
 
 Items under **Merged, not released yet** are on a repository's `main` branch only. They are not in any published package or installer yet.
 
@@ -15,6 +15,7 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 - [ci(release-package): tag and publish an immutable GitHub Release after PyPI](https://github.com/OpenAdaptAI/OpenAdapt/pull/1208) (#1208), merged 2026-10-18
 - [feat(flow): openadapt_flow.jit wraps a computer-use agent with an admitted, compiled program](https://github.com/OpenAdaptAI/OpenAdapt/pull/1207) (#1207), merged 2026-10-18, openadapt-flow
 - [fix(flow): list the folded contract schemas in public-artifacts.json and gate it in CI](https://github.com/OpenAdaptAI/OpenAdapt/pull/1206) (#1206), merged 2026-10-17, openadapt-flow
+- [docs(readme): lead with the quickstart and point to packages in this repository](https://github.com/OpenAdaptAI/OpenAdapt/pull/1204) (#1204), merged 2026-10-18, openadapt-flow
 - [feat(flow): read-back verifiers taught by demonstration, with assurance grades](https://github.com/OpenAdaptAI/OpenAdapt/pull/1203) (#1203), merged 2026-10-17, openadapt-flow
 - [ci: Markdown link check](https://github.com/OpenAdaptAI/OpenAdapt/pull/1202) (#1202), merged 2026-10-17
 - [docs(flow): resolve README TODOs and re-cut the demo GIF](https://github.com/OpenAdaptAI/OpenAdapt/pull/1201) (#1201), merged 2026-10-17, openadapt-flow
@@ -28,7 +29,6 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 - [feat(mcp): read the approval mode; answer a waiting save as a delegated agent (carry-over of openadapt-agent#80)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1192) (#1192), merged 2026-10-17, openadapt-flow
 - [docs: point links into folded repos at their monorepo paths](https://github.com/OpenAdaptAI/OpenAdapt/pull/1191) (#1191), merged 2026-10-17, openadapt-flow
 - [feat(approval): delegated approvers, read-back field checks, triage and eligibility (carry-over of openadapt-flow#534)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1190) (#1190), merged 2026-10-17, openadapt-flow
-- [perf(demo): installed browser, one browser process, early OpenCV load (carry-over of openadapt-flow#528)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1189) (#1189), merged 2026-10-17, openadapt-flow
 
 ## openadapt-desktop
 
