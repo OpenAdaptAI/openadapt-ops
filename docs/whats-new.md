@@ -1,7 +1,7 @@
 # What's New
 
 > *Pull requests merged in the last 7 days across the OpenAdapt repositories, grouped by the release that contains them.*
-> *Last updated: 2026-10-18 06:06 UTC*
+> *Last updated: 2026-10-18 08:25 UTC*
 
 Items under **Merged, not released yet** are on a repository's `main` branch only. They are not in any published package or installer yet.
 
@@ -9,26 +9,26 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 
 ### Merged, not released yet
 
+- [fix(identity): a read of a different record is final](https://github.com/OpenAdaptAI/OpenAdapt/pull/1252) (#1252), merged 2026-10-18, openadapt-flow
+- [feat(flow): one check-level ladder for how well a save was checked](https://github.com/OpenAdaptAI/OpenAdapt/pull/1250) (#1250), merged 2026-10-18, openadapt-flow
+- [feat(jit): let the recording agent admit its own draft when the policy allows it](https://github.com/OpenAdaptAI/OpenAdapt/pull/1249) (#1249), merged 2026-10-18, openadapt-flow
+- [fix(manifest): pin openadapt-privacy v1.1.2 to its rewritten commit](https://github.com/OpenAdaptAI/OpenAdapt/pull/1243) (#1243), merged 2026-10-18
+- [fix(flow): don't start the OCR prewarm for --help, and wait for it at exit](https://github.com/OpenAdaptAI/OpenAdapt/pull/1242) (#1242), merged 2026-10-18, openadapt-flow
 - [docs(flow): generic on-prem docs; every run is gated by default](https://github.com/OpenAdaptAI/OpenAdapt/pull/1237) (#1237), merged 2026-10-18, openadapt-flow
+- [Copy: describe the break-it run as a failed save, not an app that lies](https://github.com/OpenAdaptAI/OpenAdapt/pull/1236) (#1236), merged 2026-10-18, openadapt-flow
+- [feat(flow): SMART Backend Services (private_key_jwt) token source for fhir record checks](https://github.com/OpenAdaptAI/OpenAdapt/pull/1235) (#1235), merged 2026-10-18, openadapt-flow
+- [Flow: person-signed approver grants, no self-approval, one-tap phone approval on the decision portal](https://github.com/OpenAdaptAI/OpenAdapt/pull/1234) (#1234), merged 2026-10-18, openadapt-flow
+- [feat(flow): record --verify proposes system-of-record checks from what the demonstration changed](https://github.com/OpenAdaptAI/OpenAdapt/pull/1233) (#1233), merged 2026-10-18, openadapt-flow
 - [fix(flow): close five fail-open gaps in JIT admission, approvals and fix-up passes](https://github.com/OpenAdaptAI/OpenAdapt/pull/1232) (#1232), merged 2026-10-18, openadapt-flow
+- [agent: user-scope install, what happens next, job box for hosted chats](https://github.com/OpenAdaptAI/OpenAdapt/pull/1230) (#1230), merged 2026-10-18, openadapt-agent
+- [feat(flow): headless FreeRDP transport with fixed session profile and session pool](https://github.com/OpenAdaptAI/OpenAdapt/pull/1226) (#1226), merged 2026-10-18, openadapt-flow
 - [feat(flow): detect font and layout drift and halt with a named reason](https://github.com/OpenAdaptAI/OpenAdapt/pull/1225) (#1225), merged 2026-10-18, openadapt-flow
+- [feat(flow): lift look-alike identity stops against a complete known-ID list](https://github.com/OpenAdaptAI/OpenAdapt/pull/1223) (#1223), merged 2026-10-18, openadapt-flow
 - [feat(flow): unattended on-prem service with health checks, restart and egress audit](https://github.com/OpenAdaptAI/OpenAdapt/pull/1222) (#1222), merged 2026-10-18, openadapt-flow
+- [fix(flow): the drift oracle never rescues a postcondition on an irreversible or effect-bearing step](https://github.com/OpenAdaptAI/OpenAdapt/pull/1217) (#1217), merged 2026-10-18, openadapt-flow
 - [feat(flow): offline Seals by default, batched timestamps, strict no-outbound mode](https://github.com/OpenAdaptAI/OpenAdapt/pull/1216) (#1216), merged 2026-10-18, openadapt-flow
 - [docs(flow): remove site-specific references from the RDP backend notes](https://github.com/OpenAdaptAI/OpenAdapt/pull/1213) (#1213), merged 2026-10-18, openadapt-flow
 - [feat(flow): fleet drift patches, imported as policy-gated repair candidates](https://github.com/OpenAdaptAI/OpenAdapt/pull/1211) (#1211), merged 2026-10-18, openadapt-flow
-- [feat(flow): Countersigned and Timestamped Seals (Sigstore TSA by default)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1210) (#1210), merged 2026-10-18, openadapt-flow
-- [ci(release-package): tag and publish an immutable GitHub Release after PyPI](https://github.com/OpenAdaptAI/OpenAdapt/pull/1208) (#1208), merged 2026-10-18
-- [feat(flow): openadapt_flow.jit wraps a computer-use agent with an admitted, compiled program](https://github.com/OpenAdaptAI/OpenAdapt/pull/1207) (#1207), merged 2026-10-18, openadapt-flow
-- [fix(flow): list the folded contract schemas in public-artifacts.json and gate it in CI](https://github.com/OpenAdaptAI/OpenAdapt/pull/1206) (#1206), merged 2026-10-17, openadapt-flow
-- [build(monorepo): fold openadapt-capture into packages/capture (with history)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1205) (#1205), merged 2026-10-18
-- [docs(readme): lead with the quickstart and point to packages in this repository](https://github.com/OpenAdaptAI/OpenAdapt/pull/1204) (#1204), merged 2026-10-18, openadapt-flow
-- [feat(flow): read-back verifiers taught by demonstration, with assurance grades](https://github.com/OpenAdaptAI/OpenAdapt/pull/1203) (#1203), merged 2026-10-17, openadapt-flow
-- [ci: Markdown link check](https://github.com/OpenAdaptAI/OpenAdapt/pull/1202) (#1202), merged 2026-10-17
-- [docs(flow): resolve README TODOs and re-cut the demo GIF](https://github.com/OpenAdaptAI/OpenAdapt/pull/1201) (#1201), merged 2026-10-17, openadapt-flow
-- [fix: CLI help and built-in URLs point at the docs glossary and the monorepo](https://github.com/OpenAdaptAI/OpenAdapt/pull/1200) (#1200), merged 2026-10-17, openadapt-flow
-- [perf(demo): faster native OCR start and a working OCR prewarm (carry-over of openadapt-flow#535)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1199) (#1199), merged 2026-10-17, openadapt-flow
-- [feat(verify-run): judge any executor's write from the system of record, aligned with RFC-0002](https://github.com/OpenAdaptAI/OpenAdapt/pull/1198) (#1198), merged 2026-10-17, openadapt-flow
-- [docs(readme): pipeline diagram and package table](https://github.com/OpenAdaptAI/OpenAdapt/pull/1196) (#1196), merged 2026-10-17
 
 ## openadapt-desktop
 
