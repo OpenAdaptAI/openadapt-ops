@@ -14,7 +14,10 @@ commands of its own and passes two groups through to the engine:
 
 Every command takes `--help`, which is the authority for its options. This
 page lists the commands in `openadapt` 1.17.0 and `openadapt-flow` 2.1.0.
-[Command help](cli-help.md) has the full `--help` text of every command.
+[All Flow commands](flow-commands.md) lists every Flow command and subcommand
+with its long options, generated from the released package.
+[Launcher and agent help](cli-help.md) has the full `--help` text of every
+`openadapt` and `openadapt agent` command.
 
 ## Launcher commands
 
@@ -139,9 +142,10 @@ openadapt flow certify bundle [--policy clinical-write|permissive|FILE] [--confi
 openadapt flow seal bundle -o bundle-sealed
 ```
 
-`qualify` subcommands in 2.1.0: `schema`, `label`, `init`, `propose`,
+`qualify` subcommands in 2.1.0: `schema`, `init`, `propose`,
 `accept`, `admit-local`, `from-demo`, `inspect`, `explain`, `report`,
-`set-identity`, `set-risk`, `trust-runner`, `set-effect`,
+`set-identity`, `set-risk`, `trust-runner`, `set-effect`, `label`
+(`label list`, `label set`, `label remove`),
 `business-decision`, `judgment-cases`, `add-case`, `run`, `run-case`,
 `drills`, `add-requalification`, and `certify`. See
 [Certify and qualify a workflow](../how-to/certify-and-qualify.md).
@@ -154,6 +158,8 @@ openadapt flow run bundle --profile standard --config deploy.yaml [--qualificati
 openadapt flow resume RUN_DIR [--require-approval]
 openadapt flow approve RUN_DIR [--approver ID] [--resolution OPTION] [--authorize-uncertain-retry]
 openadapt flow item-approval show RUN_DIR
+openadapt flow item-approval approve RUN_DIR --request-id ID --request-sha256 SHA --decided-by ID --route ROUTE
+openadapt flow item-approval decline RUN_DIR --request-id ID --request-sha256 SHA --decided-by ID --route ROUTE
 openadapt flow attach-seal RUN_DIR --execution-id ID
 ```
 
@@ -197,6 +203,12 @@ openadapt flow push DIR --kind recording|bundle [--validation-attestation FILE]
 See [Deploy](../how-to/deploy.md#openadapt-cloud).
 
 ## Operate
+
+```bash
+openadapt flow connector enroll --control-plane-url URL --enrollment-secret SECRET
+openadapt flow connector run --control-plane-url URL
+openadapt flow business-decisions serve --runs DIR --runner-config runner.toml --profile production
+```
 
 `console` needs the `console` extra, `serve-execute` the `execute` extra,
 and `serve-reward` the `reward` extra of `openadapt-flow`.

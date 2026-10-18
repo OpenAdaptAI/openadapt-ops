@@ -16,7 +16,8 @@ DOCS = ROOT / "docs"
 # pull requests, then tested before deploy. They quote history, as
 # scripts/validate_docs.py already allows, so a past release note must not
 # block a docs deploy. Every hand-written page is scanned.
-GENERATED_PAGES = {DOCS / "changelog.md", DOCS / "whats-new.md"}
+# flow-commands.md quotes the released package's own --help text.
+GENERATED_PAGES = {DOCS / "changelog.md", DOCS / "whats-new.md", DOCS / "reference/flow-commands.md"}
 
 
 def _doc_pages() -> list[Path]:

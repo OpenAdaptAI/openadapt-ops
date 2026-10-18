@@ -1,26 +1,25 @@
 """The `openadapt flow` CLI reference must cover the shipped verbs.
 
-`FLOW_VERBS` is the top-level subcommand list of the pinned openadapt-flow
-release, read from `tests/fixtures/flow_cli.json`, which
-`scripts/generate_cli_reference.py` writes from that release's parser. When
-the pin moves, document the added and removed verbs in docs/reference/cli.md.
+`FLOW_VERBS` is the top-level subcommand list of the released openadapt-flow,
+read from the snapshot that `scripts/flow_cli_reference.py snapshot` writes
+from the PyPI package. When a Flow release adds or removes a verb, regenerate
+the snapshot and document the change in docs/reference/cli.md.
 """
 
 from __future__ import annotations
 
-import json
 import re
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 CLI_REFERENCE = ROOT / "docs/reference/cli.md"
-FLOW_FIXTURE = ROOT / "tests/fixtures/flow_cli.json"
 
-FLOW_VERBS = tuple(
-    name
-    for name in json.loads(FLOW_FIXTURE.read_text(encoding="utf-8"))["commands"]
-    if " " not in name
-)
+sys.path.insert(0, str(ROOT / "scripts"))
+
+from flow_cli_reference import read_snapshot, top_level_verbs  # noqa: E402
+
+FLOW_VERBS = tuple(top_level_verbs(read_snapshot()))
 
 
 def _text() -> str:

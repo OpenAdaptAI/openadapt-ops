@@ -1,5 +1,5 @@
 # The released versions the command reference describes. Change a pin, then
 # rerun scripts/generate_cli_reference.py and commit what it writes.
 openadapt==1.17.0
-openadapt-flow==2.1.0
+openadapt-flow==2.1.0  # must equal FLOW_VERSION in scripts/flow_cli_reference.py
 openadapt-agent==2.2.0

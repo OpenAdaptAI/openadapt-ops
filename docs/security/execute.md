@@ -90,6 +90,11 @@ After a `VERIFIED` outcome, the run fetches the signed receipt and writes it
 into `report.json` as `execute_receipt`. `openadapt flow attach-seal RUN_DIR --execution-id EXECUTION_ID` does the
 same for a finished run.
 
+Anyone with the receipt can check the Seal online or offline. See
+[Check a Seal online](../cloud/verify-a-seal.md). To be told when an execution
+stops before any save, subscribe an endpoint to `execution.halted`; see
+[Get told when a run stops](../cloud/stop-alerts.md#the-executionhalted-webhook).
+
 `openadapt flow seal` is a different command: it encrypts a bundle for
 deployment and doesn't issue a Seal.
 

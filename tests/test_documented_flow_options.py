@@ -7,23 +7,30 @@ and `openadapt flow ...` command written as code (fenced blocks and inline
 code spans) and checks its subcommand and long options against the argparse
 parser of the pinned Flow release.
 
-The same check covers `openadapt-agent ...` and `openadapt agent ...`.
+`tests/fixtures/flow_cli_<version>.json` holds that parser's subcommands and
+long options, keyed by the space-joined subcommand path (for example
+`qualify propose`). `scripts/flow_cli_reference.py snapshot` writes it from the
+release on PyPI.
 
-`tests/fixtures/flow_cli.json` and `tests/fixtures/agent_cli.json` hold each
-parser's subcommands and long options. `scripts/generate_cli_reference.py`
-writes them from the versions pinned in `cli-reference/requirements.txt`; to
-move the docs to a newer release, change the pin and rerun it.
+The same check covers `openadapt-agent ...` and `openadapt agent ...` against
+`tests/fixtures/agent_cli.json`, which `scripts/generate_cli_reference.py`
+writes from the version pinned in `cli-reference/requirements.txt`.
 """
 
 from __future__ import annotations
 
 import json
 import re
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 DOCS = ROOT / "docs"
-FIXTURE = ROOT / "tests/fixtures/flow_cli.json"
+
+sys.path.insert(0, str(ROOT / "scripts"))
+
+from flow_cli_reference import FLOW_VERSION, SNAPSHOT as FIXTURE  # noqa: E402
+
 AGENT_FIXTURE = ROOT / "tests/fixtures/agent_cli.json"
 REQUIREMENTS = ROOT / "cli-reference/requirements.txt"
 
@@ -134,22 +141,11 @@ def _problems(
     return problems
 
 
-def _pins() -> dict[str, str]:
-    pins = {}
-    for line in REQUIREMENTS.read_text(encoding="utf-8").splitlines():
-        line = line.split("#", 1)[0].strip()
-        if line:
-            name, _, version = line.partition("==")
-            pins[name.strip()] = version.strip()
-    return pins
+def test_fixture_matches_the_pinned_verb_list() -> None:
+    from tests.test_cli_reference import FLOW_VERBS
 
-
-def test_fixtures_come_from_the_pinned_versions() -> None:
-    pins = _pins()
-    for fixture, program in ((FIXTURE, "openadapt-flow"), (AGENT_FIXTURE, "openadapt-agent")):
-        data = json.loads(fixture.read_text(encoding="utf-8"))
-        assert data["program"] == program
-        assert data["version"] == pins[program], f"regenerate {fixture.name}"
+    _, commands = _cli()
+    assert sorted(name for name in commands if " " not in name) == sorted(FLOW_VERBS)
 
 
 def test_the_check_catches_a_planned_flag_and_accepts_real_ones() -> None:
@@ -186,6 +182,25 @@ def test_documented_flow_commands_use_only_shipped_options() -> None:
         for problem in _problems(page.read_text(encoding="utf-8"), global_options, commands):
             problems.append(f"{page.relative_to(ROOT)} {problem}")
     assert problems == [], "\n".join(problems)
+
+
+def _pins() -> dict[str, str]:
+    pins = {}
+    for line in REQUIREMENTS.read_text(encoding="utf-8").splitlines():
+        line = line.split("#", 1)[0].strip()
+        if line:
+            name, _, version = line.partition("==")
+            pins[name.strip()] = version.strip()
+    return pins
+
+
+def test_agent_fixture_and_flow_pin_match_the_pinned_versions() -> None:
+    pins = _pins()
+    data = json.loads(AGENT_FIXTURE.read_text(encoding="utf-8"))
+    assert data["program"] == "openadapt-agent"
+    assert data["version"] == pins["openadapt-agent"], f"regenerate {AGENT_FIXTURE.name}"
+    # The agent help is generated with the Flow release the Flow reference describes.
+    assert pins["openadapt-flow"] == FLOW_VERSION
 
 
 def test_documented_agent_commands_use_only_shipped_options() -> None:
