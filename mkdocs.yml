@@ -264,6 +264,7 @@ nav:
       - Reference:
           - Run outcomes: reference/outcomes.md
           - Commands: reference/cli.md
+          - Command help: reference/cli-help.md
           - Configuration: reference/configuration.md
           - Files and evidence: reference/artifacts.md
           - Packages: reference/packages.md

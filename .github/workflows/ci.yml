@@ -64,6 +64,29 @@ jobs:
             'site/**/*.html'
           jobSummary: false
 
+  cli-reference:
+    name: Command help matches the pinned releases
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+
+      # Installs exactly the releases in cli-reference/requirements.txt in a
+      # throwaway environment, regenerates docs/reference/cli-help.md and the
+      # CLI fixtures from their parsers, and fails if the committed copies
+      # differ. The fix is to rerun the script and commit what it writes.
+      - name: Install the pinned releases
+        run: |
+          uv venv --python 3.12 "$RUNNER_TEMP/cli-ref"
+          uv pip install --python "$RUNNER_TEMP/cli-ref/bin/python" -r cli-reference/requirements.txt
+
+      - name: Regenerate the command help and fixtures
+        run: '"$RUNNER_TEMP/cli-ref/bin/python" scripts/generate_cli_reference.py'
+
+      - name: Fail on drift
+        run: git diff --exit-code -- docs/reference/cli-help.md tests/fixtures/flow_cli.json tests/fixtures/agent_cli.json
+
   design-tokens:
     name: Vendored design tokens match openadapt-web
     runs-on: ubuntu-latest

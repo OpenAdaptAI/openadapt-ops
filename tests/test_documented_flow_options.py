@@ -1,4 +1,4 @@
-"""Every documented `openadapt-flow` command must parse in the pinned release.
+"""Every documented Flow and agent command must parse in the pinned release.
 
 The docs once told readers to run `openadapt-flow replay bundle --seal`, a
 planned flag that no Flow release has. Following that proof step ended in
@@ -7,11 +7,12 @@ and `openadapt flow ...` command written as code (fenced blocks and inline
 code spans) and checks its subcommand and long options against the argparse
 parser of the pinned Flow release.
 
-`tests/fixtures/flow_cli_2.1.0.json` holds that parser's subcommands and long
-options. When the docs move to a newer Flow release, regenerate the fixture
-from that release's `openadapt_flow.__main__.build_parser()`: for each
-subparser, record the sorted `option_strings` that start with `--`, keyed by
-the space-joined subcommand path (for example `qualify propose`).
+The same check covers `openadapt-agent ...` and `openadapt agent ...`.
+
+`tests/fixtures/flow_cli.json` and `tests/fixtures/agent_cli.json` hold each
+parser's subcommands and long options. `scripts/generate_cli_reference.py`
+writes them from the versions pinned in `cli-reference/requirements.txt`; to
+move the docs to a newer release, change the pin and rerun it.
 """
 
 from __future__ import annotations
@@ -22,7 +23,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 DOCS = ROOT / "docs"
-FIXTURE = ROOT / "tests/fixtures/flow_cli_2.1.0.json"
+FIXTURE = ROOT / "tests/fixtures/flow_cli.json"
+AGENT_FIXTURE = ROOT / "tests/fixtures/agent_cli.json"
+REQUIREMENTS = ROOT / "cli-reference/requirements.txt"
 
 # Options that exist on OpenAdapt `main` but not in the pinned release. A page
 # may show them only where it labels them as unreleased; each entry names the
@@ -32,7 +35,12 @@ UNRELEASED_OPTIONS = {
     "qualify": {"--verify", "--out", "--certify"},
 }
 # Regenerated from other repositories' release notes; they quote history.
-GENERATED_PAGES = {DOCS / "changelog.md", DOCS / "whats-new.md"}
+# The command help page is generated from the pinned parsers themselves.
+GENERATED_PAGES = {
+    DOCS / "changelog.md",
+    DOCS / "whats-new.md",
+    DOCS / "reference/cli-help.md",
+}
 
 _FENCE = re.compile(r"^\s*(```|~~~)")
 _INLINE = re.compile(r"`([^`\n]+)`")
@@ -41,12 +49,15 @@ _INLINE = re.compile(r"`([^`\n]+)`")
 _COMMAND = re.compile(
     r"(?:^|[;&|(]\s*|\$\s+|\buv run\s+)(?:openadapt-flow|openadapt flow)\s+(.*)$"
 )
+_AGENT_COMMAND = re.compile(
+    r"(?:^|[;&|(]\s*|\$\s+|\buv run\s+)(?:openadapt-agent|openadapt agent)\s+(.*)$"
+)
 _END_OF_COMMAND = re.compile(r"\s(?:\||&&|;|#|>)\s")
 _SUBCOMMAND = re.compile(r"^[a-z][a-z-]*$")
 
 
-def _cli() -> tuple[set[str], dict[str, set[str]]]:
-    data = json.loads(FIXTURE.read_text(encoding="utf-8"))
+def _cli(fixture: Path = FIXTURE) -> tuple[set[str], dict[str, set[str]]]:
+    data = json.loads(fixture.read_text(encoding="utf-8"))
     commands = {name: set(options) for name, options in data["commands"].items()}
     return set(data["global_options"]), commands
 
@@ -83,11 +94,11 @@ def _code_snippets(text: str) -> list[tuple[int, str]]:
     return snippets
 
 
-def _flow_commands(text: str) -> list[tuple[int, str, list[str]]]:
+def _flow_commands(text: str, pattern: re.Pattern = _COMMAND) -> list[tuple[int, str, list[str]]]:
     """Return (line number, code, tokens after the program name) per command."""
     found = []
     for number, code in _code_snippets(text):
-        match = _COMMAND.search(code.strip())
+        match = pattern.search(code.strip())
         if not match:
             continue
         tokens = _END_OF_COMMAND.split(f" {match.group(1)} ", maxsplit=1)[0].split()
@@ -98,9 +109,15 @@ def _flow_commands(text: str) -> list[tuple[int, str, list[str]]]:
     return found
 
 
-def _problems(text: str, global_options: set[str], commands: dict[str, set[str]]) -> list[str]:
+def _problems(
+    text: str,
+    global_options: set[str],
+    commands: dict[str, set[str]],
+    pattern: re.Pattern = _COMMAND,
+    unreleased: dict[str, set[str]] = UNRELEASED_OPTIONS,
+) -> list[str]:
     problems = []
-    for number, code, tokens in _flow_commands(text):
+    for number, code, tokens in _flow_commands(text, pattern):
         command = tokens[0]
         if command not in commands:
             problems.append(f"line {number}: unknown subcommand `{command}` in `{code}`")
@@ -112,16 +129,27 @@ def _problems(text: str, global_options: set[str], commands: dict[str, set[str]]
             if not token.startswith("--"):
                 continue
             option = token.split("=", 1)[0].rstrip(".,;:)")
-            if option not in commands[command] | global_options | UNRELEASED_OPTIONS.get(command, set()):
+            if option not in commands[command] | global_options | unreleased.get(command, set()):
                 problems.append(f"line {number}: `{command}` has no `{option}` option in `{code}`")
     return problems
 
 
-def test_fixture_matches_the_pinned_verb_list() -> None:
-    from tests.test_cli_reference import FLOW_VERBS
+def _pins() -> dict[str, str]:
+    pins = {}
+    for line in REQUIREMENTS.read_text(encoding="utf-8").splitlines():
+        line = line.split("#", 1)[0].strip()
+        if line:
+            name, _, version = line.partition("==")
+            pins[name.strip()] = version.strip()
+    return pins
 
-    _, commands = _cli()
-    assert sorted(name for name in commands if " " not in name) == sorted(FLOW_VERBS)
+
+def test_fixtures_come_from_the_pinned_versions() -> None:
+    pins = _pins()
+    for fixture, program in ((FIXTURE, "openadapt-flow"), (AGENT_FIXTURE, "openadapt-agent")):
+        data = json.loads(fixture.read_text(encoding="utf-8"))
+        assert data["program"] == program
+        assert data["version"] == pins[program], f"regenerate {fixture.name}"
 
 
 def test_the_check_catches_a_planned_flag_and_accepts_real_ones() -> None:
@@ -156,5 +184,19 @@ def test_documented_flow_commands_use_only_shipped_options() -> None:
     problems = []
     for page in pages:
         for problem in _problems(page.read_text(encoding="utf-8"), global_options, commands):
+            problems.append(f"{page.relative_to(ROOT)} {problem}")
+    assert problems == [], "\n".join(problems)
+
+
+def test_documented_agent_commands_use_only_shipped_options() -> None:
+    global_options, commands = _cli(AGENT_FIXTURE)
+    pages = _doc_pages()
+    assert sum(
+        len(_flow_commands(page.read_text(encoding="utf-8"), _AGENT_COMMAND)) for page in pages
+    ) > 5
+    problems = []
+    for page in pages:
+        text = page.read_text(encoding="utf-8")
+        for problem in _problems(text, global_options, commands, _AGENT_COMMAND, {}):
             problems.append(f"{page.relative_to(ROOT)} {problem}")
     assert problems == [], "\n".join(problems)

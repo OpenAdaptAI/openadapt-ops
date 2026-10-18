@@ -14,6 +14,7 @@ commands of its own and passes two groups through to the engine:
 
 Every command takes `--help`, which is the authority for its options. This
 page lists the commands in `openadapt` 1.17.0 and `openadapt-flow` 2.1.0.
+[Command help](cli-help.md) has the full `--help` text of every command.
 
 ## Launcher commands
 

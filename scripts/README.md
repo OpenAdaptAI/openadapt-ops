@@ -7,6 +7,23 @@ script says otherwise, install the dev environment first:
 uv sync --locked --extra dev
 ```
 
+## Command help reference
+
+`generate_cli_reference.py` writes `docs/reference/cli-help.md` and the CLI
+fixtures in `tests/fixtures/` from the parsers of the versions pinned in
+`cli-reference/requirements.txt`. It runs in its own environment, not the dev
+one:
+
+```bash
+uv venv --python 3.12 /tmp/cli-ref
+uv pip install --python /tmp/cli-ref/bin/python -r cli-reference/requirements.txt
+/tmp/cli-ref/bin/python scripts/generate_cli_reference.py
+```
+
+The `cli-reference` CI job reruns it and fails when the committed files
+differ. To move the docs to a new release, change the pin, rerun it, and
+update `docs/reference/cli.md` for the commands that changed.
+
 ## Assistant visibility
 
 `assistant_visibility.py` scores an exported assistant-response grid for OpenAdapt mentions, citations, recommendation position, missing trials, and stale product claims. The prompt set and response schema are in [`assistant-visibility/README.md`](../assistant-visibility/README.md).
