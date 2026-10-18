@@ -272,6 +272,7 @@ nav:
       - Reference:
           - Run outcomes: reference/outcomes.md
           - Commands: reference/cli.md
+          - All Flow commands: reference/flow-commands.md
           - Configuration: reference/configuration.md
           - Files and evidence: reference/artifacts.md
           - Packages: reference/packages.md

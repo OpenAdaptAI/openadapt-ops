@@ -8,6 +8,8 @@ import subprocess
 import yaml
 from jinja2 import Environment, FileSystemLoader
 
+import check_private_names
+
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 REPOS_YML = ROOT / "repos.yml"
 DOCS_DIR = ROOT / "docs"
@@ -78,6 +80,27 @@ def llm_summarize(prs_text, days):
     return response.content[0].text
 
 
+def _refuse_private_names(rendered):
+    """Keep the published digest when a PR title or summary names a customer.
+
+    PR titles come from other repositories, so this is the last point before
+    one reaches the public page. The list is read the same way as in
+    scripts/check_private_names.py; without one, nothing is checked here.
+    """
+    try:
+        patterns = check_private_names.load_patterns()
+    except check_private_names.PatternListError as exc:
+        raise RuntimeError(f"Private name list unusable: {exc}. Keeping the existing digest.") from None
+    if patterns is None:
+        return
+    hits = check_private_names.find_in_text(rendered, patterns, "whats-new.md")
+    if hits:
+        raise RuntimeError(
+            "The generated What's New matches the private name list "
+            f"({'; '.join(str(hit) for hit in hits)}). Keeping the existing digest."
+        )
+
+
 def generate(repos=None, docs_dir=None, days=7):
     repos = repos or load_repos()
     docs_dir = pathlib.Path(docs_dir or DOCS_DIR)
@@ -105,6 +128,7 @@ def generate(repos=None, docs_dir=None, days=7):
     rendered = template.render(
         repos=all_prs, summary=summary, days=days, generated_at=generated_at,
     )
+    _refuse_private_names(rendered)
     out_path = docs_dir / "whats-new.md"
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(rendered)

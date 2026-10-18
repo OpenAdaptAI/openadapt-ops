@@ -1,70 +1,25 @@
 """The `openadapt flow` CLI reference must cover the shipped verbs.
 
-`FLOW_VERBS` is the top-level subcommand list of openadapt-flow 2.1.0, read
-from its argparse parser. When a Flow release adds or removes a verb, refresh
-it from `openadapt-flow --help` (or from `build_parser()` in
-`openadapt_flow.__main__`) and document the change in docs/reference/cli.md.
+`FLOW_VERBS` is the top-level subcommand list of the released openadapt-flow,
+read from the snapshot that `scripts/flow_cli_reference.py snapshot` writes
+from the PyPI package. When a Flow release adds or removes a verb, regenerate
+the snapshot and document the change in docs/reference/cli.md.
 """
 
 from __future__ import annotations
 
 import re
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 CLI_REFERENCE = ROOT / "docs/reference/cli.md"
 
-FLOW_VERBS = (
-    "demo",
-    "record",
-    "demo-record",
-    "tutorial",
-    "compile",
-    "induce",
-    "for-each",
-    "compose",
-    "process",
-    "replay",
-    "run",
-    "attach-seal",
-    "resume",
-    "approve",
-    "item-approval",
-    "bench",
-    "benchmark",
-    "intake",
-    "lint",
-    "scaffold-verifier",
-    "explain",
-    "visualize",
-    "seal",
-    "bind-record-checks",
-    "certify",
-    "qualify",
-    "propose-qualification",
-    "disambiguate",
-    "emit-skill",
-    "emit-mcp",
-    "teach",
-    "teach-branch",
-    "repair",
-    "connect",
-    "login",
-    "sanitize",
-    "review-sanitized",
-    "materialize-approved",
-    "approve-sanitized",
-    "validate-hosted",
-    "push",
-    "report-break",
-    "report-run",
-    "console",
-    "serve-execute",
-    "serve-reward",
-    "business-decisions",
-    "connector",
-    "admit",
-)
+sys.path.insert(0, str(ROOT / "scripts"))
+
+from flow_cli_reference import read_snapshot, top_level_verbs  # noqa: E402
+
+FLOW_VERBS = tuple(top_level_verbs(read_snapshot()))
 
 
 def _text() -> str:
