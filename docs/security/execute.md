@@ -68,27 +68,15 @@ Only `verified` is business success.
 The Seal is an `ExecuteEvidenceReceiptV1` signed by OpenAdapt Cloud. It names
 the execution, the exact workflow version and digest, the qualification, the
 environment and runner, the outcome, the check level that confirmed the
-save, whether delivery was uncertain, and a digest of the evidence.
-
-| Check level | Source | Can back a Seal? |
-|---|---|---|
-| 0 | The screen or OCR | No |
-| 1 | A second session's view of the application | No |
-| 2 | The system of record, such as its API or database | Yes |
-| 3 | A counterparty artifact, such as a payer status or a legal export | Yes |
+save, whether delivery was uncertain, and a digest of the evidence. Only a
+check level of 2 (the system of record) or 3 (a counterparty artifact) can
+back one.
 
 A local run that ends `VERIFIED` is still reported as done, with
-`"proof": "local"`, to an agent; a Seal is not required for that.
-To attach Cloud's Seal to a local run, pass the execution ID:
-
-```bash
-export OPENADAPT_EXECUTE_API_KEY=...
-openadapt flow run bundle --config deploy.yaml --cloud-execution-id EXECUTION_ID
-```
-
-After a `VERIFIED` outcome, the run fetches the signed receipt and writes it
-into `report.json` as `execute_receipt`. `openadapt flow attach-seal RUN_DIR --execution-id EXECUTION_ID` does the
-same for a finished run.
+`"proof": "local"`, to an agent; a Seal is not required for that. To attach
+Cloud's Seal to a local run, pass `--cloud-execution-id`. How to get, check,
+timestamp, and countersign a Seal is in
+[Receipts, Seals, and countersigning](../reference/receipts-and-seals.md).
 
 Anyone with the receipt can check the Seal online or offline. See
 [Check a Seal online](../cloud/verify-a-seal.md). To be told when an execution

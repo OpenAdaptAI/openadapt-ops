@@ -61,5 +61,5 @@ surface still needs its own qualification.
 | Citrix | Required CI and a stand-in with no DOM | 3 confirmed runs and 3 stops under drift on a stand-in; no run over real Citrix ICA/HDX is on record yet |
 
 An agent can record on native Windows, RDP, and Citrix as well as in a
-browser. That support is on the `main` branch and not yet in a release, and its
+browser; see [Record a workflow](../how-to/record.md#an-agent-records). Its
 tests use a mock Windows server and stand-in client windows.

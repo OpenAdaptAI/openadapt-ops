@@ -1,7 +1,7 @@
 ---
 description: >-
   Every openadapt and openadapt flow command in openadapt 1.17.0 and
-  openadapt-flow 2.1.0, what it does, and its main options.
+  openadapt-flow 2.2.0, what it does, and its main options.
 ---
 
 # Command reference
@@ -13,7 +13,7 @@ commands of its own and passes two groups through to the engine:
 - `openadapt agent ...` runs `openadapt-agent`, the MCP server.
 
 Every command takes `--help`, which is the authority for its options. This
-page lists the commands in `openadapt` 1.17.0 and `openadapt-flow` 2.1.0.
+page lists the commands in `openadapt` 1.17.0 and `openadapt-flow` 2.2.0.
 [Command help](cli-help.md) has the full `--help` text of every command.
 
 ## Launcher commands
@@ -47,10 +47,13 @@ page lists the commands in `openadapt` 1.17.0 and `openadapt-flow` 2.1.0.
 | [`visualize`](#inspect) | Draws a bundle as HTML, Mermaid, or JSON. |
 | [`lint`](#check) | Lists what the program doesn't cover yet. |
 | [`scaffold-verifier`](#check) | Drafts record checks from a recording or bundle, for a person to complete. |
+| [`check`](#check) | Records how a person would check a save, then admits that check for a bundle. |
 | [`bind-record-checks`](#check) | Attaches reviewed record checks to a compiled bundle, in a new bundle. |
 | [`certify`](#check) | Checks a bundle against a policy. |
 | [`qualify`](#check) | Manages and runs a bundle's qualification against normal and fault cases. |
 | [`propose-qualification`](#check) | Same as `qualify propose`. |
+| [`verify-run`](#check) | Reads the system of record and rules on a save that an agent, a script, or a person reported. |
+| [`countersign`](#check) | Timestamps, countersigns, and discloses fields of a Seal, and exports a dossier. |
 | [`seal`](#check) | Writes an encrypted copy of a bundle using `OPENADAPT_BUNDLE_KEY`. |
 | [`admit`](#check) | Reads the public release-admission list. It never signs anything. |
 | [`replay`](#run) | Performs every step of a bundle against a real app. Never checks the record. |
@@ -59,14 +62,17 @@ page lists the commands in `openadapt` 1.17.0 and `openadapt-flow` 2.1.0.
 | [`approve`](#run) | Records a decision that lets a paused run resume. |
 | [`item-approval`](#run) | Lists, approves, or declines the saves a run is waiting on. |
 | [`explain`](#inspect) | Explains a finished run in plain words, with the next command. |
+| [`triage`](#run) | Orders verified saves for review and proposes one batch approval. |
 | [`attach-seal`](#run) | Adds Cloud's signed receipt to a `VERIFIED` run report. |
 | [`bench`](#inspect) | Replays a bundle many times against MockMed and summarizes. |
 | [`benchmark`](#inspect) | Compares compiled replay with a computer-use agent on MockMed. The agent side needs an Anthropic API key and costs money. |
 | [`teach`](#repair) | Turns a fix demonstration for a halted run into a guarded branch. |
 | [`teach-branch`](#repair) | Learns a guarded branch from two or more halts fixed the same way. |
 | [`repair`](#repair) | Moves a repaired bundle through review, campaigns, approval, staging, canary, and rollback. |
+| [`jit`](#agents) | Reviews, admits, or rejects a draft bundle compiled from a computer-use agent's run. |
 | [`emit-skill`](#agents) | Writes an Agent Skill for a bundle. |
 | [`emit-mcp`](#agents) | Writes a standalone MCP `server.py` for a bundle. |
+| [`pull`](#cloud) | Downloads a packaged workflow bundle by name. |
 | [`connect`](#cloud) | Claims a pairing and stores the workspace credential in the keychain. |
 | [`login`](#cloud) | Checks an ingest token and stores it in the keychain. |
 | [`sanitize`](#cloud) | Writes a redacted copy of a recording or bundle. Never changes the original. |
@@ -135,16 +141,22 @@ values, selectors, and URLs from the view.
 openadapt flow lint bundle [--strict]
 openadapt flow scaffold-verifier rec [-o DIR]
 openadapt flow bind-record-checks bundle --binding FILE (--check | -o OUT)
+openadapt flow check {mark,show,admit}
+openadapt flow verify-run --verify verify.yaml --params task.json --run-record RUN.json --baseline before.json --out DIR
+openadapt flow countersign {add,verify,disclose,dossier,timestamp-baseline,exceptions,resolve,close,purge}
 openadapt flow certify bundle [--policy clinical-write|permissive|FILE] [--config deploy.yaml]
 openadapt flow seal bundle -o bundle-sealed
 ```
 
-`qualify` subcommands in 2.1.0: `schema`, `label`, `init`, `propose`,
+`qualify bundle --verify verify.yaml` runs a whole campaign (`qualify
+campaign`). The other `qualify` subcommands: `schema`, `label`, `init`, `propose`,
 `accept`, `admit-local`, `from-demo`, `inspect`, `explain`, `report`,
 `set-identity`, `set-risk`, `trust-runner`, `set-effect`,
 `business-decision`, `judgment-cases`, `add-case`, `run`, `run-case`,
 `drills`, `add-requalification`, and `certify`. See
-[Certify and qualify a workflow](../how-to/certify-and-qualify.md).
+[Certify and qualify a workflow](../how-to/certify-and-qualify.md),
+[Add record checks](../how-to/record-checks.md), and
+[Receipts, Seals, and countersigning](receipts-and-seals.md).
 
 ## Run
 
@@ -155,11 +167,12 @@ openadapt flow resume RUN_DIR [--require-approval]
 openadapt flow approve RUN_DIR [--approver ID] [--resolution OPTION] [--authorize-uncertain-retry]
 openadapt flow item-approval show RUN_DIR
 openadapt flow attach-seal RUN_DIR --execution-id ID
+openadapt flow triage {plan,approve-batch,decide,calibrate,estimate,eligibility}
 ```
 
 Main `run` options: `--profile`, `--config`, `--param`, `--params-file`,
 `--worklist`, `--policy`, `--durable`, `--dry-run`, `--approval-mode`,
-`--approval-wait`, `--effects-kind`, `--effects-base-url`,
+`--approval-wait`, `--approver-policy`, `--approver-webhook`, `--effects-kind`, `--effects-base-url`,
 `--allow-model-grounding`, `--hold-on-halt`, `--browser-cdp-endpoint`,
 `--cloud-execution-id`, and the surface options. See
 [Run a workflow](../how-to/run.md).
@@ -181,6 +194,7 @@ openadapt flow emit-skill bundle --out DIR
 openadapt flow emit-mcp bundle --out server.py
 openadapt agent serve [--mode sandbox|attended|production] [--bundles DIR] [--runs-dir DIR] [--config YAML]
 openadapt agent emit-skill bundle --out DIR [--include-bundle]
+openadapt flow jit {status,review,admit,reject,keygen,register,sign-policy}
 ```
 
 See [Connect an agent](../how-to/connect-an-agent.md).
@@ -192,6 +206,7 @@ openadapt flow sanitize PATH --kind recording|bundle --out DIR
 openadapt flow review-sanitized DIR --original PATH
 openadapt flow approve-sanitized DIR --original PATH --reviewer ID
 openadapt flow push DIR --kind recording|bundle [--validation-attestation FILE]
+openadapt flow pull WORKFLOW [--out DIR] [--list]
 ```
 
 See [Deploy](../how-to/deploy.md#openadapt-cloud).

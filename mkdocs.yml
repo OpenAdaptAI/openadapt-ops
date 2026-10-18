@@ -275,6 +275,7 @@ nav:
           - Command help: reference/cli-help.md
           - Configuration: reference/configuration.md
           - Files and evidence: reference/artifacts.md
+          - Receipts, Seals, and countersigning: reference/receipts-and-seals.md
           - Packages: reference/packages.md
           - Versions and compatibility: reference/compatibility.md
           - Glossary: reference/glossary.md

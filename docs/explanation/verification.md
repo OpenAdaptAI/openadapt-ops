@@ -18,35 +18,46 @@ it isn't used as proof. A record check returns `confirmed`, `refuted`, or
 
 ## How strong a read-back is
 
-The engine ranks every read-back by how independent it is of the screen that
-did the work:
+OpenAdapt ranks every read-back by how independent it is of the screen that
+did the work. The rank is the Flow tier, 1 the strongest. The run report and
+the receipt also give each read a grade, and a Seal names a check level.
+This table maps the three:
 
-| Rank | Read-back | Example |
-|---|---|---|
-| 1, strongest | The system of record, through its API, database, or files | REST, GraphQL, FHIR, read-only SQL, a file or report drop, an email capture folder |
-| 2 | The app's record page in a separate, separately signed-in, read-only session | `ui_readback` |
-| 3 | The same session navigates back to the record and reads it again | |
-| 4, weakest | The screen that did the work still shows the value | |
+<!-- The R0–R3 read-back ladder from the reopen read-back work goes here when
+it ships: one more column naming each row's rung, and minimum_readback and
+checked_how in "What each result needs". Until then, these are the tiers
+Flow uses. -->
 
-A rank-2 read is independent of the session that acted, but it still reads
-a screen. It can't tell a record the app stored from one the app only
-displays.
+| Read-back | How you set it up | Flow tier | Grade | Ends `VERIFIED` | Certifies through qualification | Seal check level |
+|---|---|---|---|---|---|---|
+| The system of record, through its API, database, or files | `effects.kind` `rest`, `graphql`, `fhir`, `sql`, `file`, `document`, `email`, or `document-hash` | 1, `independent_system` | `independent_readback` | Yes | Yes | 2 |
+| The app's record page, in a separate, read-only, freshly signed-in session | `effects.kind: ui_readback` | 2, `independent_session` | `screen_readback` | Yes, except under the `regulated` policy | No | 1 |
+| The acting session clears what the screen remembers, reopens the record, and reads it | A check shown by demonstration; see [Show how you'd check the save](../how-to/record-checks.md#show-how-youd-check-the-save) | 3, `persisted_state_reacquisition` | `screen_readback` | No | No | 0 |
+| The screen that did the work still shows the value | `effects.kind: onscreen` | 4, `immediate_screen` | `screen_readback` | No | No | 0 |
+| No read-back | | | `unchecked` | No | No | |
+
+A tier-2 read is independent of the session that acted, but it still reads
+the app's screens, so it can't tell a record the app stored from one it only
+displays. Tiers 3 and 4 read the acting session's screen; they can stop a
+run, but never make one `VERIFIED`. Seal check level 3 is a counterparty
+artifact, such as a payer status, which Flow doesn't read.
+
+A run's receipt records the weakest read among its saves as
+`effect_tier_reached` and its grade as `effect_assurance`. See
+[Receipts, Seals, and countersigning](../reference/receipts-and-seals.md).
 
 ## What each result needs
 
-**`VERIFIED` under Standard or Regulated.** On the `main` branch and in
-`openadapt-flow` 2.1.0, every save must be confirmed at rank 2 or stronger:
-the system of record, or a separate-session `ui_readback`. The `regulated`
-policy pack raises that to rank 1. Ranks 3 and 4 can never produce
-`VERIFIED`. A pixel-only Citrix save with no rank-1 or rank-2 read ends in a
-halt or `RECONCILIATION_REQUIRED`, whatever an operator or the screen says.
+**`VERIFIED` under Standard or Regulated.** Every save must be confirmed at
+tier 2 or stronger: the system of record, or a separate-session
+`ui_readback`. The `regulated` policy pack raises that to tier 1. A
+pixel-only Citrix save with no tier-1 or tier-2 read ends in a halt or
+`RECONCILIATION_REQUIRED`, whatever an operator or the screen says.
 
-**Certification through qualification.** Qualification labels each read
-`independent_readback` (rank 1), `screen_readback` (any read through the
-app's screens, including `ui_readback`), or `unchecked`. To certify, the
-normal case must be confirmed and every fault case must show nothing landed,
-all at `independent_readback`. A workflow whose only read-back is
-`ui_readback` can run the cases but can't be certified this way.
+**Certification through qualification.** To certify, the normal case must be
+confirmed and every fault case must show nothing landed, all at
+`independent_readback`. A workflow whose only read-back is `ui_readback` can
+run the cases but can't be certified this way.
 
 **A Seal.** OpenAdapt Cloud signs a Seal only when the run was confirmed by
 a system-of-record read.

@@ -103,6 +103,6 @@ runs happen on a runner you control.
 
 - A real Citrix ICA/HDX session.
 - Recording Windows, RDP, and Citrix through the agent's Windows agent
-  server. This is on `main` only and has been tested against mock servers only.
+  server, tested so far against mock servers only.
 - Production qualification of a customer workflow.
 

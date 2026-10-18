@@ -38,23 +38,37 @@ WIDTH = "100"
 LAUNCHER_RESEARCH = {"capture", "eval", "serve", "train"}
 
 
-def pinned_versions(path: Path = REQUIREMENTS) -> dict[str, str]:
-    """Return {distribution: version} from `name==version` lines."""
-    pins: dict[str, str] = {}
-    for line in path.read_text(encoding="utf-8").splitlines():
-        line = line.split("#", 1)[0].strip()
+def pinned_versions(path: Path = REQUIREMENTS) -> dict[str, tuple[str, bool]]:
+    """Return {distribution: (version, is_release)} from the requirements.
+
+    A line is either `name==version`, a published release, or
+    `name @ git+URL@SHA#subdirectory=DIR  # release VERSION`, a source build
+    of a release that isn't published yet. VERSION is what the docs call it.
+    """
+    pins: dict[str, tuple[str, bool]] = {}
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        if " @ " in raw:
+            name = raw.split(" @ ", 1)[0].strip()
+            requirement, sep, version = raw.partition("  # release ")
+            if not sep or not version.strip():
+                raise SystemExit(f"{path}: a source pin needs '  # release VERSION': {raw!r}")
+            pins[name] = (version.strip(), False)
+            continue
+        line = raw.split("#", 1)[0].strip()
         if not line:
             continue
         name, sep, version = line.partition("==")
         if not sep:
-            raise SystemExit(f"{path}: pin every package with ==: {line!r}")
-        pins[name.strip()] = version.strip()
+            raise SystemExit(f"{path}: pin every package with == or a source URL: {raw!r}")
+        pins[name.strip()] = (version.strip(), True)
     return pins
 
 
-def _check_installed(pins: dict[str, str]) -> None:
+def _check_installed(pins: dict[str, tuple[str, bool]]) -> None:
     wrong = []
-    for name, version in pins.items():
+    for name, (version, is_release) in pins.items():
+        if not is_release:
+            continue
         try:
             installed = metadata.version(name)
         except metadata.PackageNotFoundError:
@@ -108,8 +122,8 @@ def collect() -> dict[str, list]:
     return programs
 
 
-def render_page(pins: dict[str, str], programs: dict[str, list]) -> str:
-    versions = ", ".join(f"{name} {version}" for name, version in pins.items())
+def render_page(pins: dict[str, tuple[str, bool]], programs: dict[str, list]) -> str:
+    versions = ", ".join(f"{name} {version}" for name, (version, _) in pins.items())
     lines = [
         "---",
         "description: >-",
@@ -165,11 +179,11 @@ def main() -> int:
     programs = collect()
     PAGE.write_text(render_page(pins, programs), encoding="utf-8")
     (FIXTURES / "flow_cli.json").write_text(
-        fixture("openadapt-flow", pins["openadapt-flow"], programs["openadapt-flow"]),
+        fixture("openadapt-flow", pins["openadapt-flow"][0], programs["openadapt-flow"]),
         encoding="utf-8",
     )
     (FIXTURES / "agent_cli.json").write_text(
-        fixture("openadapt-agent", pins["openadapt-agent"], programs["openadapt-agent"]),
+        fixture("openadapt-agent", pins["openadapt-agent"][0], programs["openadapt-agent"]),
         encoding="utf-8",
     )
     print(f"Wrote {PAGE.relative_to(ROOT)} and the flow and agent CLI fixtures")
