@@ -75,8 +75,8 @@ VERIFIED: openadapt-quickstart/run/REPORT.md
   effects         2/2 confirmed by an independent system-of-record read (Seal Oracle tier 2)
 ```
 
-Then the same certified program runs again, against a server that rejects the
-write after the app has shown its success message:
+Then the same certified program runs again, against a test server set up to
+reject the write, so the save never reaches the record:
 
 ```text
   The screen claimed:  every on-screen check passed -- the app painted its success banner

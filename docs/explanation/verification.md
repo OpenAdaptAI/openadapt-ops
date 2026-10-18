@@ -6,11 +6,13 @@ description: >-
 
 # How a save is checked
 
-A screen can show "Saved" when nothing was stored: an optimistic page, a
-save that failed on the server, a duplicate submit. OpenAdapt therefore
-never takes the screen's word for a save. A record check reads the record
-back and returns `confirmed`, `refuted`, or `indeterminate`. Only
-`confirmed` lets a run continue.
+A record check is how OpenAdapt checks its own work. After a save, it reads
+the record back and compares the fields it typed. That catches a value in
+the wrong field, an entry on the wrong record, a missed keystroke, a
+duplicate submit, or a step that ran before the page was ready. The
+confirmation on screen shows that a save happened, not what was stored, so
+it isn't used as proof. A record check returns `confirmed`, `refuted`, or
+`indeterminate`. Only `confirmed` lets a run continue.
 
 ![On the acting surface, the app screen OpenAdapt types into, a run checks that the right record is on screen, then enters and saves. It then reads the record back. A screen read-back uses the app's UI in a separate session and is not independent. An independent read uses the system of record through its API, database, or file export, never through the UI. If the read matches, the run ends VERIFIED with a run report and a receipt; OpenAdapt Cloud signs a Seal only after an independent read. If it doesn't match or can't tell, the run ends RECONCILIATION_REQUIRED and a person checks the record. If the right-record check fails, the run ends HALTED_BEFORE_EFFECT before saving and asks a person.](../assets/diagrams/record-check.svg)
 
@@ -37,7 +39,7 @@ displays.
 the system of record, or a separate-session `ui_readback`. The `regulated`
 policy pack raises that to rank 1. Ranks 3 and 4 can never produce
 `VERIFIED`. A pixel-only Citrix save with no rank-1 or rank-2 read ends in a
-halt or `RECONCILIATION_REQUIRED`, whatever an operator or a banner says.
+halt or `RECONCILIATION_REQUIRED`, whatever an operator or the screen says.
 
 **Certification through qualification.** Qualification labels each read
 `independent_readback` (rank 1), `screen_readback` (any read through the
@@ -59,7 +61,7 @@ with an extra write to another table. Three checks judged the same runs:
 
 | Check | Wrong records it reported as saved |
 |---|---|
-| The success banner on the screen | 54 of 72 |
+| The success message on the screen | 54 of 72 |
 | A read of the record through the app's REST API | 9 of 72, all extra writes to a billing table that this read didn't cover |
 | A read-only SQL query over every table a save could change | 0 of 72 |
 
