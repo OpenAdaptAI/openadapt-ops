@@ -31,6 +31,8 @@
 
 ## openadapt-desktop
 
+- **[v0.20.0](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/v0.20.0)** (2026-10-18)
+  Documentation
 - **[v0.19.0](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/v0.19.0)** (2026-10-17)
   Features
 - **[v0.18.0](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/v0.18.0)** (2026-10-17)
@@ -38,8 +40,6 @@
 - **[v0.17.1](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/v0.17.1)** (2026-10-17)
   Bug Fixes
 - **[v0.17.0](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/v0.17.0)** (2026-10-16)
-  Bug Fixes
-- **[v0.16.0](https://github.com/OpenAdaptAI/openadapt-desktop/releases/tag/v0.16.0)** (2026-09-02)
   Bug Fixes
 
 ## openadapt-ml
