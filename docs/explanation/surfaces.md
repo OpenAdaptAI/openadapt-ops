@@ -60,6 +60,6 @@ surface still needs its own qualification.
 | RDP | Counted trials | 3 of 3 remote-input trials into Windows 11 over a real network, confirmed by a separate file check |
 | Citrix | Required CI and a stand-in with no DOM | 3 confirmed runs and 3 stops under drift on a stand-in; no run over real Citrix ICA/HDX is on record yet |
 
-Agent-driven recording on native Windows, RDP, and Citrix is tested against
-a mock Windows server and stand-in client windows, not yet against a real
-session.
+An agent can record on native Windows, RDP, and Citrix as well as in a
+browser. That support is on the `main` branch and not yet in a release, and its
+tests use a mock Windows server and stand-in client windows.

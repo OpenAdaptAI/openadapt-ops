@@ -34,8 +34,8 @@ The table reads the record live:
 | [OpenAdapt](https://github.com/OpenAdaptAI/OpenAdapt) | <span data-openadapt-production-target="openadapt" aria-live="polite">No current verified Production admission.</span> | The `openadapt` command and installer |
 | [OpenAdapt Flow](https://github.com/OpenAdaptAI/OpenAdapt/tree/main/packages/flow) | <span data-openadapt-production-target="flow" aria-live="polite">No current verified Production admission.</span> | The compiler and runtime |
 | [OpenAdapt Agent](https://github.com/OpenAdaptAI/OpenAdapt/tree/main/packages/agent) | <span data-openadapt-production-target="agent" aria-live="polite">No current verified Production admission.</span> | The MCP server and Agent Skills |
-| [OpenAdapt Capture](https://github.com/OpenAdaptAI/openadapt-capture) | <span data-openadapt-production-target="capture" aria-live="polite">No current verified Production admission.</span> | The desktop recorder |
-| [OpenAdapt Desktop](https://github.com/OpenAdaptAI/openadapt-desktop) | <span data-openadapt-production-target="desktop" aria-live="polite">No current verified Production admission.</span> | The desktop app |
+| OpenAdapt Capture | <span data-openadapt-production-target="capture" aria-live="polite">No current verified Production admission.</span> | The desktop recorder |
+| [OpenAdapt Desktop](https://openadapt.ai/download) | <span data-openadapt-production-target="desktop" aria-live="polite">No current verified Production admission.</span> | The desktop app |
 | [OpenAdapt Cloud](https://app.openadapt.ai/) | <span data-openadapt-production-target="cloud" aria-live="polite">No current verified Production admission.</span> | The hosted workspace |
 | OpenAdapt documentation | <span data-openadapt-production-target="docs" aria-live="polite">No current verified Production admission.</span> | This site |
 

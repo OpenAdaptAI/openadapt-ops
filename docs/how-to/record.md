@@ -126,11 +126,11 @@ calls `compile`, which writes the bundle to
 person's answer accepts the bundle. A client that can't show forms can't
 accept a bundle. The authoring server doesn't turn on runs.
 
-Agent-driven recording on native Windows apps (through the Windows agent
-server) and on RDP and Citrix client windows (from pixels only) is on the
-`main` branch and isn't in a release yet. Its tests run
-against a mock Windows server and stand-in client windows, not yet against a
-real Windows, RDP, or Citrix session. See
+An agent can also record on native Windows apps, through the Windows agent
+server, and in RDP and Citrix client windows, from pixels alone. This is on the
+`main` branch and not yet in a release. Its tests run against a mock Windows
+server and stand-in client windows; no recording against a real Windows, RDP,
+or Citrix session is on record yet. See
 [Recording on Windows, RDP and Citrix](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/RECORDING_ON_WINDOWS_RDP_CITRIX.md).
 
 ## One program per surface

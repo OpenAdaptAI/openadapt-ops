@@ -29,7 +29,7 @@ stale-target and ambiguous-target controls each refused 3/3, with 0 silent
 incorrect successes, 0 over-halts, and 0 model calls. The report also keeps
 earlier diagnostic runs that were rejected; they aren't counted. It covers
 the named task on a Windows 11 ARM virtual machine snapshot.
-[Report at `defafbae758a75c8e149d9693f2cffe1f2264b8c`](https://github.com/OpenAdaptAI/openadapt-flow/blob/defafbae758a75c8e149d9693f2cffe1f2264b8c/benchmark/windows_uia/results.json).
+[Report](https://github.com/OpenAdaptAI/OpenAdapt/blob/893f40d683b4bd48ad9b049bc287c17b6776c759/packages/flow/benchmark/windows_uia/results.json), first retained at Flow commit `defafbae758a75c8e149d9693f2cffe1f2264b8c`.
 
 **macOS.** On one macOS 15.7.3 arm64 host, candidate `b1b61a5` completed 3/3
 TextEdit trials with the exact file bytes checked, and refused a two-window
@@ -38,11 +38,12 @@ ambiguity without changing either file. The original report still reads
 failure. A separate review keeps that result, checks that the test's
 processes and temporary folder were gone, and accepts the save and refusal
 evidence.
-[Review at `ca1b522cad215875f7471782283f8f8bb8e6c998`](https://github.com/OpenAdaptAI/openadapt-flow/blob/ca1b522cad215875f7471782283f8f8bb8e6c998/benchmark/macos_native/textedit_counted_3plus1_b1b61a5_20260717.adjudication.json).
+[Review](https://github.com/OpenAdaptAI/OpenAdapt/blob/893f40d683b4bd48ad9b049bc287c17b6776c759/packages/flow/benchmark/macos_native/textedit_counted_3plus1_b1b61a5_20260717.adjudication.json), first retained at Flow commit `ca1b522cad215875f7471782283f8f8bb8e6c998`.
 
 **Linux.** The required CI job
-[`linux-atspi-x11`](https://github.com/OpenAdaptAI/openadapt-flow/actions/runs/30059807758/job/89378981573)
-at Flow commit `3de5fc67acf3024a621f812c5a6ed9be07fac335` ran a fresh GTK3
+[`linux-atspi-x11`](https://github.com/OpenAdaptAI/OpenAdapt/blob/893f40d683b4bd48ad9b049bc287c17b6776c759/packages/flow/.github/workflows/ci.yml#L663)
+at Flow commit `3de5fc67acf3024a621f812c5a6ed9be07fac335` (Actions run
+30059807758, job 89378981573) ran a fresh GTK3
 process per trial on Ubuntu 24.04 with X11: 3/3 exact file saves, 3/3
 ambiguous-target refusals, and 3/3 stale-target refusals, with no model
 calls. It covers that test app and CI image, and doesn't establish Wayland
@@ -51,12 +52,12 @@ or arbitrary third-party application support.
 **RDP.** Aardwolf 0.2.14 into a Parallels Windows 11 virtual machine
 completed 3/3 file saves through the Windows Run dialog, read back through
 guest tools
-([report](https://github.com/OpenAdaptAI/openadapt-flow/blob/6610d24cebba27918b8ea507b2f05a094057ac85/benchmark/rdp/results_82a658a_20260718.sanitized.json)).
+([report](https://github.com/OpenAdaptAI/OpenAdapt/blob/893f40d683b4bd48ad9b049bc287c17b6776c759/packages/flow/benchmark/rdp/results_82a658a_20260718.sanitized.json)).
 Separately, a real FreeRDP round trip recorded, compiled, and replayed a
 synthetic note task: 3/3 healthy saves and 3/3 drift halts, with no model
 calls
-([report at `affedc5f1f0de533a0744deaa8e30a203c91c6b3`](https://github.com/OpenAdaptAI/openadapt-flow/blob/affedc5f1f0de533a0744deaa8e30a203c91c6b3/benchmark/rdp_ladder/results.json),
-[Flow PR #177](https://github.com/OpenAdaptAI/openadapt-flow/pull/177)).
+([report](https://github.com/OpenAdaptAI/OpenAdapt/blob/893f40d683b4bd48ad9b049bc287c17b6776c759/packages/flow/benchmark/rdp_ladder/results.json), first retained at Flow commit
+`affedc5f1f0de533a0744deaa8e30a203c91c6b3`).
 That second run is a synthetic Linux app, not Aardwolf, a Windows app, or
 Citrix ICA/HDX.
 
@@ -66,8 +67,8 @@ stand-in with no web page structure it completed 3/3 healthy saves and 3/3
 severe-drift halts with no model calls. The retained result records
 `code_readiness_accepted: true` and `ica_hdx_accepted: false`: it is not a
 counted real ICA/HDX batch.
-[Report at `f6faac5b900b78cbda5980de0e983a9f987285ac`](https://github.com/OpenAdaptAI/openadapt-flow/blob/f6faac5b900b78cbda5980de0e983a9f987285ac/benchmark/citrix_workspace/results.json),
-[Flow PR #183](https://github.com/OpenAdaptAI/openadapt-flow/pull/183).
+[Report](https://github.com/OpenAdaptAI/OpenAdapt/blob/893f40d683b4bd48ad9b049bc287c17b6776c759/packages/flow/benchmark/citrix_workspace/results.json), first retained at Flow commit
+`f6faac5b900b78cbda5980de0e983a9f987285ac`.
 
 ## Fault cases
 
