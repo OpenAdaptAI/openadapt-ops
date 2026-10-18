@@ -131,5 +131,5 @@ workflow, record, or step.
 ## Related
 
 - [Handle a halt](handle-a-halt.md)
-- [Data handling](../security/data-handling.md#what-can-leave-your-network)
+- [Data handling](../security/data-handling.md#what-leaves-the-computer-by-command)
 - [Configuration: `human_decisions`](../reference/configuration.md#human_decisions)
