@@ -66,7 +66,7 @@ with an extra write to another table. Three checks judged the same runs:
 Each check also stopped 9 of the 18 runs that saved correctly, because the
 reply to the save never reached the client. A record check catches what its
 read can see, so it should cover every table a save can change.
-[Method and per-fault results](https://github.com/OpenAdaptAI/OpenAdapt/blob/893f40d683b4bd48ad9b049bc287c17b6776c759/packages/flow/benchmark/effect_e2e/EFFECT_E2E.md).
+[Method and per-fault results](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/benchmark/effect_e2e/EFFECT_E2E.md).
 
 ## How a save is approved
 
