@@ -1,20 +1,31 @@
 # What's New
 
-> *Auto-generated digest of recent changes across the OpenAdapt ecosystem.*
+> *Pull requests merged in the last {{ days }} days across the OpenAdapt repositories, grouped by the release that contains them.*
 > *Last updated: {{ generated_at }}*
 
-{% if summary %}
-{{ summary }}
-{% else %}
-{% for repo_name, prs in repos.items() %}
+Items under **Merged, not released yet** are on a repository's `main` branch only. They are not in any published package or installer yet.
+
+{% for repo_name, section in repos.items() %}
 ## {{ repo_name }}
 
-{% for pr in prs %}
-- [{{ pr.title }}]({{ pr.url }}) (#{{ pr.number }}), merged {{ pr.mergedAt[:10] }}
+{% for release in section.releases %}
+### Released in {{ release.label }}
+
+{% for pr in release.prs %}
+- [{{ pr.text }}]({{ pr.url }}) (#{{ pr.number }}), merged {{ pr.mergedAt[:10] }}
 {% endfor %}
 
+{% endfor %}
+{% if section.unreleased %}
+### Merged, not released yet
+
+{% for pr in section.unreleased %}
+- [{{ pr.text }}]({{ pr.url }}) (#{{ pr.number }}), merged {{ pr.mergedAt[:10] }}{% if pr.package != repo_name %}, {{ pr.package }}{% endif %}
+
+{% endfor %}
+
+{% endif %}
 {% endfor %}
 {% if not repos %}
 No merged PRs in the last {{ days }} days.
-{% endif %}
 {% endif %}

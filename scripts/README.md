@@ -195,6 +195,24 @@ Shrinking the backlog is the point: pin a reference properly and drop its row.
 `.github/workflows/action-pin-sweep.yml` runs the report weekly and keeps one
 issue up to date, the same pattern as `default-branch-sweep.yml`.
 
+## What's New grouped by release
+
+`generate_whats_new.py` lists the PRs merged in the last 7 days and places each
+under the first release whose tag contains its merge commit (GitHub compare
+API), or under **Merged, not released yet**. A merged PR is not a shipped
+feature, so the page never lists one as released before a tag includes it.
+
+Tags come from `releases` in `repos.yml`. A repository without it uses
+`v<version>`. In the OpenAdapt monorepo the launcher uses `v<version>`, and
+`packages/flow/`, `packages/agent/`, and `packages/types/` use the
+`<pypi-project>-v<version>` tags that `release-package.yml` creates. A PR
+belongs to the package path where it changes the most files.
+
+With `ANTHROPIC_API_KEY`, the LLM rewrites each PR title as one sentence. It
+returns a JSON map keyed by PR URL and has no say in the grouping. Without the
+key, or on any bad response, the page uses the titles. A failed GitHub request
+keeps the existing page.
+
 ## Guard and generator scripts
 
 The remaining scripts validate or generate the published site:
