@@ -113,13 +113,16 @@ accepts its own recording.
 In Claude Code:
 
 ```bash
-claude mcp add openadapt-authoring -- uvx --python 3.12 --from 'openadapt-agent[tutorial]' \
+claude mcp add --scope user openadapt-authoring -- uvx --python 3.12 --from 'openadapt-agent[tutorial]' \
   openadapt-agent serve --authoring --url https://staging.your-app.example --headed
 ```
 
+This only registers the server. Claude Code starts it the next time you run
+`claude`. The `tutorial` extra brings the browser driver that `--url` needs.
 `--url` opens the app in a new Chromium window with no saved sign-ins, and
-`--headed` keeps it visible so the person can sign in when the agent pauses.
-Ask your agent to record the task with you. When the task is done, the agent
+`--headed`, which `--url` requires, keeps it visible so the person can sign in
+when the agent pauses. Run `claude` and ask your agent to record the task with
+you. When the task is done, the agent
 calls `compile`, which writes the bundle to
 `~/.openadapt/runs/authoring/bundle` by default. The agent then calls
 `admit`: your MCP client shows the person a confirmation form, and only the
