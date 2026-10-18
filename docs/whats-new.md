@@ -1,7 +1,7 @@
 # What's New
 
 > *Pull requests merged in the last 7 days across the OpenAdapt repositories, grouped by the release that contains them.*
-> *Last updated: 2026-10-18 16:56 UTC*
+> *Last updated: 2026-10-18 17:54 UTC*
 
 Items under **Merged, not released yet** are on a repository's `main` branch only. They are not in any published package or installer yet.
 
@@ -23,7 +23,6 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 - [feat(flow): qualify on the deployment surface and halt when lookups are missing](https://github.com/OpenAdaptAI/OpenAdapt/pull/1231) (#1231), merged 2026-10-18
 - [feat(flow): headless FreeRDP transport with fixed session profile and session pool](https://github.com/OpenAdaptAI/OpenAdapt/pull/1226) (#1226), merged 2026-10-18
 - [feat(flow): detect font and layout drift and halt with a named reason](https://github.com/OpenAdaptAI/OpenAdapt/pull/1225) (#1225), merged 2026-10-18
-- [feat(flow): lift look-alike identity stops against a complete known-ID list](https://github.com/OpenAdaptAI/OpenAdapt/pull/1223) (#1223), merged 2026-10-18
 
 ### Released in openadapt-agent 2.2.1
 
@@ -32,11 +31,19 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 ### Merged, not released yet
 
 - [test(cli): fake an old agent under the openadapt_flow.agent alias too](https://github.com/OpenAdaptAI/OpenAdapt/pull/1259) (#1259), merged 2026-10-18
+- [feat(flow): show the values a save writes on the phone (presentation.fields)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1257) (#1257), merged 2026-10-18, openadapt-flow
 - [ci(release-package): find a draft GitHub Release by listing releases](https://github.com/OpenAdaptAI/OpenAdapt/pull/1256) (#1256), merged 2026-10-18
 - [fix(manifest): pin openadapt-privacy v1.1.2 to its rewritten commit](https://github.com/OpenAdaptAI/OpenAdapt/pull/1243) (#1243), merged 2026-10-18
 - [docs: fix approval-mode default, agent approval tools, and launcher serve help](https://github.com/OpenAdaptAI/OpenAdapt/pull/1238) (#1238), merged 2026-10-18, openadapt-flow
 
 ## openadapt-desktop
+
+### Released in openadapt-desktop 0.20.0
+
+- [test(shadow): make the shadow-mode tests pass on Windows](https://github.com/OpenAdaptAI/openadapt-desktop/pull/213) (#213), merged 2026-10-18
+- [feat(portal): one swipe card per decision for paused runs and saves](https://github.com/OpenAdaptAI/openadapt-desktop/pull/212) (#212), merged 2026-10-18
+- [Portal: relay Flow's save-approval tasks to the paired phone](https://github.com/OpenAdaptAI/openadapt-desktop/pull/207) (#207), merged 2026-10-18
+- [feat: opt-in, local shadow mode with a notice, status indicators, and draft offers](https://github.com/OpenAdaptAI/openadapt-desktop/pull/205) (#205), merged 2026-10-18
 
 ### Released in openadapt-desktop 0.19.0
 
@@ -65,13 +72,6 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 - [fix: make the source quick start work, and rewrite the README for developers](https://github.com/OpenAdaptAI/openadapt-desktop/pull/188) (#188), merged 2026-10-14
 - [chore: sync the published source policy](https://github.com/OpenAdaptAI/openadapt-desktop/pull/187) (#187), merged 2026-10-14
 - [fix: never call a saving task read-only; run Check it signed in](https://github.com/OpenAdaptAI/openadapt-desktop/pull/185) (#185), merged 2026-10-14
-- [feat: a person approves each save; Check it runs the local drill campaign; problems-only switch](https://github.com/OpenAdaptAI/openadapt-desktop/pull/184) (#184), merged 2026-10-14
-
-### Merged, not released yet
-
-- [feat(portal): one swipe card per decision for paused runs and saves](https://github.com/OpenAdaptAI/openadapt-desktop/pull/212) (#212), merged 2026-10-18
-- [Portal: relay Flow's save-approval tasks to the paired phone](https://github.com/OpenAdaptAI/openadapt-desktop/pull/207) (#207), merged 2026-10-18
-- [feat: opt-in, local shadow mode with a notice, status indicators, and draft offers](https://github.com/OpenAdaptAI/openadapt-desktop/pull/205) (#205), merged 2026-10-18
 
 ## openadapt-ml
 
