@@ -109,7 +109,9 @@ def collect() -> dict[str, list]:
 
 
 def render_page(pins: dict[str, str], programs: dict[str, list]) -> str:
-    versions = ", ".join(f"{name} {version}" for name, version in pins.items())
+    versions = ", ".join(
+        f"{name} {version}" for name, version in pins.items() if name.startswith("openadapt")
+    )
     lines = [
         "---",
         "description: >-",
