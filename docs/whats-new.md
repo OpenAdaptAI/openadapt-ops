@@ -1,7 +1,7 @@
 # What's New
 
 > *Pull requests merged in the last 7 days across the OpenAdapt repositories, grouped by the release that contains them.*
-> *Last updated: 2026-10-19 03:51 UTC*
+> *Last updated: 2026-10-19 17:05 UTC*
 
 Items under **Merged, not released yet** are on a repository's `main` branch only. They are not in any published package or installer yet.
 
@@ -9,26 +9,26 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 
 ### Merged, not released yet
 
+- [docs: answer the review's stale points in Often missed and the record-check text](https://github.com/OpenAdaptAI/OpenAdapt/pull/1341) (#1341), merged 2026-10-19, openadapt-flow
+- [feat(jit): a person names the record check's idempotency key at confirm_params](https://github.com/OpenAdaptAI/OpenAdapt/pull/1339) (#1339), merged 2026-10-19, openadapt-flow
+- [fix(jit): lift a retyped input from the saved record; distill drops a corrected save](https://github.com/OpenAdaptAI/OpenAdapt/pull/1336) (#1336), merged 2026-10-19, openadapt-flow
+- [docs: map rows for today's merges](https://github.com/OpenAdaptAI/OpenAdapt/pull/1330) (#1330), merged 2026-10-19
+- [docs(flow): point the stop-isn't-rollback limit at the ledger and undo](https://github.com/OpenAdaptAI/OpenAdapt/pull/1327) (#1327), merged 2026-10-19, openadapt-flow
+- [docs: publish llms-full.txt (the root .gitignore hid it)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1326) (#1326), merged 2026-10-19
+- [feat(flow): self-repair a halt with a short bridge of new steps](https://github.com/OpenAdaptAI/OpenAdapt/pull/1325) (#1325), merged 2026-10-19, openadapt-flow
+- [build(desktop): bump Tauri on the npm and cargo sides together; Dependabot leaves paired pins alone](https://github.com/OpenAdaptAI/OpenAdapt/pull/1324) (#1324), merged 2026-10-19
 - [flow: count a self-closing popup click as delivered only when the step expects it](https://github.com/OpenAdaptAI/OpenAdapt/pull/1321) (#1321), merged 2026-10-19, openadapt-flow
+- [fix(release): keep ignored local files out of the artifact inventory](https://github.com/OpenAdaptAI/OpenAdapt/pull/1320) (#1320), merged 2026-10-19, openadapt-flow
 - [docs: bring every capability-map row up to date](https://github.com/OpenAdaptAI/OpenAdapt/pull/1318) (#1318), merged 2026-10-19
-- [ci: cancel superseded scan runs on pull requests](https://github.com/OpenAdaptAI/OpenAdapt/pull/1295) (#1295), merged 2026-10-18
-- [fix(flow): re-observe once before halting on an identity mismatch](https://github.com/OpenAdaptAI/OpenAdapt/pull/1293) (#1293), merged 2026-10-18, openadapt-flow
-- [test(flow): induce --probe-on probes a desktop or remote test copy](https://github.com/OpenAdaptAI/OpenAdapt/pull/1289) (#1289), merged 2026-10-19, openadapt-flow
-- [test(flow): route reads the first screen from a desktop or remote surface](https://github.com/OpenAdaptAI/OpenAdapt/pull/1288) (#1288), merged 2026-10-18, openadapt-flow
-- [feat(agent): authoring pins the app a deployment file names](https://github.com/OpenAdaptAI/OpenAdapt/pull/1287) (#1287), merged 2026-10-18, openadapt-flow
-- [flow: keep pixel-path replays running across display scaling and ClearType](https://github.com/OpenAdaptAI/OpenAdapt/pull/1286) (#1286), merged 2026-10-19, openadapt-flow
-- [feat(flow): build a working record check from the app's own reads](https://github.com/OpenAdaptAI/OpenAdapt/pull/1284) (#1284), merged 2026-10-18, openadapt-flow
-- [feat(flow): compile_agent runs on Windows, macOS, Linux, RDP and Citrix apps](https://github.com/OpenAdaptAI/OpenAdapt/pull/1283) (#1283), merged 2026-10-19, openadapt-flow
-- [docs(flow): backend parity matrix and a --url regression test](https://github.com/OpenAdaptAI/OpenAdapt/pull/1282) (#1282), merged 2026-10-18, openadapt-flow
-- [build(desktop): release openadapt-desktop from the monorepo (reviewed version, no bot commit)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1281) (#1281), merged 2026-10-19, openadapt-flow
-- [ci: enforce each package's install weight](https://github.com/OpenAdaptAI/OpenAdapt/pull/1279) (#1279), merged 2026-10-19
-- [docs: code signing policy for SignPath Foundation](https://github.com/OpenAdaptAI/OpenAdapt/pull/1278) (#1278), merged 2026-10-18
-- [feat(flow): induce --probe-on settles a recording disagreement on a test copy](https://github.com/OpenAdaptAI/OpenAdapt/pull/1276) (#1276), merged 2026-10-19, openadapt-flow
-- [docs(readme): give your agent a program, not a mouse](https://github.com/OpenAdaptAI/OpenAdapt/pull/1273) (#1273), merged 2026-10-19
-- [ci: scan the checked-out history, not every branch](https://github.com/OpenAdaptAI/OpenAdapt/pull/1272) (#1272), merged 2026-10-18
-- [feat(capture): move plots, narration and profiling into extras](https://github.com/OpenAdaptAI/OpenAdapt/pull/1271) (#1271), merged 2026-10-18
-- [refactor(types): make openadapt-types the pydantic-only leaf again](https://github.com/OpenAdaptAI/OpenAdapt/pull/1270) (#1270), merged 2026-10-18, openadapt-flow
-- [build(monorepo): release openadapt-capture from the monorepo](https://github.com/OpenAdaptAI/OpenAdapt/pull/1268) (#1268), merged 2026-10-18
+- [build(deps): bump sha2 from 0.10.9 to 0.11.1 in /packages/desktop/src-tauri](https://github.com/OpenAdaptAI/OpenAdapt/pull/1317) (#1317), merged 2026-10-19
+- [build(deps-dev): bump typescript from 5.9.3 to 7.0.2 in /packages/desktop](https://github.com/OpenAdaptAI/OpenAdapt/pull/1315) (#1315), merged 2026-10-19
+- [build(deps): bump ruff from 0.16.5 to 0.17.1 in /packages/capture](https://github.com/OpenAdaptAI/OpenAdapt/pull/1312) (#1312), merged 2026-10-19
+- [build(deps): bump presidio-image-redactor from 0.0.58 to 0.0.60 in /packages/privacy](https://github.com/OpenAdaptAI/OpenAdapt/pull/1311) (#1311), merged 2026-10-19
+- [Calm UI 2/2 (desktop): Check it, Watch it run and the steps view in plain words (hold: founder review)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1310) (#1310), merged 2026-10-19
+- [style(desktop): Calm UI 1/2, one sans face and 'workflow' everywhere (hold: founder review)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1309) (#1309), merged 2026-10-19
+- [docs(capabilities): code as action for the run-1 agent](https://github.com/OpenAdaptAI/OpenAdapt/pull/1306) (#1306), merged 2026-10-19
+- [feat(flow): code-as-action agent for compile-agent run 1](https://github.com/OpenAdaptAI/OpenAdapt/pull/1305) (#1305), merged 2026-10-19, openadapt-flow
+- [bench(flow): Harness² with and without the read-back scorer on MockMed](https://github.com/OpenAdaptAI/OpenAdapt/pull/1304) (#1304), merged 2026-10-19, openadapt-flow
 
 ## openadapt-desktop
 
