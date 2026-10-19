@@ -1,7 +1,7 @@
 # What's New
 
 > *Pull requests merged in the last 7 days across the OpenAdapt repositories, grouped by the release that contains them.*
-> *Last updated: 2026-10-18 23:32 UTC*
+> *Last updated: 2026-10-19 00:56 UTC*
 
 Items under **Merged, not released yet** are on a repository's `main` branch only. They are not in any published package or installer yet.
 
@@ -16,6 +16,7 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 - [feat(flow): build a working record check from the app's own reads](https://github.com/OpenAdaptAI/OpenAdapt/pull/1284) (#1284), merged 2026-10-18, openadapt-flow
 - [docs(flow): backend parity matrix and a --url regression test](https://github.com/OpenAdaptAI/OpenAdapt/pull/1282) (#1282), merged 2026-10-18, openadapt-flow
 - [docs: code signing policy for SignPath Foundation](https://github.com/OpenAdaptAI/OpenAdapt/pull/1278) (#1278), merged 2026-10-18
+- [docs(readme): give your agent a program, not a mouse](https://github.com/OpenAdaptAI/OpenAdapt/pull/1273) (#1273), merged 2026-10-19
 - [ci: scan the checked-out history, not every branch](https://github.com/OpenAdaptAI/OpenAdapt/pull/1272) (#1272), merged 2026-10-18
 - [feat(capture): move plots, narration and profiling into extras](https://github.com/OpenAdaptAI/OpenAdapt/pull/1271) (#1271), merged 2026-10-18
 - [refactor(types): make openadapt-types the pydantic-only leaf again](https://github.com/OpenAdaptAI/OpenAdapt/pull/1270) (#1270), merged 2026-10-18, openadapt-flow
@@ -25,10 +26,9 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 - [feat(flow): deterministic variant router over separately admitted bundles](https://github.com/OpenAdaptAI/OpenAdapt/pull/1264) (#1264), merged 2026-10-18, openadapt-flow
 - [feat(flow): change ledger, write-ordering lint and declared undo after a stop](https://github.com/OpenAdaptAI/OpenAdapt/pull/1263) (#1263), merged 2026-10-18, openadapt-flow
 - [feat(privacy): scrub everything that leaves the machine by default](https://github.com/OpenAdaptAI/OpenAdapt/pull/1262) (#1262), merged 2026-10-18, openadapt-flow
+- [docs: one map of what OpenAdapt can do](https://github.com/OpenAdaptAI/OpenAdapt/pull/1260) (#1260), merged 2026-10-19, openadapt-flow
 - [test(cli): fake an old agent under the openadapt_flow.agent alias too](https://github.com/OpenAdaptAI/OpenAdapt/pull/1259) (#1259), merged 2026-10-18
 - [feat(flow): guarded save around any agent's write](https://github.com/OpenAdaptAI/OpenAdapt/pull/1258) (#1258), merged 2026-10-18, openadapt-flow
-- [feat(flow): show the values a save writes on the phone (presentation.fields)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1257) (#1257), merged 2026-10-18, openadapt-flow
-- [ci(release-package): find a draft GitHub Release by listing releases](https://github.com/OpenAdaptAI/OpenAdapt/pull/1256) (#1256), merged 2026-10-18
 
 ## openadapt-desktop
 
