@@ -1,7 +1,7 @@
 # What's New
 
 > *Pull requests merged in the last 7 days across the OpenAdapt repositories, grouped by the release that contains them.*
-> *Last updated: 2026-10-19 00:56 UTC*
+> *Last updated: 2026-10-19 03:51 UTC*
 
 Items under **Merged, not released yet** are on a repository's `main` branch only. They are not in any published package or installer yet.
 
@@ -9,26 +9,26 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 
 ### Merged, not released yet
 
+- [flow: count a self-closing popup click as delivered only when the step expects it](https://github.com/OpenAdaptAI/OpenAdapt/pull/1321) (#1321), merged 2026-10-19, openadapt-flow
+- [docs: bring every capability-map row up to date](https://github.com/OpenAdaptAI/OpenAdapt/pull/1318) (#1318), merged 2026-10-19
 - [ci: cancel superseded scan runs on pull requests](https://github.com/OpenAdaptAI/OpenAdapt/pull/1295) (#1295), merged 2026-10-18
 - [fix(flow): re-observe once before halting on an identity mismatch](https://github.com/OpenAdaptAI/OpenAdapt/pull/1293) (#1293), merged 2026-10-18, openadapt-flow
+- [test(flow): induce --probe-on probes a desktop or remote test copy](https://github.com/OpenAdaptAI/OpenAdapt/pull/1289) (#1289), merged 2026-10-19, openadapt-flow
 - [test(flow): route reads the first screen from a desktop or remote surface](https://github.com/OpenAdaptAI/OpenAdapt/pull/1288) (#1288), merged 2026-10-18, openadapt-flow
 - [feat(agent): authoring pins the app a deployment file names](https://github.com/OpenAdaptAI/OpenAdapt/pull/1287) (#1287), merged 2026-10-18, openadapt-flow
+- [flow: keep pixel-path replays running across display scaling and ClearType](https://github.com/OpenAdaptAI/OpenAdapt/pull/1286) (#1286), merged 2026-10-19, openadapt-flow
 - [feat(flow): build a working record check from the app's own reads](https://github.com/OpenAdaptAI/OpenAdapt/pull/1284) (#1284), merged 2026-10-18, openadapt-flow
+- [feat(flow): compile_agent runs on Windows, macOS, Linux, RDP and Citrix apps](https://github.com/OpenAdaptAI/OpenAdapt/pull/1283) (#1283), merged 2026-10-19, openadapt-flow
 - [docs(flow): backend parity matrix and a --url regression test](https://github.com/OpenAdaptAI/OpenAdapt/pull/1282) (#1282), merged 2026-10-18, openadapt-flow
+- [build(desktop): release openadapt-desktop from the monorepo (reviewed version, no bot commit)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1281) (#1281), merged 2026-10-19, openadapt-flow
+- [ci: enforce each package's install weight](https://github.com/OpenAdaptAI/OpenAdapt/pull/1279) (#1279), merged 2026-10-19
 - [docs: code signing policy for SignPath Foundation](https://github.com/OpenAdaptAI/OpenAdapt/pull/1278) (#1278), merged 2026-10-18
+- [feat(flow): induce --probe-on settles a recording disagreement on a test copy](https://github.com/OpenAdaptAI/OpenAdapt/pull/1276) (#1276), merged 2026-10-19, openadapt-flow
 - [docs(readme): give your agent a program, not a mouse](https://github.com/OpenAdaptAI/OpenAdapt/pull/1273) (#1273), merged 2026-10-19
 - [ci: scan the checked-out history, not every branch](https://github.com/OpenAdaptAI/OpenAdapt/pull/1272) (#1272), merged 2026-10-18
 - [feat(capture): move plots, narration and profiling into extras](https://github.com/OpenAdaptAI/OpenAdapt/pull/1271) (#1271), merged 2026-10-18
 - [refactor(types): make openadapt-types the pydantic-only leaf again](https://github.com/OpenAdaptAI/OpenAdapt/pull/1270) (#1270), merged 2026-10-18, openadapt-flow
 - [build(monorepo): release openadapt-capture from the monorepo](https://github.com/OpenAdaptAI/OpenAdapt/pull/1268) (#1268), merged 2026-10-18
-- [build(monorepo): fold openadapt-desktop into packages/desktop (with history, CI)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1267) (#1267), merged 2026-10-18
-- [build(monorepo): fold openadapt-privacy into packages/privacy (with history)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1266) (#1266), merged 2026-10-18
-- [feat(flow): deterministic variant router over separately admitted bundles](https://github.com/OpenAdaptAI/OpenAdapt/pull/1264) (#1264), merged 2026-10-18, openadapt-flow
-- [feat(flow): change ledger, write-ordering lint and declared undo after a stop](https://github.com/OpenAdaptAI/OpenAdapt/pull/1263) (#1263), merged 2026-10-18, openadapt-flow
-- [feat(privacy): scrub everything that leaves the machine by default](https://github.com/OpenAdaptAI/OpenAdapt/pull/1262) (#1262), merged 2026-10-18, openadapt-flow
-- [docs: one map of what OpenAdapt can do](https://github.com/OpenAdaptAI/OpenAdapt/pull/1260) (#1260), merged 2026-10-19, openadapt-flow
-- [test(cli): fake an old agent under the openadapt_flow.agent alias too](https://github.com/OpenAdaptAI/OpenAdapt/pull/1259) (#1259), merged 2026-10-18
-- [feat(flow): guarded save around any agent's write](https://github.com/OpenAdaptAI/OpenAdapt/pull/1258) (#1258), merged 2026-10-18, openadapt-flow
 
 ## openadapt-desktop
 
