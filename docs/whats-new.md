@@ -1,34 +1,40 @@
 # What's New
 
 > *Pull requests merged in the last 7 days across the OpenAdapt repositories, grouped by the release that contains them.*
-> *Last updated: 2026-10-20 15:41 UTC*
+> *Last updated: 2026-10-20 20:44 UTC*
 
 Items under **Merged, not released yet** are on a repository's `main` branch only. They are not in any published package or installer yet.
 
 ## OpenAdapt
 
+### Released in openadapt-flow 2.3.0
+
+- [chore(release): openadapt-flow 2.3.0](https://github.com/OpenAdaptAI/OpenAdapt/pull/1427) (#1427), merged 2026-10-20
+- [batch: teach scope, run authorizations, redaction, merge queue, main dedupe, Desktop program map, tray fold](https://github.com/OpenAdaptAI/OpenAdapt/pull/1421) (#1421), merged 2026-10-20
+- [test(flow): pin the clock in two deferred-report assertions](https://github.com/OpenAdaptAI/OpenAdapt/pull/1418) (#1418), merged 2026-10-20
+- [flow: authorization follow-ups: one count per report, closed item labels](https://github.com/OpenAdaptAI/OpenAdapt/pull/1416) (#1416), merged 2026-10-20
+
+### Released in OpenAdapt 1.18.0
+
+- [fix(cli): the PATH version check never runs inside the check it starts](https://github.com/OpenAdaptAI/OpenAdapt/pull/1432) (#1432), merged 2026-10-20
+- [docs: public copy states what was measured, not what wasn't](https://github.com/OpenAdaptAI/OpenAdapt/pull/1430) (#1430), merged 2026-10-20
+- [chore(release): openadapt 1.18.0](https://github.com/OpenAdaptAI/OpenAdapt/pull/1429) (#1429), merged 2026-10-20
+- [feat(manifest): bind components released from the monorepo](https://github.com/OpenAdaptAI/OpenAdapt/pull/1428) (#1428), merged 2026-10-20
+- [chore(deps): Bump click from 8.4.2 to 8.5.0 in /packages/tray](https://github.com/OpenAdaptAI/OpenAdapt/pull/1426) (#1426), merged 2026-10-20
+- [chore(deps): Bump pynput from 1.8.1 to 1.8.2 in /packages/tray](https://github.com/OpenAdaptAI/OpenAdapt/pull/1425) (#1425), merged 2026-10-20
+- [chore(deps): Bump pygments from 2.20.0 to 2.21.0 in /packages/tray](https://github.com/OpenAdaptAI/OpenAdapt/pull/1424) (#1424), merged 2026-10-20
+- [chore(deps): Bump pyobjc-framework-cocoa from 12.1 to 12.2.2 in /packages/tray](https://github.com/OpenAdaptAI/OpenAdapt/pull/1423) (#1423), merged 2026-10-20
+- [chore(deps): Bump ruff from 0.16.0 to 0.17.1 in /packages/tray](https://github.com/OpenAdaptAI/OpenAdapt/pull/1422) (#1422), merged 2026-10-20
+- [ci(desktop): resume a release that reached PyPI but not its published release](https://github.com/OpenAdaptAI/OpenAdapt/pull/1417) (#1417), merged 2026-10-20
+- [ci: cancel superseded Packages runs on main unless the push changes Desktop](https://github.com/OpenAdaptAI/OpenAdapt/pull/1415) (#1415), merged 2026-10-20
+
 ### Merged, not released yet
 
-- [batch: teach scope, run authorizations, redaction, merge queue, main dedupe, Desktop program map, tray fold](https://github.com/OpenAdaptAI/OpenAdapt/pull/1421) (#1421), merged 2026-10-20, openadapt-flow
-- [test(flow): pin the clock in two deferred-report assertions](https://github.com/OpenAdaptAI/OpenAdapt/pull/1418) (#1418), merged 2026-10-20, openadapt-flow
-- [ci(desktop): resume a release that reached PyPI but not its published release](https://github.com/OpenAdaptAI/OpenAdapt/pull/1417) (#1417), merged 2026-10-20
-- [flow: authorization follow-ups: one count per report, closed item labels](https://github.com/OpenAdaptAI/OpenAdapt/pull/1416) (#1416), merged 2026-10-20, openadapt-flow
-- [ci: cancel superseded Packages runs on main unless the push changes Desktop](https://github.com/OpenAdaptAI/OpenAdapt/pull/1415) (#1415), merged 2026-10-20
-- [ci(desktop): start the Desktop release when Packages succeeds on main](https://github.com/OpenAdaptAI/OpenAdapt/pull/1414) (#1414), merged 2026-10-20
-- [ci(desktop): cache Rust and uv in Desktop builds; release workflows cache-free](https://github.com/OpenAdaptAI/OpenAdapt/pull/1413) (#1413), merged 2026-10-20
-- [ci: run every required workflow on merge_group; review every PR base](https://github.com/OpenAdaptAI/OpenAdapt/pull/1412) (#1412), merged 2026-10-20
-- [ci: package-only pull requests skip the launcher suite and manifest checks](https://github.com/OpenAdaptAI/OpenAdapt/pull/1411) (#1411), merged 2026-10-20
-- [ci: PR tier runs one Linux lane; merge queue and main run the full matrix](https://github.com/OpenAdaptAI/OpenAdapt/pull/1410) (#1410), merged 2026-10-20
-- [scoreboard: OpenEMR referrals r3–r6 on the certified bundle, reports redacted and under an offline Seal](https://github.com/OpenAdaptAI/OpenAdapt/pull/1409) (#1409), merged 2026-10-20, openadapt-flow
-- [feat(quickstart): show it once, run it, break it](https://github.com/OpenAdaptAI/OpenAdapt/pull/1408) (#1408), merged 2026-10-20, openadapt-flow
-- [flow: redact session tokens from run reports before they are sealed](https://github.com/OpenAdaptAI/OpenAdapt/pull/1407) (#1407), merged 2026-10-20, openadapt-flow
-- [fix(flow): bundles certified before #1373 load again (contract hash ignores forbid_collateral_change=False)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1406) (#1406), merged 2026-10-20, openadapt-flow
-- [flow: compile named sections for every program; the program map and Desktop fold them](https://github.com/OpenAdaptAI/OpenAdapt/pull/1405) (#1405), merged 2026-10-20, openadapt-flow
-- [fix(cli): quickstart's next steps reach the same version under uvx](https://github.com/OpenAdaptAI/OpenAdapt/pull/1404) (#1404), merged 2026-10-20, openadapt-flow
-- [ci(desktop): verify the Desktop release's own asset set](https://github.com/OpenAdaptAI/OpenAdapt/pull/1403) (#1403), merged 2026-10-20
-- [openemr referral: one duplicate rule for both compile paths; qualification checks a real possible duplicate](https://github.com/OpenAdaptAI/OpenAdapt/pull/1402) (#1402), merged 2026-10-20, openadapt-flow
-- [flow: run authorizations signed with a GitHub SSH key, and operator profiles](https://github.com/OpenAdaptAI/OpenAdapt/pull/1401) (#1401), merged 2026-10-20, openadapt-flow
-- [ci(desktop): a dispatched release waits on a first-parent commit](https://github.com/OpenAdaptAI/OpenAdapt/pull/1398) (#1398), merged 2026-10-20
+- [Qualify an already-qualified, encrypted or sealed bundle](https://github.com/OpenAdaptAI/OpenAdapt/pull/1454) (#1454), merged 2026-10-20, openadapt-flow
+- [Seal a qualified bundle: drop its authorization template with its certification](https://github.com/OpenAdaptAI/OpenAdapt/pull/1453) (#1453), merged 2026-10-20, openadapt-flow
+- [Run an API step under a managed dispatch that names it](https://github.com/OpenAdaptAI/OpenAdapt/pull/1444) (#1444), merged 2026-10-20, openadapt-flow
+- [verify-run: frame conditions (nothing outside the declared delta changed)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1443) (#1443), merged 2026-10-20, openadapt-flow
+- [docs: record checks that cover their own blind spots (design)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1434) (#1434), merged 2026-10-20, openadapt-flow
 
 ## openadapt-desktop
 

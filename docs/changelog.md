@@ -5,19 +5,21 @@
 
 ## OpenAdapt
 
+- **[v1.18.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.18.0)** (2026-10-20)
+  Breaking Changes
+- **[openadapt-types-v0.24.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-types-v0.24.0)** (2026-10-20)
+  The models live in this package again, and it depends only on `pydantic>=2.5`; the Python 3.13 cap is gone. `openadapt-flow` 2.3.0 and later depend on it, and `openadapt_flow.contracts` returns the same modules as `openadapt_types` ([#1270](https://github.com/OpenAdaptAI/OpenAdapt/pull/1270)). Upgrade `openadapt-flow` to 2.3.0 together with this package: openadapt-flow 2.2.0 carries its own copy o
+- **[openadapt-flow-v2.3.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-flow-v2.3.0)** (2026-10-20)
+  The shared contracts are back in `openadapt-types`, which depends only on Pydantic; this package requires `openadapt-types>=0.24.0,<0.25.0`, and `openadapt_flow.contracts` returns the same modules as `openadapt_types` ([#1270](https://github.com/OpenAdaptAI/OpenAdapt/pull/1270)).
 - **[openadapt-desktop-v0.22.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-desktop-v0.22.0)** (2026-10-20)
   OpenAdapt Desktop 0.22.0: the PyPI package and the native installers.
 - **[openadapt-types-v0.23.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-types-v0.23.0)** (2026-10-18)
   First release from the [OpenAdapt monorepo](https://github.com/OpenAdaptAI/OpenAdapt) (`packages/types`). The models now live in `openadapt_flow.contracts`; this package re-exports them, so `import openadapt_types` keeps working. It requires `openadapt-flow>=2.2.0,<3`.
-- **[openadapt-flow-v2.2.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-flow-v2.2.0)** (2026-10-18)
-  First release from the [OpenAdapt monorepo](https://github.com/OpenAdaptAI/OpenAdapt) (`packages/flow`). The shared contracts (`openadapt_flow.contracts`) and the MCP agent server (`openadapt_flow.agent`) now ship inside this package; `openadapt-types` and `openadapt-agent` are thin compatibility packages over them.
-- **[openadapt-agent-v2.2.1](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-agent-v2.2.1)** (2026-10-18)
-  First release from the [OpenAdapt monorepo](https://github.com/OpenAdaptAI/OpenAdapt) (`packages/agent`). The MCP agent server now lives in `openadapt_flow.agent`; this package is a compatibility package over it, so `openadapt-agent` and `import openadapt_agent` keep working. It requires `openadapt-flow>=2.2.0,<3`.
-- **[v1.17.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.17.0)** (2026-10-16)
-  Breaking Changes
 
 ## openadapt-flow
 
+- **[v2.3.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v230-2026-10-20)** (2026-10-20)
+  The shared contracts are back in `openadapt-types`, which depends only on Pydantic; this package requires `openadapt-types>=0.24.0,<0.25.0`, and `openadapt_flow.contracts` returns the same modules as `openadapt_types` ([#1270](https://github.com/OpenAdaptAI/OpenAdapt/pull/1270)).
 - **[v2.2.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v220-2026-10-18)** (2026-10-18)
   First release from the [OpenAdapt monorepo](https://github.com/OpenAdaptAI/OpenAdapt) (`packages/flow`). The shared contracts (`openadapt_flow.contracts`) and the MCP agent server (`openadapt_flow.agent`) now ship inside this package; `openadapt-types` and `openadapt-agent` are thin compatibility packages over them.
 - **[v2.1.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v210-2026-10-16)** (2026-10-16)
@@ -26,8 +28,6 @@
   `openadapt-flow run` now uses the `each_item` approval mode unless the run names a mode ([#497](https://github.com/OpenAdaptAI/openadapt-flow/pull/497)). Before 2.0.0 only the Standard and Regulated profiles were gated by default; a Demo or profile-less run saved without asking.
 - **[v1.35.1](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v1351-2026-09-08)** (2026-09-08)
   Repeat secret-boundary checks before and after each screenshot attempt while login frames change.
-- **[v1.35.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v1350-2026-09-02)** (2026-09-02)
-  Bind updated process graph schema ([#444](https://github.com/OpenAdaptAI/openadapt-flow/pull/444),
 
 ## openadapt-desktop
 
@@ -96,6 +96,8 @@
 
 ## openadapt-types
 
+- **[v0.24.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/types/CHANGELOG.md#v0240-2026-10-20)** (2026-10-20)
+  The models live in this package again, and it depends only on `pydantic>=2.5`; the Python 3.13 cap is gone. `openadapt-flow` 2.3.0 and later depend on it, and `openadapt_flow.contracts` returns the same modules as `openadapt_types` ([#1270](https://github.com/OpenAdaptAI/OpenAdapt/pull/1270)). Upgrade `openadapt-flow` to 2.3.0 together with this package: openadapt-flow 2.2.0 carries its own copy o
 - **[v0.23.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/types/CHANGELOG.md#v0230-2026-10-18)** (2026-10-18)
   First release from the [OpenAdapt monorepo](https://github.com/OpenAdaptAI/OpenAdapt) (`packages/types`). The models now live in `openadapt_flow.contracts`; this package re-exports them, so `import openadapt_types` keeps working. It requires `openadapt-flow>=2.2.0,<3`.
 - **[v0.22.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/types/CHANGELOG.md#v0220-2026-10-17)** (2026-10-17)
@@ -104,8 +106,6 @@
   **execute**: Opt-in execution.halted webhook
 - **[v0.20.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/types/CHANGELOG.md#v0200-2026-10-15)** (2026-10-15)
   Sync the published source policy ([#42](https://github.com/OpenAdaptAI/openadapt-types/pull/42),
-- **[v0.19.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/types/CHANGELOG.md#v0190-2026-10-14)** (2026-10-14)
-  Add plain run results and a shared vocabulary lint
 
 ## openadapt-grounding
 
