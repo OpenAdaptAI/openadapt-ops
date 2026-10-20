@@ -5,6 +5,8 @@
 
 ## OpenAdapt
 
+- **[openadapt-desktop-v0.22.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-desktop-v0.22.0)** (2026-10-20)
+  OpenAdapt Desktop 0.22.0: the PyPI package and the native installers.
 - **[openadapt-types-v0.23.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-types-v0.23.0)** (2026-10-18)
   First release from the [OpenAdapt monorepo](https://github.com/OpenAdaptAI/OpenAdapt) (`packages/types`). The models now live in `openadapt_flow.contracts`; this package re-exports them, so `import openadapt_types` keeps working. It requires `openadapt-flow>=2.2.0,<3`.
 - **[openadapt-flow-v2.2.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-flow-v2.2.0)** (2026-10-18)
@@ -13,8 +15,6 @@
   First release from the [OpenAdapt monorepo](https://github.com/OpenAdaptAI/OpenAdapt) (`packages/agent`). The MCP agent server now lives in `openadapt_flow.agent`; this package is a compatibility package over it, so `openadapt-agent` and `import openadapt_agent` keep working. It requires `openadapt-flow>=2.2.0,<3`.
 - **[v1.17.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.17.0)** (2026-10-16)
   Breaking Changes
-- **[v1.16.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.16.0)** (2026-08-26)
-  Bug Fixes
 
 ## openadapt-flow
 
