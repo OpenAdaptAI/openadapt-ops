@@ -1,7 +1,7 @@
 # What's New
 
 > *Pull requests merged in the last 7 days across the OpenAdapt repositories, grouped by the release that contains them.*
-> *Last updated: 2026-10-20 06:52 UTC*
+> *Last updated: 2026-10-20 15:41 UTC*
 
 Items under **Merged, not released yet** are on a repository's `main` branch only. They are not in any published package or installer yet.
 
@@ -9,26 +9,26 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 
 ### Merged, not released yet
 
+- [batch: teach scope, run authorizations, redaction, merge queue, main dedupe, Desktop program map, tray fold](https://github.com/OpenAdaptAI/OpenAdapt/pull/1421) (#1421), merged 2026-10-20, openadapt-flow
+- [test(flow): pin the clock in two deferred-report assertions](https://github.com/OpenAdaptAI/OpenAdapt/pull/1418) (#1418), merged 2026-10-20, openadapt-flow
 - [ci(desktop): resume a release that reached PyPI but not its published release](https://github.com/OpenAdaptAI/OpenAdapt/pull/1417) (#1417), merged 2026-10-20
+- [flow: authorization follow-ups: one count per report, closed item labels](https://github.com/OpenAdaptAI/OpenAdapt/pull/1416) (#1416), merged 2026-10-20, openadapt-flow
+- [ci: cancel superseded Packages runs on main unless the push changes Desktop](https://github.com/OpenAdaptAI/OpenAdapt/pull/1415) (#1415), merged 2026-10-20
 - [ci(desktop): start the Desktop release when Packages succeeds on main](https://github.com/OpenAdaptAI/OpenAdapt/pull/1414) (#1414), merged 2026-10-20
 - [ci(desktop): cache Rust and uv in Desktop builds; release workflows cache-free](https://github.com/OpenAdaptAI/OpenAdapt/pull/1413) (#1413), merged 2026-10-20
+- [ci: run every required workflow on merge_group; review every PR base](https://github.com/OpenAdaptAI/OpenAdapt/pull/1412) (#1412), merged 2026-10-20
 - [ci: package-only pull requests skip the launcher suite and manifest checks](https://github.com/OpenAdaptAI/OpenAdapt/pull/1411) (#1411), merged 2026-10-20
 - [ci: PR tier runs one Linux lane; merge queue and main run the full matrix](https://github.com/OpenAdaptAI/OpenAdapt/pull/1410) (#1410), merged 2026-10-20
 - [scoreboard: OpenEMR referrals r3–r6 on the certified bundle, reports redacted and under an offline Seal](https://github.com/OpenAdaptAI/OpenAdapt/pull/1409) (#1409), merged 2026-10-20, openadapt-flow
+- [feat(quickstart): show it once, run it, break it](https://github.com/OpenAdaptAI/OpenAdapt/pull/1408) (#1408), merged 2026-10-20, openadapt-flow
+- [flow: redact session tokens from run reports before they are sealed](https://github.com/OpenAdaptAI/OpenAdapt/pull/1407) (#1407), merged 2026-10-20, openadapt-flow
 - [fix(flow): bundles certified before #1373 load again (contract hash ignores forbid_collateral_change=False)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1406) (#1406), merged 2026-10-20, openadapt-flow
 - [flow: compile named sections for every program; the program map and Desktop fold them](https://github.com/OpenAdaptAI/OpenAdapt/pull/1405) (#1405), merged 2026-10-20, openadapt-flow
 - [fix(cli): quickstart's next steps reach the same version under uvx](https://github.com/OpenAdaptAI/OpenAdapt/pull/1404) (#1404), merged 2026-10-20, openadapt-flow
 - [ci(desktop): verify the Desktop release's own asset set](https://github.com/OpenAdaptAI/OpenAdapt/pull/1403) (#1403), merged 2026-10-20
 - [openemr referral: one duplicate rule for both compile paths; qualification checks a real possible duplicate](https://github.com/OpenAdaptAI/OpenAdapt/pull/1402) (#1402), merged 2026-10-20, openadapt-flow
+- [flow: run authorizations signed with a GitHub SSH key, and operator profiles](https://github.com/OpenAdaptAI/OpenAdapt/pull/1401) (#1401), merged 2026-10-20, openadapt-flow
 - [ci(desktop): a dispatched release waits on a first-parent commit](https://github.com/OpenAdaptAI/OpenAdapt/pull/1398) (#1398), merged 2026-10-20
-- [replayer: governed runs halt before acting on an armed step whose identity is unreadable (#1396)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1397) (#1397), merged 2026-10-20, openadapt-flow
-- [flow: a scroll skipped because its target was already in view can verify](https://github.com/OpenAdaptAI/OpenAdapt/pull/1395) (#1395), merged 2026-10-20, openadapt-flow
-- [flow: anchor offline Seals in Sigstore Rekor, verify offline](https://github.com/OpenAdaptAI/OpenAdapt/pull/1394) (#1394), merged 2026-10-20, openadapt-flow
-- [flow: sign offline Seals with customer-held keys](https://github.com/OpenAdaptAI/OpenAdapt/pull/1392) (#1392), merged 2026-10-20, openadapt-flow
-- [fix(release): run the release App check before checkout from the workspace](https://github.com/OpenAdaptAI/OpenAdapt/pull/1390) (#1390), merged 2026-10-20
-- [feat(program-graph): one shared program map package for Desktop, Cloud and the site](https://github.com/OpenAdaptAI/OpenAdapt/pull/1387) (#1387), merged 2026-10-20, openadapt-flow
-- [batch: benchmark, scoreboard and README (#1340 #1352 #1380 #1365 #1338) — after #1384](https://github.com/OpenAdaptAI/OpenAdapt/pull/1385) (#1385), merged 2026-10-20, openadapt-flow
-- [batch: repair, safety, teaching agents and evidence (#1375 #1360 #1359 #1354 #1335 #1357 #1298 #1291 #1346)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1384) (#1384), merged 2026-10-20, openadapt-flow
 
 ## openadapt-desktop
 
