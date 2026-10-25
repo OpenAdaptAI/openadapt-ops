@@ -5,6 +5,8 @@
 
 ## OpenAdapt
 
+- **[openadapt-flow-v2.4.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-flow-v2.4.0)** (2026-10-25)
+  A person's approval counts only when a registered approver key signed it, and the verification, identity and recovery paths below fail closed where they used to pass.
 - **[openadapt-desktop-v0.24.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-desktop-v0.24.0)** (2026-10-25)
   OpenAdapt Desktop 0.24.0: the PyPI package and the native installers.
 - **[openadapt-desktop-v0.23.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-desktop-v0.23.0)** (2026-10-25)
@@ -13,11 +15,11 @@
   Breaking Changes
 - **[openadapt-types-v0.24.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-types-v0.24.0)** (2026-10-20)
   The models live in this package again, and it depends only on `pydantic>=2.5`; the Python 3.13 cap is gone. `openadapt-flow` 2.3.0 and later depend on it, and `openadapt_flow.contracts` returns the same modules as `openadapt_types` ([#1270](https://github.com/OpenAdaptAI/OpenAdapt/pull/1270)). Upgrade `openadapt-flow` to 2.3.0 together with this package: openadapt-flow 2.2.0 carries its own copy o
-- **[openadapt-flow-v2.3.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-flow-v2.3.0)** (2026-10-20)
-  The shared contracts are back in `openadapt-types`, which depends only on Pydantic; this package requires `openadapt-types>=0.24.0,<0.25.0`, and `openadapt_flow.contracts` returns the same modules as `openadapt_types` ([#1270](https://github.com/OpenAdaptAI/OpenAdapt/pull/1270)).
 
 ## openadapt-flow
 
+- **[v2.4.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v240-2026-10-25)** (2026-10-25)
+  A person's approval counts only when a registered approver key signed it, and the verification, identity and recovery paths below fail closed where they used to pass.
 - **[v2.3.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v230-2026-10-20)** (2026-10-20)
   The shared contracts are back in `openadapt-types`, which depends only on Pydantic; this package requires `openadapt-types>=0.24.0,<0.25.0`, and `openadapt_flow.contracts` returns the same modules as `openadapt_types` ([#1270](https://github.com/OpenAdaptAI/OpenAdapt/pull/1270)).
 - **[v2.2.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v220-2026-10-18)** (2026-10-18)
@@ -26,8 +28,6 @@
   A calling agent can demonstrate the fix for a halted run; the result is a governed repair candidate (review, replay and fault campaigns, human approval) with provenance, scrubbed-screen evidence and the screen-share mode recorded. `run --hold-on-halt` keeps a halted browser page open for that repair ([#504](https://github.com/OpenAdaptAI/openadapt-flow/pull/504)).
 - **[v2.0.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v200-2026-10-15)** (2026-10-15)
   `openadapt-flow run` now uses the `each_item` approval mode unless the run names a mode ([#497](https://github.com/OpenAdaptAI/openadapt-flow/pull/497)). Before 2.0.0 only the Standard and Regulated profiles were gated by default; a Demo or profile-less run saved without asking.
-- **[v1.35.1](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v1351-2026-09-08)** (2026-09-08)
-  Repeat secret-boundary checks before and after each screenshot attempt while login frames change.
 
 ## openadapt-desktop
 
