@@ -1,7 +1,7 @@
 # What's New
 
 > *Pull requests merged in the last 7 days across the OpenAdapt repositories, grouped by the release that contains them.*
-> *Last updated: 2026-10-25 12:20 UTC*
+> *Last updated: 2026-10-25 13:28 UTC*
 
 Items under **Merged, not released yet** are on a repository's `main` branch only. They are not in any published package or installer yet.
 
@@ -20,6 +20,7 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 - [Behavioral held-out score; induce help states its limits](https://github.com/OpenAdaptAI/OpenAdapt/pull/1527) (#1527), merged 2026-10-25, openadapt-flow
 - [docs(flow): the run --profile standard examples name an execution surface](https://github.com/OpenAdaptAI/OpenAdapt/pull/1525) (#1525), merged 2026-10-25, openadapt-flow
 - [build(desktop): keep the macOS Intel onnxruntime pin at 1.20.1](https://github.com/OpenAdaptAI/OpenAdapt/pull/1522) (#1522), merged 2026-10-25
+- [feat(desktop): 0.24.0, the Touch ID approver key and one-tap stop review](https://github.com/OpenAdaptAI/OpenAdapt/pull/1519) (#1519), merged 2026-10-25, openadapt-flow
 - [problems_only switch policy: input problems leave it on, a person re-arms with one signed tap](https://github.com/OpenAdaptAI/OpenAdapt/pull/1517) (#1517), merged 2026-10-25, openadapt-flow
 - [fix(effects): treat empty ui read-back confirmation as indeterminate (#1475)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1515) (#1515), merged 2026-10-25, openadapt-flow
 - [Relabel repair, a duplicate check that reads the match list, ISO dates at intake, and two re-admission and approval fixes](https://github.com/OpenAdaptAI/OpenAdapt/pull/1514) (#1514), merged 2026-10-25, openadapt-flow
@@ -28,7 +29,6 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 - [feat: turn a read-only browser task into a tool for your coding agent](https://github.com/OpenAdaptAI/OpenAdapt/pull/1502) (#1502), merged 2026-10-25, openadapt-flow
 - [fix(flow): resume checks approvals against the --key-dir it is given](https://github.com/OpenAdaptAI/OpenAdapt/pull/1501) (#1501), merged 2026-10-25, openadapt-flow
 - [fix(flow): process workers always end their child, even on failure](https://github.com/OpenAdaptAI/OpenAdapt/pull/1498) (#1498), merged 2026-10-24, openadapt-flow
-- [docs(flow): decomposition plan for the largest files](https://github.com/OpenAdaptAI/OpenAdapt/pull/1497) (#1497), merged 2026-10-24, openadapt-flow
 
 ## openadapt-desktop
 
