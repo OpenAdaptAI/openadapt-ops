@@ -5,6 +5,8 @@
 
 ## OpenAdapt
 
+- **[openadapt-desktop-v0.23.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-desktop-v0.23.0)** (2026-10-25)
+  OpenAdapt Desktop 0.23.0: the PyPI package and the native installers.
 - **[v1.18.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.18.0)** (2026-10-20)
   Breaking Changes
 - **[openadapt-types-v0.24.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-types-v0.24.0)** (2026-10-20)
@@ -13,8 +15,6 @@
   The shared contracts are back in `openadapt-types`, which depends only on Pydantic; this package requires `openadapt-types>=0.24.0,<0.25.0`, and `openadapt_flow.contracts` returns the same modules as `openadapt_types` ([#1270](https://github.com/OpenAdaptAI/OpenAdapt/pull/1270)).
 - **[openadapt-desktop-v0.22.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-desktop-v0.22.0)** (2026-10-20)
   OpenAdapt Desktop 0.22.0: the PyPI package and the native installers.
-- **[openadapt-types-v0.23.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-types-v0.23.0)** (2026-10-18)
-  First release from the [OpenAdapt monorepo](https://github.com/OpenAdaptAI/OpenAdapt) (`packages/types`). The models now live in `openadapt_flow.contracts`; this package re-exports them, so `import openadapt_types` keeps working. It requires `openadapt-flow>=2.2.0,<3`.
 
 ## openadapt-flow
 
