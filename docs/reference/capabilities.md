@@ -19,17 +19,17 @@ in the [OpenAdapt monorepo](https://github.com/OpenAdaptAI/OpenAdapt).
 1. **Learns from any successful run, a person's or an agent's.** A person
    records a task, or a computer-use agent does it once and OpenAdapt compiles
    the verified run into a program (`openadapt_flow.jit`). Agents can drive
-   the recording on web, native Windows, RDP and Citrix.
+   the recording through the web, native Windows, RDP and Citrix backends.
 2. **Compiles to the fastest layer the app allows.** Page structure first (DOM,
    Windows UI Automation, macOS Accessibility), direct API calls through
    hand-authored bindings (`ApiActuator`), and pixels only where nothing else
-   exists, such as RDP and Citrix. It is not a pixel-macro recorder.
+   exists, such as a remote desktop. It is not a pixel-macro recorder.
 3. **Builds branching programs, not one linear path.** One program from several
    demonstrations (`induce`, `disambiguate`), a branch learned from several
    halts fixed the same way (`teach-branch`), and background capture of many
    real runs (shadow mode).
-4. **Works across surfaces in one workflow.** Web, native Windows and macOS,
-   RDP and Citrix. Programs chain across surfaces passing confirmed values
+4. **Works across surfaces in one workflow.** Backends for web, native Windows
+   and macOS, Linux, RDP and Citrix. Programs chain across surfaces passing confirmed values
    (`compose`, `process`).
 5. **Confirms the right record before every write and reads it back after.**
    The record check reads the system of record (API, database, FHIR with SMART
@@ -61,7 +61,7 @@ in the [OpenAdapt monorepo](https://github.com/OpenAdaptAI/OpenAdapt).
 | Learns branching programs from several demonstrations, from repeated halts, and from many background runs. | `induce`, `teach-branch`, [SHADOW_MINING.md](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/capture/docs/SHADOW_MINING.md) |
 | Chains programs across surfaces, passing confirmed values. | `compose`, `process`, [PROCESS_CONTRACT.md](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/PROCESS_CONTRACT.md) |
 | Uses page structure first on web, Windows, macOS and Linux, with pixels as the fallback for remote desktops. Benchmarks labelled "vision-only" ran a deliberately pixel-only arm. | [RESOLUTION_LADDER.md](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/RESOLUTION_LADDER.md) |
-| Runs steps as direct API calls through hand-authored bindings. In an OpenEMR benchmark the API step took a median of 0.6 s per referral, against 19.65 s on screen. | `runtime/actuators/api.py`, [SCOREBOARD.md](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/benchmark/scoreboard/SCOREBOARD.md) |
+| Runs steps as direct API calls (`ApiActuator`). In an OpenEMR benchmark, an API step compiled from the recording's network traffic took a median of 0.6 s per referral, against 19.65 s on screen. | `runtime/actuators/api.py`, [SCOREBOARD.md](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/benchmark/scoreboard/SCOREBOARD.md) |
 | Repairs itself when the app changes: governed repair, agent-demonstrated fixes, and fleet patches. | [REPAIR_LIFECYCLE.md](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/REPAIR_LIFECYCLE.md) |
 | Compiles a computer-use agent's verified run, with no human demonstration needed. | [JIT.md](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/JIT.md) |
 | Binds each approval to the exact screenshot and form state, and re-reads the form before saving. | [APPROVAL_MODES.md](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/APPROVAL_MODES.md) |
