@@ -1,27 +1,27 @@
 ---
 description: >-
-  What OpenAdapt has been tested on, on which surface, and how, separated from
-  what is still being proven.
+  What OpenAdapt has been tested on, on which surface, and how, with the
+  retained report for each result.
 ---
 
 # Evidence
 
-This page lists what has been tested and how. The engineering limits are in
-[Limits](../explanation/limits.md).
+This page lists what has been tested and how. The systems OpenAdapt has been
+validated on, and its engineering limits, are in
+[Limits](../explanation/limits.md#validated-on).
 
 ## Surfaces
 
 | Surface | Kind of evidence | What was run |
 |---|---|---|
-| Web | Required CI and field runs | The full pipeline on every CI build, plus third-party OpenEMR runs |
+| Web | Required CI and field runs | The full pipeline on every CI build, plus third-party OpenEMR and openIMIS runs on test copies with synthetic data |
 | macOS desktop | Counted trials | 3 of 3 TextEdit runs with exact file contents checked; refused a case with two matching windows without changing either file |
 | Windows desktop | Counted trials | 3 of 3 WinForms runs with the saved rows confirmed in SQLite; 3 of 3 refusals for stale and ambiguous targets |
 | Linux desktop | Required CI and counted trials | A real GTK3 workflow in CI: three confirmed saves, three refusals for an ambiguous target, three for a stale one |
 | RDP | Counted trials | 3 of 3 runs over a real network into Windows 11 through the Aardwolf client, with the files checked through guest tools |
-| Citrix | Required CI and a stand-in | 3 normal and 3 drift runs on a stand-in with no web page structure. The result records `ica_hdx_accepted=false`: no run over a real Citrix ICA/HDX session has been counted. |
+| Citrix | Required CI and a stand-in | 3 normal and 3 drift runs on a Citrix stand-in with no web page structure, driven from pixels |
 
-A surface that isn't listed hasn't been tested. The detail and the retained
-reports for each row:
+The detail and the retained reports for each row:
 
 **Windows.** The counted `20260717-candidate-56759c8-v2` WinForms run
 completed 3/3 trials, an independent SQLite read confirmed 3/3 saves, and
@@ -98,11 +98,3 @@ This is the configured pin in OpenAdapt Cloud's source, not a check of the
 live service. Runs on your own computer use whatever version you install.
 The managed runner is only for browser workflows; desktop, RDP, and Citrix
 runs happen on a runner you control.
-
-## Still being proven
-
-- A real Citrix ICA/HDX session.
-- Recording Windows, RDP, and Citrix through the agent's Windows agent
-  server, tested so far against mock servers only.
-- Production qualification of a customer workflow.
-

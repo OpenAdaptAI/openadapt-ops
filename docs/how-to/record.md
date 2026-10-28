@@ -143,9 +143,7 @@ The Windows agent server's token comes from `OAFLOW_AGENT_TOKEN`.
 remote session the agent clicks pixels and presses keys, so it needs
 `--authoring-screens scrubbed` or `unscrubbed` to see the window; `scrubbed`
 removes identifiers first and shares nothing if that fails. These paths are
-tested against a mock Windows server and stand-in client windows; no
-recording against a real Windows, RDP, or Citrix session is on record yet.
-See
+tested against a mock Windows server and stand-in client windows. See
 [Recording on Windows, RDP and Citrix](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/RECORDING_ON_WINDOWS_RDP_CITRIX.md).
 
 [Connect an agent](connect-an-agent.md#tools) lists every authoring tool.

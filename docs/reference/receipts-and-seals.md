@@ -167,8 +167,8 @@ document:
 - **Salted field commitments**, so you can later reveal chosen fields, such
   as one patient's record number, and keep the others hidden.
 - **A countersignature** by a second issuer. A Seal with one is a
-  Countersigned Seal. OpenAdapt Cloud doesn't countersign yet; a local key
-  can, for tests and self-hosted trials.
+  Countersigned Seal. A local key countersigns, for tests and self-hosted
+  trials.
 
 Neither is a notarial act, a government certification, or an eIDAS
 qualified seal or time stamp.

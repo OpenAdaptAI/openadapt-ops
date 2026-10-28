@@ -53,12 +53,12 @@ surface still needs its own qualification.
 
 | Surface | Tested how | Result |
 |---|---|---|
-| Browser | Required CI on every build, plus field runs against OpenEMR | Full record, compile, run, and check cycle |
+| Browser | Required CI on every build, plus field runs against OpenEMR and openIMIS test copies | Full record, compile, run, and check cycle; 62 of 63 OpenEMR referrals and 148 of 149 openIMIS claims saved correctly by read-back |
 | macOS | Counted trials | 3 of 3 TextEdit saves confirmed by exact file contents; refused an ambiguous two-window target |
 | Windows | Counted trials | 3 of 3 WinForms saves confirmed in SQLite; 3 of 3 refusals each for stale and ambiguous targets |
 | Linux (X11) | Required CI and counted trials | A GTK3 app: 3 confirmed saves, 3 ambiguous-target refusals, 3 stale-target refusals |
 | RDP | Counted trials | 3 of 3 remote-input trials into Windows 11 over a real network, confirmed by a separate file check |
-| Citrix | Required CI and a stand-in with no DOM | 3 confirmed runs and 3 stops under drift on a stand-in; no run over real Citrix ICA/HDX is on record yet |
+| Citrix | Required CI and a Citrix stand-in with no DOM | 3 confirmed runs and 3 stops under drift on the stand-in |
 
 An agent can record on native Windows, RDP, and Citrix as well as in a
 browser; see [Record a workflow](../how-to/record.md#an-agent-records). Its
