@@ -8,63 +8,48 @@ Start with `uvx --python 3.12 openadapt quickstart --break-it`, or `python -m pi
 
 ## OpenAdapt in ten capabilities
 
-Each capability is implemented in the
-[OpenAdapt monorepo](https://github.com/OpenAdaptAI/OpenAdapt). "Released"
-means it ships in the current PyPI packages; a pull request number means it is
-being merged now.
+Each capability below ships in the current PyPI packages and is implemented
+in the [OpenAdapt monorepo](https://github.com/OpenAdaptAI/OpenAdapt).
 
 1. **Learns from any successful run, a person's or an agent's.** A person
    records a task, or a computer-use agent does it once and OpenAdapt compiles
-   the verified run into a program (`openadapt_flow.jit`, released;
-   prompt-to-program `compile-agent`, landing). Agents can drive the recording
-   on web, native Windows, RDP and Citrix.
+   the verified run into a program (`openadapt_flow.jit`). Agents can drive
+   the recording on web, native Windows, RDP and Citrix.
 2. **Compiles to the fastest layer the app allows.** Page structure first (DOM,
-   Windows UI Automation, macOS Accessibility), direct API calls where the app's
-   own traffic allows them (`ApiActuator`, released; compiled from captured
-   traffic in [#1261](https://github.com/OpenAdaptAI/OpenAdapt/pull/1261)), and pixels only
-   where nothing else exists, such as RDP and Citrix. It is not a pixel-macro
-   recorder.
+   Windows UI Automation, macOS Accessibility), direct API calls through
+   hand-authored bindings (`ApiActuator`), and pixels only where nothing else
+   exists, such as RDP and Citrix. It is not a pixel-macro recorder.
 3. **Builds branching programs, not one linear path.** One program from several
    demonstrations (`induce`, `disambiguate`), a branch learned from several
-   halts fixed the same way (`teach-branch`), candidate branches mined from many
-   real runs in the background (shadow mode,
-   [#1212](https://github.com/OpenAdaptAI/OpenAdapt/pull/1212)), and a router
-   that sends each item to the right verified variant (landing). Released
-   except where a PR is named.
+   halts fixed the same way (`teach-branch`), and background capture of many
+   real runs (shadow mode).
 4. **Works across surfaces in one workflow.** Web, native Windows and macOS,
    RDP and Citrix. Programs chain across surfaces passing confirmed values
-   (`compose`, `process`, released), and one program can switch surfaces, tabs
-   and popups mid-run ([#1197](https://github.com/OpenAdaptAI/OpenAdapt/pull/1197)).
+   (`compose`, `process`).
 5. **Confirms the right record before every write and reads it back after.**
    The record check reads the system of record (API, database, FHIR with SMART
    Backend Services, or a separate signed-in session), never just the screen.
    `record --verify` proposes those checks from what the demonstration changed.
-   Released.
 6. **Stops instead of improvising, and never retries an uncertain save.** A run
    that can't prove a save ends `HALTED_BEFORE_EFFECT` or
-   `RECONCILIATION_REQUIRED`, never "success". A ledger of what changed before
-   a stop, with undo steps a person approves, is landing. Released except the
-   ledger.
+   `RECONCILIATION_REQUIRED`, never "success".
 7. **Approvals are bound to exactly what will be saved.** Each save waits for a
    person by default and can be answered on a paired phone with one card per
    decision. The approval is bound to the exact screenshot and form state, and
    the form is read again before saving, so what was approved is what is saved.
-   Person-signed grants let named agents answer. Released.
+   Person-signed grants let named agents answer.
 8. **Repairs itself, with a person approving.** Governed repair (propose,
    review, campaign, canary, rollback), agent-demonstrated fixes for a halted
-   run, and fleet drift patches shared with no patient data are released.
-   Self-repair, where an agent proposes a fix and Flow probes it up to the save
-   without saving, is landing.
-9. **Is a safety layer underneath any agent.** An agent's MCP calls, a guarded
-   save around any agent's write
-   ([#1258](https://github.com/OpenAdaptAI/OpenAdapt/pull/1258)), `verify-run`
-   to judge any executor's write from the system of record, and Agent Skills and
-   a CLI for coding agents. Released except where a PR is named.
+   run, and fleet drift patches shared with no patient data.
+9. **Is a safety layer underneath any agent.** An agent's MCP calls,
+   `verify-run` to judge any executor's write from the system of record, and
+   Agent Skills and a CLI for coding agents.
 10. **Runs locally and keeps data private.** Healthy runs make no model calls
     and send nothing out. Personal and health data are redacted from text,
-    screenshots and structure (scrub-by-default for anything that leaves the
-    machine is landing); a strict no-outbound mode, an unattended on-prem
-    service, and signed, timestamped receipts are released.
+    screenshots and structure. A strict no-outbound mode, an unattended on-prem
+    service, and signed, timestamped receipts are included.
+
+Measured on third-party apps, on test copies with synthetic data: OpenEMR, the open-source EHR whose 7.0 release is ONC-certified (62 of 63 referrals saved and read back, 12 of 12 fields, 0 model calls); openIMIS, the open-source claims system that runs Nepal's national health insurance scheme (148 of 149 claims saved correctly by read-back, 0 silent wrong saves); RDP into a real Windows 11 host over a real network (3 of 3). The systems OpenAdapt has been validated on are listed at https://docs.openadapt.ai/explanation/limits/#validated-on
 
 Capabilities often missed, with evidence: https://docs.openadapt.ai/reference/capabilities/#often-missed
 
@@ -85,7 +70,7 @@ Capabilities often missed, with evidence: https://docs.openadapt.ai/reference/ca
 - [Troubleshoot](https://docs.openadapt.ai/how-to/troubleshoot/)
 
 ## Reference
-- [What OpenAdapt can do](https://docs.openadapt.ai/reference/capabilities/): every capability with its status (released, in review, planned), its evidence (real app, synthetic, untested), and where it lives. Check it before concluding OpenAdapt lacks something.
+- [What OpenAdapt can do](https://docs.openadapt.ai/reference/capabilities/): every released capability with its evidence (real app or synthetic) and where it lives.
 - [Run outcomes](https://docs.openadapt.ai/reference/outcomes/): transaction and execution outcomes, halt codes, what an agent sees, exit codes.
 - [Command reference](https://docs.openadapt.ai/reference/cli/)
 - [Configuration](https://docs.openadapt.ai/reference/configuration/): the deployment file and environment variables.
@@ -98,7 +83,7 @@ Capabilities often missed, with evidence: https://docs.openadapt.ai/reference/ca
 - [How OpenAdapt works](https://docs.openadapt.ai/explanation/how-it-works/)
 - [How a save is checked](https://docs.openadapt.ai/explanation/verification/)
 - [Surfaces](https://docs.openadapt.ai/explanation/surfaces/)
-- [Limits](https://docs.openadapt.ai/explanation/limits/)
+- [Limits](https://docs.openadapt.ai/explanation/limits/): what a result proves, where runs stop, and the systems OpenAdapt has been validated on.
 
 ## Security and procurement
 - [Overview](https://docs.openadapt.ai/security/): controls and attestation status. No SOC 2; no standing BAA.

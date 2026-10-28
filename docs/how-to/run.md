@@ -51,7 +51,7 @@ happens once per workflow before production runs.
 | Mode | Before each save |
 |---|---|
 | `each_item` | The run waits until that save is approved, then saves exactly what was approved. |
-| `problems_only` | Only problems go to a person. This mode isn't available to customers yet: until it is configured, every save still asks. |
+| `problems_only` | Only problems go to a person. It turns on only after the workflow passes a readiness gate; until then, every save asks. |
 | `not_gated` | No pause. The run report records that the run wasn't gated. |
 
 `openadapt flow run` uses `each_item` unless `--approval-mode` or
@@ -128,7 +128,6 @@ A delegated approver answers in one of three ways:
 
 The run checks every answer against the policy, and the report records who
 or what approved, by which route. A person can always answer instead.
-OpenAdapt Desktop and Cloud don't show delegated approvers yet.
 
 ## 4. Read the result
 

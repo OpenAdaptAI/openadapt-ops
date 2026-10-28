@@ -23,6 +23,15 @@ or Citrix: a CRM, a billing system, an insurance portal, or an electronic
 health record. The tutorials use a synthetic clinic app as the example. The
 engine is open source under the MIT license.
 
+On test copies with synthetic data, a compiled program saved 148 of 149
+claims correctly in openIMIS, the open-source claims system that runs
+Nepal's national health insurance scheme, with no silent wrong saves. In
+OpenEMR, the open-source EHR whose 7.0 release is ONC-certified, it saved 62
+of 63 referrals and read back 12 of 12 fields, with no model calls. Over RDP
+it completed 3 of 3 trials into a Windows 11 host over a real network.
+[Limits](explanation/limits.md#validated-on) lists every system it has been
+validated on.
+
 ## For developers
 
 <div class="grid cards" markdown>
@@ -110,7 +119,8 @@ OpenAdapt fits a task when most of these are true:
   a report, or a read-only sign-in.
 
 If the application already has an API for the task, call the API. The
-[limits page](explanation/limits.md) lists what OpenAdapt doesn't do.
+[limits page](explanation/limits.md) explains what a result proves and where
+runs stop.
 
 ## What the packages are
 

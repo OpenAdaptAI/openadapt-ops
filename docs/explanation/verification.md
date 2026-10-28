@@ -93,8 +93,9 @@ whether a run waits for an answer before each save:
   approved. This is what `openadapt flow run` uses unless another mode is
   set. [Run a workflow](../how-to/run.md#3-choose-how-saves-are-approved)
   shows how to answer.
-- `problems_only`: only saves that fail a check go to a person. It isn't
-  available to customers yet; until it is configured, every save still asks.
+- `problems_only`: only saves that fail a check go to a person. It turns on
+  only after the workflow passes a readiness gate; until then, every save
+  asks.
 - `not_gated`: no pause. Runs that OpenAdapt Cloud dispatches use this, and
   every report records it.
 

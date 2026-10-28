@@ -22,8 +22,8 @@ parentheses.
 
 <span id="approval-mode"></span>**Approval mode**
 :   Whether a run waits for an answer before each save: `each_item` (wait
-    for each save), `problems_only` (only problems go to a person; not yet
-    available), or `not_gated` (no pause, recorded in the report).
+    for each save), `problems_only` (only problems go to a person, after a
+    readiness gate), or `not_gated` (no pause, recorded in the report).
 
 <span id="bundle"></span>**Bundle**
 :   The folder a compile writes: the program (`workflow.json`, or
