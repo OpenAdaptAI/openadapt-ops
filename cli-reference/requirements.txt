@@ -3,7 +3,7 @@
 #
 # The Flow pin must name the same version as FLOW_VERSION in
 # scripts/flow_cli_reference.py.
-openadapt==1.17.0
+openadapt==1.18.0
 openadapt-flow==2.2.0  # must equal FLOW_VERSION in scripts/flow_cli_reference.py
 openadapt-agent==2.2.1
 # The launcher's help is formatted by click; pin it so a click release can't
