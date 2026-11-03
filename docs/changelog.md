@@ -5,29 +5,29 @@
 
 ## OpenAdapt
 
+- **[v1.19.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.19.0)** (2026-11-03)
+  Breaking Changes
+- **[openadapt-flow-v2.5.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-flow-v2.5.0)** (2026-11-03)
+  Shadow mode checks the writes of an agent you already run against the system of record without blocking any of them, the whole-database frame works on PostgreSQL, a write that lands after the verdict can be caught by a recheck, and several verifier checks that could be unreadable or pass on the wrong value now read and compare exactly.
+- **[openadapt-flow-v2.4.1](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-flow-v2.4.1)** (2026-10-29)
+  Flow runs without its benchmark package and accepts a pinned config with Windows line endings. Several checks now halt or refute where 2.4.0 could act on the wrong row or pass a weaker check, and the frame can compare the whole database.
+- **[openadapt-desktop-v0.25.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-desktop-v0.25.0)** (2026-10-29)
+  OpenAdapt Desktop 0.25.0: the PyPI package and the native installers.
 - **[openadapt-desktop-v0.24.1](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-desktop-v0.24.1)** (2026-10-28)
   OpenAdapt Desktop 0.24.1: the PyPI package and the native installers.
-- **[openadapt-flow-v2.4.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-flow-v2.4.0)** (2026-10-25)
-  A person's approval counts only when a registered approver key signed it, and the verification, identity and recovery paths below fail closed where they used to pass.
-- **[openadapt-desktop-v0.24.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-desktop-v0.24.0)** (2026-10-25)
-  OpenAdapt Desktop 0.24.0: the PyPI package and the native installers.
-- **[openadapt-desktop-v0.23.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-desktop-v0.23.0)** (2026-10-25)
-  OpenAdapt Desktop 0.23.0: the PyPI package and the native installers.
-- **[v1.18.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.18.0)** (2026-10-20)
-  Breaking Changes
 
 ## openadapt-flow
 
+- **[v2.5.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v250-2026-11-02)** (2026-11-02)
+  Shadow mode checks the writes of an agent you already run against the system of record without blocking any of them, the whole-database frame works on PostgreSQL, a write that lands after the verdict can be caught by a recheck, and several verifier checks that could be unreadable or pass on the wrong value now read and compare exactly.
+- **[v2.4.1](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v241-2026-10-28)** (2026-10-28)
+  Flow runs without its benchmark package and accepts a pinned config with Windows line endings. Several checks now halt or refute where 2.4.0 could act on the wrong row or pass a weaker check, and the frame can compare the whole database.
 - **[v2.4.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v240-2026-10-25)** (2026-10-25)
   A person's approval counts only when a registered approver key signed it, and the verification, identity and recovery paths below fail closed where they used to pass.
 - **[v2.3.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v230-2026-10-20)** (2026-10-20)
   The shared contracts are back in `openadapt-types`, which depends only on Pydantic; this package requires `openadapt-types>=0.24.0,<0.25.0`, and `openadapt_flow.contracts` returns the same modules as `openadapt_types` ([#1270](https://github.com/OpenAdaptAI/OpenAdapt/pull/1270)).
 - **[v2.2.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v220-2026-10-18)** (2026-10-18)
   First release from the [OpenAdapt monorepo](https://github.com/OpenAdaptAI/OpenAdapt) (`packages/flow`). The shared contracts (`openadapt_flow.contracts`) and the MCP agent server (`openadapt_flow.agent`) now ship inside this package; `openadapt-types` and `openadapt-agent` are thin compatibility packages over them.
-- **[v2.1.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v210-2026-10-16)** (2026-10-16)
-  A calling agent can demonstrate the fix for a halted run; the result is a governed repair candidate (review, replay and fault campaigns, human approval) with provenance, scrubbed-screen evidence and the screen-share mode recorded. `run --hold-on-halt` keeps a halted browser page open for that repair ([#504](https://github.com/OpenAdaptAI/openadapt-flow/pull/504)).
-- **[v2.0.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v200-2026-10-15)** (2026-10-15)
-  `openadapt-flow run` now uses the `each_item` approval mode unless the run names a mode ([#497](https://github.com/OpenAdaptAI/openadapt-flow/pull/497)). Before 2.0.0 only the Standard and Regulated profiles were gated by default; a Demo or profile-less run saved without asking.
 
 ## openadapt-desktop
 
