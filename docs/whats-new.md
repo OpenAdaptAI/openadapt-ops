@@ -1,7 +1,7 @@
 # What's New
 
 > *Pull requests merged in the last 7 days across the OpenAdapt repositories, grouped by the release that contains them.*
-> *Last updated: 2026-11-03 20:06 UTC*
+> *Last updated: 2026-11-03 20:50 UTC*
 
 Items under **Merged, not released yet** are on a repository's `main` branch only. They are not in any published package or installer yet.
 
@@ -12,12 +12,12 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 - [SignPath: match the MSI's program files under its install directory](https://github.com/OpenAdaptAI/OpenAdapt/pull/1736) (#1736), merged 2026-11-03
 - [SignPath: sign Windows releases only with release-signing, and test-sign through a separate workflow](https://github.com/OpenAdaptAI/OpenAdapt/pull/1730) (#1730), merged 2026-11-03
 - [SignPath: use the OpenAdapt project slug and add test-signing](https://github.com/OpenAdaptAI/OpenAdapt/pull/1728) (#1728), merged 2026-11-03
-- [chore(release): openadapt 1.19.0 on openadapt-flow 2.5.0](https://github.com/OpenAdaptAI/OpenAdapt/pull/1716) (#1716), merged 2026-11-03
 
 ### Merged, not released yet
 
 - [Refuse a covered or off-viewport target instead of falling through to pixels](https://github.com/OpenAdaptAI/OpenAdapt/pull/1756) (#1756), merged 2026-11-03, openadapt-flow
 - [Bind a recorded value only when equality can tell which parameter it is](https://github.com/OpenAdaptAI/OpenAdapt/pull/1754) (#1754), merged 2026-11-03, openadapt-flow
+- [Docs: scope claims that drifted from the code](https://github.com/OpenAdaptAI/OpenAdapt/pull/1750) (#1750), merged 2026-11-03, openadapt-flow
 - [Frame: '<schema>.*' is PostgreSQL only, refused when the contract loads](https://github.com/OpenAdaptAI/OpenAdapt/pull/1746) (#1746), merged 2026-11-03, openadapt-flow
 - [Recheck: an unjudged later write gives UNCERTAIN; a failed saved state re-resolves no ledger attempt](https://github.com/OpenAdaptAI/OpenAdapt/pull/1744) (#1744), merged 2026-11-03, openadapt-flow
 - [Covered band: dismiss only the proved session notice, and only when it cut the band](https://github.com/OpenAdaptAI/OpenAdapt/pull/1740) (#1740), merged 2026-11-03, openadapt-flow
