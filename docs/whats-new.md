@@ -1,35 +1,35 @@
 # What's New
 
 > *Pull requests merged in the last 7 days across the OpenAdapt repositories, grouped by the release that contains them.*
-> *Last updated: 2026-10-29 00:10 UTC*
+> *Last updated: 2026-11-03 20:06 UTC*
 
 Items under **Merged, not released yet** are on a repository's `main` branch only. They are not in any published package or installer yet.
 
 ## OpenAdapt
 
-### Released in openadapt-flow 2.4.0
+### Released in OpenAdapt 1.19.0
 
-- [ci: link check passes PRs with no Markdown links; agent-guard e2e waits for the guard notice](https://github.com/OpenAdaptAI/OpenAdapt/pull/1575) (#1575), merged 2026-10-25
-- [chore(release): openadapt-flow 2.4.0](https://github.com/OpenAdaptAI/OpenAdapt/pull/1568) (#1568), merged 2026-10-25
-- [qualify: find the save control by role and name when it has no selector](https://github.com/OpenAdaptAI/OpenAdapt/pull/1564) (#1564), merged 2026-10-25
+- [SignPath: match the MSI's program files under its install directory](https://github.com/OpenAdaptAI/OpenAdapt/pull/1736) (#1736), merged 2026-11-03
+- [SignPath: sign Windows releases only with release-signing, and test-sign through a separate workflow](https://github.com/OpenAdaptAI/OpenAdapt/pull/1730) (#1730), merged 2026-11-03
+- [SignPath: use the OpenAdapt project slug and add test-signing](https://github.com/OpenAdaptAI/OpenAdapt/pull/1728) (#1728), merged 2026-11-03
+- [chore(release): openadapt 1.19.0 on openadapt-flow 2.5.0](https://github.com/OpenAdaptAI/OpenAdapt/pull/1716) (#1716), merged 2026-11-03
 
 ### Merged, not released yet
 
-- [docs: lead public pages with measured proof; scope facts in one place](https://github.com/OpenAdaptAI/OpenAdapt/pull/1614) (#1614), merged 2026-10-29, openadapt-flow
-- [test: remove or merge duplicate, fake-only and flaky tests](https://github.com/OpenAdaptAI/OpenAdapt/pull/1610) (#1610), merged 2026-10-28, openadapt-flow
-- [ci: one required check, `ci`, in under ten minutes](https://github.com/OpenAdaptAI/OpenAdapt/pull/1608) (#1608), merged 2026-10-28, openadapt-flow
-- [ci: publish every package automatically from its newest green main commit](https://github.com/OpenAdaptAI/OpenAdapt/pull/1606) (#1606), merged 2026-10-28, openadapt-flow
-- [ci: run every package's full suite nightly and track a "main is red" issue](https://github.com/OpenAdaptAI/OpenAdapt/pull/1603) (#1603), merged 2026-10-28
-- [ci: install every CI dependency from a lockfile](https://github.com/OpenAdaptAI/OpenAdapt/pull/1602) (#1602), merged 2026-10-28, openadapt-flow
-- [test(flow): fake os.fstat only for the observer descriptor](https://github.com/OpenAdaptAI/OpenAdapt/pull/1601) (#1601), merged 2026-10-28, openadapt-flow
-- [focus_on: no check for an element without a role and a name](https://github.com/OpenAdaptAI/OpenAdapt/pull/1595) (#1595), merged 2026-10-28, openadapt-flow
-- [fix(flow): product code no longer imports the benchmark package](https://github.com/OpenAdaptAI/OpenAdapt/pull/1594) (#1594), merged 2026-10-29, openadapt-flow
-- [fix(flow): the config pin reads the file's exact bytes on Windows](https://github.com/OpenAdaptAI/OpenAdapt/pull/1593) (#1593), merged 2026-10-28, openadapt-flow
-- [test(desktop): frozen smoke writes its config as exact bytes (unblocks 0.24.1)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1591) (#1591), merged 2026-10-28
-- [focus_on: check who has the focus after a key that changes nothing visible](https://github.com/OpenAdaptAI/OpenAdapt/pull/1579) (#1579), merged 2026-10-28, openadapt-flow
-- [ci: check syntax at each package's oldest Python in the PR lane](https://github.com/OpenAdaptAI/OpenAdapt/pull/1578) (#1578), merged 2026-10-25
-- [fix(desktop): bundle Flow 2.4.0 and check every command line against it (Desktop 0.24.1)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1574) (#1574), merged 2026-10-25
-- [fix(flow): repeated div rows, grid rows and cards are worklist rows](https://github.com/OpenAdaptAI/OpenAdapt/pull/1569) (#1569), merged 2026-10-25, openadapt-flow
-- [benchmark(lifecycle): the scripted person signs its approvals with a fixture-only key](https://github.com/OpenAdaptAI/OpenAdapt/pull/1565) (#1565), merged 2026-10-25, openadapt-flow
-- [chore(desktop): say where the 0.23.0 approver root is pinned](https://github.com/OpenAdaptAI/OpenAdapt/pull/1563) (#1563), merged 2026-10-25
+- [Refuse a covered or off-viewport target instead of falling through to pixels](https://github.com/OpenAdaptAI/OpenAdapt/pull/1756) (#1756), merged 2026-11-03, openadapt-flow
+- [Bind a recorded value only when equality can tell which parameter it is](https://github.com/OpenAdaptAI/OpenAdapt/pull/1754) (#1754), merged 2026-11-03, openadapt-flow
+- [Frame: '<schema>.*' is PostgreSQL only, refused when the contract loads](https://github.com/OpenAdaptAI/OpenAdapt/pull/1746) (#1746), merged 2026-11-03, openadapt-flow
+- [Recheck: an unjudged later write gives UNCERTAIN; a failed saved state re-resolves no ledger attempt](https://github.com/OpenAdaptAI/OpenAdapt/pull/1744) (#1744), merged 2026-11-03, openadapt-flow
+- [Covered band: dismiss only the proved session notice, and only when it cut the band](https://github.com/OpenAdaptAI/OpenAdapt/pull/1740) (#1740), merged 2026-11-03, openadapt-flow
+- [owned_window_over: report the owned window's visible frame as region](https://github.com/OpenAdaptAI/OpenAdapt/pull/1739) (#1739), merged 2026-11-03, openadapt-flow
+- [win_agent: record a locator only if it names the clicked element](https://github.com/OpenAdaptAI/OpenAdapt/pull/1738) (#1738), merged 2026-11-03, openadapt-flow
+- [owned_window_over: an owned dialog over part of the region counts](https://github.com/OpenAdaptAI/OpenAdapt/pull/1735) (#1735), merged 2026-11-03, openadapt-flow
+- [Covered band: tests for a dialog that hides where two records differ](https://github.com/OpenAdaptAI/OpenAdapt/pull/1733) (#1733), merged 2026-11-03, openadapt-flow
+- [Windows backend: owned_window_over, from a verified step's window and live z-order](https://github.com/OpenAdaptAI/OpenAdapt/pull/1727) (#1727), merged 2026-11-03, openadapt-flow
+- [Self-repair: the app's own dialog over the identity band is repaired after the previous click (#1724)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1726) (#1726), merged 2026-11-03, openadapt-flow
+- [Windows agent: native clicks that a modal dialog, another window or a hung app cannot fool](https://github.com/OpenAdaptAI/OpenAdapt/pull/1725) (#1725), merged 2026-11-03, openadapt-flow
+- [macOS: input to the pinned window's own AppKit sheet (#1711)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1721) (#1721), merged 2026-11-03, openadapt-flow
+- [Signed write receipts: verifier verdicts as COSE_Sign1 with their scope](https://github.com/OpenAdaptAI/OpenAdapt/pull/1719) (#1719), merged 2026-11-03, openadapt-flow
+- [macOS host: read the frontmost app after applying NSWorkspace's pending updates (#1712)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1718) (#1718), merged 2026-11-03, openadapt-flow
+- [run --self-repair outside a browser: repair.session starts the app for each probe](https://github.com/OpenAdaptAI/OpenAdapt/pull/1717) (#1717), merged 2026-11-03, openadapt-flow
 
