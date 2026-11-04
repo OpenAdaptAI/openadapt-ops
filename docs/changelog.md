@@ -5,6 +5,8 @@
 
 ## OpenAdapt
 
+- **[openadapt-desktop-v0.26.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-desktop-v0.26.0)** (2026-11-04)
+  OpenAdapt Desktop 0.26.0: the PyPI package and the native installers.
 - **[openadapt-desktop-v0.25.1](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-desktop-v0.25.1)** (2026-11-04)
   OpenAdapt Desktop 0.25.1: the PyPI package and the native installers.
 - **[v1.19.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.19.0)** (2026-11-03)
@@ -13,11 +15,11 @@
   Shadow mode checks the writes of an agent you already run against the system of record without blocking any of them, the whole-database frame works on PostgreSQL, a write that lands after the verdict can be caught by a recheck, and several verifier checks that could be unreadable or pass on the wrong value now read and compare exactly.
 - **[openadapt-flow-v2.4.1](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-flow-v2.4.1)** (2026-10-29)
   Flow runs without its benchmark package and accepts a pinned config with Windows line endings. Several checks now halt or refute where 2.4.0 could act on the wrong row or pass a weaker check, and the frame can compare the whole database.
-- **[openadapt-desktop-v0.25.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-desktop-v0.25.0)** (2026-10-29)
-  OpenAdapt Desktop 0.25.0: the PyPI package and the native installers.
 
 ## openadapt-flow
 
+- **[v2.6.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v260-2026-11-04)** (2026-11-04)
+  Flow adds signed teach authorizations, encrypted local artifacts, durable
 - **[v2.5.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v250-2026-11-02)** (2026-11-02)
   Shadow mode checks the writes of an agent you already run against the system of record without blocking any of them, the whole-database frame works on PostgreSQL, a write that lands after the verdict can be caught by a recheck, and several verifier checks that could be unreadable or pass on the wrong value now read and compare exactly.
 - **[v2.4.1](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v241-2026-10-28)** (2026-10-28)
@@ -26,8 +28,6 @@
   A person's approval counts only when a registered approver key signed it, and the verification, identity and recovery paths below fail closed where they used to pass.
 - **[v2.3.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v230-2026-10-20)** (2026-10-20)
   The shared contracts are back in `openadapt-types`, which depends only on Pydantic; this package requires `openadapt-types>=0.24.0,<0.25.0`, and `openadapt_flow.contracts` returns the same modules as `openadapt_types` ([#1270](https://github.com/OpenAdaptAI/OpenAdapt/pull/1270)).
-- **[v2.2.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v220-2026-10-18)** (2026-10-18)
-  First release from the [OpenAdapt monorepo](https://github.com/OpenAdaptAI/OpenAdapt) (`packages/flow`). The shared contracts (`openadapt_flow.contracts`) and the MCP agent server (`openadapt_flow.agent`) now ship inside this package; `openadapt-types` and `openadapt-agent` are thin compatibility packages over them.
 
 ## openadapt-desktop
 
