@@ -5,6 +5,8 @@
 
 ## OpenAdapt
 
+- **[openadapt-desktop-v0.25.1](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-desktop-v0.25.1)** (2026-11-04)
+  OpenAdapt Desktop 0.25.1: the PyPI package and the native installers.
 - **[v1.19.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.19.0)** (2026-11-03)
   Breaking Changes
 - **[openadapt-flow-v2.5.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-flow-v2.5.0)** (2026-11-03)
@@ -13,8 +15,6 @@
   Flow runs without its benchmark package and accepts a pinned config with Windows line endings. Several checks now halt or refute where 2.4.0 could act on the wrong row or pass a weaker check, and the frame can compare the whole database.
 - **[openadapt-desktop-v0.25.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-desktop-v0.25.0)** (2026-10-29)
   OpenAdapt Desktop 0.25.0: the PyPI package and the native installers.
-- **[openadapt-desktop-v0.24.1](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-desktop-v0.24.1)** (2026-10-28)
-  OpenAdapt Desktop 0.24.1: the PyPI package and the native installers.
 
 ## openadapt-flow
 
