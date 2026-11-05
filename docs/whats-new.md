@@ -1,7 +1,7 @@
 # What's New
 
 > *Pull requests merged in the last 7 days across the OpenAdapt repositories, grouped by the release that contains them.*
-> *Last updated: 2026-11-04 22:23 UTC*
+> *Last updated: 2026-11-05 04:48 UTC*
 
 Items under **Merged, not released yet** are on a repository's `main` branch only. They are not in any published package or installer yet.
 
@@ -21,15 +21,15 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 - [fix(flow): verify complete typed input and stop on focus changes](https://github.com/OpenAdaptAI/OpenAdapt/pull/1831) (#1831), merged 2026-11-04
 - [test(flow): assert countersign public commitment fields](https://github.com/OpenAdaptAI/OpenAdapt/pull/1826) (#1826), merged 2026-11-04
 - [feat(reward): score a confirmed write followed by an escalation as configurable partial credit](https://github.com/OpenAdaptAI/OpenAdapt/pull/1824) (#1824), merged 2026-11-04
-- [fix(flow): refuse volatile FHIR metadata before run 1](https://github.com/OpenAdaptAI/OpenAdapt/pull/1819) (#1819), merged 2026-11-04
-- [OpenEMR contracts declare the form's stored forms; capitalize_words joins the closed set (#1811)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1816) (#1816), merged 2026-11-04
-- [Encrypt attended state and the authority journal at rest by default](https://github.com/OpenAdaptAI/OpenAdapt/pull/1812) (#1812), merged 2026-11-04
-- [fix(flow): an ISO date typed into a native date input lands as that date](https://github.com/OpenAdaptAI/OpenAdapt/pull/1806) (#1806), merged 2026-11-04
-- [Rollback: an audit entry names exactly one snapshot table (#1793 item 2)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1803) (#1803), merged 2026-11-04
 
 ### Merged, not released yet
 
+- [fix: synchronize worklist stop and readback fixtures](https://github.com/OpenAdaptAI/OpenAdapt/pull/1930) (#1930), merged 2026-11-05, openadapt-flow
+- [on-prem: install, update and roll back the real engine offline in CI](https://github.com/OpenAdaptAI/OpenAdapt/pull/1918) (#1918), merged 2026-11-05, openadapt-flow
+- [fix: read new append-only log bodies incrementally](https://github.com/OpenAdaptAI/OpenAdapt/pull/1879) (#1879), merged 2026-11-04, openadapt-flow
+- [fix(flow): fewer contract-generator false stops on shared rows and multi-field edits](https://github.com/OpenAdaptAI/OpenAdapt/pull/1852) (#1852), merged 2026-11-05, openadapt-flow
+- [chore(release): openadapt 1.20.0 on openadapt-flow 2.6.0](https://github.com/OpenAdaptAI/OpenAdapt/pull/1850) (#1850), merged 2026-11-05
+- [zero-touch: planted faults keep out of unique indexes; dry read uses later list items](https://github.com/OpenAdaptAI/OpenAdapt/pull/1849) (#1849), merged 2026-11-04, openadapt-flow
+- [fix(flow): show rule enable state and unique indexes in the db code digest](https://github.com/OpenAdaptAI/OpenAdapt/pull/1836) (#1836), merged 2026-11-04, openadapt-flow
 - [desktop: prepare review card input before paint](https://github.com/OpenAdaptAI/OpenAdapt/pull/1825) (#1825), merged 2026-11-04
-- [flow: one key derivation per attended run, and no plaintext downgrade (fixes #1812 review blockers)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1821) (#1821), merged 2026-11-04, openadapt-flow
-- [docs: add AGENTS.md with rules for automated coding agents](https://github.com/OpenAdaptAI/OpenAdapt/pull/1817) (#1817), merged 2026-11-04
 
