@@ -5,6 +5,8 @@
 
 ## OpenAdapt
 
+- **[v1.20.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.20.0)** (2026-11-05)
+  Requirements
 - **[openadapt-flow-v2.6.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-flow-v2.6.0)** (2026-11-04)
   Flow adds signed teach authorizations, encrypted local artifacts, durable
 - **[openadapt-desktop-v0.26.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-desktop-v0.26.0)** (2026-11-04)
@@ -13,8 +15,6 @@
   OpenAdapt Desktop 0.25.1: the PyPI package and the native installers.
 - **[v1.19.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.19.0)** (2026-11-03)
   Breaking Changes
-- **[openadapt-flow-v2.5.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-flow-v2.5.0)** (2026-11-03)
-  Shadow mode checks the writes of an agent you already run against the system of record without blocking any of them, the whole-database frame works on PostgreSQL, a write that lands after the verdict can be caught by a recheck, and several verifier checks that could be unreadable or pass on the wrong value now read and compare exactly.
 
 ## openadapt-flow
 
