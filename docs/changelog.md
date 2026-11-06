@@ -5,6 +5,8 @@
 
 ## OpenAdapt
 
+- **[openadapt-desktop-v0.27.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-desktop-v0.27.0)** (2026-11-06)
+  OpenAdapt Desktop 0.27.0: the PyPI package and the native installers.
 - **[v1.20.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.20.0)** (2026-11-05)
   Requirements
 - **[openadapt-flow-v2.6.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-flow-v2.6.0)** (2026-11-04)
@@ -13,8 +15,6 @@
   OpenAdapt Desktop 0.26.0: the PyPI package and the native installers.
 - **[openadapt-desktop-v0.25.1](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-desktop-v0.25.1)** (2026-11-04)
   OpenAdapt Desktop 0.25.1: the PyPI package and the native installers.
-- **[v1.19.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.19.0)** (2026-11-03)
-  Breaking Changes
 
 ## openadapt-flow
 
