@@ -1,7 +1,7 @@
 # What's New
 
 > *Pull requests merged in the last 7 days across the OpenAdapt repositories, grouped by the release that contains them.*
-> *Last updated: 2026-11-06 15:28 UTC*
+> *Last updated: 2026-11-07 02:12 UTC*
 
 Items under **Merged, not released yet** are on a repository's `main` branch only. They are not in any published package or installer yet.
 
@@ -9,6 +9,10 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 
 ### Merged, not released yet
 
+- [docs: Get updates link in the README and desktop package README](https://github.com/OpenAdaptAI/OpenAdapt/pull/2031) (#2031), merged 2026-11-07
+- [fix(flow): require consistent database watch policies](https://github.com/OpenAdaptAI/OpenAdapt/pull/2029) (#2029), merged 2026-11-06, openadapt-flow
+- [feat(benchmark): expose fixed fixture startup stages](https://github.com/OpenAdaptAI/OpenAdapt/pull/2027) (#2027), merged 2026-11-06, openadapt-flow
+- [feat(flow): watch announced database writes](https://github.com/OpenAdaptAI/OpenAdapt/pull/2024) (#2024), merged 2026-11-06, openadapt-flow
 - [test(flow): wait for captured form submissions](https://github.com/OpenAdaptAI/OpenAdapt/pull/2023) (#2023), merged 2026-11-06, openadapt-flow
 - [feat(flow): cross-origin iframe evidence for the optional Chrome extension (Part of #1872)](https://github.com/OpenAdaptAI/OpenAdapt/pull/2011) (#2011), merged 2026-11-06, openadapt-flow
 - [test(flow): isolate durable authority during module setup](https://github.com/OpenAdaptAI/OpenAdapt/pull/2010) (#2010), merged 2026-11-06, openadapt-flow
@@ -25,8 +29,4 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 - [flow: scope Linux X11 recording to one window](https://github.com/OpenAdaptAI/OpenAdapt/pull/1966) (#1966), merged 2026-11-05, openadapt-flow
 - [fix(capture): anchor the video start time to the first frame](https://github.com/OpenAdaptAI/OpenAdapt/pull/1965) (#1965), merged 2026-11-05
 - [fix(capture,flow): keep the space bar as typed text](https://github.com/OpenAdaptAI/OpenAdapt/pull/1963) (#1963), merged 2026-11-05, openadapt-flow
-- [docs(audit): close #1472 — neighbouring/fuzzy read-back already fixed in #1747](https://github.com/OpenAdaptAI/OpenAdapt/pull/1962) (#1962), merged 2026-11-05
-- [Compare typed FHIR references by target identity (partial #1855)](https://github.com/OpenAdaptAI/OpenAdapt/pull/1952) (#1952), merged 2026-11-05, openadapt-flow
-- [fix: preserve SSH budgets and report unknown guest outcomes](https://github.com/OpenAdaptAI/OpenAdapt/pull/1949) (#1949), merged 2026-11-05, openadapt-flow
-- [fix(flow): read bundle manifest and API proposal sidecars as UTF-8](https://github.com/OpenAdaptAI/OpenAdapt/pull/1944) (#1944), merged 2026-11-05, openadapt-flow
 
