@@ -5,6 +5,8 @@
 
 ## OpenAdapt
 
+- **[openadapt-flow-v2.7.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-flow-v2.7.0)** (2026-11-09)
+  Flow adds `openadapt wrap`, which turns one agent task into a compiled program
 - **[openadapt-desktop-v0.28.1](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-desktop-v0.28.1)** (2026-11-08)
   OpenAdapt Desktop 0.28.1: the PyPI package and the native installers.
 - **[openadapt-desktop-v0.28.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-desktop-v0.28.0)** (2026-11-07)
@@ -13,11 +15,11 @@
   OpenAdapt Desktop 0.27.0: the PyPI package and the native installers.
 - **[v1.20.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.20.0)** (2026-11-05)
   Requirements
-- **[openadapt-flow-v2.6.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-flow-v2.6.0)** (2026-11-04)
-  Flow adds signed teach authorizations, encrypted local artifacts, durable
 
 ## openadapt-flow
 
+- **[v2.7.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v270-2026-11-09)** (2026-11-09)
+  Flow adds `openadapt wrap`, which turns one agent task into a compiled program
 - **[v2.6.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v260-2026-11-04)** (2026-11-04)
   Flow adds signed teach authorizations, encrypted local artifacts, durable
 - **[v2.5.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v250-2026-11-02)** (2026-11-02)
@@ -26,8 +28,6 @@
   Flow runs without its benchmark package and accepts a pinned config with Windows line endings. Several checks now halt or refute where 2.4.0 could act on the wrong row or pass a weaker check, and the frame can compare the whole database.
 - **[v2.4.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v240-2026-10-25)** (2026-10-25)
   A person's approval counts only when a registered approver key signed it, and the verification, identity and recovery paths below fail closed where they used to pass.
-- **[v2.3.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v230-2026-10-20)** (2026-10-20)
-  The shared contracts are back in `openadapt-types`, which depends only on Pydantic; this package requires `openadapt-types>=0.24.0,<0.25.0`, and `openadapt_flow.contracts` returns the same modules as `openadapt_types` ([#1270](https://github.com/OpenAdaptAI/OpenAdapt/pull/1270)).
 
 ## openadapt-desktop
 
