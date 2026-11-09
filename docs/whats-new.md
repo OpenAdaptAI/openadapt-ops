@@ -1,7 +1,7 @@
 # What's New
 
 > *Pull requests merged in the last 7 days across the OpenAdapt repositories, grouped by the release that contains them.*
-> *Last updated: 2026-11-09 19:10 UTC*
+> *Last updated: 2026-11-09 20:22 UTC*
 
 Items under **Merged, not released yet** are on a repository's `main` branch only. They are not in any published package or installer yet.
 
@@ -27,9 +27,9 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 
 ### Merged, not released yet
 
+- [chore(release): prepare launcher 1.21.0 on Flow 2.7.0 (do not merge until founder approves)](https://github.com/OpenAdaptAI/OpenAdapt/pull/2124) (#2124), merged 2026-11-09
 - [chore(gitleaks): ignore the #1862 test path under its squash commit](https://github.com/OpenAdaptAI/OpenAdapt/pull/2122) (#2122), merged 2026-11-09
 - [ci: refresh flow unit test durations](https://github.com/OpenAdaptAI/OpenAdapt/pull/2113) (#2113), merged 2026-11-09
 - [Fix Desktop release attribution across version-only merges](https://github.com/OpenAdaptAI/OpenAdapt/pull/2092) (#2092), merged 2026-11-08
 - [fix(ci): validate and retry pinned checking-tool downloads](https://github.com/OpenAdaptAI/OpenAdapt/pull/2086) (#2086), merged 2026-11-08
-- [Add a Flow shard measurement observer](https://github.com/OpenAdaptAI/OpenAdapt/pull/2081) (#2081), merged 2026-11-08
 
