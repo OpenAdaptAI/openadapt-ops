@@ -1,7 +1,7 @@
 # What's New
 
 > *Pull requests merged in the last 7 days across the OpenAdapt repositories, grouped by the release that contains them.*
-> *Last updated: 2026-11-08 08:29 UTC*
+> *Last updated: 2026-11-09 09:44 UTC*
 
 Items under **Merged, not released yet** are on a repository's `main` branch only. They are not in any published package or installer yet.
 
@@ -9,24 +9,24 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 
 ### Merged, not released yet
 
-- [fix: accept complete FHIR collection search responses](https://github.com/OpenAdaptAI/OpenAdapt/pull/2074) (#2074), merged 2026-11-08, openadapt-flow
-- [fix: refresh redacted EffectBench task-pack manifest](https://github.com/OpenAdaptAI/OpenAdapt/pull/2070) (#2070), merged 2026-11-08, openadapt-flow
-- [Preserve complete-read contracts in owned fixtures and benchmark routers](https://github.com/OpenAdaptAI/OpenAdapt/pull/2068) (#2068), merged 2026-11-08, openadapt-flow
-- [chore(deps): keep Desktop Flow updates on the release path](https://github.com/OpenAdaptAI/OpenAdapt/pull/2064) (#2064), merged 2026-11-08
-- [test(flow): isolate test-time keys and ledger during module setup (#2012)](https://github.com/OpenAdaptAI/OpenAdapt/pull/2060) (#2060), merged 2026-11-07, openadapt-flow
-- [fix(desktop): preserve release intent through merges and copies](https://github.com/OpenAdaptAI/OpenAdapt/pull/2059) (#2059), merged 2026-11-08
-- [Make remote-display lease tests independent of host timing](https://github.com/OpenAdaptAI/OpenAdapt/pull/2057) (#2057), merged 2026-11-07, openadapt-flow
-- [feat: wrap agent tasks with verified compiled replay](https://github.com/OpenAdaptAI/OpenAdapt/pull/2055) (#2055), merged 2026-11-08, openadapt-flow
-- [ci(desktop): judge release intent from net changes](https://github.com/OpenAdaptAI/OpenAdapt/pull/2054) (#2054), merged 2026-11-07
-- [test(capture): make readiness budget routing deterministic](https://github.com/OpenAdaptAI/OpenAdapt/pull/2053) (#2053), merged 2026-11-07
-- [Draft REST read setups from explicit API semantics](https://github.com/OpenAdaptAI/OpenAdapt/pull/2050) (#2050), merged 2026-11-08, openadapt-flow
-- [Reject credential files before evidence publication](https://github.com/OpenAdaptAI/OpenAdapt/pull/2049) (#2049), merged 2026-11-07, openadapt-flow
-- [build(deps): bump the github-actions group across 1 directory with 2 updates](https://github.com/OpenAdaptAI/OpenAdapt/pull/2048) (#2048), merged 2026-11-07
-- [build(deps-dev): bump the npm-desktop group in /packages/desktop with 2 updates](https://github.com/OpenAdaptAI/OpenAdapt/pull/2046) (#2046), merged 2026-11-07
-- [build(deps): bump zip from 9.1.3 to 9.3.0 in /packages/desktop/src-tauri in the cargo-desktop group](https://github.com/OpenAdaptAI/OpenAdapt/pull/2045) (#2045), merged 2026-11-07
-- [Keep incomplete REST reads indeterminate across read wrappers](https://github.com/OpenAdaptAI/OpenAdapt/pull/2041) (#2041), merged 2026-11-07, openadapt-flow
-- [Desktop: optional release-notes email in the first-launch question](https://github.com/OpenAdaptAI/OpenAdapt/pull/2032) (#2032), merged 2026-11-07
-- [docs: Get updates link in the README and desktop package README](https://github.com/OpenAdaptAI/OpenAdapt/pull/2031) (#2031), merged 2026-11-07
-- [fix(flow): require consistent database watch policies](https://github.com/OpenAdaptAI/OpenAdapt/pull/2029) (#2029), merged 2026-11-06, openadapt-flow
-- [feat(benchmark): expose fixed fixture startup stages](https://github.com/OpenAdaptAI/OpenAdapt/pull/2027) (#2027), merged 2026-11-06, openadapt-flow
+- [test: give the standalone dialog fixture its title (fixes red main)](https://github.com/OpenAdaptAI/OpenAdapt/pull/2114) (#2114), merged 2026-11-09, openadapt-flow
+- [ci: refresh flow unit test durations](https://github.com/OpenAdaptAI/OpenAdapt/pull/2113) (#2113), merged 2026-11-09
+- [fix(flow): refuse abbreviated verifier-audit options](https://github.com/OpenAdaptAI/OpenAdapt/pull/2112) (#2112), merged 2026-11-09, openadapt-flow
+- [fix(flow): verifier audit follow-ups (keyless-table duplicates, versioned seed cache, tz-aware stamps)](https://github.com/OpenAdaptAI/OpenAdapt/pull/2111) (#2111), merged 2026-11-09, openadapt-flow
+- [Revert #2094 to restore a green main](https://github.com/OpenAdaptAI/OpenAdapt/pull/2106) (#2106), merged 2026-11-08, openadapt-flow
+- [Prepare first capture on its owned backend and publish after cleanup](https://github.com/OpenAdaptAI/OpenAdapt/pull/2105) (#2105), merged 2026-11-09, openadapt-flow
+- [test(flow): recognize parser aliases and subclasses in the CLI census](https://github.com/OpenAdaptAI/OpenAdapt/pull/2104) (#2104), merged 2026-11-09, openadapt-flow
+- [fix(flow): learn authenticated field-to-column correspondence](https://github.com/OpenAdaptAI/OpenAdapt/pull/2100) (#2100), merged 2026-11-09, openadapt-flow
+- [fix(flow): refuse queried collection bundles as complete reads](https://github.com/OpenAdaptAI/OpenAdapt/pull/2098) (#2098), merged 2026-11-09, openadapt-flow
+- [Preserve exact browser frame boundaries during event persistence](https://github.com/OpenAdaptAI/OpenAdapt/pull/2094) (#2094), merged 2026-11-08, openadapt-flow
+- [Learn record identities for database frame checks](https://github.com/OpenAdaptAI/OpenAdapt/pull/2093) (#2093), merged 2026-11-08, openadapt-flow
+- [Fix Desktop release attribution across version-only merges](https://github.com/OpenAdaptAI/OpenAdapt/pull/2092) (#2092), merged 2026-11-08
+- [fix(desktop): revert extension host integration](https://github.com/OpenAdaptAI/OpenAdapt/pull/2088) (#2088), merged 2026-11-08, openadapt-flow
+- [fix(ci): validate and retry pinned checking-tool downloads](https://github.com/OpenAdaptAI/OpenAdapt/pull/2086) (#2086), merged 2026-11-08
+- [fix(flow): learn unique paths across repeated elements](https://github.com/OpenAdaptAI/OpenAdapt/pull/2085) (#2085), merged 2026-11-08, openadapt-flow
+- [feat(desktop): register the Chrome extension host per recording](https://github.com/OpenAdaptAI/OpenAdapt/pull/2082) (#2082), merged 2026-11-08, openadapt-flow
+- [Add a Flow shard measurement observer](https://github.com/OpenAdaptAI/OpenAdapt/pull/2081) (#2081), merged 2026-11-08
+- [build(deps): bump the uv-desktop group in /packages/desktop with 2 updates](https://github.com/OpenAdaptAI/OpenAdapt/pull/2077) (#2077), merged 2026-11-08
+- [build(deps-dev): bump vite from 8.3.5 to 8.3.6 in /packages/desktop in the npm-desktop group](https://github.com/OpenAdaptAI/OpenAdapt/pull/2076) (#2076), merged 2026-11-08
+- [Use collision-resistant markers in encrypted-state tests](https://github.com/OpenAdaptAI/OpenAdapt/pull/2075) (#2075), merged 2026-11-08, openadapt-flow
 
