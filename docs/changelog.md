@@ -5,6 +5,8 @@
 
 ## OpenAdapt
 
+- **[v1.21.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.21.0)** (2026-11-09)
+  Requirements
 - **[openadapt-flow-v2.7.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-flow-v2.7.0)** (2026-11-09)
   Flow adds `openadapt wrap`, which turns one agent task into a compiled program
 - **[openadapt-desktop-v0.28.1](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-desktop-v0.28.1)** (2026-11-08)
@@ -13,8 +15,6 @@
   OpenAdapt Desktop 0.28.0: the PyPI package and the native installers.
 - **[openadapt-desktop-v0.27.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-desktop-v0.27.0)** (2026-11-06)
   OpenAdapt Desktop 0.27.0: the PyPI package and the native installers.
-- **[v1.20.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.20.0)** (2026-11-05)
-  Requirements
 
 ## openadapt-flow
 

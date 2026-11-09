@@ -1,7 +1,7 @@
 # What's New
 
 > *Pull requests merged in the last 7 days across the OpenAdapt repositories, grouped by the release that contains them.*
-> *Last updated: 2026-11-09 20:22 UTC*
+> *Last updated: 2026-11-09 21:06 UTC*
 
 Items under **Merged, not released yet** are on a repository's `main` branch only. They are not in any published package or installer yet.
 
@@ -23,10 +23,10 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 - [Learn record identities for database frame checks](https://github.com/OpenAdaptAI/OpenAdapt/pull/2093) (#2093), merged 2026-11-08
 - [fix(desktop): revert extension host integration](https://github.com/OpenAdaptAI/OpenAdapt/pull/2088) (#2088), merged 2026-11-08
 - [fix(flow): learn unique paths across repeated elements](https://github.com/OpenAdaptAI/OpenAdapt/pull/2085) (#2085), merged 2026-11-08
-- [feat(desktop): register the Chrome extension host per recording](https://github.com/OpenAdaptAI/OpenAdapt/pull/2082) (#2082), merged 2026-11-08
 
-### Merged, not released yet
+### Released in OpenAdapt 1.21.0
 
+- [fix(release): pin every public package in the platform manifest's release selection](https://github.com/OpenAdaptAI/OpenAdapt/pull/2145) (#2145), merged 2026-11-09
 - [chore(release): prepare launcher 1.21.0 on Flow 2.7.0 (do not merge until founder approves)](https://github.com/OpenAdaptAI/OpenAdapt/pull/2124) (#2124), merged 2026-11-09
 - [chore(gitleaks): ignore the #1862 test path under its squash commit](https://github.com/OpenAdaptAI/OpenAdapt/pull/2122) (#2122), merged 2026-11-09
 - [ci: refresh flow unit test durations](https://github.com/OpenAdaptAI/OpenAdapt/pull/2113) (#2113), merged 2026-11-09
