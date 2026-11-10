@@ -5,6 +5,8 @@
 
 ## OpenAdapt
 
+- **[openadapt-flow-v2.7.1](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-flow-v2.7.1)** (2026-11-10)
+  Flow 2.7.1 fixes loading of programs certified before Nov 8. Two optional
 - **[v1.21.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.21.0)** (2026-11-09)
   Requirements
 - **[openadapt-flow-v2.7.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-flow-v2.7.0)** (2026-11-09)
@@ -13,11 +15,11 @@
   OpenAdapt Desktop 0.28.1: the PyPI package and the native installers.
 - **[openadapt-desktop-v0.28.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-desktop-v0.28.0)** (2026-11-07)
   OpenAdapt Desktop 0.28.0: the PyPI package and the native installers.
-- **[openadapt-desktop-v0.27.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-desktop-v0.27.0)** (2026-11-06)
-  OpenAdapt Desktop 0.27.0: the PyPI package and the native installers.
 
 ## openadapt-flow
 
+- **[v2.7.1](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v271-2026-11-09)** (2026-11-09)
+  Flow 2.7.1 fixes loading of programs certified before Nov 8. Two optional
 - **[v2.7.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v270-2026-11-09)** (2026-11-09)
   Flow adds `openadapt wrap`, which turns one agent task into a compiled program
 - **[v2.6.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v260-2026-11-04)** (2026-11-04)
@@ -26,8 +28,6 @@
   Shadow mode checks the writes of an agent you already run against the system of record without blocking any of them, the whole-database frame works on PostgreSQL, a write that lands after the verdict can be caught by a recheck, and several verifier checks that could be unreadable or pass on the wrong value now read and compare exactly.
 - **[v2.4.1](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v241-2026-10-28)** (2026-10-28)
   Flow runs without its benchmark package and accepts a pinned config with Windows line endings. Several checks now halt or refute where 2.4.0 could act on the wrong row or pass a weaker check, and the frame can compare the whole database.
-- **[v2.4.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v240-2026-10-25)** (2026-10-25)
-  A person's approval counts only when a registered approver key signed it, and the verification, identity and recovery paths below fail closed where they used to pass.
 
 ## openadapt-desktop
 
