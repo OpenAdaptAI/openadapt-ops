@@ -1,11 +1,17 @@
 # What's New
 
 > *Pull requests merged in the last 7 days across the OpenAdapt repositories, grouped by the release that contains them.*
-> *Last updated: 2026-11-09 21:06 UTC*
+> *Last updated: 2026-11-10 03:56 UTC*
 
 Items under **Merged, not released yet** are on a repository's `main` branch only. They are not in any published package or installer yet.
 
 ## OpenAdapt
+
+### Released in openadapt-flow 2.7.1
+
+- [chore(release): prepare Flow 2.7.1](https://github.com/OpenAdaptAI/OpenAdapt/pull/2148) (#2148), merged 2026-11-10
+- [qualification: reproduce certifications sealed before a reviewed additive field](https://github.com/OpenAdaptAI/OpenAdapt/pull/2134) (#2134), merged 2026-11-09
+- [benchmark: zero-config verifiers vs hand-written under planted faults](https://github.com/OpenAdaptAI/OpenAdapt/pull/2127) (#2127), merged 2026-11-09
 
 ### Released in openadapt-flow 2.7.0
 
@@ -21,8 +27,6 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 - [fix(flow): refuse queried collection bundles as complete reads](https://github.com/OpenAdaptAI/OpenAdapt/pull/2098) (#2098), merged 2026-11-09
 - [Preserve exact browser frame boundaries during event persistence](https://github.com/OpenAdaptAI/OpenAdapt/pull/2094) (#2094), merged 2026-11-08
 - [Learn record identities for database frame checks](https://github.com/OpenAdaptAI/OpenAdapt/pull/2093) (#2093), merged 2026-11-08
-- [fix(desktop): revert extension host integration](https://github.com/OpenAdaptAI/OpenAdapt/pull/2088) (#2088), merged 2026-11-08
-- [fix(flow): learn unique paths across repeated elements](https://github.com/OpenAdaptAI/OpenAdapt/pull/2085) (#2085), merged 2026-11-08
 
 ### Released in OpenAdapt 1.21.0
 
@@ -31,5 +35,4 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 - [chore(gitleaks): ignore the #1862 test path under its squash commit](https://github.com/OpenAdaptAI/OpenAdapt/pull/2122) (#2122), merged 2026-11-09
 - [ci: refresh flow unit test durations](https://github.com/OpenAdaptAI/OpenAdapt/pull/2113) (#2113), merged 2026-11-09
 - [Fix Desktop release attribution across version-only merges](https://github.com/OpenAdaptAI/OpenAdapt/pull/2092) (#2092), merged 2026-11-08
-- [fix(ci): validate and retry pinned checking-tool downloads](https://github.com/OpenAdaptAI/OpenAdapt/pull/2086) (#2086), merged 2026-11-08
 
