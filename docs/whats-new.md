@@ -1,7 +1,7 @@
 # What's New
 
 > *Pull requests merged in the last 7 days across the OpenAdapt repositories, grouped by the release that contains them.*
-> *Last updated: 2026-11-13 17:19 UTC*
+> *Last updated: 2026-11-14 03:27 UTC*
 
 Items under **Merged, not released yet** are on a repository's `main` branch only. They are not in any published package or installer yet.
 
@@ -22,11 +22,11 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 - [Require exact MySQL results for SQL effect readback](https://github.com/OpenAdaptAI/OpenAdapt/pull/2211) (#2211), merged 2026-11-11
 - [Distinguish live appends from interrupted journals](https://github.com/OpenAdaptAI/OpenAdapt/pull/2210) (#2210), merged 2026-11-11
 - [Record a durable pause before local writes](https://github.com/OpenAdaptAI/OpenAdapt/pull/2209) (#2209), merged 2026-11-11
-- [Refuse lossy MySQL frame connections](https://github.com/OpenAdaptAI/OpenAdapt/pull/2206) (#2206), merged 2026-11-11
-- [fix(agent): discard queued preflight when pool cancelled the job (fixes #2141)](https://github.com/OpenAdaptAI/OpenAdapt/pull/2203) (#2203), merged 2026-11-11
 
 ### Merged, not released yet
 
+- [ci(release): check the uploaded openadapt-verify archives](https://github.com/OpenAdaptAI/OpenAdapt/pull/2238) (#2238), merged 2026-11-14
+- [fix(desktop): stop the release-intent tests hanging on macOS](https://github.com/OpenAdaptAI/OpenAdapt/pull/2237) (#2237), merged 2026-11-14
 - [ci(release): publish openadapt-verify through release-package](https://github.com/OpenAdaptAI/OpenAdapt/pull/2236) (#2236), merged 2026-11-13
 - [verify: audit, count the wrong saves your automation's success check passes](https://github.com/OpenAdaptAI/OpenAdapt/pull/2234) (#2234), merged 2026-11-13
 - [demo: refinery, a recorded workflow becomes a task environment whose grader we audit](https://github.com/OpenAdaptAI/OpenAdapt/pull/2231) (#2231), merged 2026-11-12
