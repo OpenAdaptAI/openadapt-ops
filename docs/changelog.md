@@ -5,6 +5,8 @@
 
 ## OpenAdapt
 
+- **[openadapt-verify-v0.2.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-verify-v0.2.0)** (2026-11-14)
+  Install without the vision stack
 - **[openadapt-desktop-v0.30.1](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-desktop-v0.30.1)** (2026-11-14)
   OpenAdapt Desktop 0.30.1: the PyPI package and the native installers.
 - **[openadapt-flow-v3.0.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-flow-v3.0.0)** (2026-11-13)
@@ -13,8 +15,6 @@
   Flow 2.7.1 fixes loading of programs certified before Nov 8. Two optional
 - **[v1.21.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.21.0)** (2026-11-09)
   Requirements
-- **[openadapt-flow-v2.7.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-flow-v2.7.0)** (2026-11-09)
-  Flow adds `openadapt wrap`, which turns one agent task into a compiled program
 
 ## openadapt-flow
 
