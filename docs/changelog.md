@@ -5,6 +5,8 @@
 
 ## OpenAdapt
 
+- **[v1.23.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.23.0)** (2026-11-19)
+  Fixes
 - **[v1.22.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.22.0)** (2026-11-19)
   Features
 - **[openadapt-flow-v3.3.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-flow-v3.3.0)** (2026-11-19)
@@ -13,8 +15,6 @@
   Faster screen steps and encrypted checkpoints
 - **[openadapt-desktop-v0.30.4](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-desktop-v0.30.4)** (2026-11-19)
   OpenAdapt Desktop 0.30.4: the PyPI package and the native installers.
-- **[openadapt-desktop-v0.30.3](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-desktop-v0.30.3)** (2026-11-19)
-  OpenAdapt Desktop 0.30.3: the PyPI package and the native installers.
 
 ## openadapt-flow
 
