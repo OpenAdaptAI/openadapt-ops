@@ -11,10 +11,10 @@
   Fixes
 - **[openadapt-flow-v3.2.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-flow-v3.2.0)** (2026-11-19)
   Faster screen steps and encrypted checkpoints
+- **[openadapt-desktop-v0.30.4](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-desktop-v0.30.4)** (2026-11-19)
+  OpenAdapt Desktop 0.30.4: the PyPI package and the native installers.
 - **[openadapt-desktop-v0.30.3](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-desktop-v0.30.3)** (2026-11-19)
   OpenAdapt Desktop 0.30.3: the PyPI package and the native installers.
-- **[openadapt-verify-v0.2.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-verify-v0.2.0)** (2026-11-14)
-  Install without the vision stack
 
 ## openadapt-flow
 
