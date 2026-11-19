@@ -5,29 +5,29 @@
 
 ## OpenAdapt
 
+- **[v1.22.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.22.0)** (2026-11-19)
+  Features
+- **[openadapt-flow-v3.2.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-flow-v3.2.0)** (2026-11-19)
+  Faster screen steps and encrypted checkpoints
 - **[openadapt-verify-v0.2.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-verify-v0.2.0)** (2026-11-14)
   Install without the vision stack
+- **[openadapt-flow-v3.1.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-flow-v3.1.0)** (2026-11-14)
+  Wrap publish: the scrubber keeps a program's structure, and info lint is advice
 - **[openadapt-desktop-v0.30.1](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-desktop-v0.30.1)** (2026-11-14)
   OpenAdapt Desktop 0.30.1: the PyPI package and the native installers.
-- **[openadapt-flow-v3.0.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-flow-v3.0.0)** (2026-11-13)
-  Breaking: the vision stack is the `vision` extra (3.0.0)
-- **[openadapt-flow-v2.7.1](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-flow-v2.7.1)** (2026-11-10)
-  Flow 2.7.1 fixes loading of programs certified before Nov 8. Two optional
-- **[v1.21.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.21.0)** (2026-11-09)
-  Requirements
 
 ## openadapt-flow
 
+- **[v3.2.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v320-2026-11-19)** (2026-11-19)
+  A checkpoint store derives its at-rest key once, under one salt, instead
+- **[v3.1.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v310-2026-11-14)** (2026-11-14)
+  The outbound scrubber no longer rewrites the generated files of a wrap
 - **[v3.0.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v300-2026-11-13)** (2026-11-13)
   `pip install openadapt-flow` no longer installs NumPy, OpenCV, Pillow or
 - **[v2.7.1](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v271-2026-11-09)** (2026-11-09)
   Flow 2.7.1 fixes loading of programs certified before Nov 8. Two optional
 - **[v2.7.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v270-2026-11-09)** (2026-11-09)
   Flow adds `openadapt wrap`, which turns one agent task into a compiled program
-- **[v2.6.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v260-2026-11-04)** (2026-11-04)
-  Flow adds signed teach authorizations, encrypted local artifacts, durable
-- **[v2.5.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v250-2026-11-02)** (2026-11-02)
-  Shadow mode checks the writes of an agent you already run against the system of record without blocking any of them, the whole-database frame works on PostgreSQL, a write that lands after the verdict can be caught by a recheck, and several verifier checks that could be unreadable or pass on the wrong value now read and compare exactly.
 
 ## openadapt-desktop
 
