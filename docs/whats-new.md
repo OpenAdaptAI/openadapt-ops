@@ -1,7 +1,7 @@
 # What's New
 
 > *Pull requests merged in the last 7 days across the OpenAdapt repositories, grouped by the release that contains them.*
-> *Last updated: 2026-11-19 07:27 UTC*
+> *Last updated: 2026-11-19 19:03 UTC*
 
 Items under **Merged, not released yet** are on a repository's `main` branch only. They are not in any published package or installer yet.
 
@@ -21,10 +21,6 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 - [release(flow): 3.1.0](https://github.com/OpenAdaptAI/OpenAdapt/pull/2248) (#2248), merged 2026-11-14
 - [feat(wrap): publish a wrapped task as a hosted Cloud endpoint](https://github.com/OpenAdaptAI/OpenAdapt/pull/2239) (#2239), merged 2026-11-14
 
-### Released in openadapt-flow 3.0.0
-
-- [release(flow): 3.0.0](https://github.com/OpenAdaptAI/OpenAdapt/pull/2235) (#2235), merged 2026-11-13
-
 ### Released in openadapt-agent 2.2.2
 
 - [release(agent): openadapt-agent 2.2.2 (accepts Flow 3)](https://github.com/OpenAdaptAI/OpenAdapt/pull/2241) (#2241), merged 2026-11-14
@@ -37,8 +33,12 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 - [test(ci): skip the tomllib check of the release plan on Python 3.10](https://github.com/OpenAdaptAI/OpenAdapt/pull/2246) (#2246), merged 2026-11-14
 - [release(launcher): openadapt 1.22.0 on Flow 3.2.0](https://github.com/OpenAdaptAI/OpenAdapt/pull/2242) (#2242), merged 2026-11-19
 - [release(verify): date 0.2.0](https://github.com/OpenAdaptAI/OpenAdapt/pull/2240) (#2240), merged 2026-11-14
-- [ci(release): check the uploaded openadapt-verify archives](https://github.com/OpenAdaptAI/OpenAdapt/pull/2238) (#2238), merged 2026-11-14
-- [fix(desktop): stop the release-intent tests hanging on macOS](https://github.com/OpenAdaptAI/OpenAdapt/pull/2237) (#2237), merged 2026-11-14
-- [ci(release): publish openadapt-verify through release-package](https://github.com/OpenAdaptAI/OpenAdapt/pull/2236) (#2236), merged 2026-11-13
-- [verify: audit, count the wrong saves your automation's success check passes](https://github.com/OpenAdaptAI/OpenAdapt/pull/2234) (#2234), merged 2026-11-13
+
+### Merged, not released yet
+
+- [test(desktop): restore exact host bytes in the reversion tests on Windows](https://github.com/OpenAdaptAI/OpenAdapt/pull/2281) (#2281), merged 2026-11-19
+- [ci(desktop): start git without forking in the release tooling and its tests](https://github.com/OpenAdaptAI/OpenAdapt/pull/2277) (#2277), merged 2026-11-19
+- [fix(ci): bind pull_request_target safety runs to the PR head, not GITHUB_SHA](https://github.com/OpenAdaptAI/OpenAdapt/pull/2275) (#2275), merged 2026-11-19
+- [fix(desktop): describe OpenAdapt for any app on the welcome screen](https://github.com/OpenAdaptAI/OpenAdapt/pull/2269) (#2269), merged 2026-11-19
+- [fix(desktop): let the installed app's sample run on a fresh Mac](https://github.com/OpenAdaptAI/OpenAdapt/pull/2267) (#2267), merged 2026-11-19
 
