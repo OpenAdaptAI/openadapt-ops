@@ -1,7 +1,7 @@
 # What's New
 
 > *Pull requests merged in the last 7 days across the OpenAdapt repositories, grouped by the release that contains them.*
-> *Last updated: 2026-11-19 21:13 UTC*
+> *Last updated: 2026-11-19 21:19 UTC*
 
 Items under **Merged, not released yet** are on a repository's `main` branch only. They are not in any published package or installer yet.
 
@@ -31,10 +31,10 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 - [fix(scripts): record_quickstart parser refuses abbreviations](https://github.com/OpenAdaptAI/OpenAdapt/pull/2271) (#2271), merged 2026-11-19
 - [quickstart: a five-step story with one next step and the Seal](https://github.com/OpenAdaptAI/OpenAdapt/pull/2264) (#2264), merged 2026-11-19
 - [test(ci): skip the tomllib check of the release plan on Python 3.10](https://github.com/OpenAdaptAI/OpenAdapt/pull/2246) (#2246), merged 2026-11-14
-- [release(launcher): openadapt 1.22.0 on Flow 3.2.0](https://github.com/OpenAdaptAI/OpenAdapt/pull/2242) (#2242), merged 2026-11-19
 
 ### Merged, not released yet
 
+- [release(launcher): openadapt 1.23.0 requires Flow 3.3](https://github.com/OpenAdaptAI/OpenAdapt/pull/2288) (#2288), merged 2026-11-19
 - [fix(desktop): stop terminal windows opening over the app on Windows](https://github.com/OpenAdaptAI/OpenAdapt/pull/2285) (#2285), merged 2026-11-19
 - [test(desktop): restore exact host bytes in the reversion tests on Windows](https://github.com/OpenAdaptAI/OpenAdapt/pull/2281) (#2281), merged 2026-11-19
 - [ci(desktop): start git without forking in the release tooling and its tests](https://github.com/OpenAdaptAI/OpenAdapt/pull/2277) (#2277), merged 2026-11-19
