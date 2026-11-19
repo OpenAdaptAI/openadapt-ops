@@ -7,17 +7,19 @@
 
 - **[v1.22.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.22.0)** (2026-11-19)
   Features
+- **[openadapt-flow-v3.3.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-flow-v3.3.0)** (2026-11-19)
+  Fixes
 - **[openadapt-flow-v3.2.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-flow-v3.2.0)** (2026-11-19)
   Faster screen steps and encrypted checkpoints
 - **[openadapt-desktop-v0.30.3](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-desktop-v0.30.3)** (2026-11-19)
   OpenAdapt Desktop 0.30.3: the PyPI package and the native installers.
 - **[openadapt-verify-v0.2.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-verify-v0.2.0)** (2026-11-14)
   Install without the vision stack
-- **[openadapt-flow-v3.1.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-flow-v3.1.0)** (2026-11-14)
-  Wrap publish: the scrubber keeps a program's structure, and info lint is advice
 
 ## openadapt-flow
 
+- **[v3.3.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v330-2026-11-19)** (2026-11-19)
+  Screen text read from the clock is checked against the run's clock. A
 - **[v3.2.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v320-2026-11-19)** (2026-11-19)
   A checkpoint store derives its at-rest key once, under one salt, instead
 - **[v3.1.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v310-2026-11-14)** (2026-11-14)
@@ -26,8 +28,6 @@
   `pip install openadapt-flow` no longer installs NumPy, OpenCV, Pillow or
 - **[v2.7.1](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v271-2026-11-09)** (2026-11-09)
   Flow 2.7.1 fixes loading of programs certified before Nov 8. Two optional
-- **[v2.7.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v270-2026-11-09)** (2026-11-09)
-  Flow adds `openadapt wrap`, which turns one agent task into a compiled program
 
 ## openadapt-desktop
 

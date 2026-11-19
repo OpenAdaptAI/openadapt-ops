@@ -1,11 +1,16 @@
 # What's New
 
 > *Pull requests merged in the last 7 days across the OpenAdapt repositories, grouped by the release that contains them.*
-> *Last updated: 2026-11-19 19:03 UTC*
+> *Last updated: 2026-11-19 20:57 UTC*
 
 Items under **Merged, not released yet** are on a repository's `main` branch only. They are not in any published package or installer yet.
 
 ## OpenAdapt
+
+### Released in openadapt-flow 3.3.0
+
+- [release(flow): 3.3.0](https://github.com/OpenAdaptAI/OpenAdapt/pull/2284) (#2284), merged 2026-11-19
+- [fix(flow): check clock-read screen text against the run's clock; complete OpenEMR REST reads](https://github.com/OpenAdaptAI/OpenAdapt/pull/2280) (#2280), merged 2026-11-19
 
 ### Released in openadapt-flow 3.2.0
 
@@ -19,11 +24,6 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 ### Released in openadapt-flow 3.1.0
 
 - [release(flow): 3.1.0](https://github.com/OpenAdaptAI/OpenAdapt/pull/2248) (#2248), merged 2026-11-14
-- [feat(wrap): publish a wrapped task as a hosted Cloud endpoint](https://github.com/OpenAdaptAI/OpenAdapt/pull/2239) (#2239), merged 2026-11-14
-
-### Released in openadapt-agent 2.2.2
-
-- [release(agent): openadapt-agent 2.2.2 (accepts Flow 3)](https://github.com/OpenAdaptAI/OpenAdapt/pull/2241) (#2241), merged 2026-11-14
 
 ### Released in OpenAdapt 1.22.0
 
@@ -32,10 +32,10 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 - [quickstart: a five-step story with one next step and the Seal](https://github.com/OpenAdaptAI/OpenAdapt/pull/2264) (#2264), merged 2026-11-19
 - [test(ci): skip the tomllib check of the release plan on Python 3.10](https://github.com/OpenAdaptAI/OpenAdapt/pull/2246) (#2246), merged 2026-11-14
 - [release(launcher): openadapt 1.22.0 on Flow 3.2.0](https://github.com/OpenAdaptAI/OpenAdapt/pull/2242) (#2242), merged 2026-11-19
-- [release(verify): date 0.2.0](https://github.com/OpenAdaptAI/OpenAdapt/pull/2240) (#2240), merged 2026-11-14
 
 ### Merged, not released yet
 
+- [fix(desktop): stop terminal windows opening over the app on Windows](https://github.com/OpenAdaptAI/OpenAdapt/pull/2285) (#2285), merged 2026-11-19
 - [test(desktop): restore exact host bytes in the reversion tests on Windows](https://github.com/OpenAdaptAI/OpenAdapt/pull/2281) (#2281), merged 2026-11-19
 - [ci(desktop): start git without forking in the release tooling and its tests](https://github.com/OpenAdaptAI/OpenAdapt/pull/2277) (#2277), merged 2026-11-19
 - [fix(ci): bind pull_request_target safety runs to the PR head, not GITHUB_SHA](https://github.com/OpenAdaptAI/OpenAdapt/pull/2275) (#2275), merged 2026-11-19
