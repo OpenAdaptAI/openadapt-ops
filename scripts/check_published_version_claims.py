@@ -348,19 +348,28 @@ def _released_ranges(requires_dist: list[str], package: str) -> dict[str | None,
     return ranges
 
 
-def _unconditional(requires_dist: list[str], package: str) -> bool:
-    """Whether the base install requires ``package`` with no marker at all.
+def _unconditional_base(requires_dist: list[str], package: str) -> str | None:
+    """The base install's range for ``package`` when it applies everywhere.
 
-    Only an unconditional base requirement applies to every extra on every
-    supported Python and platform. A base requirement behind any marker
-    (``python_version``, ``sys_platform``, ...) is not modelled here, so it
-    cannot stand in for an extra that no longer states the range.
+    Only a base requirement with no marker at all applies to every extra on
+    every supported Python and platform. Return its range only when it is the
+    sole base clause for ``package``: a base clause behind any marker
+    (``python_version``, ``sys_platform``, ...) is not modelled here, so a mix
+    of clauses is ambiguous and cannot stand in for an extra that no longer
+    states the range. The returned range comes from that same clause.
     """
+    clauses = []
     for line in requires_dist:
         match = REQUIREMENT.match(line.strip())
-        if match and match.group("name").lower() == package and not match.group("marker"):
-            return True
-    return False
+        if not match or match.group("name").lower() != package:
+            continue
+        marker = match.group("marker") or ""
+        if re.search(r"extra\s*==", marker):
+            continue
+        clauses.append((marker, match.group("spec")))
+    if len(clauses) == 1 and not clauses[0][0]:
+        return clauses[0][1]
+    return None
 
 
 def _python_range(requires_python: str) -> str:
@@ -394,9 +403,11 @@ def check_compatibility_table(text: str, metadata: dict, report: Report) -> None
         ranges = _released_ranges(metadata[source].get("requires_dist") or [], package)
         # An extra installs on top of the base requirements, so an extra that
         # no longer restates a range the base install already pins inherits it.
-        inherited = None in extras and _unconditional(
-            metadata[source].get("requires_dist") or [], package
-        )
+        base = _unconditional_base(metadata[source].get("requires_dist") or [], package)
+        inherited = None in extras and base is not None
+        if inherited:
+            # Bind the inherited range to the same unconditional clause.
+            ranges[None] = base
         covered = [extra for extra in extras if extra in ranges or inherited]
         missing = [label(source, extra) for extra in extras if extra not in covered]
         if missing:

@@ -156,3 +156,37 @@ def test_a_conditional_base_types_requirement_is_not_inherited(marker):
     metadata["openadapt-flow"] = flow
     errors = _errors(_table(*CURRENT_ROWS), metadata)
     assert len(errors) == 1 and "no longer requires openadapt-types" in errors[0], errors
+
+
+@pytest.mark.parametrize("unconditional_first", [True, False])
+@pytest.mark.parametrize(
+    "marker",
+    ['python_version < "3.10"', 'sys_platform == "never-a-real-platform"'],
+)
+def test_a_mixed_base_types_requirement_is_not_inherited(marker, unconditional_first):
+    """An unconditional clause can't lend its presence to another clause's range."""
+    metadata = _metadata()
+    flow = dict(metadata["openadapt-flow"])
+    others = [line for line in flow["requires_dist"] if not line.startswith("openadapt-types")]
+    clauses = [
+        "openadapt-types<0.24,>=0.23",
+        f"openadapt-types<0.25.0,>=0.24.0; {marker}",
+    ]
+    if not unconditional_first:
+        clauses.reverse()
+    flow["requires_dist"] = others + clauses
+    metadata["openadapt-flow"] = flow
+    errors = _errors(_table(*CURRENT_ROWS), metadata)
+    assert len(errors) == 1 and "no longer requires openadapt-types" in errors[0], errors
+
+
+def test_an_unconditional_base_range_that_differs_from_the_table_fails():
+    metadata = _metadata()
+    flow = dict(metadata["openadapt-flow"])
+    flow["requires_dist"] = [
+        "openadapt-types<0.24,>=0.23" if line.startswith("openadapt-types") else line
+        for line in flow["requires_dist"]
+    ]
+    metadata["openadapt-flow"] = flow
+    errors = _errors(_table(*CURRENT_ROWS), metadata)
+    assert len(errors) == 1 and "openadapt-types >=0.24,<0.25" in errors[0], errors
