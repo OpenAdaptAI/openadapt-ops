@@ -1,3 +1,6 @@
 
 # Preserve the exact upstream license bytes, including prose whitespace.
 docs/stylesheets/vendor/semantic-theme/fonts/OFL-*.txt whitespace=-blank-at-eol
+
+# Both vendored token sets are checked against their original bytes.
+docs/stylesheets/vendor/** -text

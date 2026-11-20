@@ -6,6 +6,7 @@
   --oa-hairline: var(--oa-border);
   --oa-hairline-strong: var(--oa-border-strong);
   --oa-ink: var(--oa-text);
+  --oa-ink-wash: var(--oa-surface-raised);
   --oa-ink-2: var(--oa-text-muted);
   --oa-ink-3: var(--oa-text-muted);
   --oa-accent: var(--oa-link);
