@@ -1,7 +1,7 @@
 # What's New
 
 > *Pull requests merged in the last 7 days across the OpenAdapt repositories, grouped by the release that contains them.*
-> *Last updated: 2026-11-19 21:28 UTC*
+> *Last updated: 2026-11-20 00:35 UTC*
 
 Items under **Merged, not released yet** are on a repository's `main` branch only. They are not in any published package or installer yet.
 
@@ -17,13 +17,6 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 - [release(flow): 3.2.0](https://github.com/OpenAdaptAI/OpenAdapt/pull/2274) (#2274), merged 2026-11-19
 - [flow: fewer browser calls per screen step, the at-rest key derived once per run, and fixes that let the OpenEMR referral finish](https://github.com/OpenAdaptAI/OpenAdapt/pull/2268) (#2268), merged 2026-11-19
 - [seal: publish a run's Seal online (openadapt seal publish) and the quickstart offer](https://github.com/OpenAdaptAI/OpenAdapt/pull/2266) (#2266), merged 2026-11-19
-- [build(flow): cap opencv-python below 5.1](https://github.com/OpenAdaptAI/OpenAdapt/pull/2262) (#2262), merged 2026-11-19
-- [fix(agent): refuse unqualified pulled skills before Flow starts](https://github.com/OpenAdaptAI/OpenAdapt/pull/2261) (#2261), merged 2026-11-19
-- [ci(registry): make the registry releasable, add a re-stamp path](https://github.com/OpenAdaptAI/OpenAdapt/pull/2260) (#2260), merged 2026-11-19
-
-### Released in openadapt-flow 3.1.0
-
-- [release(flow): 3.1.0](https://github.com/OpenAdaptAI/OpenAdapt/pull/2248) (#2248), merged 2026-11-14
 
 ### Released in OpenAdapt 1.23.0
 
@@ -40,5 +33,12 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 - [quickstart: keep Flow's encryption at rest for run checkpoints](https://github.com/OpenAdaptAI/OpenAdapt/pull/2272) (#2272), merged 2026-11-19
 - [fix(scripts): record_quickstart parser refuses abbreviations](https://github.com/OpenAdaptAI/OpenAdapt/pull/2271) (#2271), merged 2026-11-19
 - [quickstart: a five-step story with one next step and the Seal](https://github.com/OpenAdaptAI/OpenAdapt/pull/2264) (#2264), merged 2026-11-19
-- [test(ci): skip the tomllib check of the release plan on Python 3.10](https://github.com/OpenAdaptAI/OpenAdapt/pull/2246) (#2246), merged 2026-11-14
+
+### Merged, not released yet
+
+- [fix(desktop): show the window again on a second launch](https://github.com/OpenAdaptAI/OpenAdapt/pull/2290) (#2290), merged 2026-11-19
+- [fix(desktop): start the engine's child processes without forking on macOS](https://github.com/OpenAdaptAI/OpenAdapt/pull/2287) (#2287), merged 2026-11-19
+- [release(capture): 1.4.0](https://github.com/OpenAdaptAI/OpenAdapt/pull/2286) (#2286), merged 2026-11-19
+- [test(desktop): start every test subprocess without forking pytest](https://github.com/OpenAdaptAI/OpenAdapt/pull/2282) (#2282), merged 2026-11-20
+- [ci(desktop): keep native-release git calls and their tests from forking](https://github.com/OpenAdaptAI/OpenAdapt/pull/2279) (#2279), merged 2026-11-19
 
