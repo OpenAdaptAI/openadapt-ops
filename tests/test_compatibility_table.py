@@ -17,6 +17,8 @@ import json
 import pathlib
 import sys
 
+import pytest
+
 REPO_ROOT = pathlib.Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT / "scripts"))
 
@@ -132,6 +134,25 @@ def test_types_missing_from_the_base_and_an_extra_fails():
     flow["requires_dist"] = [
         line for line in flow["requires_dist"] if not line.startswith("openadapt-types")
     ] + ['openadapt-types<0.25.0,>=0.24.0; extra == "execute"']
+    metadata["openadapt-flow"] = flow
+    errors = _errors(_table(*CURRENT_ROWS), metadata)
+    assert len(errors) == 1 and "no longer requires openadapt-types" in errors[0], errors
+
+
+@pytest.mark.parametrize(
+    "marker",
+    ['python_version < "3.10"', 'sys_platform == "never-a-real-platform"'],
+)
+def test_a_conditional_base_types_requirement_is_not_inherited(marker):
+    """A base pin behind a marker may apply nowhere the table promises."""
+    metadata = _metadata()
+    flow = dict(metadata["openadapt-flow"])
+    flow["requires_dist"] = [
+        f"{line}; {marker}"
+        if line.startswith("openadapt-types") and ";" not in line
+        else line
+        for line in flow["requires_dist"]
+    ]
     metadata["openadapt-flow"] = flow
     errors = _errors(_table(*CURRENT_ROWS), metadata)
     assert len(errors) == 1 and "no longer requires openadapt-types" in errors[0], errors

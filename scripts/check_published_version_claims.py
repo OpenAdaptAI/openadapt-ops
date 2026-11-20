@@ -348,6 +348,21 @@ def _released_ranges(requires_dist: list[str], package: str) -> dict[str | None,
     return ranges
 
 
+def _unconditional(requires_dist: list[str], package: str) -> bool:
+    """Whether the base install requires ``package`` with no marker at all.
+
+    Only an unconditional base requirement applies to every extra on every
+    supported Python and platform. A base requirement behind any marker
+    (``python_version``, ``sys_platform``, ...) is not modelled here, so it
+    cannot stand in for an extra that no longer states the range.
+    """
+    for line in requires_dist:
+        match = REQUIREMENT.match(line.strip())
+        if match and match.group("name").lower() == package and not match.group("marker"):
+            return True
+    return False
+
+
 def _python_range(requires_python: str) -> str:
     """``>=3.10,<3.13`` as the table writes it: ``3.10-3.12``."""
     lower = upper = None
@@ -379,7 +394,9 @@ def check_compatibility_table(text: str, metadata: dict, report: Report) -> None
         ranges = _released_ranges(metadata[source].get("requires_dist") or [], package)
         # An extra installs on top of the base requirements, so an extra that
         # no longer restates a range the base install already pins inherits it.
-        inherited = None in extras and None in ranges
+        inherited = None in extras and _unconditional(
+            metadata[source].get("requires_dist") or [], package
+        )
         covered = [extra for extra in extras if extra in ranges or inherited]
         missing = [label(source, extra) for extra in extras if extra not in covered]
         if missing:
