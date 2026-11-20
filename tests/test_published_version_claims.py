@@ -279,6 +279,41 @@ def test_missing_changelog_section_fails(tmp_path):
     assert any("no '## openadapt-flow' section" in e for e in report.errors)
 
 
+def test_monorepo_package_tags_supersede_the_pre_move_section(tmp_path):
+    """Capture and Desktop now release from the monorepo as <package>-vX.Y.Z.
+
+    Their own section keeps the pre-move history, so the newest release is the
+    newest of that section and the prefixed tags anywhere in the changelog.
+    """
+    registry = {"changelog_tracks_pypi": {"openadapt-capture": "openadapt-capture"}}
+    changelog = tmp_path / "changelog.md"
+    changelog.write_text(
+        "# Changelog\n\n## OpenAdapt\n\n"
+        "- **[openadapt-capture-v1.4.0](u)** (d)\n- **[v1.23.0](u)** (d)\n\n"
+        "## openadapt-capture\n\n- **[v1.3.0](u)** (d)\n"
+    )
+    report = Report()
+
+    claimed = check_changelog_structure(registry, report, changelog_path=changelog)
+
+    assert report.errors == []
+    assert claimed == {"openadapt-capture": "1.4.0"}
+
+
+def test_an_older_monorepo_tag_does_not_hide_a_newer_section_release(tmp_path):
+    registry = {"changelog_tracks_pypi": {"openadapt-capture": "openadapt-capture"}}
+    changelog = tmp_path / "changelog.md"
+    changelog.write_text(
+        "# Changelog\n\n## OpenAdapt\n\n- **[openadapt-capture-v1.2.9](u)** (d)\n\n"
+        "## openadapt-capture\n\n- **[v1.10.0](u)** (d)\n"
+    )
+    report = Report()
+
+    claimed = check_changelog_structure(registry, report, changelog_path=changelog)
+
+    assert claimed == {"openadapt-capture": "1.10.0"}
+
+
 # --------------------------------------------------------------------------
 # Today's tree
 # --------------------------------------------------------------------------
