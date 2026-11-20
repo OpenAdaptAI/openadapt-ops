@@ -32,20 +32,26 @@ source.
 | Governed run gate | Under Standard and Regulated, `run` refuses to start without certification, identity coverage, record checks, and a production admission. Regulated also refuses unencrypted bundles. |
 | Encryption at rest | Optional AES-256-GCM for bundles, crops, and checkpoints with `OPENADAPT_BUNDLE_KEY`, on top of your disk encryption. Key management stays yours. |
 | Single-use authorization | Each governed run's authorization is bound to the bundle digest, input digest, policy, and record-check digests. |
-| Secrets | Secret fields never enter recordings, bundles, or screenshots. Values come from the environment or the OS keychain at run time. |
+| Secrets | Runtime secret inputs come from the environment or OS keychain. Protect recordings and run artifacts inside the deployment boundary. See [Data handling](data-handling.md). |
 | Model calls | Off by default. Turning them on is an explicit setting, and patient-data mode limits model endpoints to an allowlist. |
 | Changes to a program | A repaired program passes review, replay and fault campaigns, approval by a person, and a canary before it replaces the active one. |
 
-## Attestation status
+## Security assurance
 
-| Item | Status |
+Readiness work, agreement preparation, and application testing each have a
+scope and evidence record. The current phases are:
+
+| Area | Current phase |
 |---|---|
-| SOC 2 | Not attested. OpenAdapt doesn't hold a SOC 2 report. |
-| HIPAA BAA | No standing BAA offering. Workflows with patient data run inside a boundary you control. A BAA and counsel review are per engagement. |
-| Penetration test | Ask for current status. |
-| Vulnerability disclosure | See [Vulnerability disclosure](vulnerability-disclosure.md). |
+| SOC 2 | **Readiness underway.** We are updating our control mapping and evidence inventory against the AICPA Trust Services Criteria. Auditor engagement and an issued report are separate milestones. |
+| HIPAA BAA | **Deployment review packet prepared.** Data-flow questions, agreement review notes, and a safeguards checklist are ready for review. The engagement’s data flow, safeguards, and required agreements are reviewed before access to patient data is approved. |
+| Security testing | **Scope and test plan prepared; targeted checks underway.** Initial source and synthetic application-security checks have been recorded. An independent penetration test is a separate planned review. |
+| Vulnerability disclosure | Private reporting is available. See [Vulnerability disclosure](vulnerability-disclosure.md). |
 | Subprocessors | Hosted services only. See [Subprocessors](subprocessors.md). |
 | Supply chain | GitHub Actions pinned by commit SHA, Dependabot, and checksums plus a software bill of materials on Desktop releases. See [Release integrity](release-integrity.md). |
+
+For the current security packet or a scoped deployment review, email
+[hello@openadapt.ai](mailto:hello@openadapt.ai).
 
 ## Pages in this section
 
