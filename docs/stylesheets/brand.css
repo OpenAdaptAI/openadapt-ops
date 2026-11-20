@@ -40,7 +40,7 @@
   --oa-display-font: var(--font-display);
   --oa-body-font: var(--font-body);
   --oa-mono-font: var(--font-mono);
-  --oa-radius-card: var(--radius-md);
+  --docs-radius-card: var(--oa-radius-card);
 
   --md-text-font: var(--oa-body-font);
   --md-code-font: var(--oa-mono-font);
@@ -305,7 +305,7 @@ a:focus-visible {
 .md-typeset .grid.cards > ul > li,
 .md-typeset .grid > .card {
   border: 1px solid var(--oa-hairline);
-  border-radius: var(--oa-radius-card);
+  border-radius: var(--docs-radius-card);
   background: var(--oa-panel);
 }
 [data-md-color-scheme="slate"] .md-typeset .grid.cards > ul > li {

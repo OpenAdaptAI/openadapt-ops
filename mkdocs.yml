@@ -65,6 +65,9 @@ extra_css:
   # defines no colour of its own. See the VENDORED.txt beside the copies.
   - stylesheets/vendor/openadapt-web/tokens.css
   - stylesheets/brand.css
+  - stylesheets/vendor/semantic-theme/semantic-theme.css
+  - stylesheets/vendor/semantic-theme/fonts.css
+  - stylesheets/semantic-theme.css
 
 extra_javascript:
   - javascripts/production-lifecycle.js
