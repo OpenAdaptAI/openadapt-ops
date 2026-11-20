@@ -1,4 +1,8 @@
 /* Chosen website palette on Material's existing light/dark controls. */
+/* Material sets the scheme on body. The root controls viewport scrollbars. */
+html:has(> body[data-md-color-scheme="default"]) { color-scheme: light; }
+html:has(> body[data-md-color-scheme="slate"]) { color-scheme: dark; }
+
 :root, [data-md-color-scheme] {
   --oa-ground: var(--oa-canvas);
   --oa-panel: var(--oa-surface-raised);
@@ -6,7 +10,7 @@
   --oa-hairline: var(--oa-border);
   --oa-hairline-strong: var(--oa-border-strong);
   --oa-ink: var(--oa-text);
-  --oa-ink-wash: var(--oa-surface-raised);
+  --oa-ink-wash: var(--oa-surface);
   --oa-ink-2: var(--oa-text-muted);
   --oa-ink-3: var(--oa-text-muted);
   --oa-accent: var(--oa-link);
