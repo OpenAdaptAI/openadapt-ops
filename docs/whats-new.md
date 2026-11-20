@@ -1,7 +1,7 @@
 # What's New
 
 > *Pull requests merged in the last 7 days across the OpenAdapt repositories, grouped by the release that contains them.*
-> *Last updated: 2026-11-20 00:35 UTC*
+> *Last updated: 2026-11-20 01:06 UTC*
 
 Items under **Merged, not released yet** are on a repository's `main` branch only. They are not in any published package or installer yet.
 
@@ -32,7 +32,6 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 
 - [quickstart: keep Flow's encryption at rest for run checkpoints](https://github.com/OpenAdaptAI/OpenAdapt/pull/2272) (#2272), merged 2026-11-19
 - [fix(scripts): record_quickstart parser refuses abbreviations](https://github.com/OpenAdaptAI/OpenAdapt/pull/2271) (#2271), merged 2026-11-19
-- [quickstart: a five-step story with one next step and the Seal](https://github.com/OpenAdaptAI/OpenAdapt/pull/2264) (#2264), merged 2026-11-19
 
 ### Merged, not released yet
 
@@ -41,4 +40,5 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 - [release(capture): 1.4.0](https://github.com/OpenAdaptAI/OpenAdapt/pull/2286) (#2286), merged 2026-11-19
 - [test(desktop): start every test subprocess without forking pytest](https://github.com/OpenAdaptAI/OpenAdapt/pull/2282) (#2282), merged 2026-11-20
 - [ci(desktop): keep native-release git calls and their tests from forking](https://github.com/OpenAdaptAI/OpenAdapt/pull/2279) (#2279), merged 2026-11-19
+- [docs: describe OpenAdapt for any application first](https://github.com/OpenAdaptAI/OpenAdapt/pull/2270) (#2270), merged 2026-11-20, openadapt-agent
 
