@@ -37,7 +37,7 @@ import tempfile
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 
 #: The released openadapt-flow the docs describe.
-FLOW_VERSION = "2.2.0"
+FLOW_VERSION = "3.3.0"
 #: Until FLOW_VERSION is on PyPI, build it from this OpenAdapt commit instead,
 #: which holds everything the release ships. Set it to None on release day and
 #: rerun `snapshot`; the snapshot must not change.
