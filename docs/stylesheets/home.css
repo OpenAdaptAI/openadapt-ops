@@ -212,3 +212,13 @@
 .md-typeset .oa-docs-home > p:has(.md-button) {
   margin: 1rem 0 2rem;
 }
+
+/* Markdown source links remain visible to MkDocs validation. The renderer
+   wraps each full-card link in a paragraph; keep that wrapper layout-neutral. */
+.md-typeset .oa-docs-home .oa-docs-paths > p {
+  display: flex;
+  margin: 0;
+}
+.md-typeset .oa-docs-home .oa-docs-paths > p > a {
+  flex: 1;
+}

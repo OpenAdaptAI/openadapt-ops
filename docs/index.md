@@ -22,37 +22,19 @@ hide:
 
 ## Jump to what you need
 
-<nav class="oa-docs-paths" aria-label="Documentation shortcuts">
+<nav class="oa-docs-paths" aria-label="Documentation shortcuts" markdown>
 
-<a class="oa-docs-path" href="tutorials/first-workflow/">
-<strong>Build your first workflow</strong>
-<span>Record the task, work with new inputs, and check the saved result.</span>
-</a>
+[<strong>Build your first workflow</strong><span>Record the task, work with new inputs, and check the saved result.</span>](tutorials/first-workflow.md){ .oa-docs-path }
 
-<a class="oa-docs-path" href="how-to/connect-an-agent/">
-<strong>Connect your agent</strong>
-<span>Give an agent a compiled workflow as a single tool call.</span>
-</a>
+[<strong>Connect your agent</strong><span>Give an agent a compiled workflow as a single tool call.</span>](how-to/connect-an-agent.md){ .oa-docs-path }
 
-<a class="oa-docs-path" href="reference/cli/">
-<strong>Find a command</strong>
-<span>Install, record, compile, run, and inspect the evidence.</span>
-</a>
+[<strong>Find a command</strong><span>Install, record, compile, run, and inspect the evidence.</span>](reference/cli.md){ .oa-docs-path }
 
-<a class="oa-docs-path" href="reference/outcomes/">
-<strong>Understand a result</strong>
-<span>Read the run outcome and decide what needs review.</span>
-</a>
+[<strong>Understand a result</strong><span>Read the run outcome and decide what needs review.</span>](reference/outcomes.md){ .oa-docs-path }
 
-<a class="oa-docs-path" href="how-to/deploy/">
-<strong>Deploy a workflow</strong>
-<span>Choose a runner and keep the right data boundary.</span>
-</a>
+[<strong>Deploy a workflow</strong><span>Choose a runner and keep the right data boundary.</span>](how-to/deploy.md){ .oa-docs-path }
 
-<a class="oa-docs-path" href="security/">
-<strong>Review security and data</strong>
-<span>Find data handling, deployment boundaries, and procurement details.</span>
-</a>
+[<strong>Review security and data</strong><span>Find data handling, deployment boundaries, and procurement details.</span>](security/index.md){ .oa-docs-path }
 
 </nav>
 
