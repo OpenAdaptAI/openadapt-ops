@@ -1,130 +1,103 @@
 ---
 title: OpenAdapt documentation
 description: >-
-  OpenAdapt compiles one or more demonstrations of a task into a workflow
-  program, tests it in the target environment, and runs it with a check
-  before and after each save. A run that can't prove a save stops.
+  Build a repeatable workflow from one or more demonstrations. Start with a
+  checked run, connect your agent, and find the guides and reference you need.
 hide:
   - toc
+  - navigation
 ---
 
-# OpenAdapt
+<div class="oa-docs-home" markdown>
 
-OpenAdapt turns a repetitive task in an application without a usable API
-into a program that enters the data and then checks that it saved. A person
-or an agent shows the task in the real application. OpenAdapt compiles one or
-more demonstrations into a workflow program you can read, tests it in your
-environment, and runs it with new inputs. A healthy run makes no AI model
-calls. When a check fails, the run stops and asks a person instead of
-guessing.
+<p class="oa-docs-kicker">OpenAdapt documentation</p>
 
-It drives web apps, Windows, macOS, and Linux apps, and apps reached over RDP
-or Citrix: a CRM, a billing system, an insurance portal, or an electronic
-health record. The tutorials use a synthetic clinic app as the example. The
-engine is open source under the MIT license.
+# Automate the task.<br>Check the result.
 
-On test copies with synthetic data, a compiled program saved 148 of 149
-claims correctly in openIMIS, the open-source claims system that runs
-Nepal's national health insurance scheme, with no silent wrong saves. In
-OpenEMR, the open-source EHR whose 7.0 release is ONC-certified, it saved 62
-of 63 referrals and read back 12 of 12 fields, with no model calls. Over RDP
-it completed 3 of 3 trials into a Windows 11 host over a real network.
-[Limits](explanation/limits.md#validated-on) lists every system it has been
-validated on.
+<p class="oa-docs-lede">Build a workflow from one or more demonstrations, then check each save.</p>
 
-## For developers
+<p class="oa-docs-intro">For browser, desktop, and remote applications. A healthy compiled run makes no AI model calls.</p>
 
-<div class="grid cards" markdown>
+[Try the quickstart](tutorials/quickstart.md){ .md-button .md-button--primary }
 
--   __Run it in one command__
+## Jump to what you need
 
-    ```bash
-    uvx --python 3.12 openadapt quickstart --break-it
-    ```
+<nav class="oa-docs-paths" aria-label="Documentation shortcuts" markdown>
 
-    Or install it on Python 3.10 to 3.12 and run the engine tutorial:
+[<strong>Build your first workflow</strong><span>Record the task, work with new inputs, and check the saved result.</span>](tutorials/first-workflow.md){ .oa-docs-path }
 
-    ```bash
-    python -m pip install --upgrade openadapt
-    openadapt flow tutorial
-    ```
+[<strong>Connect your agent</strong><span>Give an agent a compiled workflow as a single tool call.</span>](how-to/connect-an-agent.md){ .oa-docs-path }
 
-    No account or API key. [Quickstart tutorial](tutorials/quickstart.md)
+[<strong>Find a command</strong><span>Install, record, compile, run, and inspect the evidence.</span>](reference/cli.md){ .oa-docs-path }
 
--   __Give a workflow to your agent__
+[<strong>Understand a result</strong><span>Read the run outcome and decide what needs review.</span>](reference/outcomes.md){ .oa-docs-path }
 
-    ```bash
-    claude mcp add --scope user openadapt -- uvx --python 3.12 openadapt-agent serve
-    ```
+[<strong>Deploy a workflow</strong><span>Choose a runner and keep the right data boundary.</span>](how-to/deploy.md){ .oa-docs-path }
 
-    The MCP server gives an agent each compiled workflow as one tool call.
-    This registers a sandbox that needs no account. Then run `claude` and
-    ask it to run the OpenAdapt sandbox workflow `add_triage_note`.
-    [Try the sandbox](how-to/connect-an-agent.md#try-the-sandbox)
+[<strong>Review security and data</strong><span>Find data handling, deployment boundaries, and procurement details.</span>](security/index.md){ .oa-docs-path }
+
+</nav>
+
+<div class="oa-docs-start" markdown>
+
+<div class="oa-docs-start-copy" markdown>
+
+### Run it on your computer
+
+See a saved result and a stopped run using synthetic data. No account or API key.
 
 </div>
 
-**Jump to:** [Command line](reference/cli.md) ·
-[How the compiler works](explanation/how-it-works.md#a-program-not-a-model-in-a-loop) ·
-[MCP server](how-to/connect-an-agent.md#serve-your-own-workflows) ·
-[Run outcomes](reference/outcomes.md) ·
-[Your first workflow](tutorials/first-workflow.md) ·
-[Security & procurement](security/index.md)
+<div class="oa-docs-command" markdown>
 
-## How a save is checked
-
-![On the acting surface, the app screen OpenAdapt types into, a run checks that the right record is on screen, then enters and saves. It then reads the record back. A screen read-back uses the app's UI in a separate session and is not independent. An independent read uses the system of record through its API, database, or file export, never through the UI. If the read matches, the run ends VERIFIED with a run report and a receipt; OpenAdapt Cloud signs a Seal only after an independent read. If it doesn't match or can't tell, the run ends RECONCILIATION_REQUIRED and a person checks the record. If the right-record check fails, the run ends HALTED_BEFORE_EFFECT before saving and asks a person.](assets/diagrams/record-check.svg)
-
-The screen that did the work can show "Saved" when nothing was stored, so it
-never confirms a save on its own. [How a save is checked](explanation/verification.md)
-explains which read-backs count for which result.
-
-## What stays on your computer
-
-![On your computer or the runner you control stay the screenshots and recordings, typed values and record identifiers, credentials read from environment variables, and the compiled program and full run report. What can be shared holds no screenshots, typed values, or free text: the receipt has counts, digests, closed values, and versions, and the OpenAdapt Cloud dashboard gets the same kind of run summary and halt questions without images. Two things leave only when you turn them on: a sanitized copy that a person reviewed and approved, and screenshots sent to a model host when model grounding is on.](assets/diagrams/data-boundary.svg)
-
-[Data handling](security/data-handling.md) lists every artifact and where it
-can go.
-
-## From demonstration to production
-
-```mermaid
-flowchart LR
-    S["Show the task<br/>(a person or an agent,<br/>one or more times)"] --> C["Compile<br/>a workflow program<br/>you can read"]
-    C --> P["Certify<br/>policy and lint checks"]
-    P --> Q["Qualify<br/>normal and fault cases<br/>in the target environment"]
-    Q --> A["Admit<br/>this exact version"]
-    A --> R["Run<br/>right-record check, action,<br/>record check at each save"]
-    R --> V(["VERIFIED<br/>report, receipt, Seal"])
-    R --> H(["Stopped<br/>HALTED_BEFORE_EFFECT"])
-    R --> U(["Not sure it saved<br/>RECONCILIATION_REQUIRED"])
-    H -.->|"a person or an agent<br/>shows the fix"| C
-    U -.-> K["A person checks<br/>the record"]
+```bash
+uvx --python 3.12 openadapt quickstart --break-it
 ```
 
-[How OpenAdapt works](explanation/how-it-works.md) walks through each stage.
-Terms are defined once, in the [glossary](reference/glossary.md). Which
-releases are admitted for production is on
-[Release integrity](security/release-integrity.md).
+[Other install options](tutorials/quickstart.md#run-it)
 
-## When it fits
+</div>
 
-OpenAdapt fits a task when most of these are true:
+</div>
 
-- The team does it the same way many times a week.
-- What to enter is already decided, by a person, a form, or an AI agent.
-- The application has no practical API for the write.
-- A wrong entry is costly.
-- There is a second way to read the saved record, such as an API, a database,
-  a report, or a read-only sign-in.
+## A save is more than a click
 
-If the application already has an API for the task, call the API. The
-[limits page](explanation/limits.md) explains what a result proves and where
-runs stop.
+<div class="oa-docs-checks" markdown>
 
-## What the packages are
+<div markdown>
 
-On Python 3.10 to 3.12, `pip install openadapt` installs the `openadapt`
-command, the engine (`openadapt-flow`), and the MCP server
-(`openadapt-agent`). The [packages map](reference/packages.md) lists every
-package and repository and which ones you need.
+### Check the target
+
+Before entering data, check that the intended record is on screen.
+
+</div>
+
+<div markdown>
+
+### Read the saved result
+
+Check what persisted. An independent read uses the system of record, rather than the screen that did the work.
+
+</div>
+
+<div markdown>
+
+### Stop when unsure
+
+If a check fails or the result is uncertain, pause for review instead of claiming success.
+
+</div>
+
+</div>
+
+[How a save is checked](explanation/verification.md){ .oa-docs-text-link }
+
+<div class="oa-docs-more" markdown>
+
+### Go deeper
+
+[How the compiler works](explanation/how-it-works.md#a-program-not-a-model-in-a-loop) · [Data handling](security/data-handling.md) · [Release integrity](security/release-integrity.md) · [Packages](reference/packages.md) · [Versions and compatibility](reference/compatibility.md) · [Validated systems and limits](explanation/limits.md)
+
+</div>
+
+</div>
