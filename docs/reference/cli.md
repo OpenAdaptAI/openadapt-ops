@@ -1,7 +1,7 @@
 ---
 description: >-
-  Every openadapt and openadapt flow command in openadapt 1.17.0 and
-  openadapt-flow 2.2.0, what it does, and its main options.
+  Every openadapt and openadapt flow command in openadapt 1.23.0 and
+  openadapt-flow 3.3.0, what it does, and its main options.
 ---
 
 # Command reference
@@ -13,7 +13,7 @@ commands of its own and passes two groups through to the engine:
 - `openadapt agent ...` runs `openadapt-agent`, the MCP server.
 
 Every command takes `--help`, which is the authority for its options. This
-page lists the commands in `openadapt` 1.17.0 and `openadapt-flow` 2.2.0.
+page lists the commands in `openadapt` 1.23.0 and `openadapt-flow` 3.3.0.
 [All Flow commands](flow-commands.md) lists every Flow command and subcommand
 with its long options, generated from the released package.
 [Launcher and agent help](cli-help.md) has the full `--help` text of every
@@ -24,6 +24,13 @@ with its long options, generated from the released package.
 | Command | What it does |
 |---|---|
 | `openadapt quickstart [--break-it] [--headed] [--out DIR]` | Runs the bundled tutorial: records, compiles, certifies, and runs a save against a test app, then confirms it through the app's API. `--break-it` adds a second run against a backend that fakes success. See [Quickstart](../tutorials/quickstart.md). |
+| `openadapt setup [--client CLIENT] [--dry-run] [--undo]` | Adds the OpenAdapt MCP server and skill to Claude Code, Cursor, Codex, and Gemini CLI, for each one installed. Prints every change; `--undo` reverses them. |
+| `openadapt wrap` | Runs an agent task once, then reuses its checked compiled tool. |
+| `openadapt verify serve` | Serves write verification to any MCP client: each write an agent makes gets a verified receipt or a refusal. Python agents use `openadapt.verify` instead. `openadapt verify ledger` lists, reconciles, and releases writes whose outcome isn't known yet. |
+| `openadapt shadow` | Checks each write an agent makes against the system of record, without blocking it. Same as `openadapt flow shadow`. |
+| `openadapt record`, `openadapt compile`, `openadapt run` | Same as `openadapt flow record`, `compile`, and `run`, with the same options. |
+| `openadapt pull NAME [--list]` | Downloads a packaged workflow. Same as `openadapt flow pull`. |
+| `openadapt bench medplum` | A public benchmark you can rerun: your agent writes to a local Medplum and OpenAdapt checks every write. |
 | `openadapt doctor [--backend SURFACE]` | Checks this computer's requirements, for one surface if given. |
 | `openadapt deploy [--backend SURFACE] [--secret-ref REF]` | Checks this host and prints the deployment path for a surface. Takes secret references only (`env:NAME` or `keychain:service/item`). |
 | `openadapt connect --pairing CODE` | Pairs this computer with an OpenAdapt Cloud workspace. |
@@ -40,6 +47,9 @@ with its long options, generated from the released package.
 | [`tutorial`](#try-it) | The engine side of `openadapt quickstart`. |
 | [`demo-record`](#try-it) | Serves the MockMed test app and records the standard triage demonstration. |
 | [`record`](#record) | Records a demonstration in a browser, on the desktop, or in an RDP or Citrix client window. |
+| [`confirm-surfaces`](#record) | Confirms the windows a cross-window recording used, so the recording can compile. |
+| [`browser-accessibility`](#record) | On Linux, starts Chrome, Chromium, Edge, and Brave so `record` can read clicks in them. Writes only your own launcher entries. |
+| [`narration`](#record) | Transcribes a recording's spoken narration on this computer, scrubs it, and lines it up with the steps. |
 | [`compile`](#build) | Compiles one recording into a bundle. |
 | [`induce`](#build) | Learns one program from two or more recordings, or refuses and lists the recordings it needs. |
 | [`for-each`](#build) | Wraps a bundle in a loop over a worklist. |
@@ -47,6 +57,11 @@ with its long options, generated from the released package.
 | [`process`](#build) | Builds a process from separately admitted parts, each with its own admission. |
 | [`disambiguate`](#build) | Asks the open questions in an induced program as multiple choice. |
 | [`intake`](#build) | Fills a workflow's inputs from a referral PDF, fax image, or email. |
+| [`api`](#build) | Shows or admits API steps compiled from a recording's network capture. None runs until a person admits it. |
+| [`learn`](#build) | Learns the app's own per-request writes from checked traffic and, after approval, adds them to the contracts. |
+| [`variants`](#build) | Builds a variant set: separately admitted variants of one workflow, chosen before the run starts. |
+| [`route`](#build) | Shows which admitted variant a variant set would run for one item. Runs nothing. |
+| [`sections`](#build) | Shows, renames, merges, or splits a compiled program's named sections. |
 | [`visualize`](#inspect) | Draws a bundle as HTML, Mermaid, or JSON. |
 | [`lint`](#check) | Lists what the program doesn't cover yet. |
 | [`scaffold-verifier`](#check) | Drafts record checks from a recording or bundle, for a person to complete. |
@@ -57,7 +72,11 @@ with its long options, generated from the released package.
 | [`propose-qualification`](#check) | Same as `qualify propose`. |
 | [`verify-run`](#check) | Reads the system of record and rules on a save that an agent, a script, or a person reported. |
 | [`known-ids`](#check) | Admits a system-of-record export as the known-ID list that look-alike identity checks use. |
+| [`reconcile`](#check) | Checks that the systems in a prior authorization or claim agree, and reports each mismatch. |
+| [`shadow`](#check) | Checks each write an agent makes against the system of record, without blocking it, and writes a report. |
 | [`countersign`](#check) | Timestamps, countersigns, and discloses fields of a Seal, and exports a dossier. |
+| [`receipt`](#check) | Checks a signed write receipt offline, or exports the keys that check it. |
+| [`redact-report`](#check) | Removes session tokens and credentials from a run's `report.json` so it can be sealed again. Keeps the original locally. |
 | [`local-seal`](#check) | Signs offline Seals with this machine's key. |
 | [`seal`](#check) | Writes an encrypted copy of a bundle using `OPENADAPT_BUNDLE_KEY`. |
 | [`admit`](#check) | Reads the public release-admission list. It never signs anything. |
@@ -66,19 +85,28 @@ with its long options, generated from the released package.
 | [`resume`](#run) | Continues a paused durable run from its last confirmed step. |
 | [`approve`](#run) | Records a decision that lets a paused run resume. |
 | [`item-approval`](#run) | Lists, approves, or declines the saves a run is waiting on. |
+| [`deferred`](#run) | Settles saves that a later report confirms, such as claim acknowledgments or exports. |
 | [`approver-grant`](#run) | Signs or checks a grant that lets named agents or systems answer saves. |
 | [`explain`](#inspect) | Explains a finished run in plain words, with the next command. |
 | [`triage`](#run) | Orders verified saves for review and proposes one batch approval. |
 | [`attach-seal`](#run) | Adds Cloud's signed receipt to a `VERIFIED` run report. |
 | [`bench`](#inspect) | Replays a bundle many times against MockMed and summarizes. |
 | [`benchmark`](#inspect) | Compares compiled replay with a computer-use agent on MockMed. The agent side needs an Anthropic API key and costs money. |
+| [`silent-saves`](#inspect) | Scores a GUI agent on injected bad saves: how often it reports success while the record is wrong. Runs from a source checkout. |
 | [`teach`](#repair) | Turns a fix demonstration for a halted run into a guarded branch. |
 | [`teach-branch`](#repair) | Learns a guarded branch from two or more halts fixed the same way. |
+| [`teach-authorization`](#repair) | Creates, signs, or checks what a teaching agent may do, signed by a person's approver key. |
 | [`repair`](#repair) | Moves a repaired bundle through review, campaigns, approval, staging, canary, and rollback. |
+| [`undo`](#repair) | Declares, approves, and runs undo steps for a stopped run, with verification. |
+| [`rollback`](#repair) | Qualifies a compensating rollback on a test copy, with a stop before and after every save. |
+| [`cleanup`](#repair) | Qualifies the cleanup that leaves a clean screen after a halted item. |
 | [`fleet`](#repair) | Sets fleet drift patches, opt-in per app family. |
 | [`jit`](#agents) | Reviews, admits, or rejects a draft bundle compiled from a computer-use agent's run. |
+| [`compile-agent`](#agents) | Runs a computer-use agent once against `--url`, checks the record it wrote, and compiles the run into a program. It writes to that app, so use a test copy. |
+| [`guard`](#agents) | Attaches to an agent's Chromium over CDP, holds each save until the right record is on screen, reads it back, and records the run. |
 | [`emit-skill`](#agents) | Writes an Agent Skill for a bundle. |
 | [`emit-mcp`](#agents) | Writes a standalone MCP `server.py` for a bundle. |
+| [`skill`](#agents) | Binds and qualifies a skill pulled from the registry. |
 | [`pull`](#cloud) | Downloads a packaged workflow bundle by name. |
 | [`connect`](#cloud) | Claims a pairing and stores the workspace credential in the keychain. |
 | [`login`](#cloud) | Checks an ingest token and stores it in the keychain. |

@@ -37,7 +37,7 @@ REQUIRED_PUBLIC_PAGES = {
         "Never summarize a halt as success",
         "not_sure_if_saved",
     ),
-    "security/index.md": ("Attestation status", "SOC 2"),
+    "security/index.md": ("Security assurance", "SOC 2"),
     # Nothing raw is uploaded: a person reviews a sanitized copy, the upload is
     # bound to its hash, and content the sanitizer can't handle is refused.
     "security/data-handling.md": (
