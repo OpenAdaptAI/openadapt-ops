@@ -237,6 +237,30 @@ def newest_semver_tag(tags: list[str]) -> str | None:
     return None
 
 
+def newest_monorepo_tag(sections: dict[str, list[str]], package: str) -> str | None:
+    """Newest ``<package>-vX.Y.Z`` tag in any section.
+
+    Packages that moved into the OpenAdapt monorepo (openadapt-capture,
+    openadapt-desktop) publish there under package-prefixed tags, so their
+    own ``## <repo>`` section only holds the pre-move history.
+    """
+    pattern = re.compile(rf"^{re.escape(package)}-v(?P<version>\d+\.\d+\.\d+)$")
+    versions = [
+        match.group("version")
+        for tags in sections.values()
+        for match in map(pattern.match, tags)
+        if match
+    ]
+    return _newest(versions)
+
+
+def _newest(versions: list[str | None]) -> str | None:
+    present = [version for version in versions if version]
+    if not present:
+        return None
+    return max(present, key=lambda version: tuple(int(part) for part in version.split(".")))
+
+
 def check_changelog_structure(
     registry: dict, report: Report, changelog_path: Path = CHANGELOG_PATH
 ) -> dict[str, str]:
@@ -253,7 +277,9 @@ def check_changelog_structure(
                 "registry expects it to advertise that package's releases"
             )
             continue
-        version = newest_semver_tag(sections[repo])
+        version = _newest(
+            [newest_semver_tag(sections[repo]), newest_monorepo_tag(sections, package)]
+        )
         if version is None:
             report.error(
                 f"docs/changelog.md '## {repo}' section lists no vX.Y.Z release"
@@ -322,6 +348,30 @@ def _released_ranges(requires_dist: list[str], package: str) -> dict[str | None,
     return ranges
 
 
+def _unconditional_base(requires_dist: list[str], package: str) -> str | None:
+    """The base install's range for ``package`` when it applies everywhere.
+
+    Only a base requirement with no marker at all applies to every extra on
+    every supported Python and platform. Return its range only when it is the
+    sole base clause for ``package``: a base clause behind any marker
+    (``python_version``, ``sys_platform``, ...) is not modelled here, so a mix
+    of clauses is ambiguous and cannot stand in for an extra that no longer
+    states the range. The returned range comes from that same clause.
+    """
+    clauses = []
+    for line in requires_dist:
+        match = REQUIREMENT.match(line.strip())
+        if not match or match.group("name").lower() != package:
+            continue
+        marker = match.group("marker") or ""
+        if re.search(r"extra\s*==", marker):
+            continue
+        clauses.append((marker, match.group("spec")))
+    if len(clauses) == 1 and not clauses[0][0]:
+        return clauses[0][1]
+    return None
+
+
 def _python_range(requires_python: str) -> str:
     """``>=3.10,<3.13`` as the table writes it: ``3.10-3.12``."""
     lower = upper = None
@@ -351,22 +401,33 @@ def check_compatibility_table(text: str, metadata: dict, report: Report) -> None
     expected: dict[str, str] = {}
     for package, (source, extras) in COMPATIBILITY_SOURCES.items():
         ranges = _released_ranges(metadata[source].get("requires_dist") or [], package)
-        missing = [label(source, extra) for extra in extras if extra not in ranges]
+        # An extra installs on top of the base requirements, so an extra that
+        # no longer restates a range the base install already pins inherits it.
+        base = _unconditional_base(metadata[source].get("requires_dist") or [], package)
+        inherited = None in extras and base is not None
+        if inherited:
+            # Bind the inherited range to the same unconditional clause.
+            ranges[None] = base
+        covered = [extra for extra in extras if extra in ranges or inherited]
+        missing = [label(source, extra) for extra in extras if extra not in covered]
         if missing:
             report.error(
                 f"compatibility table: {', '.join(missing)} no longer requires "
                 f"{package}; update the table row that says it does"
             )
             continue
-        meanings = {_spec_meaning(ranges[extra]) for extra in extras}
+        stated_extras = [extra for extra in extras if extra in ranges]
+        meanings = {_spec_meaning(ranges[extra]) for extra in stated_extras}
         if len(meanings) > 1:
-            stated = ", ".join(f"{label(source, extra)} {ranges[extra]}" for extra in extras)
+            stated = ", ".join(
+                f"{label(source, extra)} {ranges[extra]}" for extra in stated_extras
+            )
             report.error(
                 f"compatibility table: {source} now pins different {package} "
                 f"ranges ({stated}), so one table row can't state them"
             )
             continue
-        expected[package] = ranges[extras[0]]
+        expected[package] = ranges[stated_extras[0]]
 
     for component, cell in parse_compatibility_table(text):
         if component == "Python":

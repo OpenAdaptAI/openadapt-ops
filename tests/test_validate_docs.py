@@ -84,7 +84,7 @@ def _write_contract_docs(root):
             "# Connect an agent\n\n`claude mcp add --scope user openadapt`. Never summarize "
             "a halt as success. Never retry `not_sure_if_saved`."
         ),
-        "security/index.md": "# Security\n\n## Attestation status\n\nNo SOC 2 report.",
+        "security/index.md": "# Security\n\n## Security assurance\n\nNo SOC 2 report.",
         "security/data-handling.md": (
             "# Data handling\n\nA person reviews the sanitized copy in a viewer "
             "that listens only on this computer. Cloud checks the SHA-256. Files it "
