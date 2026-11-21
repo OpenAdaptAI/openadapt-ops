@@ -7,14 +7,14 @@
 
 - **[openadapt-privacy-v1.1.4](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-privacy-v1.1.4)** (2026-11-21)
   Features
+- **[openadapt-flow-v3.4.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-flow-v3.4.0)** (2026-11-21)
+  Features
 - **[openadapt-desktop-v0.30.6](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-desktop-v0.30.6)** (2026-11-20)
   OpenAdapt Desktop 0.30.6: the PyPI package and the native installers.
 - **[openadapt-capture-v1.4.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-capture-v1.4.0)** (2026-11-20)
   _This release uses the MIT License._
 - **[v1.23.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.23.0)** (2026-11-19)
   Fixes
-- **[v1.22.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.22.0)** (2026-11-19)
-  Features
 
 ## openadapt-flow
 
