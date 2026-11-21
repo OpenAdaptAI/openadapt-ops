@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 490" width="1100" height="490" role="img" aria-labelledby="title desc">
   <title id="title">How OpenAdapt checks a save</title>
-  <desc id="desc">On the acting surface, the app screen OpenAdapt types into, a run checks that the right record is on screen and then enters and saves. It then reads the record back. A screen read-back uses the app's UI in a separate session and is not independent. An independent read uses the system of record through its API, database, or file export, never through the UI. The acting screen alone never confirms a save. If the read matches, the run ends VERIFIED with a run report and a receipt, and OpenAdapt Cloud signs a Seal only after an independent read. If it doesn't match or can't tell, the run ends RECONCILIATION_REQUIRED and a person checks the record before any retry. If the right-record check fails, the run ends HALTED_BEFORE_EFFECT before saving and asks a person.</desc>
+  <desc id="desc">On the acting surface, the app screen OpenAdapt types into, a run checks that the right record is on screen and then enters and saves. It then reads the record back. A screen read-back uses the app's UI in a separate session and is not independent. An independent read uses the system of record through its API, database, or file export, never through the UI. The acting screen alone never confirms a save. If the read matches, the run ends VERIFIED with a run report and a receipt, and OpenAdapt Cloud countersigns the receipt only after an independent read. If it doesn't match or can't tell, the run ends RECONCILIATION_REQUIRED and a person checks the record before any retry. If the right-record check fails, the run ends HALTED_BEFORE_EFFECT before saving and asks a person.</desc>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
       <path d="M0,0 L10,5 L0,10 z" fill="#3e4c59"/>
@@ -66,7 +66,7 @@
   <text x="776" y="102">Run report and a receipt</text>
   <path d="M920,125 L920,156" class="line" marker-end="url(#arrow)"/>
   <rect x="760" y="160" width="320" height="72" rx="10" fill="#ffffff" stroke="#2f8a57" stroke-width="1.5" stroke-dasharray="6 4"/>
-  <text x="776" y="189" class="head">Signed Seal from OpenAdapt Cloud</text>
+  <text x="776" y="189" class="head">Countersigned by OpenAdapt Cloud</text>
   <text x="776" y="213">Only after an independent read</text>
   <rect x="760" y="262" width="320" height="88" rx="10" fill="#fff4e3" stroke="#b86e00" stroke-width="2"/>
   <text x="776" y="290" class="outcome">RECONCILIATION_REQUIRED</text>

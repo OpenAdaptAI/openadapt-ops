@@ -1,29 +1,34 @@
 ---
 description: >-
-  Check an OpenAdapt Seal on the public verification page or its API, or
+  Check an OpenAdapt receipt on the public verification page or its API, or
   offline with the openadapt command.
 ---
 
-# Check a Seal online
+# Check a receipt online
 
-A Seal is OpenAdapt Cloud's Ed25519 signature on a run's receipt. Anyone who
-holds the receipt can check it: an auditor, a payer, or the system that asked
-for the run. There are two ways, and both give the same answer.
+A receipt is a signed, itemized record of one run: what it changed, how each
+change was checked, and who signed it. It doesn't grade the run. Anyone who
+holds a receipt can check it: an auditor, a payer, or the system that asked
+for the run.
 
 ## On the verification page
+
+The page checks OpenAdapt Cloud's countersignature, the "Countersigned by
+OpenAdapt Cloud" line. To check every signer on a receipt, use
+[`openadapt verify`](#offline).
 
 Open [app.openadapt.ai/seals/verify](https://app.openadapt.ai/seals/verify).
 It needs no account. Paste or upload any of these:
 
 - an Execute receipt (`openadapt.execute-evidence-receipt/v1`);
-- a run's `report.json`, which holds the receipt as `execute_receipt`;
+- a run's `report.json`, which holds it as `execute_receipt`;
 - an Execute webhook body, which holds it as `receipt`.
 
 The page shows one of these results:
 
 | Result | Meaning |
 |---|---|
-| Seal verified | Cloud signed this receipt with a published key, the receipt is unchanged, and it records a verified outcome |
+| Verified | Cloud signed this receipt with a published key, the receipt is unchanged, and it records a verified outcome |
 | The signature is genuine, but the outcome it records is not verified | Cloud signed it, and the run ended some other way, for example `halted_before_effect` |
 | Not verified | No signature, a changed receipt, an unknown or revoked key, or a signature that doesn't match |
 
@@ -48,16 +53,19 @@ only on the receipt and the published keys.
 
 ## Offline
 
-The page and the API ask Cloud. To check without asking Cloud, pin the public
-keys once, then verify on your own computer:
+The page and the API ask Cloud. `openadapt verify` checks on your own
+computer, and it checks every signer, not only Cloud. It prints one line per
+signer and fails closed on an unknown one; see
+[Who signed it](../reference/receipts.md#who-signed-it). To trust Cloud's
+countersignature, pin Cloud's public keys once:
 
 ```bash
 pip install openadapt
-openadapt seal keys pin          # compare the fingerprint before you confirm
-openadapt seal verify runs/<run>/report.json
+openadapt receipt keys pin       # compare the fingerprint before you confirm
+openadapt verify runs/<run>
 ```
 
 The keys are published at
 [app.openadapt.ai/api/public/seal-keys](https://app.openadapt.ai/api/public/seal-keys).
-`seal verify` never fetches keys while it checks. See
-[Files and evidence](../reference/artifacts.md).
+`openadapt verify` never fetches keys while it checks a file or folder. See
+[Receipts](../reference/receipts.md).

@@ -80,10 +80,11 @@ rely on certification, the right-record check, and the record check, and
 stop when any of them can't confirm. See
 [Verification](../explanation/verification.md#how-a-save-is-approved).
 
-**What is a Seal? Is it a clinician's signature?**
-A Seal is a signed receipt from OpenAdapt Cloud that a run's identity and
-record checks passed. It isn't a signature by a person, and it doesn't make
-OpenAdapt the legal actor. See [Execute](execute.md#the-seal).
+**What is a receipt? Is it a clinician's signature?**
+A receipt is a signed, itemized record of one run: what it changed, how each
+change was checked, and who signed it. It doesn't grade the run. It isn't a
+signature by a person, and it doesn't make OpenAdapt the legal actor. See
+[Receipts](../reference/receipts.md).
 
 **What if it gets something wrong without noticing?**
 The acceptance target is zero runs that report success while the record
