@@ -34,7 +34,7 @@ with its long options, generated from the released package.
 | `openadapt doctor [--backend SURFACE]` | Checks this computer's requirements, for one surface if given. |
 | `openadapt deploy [--backend SURFACE] [--secret-ref REF]` | Checks this host and prints the deployment path for a surface. Takes secret references only (`env:NAME` or `keychain:service/item`). |
 | `openadapt connect --pairing CODE` | Pairs this computer with an OpenAdapt Cloud workspace. |
-| `openadapt verify TARGET [--keys KEYS] [--json]` | Checks a receipt offline: a file, a run folder, or a link. Prints who signed it and fails closed on an unknown signer. Same as `openadapt receipt verify`. |
+| `openadapt verify TARGET` | Checks a receipt offline: a file, a run folder, or a link. Prints who signed it and fails closed on an unknown signer. Same as `openadapt receipt verify`. |
 | `openadapt receipt view\|publish\|unpublish\|claim` | Shows a receipt as an offline page, publishes or takes down its public version, and adds published receipts to your Cloud workspace. `openadapt receipt keys pin` and `show` manage the trusted keys. The `openadapt seal` commands still work. See [Receipts](receipts.md). |
 | `openadapt version` | Prints installed package versions. |
 

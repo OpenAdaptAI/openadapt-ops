@@ -16,8 +16,9 @@ save landed. The receipt copies the run's outcome and never upgrades it. A
 ## Who signed it
 
 A receipt can carry several signatures over the same record. Each signature
-names a key, and the pinned key registry maps that key to a role. The
-verifier prints one line per role it finds, strongest first:
+names a key, and the pinned key registry maps that key to a role. The role
+comes only from the registry, never from the receipt. The verifier prints one
+line per role, in this order:
 
 | Line | What it means |
 |---|---|
@@ -25,14 +26,31 @@ verifier prints one line per role it finds, strongest first:
 | Signed by `<org>`'s key | Your organization's own key signed it, from a file, the keychain, or a PKCS#11 token. |
 | Countersigned by OpenAdapt Cloud | Cloud checked the runner's signed result and its own read-back of the record, then added its signature. |
 | Logged publicly | The receipt's digest is in a public transparency log (Sigstore Rekor), so it existed at that time and hasn't changed since. |
-| Demo key | An example signed with a demo key. It checks only inside the demo and is never evidence. |
+| Demo key: checks only in this demo | An example signed with a demo key. It is never evidence. |
 
 **An unknown signer fails closed.** A signature from a key that isn't in the
-registry, or a role, schema, or format the verifier doesn't know, makes the
-result `Not verified: unknown signer`. The verifier doesn't skip that
-signature and report the others.
+registry makes the result "Not verified: unknown signer", even when the other
+signatures are genuine. The verifier doesn't skip that signature and report
+the rest. The other refusals work the same way:
+
+- A demo key beside any other signer: "Not verified: a demo key signed
+  alongside a real one".
+- A registry that names a role the verifier doesn't know: the whole registry
+  is refused.
+- A schema the verifier doesn't know, a changed receipt, a bad or revoked
+  signature, or no signature: "Not verified".
 
 ## What a receipt holds
+
+A run folder holds three receipt files:
+
+| File | What it is |
+|---|---|
+| `receipt.json` | The signed receipt |
+| `receipt.private.json` | The salts and values behind its commitments. Mode 0600, never uploaded. |
+| `receipt.card.json` | The public receipt: the same signed record, with only the fields on the public list revealed |
+
+The receipt holds:
 
 - The program and the digest of the exact version that ran.
 - The hour the run started.
@@ -42,15 +60,19 @@ signature and report the others.
   check.
 - Check counts, and digests of the run report and the evidence bundle.
 
-Record values never appear in clear. Each one is a salted commitment, and the
+A receipt never holds screenshots, typed values, URLs, or page text. Evidence
+files appear only as SHA-256 digests, and a receipt that embeds an image, a
+link, or long text is refused. Record values never appear in clear. Each one is a salted commitment, and the
 salts stay in a private file beside the receipt, so you can reveal one field
 later and keep the others hidden. How strong a check is, from a screen read
 to a read of the system of record, is in
 [How a save is checked](../explanation/verification.md#how-strong-a-read-back-is).
 
 A public receipt is the same record with every field that isn't on the public
-list replaced by its commitment. The same signatures verify it, so a public
-receipt can't say anything the full one doesn't.
+list replaced by its commitment. The public list is the program name, the
+Flow version, and the GitHub login. The same signatures verify the public
+receipt, and nothing re-signs it, so it can't say anything the full one
+doesn't.
 
 ## Check a receipt
 
@@ -98,7 +120,7 @@ and labels the result "older format":
 |---|---|
 | `seal.json` | `local-seal/v1` |
 | `public-seal.json` | `public-seal/v1` |
-| `receipt.json` | `openadapt.run-receipt/v2` |
+| `receipt.json` from an older release, now written as `run-summary.json` | `openadapt.run-receipt/v2` |
 | Cloud's signature in `report.json` (`execute_receipt`) | `seal-signature/v1` and `openadapt.execute-evidence-receipt/v1` |
 | Write and transaction receipts | `write-receipt/v1`, `tx-receipt/v1` to `v3` |
 
