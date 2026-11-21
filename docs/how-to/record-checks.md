@@ -67,7 +67,7 @@ openadapt flow run bundle --effects-kind rest --effects-base-url https://app.exa
 | The screen the run worked on | `effects.kind: onscreen` | Weakest. A consistency signal, not proof of a save. |
 
 [How a save is checked](../explanation/verification.md#how-strong-a-read-back-is)
-maps each one to what it can reach: `VERIFIED`, certification, and a Seal.
+maps each one to what it can reach: `VERIFIED`, certification, and Cloud's countersignature.
 When the deployment can read more than one way, list them under
 `effects.candidates` instead of `effects.kind`; Flow uses the strongest one
 for each save.

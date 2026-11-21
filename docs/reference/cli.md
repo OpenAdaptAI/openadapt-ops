@@ -34,7 +34,8 @@ with its long options, generated from the released package.
 | `openadapt doctor [--backend SURFACE]` | Checks this computer's requirements, for one surface if given. |
 | `openadapt deploy [--backend SURFACE] [--secret-ref REF]` | Checks this host and prints the deployment path for a surface. Takes secret references only (`env:NAME` or `keychain:service/item`). |
 | `openadapt connect --pairing CODE` | Pairs this computer with an OpenAdapt Cloud workspace. |
-| `openadapt seal verify TARGET [--keys KEYS] [--json]` | Checks a Seal offline. `openadapt seal keys pin` and `show` manage the trusted keys. |
+| `openadapt verify TARGET [--keys KEYS] [--json]` | Checks a receipt offline: a file, a run folder, or a link. Prints who signed it and fails closed on an unknown signer. Same as `openadapt receipt verify`. |
+| `openadapt receipt view\|publish\|unpublish\|claim` | Shows a receipt as an offline page, publishes or takes down its public version, and adds published receipts to your Cloud workspace. `openadapt receipt keys pin` and `show` manage the trusted keys. The `openadapt seal` commands still work. See [Receipts](receipts.md). |
 | `openadapt version` | Prints installed package versions. |
 
 ## Verbs at a glance
@@ -74,11 +75,11 @@ with its long options, generated from the released package.
 | [`known-ids`](#check) | Admits a system-of-record export as the known-ID list that look-alike identity checks use. |
 | [`reconcile`](#check) | Checks that the systems in a prior authorization or claim agree, and reports each mismatch. |
 | [`shadow`](#check) | Checks each write an agent makes against the system of record, without blocking it, and writes a report. |
-| [`countersign`](#check) | Timestamps, countersigns, and discloses fields of a Seal, and exports a dossier. |
+| [`countersign`](#check) | Timestamps, countersigns, and discloses fields of a receipt, and exports a dossier. |
 | [`receipt`](#check) | Checks a signed write receipt offline, or exports the keys that check it. |
-| [`redact-report`](#check) | Removes session tokens and credentials from a run's `report.json` so it can be sealed again. Keeps the original locally. |
-| [`local-seal`](#check) | Signs offline Seals with this machine's key. |
-| [`seal`](#check) | Writes an encrypted copy of a bundle using `OPENADAPT_BUNDLE_KEY`. |
+| [`redact-report`](#check) | Removes session tokens and credentials from a run's `report.json` so it can be signed again. Keeps the original locally. |
+| [`local-seal`](#check) | Signs receipts with this computer's key, offline. |
+| [`seal`](#check) | Writes an encrypted copy of a bundle using `OPENADAPT_BUNDLE_KEY`. `encrypt` is its new name; `seal` still works. |
 | [`admit`](#check) | Reads the public release-admission list. It never signs anything. |
 | [`replay`](#run) | Performs every step of a bundle against a real app. Never checks the record. |
 | [`run`](#run) | Runs a bundle under a profile, with every gate. |
@@ -89,7 +90,7 @@ with its long options, generated from the released package.
 | [`approver-grant`](#run) | Signs or checks a grant that lets named agents or systems answer saves. |
 | [`explain`](#inspect) | Explains a finished run in plain words, with the next command. |
 | [`triage`](#run) | Orders verified saves for review and proposes one batch approval. |
-| [`attach-seal`](#run) | Adds Cloud's signed receipt to a `VERIFIED` run report. |
+| [`attach-seal`](#run) | Adds Cloud's countersignature to a `VERIFIED` run's receipt. |
 | [`bench`](#inspect) | Replays a bundle many times against MockMed and summarizes. |
 | [`benchmark`](#inspect) | Compares compiled replay with a computer-use agent on MockMed. The agent side needs an Anthropic API key and costs money. |
 | [`silent-saves`](#inspect) | Scores a GUI agent on injected bad saves: how often it reports success while the record is wrong. Runs from a source checkout. |
@@ -121,10 +122,10 @@ with its long options, generated from the released package.
 | [`connector`](#cloud) | Enrolls this computer with Cloud and runs Cloud jobs locally. |
 | [`console`](#operate) | Serves a local operator page over bundles, runs, and halts. Read-only unless `--allow-actions`. |
 | [`business-decisions`](#operate) | Relays typed business decisions on a customer runner. It never resumes or acts. |
-| [`serve-execute`](#operate) | Serves the Execute API locally. Its receipts are signed with a local key and aren't Seals. |
+| [`serve-execute`](#operate) | Serves the Execute API locally. Its receipts are signed with a local key, not by OpenAdapt Cloud. |
 | [`service`](#operate) | Runs the unattended on-prem service, with health checks and restart. |
 | [`no-outbound`](#operate) | Lists and edits the allow list for strict no-outbound mode. |
-| [`serve-reward`](#operate) | Scores training episodes by reading the system of record. Its receipts aren't Seals. |
+| [`serve-reward`](#operate) | Scores training episodes by reading the system of record. Its receipts are self-signed, not by OpenAdapt Cloud. |
 
 `certify`, `replay`, `run`, and `resume` all accept `--config deploy.yaml`.
 `record` and `compile` don't.
@@ -182,7 +183,7 @@ openadapt flow check {mark,show,admit}
 openadapt flow verify-run --verify verify.yaml --params task.json --run-record RUN.json --baseline before.json --out DIR
 openadapt flow countersign {add,verify,disclose,dossier,timestamp-baseline,exceptions,resolve,close,purge}
 openadapt flow certify bundle [--policy clinical-write|permissive|FILE] [--config deploy.yaml]
-openadapt flow seal bundle -o bundle-sealed
+openadapt flow encrypt bundle -o bundle-encrypted
 ```
 
 `qualify bundle --verify verify.yaml` runs a whole campaign (`qualify
@@ -194,7 +195,7 @@ campaign`). The other `qualify` subcommands: `schema`, `init`, `propose`,
 `drills`, `add-requalification`, and `certify`. See
 [Certify and qualify a workflow](../how-to/certify-and-qualify.md),
 [Add record checks](../how-to/record-checks.md), and
-[Receipts, Seals, and countersigning](receipts-and-seals.md).
+[Receipts](receipts.md).
 
 ## Run
 

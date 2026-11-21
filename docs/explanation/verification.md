@@ -14,13 +14,13 @@ confirmation on screen shows that a save happened, not what was stored, so
 it isn't used as proof. A record check returns `confirmed`, `refuted`, or
 `indeterminate`. Only `confirmed` lets a run continue.
 
-![On the acting surface, the app screen OpenAdapt types into, a run checks that the right record is on screen, then enters and saves. It then reads the record back. A screen read-back uses the app's UI in a separate session and is not independent. An independent read uses the system of record through its API, database, or file export, never through the UI. If the read matches, the run ends VERIFIED with a run report and a receipt; OpenAdapt Cloud signs a Seal only after an independent read. If it doesn't match or can't tell, the run ends RECONCILIATION_REQUIRED and a person checks the record. If the right-record check fails, the run ends HALTED_BEFORE_EFFECT before saving and asks a person.](../assets/diagrams/record-check.svg)
+![On the acting surface, the app screen OpenAdapt types into, a run checks that the right record is on screen, then enters and saves. It then reads the record back. A screen read-back uses the app's UI in a separate session and is not independent. An independent read uses the system of record through its API, database, or file export, never through the UI. If the read matches, the run ends VERIFIED with a run report and a receipt; OpenAdapt Cloud countersigns the receipt only after an independent read. If it doesn't match or can't tell, the run ends RECONCILIATION_REQUIRED and a person checks the record. If the right-record check fails, the run ends HALTED_BEFORE_EFFECT before saving and asks a person.](../assets/diagrams/record-check.svg)
 
 ## How strong a read-back is
 
 OpenAdapt ranks every read-back by how independent it is of the screen that
 did the work. The rank is the Flow tier, 1 the strongest. The run report and
-the receipt also give each read a grade, and a Seal names a check level.
+the receipt also give each read a grade, and Cloud's countersignature names a check level.
 This table maps the three:
 
 <!-- The R0–R3 read-back ladder from the reopen read-back work goes here when
@@ -28,7 +28,7 @@ it ships: one more column naming each row's rung, and minimum_readback and
 checked_how in "What each result needs". Until then, these are the tiers
 Flow uses. -->
 
-| Read-back | How you set it up | Flow tier | Grade | Ends `VERIFIED` | Certifies through qualification | Seal check level |
+| Read-back | How you set it up | Flow tier | Grade | Ends `VERIFIED` | Certifies through qualification | Cloud check level |
 |---|---|---|---|---|---|---|
 | The system of record, through its API, database, or files | `effects.kind` `rest`, `graphql`, `fhir`, `sql`, `file`, `document`, `email`, or `document-hash` | 1, `independent_system` | `independent_readback` | Yes | Yes | 2 |
 | The app's record page, in a separate, read-only, freshly signed-in session | `effects.kind: ui_readback` | 2, `independent_session` | `screen_readback` | Yes, except under the `regulated` policy | No | 1 |
@@ -39,12 +39,12 @@ Flow uses. -->
 A tier-2 read is independent of the session that acted, but it still reads
 the app's screens, so it can't tell a record the app stored from one it only
 displays. Tiers 3 and 4 read the acting session's screen; they can stop a
-run, but never make one `VERIFIED`. Seal check level 3 is a counterparty
+run, but never make one `VERIFIED`. Cloud check level 3 is a counterparty
 artifact, such as a payer status, which Flow doesn't read.
 
 A run's receipt records the weakest read among its saves as
 `effect_tier_reached` and its grade as `effect_assurance`. See
-[Receipts, Seals, and countersigning](../reference/receipts-and-seals.md).
+[Receipts](../reference/receipts.md).
 
 ## What each result needs
 
@@ -59,8 +59,8 @@ confirmed and every fault case must show nothing landed, all at
 `independent_readback`. A workflow whose only read-back is `ui_readback` can
 run the cases but can't be certified this way.
 
-**A Seal.** OpenAdapt Cloud signs a Seal only when the run was confirmed by
-a system-of-record read.
+**Cloud's countersignature.** OpenAdapt Cloud countersigns a receipt only
+when the run was confirmed by a system-of-record read.
 
 ## What a record check catches
 

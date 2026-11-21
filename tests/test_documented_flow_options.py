@@ -38,6 +38,11 @@ REQUIREMENTS = ROOT / "cli-reference/requirements.txt"
 # may show them only where it labels them as unreleased; each entry names the
 # page that does. Remove an entry when the release that ships it is pinned.
 UNRELEASED_OPTIONS: dict[str, set[str]] = {}
+# Subcommands that exist on OpenAdapt `main` but not in the pinned release,
+# with their long options. `encrypt` is the new name of `seal` (the receipt
+# rename, openadapt-internal#265). Remove an entry when the release that ships
+# it is pinned.
+UNRELEASED_COMMANDS: dict[str, set[str]] = {"encrypt": {"--out"}}
 # Flow rewrites `qualify <bundle> ...` to `qualify campaign <bundle> ...`
 # (`_qualify_default_form`), so that form takes the campaign's options.
 DEFAULT_SUBCOMMANDS = {"qualify": "qualify campaign"}
@@ -66,6 +71,9 @@ _SUBCOMMAND = re.compile(r"^[a-z][a-z-]*$")
 def _cli(fixture: Path = FIXTURE) -> tuple[set[str], dict[str, set[str]]]:
     data = json.loads(fixture.read_text(encoding="utf-8"))
     commands = {name: set(options) for name, options in data["commands"].items()}
+    if fixture == FIXTURE:
+        for name, options in UNRELEASED_COMMANDS.items():
+            commands.setdefault(name, set(options))
     return set(data["global_options"]), commands
 
 
@@ -153,7 +161,8 @@ def test_fixture_matches_the_pinned_verb_list() -> None:
     from tests.test_cli_reference import FLOW_VERBS
 
     _, commands = _cli()
-    assert sorted(name for name in commands if " " not in name) == sorted(FLOW_VERBS)
+    released = {name for name in commands if " " not in name} - set(UNRELEASED_COMMANDS)
+    assert sorted(released) == sorted(FLOW_VERBS)
 
 
 def test_the_check_catches_a_planned_flag_and_accepts_real_ones() -> None:

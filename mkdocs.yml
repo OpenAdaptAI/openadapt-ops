@@ -78,6 +78,7 @@ plugins:
         LEGACY_FREEZE.md: index.md
         architecture.md: explanation/how-it-works.md
         cli.md: reference/cli.md
+        cloud/verify-a-seal.md: cloud/verify-a-receipt.md
         commercial/acceptance-matrix.md: security/engagements.md
         commercial/citrix-external-brief.md: explanation/surfaces.md
         commercial/deployment-boundaries.md: security/deployment-boundaries.md
@@ -89,8 +90,8 @@ plugins:
         commercial/qualification-report-outline.md: security/engagements.md
         commercial/qualification-sprint.md: security/engagements.md
         commercial/scope-checklist.md: security/engagements.md
-        commercial/seal-reward.md: security/execute.md#the-seal
-        commercial/seal.md: security/execute.md#the-seal
+        commercial/seal-reward.md: reference/receipts.md
+        commercial/seal.md: reference/receipts.md
         commercial/security-packet.md: security/index.md
         commercial/subprocessors.md: security/subprocessors.md
         commercial/vulnerability-disclosure.md: security/vulnerability-disclosure.md
@@ -183,6 +184,7 @@ plugins:
         reference/documentation-governance.md: reference/packages.md
         reference/index.md: reference/cli.md
         reference/production-lifecycle.md: security/release-integrity.md
+        reference/receipts-and-seals.md: reference/receipts.md
         reference/run-outcomes.md: reference/outcomes.md
         start/index.md: tutorials/quickstart.md
         telemetry.md: security/subprocessors.md
@@ -272,7 +274,7 @@ nav:
       - OpenAdapt Cloud:
           - cloud/index.md
           - Get told when a run stops: cloud/stop-alerts.md
-          - Check a Seal online: cloud/verify-a-seal.md
+          - Check a receipt online: cloud/verify-a-receipt.md
           - Review a repair: cloud/review-a-repair.md
           - How hosted runs queue: cloud/hosted-runs.md
       - Reference:
@@ -283,7 +285,7 @@ nav:
           - Launcher and agent help: reference/cli-help.md
           - Configuration: reference/configuration.md
           - Files and evidence: reference/artifacts.md
-          - Receipts, Seals, and countersigning: reference/receipts-and-seals.md
+          - Receipts: reference/receipts.md
           - Packages: reference/packages.md
           - Versions and compatibility: reference/compatibility.md
           - Glossary: reference/glossary.md

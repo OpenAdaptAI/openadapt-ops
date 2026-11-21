@@ -1,6 +1,6 @@
 ---
 description: >-
-  What OpenAdapt Cloud adds to a workspace: stop alerts, an online Seal check,
+  What OpenAdapt Cloud adds to a workspace: stop alerts, an online receipt check,
   repair review, and the hosted run queue.
 ---
 
@@ -13,8 +13,8 @@ does once it is connected:
 
 - [Get told when a run stops](stop-alerts.md): email, a phone notification,
   and the `execution.halted` webhook.
-- [Check a Seal online](verify-a-seal.md): the public verification page and
-  its API.
+- [Check a receipt online](verify-a-receipt.md): the public verification
+  page and its API.
 - [Review a repair](review-a-repair.md): approve or reject a proposed fix
   before the runner tests it.
 - [How hosted runs queue](hosted-runs.md): one hosted run at a time per

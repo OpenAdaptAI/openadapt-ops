@@ -1,53 +1,115 @@
 ---
 description: >-
-  The receipt a verified run writes, the Seal OpenAdapt Cloud signs, the
-  effect receipt for a write another executor made, and how to timestamp,
-  countersign, and disclose them.
+  What a receipt is, who can sign one, how to check, view, publish, and claim
+  it, and how to timestamp, countersign, and disclose its fields.
 ---
 
-# Receipts, Seals, and countersigning
+# Receipts
 
-A run that ends `VERIFIED` writes a **receipt**: a summary of what was
-checked, safe to share. OpenAdapt Cloud can sign it, and the signed receipt
-is a **Seal**. `verify-run` writes an **effect receipt** for a write that an
-agent, a script, or a person made. `countersign` adds trusted timestamps,
-field commitments you can reveal one at a time, and a dossier a third party
-can check offline.
+A receipt is a signed, itemized record of one run: what it changed, how each
+change was checked, and who signed it. It doesn't grade the run.
 
-## The run receipt
+Every run gets one, including a run that stopped or couldn't tell whether a
+save landed. The receipt copies the run's outcome and never upgrades it. A
+`STOPPED` run with a valid signature is still a stopped run.
 
-A `VERIFIED` run writes `receipt.json` (schema `openadapt.run-receipt/v2`)
-and an image of it, `receipt.png`. From the quickstart:
+## Who signed it
 
-```json
-{
-  "outcome": "VERIFIED",
-  "transaction_outcome": "VERIFIED",
-  "profile": "standard",
-  "substrate": "web",
-  "steps_ok": 6, "steps_total": 6,
-  "identity_confirmed": 5, "identity_required": 5,
-  "effects_confirmed": 2, "effects_required": 2,
-  "effect_tier_reached": "independent_system",
-  "model_calls": 0,
-  "external_network_calls": "none",
-  "bundle_digest": "d9b3102c…",
-  "provenance": "synthetic-tutorial"
-}
+A receipt can carry several signatures over the same record. Each signature
+names a key, and the pinned key registry maps that key to a role. The
+verifier prints one line per role it finds, strongest first:
+
+| Line | What it means |
+|---|---|
+| Signed by this computer | The computer that ran the program signed its own account of the run. |
+| Signed by `<org>`'s key | Your organization's own key signed it, from a file, the keychain, or a PKCS#11 token. |
+| Countersigned by OpenAdapt Cloud | Cloud checked the runner's signed result and its own read-back of the record, then added its signature. |
+| Logged publicly | The receipt's digest is in a public transparency log (Sigstore Rekor), so it existed at that time and hasn't changed since. |
+| Demo key | An example signed with a demo key. It checks only inside the demo and is never evidence. |
+
+**An unknown signer fails closed.** A signature from a key that isn't in the
+registry, or a role, schema, or format the verifier doesn't know, makes the
+result `Not verified: unknown signer`. The verifier doesn't skip that
+signature and report the others.
+
+## What a receipt holds
+
+- The program and the digest of the exact version that ran.
+- The hour the run started.
+- The outcome and a reason code.
+- One line per write: what kind of record it targeted, the operation, the
+  result of the record check, how strong that check was, and what it didn't
+  check.
+- Check counts, and digests of the run report and the evidence bundle.
+
+Record values never appear in clear. Each one is a salted commitment, and the
+salts stay in a private file beside the receipt, so you can reveal one field
+later and keep the others hidden. How strong a check is, from a screen read
+to a read of the system of record, is in
+[How a save is checked](../explanation/verification.md#how-strong-a-read-back-is).
+
+A public receipt is the same record with every field that isn't on the public
+list replaced by its commitment. The same signatures verify it, so a public
+receipt can't say anything the full one doesn't.
+
+## Check a receipt
+
+```bash
+openadapt verify runs/<run>
 ```
 
-It holds counts, digests, closed values, and versions; no record values.
-`effect_tier_reached` is the weakest read-back among the run's saves:
-`independent_system`, `independent_session`, or
-`persisted_state_reacquisition`. `effect_assurance` gives its grade,
-`independent_readback` or `screen_readback`.
-[How a save is checked](../explanation/verification.md#how-strong-a-read-back-is)
-maps the two. A stopped run gets no receipt, only its local report.
+`openadapt verify` takes a receipt file, a run folder (or a folder of them,
+such as the quickstart's), or a receipt link. It prints the outcome, each
+line, and the signer lines, and exits 0 only when every signature checks and
+every signer is known. `openadapt receipt verify` is the same command.
 
-## The Seal
+It never fetches keys while it checks a file or folder. To trust OpenAdapt
+Cloud's countersignature, pin Cloud's public keys once and compare the
+printed fingerprint with the one OpenAdapt publishes:
 
-A Seal is OpenAdapt Cloud's Ed25519 signature on the receipt of a run that
-Cloud Execute tracked. A run gets one when it ends `VERIFIED` with a record
+```bash
+openadapt receipt keys pin
+```
+
+The keys come from
+[app.openadapt.ai/api/public/seal-keys](https://app.openadapt.ai/api/public/seal-keys)
+and are written to `~/.openadapt/seal-keys.json`. To check a receipt in a
+browser instead, see [Check a receipt online](../cloud/verify-a-receipt.md).
+
+## View, publish, and claim a receipt
+
+| Command | What it does |
+|---|---|
+| `openadapt receipt view RUN_DIR` | Writes the run's receipt as one offline page in the run folder and opens it. The page checks the signatures in the browser and makes no network requests. |
+| `openadapt receipt publish [RUN_DIR]` | Uploads the public receipt (counts, outcomes, and digests only) after you confirm, and prints its link. |
+| `openadapt receipt unpublish RUN_DIR` | Takes a published receipt down. |
+| `openadapt receipt claim [RUN_DIR...]` | Adds the receipts you published from this computer to your OpenAdapt Cloud workspace. `openadapt login` does this for you after you sign in. |
+
+The `openadapt seal` commands still work and do the same thing:
+`openadapt seal verify`, `view`, `publish`, `unpublish`, `claim`, and
+`keys pin`.
+
+## Older files
+
+Older Seal files still verify. `openadapt verify` reads every earlier format
+and labels the result "older format":
+
+| File | Schema |
+|---|---|
+| `seal.json` | `local-seal/v1` |
+| `public-seal.json` | `public-seal/v1` |
+| `receipt.json` | `openadapt.run-receipt/v2` |
+| Cloud's signature in `report.json` (`execute_receipt`) | `seal-signature/v1` and `openadapt.execute-evidence-receipt/v1` |
+| Write and transaction receipts | `write-receipt/v1`, `tx-receipt/v1` to `v3` |
+
+Links to published Seals keep working and lead to the same receipt.
+
+<span id="the-seal"></span>
+
+## Cloud's countersignature
+
+OpenAdapt Cloud countersigns the receipt of a run that Cloud Execute tracked.
+A run gets Cloud's countersignature when it ends `VERIFIED` with a record
 check that read the system of record, and it was started with
 `--cloud-execution-id` and `OPENADAPT_EXECUTE_API_KEY` set:
 
@@ -56,45 +118,19 @@ export OPENADAPT_EXECUTE_API_KEY=...
 openadapt flow run bundle --config deploy.yaml --cloud-execution-id EXECUTION_ID
 ```
 
-Flow then fetches the signed receipt into `report.json` as
-`execute_receipt`. `openadapt flow attach-seal RUN_DIR --execution-id ID`
-does the same for a finished run.
+`openadapt flow attach-seal RUN_DIR --execution-id ID` adds Cloud's
+countersignature to a run that has already finished.
 
-The Seal names the execution, the exact workflow version and digest, the
-qualification, the environment and runner, the outcome, the check level that
-confirmed the save, whether delivery was uncertain, and a digest of the
-evidence.
-
-| Check level | Source | Can back a Seal? |
+| Check level | Source | Can Cloud countersign? |
 |---|---|---|
 | 0 | The screen or OCR | No |
 | 1 | A second session's view of the application | No |
 | 2 | The system of record, such as its API or database | Yes |
 | 3 | A counterparty artifact, such as a payer status or a legal export | Yes |
 
-### Check a Seal offline
-
-Pin Cloud's public keys once, comparing the printed fingerprint with the one
-OpenAdapt publishes, then check:
-
-```bash
-openadapt seal keys pin
-openadapt seal verify runs/<run>/report.json
-```
-
-`keys pin` downloads the keys from
-`https://app.openadapt.ai/api/public/seal-keys` (or `--url`) and writes
-`~/.openadapt/seal-keys.json` (or `--path`). `seal verify` also accepts a
-receipt file or a webhook body, and `--json` prints the result as JSON. It
-never fetches keys while it checks. To check one in a browser instead, see
-[Check a Seal online](../cloud/verify-a-seal.md).
-
-`openadapt flow seal` is a different command: it encrypts a bundle for
-deployment and doesn't issue a Seal.
-
 ## Check a write that something else made
 
-`verify-run` reads the system of record and decides whether a write an
+`verify-run` reads the system of record and decides whether a write that an
 agent, a script, or a person reported actually landed. It uses the same
 record checks as `run` and makes no model calls. It's a preview: the effect
 receipt format follows a draft specification and may change.
@@ -159,18 +195,16 @@ It exits 0 only for a genuine signature on a `verified` outcome.
 
 ## Timestamps and countersigning
 
-`countersign` adds three things to a sealed receipt, beside it in the same
+`countersign` adds three things to a signed receipt, beside it in the same
 document:
 
-- **Trusted timestamps** (RFC 3161) over the receipt's hash. A Seal with one
-  is a Timestamped Seal.
+- **Trusted timestamps** (RFC 3161) over the receipt's hash.
 - **Salted field commitments**, so you can later reveal chosen fields, such
   as one patient's record number, and keep the others hidden.
-- **A countersignature** by a second issuer. A Seal with one is a
-  Countersigned Seal. A local key countersigns, for tests and self-hosted
-  trials.
+- **A countersignature** by a second issuer. A local key countersigns, for
+  tests and self-hosted trials.
 
-Neither is a notarial act, a government certification, or an eIDAS
+None of these is a notarial act, a government certification, or an eIDAS
 qualified seal or time stamp.
 
 Install the extra first:
@@ -224,20 +258,20 @@ doesn't verify leaves no output file.
 
 `verify` prints the executor first (a Flow replay, or another executor such
 as a computer-use agent), then the verification tier, the effect verdict, the
-outcome, and the result of each check: the Seal signature, the evidence
+outcome, and the result of each check: Cloud's signature, the evidence
 manifest, each timestamp with the service's name and time, the
 countersignature, the field commitments, and each disclosure. `--json` prints
 the same report as data.
 
-It exits 0 only for a genuine Seal on a `verified` or `rolled_back_verified`
-outcome, with every part present checked and passed. It exits 1 for a Seal
-on a `REFUTED` or `INDETERMINATE` outcome, for any failed check, for a
-timestamp with no pinned certificate, and for an effect receipt from anything
-but a Flow replay unless you pass `--accept-non-flow`. It warns, without
-changing the exit code, when the timestamp's time and the receipt's issue
-time are more than 300 seconds apart.
+It exits 0 only for a genuine Cloud signature on a `verified` or
+`rolled_back_verified` outcome, with every part present checked and passed.
+It exits 1 for a signature on a `REFUTED` or `INDETERMINATE` outcome, for any
+failed check, for a timestamp with no pinned certificate, and for an effect
+receipt from anything but a Flow replay unless you pass `--accept-non-flow`.
+It warns, without changing the exit code, when the timestamp's time and the
+receipt's issue time are more than 300 seconds apart.
 
-Seal keys come from `--keys`, `OPENADAPT_SEAL_KEYS_PATH`,
+Cloud's keys come from `--keys`, `OPENADAPT_SEAL_KEYS_PATH`,
 `OPENADAPT_SEAL_KEYS_JSON`, or `~/.openadapt/seal-keys.json`. Nothing is
 fetched.
 
@@ -256,17 +290,18 @@ ability to disclose; it never weakens the commitments.
 
 ### The exception queue
 
-`countersign add --keys FILE` queues an exception for each genuine Seal on a
-`REFUTED` or `INDETERMINATE` outcome. An entry starts `open` and ends one of
-two ways:
+`countersign add --keys FILE` queues an exception for each receipt that Cloud
+signed on a `REFUTED` or `INDETERMINATE` outcome. An entry starts `open` and
+ends one of two ways:
 
-- **Resolved by a Seal.** `countersign resolve ENTRY --with fix.json` takes a
-  later receipt with a genuine Seal on a verified outcome that links to the
-  failed run and has the same workflow, contract, and committed inputs.
+- **Resolved by a later receipt.** `countersign resolve ENTRY --with fix.json`
+  takes a later receipt that Cloud signed on a verified outcome, that links to
+  the failed run, and that has the same workflow, contract, and committed
+  inputs.
 - **Closed by attestation.** `countersign close` takes a signed disposition
   from a person: a closed `--code` and `--method`, a role, and a ticket id
-  kept only as a keyed digest. The key that sealed the failed run, or that
-  run's executor, can't close it.
+  kept only as a keyed digest. The key that signed the failed run's receipt,
+  or that run's executor, can't close it.
 
 No flag marks an entry resolved or closed on someone's word. Closed entries
 are kept for 6 years (`--retention-days` or
@@ -278,9 +313,9 @@ entries.
 ### The dossier
 
 `countersign dossier` writes one HTML page, or with `--format zip` the page
-plus the raw token files. When opened, the page checks the receipt hash, the
-Seal signature, the evidence digest, and each disclosed field in the browser.
-Timestamps need `openadapt flow countersign verify dossier.html` or
+plus the raw token files. When opened, the page checks the receipt hash,
+Cloud's signature, the evidence digest, and each disclosed field in the
+browser. Timestamps need `openadapt flow countersign verify dossier.html` or
 `openssl ts -verify`. The dossier lists every exception in the vault and how
 each ended.
 
@@ -294,6 +329,14 @@ A verified token shows that the timestamp service signed this exact hash at
 its stated time. If the service's key and clock were sound, the receipt, its
 evidence digest, and its commitments existed by then and haven't changed.
 
-It doesn't prove that the write happened (the read-back and the Seal carry
-that), when the write happened, that the baseline came before the executor,
-or who asked for the timestamp. Revocation isn't checked offline.
+It doesn't prove that the write happened (the record check and Cloud's
+countersignature carry that), when the write happened, that the baseline came
+before the executor, or who asked for the timestamp. Revocation isn't checked
+offline.
+
+## Encrypting a bundle is a different command
+
+`openadapt flow encrypt bundle -o bundle-encrypted` writes an encrypted copy
+of a bundle with `OPENADAPT_BUNDLE_KEY`. It doesn't sign anything or write a
+receipt. `openadapt flow seal` is the older name for the same command and
+still works.

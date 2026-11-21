@@ -85,9 +85,10 @@ replaces the old one. See [Handle a halt](../how-to/handle-a-halt.md).
 
 Every run writes a report with each step, how its target was found, every
 check and its result, and the number of model calls. A `VERIFIED` run also
-writes a receipt that's safe to share. A run that OpenAdapt Cloud Execute
-tracked can carry a Seal, Cloud's signature on that receipt, which anyone can
-check offline. See [Files and evidence](../reference/artifacts.md).
+writes a receipt that's safe to share: a signed, itemized record of what the
+run changed, how each change was checked, and who signed it. A run that
+OpenAdapt Cloud Execute tracked can also carry Cloud's countersignature.
+Anyone can check a receipt offline. See [Files and evidence](../reference/artifacts.md).
 
 ## Where it runs
 

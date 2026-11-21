@@ -261,10 +261,10 @@ policy:
 | `OPENADAPT_AGENT_SANDBOX_DIR` | The MCP server's sandbox folder (default `~/.openadapt/agent-sandbox`) |
 | `OPENADAPT_AGENT_BUNDLES_DIR`, `OPENADAPT_AGENT_ALLOW_RUN`, `OPENADAPT_AGENT_ALLOW_ATTENDED_ACTIONS`, `OPENADAPT_AGENT_DEPLOYMENT_CONFIG`, `OPENADAPT_AGENT_POLICY`, `OPENADAPT_AGENT_HEADED`, `OPENADAPT_AGENT_BUNDLE_KEY` | Settings for the MCP server when it's installed as a desktop extension; each maps to the matching `serve` option, and the key to `OPENADAPT_BUNDLE_KEY` |
 | `OPENADAPT_APPROVER_WEBHOOK_SECRET` | The key that signs approval requests sent to `--approver-webhook` |
-| `OPENADAPT_SEAL_KEYS_PATH`, `OPENADAPT_SEAL_KEYS_JSON` | Pinned Seal keys, as a file or inline JSON (default `~/.openadapt/seal-keys.json`) |
+| `OPENADAPT_SEAL_KEYS_PATH`, `OPENADAPT_SEAL_KEYS_JSON` | Pinned OpenAdapt Cloud keys for checking receipts, as a file or inline JSON (default `~/.openadapt/seal-keys.json`) |
 | `OPENADAPT_COUNTERSIGN_VAULT` | Where `countersign` keeps field values and salts (default `~/.openadapt/countersign-vault`) |
 | `OPENADAPT_EXCEPTION_RETENTION_DAYS` | How long closed exceptions are kept (default 2,190, at least 183) |
 | `OPENADAPT_INGEST_TOKEN` | The Cloud ingest token, if not in the keychain |
 | `OPENADAPT_FLOW_REPORT_RUN` | `1` sends a run summary to Cloud after a successful run, like `--report` |
-| `OPENADAPT_CLOUD_EXECUTION_ID`, `OPENADAPT_EXECUTE_API_KEY` | Link a run to a Cloud Execute execution so it can get a Seal |
+| `OPENADAPT_CLOUD_EXECUTION_ID`, `OPENADAPT_EXECUTE_API_KEY` | Link a run to a Cloud Execute execution so Cloud can countersign its receipt |
 | `DO_NOT_TRACK=1` or `OPENADAPT_TELEMETRY=0` | Leave the failure signal out of a Cloud connector's run callbacks |

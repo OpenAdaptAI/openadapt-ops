@@ -15,7 +15,7 @@ File issues and pull requests there.
 
 | Package | What it is | Source | Do you need it? |
 |---|---|---|---|
-| `openadapt` | The `openadapt` command: `quickstart`, `doctor`, `deploy`, `connect`, `seal`, and the `flow` and `agent` command groups | [OpenAdapt](https://github.com/OpenAdaptAI/OpenAdapt) | Yes. Start here. |
+| `openadapt` | The `openadapt` command: `quickstart`, `doctor`, `deploy`, `connect`, `verify`, `receipt`, and the `flow` and `agent` command groups | [OpenAdapt](https://github.com/OpenAdaptAI/OpenAdapt) | Yes. Start here. |
 | `openadapt-flow` | The engine: recording, compiling, checks, qualification, runs, repair | [`packages/flow`](https://github.com/OpenAdaptAI/OpenAdapt/tree/main/packages/flow) | Installed by `openadapt` |
 | `openadapt-agent` | The MCP server and Agent Skills for AI agents | [`packages/agent`](https://github.com/OpenAdaptAI/OpenAdapt/tree/main/packages/agent) | Installed by `openadapt` |
 | `openadapt-types` | Shared data models: screen state, actions, Execute contracts | [`packages/types`](https://github.com/OpenAdaptAI/OpenAdapt/tree/main/packages/types) | Installed by `openadapt-flow` |

@@ -31,11 +31,14 @@ number of model calls, and whether screenshots could have left the computer.
 `REPORT.md` is the same information to read. `openadapt flow explain` turns
 it into a short account with the next command to run.
 
-## The receipt and the Seal
+<span id="the-receipt-and-the-seal"></span>
 
-A `VERIFIED` run writes `receipt.json` (schema `openadapt.run-receipt/v2`)
-and `receipt.png`: counts, digests, and versions, no record values. A run
-tracked by Cloud Execute can also carry Cloud's signature on it, the Seal, in
-`report.json` as `execute_receipt`. See
-[Receipts, Seals, and countersigning](receipts-and-seals.md).
+## The receipt
+
+A run writes a receipt: a signed, itemized record of what it changed, how
+each change was checked, and who signed it. It holds counts, digests, and
+versions, no record values. A run tracked by Cloud Execute can also carry
+Cloud's countersignature, in `report.json` as `execute_receipt`. Older Seal
+files (`seal.json`, `public-seal.json`) and `receipt.json` (schema
+`openadapt.run-receipt/v2`) still verify. See [Receipts](receipts.md).
 

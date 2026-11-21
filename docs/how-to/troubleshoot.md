@@ -50,7 +50,7 @@ needs that are missing, and the command that installs them.
 | A missing admission | Standard and Regulated need `--qualification-authority-file` for that exact bundle version. |
 | `unresolved` fields | Fill every field listed under `unresolved` in the deployment file. |
 | A surface mismatch | The bundle was recorded on another surface. Pass the right `--backend`. |
-| An unencrypted bundle | Regulated needs an encrypted bundle: `openadapt flow seal bundle -o bundle-sealed`. |
+| An unencrypted bundle | Regulated needs an encrypted bundle: `openadapt flow encrypt bundle -o bundle-encrypted`. |
 
 Add `--dry-run` to see every gate without running.
 

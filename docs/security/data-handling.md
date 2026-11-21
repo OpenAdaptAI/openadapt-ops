@@ -76,10 +76,10 @@ application they drive.
 | The same, with `OPENADAPT_FLOW_VLM_URL` set | A model server on your network | Crops and screenshots. Identity crops sent to it aren't scrubbed. |
 | The first browser run on a computer with no Chrome or Edge, or with `OPENADAPT_FLOW_BROWSER=bundled` | Playwright's download server, once | A request for Chromium; nothing from the workflow. `OPENADAPT_FLOW_NO_AUTO_INSTALL=1` skips the download. |
 | `run --report`, `report-run`, `report-break`, `connector` | OpenAdapt Cloud | Counts, digests, and closed values. See [Subprocessors](subprocessors.md#what-runs-send-to-openadapt). |
-| `run --cloud-execution-id`, `attach-seal` | OpenAdapt Cloud | The execution id and the run's receipt, to get a Seal |
+| `run --cloud-execution-id`, `attach-seal` | OpenAdapt Cloud | The execution id and the run's receipt, to get Cloud's countersignature |
 | `connect`, `login` | OpenAdapt Cloud | A pairing code or an ingest token |
 | `push` | OpenAdapt Cloud | The approved sanitized bytes only |
-| `openadapt seal keys pin` | `app.openadapt.ai/api/public/seal-keys`, or `--url` | Nothing; it downloads the public keys. `openadapt seal verify` connects only when you give it a URL. |
+| `openadapt receipt keys pin` | `app.openadapt.ai/api/public/seal-keys`, or `--url` | Nothing; it downloads the public keys. `openadapt verify` connects only when you give it a link. |
 | `console --remote-decisions`, with `human_decisions.remote.enabled` | OpenAdapt Cloud | A signed task: IDs, digests, fixed codes, counts, and expiry. No screenshot or free text. See [Answer a halt from a phone](../how-to/answer-from-a-phone.md). |
 | The desktop decision portal, when your organization publishes it with `customer_ingress` | A paired phone, through your own HTTPS ingress | Screen crops and halt detail. Nothing goes to OpenAdapt Cloud. |
 | `countersign add`, `countersign timestamp-baseline` | Sigstore's public timestamp service by default, or the service named by `--tsa-url` | A 32-byte digest and a random nonce; no record content, names, or identifiers. `--no-timestamp` on `add` sends nothing. |
@@ -91,7 +91,7 @@ The default timestamp service is
 `https://timestamp.sigstore.dev/api/v1/timestamp`. `--tsa-cert PEM` pins
 the certificate of another service. No other `countersign` command connects
 to the network; see
-[Receipts, Seals, and countersigning](../reference/receipts-and-seals.md#the-timestamp-service).
+[Receipts](../reference/receipts.md#the-timestamp-service).
 
 ## Encryption
 
