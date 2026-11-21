@@ -1,8 +1,8 @@
 # OpenAdapt Documentation
 
-> OpenAdapt compiles one or more demonstrations of a task into a workflow program, tests it in the target environment, and runs it with a right-record check before and a record check after each save. A run that can't prove a save stops. Healthy runs make no model calls. Never summarize a halt as success. MIT licensed.
+> Give your agent a program, not a mouse. OpenAdapt is the open-source, verified execution layer for computer-use agents. An agent, or a person, does a task once in a web, Windows, macOS, Linux or remote-desktop app; OpenAdapt compiles that run into a program the agent calls as one tool (`openadapt-agent serve` over MCP, or `openadapt wrap` around an agent task). The program confirms the right record before each save and reads the save back from the system of record after it; `openadapt verify effect` judges a write made by any agent or script the same way. A run that can't prove a save stops. Healthy runs make no model calls. Never summarize a halt as success. MIT licensed. This file describes the current release; pages that call OpenAdapt generative process automation describe the pre-1.0 project.
 
-Production status: https://docs.openadapt.ai/production-lifecycle.json. Product-wide Production requires seven active target admissions, each verified against its exact release and current authority state. The public workflow ledger is https://docs.openadapt.ai/production-workflow-admissions.json. Every entry is remote-safe-synthetic, including tutorial bundles with bundle_version `0.0.0-synthetic`. A retained row doesn't establish current qualification. Synthetic evidence does not qualify a customer workflow. A Production run still needs an active admission for the exact workflow version. Desktop installers are pre-release 0.15.0: Windows and Linux unsigned, macOS ad-hoc signed.
+Production status: https://docs.openadapt.ai/production-lifecycle.json. Product-wide Production requires seven active target admissions, each verified against its exact release and current authority state. The public workflow ledger is https://docs.openadapt.ai/production-workflow-admissions.json. Every entry is remote-safe-synthetic, including tutorial bundles with bundle_version `0.0.0-synthetic`. A retained row doesn't establish current qualification. Synthetic evidence does not qualify a customer workflow. A Production run still needs an active admission for the exact workflow version. Desktop installers are published as GitHub releases tagged `openadapt-desktop-v*`; their signing status is on https://docs.openadapt.ai/security/release-integrity/.
 
 Start with `uvx --python 3.12 openadapt quickstart --break-it`, or `python -m pip install --upgrade openadapt` on Python 3.10 to 3.12.
 
@@ -41,9 +41,12 @@ in the [OpenAdapt monorepo](https://github.com/OpenAdaptAI/OpenAdapt).
 8. **Repairs itself, with a person approving.** Governed repair (propose,
    review, campaign, canary, rollback), agent-demonstrated fixes for a halted
    run, and fleet drift patches shared with no patient data.
-9. **Is a safety layer underneath any agent.** An agent's MCP calls,
-   `verify-run` to judge any executor's write from the system of record, and
-   Agent Skills and a CLI for coding agents.
+9. **Is a safety layer underneath any agent.** An MCP server
+   (`uvx --python 3.12 openadapt-agent serve`) gives an agent each compiled
+   workflow as one tool; `openadapt wrap` runs an agent task once and reuses
+   its checked compiled tool; `openadapt verify effect` (`openadapt-flow
+   verify-run`) judges any executor's write from the system of record; and
+   Agent Skills and a CLI serve coding agents.
 10. **Runs locally and keeps data private.** Healthy runs make no model calls
     and send nothing out. Personal and health data are redacted from text,
     screenshots and structure. A strict no-outbound mode, an unattended on-prem
