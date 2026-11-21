@@ -1,44 +1,32 @@
 # What's New
 
 > *Pull requests merged in the last 7 days across the OpenAdapt repositories, grouped by the release that contains them.*
-> *Last updated: 2026-11-20 01:32 UTC*
+> *Last updated: 2026-11-21 04:15 UTC*
 
 Items under **Merged, not released yet** are on a repository's `main` branch only. They are not in any published package or installer yet.
 
 ## OpenAdapt
 
-### Released in openadapt-flow 3.3.0
-
-- [release(flow): 3.3.0](https://github.com/OpenAdaptAI/OpenAdapt/pull/2284) (#2284), merged 2026-11-19
-- [fix(flow): check clock-read screen text against the run's clock; complete OpenEMR REST reads](https://github.com/OpenAdaptAI/OpenAdapt/pull/2280) (#2280), merged 2026-11-19
-
-### Released in openadapt-flow 3.2.0
-
-- [release(flow): 3.2.0](https://github.com/OpenAdaptAI/OpenAdapt/pull/2274) (#2274), merged 2026-11-19
-- [flow: fewer browser calls per screen step, the at-rest key derived once per run, and fixes that let the OpenEMR referral finish](https://github.com/OpenAdaptAI/OpenAdapt/pull/2268) (#2268), merged 2026-11-19
-- [seal: publish a run's Seal online (openadapt seal publish) and the quickstart offer](https://github.com/OpenAdaptAI/OpenAdapt/pull/2266) (#2266), merged 2026-11-19
-
-### Released in OpenAdapt 1.23.0
-
-- [release(launcher): openadapt 1.23.0 requires Flow 3.3](https://github.com/OpenAdaptAI/OpenAdapt/pull/2288) (#2288), merged 2026-11-19
-- [fix(desktop): stop terminal windows opening over the app on Windows](https://github.com/OpenAdaptAI/OpenAdapt/pull/2285) (#2285), merged 2026-11-19
-- [test(desktop): restore exact host bytes in the reversion tests on Windows](https://github.com/OpenAdaptAI/OpenAdapt/pull/2281) (#2281), merged 2026-11-19
-- [ci(desktop): start git without forking in the release tooling and its tests](https://github.com/OpenAdaptAI/OpenAdapt/pull/2277) (#2277), merged 2026-11-19
-- [fix(ci): bind pull_request_target safety runs to the PR head, not GITHUB_SHA](https://github.com/OpenAdaptAI/OpenAdapt/pull/2275) (#2275), merged 2026-11-19
-- [fix(desktop): describe OpenAdapt for any app on the welcome screen](https://github.com/OpenAdaptAI/OpenAdapt/pull/2269) (#2269), merged 2026-11-19
-- [fix(desktop): let the installed app's sample run on a fresh Mac](https://github.com/OpenAdaptAI/OpenAdapt/pull/2267) (#2267), merged 2026-11-19
-
-### Released in OpenAdapt 1.22.0
-
-- [quickstart: keep Flow's encryption at rest for run checkpoints](https://github.com/OpenAdaptAI/OpenAdapt/pull/2272) (#2272), merged 2026-11-19
-- [fix(scripts): record_quickstart parser refuses abbreviations](https://github.com/OpenAdaptAI/OpenAdapt/pull/2271) (#2271), merged 2026-11-19
-
 ### Merged, not released yet
 
-- [fix(desktop): show the window again on a second launch](https://github.com/OpenAdaptAI/OpenAdapt/pull/2290) (#2290), merged 2026-11-19
-- [fix(desktop): start the engine's child processes without forking on macOS](https://github.com/OpenAdaptAI/OpenAdapt/pull/2287) (#2287), merged 2026-11-19
-- [release(capture): 1.4.0](https://github.com/OpenAdaptAI/OpenAdapt/pull/2286) (#2286), merged 2026-11-19
-- [test(desktop): start every test subprocess without forking pytest](https://github.com/OpenAdaptAI/OpenAdapt/pull/2282) (#2282), merged 2026-11-20
-- [ci(desktop): keep native-release git calls and their tests from forking](https://github.com/OpenAdaptAI/OpenAdapt/pull/2279) (#2279), merged 2026-11-19
-- [docs: describe OpenAdapt for any application first](https://github.com/OpenAdaptAI/OpenAdapt/pull/2270) (#2270), merged 2026-11-20, openadapt-agent
+- [fix(flow): read the connector's read-back labels from the v1 effect receipt](https://github.com/OpenAdaptAI/OpenAdapt/pull/2384) (#2384), merged 2026-11-21, openadapt-flow
+- [feat(quickstart): offer the checked and the stopped run's Seals in one question](https://github.com/OpenAdaptAI/OpenAdapt/pull/2381) (#2381), merged 2026-11-21
+- [fix(flow): let digest-named keys of the closed outcome envelope leave the connector](https://github.com/OpenAdaptAI/OpenAdapt/pull/2380) (#2380), merged 2026-11-21, openadapt-flow
+- [feat(flow): sign in to Cloud from the terminal with the browser (openadapt login)](https://github.com/OpenAdaptAI/OpenAdapt/pull/2379) (#2379), merged 2026-11-21, openadapt-flow
+- [Wait for background work in two Flow test fixtures](https://github.com/OpenAdaptAI/OpenAdapt/pull/2378) (#2378), merged 2026-11-21, openadapt-flow
+- [release(privacy): 1.1.4 with sanitization_config; hold Flow 3.4.0 until it is on PyPI](https://github.com/OpenAdaptAI/OpenAdapt/pull/2371) (#2371), merged 2026-11-21, openadapt-flow
+- [fix(repair): refuse repair candidate ids that leave the store](https://github.com/OpenAdaptAI/OpenAdapt/pull/2369) (#2369), merged 2026-11-21, openadapt-flow
+- [ci(gitleaks): ignore the #2293 squash commit's lens.py annotation](https://github.com/OpenAdaptAI/OpenAdapt/pull/2364) (#2364), merged 2026-11-21
+- [List public Seal fields before consent and show exact bytes on request](https://github.com/OpenAdaptAI/OpenAdapt/pull/2357) (#2357), merged 2026-11-21
+- [test(teach): align remote MCP cases with protected capture](https://github.com/OpenAdaptAI/OpenAdapt/pull/2354) (#2354), merged 2026-11-20, openadapt-flow
+- [fix(wrap): withhold sign-in values with authenticated capture provenance](https://github.com/OpenAdaptAI/OpenAdapt/pull/2352) (#2352), merged 2026-11-20, openadapt-flow
+- [Keep map pointer targets stable during playback](https://github.com/OpenAdaptAI/OpenAdapt/pull/2351) (#2351), merged 2026-11-20
+- [Bind first local program delivery recovery to its exact cursor](https://github.com/OpenAdaptAI/OpenAdapt/pull/2348) (#2348), merged 2026-11-20, openadapt-flow
+- [test(flow): bind startup diagnostics to the latest probe](https://github.com/OpenAdaptAI/OpenAdapt/pull/2345) (#2345), merged 2026-11-20, openadapt-flow
+- [docs(flow): clarify governed MCP uncertainty](https://github.com/OpenAdaptAI/OpenAdapt/pull/2344) (#2344), merged 2026-11-20, openadapt-flow
+- [fix(ci): repair browser support and graph test integration](https://github.com/OpenAdaptAI/OpenAdapt/pull/2343) (#2343), merged 2026-11-20, openadapt-flow
+- [test(flow): retain bounded transform timeout diagnostics](https://github.com/OpenAdaptAI/OpenAdapt/pull/2342) (#2342), merged 2026-11-20, openadapt-flow
+- [Remove global credential and plaintext caches](https://github.com/OpenAdaptAI/OpenAdapt/pull/2341) (#2341), merged 2026-11-20, openadapt-flow
+- [Sync platform manifest to published launcher 1.23.0](https://github.com/OpenAdaptAI/OpenAdapt/pull/2340) (#2340), merged 2026-11-20
+- [ci(desktop): capture bounded DMG failure diagnostics](https://github.com/OpenAdaptAI/OpenAdapt/pull/2339) (#2339), merged 2026-11-20
 
