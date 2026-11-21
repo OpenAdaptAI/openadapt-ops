@@ -1,7 +1,7 @@
 # What's New
 
 > *Pull requests merged in the last 7 days across the OpenAdapt repositories, grouped by the release that contains them.*
-> *Last updated: 2026-11-21 18:34 UTC*
+> *Last updated: 2026-11-21 21:44 UTC*
 
 Items under **Merged, not released yet** are on a repository's `main` branch only. They are not in any published package or installer yet.
 
@@ -9,6 +9,7 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 
 ### Merged, not released yet
 
+- [release(flow): 3.4.0 requires openadapt-privacy 1.1.4](https://github.com/OpenAdaptAI/OpenAdapt/pull/2470) (#2470), merged 2026-11-21, openadapt-flow
 - [fix(flow): keep ir within its import-time budget (main is red)](https://github.com/OpenAdaptAI/OpenAdapt/pull/2466) (#2466), merged 2026-11-21, openadapt-flow
 - [refactor(flow): move the replayer's asset, healing and step-evidence helpers to a mixin, unchanged](https://github.com/OpenAdaptAI/OpenAdapt/pull/2459) (#2459), merged 2026-11-21, openadapt-flow
 - [refactor(flow): move the replayer's qualification fault injection to a mixin, unchanged](https://github.com/OpenAdaptAI/OpenAdapt/pull/2456) (#2456), merged 2026-11-21, openadapt-flow
@@ -27,6 +28,5 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 - [test: pin every Flow import path that Desktop, the launcher, Verify, Agent and Cloud use](https://github.com/OpenAdaptAI/OpenAdapt/pull/2422) (#2422), merged 2026-11-21, openadapt-flow
 - [fix(generate): fewer false stops from generated contracts](https://github.com/OpenAdaptAI/OpenAdapt/pull/2418) (#2418), merged 2026-11-21, openadapt-flow
 - [docs: lead package metadata and the legacy README with the current positioning](https://github.com/OpenAdaptAI/OpenAdapt/pull/2416) (#2416), merged 2026-11-21, openadapt-flow
-- [Flow: retain the admitted policy for managed run and resume](https://github.com/OpenAdaptAI/OpenAdapt/pull/2401) (#2401), merged 2026-11-21, openadapt-flow
-- [ci(desktop): macOS and Windows py3.11 to nightly once released; batching design](https://github.com/OpenAdaptAI/OpenAdapt/pull/2400) (#2400), merged 2026-11-21
+- [fix(tx): refuse a trace with no attributable write instead of guessing a route](https://github.com/OpenAdaptAI/OpenAdapt/pull/2404) (#2404), merged 2026-11-21, openadapt-flow
 
