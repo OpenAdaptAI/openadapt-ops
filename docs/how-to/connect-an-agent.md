@@ -13,7 +13,7 @@ outcome; it doesn't drive the screen, and by default it never sees recorded
 values or screens.
 
 The server runs over local stdio on the computer that can open the app. It
-needs Python 3.10 to 3.12.
+needs Python 3.11 or 3.12.
 
 ## Try the sandbox
 
