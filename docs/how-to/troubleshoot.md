@@ -32,7 +32,7 @@ The engine and the MCP server need Python 3.10, 3.11, or 3.12. On Python 3.13
 or later, pip installs only the launcher. Use a 3.12 environment, or:
 
 ```bash
-uvx --python 3.12 openadapt quickstart
+uvx --python 3.12 openadapt@latest quickstart
 ```
 
 ## The browser doesn't start on Linux
