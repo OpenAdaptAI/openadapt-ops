@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><!-- stylesheets -->
+  <!-- Compare settled colors immediately after switching schemes. -->
+  <style>* { transition: none !important; }</style>
+</head>
+<body data-md-color-scheme="default">
+  <div class="md-search__form"></div>
+  <article class="md-typeset">
+    <h1>Heading</h1>
+    <a class="md-button">Secondary</a>
+    <a class="md-button md-button--primary">Primary</a>
+    <div class="grid cards"><ul><li>Card</li></ul></div>
+    <div class="oa-docs-home"><div class="oa-docs-start">Quickstart</div></div>
+  </article>
+  <footer class="md-footer"><div class="md-footer-meta"></div></footer>
+  <span id="probe"></span><output id="failures"></output>
+  <script>
+    const failures = [];
+    function role(name) {
+      const probe = document.getElementById("probe");
+      probe.style.color = "var(--oa-" + name + ")";
+      return getComputedStyle(probe).color;
+    }
+    function check(label, got, want) {
+      if (got !== want) failures.push([document.body.dataset.mdColorScheme, label, got, want]);
+    }
+    for (const [scheme, rootScheme] of [["default", "light"], ["slate", "dark"]]) {
+      document.body.dataset.mdColorScheme = scheme;
+      check("root scheme", getComputedStyle(document.documentElement).colorScheme, rootScheme);
+      for (const [selector, property, token] of [
+        ["h1", "color", "text"],
+        [".md-button", "color", "text"],
+        [".md-button", "borderTopColor", "text"],
+        [".md-button--primary", "backgroundColor", "action"],
+        [".grid.cards li", "borderTopColor", "border"],
+        [".grid.cards li", "backgroundColor", "surface-raised"],
+        [".md-footer", "backgroundColor", "canvas"],
+        [".md-footer-meta", "backgroundColor", scheme === "slate" ? "surface" : "surface-raised"],
+        [".oa-docs-start", "backgroundColor", "surface"],
+      ]) {
+        check(selector + " " + property, getComputedStyle(document.querySelector(selector))[property], role(token));
+      }
+      if (scheme === "default") {
+        check("search wash", getComputedStyle(document.querySelector(".md-search__form")).backgroundColor, role("surface"));
+        check("visible wash", role("surface") !== role("canvas"), true);
+      }
+    }
+    document.getElementById("failures").textContent = JSON.stringify(failures);
+  </script>
+</body></html>

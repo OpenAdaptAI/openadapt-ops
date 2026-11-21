@@ -203,11 +203,6 @@
 .md-typeset .oa-docs-home a.oa-docs-path strong {
   color: var(--oa-home-ink);
 }
-[data-md-color-scheme="slate"] .oa-docs-home {
-  --oa-home-border: var(--inset-border);
-  --oa-home-border-strong: var(--inset-border);
-  --oa-home-ink: var(--inset-text);
-}
 
 .md-typeset .oa-docs-home > p:has(.md-button) {
   margin: 1rem 0 2rem;
