@@ -27,7 +27,7 @@ PyPI require. A daily check compares this table with that metadata.
 | Windows control details at recording time | `openadapt-flow >=3.3.0,<4` + `openadapt-capture >=1.2.0,<2` | Keeps the UI Automation details of each clicked control for native Windows apps |
 | `openadapt-flow` 3.x with the `privacy` extra | `openadapt-privacy[presidio] >=1.0` | Local scrubbing and redaction |
 | `openadapt-flow` 3.x, including its interop, console, execute, and reward extras | `openadapt-types >=0.24,<0.25` | Shared data models, including the Execute request, status, webhook, and receipt; installed with Flow |
-| Python | 3.10-3.12 | Supported runtime range |
+| Python | 3.11-3.12 | Supported runtime range |
 
 On Python 3.13 and later, `pip install openadapt` installs only the launcher,
 because the engine and the MCP server require Python 3.12 or earlier. Use a

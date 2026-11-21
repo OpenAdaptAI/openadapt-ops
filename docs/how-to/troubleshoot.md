@@ -28,7 +28,7 @@ The operating system blocked screen capture without an error.
 
 ## `pip install openadapt` doesn't install the engine
 
-The engine and the MCP server need Python 3.10, 3.11, or 3.12. On Python 3.13
+The engine and the MCP server need Python 3.11 or 3.12. On Python 3.13
 or later, pip installs only the launcher. Use a 3.12 environment, or:
 
 ```bash

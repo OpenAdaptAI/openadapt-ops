@@ -24,7 +24,7 @@ uvx --python 3.12 openadapt quickstart --break-it
 ```
 
 uv downloads Python 3.12 for this command if you don't have it. Without uv,
-use Python 3.10, 3.11, or 3.12:
+use Python 3.11 or 3.12:
 
 ```bash
 python -m pip install --upgrade openadapt
