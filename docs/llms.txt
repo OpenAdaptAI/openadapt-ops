@@ -86,7 +86,7 @@ Capabilities often missed, with evidence: https://docs.openadapt.ai/reference/ca
 - [Limits](https://docs.openadapt.ai/explanation/limits/): what a result proves, where runs stop, and the systems OpenAdapt has been validated on.
 
 ## Security and procurement
-- [Overview](https://docs.openadapt.ai/security/): controls and attestation status. No SOC 2; no standing BAA.
+- [Overview](https://docs.openadapt.ai/security/): controls and security assurance: SOC 2 Type I readiness, HIPAA readiness and internal security testing underway; no SOC 2 report yet.
 - [Data handling](https://docs.openadapt.ai/security/data-handling/)
 - [Deployment boundaries](https://docs.openadapt.ai/security/deployment-boundaries/)
 - [Evidence](https://docs.openadapt.ai/security/evidence/): what has been tested on each surface.
