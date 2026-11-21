@@ -51,7 +51,7 @@ See a saved result and a stopped run using synthetic data. No account or API key
 <div class="oa-docs-command" markdown>
 
 ```bash
-uvx --python 3.12 openadapt quickstart --break-it
+uvx --python 3.12 openadapt@latest quickstart --break-it
 ```
 
 [Other install options](tutorials/quickstart.md#run-it)
