@@ -43,9 +43,9 @@ scope and evidence record. The current phases are:
 
 | Area | Current phase |
 |---|---|
-| SOC 2 | **Type I readiness underway**, covering the Security and Confidentiality criteria. As of 2026-11-20, the system description, control mapping and security policies are drafted, and evidence from source control and CI is collected automatically. We don't hold a SOC 2 report yet. |
-| HIPAA BAA | **Readiness underway; deployment review packet prepared.** Workflows with patient data run inside a boundary you control. Before any work on real patient data, we review the engagement's data flow and safeguards and sign the agreements it needs, such as a BAA. |
-| Security testing | **Internal testing underway.** The first test of the hosted service, on a staging copy, was completed on 2026-11-20. An independent penetration test is planned. |
+| SOC 2 | **Type I readiness underway**, covering the Security and Confidentiality criteria. As of 2026-11-20, the system description, control mapping and security policies are drafted, and a dated readback of our source-control and CI settings is recorded. We don't hold a SOC 2 report yet. |
+| HIPAA BAA | **Readiness underway; deployment review packet prepared.** Workflows with patient data run inside a boundary you control. Data-flow questions, agreement review notes and a safeguards checklist are ready for each engagement's review. A BAA is decided per engagement. |
+| Security testing | **Internal testing underway.** The first round of testing of the hosted service, on a staging copy, ran on 2026-11-20. An independent penetration test is planned. |
 | Vulnerability disclosure | Private reporting is available. See [Vulnerability disclosure](vulnerability-disclosure.md). |
 | Subprocessors | Hosted services only. See [Subprocessors](subprocessors.md). |
 | Supply chain | GitHub Actions pinned by commit SHA, Dependabot, and checksums plus a software bill of materials on Desktop releases. See [Release integrity](release-integrity.md). |
