@@ -1,7 +1,7 @@
 # What's New
 
 > *Pull requests merged in the last 7 days across the OpenAdapt repositories, grouped by the release that contains them.*
-> *Last updated: 2026-11-21 23:04 UTC*
+> *Last updated: 2026-11-22 06:20 UTC*
 
 Items under **Merged, not released yet** are on a repository's `main` branch only. They are not in any published package or installer yet.
 
@@ -18,18 +18,18 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 - [refactor(flow): the package loads its ir re-exports on first use](https://github.com/OpenAdaptAI/OpenAdapt/pull/2451) (#2451), merged 2026-11-21
 - [refactor(flow): qualification imports execution_profiles where it uses it, breaking the ir import cycle](https://github.com/OpenAdaptAI/OpenAdapt/pull/2439) (#2439), merged 2026-11-21
 - [ci(ratchet): size budgets never rise; dropping the row of an existing file fails](https://github.com/OpenAdaptAI/OpenAdapt/pull/2430) (#2430), merged 2026-11-21
-- [test: Flow layers import downward only, with import-time budgets for low modules](https://github.com/OpenAdaptAI/OpenAdapt/pull/2427) (#2427), merged 2026-11-21
-- [test: pin the JSON schema of every model in ir and the qualification modules](https://github.com/OpenAdaptAI/OpenAdapt/pull/2424) (#2424), merged 2026-11-21
-- [test: pin every Flow import path that Desktop, the launcher, Verify, Agent and Cloud use](https://github.com/OpenAdaptAI/OpenAdapt/pull/2422) (#2422), merged 2026-11-21
-- [fix(generate): fewer false stops from generated contracts](https://github.com/OpenAdaptAI/OpenAdapt/pull/2418) (#2418), merged 2026-11-21
-- [docs: lead package metadata and the legacy README with the current positioning](https://github.com/OpenAdaptAI/OpenAdapt/pull/2416) (#2416), merged 2026-11-21
 
 ### Merged, not released yet
 
+- [fix(hooks): emit #2410-compliant StepResult fields in hooks receipt reports](https://github.com/OpenAdaptAI/OpenAdapt/pull/2496) (#2496), merged 2026-11-22, openadapt-flow
+- [feat(flow): compose novel field-set contracts with planted-fault admission (P6)](https://github.com/OpenAdaptAI/OpenAdapt/pull/2490) (#2490), merged 2026-11-21, openadapt-flow
+- [fix(flow): bind null SQL verification read params as IS NULL (fail closed)](https://github.com/OpenAdaptAI/OpenAdapt/pull/2489) (#2489), merged 2026-11-21, openadapt-flow
+- [refactor(flow): extract Stedi 270/271 eligibility client into optional connector package](https://github.com/OpenAdaptAI/OpenAdapt/pull/2488) (#2488), merged 2026-11-21, openadapt-flow
+- [refactor(flow): generalize Execute seeding, reward bundles, and identity chrome](https://github.com/OpenAdaptAI/OpenAdapt/pull/2486) (#2486), merged 2026-11-22, openadapt-flow
+- [feat(flow): Global-to-Local (GOLD) ROI cropping and unified VetoOnlyVLMGuard](https://github.com/OpenAdaptAI/OpenAdapt/pull/2485) (#2485), merged 2026-11-22, openadapt-flow
 - [build(deps): bump the github-actions group across 1 directory with 2 updates](https://github.com/OpenAdaptAI/OpenAdapt/pull/2436) (#2436), merged 2026-11-21
 - [build(deps): bump zip from 9.5.1 to 9.7.0 in /packages/desktop/src-tauri in the cargo-desktop group](https://github.com/OpenAdaptAI/OpenAdapt/pull/2435) (#2435), merged 2026-11-21
 - [build(deps): bump boto3 from 1.44.4 to 1.44.5 in /packages/desktop in the uv-desktop group](https://github.com/OpenAdaptAI/OpenAdapt/pull/2434) (#2434), merged 2026-11-21
 - [build(deps-dev): bump the npm-desktop group in /packages/desktop with 2 updates](https://github.com/OpenAdaptAI/OpenAdapt/pull/2433) (#2433), merged 2026-11-21
 - [fix(scripts): verify_moved_code sees a module that became a package](https://github.com/OpenAdaptAI/OpenAdapt/pull/2431) (#2431), merged 2026-11-21
-- [feat(hooks): check a coding agent's writes to declared systems of record](https://github.com/OpenAdaptAI/OpenAdapt/pull/2411) (#2411), merged 2026-11-21, openadapt-flow
 

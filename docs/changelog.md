@@ -19,7 +19,7 @@
 ## openadapt-flow
 
 - **[v3.4.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v340-2026-11-21)** (2026-11-21)
-  Dropdowns, searchable selects, type-aheads and native selects are recorded,
+  Agent-to-agent handoffs. `openadapt-flow handoff send` attaches a run's
 - **[v3.3.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v330-2026-11-19)** (2026-11-19)
   Screen text read from the clock is checked against the run's clock. A
 - **[v3.2.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v320-2026-11-19)** (2026-11-19)
