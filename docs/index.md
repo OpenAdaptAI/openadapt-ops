@@ -139,9 +139,9 @@ uvx --python 3.12 openadapt@latest quickstart
 <div class="oa-step-card" markdown>
 <p class="oa-step-num">Step 01</p>
 
-### Record once
+### Demonstrate the task
 
-Run `openadapt record` on a web page, desktop app, or remote session, or let an agent drive the demonstration.
+Run `openadapt record` on a web page, desktop app, or remote session, or let a cloud AI agent demonstrate the task on test data — once for a simple path, or a few times to cover variations.
 
 </div>
 

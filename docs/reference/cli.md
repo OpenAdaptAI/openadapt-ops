@@ -25,7 +25,7 @@ with its long options, generated from the released package.
 |---|---|
 | `openadapt quickstart [--break-it] [--headed] [--out DIR]` | Runs the bundled tutorial: records, compiles, certifies, and runs a save against a test app, then confirms it through the app's API. `--break-it` adds a second run against a backend that fakes success. See [Quickstart](../tutorials/quickstart.md). |
 | `openadapt setup [--client CLIENT] [--dry-run] [--undo]` | Adds the OpenAdapt MCP server and skill to Claude Code, Cursor, Codex, and Gemini CLI, for each one installed. Prints every change; `--undo` reverses them. |
-| `openadapt wrap` | Runs an agent task once, then reuses its checked compiled tool. |
+| `openadapt wrap` | Demonstrates an agent task (once for a simple path, or across examples), then reuses its checked compiled tool. |
 | `openadapt verify serve` | Serves write verification to any MCP client: each write an agent makes gets a verified receipt or a refusal. Python agents use `openadapt.verify` instead. `openadapt verify ledger` lists, reconciles, and releases writes whose outcome isn't known yet. |
 | `openadapt shadow` | Checks each write an agent makes against the system of record, without blocking it. Same as `openadapt flow shadow`. |
 | `openadapt record`, `openadapt compile`, `openadapt run` | Same as `openadapt flow record`, `compile`, and `run`, with the same options. |
