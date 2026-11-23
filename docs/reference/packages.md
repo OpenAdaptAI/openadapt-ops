@@ -9,19 +9,19 @@ description: >-
 You need one package: `pip install openadapt`. It installs the engine and
 the MCP server. Install the others only for the reasons in the last column.
 
-OpenAdapt is moving its product packages into one repository,
+OpenAdapt maintains its product packages in one monorepo,
 [OpenAdapt](https://github.com/OpenAdaptAI/OpenAdapt), under `packages/`.
 File issues and pull requests there.
 
 | Package | What it is | Source | Do you need it? |
 |---|---|---|---|
-| `openadapt` | The `openadapt` command: `quickstart`, `doctor`, `deploy`, `connect`, `verify`, `receipt`, and the `flow` and `agent` command groups | [OpenAdapt](https://github.com/OpenAdaptAI/OpenAdapt) | Yes. Start here. |
+| `openadapt` | The `openadapt` command: `quickstart`, `setup`, `wrap`, `verify`, `receipt`, `doctor`, `deploy`, `connect`, and the `flow` and `agent` command groups | [OpenAdapt](https://github.com/OpenAdaptAI/OpenAdapt) | Yes. Start here. |
 | `openadapt-flow` | The engine: recording, compiling, checks, qualification, runs, repair | [`packages/flow`](https://github.com/OpenAdaptAI/OpenAdapt/tree/main/packages/flow) | Installed by `openadapt` |
 | `openadapt-agent` | The MCP server and Agent Skills for AI agents | [`packages/agent`](https://github.com/OpenAdaptAI/OpenAdapt/tree/main/packages/agent) | Installed by `openadapt` |
 | `openadapt-types` | Shared data models: screen state, actions, Execute contracts | [`packages/types`](https://github.com/OpenAdaptAI/OpenAdapt/tree/main/packages/types) | Installed by `openadapt-flow` |
-| `openadapt-capture` | The desktop recorder | Moving into `packages/capture` | For recording desktop apps: `openadapt[capture]` |
-| `openadapt-privacy` | Scrubbing and redaction of identifiers in text and images | Moving into `packages/` | For scrubbing: `openadapt[privacy]` |
-| `openadapt-desktop` | The OpenAdapt Desktop app | Moving into `packages/` | For the desktop app; installers at [openadapt.ai/download](https://openadapt.ai/download) |
+| `openadapt-capture` | The desktop recorder | [`packages/capture`](https://github.com/OpenAdaptAI/OpenAdapt/tree/main/packages/capture) | For recording desktop apps: `openadapt[capture]` |
+| `openadapt-privacy` | Scrubbing and redaction of identifiers in text and images | [`packages/privacy`](https://github.com/OpenAdaptAI/OpenAdapt/tree/main/packages/privacy) | For scrubbing: `openadapt[privacy]` |
+| `openadapt-desktop` | The OpenAdapt Desktop app | [`packages/desktop`](https://github.com/OpenAdaptAI/OpenAdapt/tree/main/packages/desktop) | For the desktop app; installers at [openadapt.ai/download](https://openadapt.ai/download) |
 
 OpenAdapt Cloud, the hosted workspace at `app.openadapt.ai`, isn't open
 source.

@@ -16,6 +16,100 @@ it isn't used as proof. A record check returns `confirmed`, `refuted`, or
 
 ![On the acting surface, the app screen OpenAdapt types into, a run checks that the right record is on screen, then enters and saves. It then reads the record back. A screen read-back uses the app's UI in a separate session and is not independent. An independent read uses the system of record through its API, database, or file export, never through the UI. If the read matches, the run ends VERIFIED with a run report and a receipt; OpenAdapt Cloud countersigns the receipt only after an independent read. If it doesn't match or can't tell, the run ends RECONCILIATION_REQUIRED and a person checks the record. If the right-record check fails, the run ends HALTED_BEFORE_EFFECT before saving and asks a person.](../assets/diagrams/record-check.svg)
 
+## Commit-boundary verification
+
+When an agent or compiled program crosses a commit boundary, OpenAdapt captures
+a baseline before the write and compares the post-write read-back against it:
+
+<figure class="oa-diagram-frame">
+<svg viewBox="0 0 980 270" role="img" aria-labelledby="oa-ver-title oa-ver-desc">
+  <title id="oa-ver-title">Commit-boundary verification flow</title>
+  <desc id="oa-ver-desc">Before a consequential action, OpenAdapt captures a baseline and checks that the right record is on screen. After the save, it reads the record back either independently from the system of record (Tier 1: REST, GraphQL, FHIR, SQL, or file export) or from a separate signed-in UI session (Tier 2: ui_readback). Confirmed effects end VERIFIED with a signed receipt; refuted or indeterminate checks end RECONCILIATION_REQUIRED and the ledger blocks blind retries.</desc>
+  <defs>
+    <marker id="ver-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,1 L9,5 L0,9 z" class="oa-svg-arrow-accent"/>
+    </marker>
+    <marker id="ver-arr-v" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,1 L9,5 L0,9 z" class="oa-svg-arrow-verified"/>
+    </marker>
+    <marker id="ver-arr-s" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,1 L9,5 L0,9 z" class="oa-svg-arrow-stopped"/>
+    </marker>
+  </defs>
+
+  <!-- Pre-state & Action -->
+  <rect x="14" y="42" width="176" height="122" rx="12" class="oa-svg-panel-link"/>
+  <text x="28" y="66" font-size="10" class="oa-svg-accent">BEFORE WRITE</text>
+  <text x="28" y="88" font-size="14" class="oa-svg-title">Pre-state gate</text>
+  <text x="28" y="108" font-size="11.5" class="oa-svg-muted">Baseline snapshot</text>
+  <text x="28" y="125" font-size="11.5" class="oa-svg-muted">Right-record check</text>
+  <text x="28" y="146" font-size="10.5" class="oa-svg-mono">begin_write()</text>
+
+  <path d="M190,103 L222,103" class="oa-svg-line-accent" marker-end="url(#ver-arr)"/>
+
+  <!-- Action / Save -->
+  <rect x="228" y="42" width="148" height="122" rx="12" class="oa-svg-panel"/>
+  <text x="242" y="66" font-size="10" class="oa-svg-accent">COMMIT BOUNDARY</text>
+  <text x="242" y="88" font-size="14" class="oa-svg-title">Action and save</text>
+  <text x="242" y="108" font-size="11.5" class="oa-svg-muted">Compiled step or</text>
+  <text x="242" y="125" font-size="11.5" class="oa-svg-muted">external agent</text>
+  <text x="242" y="146" font-size="10.5" class="oa-svg-mono">approval-gated</text>
+
+  <!-- Split to read-back tiers -->
+  <path d="M376,80 L402,80 L402,68 L428,68" class="oa-svg-line-verified" marker-end="url(#ver-arr-v)"/>
+  <path d="M376,126 L402,126 L402,174 L428,174" class="oa-svg-line-accent" marker-end="url(#ver-arr)"/>
+
+  <!-- Tier 1: Independent read-back -->
+  <rect x="434" y="16" width="268" height="106" rx="12" class="oa-svg-panel-verified"/>
+  <text x="450" y="39" font-size="10" class="oa-svg-verified-txt">TIER 1 · INDEPENDENT READ</text>
+  <text x="450" y="60" font-size="14" class="oa-svg-title">System-of-record read-back</text>
+  <text x="450" y="80" font-size="11.5" class="oa-svg-muted">REST, GraphQL, FHIR, SQL, or file export</text>
+  <text x="450" y="97" font-size="11.5" class="oa-svg-muted">Qualifies, certifies, and backs Cloud Seal</text>
+
+  <!-- Tier 2: Separate UI session -->
+  <rect x="434" y="136" width="268" height="106" rx="12" class="oa-svg-panel"/>
+  <text x="450" y="159" font-size="10" class="oa-svg-accent">TIER 2 · SEPARATE SESSION</text>
+  <text x="450" y="180" font-size="14" class="oa-svg-title">Separate UI read-back</text>
+  <text x="450" y="200" font-size="11.5" class="oa-svg-muted">Fresh read-only session (ui_readback)</text>
+  <text x="450" y="217" font-size="11.5" class="oa-svg-muted">Ends VERIFIED outside regulated policy</text>
+
+  <!-- Merge to outcomes -->
+  <path d="M702,68 L748,68" class="oa-svg-line-verified" marker-end="url(#ver-arr-v)"/>
+  <path d="M702,188 L748,188" class="oa-svg-line-stopped" marker-end="url(#ver-arr-s)"/>
+
+  <!-- Outcome: Commit / VERIFIED -->
+  <rect x="754" y="24" width="212" height="88" rx="12" class="oa-svg-panel-verified"/>
+  <text x="770" y="49" font-size="12" class="oa-svg-verified-txt">VERIFIED</text>
+  <text x="770" y="70" font-size="11.5" class="oa-svg-muted">All effects confirmed</text>
+  <text x="770" y="88" font-size="11.5" class="oa-svg-muted">Emit signed receipt</text>
+
+  <!-- Outcome: Pause / Reconcile -->
+  <rect x="754" y="138" width="212" height="102" rx="12" class="oa-svg-panel-reconcile"/>
+  <text x="770" y="162" font-size="10.5" class="oa-svg-reconcile-txt">RECONCILIATION_REQUIRED</text>
+  <text x="770" y="183" font-size="11.5" class="oa-svg-muted">Refuted or indeterminate:</text>
+  <text x="770" y="200" font-size="11.5" class="oa-svg-muted">stop and ask a person</text>
+  <text x="770" y="220" font-size="10.5" class="oa-svg-mono">ledger blocks blind retry</text>
+</svg>
+<figcaption class="oa-diagram-caption">
+  <span><strong>Read-back tiers:</strong> Tier 1 reads the system of record directly; Tier 2 reads a separate UI session. Unconfirmed writes stop for reconciliation.</span>
+  <span><a href="../../reference/receipts/">Signed receipts &rarr;</a></span>
+</figcaption>
+</figure>
+
+### Programmatic verification (`openadapt.verify`)
+
+Any Python agent or automation script can use the same commit-boundary verifier
+directly via `openadapt.verify` (backed by `openadapt_flow.verifier`) and its
+uncertain-write ledger:
+
+```python
+from openadapt.verify import Contract, begin_write, verify_write
+```
+
+Each call returns a three-valued outcome (`CONFIRMED`, `REFUTED`, or
+`UNCERTAIN`) and records uncertain writes in the local ledger so a retry cannot
+silently duplicate a write.
+
 ## How strong a read-back is
 
 OpenAdapt ranks every read-back by how independent it is of the screen that
