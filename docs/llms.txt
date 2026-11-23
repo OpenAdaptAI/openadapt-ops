@@ -4,7 +4,7 @@
 
 Production status: https://docs.openadapt.ai/production-lifecycle.json. Product-wide Production requires seven active target admissions, each verified against its exact release and current authority state. The public workflow ledger is https://docs.openadapt.ai/production-workflow-admissions.json. Every entry is remote-safe-synthetic, including tutorial bundles with bundle_version `0.0.0-synthetic`. A retained row doesn't establish current qualification. Synthetic evidence does not qualify a customer workflow. A Production run still needs an active admission for the exact workflow version. Desktop installers are published as GitHub releases tagged `openadapt-desktop-v*`; their signing status is on https://docs.openadapt.ai/security/release-integrity/.
 
-Start with `uvx --python 3.12 openadapt quickstart --break-it`, or `python -m pip install --upgrade openadapt` on Python 3.10 to 3.12.
+Start with `uvx --python 3.12 openadapt@latest quickstart`, or `python -m pip install --upgrade openadapt` on Python 3.10 to 3.12.
 
 ## OpenAdapt in ten capabilities
 

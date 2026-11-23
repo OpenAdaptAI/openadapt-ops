@@ -69,6 +69,7 @@ extra_css:
   - stylesheets/vendor/semantic-theme/fonts.css
   - stylesheets/semantic-theme.css
   - stylesheets/home.css
+  - stylesheets/premium.css
 
 extra_javascript:
   - javascripts/production-lifecycle.js
