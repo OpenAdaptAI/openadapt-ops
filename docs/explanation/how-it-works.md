@@ -12,10 +12,6 @@ times. OpenAdapt compiles what it saw into a program. The program runs the
 same steps every time, checks each one, and stops when it can't confirm the
 next step is safe.
 
-```text
-Record (1+ demos) -> Compile (IR) -> Certify (policy) -> Qualify (fault drills) -> Admit -> Run -> Verify & Sign
-```
-
 <figure class="oa-diagram-frame">
 <svg viewBox="0 0 980 280" role="img" aria-labelledby="oa-how-title oa-how-desc">
   <title id="oa-how-title">OpenAdapt workflow lifecycle from demonstration to verified run</title>

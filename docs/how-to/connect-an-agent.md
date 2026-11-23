@@ -13,7 +13,7 @@ outcome; it doesn't drive the screen, and by default it never sees recorded
 values or screens.
 
 The server runs over local stdio on the computer that can open the app. It
-requires Python 3.11 or 3.12 (`uvx --python 3.12` handles this automatically).
+needs Python 3.10 to 3.12 (`uvx --python 3.12` handles this automatically).
 
 ## Developer and integration map
 
@@ -43,23 +43,23 @@ requires Python 3.11 or 3.12 (`uvx --python 3.12` handles this automatically).
 
   <rect x="14" y="178" width="230" height="66" rx="10" class="oa-svg-panel"/>
   <text x="28" y="202" font-size="10" class="oa-svg-accent">OPERATOR TOOLS</text>
-  <text x="28" y="221" font-size="13" class="oa-svg-title">CLI &amp; Desktop App</text>
-  <text x="28" y="236" font-size="10.5" class="oa-svg-muted">openadapt · Chrome capture</text>
+  <text x="28" y="221" font-size="13" class="oa-svg-title">CLI and desktop app</text>
+  <text x="28" y="236" font-size="10.5" class="oa-svg-muted">openadapt · desktop capture</text>
 
   <!-- Arrows to bridge -->
   <path d="M244,51 L312,86" class="oa-svg-line-accent" marker-end="url(#int-arr)"/>
   <path d="M244,131 L312,131" class="oa-svg-line-accent" marker-end="url(#int-arr)"/>
   <path d="M244,211 L312,184" class="oa-svg-line-accent" marker-end="url(#int-arr)"/>
 
-  <!-- Local Bridge / Harness -->
+  <!-- Local Bridge -->
   <rect x="318" y="26" width="318" height="212" rx="12" class="oa-svg-panel-link"/>
   <text x="334" y="50" font-size="10" class="oa-svg-accent">LOCAL EXECUTION &amp; VERIFICATION LAYER</text>
   <rect x="334" y="64" width="286" height="52" rx="8" class="oa-svg-panel"/>
-  <text x="346" y="85" font-size="12.5" class="oa-svg-title">MCP Workflow Server</text>
+  <text x="346" y="85" font-size="12.5" class="oa-svg-title">MCP workflow server</text>
   <text x="346" y="103" font-size="10.5" class="oa-svg-mono">openadapt agent serve · emit-mcp</text>
 
   <rect x="334" y="124" width="286" height="52" rx="8" class="oa-svg-panel"/>
-  <text x="346" y="145" font-size="12.5" class="oa-svg-title">Write Verifier &amp; Ledger</text>
+  <text x="346" y="145" font-size="12.5" class="oa-svg-title">Write verifier and ledger</text>
   <text x="346" y="163" font-size="10.5" class="oa-svg-mono">openadapt verify serve · ledger</text>
 
   <text x="334" y="204" font-size="11" class="oa-svg-muted">Idempotent request_id · approval gates</text>
@@ -72,16 +72,16 @@ requires Python 3.11 or 3.12 (`uvx --python 3.12` handles this automatically).
   <!-- Surfaces -->
   <rect x="708" y="26" width="258" height="106" rx="12" class="oa-svg-panel"/>
   <text x="724" y="50" font-size="10" class="oa-svg-accent">TARGET SURFACES</text>
-  <text x="724" y="72" font-size="13.5" class="oa-svg-title">Legacy &amp; Modern Apps</text>
+  <text x="724" y="72" font-size="13.5" class="oa-svg-title">Web and desktop apps</text>
   <text x="724" y="93" font-size="11" class="oa-svg-muted">Browser (DOM / CDP) · API</text>
   <text x="724" y="111" font-size="11" class="oa-svg-muted">Windows · macOS · Linux · RDP · Citrix</text>
 
   <!-- Verified Output -->
   <rect x="708" y="146" width="258" height="92" rx="12" class="oa-svg-panel-verified"/>
   <text x="724" y="170" font-size="10" class="oa-svg-verified-txt">VERIFIED OUTCOMES</text>
-  <text x="724" y="191" font-size="13.5" class="oa-svg-title">Signed Receipts</text>
+  <text x="724" y="191" font-size="13.5" class="oa-svg-title">Signed receipts</text>
   <text x="724" y="211" font-size="11" class="oa-svg-muted">done · needs_review · not_sure_if_saved</text>
-  <text x="724" y="227" font-size="10.5" class="oa-svg-mono">Zero screens returned to agent</text>
+  <text x="724" y="227" font-size="10.5" class="oa-svg-mono">No screens returned to agent</text>
 </svg>
 <figcaption class="oa-diagram-caption">
   <span><strong>Integration surface:</strong> Turn any compiled web or desktop workflow into a typed MCP tool or verify arbitrary agent writes.</span>

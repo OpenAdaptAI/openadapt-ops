@@ -425,7 +425,8 @@
   border: 1px solid var(--oa-border);
   border-radius: var(--oa-radius-card);
   margin: 1.6rem 0;
-  overflow: hidden;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   padding: 1.1rem 1.1rem 0.85rem;
 }
 
@@ -582,9 +583,36 @@
   }
 }
 
+@media screen and (max-width: 48em) {
+  .md-typeset .oa-diagram-frame svg {
+    max-width: none;
+    min-width: 680px;
+  }
+}
+
 @media screen and (max-width: 36em) {
   .md-typeset .oa-bento-card,
   .md-typeset .oa-bento-card--wide {
     grid-column: span 12;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .md-typeset .oa-step-card,
+  .md-typeset .oa-bento-card,
+  .md-typeset .oa-docs-home a.oa-docs-path,
+  .md-header,
+  .md-tabs,
+  .md-tabs__link,
+  .md-search__form,
+  .md-nav__link,
+  .md-typeset table:not([class]) tr {
+    transition: none !important;
+  }
+
+  .md-typeset .oa-step-card:hover,
+  .md-typeset .oa-bento-card:hover,
+  .md-typeset .oa-docs-home a.oa-docs-path:hover {
+    transform: none !important;
   }
 }

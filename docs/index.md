@@ -1,9 +1,9 @@
 ---
 title: OpenAdapt documentation
 description: >-
-  OpenAdapt is the compiler and verification harness for GUI workflows. Build a
-  repeatable workflow from one or more demonstrations, verify every save against
-  the system of record, and emit signed Ed25519 receipts.
+  OpenAdapt compiles one or more demonstrations into a repeatable GUI workflow,
+  checks each save through the system of record or a separate UI session, and
+  writes signed Ed25519 receipts.
 hide:
   - toc
   - navigation
@@ -14,16 +14,16 @@ hide:
 <section class="oa-hero-shell" markdown>
 
 <div class="oa-pill-row">
-  <span class="oa-pill oa-pill--verified">0 Model Calls on Healthy Runs</span>
-  <span class="oa-pill oa-pill--link">Commit-Boundary Verification</span>
-  <span class="oa-pill">Signed Ed25519 Receipts</span>
+  <span class="oa-pill oa-pill--verified">0 model calls on healthy runs</span>
+  <span class="oa-pill oa-pill--link">Commit-boundary checks</span>
+  <span class="oa-pill">Signed Ed25519 receipts</span>
 </div>
 
 <p class="oa-docs-kicker">OpenAdapt documentation</p>
 
 # Compile GUI workflows.<br>Verify every save.
 
-<p class="oa-docs-lede">OpenAdapt is the compiler and verification harness for GUI workflows. Build a deterministic program from one or more demonstrations, check every save against the system of record, and stop whenever proof is missing.</p>
+<p class="oa-docs-lede">OpenAdapt is a compiler and verification runtime for GUI workflows. Build a deterministic program from one or more demonstrations, check each save through the system of record or a separate UI session, and stop whenever proof is missing.</p>
 
 <p class="oa-docs-intro">Built for browser, Windows, macOS, Linux, RDP, and Citrix applications. A healthy compiled run makes zero AI model calls and keeps data inside your network boundary.</p>
 
@@ -40,16 +40,16 @@ hide:
 
 <div class="oa-docs-start-copy" markdown>
 
-### Run the 5-minute proof locally
+### Run a checked task locally
 
-Watch one compiled workflow confirm a real save, then halt when a backend fakes a success banner and drops the write. Runs in a hidden browser by default with synthetic data. No account or API key.
+Watch one compiled workflow confirm a save in a synthetic clinic app, then halt when a test backend fakes a success banner and drops the write. No account or API key.
 
 </div>
 
 <div class="oa-docs-command" markdown>
 
 ```bash
-uvx --python 3.12 openadapt@latest quickstart --break-it
+uvx --python 3.12 openadapt@latest quickstart
 ```
 
 [Other install options](tutorials/quickstart.md#run-it) · [Command reference](reference/cli.md)
@@ -63,7 +63,7 @@ uvx --python 3.12 openadapt@latest quickstart --break-it
 <figure class="oa-diagram-frame">
 <svg viewBox="0 0 980 230" role="img" aria-labelledby="oa-pipe-title oa-pipe-desc">
   <title id="oa-pipe-title">OpenAdapt core execution pipeline</title>
-  <desc id="oa-pipe-desc">One or more demonstrations are recorded, compiled into a deterministic workflow program, replayed with zero model calls, checked at the commit boundary against the system of record, and attested with a signed Ed25519 receipt. Any failed or uncertain check stops the run and routes to human review or guarded teach repair.</desc>
+  <desc id="oa-pipe-desc">One or more demonstrations are recorded, compiled into a deterministic workflow program, replayed with zero model calls, checked at the commit boundary through the system of record or a separate UI session, and attested with a signed Ed25519 receipt. Any failed or uncertain check stops the run and routes to human review or guarded teach repair.</desc>
   <defs>
     <marker id="oa-arr-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
       <path d="M0,1 L9,5 L0,9 z" class="oa-svg-arrow-accent"/>
@@ -90,34 +90,34 @@ uvx --python 3.12 openadapt@latest quickstart --break-it
   <text x="220" y="48" font-size="10.5" class="oa-svg-accent">02 · COMPILE</text>
   <text x="220" y="70" font-size="14" class="oa-svg-title">Workflow IR</text>
   <text x="220" y="90" font-size="11.5" class="oa-svg-muted">DOM, UIA, AX, or API</text>
-  <text x="220" y="107" font-size="11.5" class="oa-svg-muted">Certify &amp; qualify</text>
+  <text x="220" y="107" font-size="11.5" class="oa-svg-muted">Certify and qualify</text>
 
   <path d="M360,77 L388,77" class="oa-svg-line-accent" marker-end="url(#oa-arr-accent)"/>
 
-  <!-- Step 3: Deterministic Replay -->
+  <!-- Step 3: Deterministic replay -->
   <rect x="394" y="24" width="170" height="106" rx="12" class="oa-svg-panel-link"/>
   <text x="410" y="48" font-size="10.5" class="oa-svg-accent">03 · REPLAY</text>
-  <text x="410" y="70" font-size="14" class="oa-svg-title">Deterministic Run</text>
+  <text x="410" y="70" font-size="14" class="oa-svg-title">Deterministic run</text>
   <text x="410" y="90" font-size="11.5" class="oa-svg-muted">0 AI model calls</text>
   <text x="410" y="107" font-size="11.5" class="oa-svg-muted">Right-record pre-check</text>
 
   <path d="M564,77 L592,77" class="oa-svg-line-accent" marker-end="url(#oa-arr-accent)"/>
 
-  <!-- Step 4: Commit Gate -->
+  <!-- Step 4: Commit gate -->
   <rect x="598" y="24" width="172" height="106" rx="12" class="oa-svg-panel"/>
   <text x="614" y="48" font-size="10.5" class="oa-svg-accent">04 · COMMIT GATE</text>
-  <text x="614" y="70" font-size="14" class="oa-svg-title">Verify Effect</text>
+  <text x="614" y="70" font-size="14" class="oa-svg-title">Verify effect</text>
   <text x="614" y="90" font-size="11.5" class="oa-svg-muted">API, SQL, FHIR read-back</text>
   <text x="614" y="107" font-size="11.5" class="oa-svg-muted">or separate UI session</text>
 
   <path d="M770,77 L798,77" class="oa-svg-line-verified" marker-end="url(#oa-arr-verified)"/>
 
-  <!-- Step 5: Signed Receipt -->
+  <!-- Step 5: Signed receipt -->
   <rect x="804" y="24" width="162" height="106" rx="12" class="oa-svg-panel-verified"/>
   <text x="820" y="48" font-size="10.5" class="oa-svg-verified-txt">05 · RECEIPT</text>
   <text x="820" y="70" font-size="14" class="oa-svg-title">VERIFIED</text>
   <text x="820" y="90" font-size="11.5" class="oa-svg-muted">Signed Ed25519 proof</text>
-  <text x="820" y="107" font-size="11.5" class="oa-svg-muted">Zero PII, offline check</text>
+  <text x="820" y="107" font-size="11.5" class="oa-svg-muted">Safe to share · offline</text>
 
   <!-- Halt & Teach feedback loop -->
   <path d="M684,130 L684,174 L484,174" class="oa-svg-line-stopped" marker-end="url(#oa-arr-stopped)"/>
@@ -148,16 +148,16 @@ Run `openadapt record` on a web page, desktop app, or remote session, or let an 
 <div class="oa-step-card" markdown>
 <p class="oa-step-num">Step 02</p>
 
-### Compile & qualify
+### Compile and qualify
 
-Compile the recording into an inspectable program, attach system-of-record checks, and qualify it against planted faults.
+Compile the recording into an inspectable program, attach record checks, and qualify it against planted faults.
 
 </div>
 
 <div class="oa-step-card" markdown>
 <p class="oa-step-num">Step 03</p>
 
-### Run & verify
+### Run and verify
 
 Execute deterministically with zero model calls per step, or expose the workflow to any AI agent over MCP with signed receipts.
 
@@ -165,7 +165,7 @@ Execute deterministically with zero model calls per step, or expose the workflow
 
 </div>
 
-## Why teams build on OpenAdapt
+## How OpenAdapt guards every run
 
 <div class="oa-bento-grid" markdown>
 
@@ -183,7 +183,7 @@ A computer-use agent sends screenshots to a model on every click. OpenAdapt comp
 
 ### Commit-boundary verification
 
-Every consequential save is guarded before and after the write. Before acting, a right-record check confirms the intended entity is open. After saving, an independent read through the system of record (REST, GraphQL, FHIR, SQL, or file export) confirms what actually persisted.
+Every consequential save is guarded before and after the write. Before acting, a right-record check confirms the intended entity is open. After saving, a read-back through the system of record (REST, GraphQL, FHIR, SQL, or file export) or a separate signed-in UI session confirms what persisted.
 
 <span class="oa-bento-meta">3-valued verdicts · never trusts a banner</span>
 
@@ -193,9 +193,9 @@ Every consequential save is guarded before and after the write. Before acting, a
 
 ### Signed Ed25519 receipts
 
-Verified runs emit portable JSON receipts containing digests, check tiers, and counts with zero record values. Cloud-tracked runs add an Ed25519 signature anyone can verify offline.
+Verified runs emit portable JSON receipts containing digests, check tiers, and counts with no screenshots, typed values, or free text. Cloud-tracked runs add an Ed25519 signature anyone can verify offline.
 
-<span class="oa-bento-meta">offline verification · audit-ready</span>
+<span class="oa-bento-meta">offline verification · safe to share</span>
 
 </div>
 
