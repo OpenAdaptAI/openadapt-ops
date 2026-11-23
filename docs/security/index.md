@@ -53,6 +53,14 @@ scope and evidence record. The current phases are:
 For the current security packet or a scoped deployment review, email
 [hello@openadapt.ai](mailto:hello@openadapt.ai).
 
+## Deployment patterns by industry
+
+| Environment | Typical surfaces | Required verification tier | Typical boundary |
+|---|---|---|---|
+| Healthcare EHR & referrals | Web EHR, Windows, Citrix / RDP | Tier 1 (`fhir`, `rest`, `sql`) with `regulated` policy | On-premises / VPC runner, `OPENADAPT_FLOW_SCRUB=on`, AES-256-GCM bundles |
+| Insurance quoting & claims | Payer portals, legacy desktop, EDI | Tier 1 (`rest`, `sql`, `file`) or counterparty acknowledgment | Customer runner + Ed25519 signed execution receipts |
+| Enterprise operations & ERP | Web SaaS, internal admin tools | Tier 1 (`rest`, `graphql`, `sql`) or Tier 2 (`ui_readback`) | Local runner or OpenAdapt Cloud workspace |
+
 ## Pages in this section
 
 - [Data handling](data-handling.md): where each kind of data lives, how

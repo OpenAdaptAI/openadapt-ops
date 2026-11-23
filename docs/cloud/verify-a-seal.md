@@ -6,7 +6,8 @@ description: >-
 
 # Check a Seal online
 
-A Seal is OpenAdapt Cloud's Ed25519 signature on a run's receipt. Anyone who
+A signed execution receipt (countersigned by OpenAdapt Cloud as a **Seal**)
+carries Cloud's Ed25519 signature over a verified run's receipt. Anyone who
 holds the receipt can check it: an auditor, a payer, or the system that asked
 for the run. There are two ways, and both give the same answer.
 

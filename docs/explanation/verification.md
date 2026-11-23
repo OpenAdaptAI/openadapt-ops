@@ -16,6 +16,105 @@ it isn't used as proof. A record check returns `confirmed`, `refuted`, or
 
 ![On the acting surface, the app screen OpenAdapt types into, a run checks that the right record is on screen, then enters and saves. It then reads the record back. A screen read-back uses the app's UI in a separate session and is not independent. An independent read uses the system of record through its API, database, or file export, never through the UI. If the read matches, the run ends VERIFIED with a run report and a receipt; OpenAdapt Cloud signs a Seal only after an independent read. If it doesn't match or can't tell, the run ends RECONCILIATION_REQUIRED and a person checks the record. If the right-record check fails, the run ends HALTED_BEFORE_EFFECT before saving and asks a person.](../assets/diagrams/record-check.svg)
 
+## Hybrid commit-boundary verification
+
+When an agent or compiled program crosses a commit boundary, OpenAdapt pairs
+deterministic system-of-record read-back with optional local visual checks:
+
+<figure class="oa-diagram-frame">
+<svg viewBox="0 0 980 270" role="img" aria-labelledby="oa-ver-title oa-ver-desc">
+  <title id="oa-ver-title">Hybrid commit-boundary verification flow</title>
+  <desc id="oa-ver-desc">Before a consequential action, OpenAdapt captures pre-state and checks the right record. After the write, it runs deterministic system-of-record read-back (REST, GraphQL, FHIR, SQL, or file export) alongside optional local visual veto (OpenAdapt-Veto-9B-v4). Confirmed effects emit a VERIFIED signed receipt; refuted or indeterminate checks stop for human reconciliation.</desc>
+  <defs>
+    <marker id="ver-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,1 L9,5 L0,9 z" class="oa-svg-arrow-accent"/>
+    </marker>
+    <marker id="ver-arr-v" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,1 L9,5 L0,9 z" class="oa-svg-arrow-verified"/>
+    </marker>
+    <marker id="ver-arr-s" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,1 L9,5 L0,9 z" class="oa-svg-arrow-stopped"/>
+    </marker>
+  </defs>
+
+  <!-- Pre-state & Action -->
+  <rect x="14" y="42" width="176" height="122" rx="12" class="oa-svg-panel-link"/>
+  <text x="28" y="66" font-size="10" class="oa-svg-accent">BEFORE WRITE</text>
+  <text x="28" y="88" font-size="14" class="oa-svg-title">Pre-State Gate</text>
+  <text x="28" y="108" font-size="11.5" class="oa-svg-muted">Baseline snapshot</text>
+  <text x="28" y="125" font-size="11.5" class="oa-svg-muted">Right-record check</text>
+  <text x="28" y="146" font-size="10.5" class="oa-svg-mono">begin_write()</text>
+
+  <path d="M190,103 L222,103" class="oa-svg-line-accent" marker-end="url(#ver-arr)"/>
+
+  <!-- Action / Save -->
+  <rect x="228" y="42" width="148" height="122" rx="12" class="oa-svg-panel"/>
+  <text x="242" y="66" font-size="10" class="oa-svg-accent">COMMIT BOUNDARY</text>
+  <text x="242" y="88" font-size="14" class="oa-svg-title">Action &amp; Save</text>
+  <text x="242" y="108" font-size="11.5" class="oa-svg-muted">Compiled step or</text>
+  <text x="242" y="125" font-size="11.5" class="oa-svg-muted">external agent</text>
+  <text x="242" y="146" font-size="10.5" class="oa-svg-mono">approval-gated</text>
+
+  <!-- Split to dual checks -->
+  <path d="M376,80 L402,80 L402,68 L428,68" class="oa-svg-line-verified" marker-end="url(#ver-arr-v)"/>
+  <path d="M376,126 L402,126 L402,174 L428,174" class="oa-svg-line-accent" marker-end="url(#ver-arr)"/>
+
+  <!-- Primary: Deterministic Read-Back -->
+  <rect x="434" y="16" width="268" height="106" rx="12" class="oa-svg-panel-verified"/>
+  <text x="450" y="39" font-size="10" class="oa-svg-verified-txt">PRIMARY PROOF · TIER 1</text>
+  <text x="450" y="60" font-size="14" class="oa-svg-title">Deterministic Read-Back</text>
+  <text x="450" y="80" font-size="11.5" class="oa-svg-muted">Independent REST, GraphQL, FHIR,</text>
+  <text x="450" y="97" font-size="11.5" class="oa-svg-muted">SQL, or file export query vs. baseline</text>
+
+  <!-- Secondary: Local Visual Veto -->
+  <rect x="434" y="136" width="268" height="106" rx="12" class="oa-svg-panel"/>
+  <text x="450" y="159" font-size="10" class="oa-svg-accent">OPTIONAL LOCAL VISUAL VETO</text>
+  <text x="450" y="180" font-size="14" class="oa-svg-title">OpenAdapt-Veto-9B-v4</text>
+  <text x="450" y="200" font-size="11.5" class="oa-svg-muted">Pre/post visual diff &amp; per-app Multi-LoRA</text>
+  <text x="450" y="217" font-size="11.5" class="oa-svg-muted">Can veto a suspicious screen; never alone confirms</text>
+
+  <!-- Merge to outcomes -->
+  <path d="M702,68 L748,68" class="oa-svg-line-verified" marker-end="url(#ver-arr-v)"/>
+  <path d="M702,188 L748,188" class="oa-svg-line-stopped" marker-end="url(#ver-arr-s)"/>
+
+  <!-- Outcome: Commit / VERIFIED -->
+  <rect x="754" y="24" width="212" height="88" rx="12" class="oa-svg-panel-verified"/>
+  <text x="770" y="49" font-size="12" class="oa-svg-verified-txt">VERIFIED</text>
+  <text x="770" y="70" font-size="11.5" class="oa-svg-muted">All effects confirmed</text>
+  <text x="770" y="88" font-size="11.5" class="oa-svg-muted">Emit signed receipt</text>
+
+  <!-- Outcome: Pause / Reconcile -->
+  <rect x="754" y="138" width="212" height="102" rx="12" class="oa-svg-panel-reconcile"/>
+  <text x="770" y="162" font-size="10.5" class="oa-svg-reconcile-txt">RECONCILIATION_REQUIRED</text>
+  <text x="770" y="183" font-size="11.5" class="oa-svg-muted">Refuted, indeterminate, or</text>
+  <text x="770" y="200" font-size="11.5" class="oa-svg-muted">vetoed: pause for human review</text>
+  <text x="770" y="220" font-size="10.5" class="oa-svg-mono">ledger blocks blind retry</text>
+</svg>
+<figcaption class="oa-diagram-caption">
+  <span><strong>Defense in depth:</strong> Independent system-of-record read-back confirms persistence; optional local visual veto blocks screen-level anomalies.</span>
+  <span><a href="../../reference/receipts-and-seals/">Signed receipts &rarr;</a></span>
+</figcaption>
+</figure>
+
+### Programmatic verification (`openadapt.verify`) and visual veto models
+
+Any Python agent or automation script can use the same commit-boundary harness
+directly via `openadapt.verify` (backed by `openadapt_flow.verifier`) and its
+uncertain-write ledger:
+
+```python
+from openadapt.verify import Contract, begin_write, verify_write
+```
+
+For environments that also run local visual screening on pre/post screenshots,
+OpenAdapt publishes open-weights visual veto models on Hugging Face, including
+[OpenAdapt-Veto-9B-v4](https://huggingface.co/OpenAdapt/OpenAdapt-Veto-9B-v4)
+and per-application Multi-LoRA adapters such as
+[OpenAdapt-Veto-9B-app-dark-saas](https://huggingface.co/OpenAdapt/OpenAdapt-Veto-9B-app-dark-saas).
+Visual veto runs locally inside your boundary to flag unexpected screen states,
+while independent system-of-record read-back remains the authority required for
+a `VERIFIED` signed receipt.
+
 ## How strong a read-back is
 
 OpenAdapt ranks every read-back by how independent it is of the screen that

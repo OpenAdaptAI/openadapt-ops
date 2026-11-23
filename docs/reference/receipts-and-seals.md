@@ -7,12 +7,89 @@ description: >-
 
 # Receipts, Seals, and countersigning
 
-A run that ends `VERIFIED` writes a **receipt**: a summary of what was
-checked, safe to share. OpenAdapt Cloud can sign it, and the signed receipt
-is a **Seal**. `verify-run` writes an **effect receipt** for a write that an
-agent, a script, or a person made. `countersign` adds trusted timestamps,
-field commitments you can reveal one at a time, and a dossier a third party
-can check offline.
+A run that ends `VERIFIED` writes a **signed execution receipt** (or **receipt**):
+a portable, zero-PII record of what was checked, safe to share with auditors,
+counterparties, or downstream systems. OpenAdapt Cloud can add an Ed25519
+countersignature (also called a **Seal**) to that receipt. `verify-run` writes
+an **effect receipt** for a write that an agent, a script, or a person made.
+`countersign` adds trusted timestamps, field commitments you can reveal one at
+a time, and a dossier a third party can check offline.
+
+## Trust and receipt signing architecture
+
+<figure class="oa-diagram-frame">
+<svg viewBox="0 0 980 250" role="img" aria-labelledby="oa-trust-title oa-trust-desc">
+  <title id="oa-trust-title">Trust boundary and Ed25519 receipt signing architecture</title>
+  <desc id="oa-trust-desc">The local runner or enterprise VPC holds recordings, screenshots, inputs, and credentials. Only zero-PII metadata (counts, digests, check tiers, and versions) crosses the boundary to an Ed25519 signer (local key, organization key, or OpenAdapt Cloud countersignature), producing a verifiable receipt checked offline with pinned public keys.</desc>
+  <defs>
+    <marker id="tr-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,1 L9,5 L0,9 z" class="oa-svg-arrow-accent"/>
+    </marker>
+    <marker id="tr-arr-v" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,1 L9,5 L0,9 z" class="oa-svg-arrow-verified"/>
+    </marker>
+  </defs>
+
+  <!-- Customer Boundary -->
+  <rect x="14" y="18" width="276" height="214" rx="12" class="oa-svg-panel-link"/>
+  <text x="30" y="42" font-size="10" class="oa-svg-accent">CUSTOMER BOUNDARY · VPC / LOCAL</text>
+  <text x="30" y="64" font-size="14" class="oa-svg-title">Local Runner</text>
+  <rect x="30" y="80" width="244" height="44" rx="8" class="oa-svg-panel"/>
+  <text x="42" y="99" font-size="11.5" class="oa-svg-title">Screenshots &amp; Inputs</text>
+  <text x="42" y="115" font-size="10.5" class="oa-svg-muted">Stays local · optional AES-256-GCM</text>
+  <rect x="30" y="132" width="244" height="44" rx="8" class="oa-svg-panel"/>
+  <text x="42" y="151" font-size="11.5" class="oa-svg-title">System-of-Record Check</text>
+  <text x="42" y="167" font-size="10.5" class="oa-svg-muted">API / SQL / FHIR read-back</text>
+  <text x="30" y="206" font-size="10.5" class="oa-svg-mono">report.json · receipt.json</text>
+
+  <!-- Boundary divider -->
+  <line x1="322" y1="18" x2="322" y2="232" class="oa-svg-line" stroke-dasharray="6 4"/>
+  <path d="M290,125 L354,125" class="oa-svg-line-accent" marker-end="url(#tr-arr)"/>
+  <text x="294" y="114" font-size="10" class="oa-svg-muted">digests only</text>
+
+  <!-- Ed25519 Signer -->
+  <rect x="360" y="34" width="266" height="182" rx="12" class="oa-svg-panel"/>
+  <text x="376" y="58" font-size="10" class="oa-svg-accent">CRYPTOGRAPHIC SIGNING</text>
+  <text x="376" y="80" font-size="14" class="oa-svg-title">Ed25519 Signer Roles</text>
+  <text x="376" y="104" font-size="11.5" class="oa-svg-muted">• Local computer key (offline)</text>
+  <text x="376" y="124" font-size="11.5" class="oa-svg-muted">• Organization key (self-hosted)</text>
+  <text x="376" y="144" font-size="11.5" class="oa-svg-muted">• OpenAdapt Cloud countersignature</text>
+  <text x="376" y="164" font-size="11.5" class="oa-svg-muted">• Optional RFC 3161 / Sigstore timestamp</text>
+  <text x="376" y="192" font-size="10.5" class="oa-svg-mono">Zero PII or screenshots in payload</text>
+
+  <path d="M626,125 L666,125" class="oa-svg-line-verified" marker-end="url(#tr-arr-v)"/>
+
+  <!-- Verification -->
+  <rect x="672" y="24" width="294" height="96" rx="12" class="oa-svg-panel-verified"/>
+  <text x="688" y="48" font-size="10" class="oa-svg-verified-txt">OFFLINE VERIFICATION</text>
+  <text x="688" y="69" font-size="14" class="oa-svg-title">Auditor / Counterparty</text>
+  <text x="688" y="89" font-size="11.5" class="oa-svg-muted">Pin public keys once, verify offline</text>
+  <text x="688" y="107" font-size="10.5" class="oa-svg-mono">openadapt seal verify report.json</text>
+
+  <rect x="672" y="136" width="294" height="90" rx="12" class="oa-svg-panel"/>
+  <text x="688" y="160" font-size="10" class="oa-svg-accent">OPTIONAL CONTROL PLANE</text>
+  <text x="688" y="181" font-size="14" class="oa-svg-title">OpenAdapt Cloud</text>
+  <text x="688" y="201" font-size="11.5" class="oa-svg-muted">app.openadapt.ai/seals/verify</text>
+  <text x="688" y="217" font-size="10.5" class="oa-svg-muted">Key publication &amp; audit dashboard</text>
+</svg>
+<figcaption class="oa-diagram-caption">
+  <span><strong>Zero-PII proof:</strong> Raw recordings stay inside your boundary; signed receipts carry only digests, counts, and check tiers.</span>
+  <span><a href="../../security/data-handling/">Data handling &rarr;</a></span>
+</figcaption>
+</figure>
+
+### Signer roles
+
+Every signed receipt identifies who signed it using an explicit signer role. An
+unknown signer role or tampered payload is refused:
+
+| Signer role | What it attests | Where the key lives |
+|---|---|---|
+| Local computer key | Signed on this machine (`openadapt flow local-seal`) | Local runner |
+| Organization key | Signed by your organization's key | Customer KMS / HSM |
+| OpenAdapt Cloud countersignature | Countersigned by OpenAdapt Cloud Execute (Seal) after an independent read | OpenAdapt Cloud (`app.openadapt.ai/api/public/seal-keys`) |
+| Public log / timestamp | Anchored to a timestamp authority (`openadapt flow countersign`) | Sigstore or configured TSA |
+| Demo key | Synthetic tutorial or demo check only; never valid for production | Bundled demo fixture |
 
 ## The run receipt
 
