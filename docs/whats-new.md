@@ -1,44 +1,35 @@
 # What's New
 
 > *Pull requests merged in the last 7 days across the OpenAdapt repositories, grouped by the release that contains them.*
-> *Last updated: 2026-11-20 01:32 UTC*
+> *Last updated: 2026-11-22 06:20 UTC*
 
 Items under **Merged, not released yet** are on a repository's `main` branch only. They are not in any published package or installer yet.
 
 ## OpenAdapt
 
-### Released in openadapt-flow 3.3.0
+### Released in openadapt-flow 3.4.0
 
-- [release(flow): 3.3.0](https://github.com/OpenAdaptAI/OpenAdapt/pull/2284) (#2284), merged 2026-11-19
-- [fix(flow): check clock-read screen text against the run's clock; complete OpenEMR REST reads](https://github.com/OpenAdaptAI/OpenAdapt/pull/2280) (#2280), merged 2026-11-19
-
-### Released in openadapt-flow 3.2.0
-
-- [release(flow): 3.2.0](https://github.com/OpenAdaptAI/OpenAdapt/pull/2274) (#2274), merged 2026-11-19
-- [flow: fewer browser calls per screen step, the at-rest key derived once per run, and fixes that let the OpenEMR referral finish](https://github.com/OpenAdaptAI/OpenAdapt/pull/2268) (#2268), merged 2026-11-19
-- [seal: publish a run's Seal online (openadapt seal publish) and the quickstart offer](https://github.com/OpenAdaptAI/OpenAdapt/pull/2266) (#2266), merged 2026-11-19
-
-### Released in OpenAdapt 1.23.0
-
-- [release(launcher): openadapt 1.23.0 requires Flow 3.3](https://github.com/OpenAdaptAI/OpenAdapt/pull/2288) (#2288), merged 2026-11-19
-- [fix(desktop): stop terminal windows opening over the app on Windows](https://github.com/OpenAdaptAI/OpenAdapt/pull/2285) (#2285), merged 2026-11-19
-- [test(desktop): restore exact host bytes in the reversion tests on Windows](https://github.com/OpenAdaptAI/OpenAdapt/pull/2281) (#2281), merged 2026-11-19
-- [ci(desktop): start git without forking in the release tooling and its tests](https://github.com/OpenAdaptAI/OpenAdapt/pull/2277) (#2277), merged 2026-11-19
-- [fix(ci): bind pull_request_target safety runs to the PR head, not GITHUB_SHA](https://github.com/OpenAdaptAI/OpenAdapt/pull/2275) (#2275), merged 2026-11-19
-- [fix(desktop): describe OpenAdapt for any app on the welcome screen](https://github.com/OpenAdaptAI/OpenAdapt/pull/2269) (#2269), merged 2026-11-19
-- [fix(desktop): let the installed app's sample run on a fresh Mac](https://github.com/OpenAdaptAI/OpenAdapt/pull/2267) (#2267), merged 2026-11-19
-
-### Released in OpenAdapt 1.22.0
-
-- [quickstart: keep Flow's encryption at rest for run checkpoints](https://github.com/OpenAdaptAI/OpenAdapt/pull/2272) (#2272), merged 2026-11-19
-- [fix(scripts): record_quickstart parser refuses abbreviations](https://github.com/OpenAdaptAI/OpenAdapt/pull/2271) (#2271), merged 2026-11-19
+- [release(flow): 3.4.0 requires openadapt-privacy 1.1.4](https://github.com/OpenAdaptAI/OpenAdapt/pull/2470) (#2470), merged 2026-11-21
+- [fix(flow): keep ir within its import-time budget (main is red)](https://github.com/OpenAdaptAI/OpenAdapt/pull/2466) (#2466), merged 2026-11-21
+- [refactor(flow): move the replayer's asset, healing and step-evidence helpers to a mixin, unchanged](https://github.com/OpenAdaptAI/OpenAdapt/pull/2459) (#2459), merged 2026-11-21
+- [refactor(flow): move the replayer's qualification fault injection to a mixin, unchanged](https://github.com/OpenAdaptAI/OpenAdapt/pull/2456) (#2456), merged 2026-11-21
+- [refactor(flow): move the replayer's module-level helpers to runtime/replay/_shared.py, re-exported unchanged](https://github.com/OpenAdaptAI/OpenAdapt/pull/2455) (#2455), merged 2026-11-21
+- [refactor(flow): move the qualification data model to qualification/models.py, re-exported unchanged](https://github.com/OpenAdaptAI/OpenAdapt/pull/2454) (#2454), merged 2026-11-21
+- [refactor(flow): the package loads its ir re-exports on first use](https://github.com/OpenAdaptAI/OpenAdapt/pull/2451) (#2451), merged 2026-11-21
+- [refactor(flow): qualification imports execution_profiles where it uses it, breaking the ir import cycle](https://github.com/OpenAdaptAI/OpenAdapt/pull/2439) (#2439), merged 2026-11-21
+- [ci(ratchet): size budgets never rise; dropping the row of an existing file fails](https://github.com/OpenAdaptAI/OpenAdapt/pull/2430) (#2430), merged 2026-11-21
 
 ### Merged, not released yet
 
-- [fix(desktop): show the window again on a second launch](https://github.com/OpenAdaptAI/OpenAdapt/pull/2290) (#2290), merged 2026-11-19
-- [fix(desktop): start the engine's child processes without forking on macOS](https://github.com/OpenAdaptAI/OpenAdapt/pull/2287) (#2287), merged 2026-11-19
-- [release(capture): 1.4.0](https://github.com/OpenAdaptAI/OpenAdapt/pull/2286) (#2286), merged 2026-11-19
-- [test(desktop): start every test subprocess without forking pytest](https://github.com/OpenAdaptAI/OpenAdapt/pull/2282) (#2282), merged 2026-11-20
-- [ci(desktop): keep native-release git calls and their tests from forking](https://github.com/OpenAdaptAI/OpenAdapt/pull/2279) (#2279), merged 2026-11-19
-- [docs: describe OpenAdapt for any application first](https://github.com/OpenAdaptAI/OpenAdapt/pull/2270) (#2270), merged 2026-11-20, openadapt-agent
+- [fix(hooks): emit #2410-compliant StepResult fields in hooks receipt reports](https://github.com/OpenAdaptAI/OpenAdapt/pull/2496) (#2496), merged 2026-11-22, openadapt-flow
+- [feat(flow): compose novel field-set contracts with planted-fault admission (P6)](https://github.com/OpenAdaptAI/OpenAdapt/pull/2490) (#2490), merged 2026-11-21, openadapt-flow
+- [fix(flow): bind null SQL verification read params as IS NULL (fail closed)](https://github.com/OpenAdaptAI/OpenAdapt/pull/2489) (#2489), merged 2026-11-21, openadapt-flow
+- [refactor(flow): extract Stedi 270/271 eligibility client into optional connector package](https://github.com/OpenAdaptAI/OpenAdapt/pull/2488) (#2488), merged 2026-11-21, openadapt-flow
+- [refactor(flow): generalize Execute seeding, reward bundles, and identity chrome](https://github.com/OpenAdaptAI/OpenAdapt/pull/2486) (#2486), merged 2026-11-22, openadapt-flow
+- [feat(flow): Global-to-Local (GOLD) ROI cropping and unified VetoOnlyVLMGuard](https://github.com/OpenAdaptAI/OpenAdapt/pull/2485) (#2485), merged 2026-11-22, openadapt-flow
+- [build(deps): bump the github-actions group across 1 directory with 2 updates](https://github.com/OpenAdaptAI/OpenAdapt/pull/2436) (#2436), merged 2026-11-21
+- [build(deps): bump zip from 9.5.1 to 9.7.0 in /packages/desktop/src-tauri in the cargo-desktop group](https://github.com/OpenAdaptAI/OpenAdapt/pull/2435) (#2435), merged 2026-11-21
+- [build(deps): bump boto3 from 1.44.4 to 1.44.5 in /packages/desktop in the uv-desktop group](https://github.com/OpenAdaptAI/OpenAdapt/pull/2434) (#2434), merged 2026-11-21
+- [build(deps-dev): bump the npm-desktop group in /packages/desktop with 2 updates](https://github.com/OpenAdaptAI/OpenAdapt/pull/2433) (#2433), merged 2026-11-21
+- [fix(scripts): verify_moved_code sees a module that became a package](https://github.com/OpenAdaptAI/OpenAdapt/pull/2431) (#2431), merged 2026-11-21
 

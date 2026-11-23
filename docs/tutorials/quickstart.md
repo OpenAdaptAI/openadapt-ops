@@ -20,16 +20,20 @@ You don't need an account, an API key, or an application of your own.
 With [uv](https://docs.astral.sh/uv/getting-started/installation/) installed:
 
 ```bash
-uvx --python 3.12 openadapt quickstart --break-it
+uvx --python 3.12 openadapt@latest quickstart
 ```
 
-uv downloads Python 3.12 for this command if you don't have it. Without uv,
-use Python 3.11 or 3.12:
+`uv` downloads Python 3.12 automatically for this command if you don't have it.
+Without `uv`, use Python 3.11 or 3.12:
 
 ```bash
 python -m pip install --upgrade openadapt
-openadapt quickstart --break-it
+openadapt quickstart
 ```
+
+`quickstart` runs both the clean save and the fault case by default (the older
+`--break-it` flag still works as an alias; pass `--no-break` to skip the fault
+case, or `--headless` to hide the browser window).
 
 On the first browser step, OpenAdapt asks Playwright to download its Chromium
 build. On a minimal Linux host, run `openadapt doctor --backend web` first. It

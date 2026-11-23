@@ -5,19 +5,21 @@
 
 ## OpenAdapt
 
+- **[openadapt-privacy-v1.1.4](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-privacy-v1.1.4)** (2026-11-21)
+  Features
+- **[openadapt-flow-v3.4.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-flow-v3.4.0)** (2026-11-21)
+  Features
 - **[openadapt-desktop-v0.30.6](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-desktop-v0.30.6)** (2026-11-20)
   OpenAdapt Desktop 0.30.6: the PyPI package and the native installers.
 - **[openadapt-capture-v1.4.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-capture-v1.4.0)** (2026-11-20)
   _This release uses the MIT License._
 - **[v1.23.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.23.0)** (2026-11-19)
   Fixes
-- **[v1.22.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.22.0)** (2026-11-19)
-  Features
-- **[openadapt-flow-v3.3.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-flow-v3.3.0)** (2026-11-19)
-  Fixes
 
 ## openadapt-flow
 
+- **[v3.4.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v340-2026-11-21)** (2026-11-21)
+  Agent-to-agent handoffs. `openadapt-flow handoff send` attaches a run's
 - **[v3.3.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v330-2026-11-19)** (2026-11-19)
   Screen text read from the clock is checked against the run's clock. A
 - **[v3.2.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v320-2026-11-19)** (2026-11-19)
@@ -26,8 +28,6 @@
   The outbound scrubber no longer rewrites the generated files of a wrap
 - **[v3.0.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v300-2026-11-13)** (2026-11-13)
   `pip install openadapt-flow` no longer installs NumPy, OpenCV, Pillow or
-- **[v2.7.1](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v271-2026-11-09)** (2026-11-09)
-  Flow 2.7.1 fixes loading of programs certified before Nov 8. Two optional
 
 ## openadapt-desktop
 

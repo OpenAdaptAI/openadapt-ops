@@ -1,0 +1,44 @@
+/* Chosen website palette on Material's existing light/dark controls. */
+/* Material sets the scheme on body. The root controls viewport scrollbars. */
+html:has(> body[data-md-color-scheme="default"]) { color-scheme: light; }
+html:has(> body[data-md-color-scheme="slate"]) { color-scheme: dark; }
+
+:root, [data-md-color-scheme] {
+  --oa-ground: var(--oa-canvas);
+  --oa-panel: var(--oa-surface-raised);
+  --oa-sunken: var(--oa-surface-sunken);
+  --oa-hairline: var(--oa-border);
+  --oa-hairline-strong: var(--oa-border-strong);
+  --oa-ink: var(--oa-text);
+  --oa-ink-wash: var(--oa-surface);
+  --oa-ink-2: var(--oa-text-muted);
+  --oa-ink-3: var(--oa-text-muted);
+  --oa-accent: var(--oa-link);
+  --oa-accent-hover: var(--oa-link-hover);
+  --oa-accent-bright: var(--oa-link-hover);
+  --oa-link-visited: var(--oa-link-hover);
+  --oa-link-underline: var(--oa-link);
+  --oa-link-visited-underline: var(--oa-link-hover);
+  --oa-focus-ring: var(--oa-focus);
+  --oa-display-font: var(--oa-font-display);
+  --oa-body-font: var(--oa-font-body);
+  --oa-mono-font: var(--oa-font-mono);
+  --md-text-font: var(--oa-font-body);
+  --md-code-font: var(--oa-font-mono);
+  --md-primary-fg-color: var(--oa-surface);
+  --md-primary-fg-color--light: var(--oa-surface-raised);
+  --md-primary-fg-color--dark: var(--oa-surface-sunken);
+  --md-primary-bg-color: var(--oa-text);
+  --md-primary-bg-color--light: var(--oa-text-muted);
+  --md-accent-fg-color: var(--oa-link);
+  --md-typeset-a-color: var(--oa-link);
+  --md-default-bg-color: var(--oa-canvas);
+  --md-default-fg-color: var(--oa-text);
+  --md-default-fg-color--light: var(--oa-text-muted);
+  --md-default-fg-color--lighter: var(--oa-text-muted);
+  --md-footer-bg-color: var(--oa-surface);
+  --md-footer-bg-color--dark: var(--oa-surface-sunken);
+}
+.md-header, [data-md-color-scheme="default"] .md-header { background: var(--oa-header-bg); color: var(--oa-text); }
+[data-md-color-scheme] .md-typeset .md-button--primary { background: var(--oa-action); border-color: var(--oa-action); color: var(--oa-on-action); border-radius: var(--oa-radius-action); }
+[data-md-color-scheme] .md-typeset .md-button--primary:hover { background: var(--oa-action-hover); border-color: var(--oa-action-hover); color: var(--oa-on-action); }
