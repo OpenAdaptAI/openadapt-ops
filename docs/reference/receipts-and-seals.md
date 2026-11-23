@@ -7,12 +7,90 @@ description: >-
 
 # Receipts, Seals, and countersigning
 
-A run that ends `VERIFIED` writes a **receipt**: a summary of what was
-checked, safe to share. OpenAdapt Cloud can sign it, and the signed receipt
-is a **Seal**. `verify-run` writes an **effect receipt** for a write that an
-agent, a script, or a person made. `countersign` adds trusted timestamps,
-field commitments you can reveal one at a time, and a dossier a third party
-can check offline.
+A run that ends `VERIFIED` writes a **signed execution receipt** (or **receipt**):
+a portable summary of what was checked, with no screenshots, typed values, or
+free text, safe to share with auditors, counterparties, or downstream systems.
+OpenAdapt Cloud can add an Ed25519 countersignature (also called a **Seal**) to
+that receipt. `verify-run` writes an **effect receipt** for a write that an
+agent, a script, or a person made. `countersign` adds trusted timestamps, field
+commitments you can reveal one at a time, and a dossier a third party can check
+offline.
+
+## Trust and receipt signing architecture
+
+<figure class="oa-diagram-frame">
+<svg viewBox="0 0 980 260" role="img" aria-labelledby="oa-trust-title oa-trust-desc">
+  <title id="oa-trust-title">Trust boundary and Ed25519 receipt signing architecture</title>
+  <desc id="oa-trust-desc">Inside the customer boundary sit the local runner (screenshots, inputs, credentials, system-of-record read-back) and local signing keys (local computer key and organization key). Only metadata with no screenshots, typed values, or free text crosses the dashed boundary to optional external services (OpenAdapt Cloud countersignature and public timestamp log), and any auditor can verify receipts offline using pinned public keys.</desc>
+  <defs>
+    <marker id="tr-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,1 L9,5 L0,9 z" class="oa-svg-arrow-accent"/>
+    </marker>
+    <marker id="tr-arr-v" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,1 L9,5 L0,9 z" class="oa-svg-arrow-verified"/>
+    </marker>
+  </defs>
+
+  <!-- Customer Boundary (encloses runner + local/org keys) -->
+  <rect x="14" y="16" width="522" height="228" rx="12" class="oa-svg-panel-link"/>
+  <text x="30" y="40" font-size="10" class="oa-svg-accent">INSIDE YOUR BOUNDARY · LOCAL / VPC</text>
+
+  <!-- Runner column -->
+  <rect x="30" y="54" width="234" height="174" rx="10" class="oa-svg-panel"/>
+  <text x="44" y="77" font-size="13.5" class="oa-svg-title">Local runner</text>
+  <text x="44" y="99" font-size="11.5" class="oa-svg-muted">• Screenshots and inputs</text>
+  <text x="44" y="119" font-size="11.5" class="oa-svg-muted">• Optional AES-256-GCM</text>
+  <text x="44" y="139" font-size="11.5" class="oa-svg-muted">• System-of-record read-back</text>
+  <text x="44" y="169" font-size="10.5" class="oa-svg-mono">report.json · receipt.json</text>
+  <text x="44" y="189" font-size="10.5" class="oa-svg-muted">Private openings stay local</text>
+
+  <path d="M264,141 L292,141" class="oa-svg-line-accent" marker-end="url(#tr-arr)"/>
+
+  <!-- Local & Org signers (inside boundary) -->
+  <rect x="298" y="54" width="222" height="174" rx="10" class="oa-svg-panel"/>
+  <text x="312" y="77" font-size="13.5" class="oa-svg-title">Customer signers</text>
+  <text x="312" y="100" font-size="11.5" class="oa-svg-muted">• Local computer key</text>
+  <text x="312" y="120" font-size="11.5" class="oa-svg-muted">• Organization key</text>
+  <text x="312" y="148" font-size="10.5" class="oa-svg-muted">PEM file, OS keychain,</text>
+  <text x="312" y="164" font-size="10.5" class="oa-svg-muted">or PKCS#11 HSM</text>
+  <text x="312" y="196" font-size="10.5" class="oa-svg-mono">openadapt flow local-seal</text>
+
+  <!-- Boundary divider -->
+  <line x1="564" y1="16" x2="564" y2="244" class="oa-svg-line" stroke-dasharray="6 4"/>
+  <path d="M536,141 L612,141" class="oa-svg-line-verified" marker-end="url(#tr-arr-v)"/>
+  <text x="542" y="129" font-size="10" class="oa-svg-muted">digests only</text>
+
+  <!-- External optional services & verification -->
+  <rect x="618" y="20" width="348" height="106" rx="12" class="oa-svg-panel"/>
+  <text x="634" y="44" font-size="10" class="oa-svg-accent">OUTSIDE YOUR BOUNDARY (OPTIONAL)</text>
+  <text x="634" y="65" font-size="13.5" class="oa-svg-title">External countersigners</text>
+  <text x="634" y="86" font-size="11.5" class="oa-svg-muted">• OpenAdapt Cloud countersignature (Seal)</text>
+  <text x="634" y="105" font-size="11.5" class="oa-svg-muted">• Public log / RFC 3161 timestamp (Sigstore)</text>
+
+  <rect x="618" y="140" width="348" height="102" rx="12" class="oa-svg-panel-verified"/>
+  <text x="634" y="164" font-size="10" class="oa-svg-verified-txt">OFFLINE VERIFICATION</text>
+  <text x="634" y="185" font-size="13.5" class="oa-svg-title">Auditor or counterparty</text>
+  <text x="634" y="206" font-size="11.5" class="oa-svg-muted">Pin public keys once; verify offline</text>
+  <text x="634" y="225" font-size="10.5" class="oa-svg-mono">openadapt seal verify report.json</text>
+</svg>
+<figcaption class="oa-diagram-caption">
+  <span><strong>What crosses the boundary:</strong> Recordings, inputs, and local keys stay inside your boundary; receipts hold counts, digests, and check tiers with no screenshots, typed values, or free text.</span>
+  <span><a href="../../security/data-handling/">Data handling &rarr;</a></span>
+</figcaption>
+</figure>
+
+### Signer roles
+
+Every signed receipt identifies who signed it using an explicit signer role. An
+unknown signer role or tampered payload is refused:
+
+| Signer role | What it attests | Where the key lives |
+|---|---|---|
+| Local computer key | Signed on this machine (`openadapt flow local-seal`) | Local runner |
+| Organization key | Signed by your organization's key | PEM file, OS keychain, or PKCS#11 HSM |
+| OpenAdapt Cloud countersignature | Countersigned by OpenAdapt Cloud Execute (Seal) after an independent read | OpenAdapt Cloud (`app.openadapt.ai/api/public/seal-keys`) |
+| Public log / timestamp | Anchored to a timestamp authority (`openadapt flow countersign`) | Sigstore or configured TSA |
+| Demo key | Synthetic tutorial or demo check only; never valid for production | Bundled demo fixture |
 
 ## The run receipt
 

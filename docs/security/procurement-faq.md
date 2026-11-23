@@ -39,12 +39,21 @@ Yes, including fully offline deployments. See
 ## Security and compliance
 
 **Do you have SOC 2?**
-No.
+SOC 2 Type I readiness is underway, covering the Security and
+Confidentiality criteria. As of 2026-11-20, the system description, control
+mapping and security policies are drafted. We don't hold a SOC 2 report yet.
+See [Security assurance](index.md#security-assurance).
 
 **Will you sign a BAA or process patient data in your cloud?**
 The managed cloud runner is for data that isn't regulated. Workflows with
-patient data run inside a boundary you control, where that data stays. A BAA
-is decided per engagement.
+patient data run inside a boundary you control, where that data stays.
+HIPAA readiness is underway, and a BAA is decided per engagement.
+
+**Has OpenAdapt been penetration tested?**
+Internal security testing is underway. The first round of testing of the
+hosted service, on a staging copy, ran on 2026-11-20. An independent penetration
+test is planned. To report a vulnerability, see
+[Vulnerability disclosure](vulnerability-disclosure.md).
 
 **Where does our data live?**
 See [Data handling](data-handling.md).

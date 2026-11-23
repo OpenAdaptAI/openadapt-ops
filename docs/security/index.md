@@ -43,9 +43,9 @@ scope and evidence record. The current phases are:
 
 | Area | Current phase |
 |---|---|
-| SOC 2 | **Readiness underway.** We are updating our control mapping and evidence inventory against the AICPA Trust Services Criteria. Auditor engagement and an issued report are separate milestones. |
-| HIPAA BAA | **Deployment review packet prepared.** Data-flow questions, agreement review notes, and a safeguards checklist are ready for review. The engagement’s data flow, safeguards, and required agreements are reviewed before access to patient data is approved. |
-| Security testing | **Scope and test plan prepared; targeted checks underway.** Initial source and synthetic application-security checks have been recorded. An independent penetration test is a separate planned review. |
+| SOC 2 | **Type I readiness underway**, covering the Security and Confidentiality criteria. As of 2026-11-20, the system description, control mapping and security policies are drafted, and a dated readback of our source-control and CI settings is recorded. We don't hold a SOC 2 report yet. |
+| HIPAA BAA | **Readiness underway; deployment review packet prepared.** Workflows with patient data run inside a boundary you control. Data-flow questions, agreement review notes and a safeguards checklist are ready for each engagement's review. A BAA is decided per engagement. |
+| Security testing | **Internal testing underway.** The first round of testing of the hosted service, on a staging copy, ran on 2026-11-20. An independent penetration test is planned. |
 | Vulnerability disclosure | Private reporting is available. See [Vulnerability disclosure](vulnerability-disclosure.md). |
 | Subprocessors | Hosted services only. See [Subprocessors](subprocessors.md). |
 | Supply chain | GitHub Actions pinned by commit SHA, Dependabot, and checksums plus a software bill of materials on Desktop releases. See [Release integrity](release-integrity.md). |

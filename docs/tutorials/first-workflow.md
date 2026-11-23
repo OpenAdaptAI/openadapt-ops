@@ -16,7 +16,7 @@ last section points to those guides.
 
 You need:
 
-- Python 3.10, 3.11, or 3.12.
+- Python 3.10, 3.11, or 3.12 (`uvx --python 3.12` manages this for you).
 - A test or staging copy of a web application you can sign in to.
 - A short task in it that doesn't save anything, such as opening a test
   record and viewing one field.
