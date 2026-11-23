@@ -205,8 +205,8 @@ with a salt drawn for the run, which stays in the baseline file or
 `share/effect-run.private.json`. Those files are written with mode 0600;
 delete them when you no longer need them.
 
-The effect receipt is unsigned. To check a signed one against keys you
-pinned:
+`verify-run`'s effect receipt is a local check summary rather than a signed
+`record/run/v1` receipt. To check a signed receipt against keys you pinned:
 
 ```bash
 openadapt flow verify-run --check signed.json --keys seal-keys.json
