@@ -141,7 +141,7 @@ uvx --python 3.12 openadapt@latest quickstart
 
 ### Demonstrate the task
 
-Run `openadapt record` on a web page, desktop app, or remote session, or let a cloud AI agent demonstrate the task on test data — once for a simple path, or a few times to cover variations.
+Run `openadapt record` on a web page, desktop app, or remote session (once for a simple path, or a few times with `openadapt compile --induce` to cover variations), or let an AI agent perform the task once while OpenAdapt records it, ideally on test data.
 
 </div>
 
