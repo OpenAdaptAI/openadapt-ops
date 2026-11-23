@@ -270,6 +270,8 @@ nav:
           - Handle a halt: how-to/handle-a-halt.md
           - Answer a halt from a phone: how-to/answer-from-a-phone.md
           - Connect an agent: how-to/connect-an-agent.md
+          - Expose a workflow pack with mcpify: how-to/mcpify.md
+          - Chrome Co-Pilot extension: how-to/chrome-extension.md
           - Install the desktop app: how-to/desktop.md
           - Deploy: how-to/deploy.md
           - Troubleshoot: how-to/troubleshoot.md
@@ -296,6 +298,7 @@ nav:
       - Explanation:
           - How OpenAdapt works: explanation/how-it-works.md
           - How a save is checked: explanation/verification.md
+          - Visual veto and Multi-LoRA runtime: explanation/visual-veto.md
           - Surfaces: explanation/surfaces.md
           - Limits: explanation/limits.md
   - Security & procurement:
