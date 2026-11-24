@@ -23,8 +23,9 @@ With [uv](https://docs.astral.sh/uv/getting-started/installation/) installed:
 uvx --python 3.12 openadapt@latest quickstart
 ```
 
-`uv` downloads Python 3.12 automatically for this command if you don't have it.
-Without `uv`, use Python 3.10, 3.11, or 3.12:
+`uv` downloads Python 3.12 for this command if you don't have it, and
+`openadapt@latest` runs the newest release. Without `uv`, use Python 3.10, 3.11,
+or 3.12:
 
 ```bash
 python -m pip install --upgrade openadapt
@@ -33,7 +34,10 @@ openadapt quickstart
 
 `quickstart` runs both the clean save and the fault case by default (the older
 `--break-it` flag still works as an alias; pass `--no-break` to skip the fault
-case, or `--headless` to hide the browser window).
+case). The browser runs hidden, so nothing takes over your screen, and the
+terminal shows each step as it happens. Add `--watch` to see the browser
+window. At the end the terminal prints a link to your Seal page; add `--open`
+to open it in your browser.
 
 On the first browser step, OpenAdapt asks Playwright to download its Chromium
 build. On a minimal Linux host, run `openadapt doctor --backend web` first. It
