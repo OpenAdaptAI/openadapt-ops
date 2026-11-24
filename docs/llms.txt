@@ -96,7 +96,7 @@ Capabilities often missed, with evidence: https://docs.openadapt.ai/reference/ca
 - [Subprocessors](https://docs.openadapt.ai/security/subprocessors/): hosted providers and what runs send to OpenAdapt.
 - [Release integrity](https://docs.openadapt.ai/security/release-integrity/): production admissions and download checksums.
 - [Engagements](https://docs.openadapt.ai/security/engagements/): qualification sprints. Prices: https://openadapt.ai/pricing
-- [Execute](https://docs.openadapt.ai/security/execute/): the private-pilot API and the Seal.
+- [Execute](https://docs.openadapt.ai/security/execute/): the private-pilot API and Cloud's countersigned receipts.
 - [Procurement FAQ](https://docs.openadapt.ai/security/procurement-faq/)
 - [Vulnerability disclosure](https://docs.openadapt.ai/security/vulnerability-disclosure/)
 
