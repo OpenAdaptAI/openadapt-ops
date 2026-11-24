@@ -10,8 +10,8 @@ description: >-
 Execute lets a software or service provider complete an authorized
 transaction in an application it can't integrate with directly. The
 provider's product decides what to do. OpenAdapt runs the qualified workflow
-on a runner in the customer's environment and returns a signed receipt, the
-Seal.
+on a runner in the customer's environment and returns a receipt that
+OpenAdapt Cloud countersigns.
 
 !!! note "Private pilot"
     Execute is available to approved pilot partners. This page describes the
@@ -63,28 +63,32 @@ policy, or reuse an authorization for other inputs.
 
 Only `verified` is business success.
 
-## The Seal
+<span id="the-seal"></span>
 
-The Seal is an `ExecuteEvidenceReceiptV1` signed by OpenAdapt Cloud. It names
+## The countersigned receipt
+
+Cloud's countersignature is an `ExecuteEvidenceReceiptV1` signed by
+OpenAdapt Cloud. It names
 the execution, the exact workflow version and digest, the qualification, the
 environment and runner, the outcome, the check level that confirmed the
 save, whether delivery was uncertain, and a digest of the evidence. Only a
 check level of 2 (the system of record) or 3 (a counterparty artifact) can
-back one.
+back it.
 
 A local run that ends `VERIFIED` is still reported as done, with
-`"proof": "local"`, to an agent; a Seal is not required for that. To attach
-Cloud's Seal to a local run, pass `--cloud-execution-id`. How to get, check,
-timestamp, and countersign a Seal is in
-[Receipts, Seals, and countersigning](../reference/receipts-and-seals.md).
+`"proof": "local"`, to an agent; Cloud's countersignature is not required
+for that. To add it to a local run, pass `--cloud-execution-id`. How to get,
+check, timestamp, and countersign a receipt is in
+[Receipts](../reference/receipts.md).
 
-Anyone with the receipt can check the Seal online or offline. See
-[Check a Seal online](../cloud/verify-a-seal.md). To be told when an execution
+Anyone with the receipt can check it online or offline. See
+[Check a receipt online](../cloud/verify-a-receipt.md). To be told when an execution
 stops before any save, subscribe an endpoint to `execution.halted`; see
 [Get told when a run stops](../cloud/stop-alerts.md#the-executionhalted-webhook).
 
-`openadapt flow seal` is a different command: it encrypts a bundle for
-deployment and doesn't issue a Seal.
+`openadapt flow encrypt` is a different command: it encrypts a bundle for
+deployment and doesn't write a receipt. `openadapt flow seal` is its older
+name.
 
 ## Try the contract locally
 

@@ -15,7 +15,7 @@ such as patient details.
 | Recording (`rec/`) | `record`, `demo-record` | `events.jsonl` (each step and who did it), `meta.json`, screenshots in `frames/` | Yes. Screenshots and typed values. Passwords and secret fields are never saved. |
 | Bundle (`bundle/`) | `compile`, `induce`, `for-each`, `compose` | `workflow.json` or `workflow.json.enc`, target crops under `templates/`, and a manifest with a digest of every file | Yes. Crops and recorded default values. |
 | Run directory (`runs/<run>/`) | `run`, `replay`, `resume` | `report.json`, `REPORT.md`, step screenshots, `checkpoints/` for durable runs, `pending_escalation.json` when paused | Yes. `report.json` keeps literal identifiers on purpose, as the audit trail. |
-| `receipt.json` and `receipt.png` | A `VERIFIED` run | A summary safe to share | No. Counts and digests only. |
+| `receipt.json`, `receipt.card.json`, `receipt.private.json` | Every run | The signed receipt, its public version, and the salts and values behind its commitments | `receipt.private.json` does. The other two hold counts, digests, and commitments only. |
 | Qualification folder | `qualify` | Per-trial run reports, `qualification/result.json`, `QUALIFICATION.md` | Yes, when run against real records. |
 
 Treat recordings, bundles, and run directories as protected data and limit
@@ -31,11 +31,17 @@ number of model calls, and whether screenshots could have left the computer.
 `REPORT.md` is the same information to read. `openadapt flow explain` turns
 it into a short account with the next command to run.
 
-## The receipt and the Seal
+<span id="the-receipt-and-the-seal"></span>
 
-A `VERIFIED` run writes `receipt.json` (schema `openadapt.run-receipt/v2`)
-and `receipt.png`: counts, digests, and versions, no record values. A run
-tracked by Cloud Execute can also carry Cloud's signature on it, the Seal, in
-`report.json` as `execute_receipt`. See
-[Receipts, Seals, and countersigning](receipts-and-seals.md).
+## The receipt
+
+A run writes a receipt: a signed, itemized record of what it changed, how
+each change was checked, and who signed it. It holds counts, digests, and
+versions, no record values. A run tracked by Cloud Execute can also carry
+Cloud's countersignature. The receipt is `receipt.json`, its private
+openings are `receipt.private.json`, and its public version is
+`receipt.card.json`. The run summary that older releases wrote as
+`receipt.json` (schema `openadapt.run-receipt/v2`) is now
+`run-summary.json`. Older Seal files (`seal.json`, `public-seal.json`) still
+verify. See [Receipts](receipts.md).
 

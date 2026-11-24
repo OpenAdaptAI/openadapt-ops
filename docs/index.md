@@ -243,7 +243,7 @@ Recordings, credentials, and typed values stay on the runner you control. Local 
 
 ### Go deeper
 
-[How the compiler works](explanation/how-it-works.md#a-program-not-a-model-in-a-loop) · [How a save is checked](explanation/verification.md) · [Receipts and signing](reference/receipts-and-seals.md) · [Data handling](security/data-handling.md) · [Release integrity](security/release-integrity.md) · [Packages](reference/packages.md) · [Versions and compatibility](reference/compatibility.md) · [Validated systems and limits](explanation/limits.md)
+[How the compiler works](explanation/how-it-works.md#a-program-not-a-model-in-a-loop) · [How a save is checked](explanation/verification.md) · [Receipts and signing](reference/receipts.md) · [Data handling](security/data-handling.md) · [Release integrity](security/release-integrity.md) · [Packages](reference/packages.md) · [Versions and compatibility](reference/compatibility.md) · [Validated systems and limits](explanation/limits.md)
 
 </div>
 

@@ -29,7 +29,7 @@ parentheses.
 :   The folder a compile writes: the program (`workflow.json`, or
     `workflow.json.enc` when encrypted), screen crops it uses to find
     targets, and a manifest with a digest of every file. The docs also call
-    it the program. `openadapt flow seal` writes an encrypted copy.
+    it the program. `openadapt flow encrypt` writes an encrypted copy.
 
 <span id="canary"></span>**Canary**
 :   The first few runs of a repaired program after it's activated. Any wrong
@@ -89,9 +89,10 @@ parentheses.
     environment.
 
 <span id="receipt"></span>**Receipt**
-:   A small JSON summary of a `VERIFIED` run that's safe to share. It holds
-    counts and digests, not record values (`receipt.json`). Only `VERIFIED`
-    runs get one.
+:   A signed, itemized record of one run: what it changed, how each change
+    was checked, and who signed it. It doesn't grade the run. It holds counts
+    and digests, not record values. Check one with `openadapt verify`. See
+    [Receipts](receipts.md).
 
 <span id="reconciliation"></span>**Reconciliation**
 :   A person checking the record after a run ended
@@ -121,8 +122,8 @@ parentheses.
     calls.
 
 <span id="seal"></span>**Seal**
-:   OpenAdapt Cloud's signature on the receipt of a run that Cloud Execute
-    tracked. Anyone can check it offline with `openadapt seal verify`.
+:   The earlier name for a [receipt](#receipt). Older Seal files still
+    verify with `openadapt verify`.
 
 <span id="surface"></span>**Surface**
 :   Where a program acts: a browser tab, a Windows, macOS, or Linux app
