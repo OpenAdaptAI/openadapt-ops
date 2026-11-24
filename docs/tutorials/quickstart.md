@@ -32,11 +32,12 @@ python -m pip install --upgrade openadapt
 openadapt quickstart
 ```
 
-`quickstart` runs both the clean save and the fault case by default (pass
-`--no-break` to skip the fault case). The browser runs hidden, so nothing takes
-over your screen, and the terminal shows each step as it happens. Add `--watch`
-to see the browser window. At the end the terminal prints a link to your Seal
-page; add `--open` to open it in your browser.
+`quickstart` runs both the clean save and the fault case by default (the older
+`--break-it` flag still works as an alias; pass `--no-break` to skip the fault
+case). The browser runs hidden, so nothing takes over your screen, and the
+terminal shows each step as it happens. Add `--watch` to see the browser
+window. At the end the terminal prints a link to your Seal page; add `--open`
+to open it in your browser.
 
 On the first browser step, OpenAdapt asks Playwright to download its Chromium
 build. On a minimal Linux host, run `openadapt doctor --backend web` first. It
