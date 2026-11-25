@@ -1,7 +1,7 @@
 # What's New
 
 > *Pull requests merged in the last 7 days across the OpenAdapt repositories, grouped by the release that contains them.*
-> *Last updated: 2026-11-25 02:21 UTC*
+> *Last updated: 2026-11-25 04:09 UTC*
 
 Items under **Merged, not released yet** are on a repository's `main` branch only. They are not in any published package or installer yet.
 
@@ -18,11 +18,6 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 - [fix(flow): fail closed on crashed rechecks, shared secret-field names, refuse forged --check (fix-forward #2438)](https://github.com/OpenAdaptAI/OpenAdapt/pull/2635) (#2635), merged 2026-11-24
 - [fix(extension): camelCase-aware secret field names in every redaction layer (fix-forward for #2575)](https://github.com/OpenAdaptAI/OpenAdapt/pull/2621) (#2621), merged 2026-11-24
 - [fix(flow): green main after #2594 and re-trigger the types and verify publish](https://github.com/OpenAdaptAI/OpenAdapt/pull/2616) (#2616), merged 2026-11-24
-- [fix(tests): join _person helper threads in test_second_factor_terminal.py](https://github.com/OpenAdaptAI/OpenAdapt/pull/2614) (#2614), merged 2026-11-24
-- [feat(flow): add blinded commit prosecutor and online adaptive conformal triage](https://github.com/OpenAdaptAI/OpenAdapt/pull/2613) (#2613), merged 2026-11-24
-- [feat(wrap): add LTL_f DirtyBufferMonitor and SSA SsaIdentifierGuard](https://github.com/OpenAdaptAI/OpenAdapt/pull/2612) (#2612), merged 2026-11-24
-- [feat(wrap): add origin capability firewall and physical hit-test delta oracle](https://github.com/OpenAdaptAI/OpenAdapt/pull/2611) (#2611), merged 2026-11-24
-- [release(flow,agent)!: cut openadapt-flow 4.0.0 and openadapt-agent 2.2.4 (<5)](https://github.com/OpenAdaptAI/OpenAdapt/pull/2609) (#2609), merged 2026-11-24
 
 ### Released in openadapt-agent 2.2.4
 
@@ -40,5 +35,10 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 
 ### Merged, not released yet
 
+- [chore(release): record published openadapt 1.24.0 in platform-manifest.json](https://github.com/OpenAdaptAI/OpenAdapt/pull/2654) (#2654), merged 2026-11-25
+- [feat(desktop): add local Before/After step screenshot preview to WatchRun](https://github.com/OpenAdaptAI/OpenAdapt/pull/2653) (#2653), merged 2026-11-25
+- [feat(desktop): redesign desktop app UI for modern native-grade clarity and polish](https://github.com/OpenAdaptAI/OpenAdapt/pull/2651) (#2651), merged 2026-11-25
+- [feat(types,verify,flow): add first-class agent_used and verifier_adapter receipt fields](https://github.com/OpenAdaptAI/OpenAdapt/pull/2650) (#2650), merged 2026-11-25, openadapt-types
+- [test(desktop): fail closed when the bundled Flow is required but not installed](https://github.com/OpenAdaptAI/OpenAdapt/pull/2646) (#2646), merged 2026-11-25
 - [fix(seal-view): reject null and missing evidence_scope fields that Python rejects (follow-up #2643)](https://github.com/OpenAdaptAI/OpenAdapt/pull/2644) (#2644), merged 2026-11-24, openadapt-types
 

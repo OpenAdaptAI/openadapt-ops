@@ -9,12 +9,12 @@
   Requirements
 - **[openadapt-flow-v4.0.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-flow-v4.0.0)** (2026-11-25)
   Breaking Changes
+- **[openadapt-desktop-v0.35.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-desktop-v0.35.0)** (2026-11-25)
+  OpenAdapt Desktop 0.35.0: the PyPI package and the native installers.
 - **[openadapt-desktop-v0.33.1](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-desktop-v0.33.1)** (2026-11-25)
   OpenAdapt Desktop 0.33.1: the PyPI package and the native installers.
 - **[openadapt-agent-v2.2.4](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-agent-v2.2.4)** (2026-11-25)
   - Accept `openadapt-flow` 4.x (`openadapt-flow[vision]>=2.2.0,<5` and
-- **[openadapt-verify-v0.2.1](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-verify-v0.2.1)** (2026-11-24)
-  Published after [#2589](https://github.com/OpenAdaptAI/OpenAdapt/pull/2589),
 
 ## openadapt-flow
 
@@ -64,6 +64,8 @@
 - **[v0.97.0](https://github.com/OpenAdaptAI/openadapt-evals/releases/tag/v0.97.0)** (2026-09-03)
   What's Changed
 - **[v0.96.1](https://github.com/OpenAdaptAI/openadapt-evals/releases/tag/v0.96.1)** (2026-09-02)
+  What's Changed
+- **[v0.96.0](https://github.com/OpenAdaptAI/openadapt-evals/releases/tag/v0.96.0)** (2026-09-01)
   What's Changed
 
 ## openadapt-capture
