@@ -16,9 +16,11 @@ There are two halves:
 
 - The **program** says what must be true after each save, for example
   "one new triage note for this patient".
-- The **deployment** says where to read it: a REST or FHIR API, a read-only
-  SQL query, a file drop, or a separate signed-in browser session. This lives
-  in the `effects:` section of a deployment file and never in the program.
+- The **deployment** says where to read it: a fresh page reload in the same UI
+  session (`fresh_reload`), an optional separate signed-in browser session
+  (`ui_readback`), or a direct system-of-record read (REST, FHIR, read-only
+  SQL, or a file drop). This lives in the `effects:` section of a deployment
+  file and never in the program.
 
 ## 1. Draft the check from the recording
 
@@ -62,15 +64,29 @@ openadapt flow run bundle --effects-kind rest --effects-base-url https://app.exa
 | Where the record is read | How | Strength |
 |---|---|---|
 | The system's API, database, or files: REST, GraphQL, FHIR, read-only SQL, a file or report drop, an email capture folder, a document store | `effects.kind` `rest`, `graphql`, `fhir`, `sql`, `file`, `document`, `email`, `document-hash` | Strongest. Reads the system of record directly. |
-| The app's own record page, opened by id in a separate, freshly signed-in, read-only browser session | `effects.kind: ui_readback` | Independent of the session that typed, though still read from a rendered page |
-| The acting session clears what the screen remembers, opens the record again, and reads it | A check you show by demonstration | Can stop a run; never makes one `VERIFIED` on its own |
-| The screen the run worked on | `effects.kind: onscreen` | Weakest. Provides a consistency signal and does not prove a save persisted. |
+| The app's own record page, opened by id in an optional separate, freshly signed-in, read-only browser session | `effects.kind: ui_readback` | Independent of the session that typed, though still read from a rendered page |
+| Fresh page reload in the same UI session (reloads the record from the server after saving) | `fresh_reload` (same-session reload or demonstrated reopen check) | Default when no API or separate login is needed; reaches Level 3 `VERIFIED` outside regulated policy |
+| The screen the run worked on (no reload) | `effects.kind: onscreen` | Weakest. Provides a consistency signal and does not prove a save persisted. |
 
 [How a save is checked](../explanation/verification.md#how-strong-a-read-back-is)
 maps each one to what it can reach: `VERIFIED`, certification, and Cloud's countersignature.
 When the deployment can read more than one way, list them under
 `effects.candidates` instead of `effects.kind`; Flow uses the strongest one
 for each save.
+
+### Reload the record page in the same session
+
+Most web workflows verify right inside the same UI session without a separate
+login or API integration. After the save completes, OpenAdapt performs a
+**fresh page reload** (`fresh_reload`), discarding client-side form memory and
+reading the record back from the server's rendered response.
+
+- No second account, API token, or database credential is required.
+- A confirmed `fresh_reload` read-back reaches Level 3 `VERIFIED` outside the
+  `regulated` policy and writes a signed receipt recording the `fresh_reload`
+  read-back basis.
+- If the reloaded page omits the saved field or shows a different record, the
+  run stops with `RECONCILIATION_REQUIRED` and refuses a blind retry.
 
 ### Read the record page in a separate session
 

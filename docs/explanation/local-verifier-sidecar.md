@@ -13,15 +13,15 @@ access to your agent's weights**.
 You never fine-tune, patch, or host your agent's model to use OpenAdapt.
 OpenAdapt sits outside the agent as a wrapper or local tool server. When visual
 verification or prompt-injection screening is enabled, OpenAdapt's open-source
-LoRA adapters (`Veto-4B-r5`, `taint-guard`) run solely on OpenAdapt's own local
-4B verifier sidecar (~3.13 GB VRAM) on your host.
+LoRA adapters ([`Veto-4B-r6`](https://huggingface.co/OpenAdapt/openadapt-veto-4b-r6), `taint-guard`) run solely on OpenAdapt's own local
+4B verifier sidecar (~3.15 GB VRAM) on your host.
 
 ## Architecture boundary
 
 <figure class="oa-diagram-frame">
 <svg viewBox="0 0 980 230" role="img" aria-labelledby="oa-sidecar-title oa-sidecar-desc">
   <title id="oa-sidecar-title">Black-box agent wrapping and local 4B verifier sidecar</title>
-  <desc id="oa-sidecar-desc">Any frontier or open-source agent calls OpenAdapt over MCP or openadapt wrap with zero access to agent weights. The local OpenAdapt wrapper executes compiled workflows with zero model calls, then checks outcomes via deterministic system-of-record read-back alongside an optional local 4B verifier sidecar running Veto-4B-r5 and taint-guard LoRAs in 3.13 GB VRAM with zero screenshot egress.</desc>
+  <desc id="oa-sidecar-desc">Any frontier or open-source agent calls OpenAdapt over MCP or openadapt wrap with zero access to agent weights. The local OpenAdapt wrapper executes compiled workflows with zero model calls, then checks outcomes via deterministic read-back (fresh page reload, separate UI session, or system-of-record API/SQL/FHIR) alongside an optional local 4B verifier sidecar running Veto-4B-r6 and taint-guard LoRAs in 3.15 GB VRAM with zero screenshot egress.</desc>
   <defs>
     <marker id="sc-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
       <path d="M0,1 L9,5 L0,9 z" class="oa-svg-arrow-accent"/>
@@ -61,14 +61,14 @@ LoRA adapters (`Veto-4B-r5`, `taint-guard`) run solely on OpenAdapt's own local
     <circle cx="948" cy="38" r="4" class="oa-svg-gate-dot oa-svg-gate-dot--verified"/>
     <text x="678" y="44" font-size="10" class="oa-svg-verified-txt">PRIMARY PROOF</text>
     <text x="678" y="66" font-size="13.5" class="oa-svg-title">Deterministic read-back</text>
-    <text x="678" y="88" font-size="11" class="oa-svg-muted">System-of-record API, SQL, FHIR + receipt</text>
+    <text x="678" y="88" font-size="11" class="oa-svg-muted">Fresh reload, API, SQL, FHIR + receipt</text>
   </g>
 
   <g class="oa-svg-node">
     <rect x="662" y="122" width="304" height="90" rx="12" class="oa-svg-panel"/>
-    <text x="678" y="146" font-size="10" class="oa-svg-accent">OPTIONAL LOCAL SIDECAR · ~3.13 GB VRAM</text>
+    <text x="678" y="146" font-size="10" class="oa-svg-accent">OPTIONAL LOCAL SIDECAR · ~3.15 GB VRAM</text>
     <text x="678" y="168" font-size="13.5" class="oa-svg-title">4B verifier sidecar</text>
-    <text x="678" y="190" font-size="11" class="oa-svg-muted">Veto-4B-r5 + taint-guard LoRAs (local only)</text>
+    <text x="678" y="190" font-size="11" class="oa-svg-muted">Veto-4B-r6 + taint-guard LoRAs (local only)</text>
   </g>
 </svg>
 <figcaption class="oa-diagram-caption">
@@ -83,7 +83,7 @@ LoRA adapters (`Veto-4B-r5`, `taint-guard`) run solely on OpenAdapt's own local
 |---|---|---|---|
 | **Your agent** | Cloud API or your own host | Yes (owned by you or the vendor) | Decides which task to run and supplies inputs |
 | **OpenAdapt wrapper and compiled tool** | Local host (`openadapt wrap` or `openadapt agent serve`) | **No** | Executes compiled workflows at 0 model calls and checks outcomes via deterministic read-back |
-| **Local 4B verifier sidecar** *(optional)* | Local host (~3.13 GB VRAM) | **No** | Runs OpenAdapt's open-source LoRA adapters (`Veto-4B-r5`, `taint-guard`) on local screenshots with zero screenshot egress |
+| **Local 4B verifier sidecar** *(optional)* | Local host (~3.15 GB VRAM) | **No** | Runs OpenAdapt's open-source LoRA adapters ([`Veto-4B-r6`](https://huggingface.co/OpenAdapt/openadapt-veto-4b-r6), `taint-guard`) on local screenshots with zero screenshot egress |
 
 ## Why the verifier runs as a separate sidecar
 
@@ -94,9 +94,9 @@ LoRA adapters (`Veto-4B-r5`, `taint-guard`) run solely on OpenAdapt's own local
 2. **No screenshot egress.** When pixel-level checks are needed (for example on
    Windows RDP, Citrix, or legacy desktop apps), screenshots stay on the local
    machine and are inspected by the 4B sidecar instead of leaving your network.
-3. **Fast adapter switching.** Because the base 4B model stays loaded in ~3.13
+3. **Fast adapter switching.** Because the base 4B model stays loaded in ~3.15
    GB VRAM, OpenAdapt can swap between small task-specific LoRA adapters
-   (`Veto-4B-r5` for state verification, `taint-guard` for prompt-injection
+   ([`Veto-4B-r6`](https://huggingface.co/OpenAdapt/openadapt-veto-4b-r6) for state verification, `taint-guard` for prompt-injection
    detection) without reloading the base model or touching the calling agent.
 
 ## Related guides

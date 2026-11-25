@@ -16,7 +16,7 @@ prove what was stored, so it isn't used as proof. A record check returns `confir
 <figure class="oa-diagram-frame">
 <svg viewBox="0 0 980 390" role="img" aria-labelledby="oa-ver-title oa-ver-desc">
   <title id="oa-ver-title">How OpenAdapt checks a save at the commit boundary</title>
-  <desc id="oa-ver-desc">On the acting surface, OpenAdapt first performs a right-record check and captures a baseline. If the wrong record or an unexpected screen appears, the run stops before saving with HALTED_BEFORE_EFFECT and nothing is written. Otherwise it enters and saves, then reads the record back either independently from the system of record (Tier 1: REST, GraphQL, FHIR, SQL, or file export) or from a separate signed-in UI session (Tier 2: ui_readback). The acting screen alone never confirms a save. If the read matches, the run ends VERIFIED with a signed Ed25519 receipt (OpenAdapt Cloud countersigns only after a Tier 1 independent read). If the read disagrees or cannot tell, the run ends RECONCILIATION_REQUIRED and the ledger blocks blind retries until a person checks the record.</desc>
+  <desc id="oa-ver-desc">On the acting surface, OpenAdapt first performs a right-record check and captures a baseline. If the wrong record or an unexpected screen appears, the run stops before saving with HALTED_BEFORE_EFFECT and nothing is written. Otherwise it enters and saves, then reads the record back via a fresh page reload in the same UI session (fresh_reload), an optional separate signed-in UI session (ui_readback), or directly from the system of record (Tier 1: REST, GraphQL, FHIR, SQL, or file export). An un-reloaded acting screen toast alone never confirms a save. If the read matches, the run ends VERIFIED with a signed Ed25519 receipt (OpenAdapt Cloud countersigns only after a Tier 1 independent read). If the read disagrees or cannot tell, the run ends RECONCILIATION_REQUIRED and the ledger blocks blind retries until a person checks the record.</desc>
   <defs>
     <marker id="ver-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
       <path d="M0,1 L9,5 L0,9 z" class="oa-svg-arrow-accent"/>
@@ -73,13 +73,13 @@ prove what was stored, so it isn't used as proof. A record check returns `confir
     <text x="406" y="118" font-size="10" class="oa-svg-mono">independent_readback</text>
   </g>
 
-  <!-- Step 3: Tier 2 Separate Session UI Read-Back -->
+  <!-- Step 3: UI Read-Back (Fresh Reload or Separate Session) -->
   <g class="oa-svg-node">
     <rect x="390" y="144" width="276" height="108" rx="12" class="oa-svg-panel"/>
-    <text x="406" y="168" font-size="10" class="oa-svg-accent">3B · TIER 2 SEPARATE SESSION</text>
-    <text x="406" y="190" font-size="14" class="oa-svg-title">Separate UI read-back</text>
-    <text x="406" y="211" font-size="11.5" class="oa-svg-muted">Fresh read-only session (ui_readback)</text>
-    <text x="406" y="229" font-size="11" class="oa-svg-muted">Ends VERIFIED outside regulated policy</text>
+    <text x="406" y="168" font-size="10" class="oa-svg-accent">3B · UI READ-BACK</text>
+    <text x="406" y="190" font-size="14" class="oa-svg-title">Fresh reload or separate UI</text>
+    <text x="406" y="211" font-size="11.5" class="oa-svg-muted">Same-session fresh reload (fresh_reload)</text>
+    <text x="406" y="229" font-size="11" class="oa-svg-muted">or optional separate session (ui_readback)</text>
   </g>
 
   <!-- Connectors to Outcomes -->
@@ -157,16 +157,20 @@ Flow uses. -->
 | Read-back | How you set it up | Flow tier | Grade | Ends `VERIFIED` | Certifies through qualification | Cloud check level |
 |---|---|---|---|---|---|---|
 | The system of record, through its API, database, or files | `effects.kind` `rest`, `graphql`, `fhir`, `sql`, `file`, `document`, `email`, or `document-hash` | 1, `independent_system` | `independent_readback` | Yes | Yes | 2 |
-| The app's record page, in a separate, read-only, freshly signed-in session | `effects.kind: ui_readback` | 2, `independent_session` | `screen_readback` | Yes, except under the `regulated` policy | No | 1 |
-| The acting session clears what the screen remembers, reopens the record, and reads it | A check shown by demonstration; see [Show how you'd check the save](../how-to/record-checks.md#show-how-youd-check-the-save) | 3, `persisted_state_reacquisition` | `screen_readback` | No | No | 0 |
-| The screen that did the work still shows the value | `effects.kind: onscreen` | 4, `immediate_screen` | `screen_readback` | No | No | 0 |
+| The app's record page, in an optional separate, read-only, freshly signed-in session | `effects.kind: ui_readback` | 2, `independent_session` | `screen_readback` | Yes, except under the `regulated` policy | No | 1 |
+| Fresh page reload in the same UI session (clears client state, reloads the record from the server, and reads it back) | `fresh_reload` (default for web workflows without an API); see [Reload the record page in the same session](../how-to/record-checks.md#reload-the-record-page-in-the-same-session) | 3, `persisted_state_reacquisition` | `fresh_reload` | Yes (Level 3 `VERIFIED` outside the `regulated` policy) | No | 0 |
+| The screen that did the work still shows the value (no reload) | `effects.kind: onscreen` | 4, `immediate_screen` | `screen_readback` | No | No | 0 |
 | No read-back | | | `unchecked` | No | No | |
 
-A tier-2 read is independent of the session that acted, but it still reads
-the app's screens, so it can't tell a record the app stored from one it only
-displays. Tiers 3 and 4 read the acting session's screen; they can stop a
-run, but never make one `VERIFIED`. Cloud check level 3 is a counterparty
-artifact, such as a payer status, which Flow doesn't read.
+Most web workflows verify right inside the same UI session via `fresh_reload`
+(a fresh page reload that discards client-side form state and reads the
+persisted record back from the server), reaching Level 3 `VERIFIED` without
+requiring a second login or API credentials. When an application exposes an
+API, database, or file export (Tier 1), or when you want an isolated read-only
+browser session (Tier 2 `ui_readback`), configure that path for stronger
+independence. An un-reloaded `onscreen` check (Tier 4) can stop a run, though
+it never makes one `VERIFIED`. Cloud check level 3 is a counterparty artifact,
+such as a payer status, which Flow doesn't read.
 
 A run's receipt records the weakest read among its saves as
 `effect_tier_reached` and its grade as `effect_assurance`. See
