@@ -13,7 +13,7 @@ site. It also contains operations runbooks and a history-scrubbing CLI.
 > `docs.openadapt.ai`. `OpenAdapt/docs`, `OpenAdapt/mkdocs.yml`, and
 > `openadapt-gitbook` are noncanonical historical trees and must not deploy to
 > the production docs domain. See
-> [`docs/reference/documentation-governance.md`](docs/reference/documentation-governance.md).
+> [`docs/reference/packages.md`](docs/reference/packages.md).
 
 ## OpenAdapt
 
@@ -98,5 +98,5 @@ Add an entry to `repos.yml`. No code changes are needed.
 - Live documentation: [docs.openadapt.ai](https://docs.openadapt.ai)
 - Flagship repository:
   [github.com/OpenAdaptAI/OpenAdapt](https://github.com/OpenAdaptAI/OpenAdapt)
-- Documentation governance:
-  [`docs/reference/documentation-governance.md`](docs/reference/documentation-governance.md)
+- Package reference:
+  [`docs/reference/packages.md`](docs/reference/packages.md)
