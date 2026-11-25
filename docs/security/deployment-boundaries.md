@@ -105,7 +105,7 @@ to OpenAdapt.
 </svg>
 <figcaption class="oa-diagram-caption">
   <span><strong>Trust boundaries:</strong> Regulated values, screenshots, and credentials never leave customer-controlled infrastructure.</span>
-  <span><a href="../data-boundaries/">Data boundaries &rarr;</a></span>
+  <span><a href="../data-handling/">Data handling &rarr;</a></span>
 </figcaption>
 </figure>
 
