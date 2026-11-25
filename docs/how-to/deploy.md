@@ -12,7 +12,7 @@ commit-boundary checks and signed Ed25519 receipts.
 
 | Execution mode | Where the runner lives | Use it when |
 |---|---|---|
-| **Local + 4B sidecar** | Your laptop, workstation, or offline VPC (`openadapt wrap` + optional `Veto-4B-r5` ~3.13 GB VRAM sidecar) | Building workflows, local agent wrapping, or regulated / air-gapped data |
+| **Local + 4B sidecar** | Your laptop, workstation, or offline VPC (`openadapt wrap` + optional [`Veto-4B-r6`](https://huggingface.co/OpenAdapt/openadapt-veto-4b-r6) ~3.15 GB VRAM sidecar) | Building workflows, local agent wrapping, or regulated / air-gapped data |
 | **OpenAdapt Hosted & BYOC Connector** | Managed web runner (`$0.05/verified run` PAYG, `$79/mo` Builder, `$499/mo` Team) or `openadapt connect` / `openadapt-flow connector` on your own machine | Shared workspaces, fleet receipts, phone approvals, and managed public web runs |
 | **Bring Your Own Sandbox** | Browserbase, E2B, Daytona, or Browser Use connected via `--cdp-url` + `OPENADAPT_CLOUD_KEY` | You already run cloud browser sandboxes and want commit-boundary verification + receipts |
 

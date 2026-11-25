@@ -16,7 +16,7 @@ The server runs over local stdio on the computer that can open the app. It
 needs Python 3.11 or 3.12 (`uvx --python 3.12` handles this automatically).
 OpenAdapt treats your agent as a black box with zero access to its weights; see
 [Black-box agent wrapping and the local 4B verifier sidecar](../explanation/local-verifier-sidecar.md)
-for how the optional local 4B verifier sidecar (`Veto-4B-r5`, `taint-guard`)
+for how the optional local 4B verifier sidecar ([`Veto-4B-r6`](https://huggingface.co/OpenAdapt/openadapt-veto-4b-r6), `taint-guard`)
 stays completely separate from your calling agent. If your agent runs in
 Browserbase, Browser Use, E2B, Daytona, or a private VPC, see
 [Verify agents in cloud sandboxes and private VPCs](verify-cloud-sandboxes.md).
