@@ -15,10 +15,13 @@ connect it to [OpenAdapt Cloud](deploy.md#openadapt-cloud).
 
 Get the installer from [openadapt.ai/download](https://openadapt.ai/download).
 The page detects your operating system and offers the right build. The
-current build is the GitHub pre-release `desktop-v0.15.0`. It includes
-openadapt-flow 1.27.1. Its sidebar has **Workflows**, **Record**, **Runner**,
-**Phone**, and **Settings**. **Runner** runs workflows that OpenAdapt Cloud sends
-to this computer; it's off until you turn it on.
+current GitHub pre-release is `openadapt-desktop-v0.35.0`, built on the
+redesigned Linear/Raycast-inspired interface with the official OpenAdapt mark
+and bundling `openadapt-flow` 4.0.0. Its sidebar has **Workflows**, **Record**,
+**Watch Run** (with local Before/After step screenshot previews and a
+blur/privacy toggle), **Runner**, **Phone**, and **Settings**. **Runner** runs
+workflows that OpenAdapt Cloud sends to this computer; it's off until you turn
+it on.
 
 | Operating system | Installer |
 |---|---|
@@ -75,9 +78,10 @@ app. [Troubleshoot](troubleshoot.md) covers other first-week problems.
 
 ## Approving saves
 
-`desktop-v0.15.0` predates per-save approval, so its runs don't pause before
-a save. In the next Desktop build, when a run waits before a save, Desktop
-shows the filled form. You approve it to save exactly what you see, or decline
-with a reason. Until then, answer waiting saves from `openadapt flow` runs
-with `openadapt flow item-approval`; see
+When a run waits before a save, OpenAdapt Desktop shows the filled form and
+local Before/After step screenshot previews (with a one-click blur/privacy
+toggle in **Watch Run**). Approve to save exactly what you see, or decline
+with a reason. On macOS, approvals can be signed with a key held behind Touch
+ID so Flow never sees the raw key. For CLI runs, answer waiting saves with
+`openadapt flow item-approval`; see
 [Run a workflow](run.md#3-choose-how-saves-are-approved).

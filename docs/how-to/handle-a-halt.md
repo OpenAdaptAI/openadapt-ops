@@ -83,18 +83,104 @@ or approve its own candidate.
 A repaired bundle never replaces the running one just because it exists.
 It goes through a fixed sequence, and no step can be skipped:
 
-```mermaid
-flowchart LR
-  C[Candidate] --> R[Diff reviewed by a person]
-  R --> P[Replay campaign passes]
-  P --> F[Fault campaign passes]
-  F --> A[Approved by a person]
-  A --> S[Staged by hash]
-  S --> K[Canary: first runs checked]
-  K --> V[Active]
-  K -. regression .-> S
-  V -. rollback .-> B[Prior version restored]
-```
+<figure class="oa-diagram-frame">
+<svg viewBox="0 0 980 265" role="img" aria-labelledby="oa-rep-title oa-rep-desc">
+  <title id="oa-rep-title">Governed repair promotion pipeline</title>
+  <desc id="oa-rep-desc">A candidate repair moves strictly through human diff review, replay campaign, fault campaign, human approval, hash-pinned staging, canary verification, and active status. Any canary regression reverts to staged, and active rollback restores the prior version.</desc>
+  <defs>
+    <marker id="rep-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto">
+      <path d="M0,1 L9,5 L0,9 z" class="oa-svg-arrow-accent"/>
+    </marker>
+    <marker id="rep-arr-v" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto">
+      <path d="M0,1 L9,5 L0,9 z" class="oa-svg-arrow-verified"/>
+    </marker>
+    <marker id="rep-arr-w" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto">
+      <path d="M0,1 L9,5 L0,9 z" class="oa-svg-arrow-warn"/>
+    </marker>
+  </defs>
+
+  <!-- Row 1: Candidate -> Review -> Replay -> Fault -->
+  <g class="oa-svg-node">
+    <rect x="14" y="20" width="206" height="66" rx="10" class="oa-svg-panel"/>
+    <text x="28" y="42" font-size="9.5" class="oa-svg-accent">01 · REGISTER</text>
+    <text x="28" y="61" font-size="13" class="oa-svg-title">Candidate bundle</text>
+    <text x="28" y="76" font-size="10" class="oa-svg-muted">Weakened checks refused</text>
+  </g>
+  <path d="M220,53 L262,53" class="oa-svg-line-accent oa-svg-flow" marker-end="url(#rep-arr)"/>
+
+  <g class="oa-svg-node">
+    <rect x="268" y="20" width="206" height="66" rx="10" class="oa-svg-panel-warn"/>
+    <circle cx="458" cy="34" r="3.5" class="oa-svg-gate-dot oa-svg-dot-warn"/>
+    <text x="282" y="42" font-size="9.5" class="oa-svg-warn-txt">02 · HUMAN GATE</text>
+    <text x="282" y="61" font-size="13" class="oa-svg-title">Diff reviewed</text>
+    <text x="282" y="76" font-size="10" class="oa-svg-muted">Person inspects repair</text>
+  </g>
+  <path d="M474,53 L516,53" class="oa-svg-line-accent oa-svg-flow" marker-end="url(#rep-arr)"/>
+
+  <g class="oa-svg-node">
+    <rect x="522" y="20" width="206" height="66" rx="10" class="oa-svg-panel"/>
+    <text x="536" y="42" font-size="9.5" class="oa-svg-accent">03 · REPLAY</text>
+    <text x="536" y="61" font-size="13" class="oa-svg-title">Replay campaign</text>
+    <text x="536" y="76" font-size="10" class="oa-svg-muted">Prior evidence passes</text>
+  </g>
+  <path d="M728,53 L770,53" class="oa-svg-line-accent oa-svg-flow" marker-end="url(#rep-arr)"/>
+
+  <g class="oa-svg-node">
+    <rect x="776" y="20" width="190" height="66" rx="10" class="oa-svg-panel"/>
+    <text x="790" y="42" font-size="9.5" class="oa-svg-accent">04 · ADVERSARIAL</text>
+    <text x="790" y="61" font-size="13" class="oa-svg-title">Fault campaign</text>
+    <text x="790" y="76" font-size="10" class="oa-svg-muted">Every fault must halt</text>
+  </g>
+
+  <!-- Connector from Row 1 end down to Row 2 start -->
+  <path d="M871,86 L871,108 L117,108 L117,128" class="oa-svg-line-accent oa-svg-flow-slow" marker-end="url(#rep-arr)"/>
+
+  <!-- Row 2: Approved -> Staged -> Canary -> Active -->
+  <g class="oa-svg-node">
+    <rect x="14" y="134" width="206" height="66" rx="10" class="oa-svg-panel-warn"/>
+    <circle cx="204" cy="148" r="3.5" class="oa-svg-gate-dot oa-svg-dot-warn"/>
+    <text x="28" y="156" font-size="9.5" class="oa-svg-warn-txt">05 · HUMAN GATE</text>
+    <text x="28" y="175" font-size="13" class="oa-svg-title">Approved by person</text>
+    <text x="28" y="190" font-size="10" class="oa-svg-muted">Models never approve</text>
+  </g>
+  <path d="M220,167 L262,167" class="oa-svg-line-accent oa-svg-flow" marker-end="url(#rep-arr)"/>
+
+  <g class="oa-svg-node">
+    <rect x="268" y="134" width="206" height="66" rx="10" class="oa-svg-panel"/>
+    <text x="282" y="156" font-size="9.5" class="oa-svg-accent">06 · STAGE</text>
+    <text x="282" y="175" font-size="13" class="oa-svg-title">Staged by hash</text>
+    <text x="282" y="190" font-size="10" class="oa-svg-muted">Immutable bundle digest</text>
+  </g>
+  <path d="M474,167 L516,167" class="oa-svg-line-accent oa-svg-flow" marker-end="url(#rep-arr)"/>
+
+  <g class="oa-svg-node">
+    <rect x="522" y="134" width="206" height="66" rx="10" class="oa-svg-panel-link"/>
+    <text x="536" y="156" font-size="9.5" class="oa-svg-accent">07 · CANARY</text>
+    <text x="536" y="175" font-size="13" class="oa-svg-title">Canary runs</text>
+    <text x="536" y="190" font-size="10" class="oa-svg-muted">First runs checked</text>
+  </g>
+  <path d="M728,167 L770,167" class="oa-svg-line-verified oa-svg-flow" marker-end="url(#rep-arr-v)"/>
+
+  <g class="oa-svg-node">
+    <rect x="776" y="134" width="190" height="66" rx="10" class="oa-svg-panel-verified"/>
+    <circle cx="950" cy="148" r="3.5" class="oa-svg-gate-dot oa-svg-dot-verified"/>
+    <text x="790" y="156" font-size="9.5" class="oa-svg-verified-txt">08 · PROMOTED</text>
+    <text x="790" y="175" font-size="13" class="oa-svg-title">Active bundle</text>
+    <text x="790" y="190" font-size="10" class="oa-svg-muted">Serving production</text>
+  </g>
+
+  <!-- Regression & Rollback return paths -->
+  <path d="M625,200 C625,232 371,232 371,204" class="oa-svg-line-warn" stroke-dasharray="4 4" marker-end="url(#rep-arr-w)"/>
+  <text x="498" y="236" text-anchor="middle" font-size="9.5" class="oa-svg-warn-txt">canary regression &rarr; auto-revert to prior bundle</text>
+
+  <path d="M871,200 C871,252 371,252 371,204" class="oa-svg-line-warn" stroke-dasharray="4 4" marker-end="url(#rep-arr-w)"/>
+  <text x="750" y="256" text-anchor="middle" font-size="9.5" class="oa-svg-warn-txt">rollback &rarr; prior version restored</text>
+</svg>
+<figcaption class="oa-diagram-caption">
+  <span><strong>Governed promotion:</strong> No step can be skipped, and models never review, approve, or promote a repair.</span>
+  <span><a href="../../explanation/verification/">How checks work &rarr;</a></span>
+</figcaption>
+</figure>
 
 ```bash
 openadapt flow repair register bundle-v2 --prior bundle --source teach --evidence runs/<run-dir>

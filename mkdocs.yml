@@ -73,6 +73,7 @@ extra_css:
 
 extra_javascript:
   - javascripts/production-lifecycle.js
+  - javascripts/diagrams.js
 
 plugins:
   - search

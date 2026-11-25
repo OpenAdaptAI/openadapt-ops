@@ -1,35 +1,57 @@
-/* OpenAdapt Docs - Premium visual layer on canonical semantic tokens.
+/* OpenAdapt Docs - Precision visual design system on canonical semantic tokens.
  *
- * Every colour is derived from the vendored semantic-theme tokens (--oa-*)
- * via var() and color-mix(). Zero literal hex colours, zero retired warm
- * values, and full dark/light parity.
+ * Inspired by Linear, Vercel, Anthropic, and Mintlify developer documentation.
+ * Every colour is derived strictly from the vendored semantic-theme tokens (--oa-*)
+ * via var() and color-mix(). Zero literal hex colours, zero retired warm values,
+ * full dark/light parity, and strict prefers-reduced-motion compliance.
  */
+
+/* ---- 3-column reading geometry & rhythm ------------------------------ */
+@media screen and (min-width: 76.25em) {
+  .md-grid {
+    max-width: 78rem;
+  }
+
+  .md-sidebar--primary {
+    width: 14.5rem;
+  }
+
+  .md-sidebar--secondary {
+    width: 13.5rem;
+  }
+
+  .md-content__inner {
+    margin-inline: auto;
+    max-width: 52rem;
+    padding-inline: 1.5rem;
+  }
+}
 
 /* ---- Frosted-glass sticky header & tab bar --------------------------- */
 .md-header {
-  backdrop-filter: blur(18px) saturate(165%);
-  -webkit-backdrop-filter: blur(18px) saturate(165%);
+  backdrop-filter: blur(22px) saturate(180%);
+  -webkit-backdrop-filter: blur(22px) saturate(180%);
   border-bottom: 1px solid var(--oa-border);
   transition: background-color var(--oa-duration) var(--oa-easing),
     border-color var(--oa-duration) var(--oa-easing);
 }
 
 .md-tabs {
-  backdrop-filter: blur(14px) saturate(150%);
-  -webkit-backdrop-filter: blur(14px) saturate(150%);
-  background: color-mix(in srgb, var(--oa-canvas) 82%, transparent);
+  backdrop-filter: blur(18px) saturate(165%);
+  -webkit-backdrop-filter: blur(18px) saturate(165%);
+  background: color-mix(in srgb, var(--oa-canvas) 84%, transparent);
   border-bottom: 1px solid var(--oa-border);
 }
 
 [data-md-color-scheme="default"] .md-tabs {
-  background: color-mix(in srgb, var(--oa-surface-raised) 88%, transparent);
+  background: color-mix(in srgb, var(--oa-surface-raised) 90%, transparent);
 }
 
 .md-tabs__link {
-  font-size: 0.74rem;
+  font-size: 0.75rem;
   font-weight: 550;
   letter-spacing: 0.005em;
-  opacity: 0.78;
+  opacity: 0.72;
   transition: color var(--oa-duration-fast) var(--oa-easing),
     opacity var(--oa-duration-fast) var(--oa-easing);
 }
@@ -45,7 +67,7 @@
 }
 
 .md-tabs__item--active .md-tabs__link::after {
-  background: var(--oa-link);
+  background: linear-gradient(90deg, var(--oa-link), var(--oa-verified));
   border-radius: 9999px;
   bottom: 0;
   content: "";
@@ -55,7 +77,7 @@
   right: 0;
 }
 
-/* ---- Refined search input -------------------------------------------- */
+/* ---- Command-K styled search bar ------------------------------------- */
 .md-search__form {
   border: 1px solid var(--oa-border);
   border-radius: var(--oa-radius-control);
@@ -69,41 +91,65 @@
 
 [data-md-toggle="search"]:checked ~ .md-header .md-search__form {
   border-color: var(--oa-link);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--oa-link) 22%, transparent);
 }
 
-/* ---- Left nav & TOC active rail -------------------------------------- */
+/* ---- Left sidebar & right TOC hairline hierarchy --------------------- */
 .md-nav--primary .md-nav__title,
 .md-nav--secondary .md-nav__title {
-  font-family: var(--oa-font-display);
-  font-size: 0.72rem;
-  font-weight: 650;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
   color: var(--oa-text-muted);
+  font-family: var(--oa-font-display);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.md-nav--secondary .md-nav__list {
+  border-left: 1px solid color-mix(in srgb, var(--oa-border) 85%, transparent);
+  padding-left: 0.25rem;
 }
 
 .md-nav__link {
   border-radius: 6px;
+  padding: 0.24rem 0.45rem;
+  position: relative;
   transition: color var(--oa-duration-fast) var(--oa-easing),
     background-color var(--oa-duration-fast) var(--oa-easing);
 }
 
+.md-nav__link:hover {
+  background: color-mix(in srgb, var(--oa-link-tint) 55%, transparent);
+}
+
 .md-nav__link--active {
+  background: color-mix(in srgb, var(--oa-link-tint) 75%, transparent);
   color: var(--oa-link) !important;
   font-weight: 600;
 }
 
+.md-nav--secondary .md-nav__link--active::before {
+  background: var(--oa-link);
+  border-radius: 9999px;
+  bottom: 0.2rem;
+  content: "";
+  left: -0.32rem;
+  position: absolute;
+  top: 0.2rem;
+  width: 2px;
+}
+
 /* ---- Typography refinements ------------------------------------------ */
 .md-typeset h1 {
-  letter-spacing: -0.03em;
   font-weight: 700;
+  letter-spacing: -0.035em;
 }
 
 .md-typeset h2 {
-  border-bottom: 1px solid color-mix(in srgb, var(--oa-border) 70%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--oa-border) 75%, transparent);
   letter-spacing: -0.025em;
-  padding-bottom: 0.35rem;
-  margin-top: 2.2rem;
+  margin-top: 2.3rem;
+  padding-bottom: 0.4rem;
 }
 
 .md-typeset .oa-docs-home h2 {
@@ -115,28 +161,28 @@
   letter-spacing: -0.015em;
 }
 
-/* ---- Sleek pill badges & status chips -------------------------------- */
+/* ---- Sleek pill badges & telemetry chips ----------------------------- */
 .md-typeset .oa-pill-row {
   display: flex;
   flex-wrap: wrap;
   gap: 0.45rem;
-  margin: 0 0 1rem;
+  margin: 0 0 1.15rem;
 }
 
 .md-typeset .oa-pill {
   align-items: center;
-  background: var(--oa-surface);
+  background: color-mix(in srgb, var(--oa-surface-raised) 85%, transparent);
   border: 1px solid var(--oa-border);
   border-radius: var(--oa-radius-action);
   color: var(--oa-text-muted);
   display: inline-flex;
   font-family: var(--oa-font-mono);
-  font-size: 0.66rem;
+  font-size: 0.65rem;
   font-weight: 600;
-  gap: 0.35rem;
-  letter-spacing: 0.02em;
+  gap: 0.38rem;
+  letter-spacing: 0.03em;
   line-height: 1;
-  padding: 0.38rem 0.72rem;
+  padding: 0.38rem 0.76rem;
   white-space: nowrap;
 }
 
@@ -145,47 +191,49 @@
   border-radius: 50%;
   content: "";
   display: inline-block;
-  height: 0.38rem;
-  width: 0.38rem;
+  height: 0.36rem;
+  width: 0.36rem;
 }
 
 .md-typeset .oa-pill--verified {
   background: var(--oa-verified-tint);
-  border-color: color-mix(in srgb, var(--oa-verified) 38%, transparent);
+  border-color: color-mix(in srgb, var(--oa-verified) 40%, transparent);
   color: var(--oa-verified);
 }
 
 .md-typeset .oa-pill--link {
   background: var(--oa-link-tint);
-  border-color: color-mix(in srgb, var(--oa-link) 38%, transparent);
+  border-color: color-mix(in srgb, var(--oa-link) 40%, transparent);
   color: var(--oa-link);
 }
 
 .md-typeset .oa-pill--stopped {
   background: var(--oa-stopped-tint);
-  border-color: color-mix(in srgb, var(--oa-stopped) 38%, transparent);
+  border-color: color-mix(in srgb, var(--oa-stopped) 40%, transparent);
   color: var(--oa-stopped);
 }
 
 .md-typeset .oa-pill--reconcile {
   background: color-mix(in srgb, var(--oa-reconcile) 14%, var(--oa-surface));
-  border-color: color-mix(in srgb, var(--oa-reconcile) 38%, transparent);
+  border-color: color-mix(in srgb, var(--oa-reconcile) 40%, transparent);
   color: var(--oa-reconcile);
 }
 
 /* ---- Home hero ambient shell ----------------------------------------- */
 .md-typeset .oa-hero-shell {
+  background-color: var(--oa-surface);
   background-image:
     var(--oa-glow),
     radial-gradient(var(--oa-grid-dot) 1px, transparent 1px);
   background-position: top center, 0 0;
   background-repeat: no-repeat, repeat;
-  background-size: 100% 24rem, 22px 22px;
+  background-size: 100% 26rem, 20px 20px;
   border: 1px solid var(--oa-border);
   border-radius: calc(var(--oa-radius-card) + 4px);
+  box-shadow: var(--oa-shadow-lift);
   margin: 0 0 2rem;
   overflow: hidden;
-  padding: clamp(1.75rem, 4vw, 3rem) clamp(1.4rem, 3.5vw, 2.75rem);
+  padding: clamp(2rem, 4.5vw, 3.25rem) clamp(1.5rem, 3.8vw, 3rem);
   position: relative;
 }
 
@@ -193,8 +241,8 @@
   background: linear-gradient(
     90deg,
     transparent 0%,
-    color-mix(in srgb, var(--oa-link) 45%, transparent) 30%,
-    color-mix(in srgb, var(--oa-verified) 45%, transparent) 70%,
+    color-mix(in srgb, var(--oa-link) 55%, transparent) 28%,
+    color-mix(in srgb, var(--oa-verified) 55%, transparent) 72%,
     transparent 100%
   );
   content: "";
@@ -209,12 +257,101 @@
   align-items: center;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.7rem;
-  margin: 1.4rem 0 0;
+  gap: 0.75rem;
+  margin: 1.5rem 0 0;
 }
 
 .md-typeset .oa-hero-actions .md-button {
   margin: 0;
+}
+
+/* ---- 3-Mode Execution Plane cards ------------------------------------ */
+.md-typeset .oa-modes-grid {
+  display: grid;
+  gap: 0.9rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 1.25rem 0 2.1rem;
+}
+
+.md-typeset .oa-mode-card {
+  background: var(--oa-surface-raised);
+  border: 1px solid var(--oa-border);
+  border-radius: var(--oa-radius-card);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.25rem 1.3rem;
+  position: relative;
+  overflow: hidden;
+  transition: border-color var(--oa-duration) var(--oa-easing),
+    transform var(--oa-duration) var(--oa-easing),
+    box-shadow var(--oa-duration) var(--oa-easing);
+}
+
+.md-typeset .oa-mode-card::before {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--oa-link) 50%, transparent),
+    transparent
+  );
+  content: "";
+  height: 1px;
+  left: 0;
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: opacity var(--oa-duration) var(--oa-easing);
+}
+
+.md-typeset .oa-mode-card:hover {
+  border-color: color-mix(in srgb, var(--oa-link) 55%, var(--oa-border));
+  box-shadow: var(--oa-shadow-lift);
+  transform: translateY(-2px);
+}
+
+.md-typeset .oa-mode-card:hover::before {
+  opacity: 1;
+}
+
+.md-typeset .oa-mode-icon {
+  align-items: center;
+  background: var(--oa-link-tint);
+  border: 1px solid color-mix(in srgb, var(--oa-link) 30%, transparent);
+  border-radius: 9px;
+  color: var(--oa-link);
+  display: inline-flex;
+  height: 2rem;
+  justify-content: center;
+  margin-bottom: 0.2rem;
+  width: 2rem;
+}
+
+.md-typeset .oa-mode-icon--verified {
+  background: var(--oa-verified-tint);
+  border-color: color-mix(in srgb, var(--oa-verified) 35%, transparent);
+  color: var(--oa-verified);
+}
+
+.md-typeset .oa-mode-card h3 {
+  font-size: 0.98rem;
+  margin: 0;
+}
+
+.md-typeset .oa-mode-card p {
+  color: var(--oa-text-muted);
+  font-size: 0.8rem;
+  line-height: 1.56;
+  margin: 0;
+}
+
+.md-typeset .oa-mode-footer {
+  border-top: 1px solid color-mix(in srgb, var(--oa-border) 70%, transparent);
+  font-family: var(--oa-font-mono);
+  font-size: 0.68rem;
+  margin-top: auto;
+  padding-top: 0.55rem;
 }
 
 /* ---- 3-step getting-started strip ------------------------------------ */
@@ -341,12 +478,12 @@
   transform: translateY(-2px);
 }
 
-/* ---- Refined code blocks & terminal chrome --------------------------- */
+/* ---- Sharp code blocks & language tabs ------------------------------- */
 .md-typeset pre > code {
   border: 1px solid var(--oa-border);
   border-radius: var(--oa-radius-control);
   font-size: 0.78rem;
-  line-height: 1.6;
+  line-height: 1.65;
 }
 
 .md-typeset .highlight {
@@ -354,10 +491,20 @@
 }
 
 .md-typeset code:not(pre code) {
-  border: 1px solid color-mix(in srgb, var(--oa-border) 80%, transparent);
+  border: 1px solid color-mix(in srgb, var(--oa-border) 85%, transparent);
   border-radius: 5px;
   font-size: 0.82em;
-  padding: 0.1em 0.36em;
+  padding: 0.1em 0.38em;
+}
+
+.md-typeset .tabbed-set > .tabbed-labels {
+  border-bottom: 1px solid var(--oa-border);
+}
+
+.md-typeset .tabbed-set > .tabbed-labels > label {
+  font-family: var(--oa-font-display);
+  font-size: 0.76rem;
+  font-weight: 600;
 }
 
 /* ---- Crisp data tables ----------------------------------------------- */
@@ -374,9 +521,9 @@
   border-bottom: 1px solid var(--oa-border-strong);
   color: var(--oa-text-muted);
   font-family: var(--oa-font-display);
-  font-size: 0.7rem;
+  font-size: 0.69rem;
   font-weight: 650;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 
@@ -419,17 +566,43 @@
   border-left-color: var(--oa-reconcile);
 }
 
-/* ---- Bespoke inline SVG diagram frames ------------------------------- */
+/* ---- Unified animated SVG diagram system ----------------------------- */
+.md-typeset figure.oa-diagram-frame,
 .md-typeset .oa-diagram-frame {
-  background: var(--oa-surface);
+  background-color: var(--oa-surface);
+  background-image: radial-gradient(var(--oa-grid-dot) 1px, transparent 1px);
+  background-size: 18px 18px;
   border: 1px solid var(--oa-border);
   border-radius: var(--oa-radius-card);
-  margin: 1.6rem 0;
+  display: block;
+  margin: 1.75rem 0;
+  max-width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-  padding: 1.1rem 1.1rem 0.85rem;
+  padding: 1.35rem 1.35rem 0.95rem;
+  position: relative;
+  text-align: left;
+  width: 100%;
 }
 
+.md-typeset figure.oa-diagram-frame::before,
+.md-typeset .oa-diagram-frame::before {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in srgb, var(--oa-link) 45%, transparent) 30%,
+    color-mix(in srgb, var(--oa-verified) 45%, transparent) 70%,
+    transparent 100%
+  );
+  content: "";
+  height: 1px;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.md-typeset figure.oa-diagram-frame svg,
 .md-typeset .oa-diagram-frame svg {
   display: block;
   height: auto;
@@ -438,16 +611,20 @@
   width: 100%;
 }
 
+.md-typeset figure.oa-diagram-frame figcaption.oa-diagram-caption,
 .md-typeset .oa-diagram-caption {
-  border-top: 1px solid color-mix(in srgb, var(--oa-border) 70%, transparent);
+  border-top: 1px solid color-mix(in srgb, var(--oa-border) 75%, transparent);
   color: var(--oa-text-muted);
   display: flex;
   flex-wrap: wrap;
   font-size: 0.74rem;
-  gap: 0.5rem;
+  font-style: normal;
+  gap: 0.5rem 1rem;
   justify-content: space-between;
-  margin-top: 0.85rem;
+  margin: 0.95rem 0 0;
+  max-width: none;
   padding-top: 0.65rem;
+  text-align: left;
 }
 
 .md-typeset .oa-diagram-caption strong {
@@ -455,7 +632,7 @@
   font-family: var(--oa-font-display);
 }
 
-/* Shared SVG utility classes so inline diagrams adapt automatically to dark/light */
+/* SVG semantic surfaces & typography */
 .oa-svg-bg {
   fill: var(--oa-canvas);
   stroke: var(--oa-border);
@@ -464,26 +641,32 @@
 .oa-svg-panel {
   fill: var(--oa-surface-raised);
   stroke: var(--oa-border-strong);
+  stroke-width: 1.25;
 }
 
 .oa-svg-panel-link {
   fill: var(--oa-link-tint);
-  stroke: color-mix(in srgb, var(--oa-link) 55%, var(--oa-border));
+  stroke: color-mix(in srgb, var(--oa-link) 58%, var(--oa-border));
+  stroke-width: 1.35;
 }
 
 .oa-svg-panel-verified {
   fill: var(--oa-verified-tint);
-  stroke: color-mix(in srgb, var(--oa-verified) 65%, var(--oa-border));
+  stroke: color-mix(in srgb, var(--oa-verified) 68%, var(--oa-border));
+  stroke-width: 1.45;
 }
 
-.oa-svg-panel-stopped {
+.oa-svg-panel-stopped,
+.oa-svg-panel-warn {
   fill: var(--oa-stopped-tint);
   stroke: color-mix(in srgb, var(--oa-stopped) 65%, var(--oa-border));
+  stroke-width: 1.35;
 }
 
 .oa-svg-panel-reconcile {
   fill: color-mix(in srgb, var(--oa-reconcile) 14%, var(--oa-surface));
-  stroke: color-mix(in srgb, var(--oa-reconcile) 65%, var(--oa-border));
+  stroke: color-mix(in srgb, var(--oa-reconcile) 68%, var(--oa-border));
+  stroke-width: 1.45;
 }
 
 .oa-svg-text {
@@ -519,7 +702,8 @@
   font-weight: 700;
 }
 
-.oa-svg-stopped-txt {
+.oa-svg-stopped-txt,
+.oa-svg-warn-txt {
   fill: var(--oa-stopped);
   font-family: var(--oa-font-mono);
   font-weight: 700;
@@ -531,7 +715,8 @@
   font-weight: 700;
 }
 
-.oa-svg-line {
+.oa-svg-line,
+.oa-svg-line-muted {
   fill: none;
   stroke: var(--oa-border-strong);
   stroke-width: 1.75;
@@ -549,13 +734,15 @@
   stroke-width: 1.9;
 }
 
-.oa-svg-line-stopped {
+.oa-svg-line-stopped,
+.oa-svg-line-warn {
   fill: none;
   stroke: var(--oa-stopped);
   stroke-width: 1.75;
 }
 
-.oa-svg-arrow {
+.oa-svg-arrow,
+.oa-svg-arrow-muted {
   fill: var(--oa-border-strong);
 }
 
@@ -567,13 +754,82 @@
   fill: var(--oa-verified);
 }
 
-.oa-svg-arrow-stopped {
+.oa-svg-arrow-stopped,
+.oa-svg-arrow-warn {
   fill: var(--oa-stopped);
+}
+
+/* Subtle signal pulse along connectors & gate status glow */
+@keyframes oaSignalFlow {
+  from {
+    stroke-dashoffset: 24;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes oaGatePulse {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.oa-svg-flow {
+  stroke-dasharray: 6 6;
+  animation: oaSignalFlow 1.8s linear infinite;
+}
+
+.oa-svg-flow-slow {
+  stroke-dasharray: 5 7;
+  animation: oaSignalFlow 2.6s linear infinite;
+}
+
+.oa-svg-gate-dot {
+  animation: oaGatePulse 2.4s ease-in-out infinite;
+}
+
+.oa-svg-gate-dot--verified,
+.oa-svg-dot-verified {
+  fill: var(--oa-verified);
+}
+
+.oa-svg-gate-dot--accent,
+.oa-svg-dot-accent {
+  fill: var(--oa-link);
+}
+
+.oa-svg-gate-dot--warn,
+.oa-svg-dot-warn {
+  fill: var(--oa-stopped);
+}
+
+.oa-svg-gate-dot--stopped {
+  fill: var(--oa-stopped);
+}
+
+/* Interactive node focus / hover highlighting (enhanced by diagrams.js) */
+.oa-svg-node {
+  cursor: pointer;
+  transition: opacity var(--oa-duration-fast) var(--oa-easing);
+}
+
+svg.oa-diagram-has-active .oa-svg-node {
+  opacity: 0.48;
+}
+
+svg.oa-diagram-has-active .oa-svg-node.is-active {
+  opacity: 1;
 }
 
 /* ---- Responsive adjustments ------------------------------------------ */
 @media screen and (max-width: 60em) {
-  .md-typeset .oa-steps-strip {
+  .md-typeset .oa-steps-strip,
+  .md-typeset .oa-modes-grid {
     grid-template-columns: 1fr;
   }
 
@@ -599,6 +855,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .md-typeset .oa-step-card,
+  .md-typeset .oa-mode-card,
   .md-typeset .oa-bento-card,
   .md-typeset .oa-docs-home a.oa-docs-path,
   .md-header,
@@ -606,13 +863,21 @@
   .md-tabs__link,
   .md-search__form,
   .md-nav__link,
-  .md-typeset table:not([class]) tr {
+  .md-typeset table:not([class]) tr,
+  .oa-svg-node {
     transition: none !important;
   }
 
   .md-typeset .oa-step-card:hover,
+  .md-typeset .oa-mode-card:hover,
   .md-typeset .oa-bento-card:hover,
   .md-typeset .oa-docs-home a.oa-docs-path:hover {
     transform: none !important;
+  }
+
+  .oa-svg-flow,
+  .oa-svg-flow-slow,
+  .oa-svg-gate-dot {
+    animation: none !important;
   }
 }

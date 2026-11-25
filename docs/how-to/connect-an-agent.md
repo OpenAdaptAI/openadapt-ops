@@ -16,7 +16,7 @@ The server runs over local stdio on the computer that can open the app. It
 needs Python 3.11 or 3.12 (`uvx --python 3.12` handles this automatically).
 OpenAdapt treats your agent as a black box with zero access to its weights; see
 [Black-box agent wrapping and the local 4B verifier sidecar](../explanation/local-verifier-sidecar.md)
-for how the optional local 4B verifier sidecar (`Veto-4B-r6`, `taint-guard`)
+for how the optional local 4B verifier sidecar (`Veto-4B-r5`, `taint-guard`)
 stays completely separate from your calling agent. If your agent runs in
 Browserbase, Browser Use, E2B, Daytona, or a private VPC, see
 [Verify agents in cloud sandboxes and private VPCs](verify-cloud-sandboxes.md).
@@ -26,68 +26,83 @@ Browserbase, Browser Use, E2B, Daytona, or a private VPC, see
 <figure class="oa-diagram-frame">
 <svg viewBox="0 0 980 265" role="img" aria-labelledby="oa-int-title oa-int-desc">
   <title id="oa-int-title">OpenAdapt developer and agent integration map</title>
-  <desc id="oa-int-desc">AI coding agents (Claude Code, Cursor, Codex, Gemini CLI), Python scripts using openadapt.verify, CLI operators, and OpenAdapt Desktop connect through the local MCP server (openadapt agent serve), standalone MCP server exports (openadapt flow emit-mcp), or the verification ledger (openadapt verify serve) to drive web, Windows, macOS, Linux, RDP, and Citrix apps with verified receipts.</desc>
+  <desc id="oa-int-desc">AI coding agents (Claude Code, Cursor, Codex, Gemini CLI), Python scripts using openadapt.verify and @openadapt.jit, CLI operators, and OpenAdapt Desktop connect through the local MCP server (openadapt agent serve), standalone MCP server exports (openadapt mcpify and emit-mcp), or the verification ledger (openadapt verify serve) to drive web, Windows, macOS, Linux, RDP, and Citrix apps with verified receipts.</desc>
   <defs>
-    <marker id="int-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+    <marker id="int-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto">
       <path d="M0,1 L9,5 L0,9 z" class="oa-svg-arrow-accent"/>
     </marker>
-    <marker id="int-arr-v" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+    <marker id="int-arr-v" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto">
       <path d="M0,1 L9,5 L0,9 z" class="oa-svg-arrow-verified"/>
     </marker>
   </defs>
 
   <!-- Callers column -->
-  <rect x="14" y="18" width="230" height="66" rx="10" class="oa-svg-panel"/>
-  <text x="28" y="42" font-size="10" class="oa-svg-accent">MCP CLIENTS</text>
-  <text x="28" y="61" font-size="13" class="oa-svg-title">Claude, Cursor, Codex</text>
-  <text x="28" y="76" font-size="10.5" class="oa-svg-muted">Gemini CLI · Desktop agents</text>
+  <g class="oa-svg-node">
+    <rect x="14" y="18" width="230" height="66" rx="10" class="oa-svg-panel"/>
+    <text x="28" y="42" font-size="10" class="oa-svg-accent">MCP CLIENTS</text>
+    <text x="28" y="61" font-size="13" class="oa-svg-title">Claude, Cursor, Codex</text>
+    <text x="28" y="76" font-size="10.5" class="oa-svg-muted">Gemini CLI · Desktop agents</text>
+  </g>
 
-  <rect x="14" y="98" width="230" height="66" rx="10" class="oa-svg-panel"/>
-  <text x="28" y="122" font-size="10" class="oa-svg-accent">PYTHON SDK</text>
-  <text x="28" y="141" font-size="13" class="oa-svg-title">openadapt.verify</text>
-  <text x="28" y="156" font-size="10.5" class="oa-svg-muted">Contract · begin_write · verify_write</text>
+  <g class="oa-svg-node">
+    <rect x="14" y="98" width="230" height="66" rx="10" class="oa-svg-panel"/>
+    <text x="28" y="122" font-size="10" class="oa-svg-accent">PYTHON SDK</text>
+    <text x="28" y="141" font-size="13" class="oa-svg-title">@openadapt.jit &amp; verify</text>
+    <text x="28" y="156" font-size="10.5" class="oa-svg-muted">Contract · begin_write · verify_write</text>
+  </g>
 
-  <rect x="14" y="178" width="230" height="66" rx="10" class="oa-svg-panel"/>
-  <text x="28" y="202" font-size="10" class="oa-svg-accent">OPERATOR TOOLS</text>
-  <text x="28" y="221" font-size="13" class="oa-svg-title">CLI and desktop app</text>
-  <text x="28" y="236" font-size="10.5" class="oa-svg-muted">openadapt · desktop capture</text>
+  <g class="oa-svg-node">
+    <rect x="14" y="178" width="230" height="66" rx="10" class="oa-svg-panel"/>
+    <text x="28" y="202" font-size="10" class="oa-svg-accent">OPERATOR TOOLS</text>
+    <text x="28" y="221" font-size="13" class="oa-svg-title">CLI and desktop app</text>
+    <text x="28" y="236" font-size="10.5" class="oa-svg-muted">openadapt · desktop 0.35.0</text>
+  </g>
 
   <!-- Arrows to bridge -->
-  <path d="M244,51 L312,86" class="oa-svg-line-accent" marker-end="url(#int-arr)"/>
-  <path d="M244,131 L312,131" class="oa-svg-line-accent" marker-end="url(#int-arr)"/>
-  <path d="M244,211 L312,184" class="oa-svg-line-accent" marker-end="url(#int-arr)"/>
+  <path d="M244,51 C278,51 282,86 312,86" class="oa-svg-line-accent oa-svg-flow" marker-end="url(#int-arr)"/>
+  <path d="M244,131 L312,131" class="oa-svg-line-accent oa-svg-flow" marker-end="url(#int-arr)"/>
+  <path d="M244,211 C278,211 282,184 312,184" class="oa-svg-line-accent oa-svg-flow" marker-end="url(#int-arr)"/>
 
   <!-- Local Bridge -->
   <rect x="318" y="26" width="318" height="212" rx="12" class="oa-svg-panel-link"/>
   <text x="334" y="50" font-size="10" class="oa-svg-accent">LOCAL EXECUTION &amp; VERIFICATION LAYER</text>
-  <rect x="334" y="64" width="286" height="52" rx="8" class="oa-svg-panel"/>
-  <text x="346" y="85" font-size="12.5" class="oa-svg-title">MCP workflow server</text>
-  <text x="346" y="103" font-size="10.5" class="oa-svg-mono">openadapt agent serve · emit-mcp</text>
+  <g class="oa-svg-node">
+    <rect x="334" y="64" width="286" height="52" rx="8" class="oa-svg-panel"/>
+    <text x="346" y="85" font-size="12.5" class="oa-svg-title">MCP workflow server</text>
+    <text x="346" y="103" font-size="10.5" class="oa-svg-mono">openadapt agent serve · mcpify</text>
+  </g>
 
-  <rect x="334" y="124" width="286" height="52" rx="8" class="oa-svg-panel"/>
-  <text x="346" y="145" font-size="12.5" class="oa-svg-title">Write verifier and ledger</text>
-  <text x="346" y="163" font-size="10.5" class="oa-svg-mono">openadapt verify serve · ledger</text>
+  <g class="oa-svg-node">
+    <rect x="334" y="124" width="286" height="52" rx="8" class="oa-svg-panel"/>
+    <text x="346" y="145" font-size="12.5" class="oa-svg-title">Write verifier and ledger</text>
+    <text x="346" y="163" font-size="10.5" class="oa-svg-mono">openadapt verify serve · ledger</text>
+  </g>
 
   <text x="334" y="204" font-size="11" class="oa-svg-muted">Idempotent request_id · approval gates</text>
   <text x="334" y="221" font-size="11" class="oa-svg-muted">0 model calls on compiled replay</text>
 
   <!-- Arrows to surfaces & receipts -->
-  <path d="M636,90 L702,90" class="oa-svg-line-accent" marker-end="url(#int-arr)"/>
-  <path d="M636,176 L702,176" class="oa-svg-line-verified" marker-end="url(#int-arr-v)"/>
+  <path d="M636,90 L702,90" class="oa-svg-line-accent oa-svg-flow" marker-end="url(#int-arr)"/>
+  <path d="M636,176 L702,176" class="oa-svg-line-verified oa-svg-flow" marker-end="url(#int-arr-v)"/>
 
   <!-- Surfaces -->
-  <rect x="708" y="26" width="258" height="106" rx="12" class="oa-svg-panel"/>
-  <text x="724" y="50" font-size="10" class="oa-svg-accent">TARGET SURFACES</text>
-  <text x="724" y="72" font-size="13.5" class="oa-svg-title">Web and desktop apps</text>
-  <text x="724" y="93" font-size="11" class="oa-svg-muted">Browser (DOM / CDP) · API</text>
-  <text x="724" y="111" font-size="11" class="oa-svg-muted">Windows · macOS · Linux · RDP · Citrix</text>
+  <g class="oa-svg-node">
+    <rect x="708" y="26" width="258" height="106" rx="12" class="oa-svg-panel"/>
+    <text x="724" y="50" font-size="10" class="oa-svg-accent">TARGET SURFACES</text>
+    <text x="724" y="72" font-size="13.5" class="oa-svg-title">Web and desktop apps</text>
+    <text x="724" y="93" font-size="11" class="oa-svg-muted">Browser (DOM / CDP) · API</text>
+    <text x="724" y="111" font-size="11" class="oa-svg-muted">Windows · macOS · Linux · RDP · Citrix</text>
+  </g>
 
   <!-- Verified Output -->
-  <rect x="708" y="146" width="258" height="92" rx="12" class="oa-svg-panel-verified"/>
-  <text x="724" y="170" font-size="10" class="oa-svg-verified-txt">VERIFIED OUTCOMES</text>
-  <text x="724" y="191" font-size="13.5" class="oa-svg-title">Signed receipts</text>
-  <text x="724" y="211" font-size="11" class="oa-svg-muted">done · needs_review · not_sure_if_saved</text>
-  <text x="724" y="227" font-size="10.5" class="oa-svg-mono">No screens returned to agent</text>
+  <g class="oa-svg-node">
+    <rect x="708" y="146" width="258" height="92" rx="12" class="oa-svg-panel-verified"/>
+    <circle cx="950" cy="162" r="3.5" class="oa-svg-gate-dot oa-svg-dot-verified"/>
+    <text x="724" y="170" font-size="10" class="oa-svg-verified-txt">VERIFIED OUTCOMES</text>
+    <text x="724" y="191" font-size="13.5" class="oa-svg-title">Signed receipts</text>
+    <text x="724" y="211" font-size="11" class="oa-svg-muted">done · needs_review · not_sure_if_saved</text>
+    <text x="724" y="227" font-size="10.5" class="oa-svg-mono">No screens returned to agent</text>
+  </g>
 </svg>
 <figcaption class="oa-diagram-caption">
   <span><strong>Integration surface:</strong> Turn any compiled web or desktop workflow into a typed MCP tool or verify arbitrary agent writes.</span>
@@ -95,12 +110,13 @@ Browserbase, Browser Use, E2B, Daytona, or a private VPC, see
 </figcaption>
 </figure>
 
-!!! tip "Export a standalone MCP server or verify writes in Python"
-    To turn a single compiled workflow into a standalone MCP server script, run
-    `openadapt flow emit-mcp bundle --out server.py`. To verify writes made by
-    any Python agent against the system of record with an uncertain-write
-    ledger, import `Contract`, `begin_write`, and `verify_write` from
-    `openadapt.verify`, or run `openadapt verify serve` for MCP clients.
+## Developer primitives
+
+Beyond `openadapt agent serve`, three primitives let you drop verified execution straight into existing Python and MCP codebases:
+
+- **`@openadapt.jit` (Python decorator):** Wrap a Python task function so the first run compiles a verified workflow and subsequent calls replay deterministically with zero model calls.
+- **`openadapt mcpify --from-compiled`:** Package a compiled workflow bundle as a typed MCP server tool ready for Claude Code, Cursor, Codex, or Gemini CLI. You can also export a single-file server script with `openadapt flow emit-mcp bundle --out server.py`.
+- **Starter Skills Registry:** Browse pre-built, schema-typed starter skills at [app.openadapt.ai/registry](https://app.openadapt.ai/registry) and verify arbitrary agent writes in Python with `Contract`, `begin_write`, and `verify_write` from `openadapt.verify` (or `openadapt verify serve` for MCP clients).
 
 ## Try the sandbox
 

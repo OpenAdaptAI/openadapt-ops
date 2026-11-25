@@ -29,68 +29,86 @@ next step is safe.
   </defs>
 
   <!-- Stage 1 -->
-  <rect x="12" y="34" width="128" height="92" rx="10" class="oa-svg-panel"/>
-  <text x="24" y="58" font-size="10" class="oa-svg-accent">DEMONSTRATE</text>
-  <text x="24" y="78" font-size="13.5" class="oa-svg-title">Show task</text>
-  <text x="24" y="98" font-size="11" class="oa-svg-muted">1+ recordings</text>
-  <text x="24" y="114" font-size="11" class="oa-svg-muted">person or agent</text>
-  <path d="M140,80 L164,80" class="oa-svg-line-accent" marker-end="url(#how-arr)"/>
+  <g class="oa-svg-node">
+    <rect x="12" y="34" width="128" height="92" rx="10" class="oa-svg-panel"/>
+    <text x="24" y="58" font-size="10" class="oa-svg-accent">DEMONSTRATE</text>
+    <text x="24" y="78" font-size="13.5" class="oa-svg-title">Show task</text>
+    <text x="24" y="98" font-size="11" class="oa-svg-muted">1+ recordings</text>
+    <text x="24" y="114" font-size="11" class="oa-svg-muted">person or agent</text>
+  </g>
+  <path d="M140,80 L164,80" class="oa-svg-line-accent oa-svg-flow" marker-end="url(#how-arr)"/>
 
   <!-- Stage 2 -->
-  <rect x="170" y="34" width="118" height="92" rx="10" class="oa-svg-panel"/>
-  <text x="182" y="58" font-size="10" class="oa-svg-accent">BUILD</text>
-  <text x="182" y="78" font-size="13.5" class="oa-svg-title">Compile</text>
-  <text x="182" y="98" font-size="11" class="oa-svg-muted">Workflow IR</text>
-  <text x="182" y="114" font-size="11" class="oa-svg-muted">+ checks</text>
-  <path d="M288,80 L312,80" class="oa-svg-line-accent" marker-end="url(#how-arr)"/>
+  <g class="oa-svg-node">
+    <rect x="170" y="34" width="118" height="92" rx="10" class="oa-svg-panel"/>
+    <text x="182" y="58" font-size="10" class="oa-svg-accent">BUILD</text>
+    <text x="182" y="78" font-size="13.5" class="oa-svg-title">Compile</text>
+    <text x="182" y="98" font-size="11" class="oa-svg-muted">Workflow IR</text>
+    <text x="182" y="114" font-size="11" class="oa-svg-muted">+ checks</text>
+  </g>
+  <path d="M288,80 L312,80" class="oa-svg-line-accent oa-svg-flow" marker-end="url(#how-arr)"/>
 
   <!-- Stage 3 -->
-  <rect x="318" y="34" width="126" height="92" rx="10" class="oa-svg-panel"/>
-  <text x="330" y="58" font-size="10" class="oa-svg-accent">GATE 1</text>
-  <text x="330" y="78" font-size="13.5" class="oa-svg-title">Certify</text>
-  <text x="330" y="98" font-size="11" class="oa-svg-muted">Policy rules</text>
-  <text x="330" y="114" font-size="11" class="oa-svg-muted">&amp; coverage</text>
-  <path d="M444,80 L468,80" class="oa-svg-line-accent" marker-end="url(#how-arr)"/>
+  <g class="oa-svg-node">
+    <rect x="318" y="34" width="126" height="92" rx="10" class="oa-svg-panel"/>
+    <text x="330" y="58" font-size="10" class="oa-svg-accent">GATE 1</text>
+    <text x="330" y="78" font-size="13.5" class="oa-svg-title">Certify</text>
+    <text x="330" y="98" font-size="11" class="oa-svg-muted">Policy rules</text>
+    <text x="330" y="114" font-size="11" class="oa-svg-muted">&amp; coverage</text>
+  </g>
+  <path d="M444,80 L468,80" class="oa-svg-line-accent oa-svg-flow" marker-end="url(#how-arr)"/>
 
   <!-- Stage 4 -->
-  <rect x="474" y="34" width="132" height="92" rx="10" class="oa-svg-panel"/>
-  <text x="486" y="58" font-size="10" class="oa-svg-accent">GATE 2</text>
-  <text x="486" y="78" font-size="13.5" class="oa-svg-title">Qualify</text>
-  <text x="486" y="98" font-size="11" class="oa-svg-muted">Normal + 5</text>
-  <text x="486" y="114" font-size="11" class="oa-svg-muted">planted faults</text>
-  <path d="M606,80 L630,80" class="oa-svg-line-accent" marker-end="url(#how-arr)"/>
+  <g class="oa-svg-node">
+    <rect x="474" y="34" width="132" height="92" rx="10" class="oa-svg-panel"/>
+    <text x="486" y="58" font-size="10" class="oa-svg-accent">GATE 2</text>
+    <text x="486" y="78" font-size="13.5" class="oa-svg-title">Qualify</text>
+    <text x="486" y="98" font-size="11" class="oa-svg-muted">Normal + 5</text>
+    <text x="486" y="114" font-size="11" class="oa-svg-muted">planted faults</text>
+  </g>
+  <path d="M606,80 L630,80" class="oa-svg-line-accent oa-svg-flow" marker-end="url(#how-arr)"/>
 
   <!-- Stage 5 -->
-  <rect x="636" y="34" width="118" height="92" rx="10" class="oa-svg-panel-link"/>
-  <text x="648" y="58" font-size="10" class="oa-svg-accent">EXECUTE</text>
-  <text x="648" y="78" font-size="13.5" class="oa-svg-title">Admit &amp; Run</text>
-  <text x="648" y="98" font-size="11" class="oa-svg-muted">0 model calls</text>
-  <text x="648" y="114" font-size="11" class="oa-svg-muted">Read-back check</text>
+  <g class="oa-svg-node">
+    <rect x="636" y="34" width="118" height="92" rx="10" class="oa-svg-panel-link"/>
+    <circle cx="738" cy="50" r="4" class="oa-svg-gate-dot oa-svg-gate-dot--accent"/>
+    <text x="648" y="58" font-size="10" class="oa-svg-accent">EXECUTE</text>
+    <text x="648" y="78" font-size="13.5" class="oa-svg-title">Admit &amp; run</text>
+    <text x="648" y="98" font-size="11" class="oa-svg-muted">0 model calls</text>
+    <text x="648" y="114" font-size="11" class="oa-svg-muted">Read-back check</text>
+  </g>
 
   <!-- Branches to outcomes -->
-  <path d="M754,56 L792,56" class="oa-svg-line-verified" marker-end="url(#how-arr-v)"/>
-  <path d="M754,84 L772,84 L772,144 L792,144" class="oa-svg-line-stopped" marker-end="url(#how-arr-s)"/>
-  <path d="M754,108 L764,108 L764,226 L792,226" class="oa-svg-line-stopped" marker-end="url(#how-arr-s)"/>
+  <path d="M754,56 L792,56" class="oa-svg-line-verified oa-svg-flow" marker-end="url(#how-arr-v)"/>
+  <path d="M754,84 C774,84 772,144 792,144" class="oa-svg-line-stopped oa-svg-flow-slow" marker-end="url(#how-arr-s)"/>
+  <path d="M754,108 C768,108 764,226 792,226" class="oa-svg-line-stopped oa-svg-flow-slow" marker-end="url(#how-arr-s)"/>
 
   <!-- Outcome 1: VERIFIED -->
-  <rect x="798" y="20" width="170" height="68" rx="10" class="oa-svg-panel-verified"/>
-  <text x="812" y="45" font-size="12" class="oa-svg-verified-txt">VERIFIED</text>
-  <text x="812" y="64" font-size="11" class="oa-svg-muted">Report + signed receipt</text>
+  <g class="oa-svg-node">
+    <rect x="798" y="20" width="170" height="68" rx="10" class="oa-svg-panel-verified"/>
+    <circle cx="952" cy="36" r="4" class="oa-svg-gate-dot oa-svg-gate-dot--verified"/>
+    <text x="812" y="45" font-size="12" class="oa-svg-verified-txt">VERIFIED</text>
+    <text x="812" y="64" font-size="11" class="oa-svg-muted">Report + signed receipt</text>
+  </g>
 
   <!-- Outcome 2: HALTED_BEFORE_EFFECT -->
-  <rect x="798" y="106" width="170" height="72" rx="10" class="oa-svg-panel-stopped"/>
-  <text x="812" y="131" font-size="10.5" class="oa-svg-stopped-txt">HALTED_BEFORE_EFFECT</text>
-  <text x="812" y="150" font-size="11" class="oa-svg-muted">Stopped before save</text>
-  <text x="812" y="165" font-size="11" class="oa-svg-muted">Nothing written</text>
+  <g class="oa-svg-node">
+    <rect x="798" y="106" width="170" height="72" rx="10" class="oa-svg-panel-stopped"/>
+    <text x="812" y="131" font-size="10.5" class="oa-svg-stopped-txt">HALTED_BEFORE_EFFECT</text>
+    <text x="812" y="150" font-size="11" class="oa-svg-muted">Stopped before save</text>
+    <text x="812" y="165" font-size="11" class="oa-svg-muted">Nothing written</text>
+  </g>
 
   <!-- Outcome 3: RECONCILIATION_REQUIRED -->
-  <rect x="798" y="192" width="170" height="72" rx="10" class="oa-svg-panel-reconcile"/>
-  <text x="812" y="216" font-size="9.5" class="oa-svg-reconcile-txt">RECONCILIATION_REQUIRED</text>
-  <text x="812" y="235" font-size="11" class="oa-svg-muted">Save not confirmed</text>
-  <text x="812" y="250" font-size="11" class="oa-svg-muted">Person checks record</text>
+  <g class="oa-svg-node">
+    <rect x="798" y="192" width="170" height="72" rx="10" class="oa-svg-panel-reconcile"/>
+    <text x="812" y="216" font-size="9.5" class="oa-svg-reconcile-txt">RECONCILIATION_REQUIRED</text>
+    <text x="812" y="235" font-size="11" class="oa-svg-muted">Save not confirmed</text>
+    <text x="812" y="250" font-size="11" class="oa-svg-muted">Person checks record</text>
+  </g>
 
   <!-- Teach loop -->
-  <path d="M798,162 L229,162 L229,130" class="oa-svg-line-stopped" stroke-dasharray="5 4" marker-end="url(#how-arr-s)"/>
+  <path d="M798,162 L229,162 L229,130" class="oa-svg-line-stopped oa-svg-flow-slow" marker-end="url(#how-arr-s)"/>
   <text x="415" y="182" font-size="11" class="oa-svg-muted">teach a guarded fix -> review -> re-qualify -> canary</text>
 </svg>
 <figcaption class="oa-diagram-caption">
