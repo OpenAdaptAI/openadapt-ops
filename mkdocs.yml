@@ -250,16 +250,15 @@ extra:
     - icon: fontawesome/solid/rss
       link: https://blog.openadapt.ai
 
-# Information architecture (Diataxis). Developers is split into Tutorials
-# (learning by doing), How-to guides (one task each), Reference (facts to look
-# up), and Explanation (why it works this way). Security & procurement is a
-# separate section for reviewers who won't install anything.
+# Information architecture (Diataxis) flattened into six top-level tabs:
+# Overview, Guides (Tutorials + How-to guides), Cloud, Reference, Architecture
+# (Explanation), and Security (Security & procurement).
 #
 # Every page appears in exactly one section. Old URLs redirect through the
 # mkdocs-redirects map in `plugins` above.
 nav:
-  - Home: index.md
-  - Developers:
+  - Overview: index.md
+  - Guides:
       - Tutorials:
           - Quickstart: tutorials/quickstart.md
           - Automate your first workflow: tutorials/first-workflow.md
@@ -277,33 +276,33 @@ nav:
           - Install the desktop app: how-to/desktop.md
           - Deploy: how-to/deploy.md
           - Troubleshoot: how-to/troubleshoot.md
-      - OpenAdapt Cloud:
-          - cloud/index.md
-          - Get told when a run stops: cloud/stop-alerts.md
-          - Check a receipt online: cloud/verify-a-receipt.md
-          - Review a repair: cloud/review-a-repair.md
-          - How hosted runs queue: cloud/hosted-runs.md
-      - Reference:
-          - What OpenAdapt can do: reference/capabilities.md
-          - Run outcomes: reference/outcomes.md
-          - Commands: reference/cli.md
-          - All Flow commands: reference/flow-commands.md
-          - Launcher and agent help: reference/cli-help.md
-          - Configuration: reference/configuration.md
-          - Files and evidence: reference/artifacts.md
-          - Receipts: reference/receipts.md
-          - Packages: reference/packages.md
-          - Versions and compatibility: reference/compatibility.md
-          - Glossary: reference/glossary.md
-          - Changelog: changelog.md
-          - What's new: whats-new.md
-      - Explanation:
-          - How OpenAdapt works: explanation/how-it-works.md
-          - How a save is checked: explanation/verification.md
-          - Local verifier sidecar: explanation/local-verifier-sidecar.md
-          - Surfaces: explanation/surfaces.md
-          - Limits: explanation/limits.md
-  - Security & procurement:
+  - Cloud:
+      - cloud/index.md
+      - Get told when a run stops: cloud/stop-alerts.md
+      - Check a receipt online: cloud/verify-a-receipt.md
+      - Review a repair: cloud/review-a-repair.md
+      - How hosted runs queue: cloud/hosted-runs.md
+  - Reference:
+      - What OpenAdapt can do: reference/capabilities.md
+      - Run outcomes: reference/outcomes.md
+      - Commands: reference/cli.md
+      - All Flow commands: reference/flow-commands.md
+      - Launcher and agent help: reference/cli-help.md
+      - Configuration: reference/configuration.md
+      - Files and evidence: reference/artifacts.md
+      - Receipts: reference/receipts.md
+      - Packages: reference/packages.md
+      - Versions and compatibility: reference/compatibility.md
+      - Glossary: reference/glossary.md
+      - Changelog: changelog.md
+      - What's new: whats-new.md
+  - Architecture:
+      - How OpenAdapt works: explanation/how-it-works.md
+      - How a save is checked: explanation/verification.md
+      - Local verifier sidecar: explanation/local-verifier-sidecar.md
+      - Surfaces: explanation/surfaces.md
+      - Limits: explanation/limits.md
+  - Security:
       - Overview: security/index.md
       - Data handling: security/data-handling.md
       - Deployment boundaries: security/deployment-boundaries.md
