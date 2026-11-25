@@ -298,6 +298,7 @@ nav:
       - Explanation:
           - How OpenAdapt works: explanation/how-it-works.md
           - How a save is checked: explanation/verification.md
+          - Local verifier sidecar: explanation/local-verifier-sidecar.md
           - Surfaces: explanation/surfaces.md
           - Limits: explanation/limits.md
   - Security & procurement:
