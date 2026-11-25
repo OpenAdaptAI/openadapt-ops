@@ -54,8 +54,8 @@ only on the receipt and the published keys.
 ## Offline
 
 The page and the API ask Cloud. `openadapt verify` checks on your own
-computer, and it checks every signer, not only Cloud. It prints one line per
-signer and fails closed on an unknown one; see
+computer and verifies every signer on the receipt. It prints one line per
+signer and stops with an error on any unknown key; see
 [Who signed it](../reference/receipts.md#who-signed-it). To trust Cloud's
 countersignature, pin Cloud's public keys once:
 

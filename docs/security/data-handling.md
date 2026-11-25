@@ -33,11 +33,11 @@ one path in the engine:
 
 - `REPORT.md` passes every free-text field through the scrubber.
 - Saved step screenshots go through image redaction when scrubbing is on.
-- `OPENADAPT_FLOW_SCRUB=on` fails closed: if the scrubber isn't installed,
-  the run stops instead of writing plain text. The on-premises queue refuses
+- `OPENADAPT_FLOW_SCRUB=on` requires the scrubber: if it isn't installed,
+  the run stops before writing plain text. The on-premises queue refuses
   to start without it.
 - Without the `privacy` extra, writing text that looks like an identifier
-  prints a warning instead of failing silently.
+  prints a warning so it never fails silently.
 
 The right-record check's evidence keeps literal identifiers, because
 scrubbing them would make the check impossible. That evidence stays inside
@@ -59,7 +59,7 @@ person approved:
    manifest, the review state, and the archive's SHA-256 before accepting it.
 
 Files the sanitizer can't handle, such as databases, video, audio, nested
-archives, and symlinks, refuse the whole copy instead of passing through.
+archives, and symlinks, cause the sanitizer to refuse the whole copy.
 The sanitizer's success isn't proof of de-identification; the person's review
 is the gate.
 

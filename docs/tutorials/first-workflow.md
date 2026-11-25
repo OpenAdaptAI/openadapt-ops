@@ -101,8 +101,8 @@ task that only reads. Point it at a test copy, never at production data.
 When it finishes, it prints a summary and writes `run/REPORT.md` and
 `run/report.json`. A replay ends `COMPLETED_UNVERIFIED`: the steps finished,
 but nothing read a saved record back, because `replay` doesn't check saves.
-Exit code 0 from `replay` means the steps finished, not that anything was
-confirmed.
+Exit code 0 from `replay` only means the steps finished; it does not confirm
+that anything persisted.
 
 If a screen has changed since you recorded, the step tries other ways to find
 its target, logs a proposed repair, and stops if nothing matches. Run

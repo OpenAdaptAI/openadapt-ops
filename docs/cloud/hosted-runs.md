@@ -30,4 +30,4 @@ scheduler tick, so a run whose slot was freed by a lost or timed-out run
 still starts.
 
 Each run goes to the managed runner at most once. A workflow can have only
-one active run, so a second run of the same workflow is refused, not queued.
+one active run, so a second run of the same workflow is refused immediately.

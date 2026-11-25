@@ -10,7 +10,9 @@ A surface is where a program acts. OpenAdapt drives six: a browser
 (`web`), native apps on `windows`, `macos`, and `linux`, and remote sessions
 over `rdp` and `citrix`. One runtime, with the same checks, drives all six.
 
-## Vision first, not vision only
+<span id="vision-first-not-vision-only"></span>
+
+## Structure first, pixels as fallback
 
 OpenAdapt can work from pixels alone: a screenshot in, clicks and keys out.
 That's what lets it drive an RDP or Citrix session, where the local computer

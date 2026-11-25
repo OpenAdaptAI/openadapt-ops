@@ -47,7 +47,7 @@ def test_remote_evidence_covers_rdp_lifecycle_and_citrix_contract():
     assert "3/3 healthy saves and 3/3 drift halts" in evidence
     assert "affedc5f1f0de533a0744deaa8e30a203c91c6b3" in evidence
     assert "packages/flow/benchmark/rdp_ladder/results.json" in evidence
-    assert "not Aardwolf, a Windows app, or Citrix ICA/HDX" in evidence
+    assert "distinct from Aardwolf, a Windows app, or Citrix ICA/HDX" in evidence
 
     assert "`--backend citrix` path" in evidence
     assert "requires on-screen readiness text before a governed run" in evidence
@@ -76,7 +76,7 @@ def test_public_managed_runner_and_customer_runtime_boundaries_remain_distinct()
 def test_deployment_config_selects_dedicated_citrix_backend_and_safety_contract():
     config = _read("reference/configuration.md")
 
-    assert "Citrix is its own backend, not an alias for RDP" in config
+    assert "Citrix is a separate backend from RDP" in config
     assert "kind: citrix" in config
     assert "Flow build `CitrixWorkspaceBackend`" in config
     assert "rdp_window_title: Claims - Citrix Workspace" in config

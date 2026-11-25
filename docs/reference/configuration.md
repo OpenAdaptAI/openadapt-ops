@@ -69,10 +69,10 @@ fields bind the session and guard each input:
 | `rdp_readiness_text` | none | Stable text that must be on screen before input, such as a menu label. |
 | `rdp_readiness_min_ratio` | `0.85` | How closely the text read from the screen must match the readiness text, from `0.0` to `1.0`. |
 | `rdp_host`, `rdp_port` (`3389`) | none | A network RDP session instead of a local window. Only for `kind: rdp`. |
-| `rdp_application_marker`, `rdp_application_version_marker`, `rdp_environment_marker`, `rdp_session_marker` | none | Stable text read from the session for qualification, such as the application name and version. Compared with the qualified environment, not kept in evidence. |
+| `rdp_application_marker`, `rdp_application_version_marker`, `rdp_environment_marker`, `rdp_session_marker` | none | Stable text read from the session for qualification, such as the application name and version. Compared against the qualified environment and omitted from evidence. |
 | `remote_frame_contract` | none | Regions of the session's screen that change on their own, such as a clock, left out when OpenAdapt checks that the screen has settled |
 
-Citrix is its own backend, not an alias for RDP. `kind: citrix` makes Flow
+Citrix is a separate backend from RDP. `kind: citrix` makes Flow
 build `CitrixWorkspaceBackend`, which binds the local Workspace or Viewer
 window and keeps that exact window through a run, a halt, and a resume.
 
@@ -105,7 +105,7 @@ a target, an identity check, or a record check, stops the run before input.
 `kind: citrix` rejects `rdp_host`; use `kind: rdp` for a network session.
 Governed Citrix `run` and `resume` require a nonblank `rdp_readiness_text`
 and refuse before any input without one. Choose text from the application's
-own frame, not from a record, so a lock screen, sign-in page, or other
+own chrome (never from record data) so a lock screen, sign-in page, or other
 application doesn't match. Pin the window title and qualify the frame age and
 match ratio against the real session before any saves.
 
@@ -212,9 +212,9 @@ runtime:
   with the recording before each recorded click, and stops the run when they
   differ, for example `font_size_changed` or `landmark_missing`. Bundles
   compiled before 2.2.0 carry no fingerprint and need recompiling to use it.
-- `pixel_verify_enabled` lets the pixel right-record check confirm a match,
-  not only refuse one. Leave it off unless that check was validated for your
-  screens.
+- `pixel_verify_enabled` allows the pixel right-record check to confirm a
+  match in addition to refusing mismatches. Leave it off unless that check was
+  validated for your screens.
 
 ### `human_decisions`
 

@@ -10,8 +10,8 @@ description: >-
 
 The public production record covers seven Production targets: the
 launcher, Flow, Agent, Capture, Desktop, Cloud, and this documentation.
-These are the parts OpenAdapt releases, not the
-[surfaces](../explanation/surfaces.md) it drives. A
+These are the software components OpenAdapt releases (distinct from the
+[surfaces](../explanation/surfaces.md) it drives). A
 release of each one is admitted for production use only by a signed
 admission in that record. The product as a whole is in production only when
 all seven hold an active admission. The record's policy sets a 30-day
