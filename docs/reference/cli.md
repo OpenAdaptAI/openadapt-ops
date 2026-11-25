@@ -34,7 +34,7 @@ with its long options, generated from the released package.
 | `openadapt doctor [--backend SURFACE]` | Checks this computer's requirements, for one surface if given. |
 | `openadapt deploy [--backend SURFACE] [--secret-ref REF]` | Checks this host and prints the deployment path for a surface. Takes secret references only (`env:NAME` or `keychain:service/item`). |
 | `openadapt connect --pairing CODE` | Pairs this computer with an OpenAdapt Cloud workspace. |
-| `openadapt verify TARGET` | Checks a receipt offline: a file, a run folder, or a link. Prints who signed it and fails closed on an unknown signer. Same as `openadapt receipt verify`. |
+| `openadapt verify TARGET` | Checks a receipt offline: a file, a run folder, or a link. Prints who signed it and refuses any unknown signer. Same as `openadapt receipt verify`. |
 | `openadapt receipt view\|publish\|unpublish\|claim` | Shows a receipt as an offline page, publishes or takes down its public version, and adds published receipts to your Cloud workspace. `openadapt receipt keys pin` and `show` manage the trusted keys. The `openadapt seal` commands still work. See [Receipts](receipts.md). |
 | `openadapt version` | Prints installed package versions. |
 
@@ -122,10 +122,10 @@ with its long options, generated from the released package.
 | [`connector`](#cloud) | Enrolls this computer with Cloud and runs Cloud jobs locally. |
 | [`console`](#operate) | Serves a local operator page over bundles, runs, and halts. Read-only unless `--allow-actions`. |
 | [`business-decisions`](#operate) | Relays typed business decisions on a customer runner. It never resumes or acts. |
-| [`serve-execute`](#operate) | Serves the Execute API locally. Its receipts are signed with a local key, not by OpenAdapt Cloud. |
+| [`serve-execute`](#operate) | Serves the Execute API locally. Its receipts are signed with a local key (without an OpenAdapt Cloud countersignature). |
 | [`service`](#operate) | Runs the unattended on-prem service, with health checks and restart. |
 | [`no-outbound`](#operate) | Lists and edits the allow list for strict no-outbound mode. |
-| [`serve-reward`](#operate) | Scores training episodes by reading the system of record. Its receipts are self-signed, not by OpenAdapt Cloud. |
+| [`serve-reward`](#operate) | Scores training episodes by reading the system of record. Its receipts are self-signed locally. |
 
 `certify`, `replay`, `run`, and `resume` all accept `--config deploy.yaml`.
 `record` and `compile` don't.

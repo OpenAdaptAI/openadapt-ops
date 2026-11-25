@@ -59,7 +59,7 @@ policy, or reuse an authorization for other inputs.
 | `reconciliation_required` | Whether the save happened is uncertain or conflicting. Don't send the write again; check the record first. |
 | `failed_platform` | A platform failure before anything could be saved |
 | `rejected_policy` | Refused before any save by qualification, authorization, identity, environment, or policy |
-| `rolled_back_verified` | A configured undo ran and was confirmed. This confirms the undo, not the original request. |
+| `rolled_back_verified` | A configured undo ran and was confirmed. This confirms only the undo. |
 
 Only `verified` is business success.
 

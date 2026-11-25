@@ -27,7 +27,7 @@ time.
 | GlitchTip | Error monitoring for the web app, when turned on | Error reports from the web app |
 | Google Analytics | Analytics on the public website and this documentation | Page views on public pages |
 
-Analytics apply to OpenAdapt's own pages, not to your workflows. This
+Analytics cover only OpenAdapt's own web pages and never run on your workflows. This
 documentation site skips analytics when the browser sends Do Not Track.
 
 ## What runs send to OpenAdapt

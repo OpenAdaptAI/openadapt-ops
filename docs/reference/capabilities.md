@@ -24,7 +24,7 @@ in the [OpenAdapt monorepo](https://github.com/OpenAdaptAI/OpenAdapt).
    Windows UI Automation, macOS Accessibility), direct API calls through
    hand-authored bindings (`ApiActuator`), and pixels only where nothing else
    exists, such as a remote desktop. It is not a pixel-macro recorder.
-3. **Builds branching programs, not one linear path.** One program from several
+3. **Builds branching programs.** One program from several
    demonstrations (`induce`, `disambiguate`), a branch learned from several
    halts fixed the same way (`teach-branch`), and background capture of many
    real runs (shadow mode).
@@ -120,9 +120,9 @@ improvising or retrying when something is off.
 | Person-signed grants let named agents or systems answer saves | Released | Unit tests | `openadapt-flow approver-grant` |
 | Admit once, then stop only on problems | Released, behind a readiness gate | Synthetic | [APPROVAL_MODES.md](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/APPROVAL_MODES.md) |
 | A person's approval in Desktop is signed with a key kept behind Touch ID on a Mac: one-prompt setup in the app, a prompt for every answer, and Flow never sees the key | Released ([#1500](https://github.com/OpenAdaptAI/OpenAdapt/pull/1500)) | Unit tests; opt-in test on a real Secure Enclave | `packages/desktop/openadapt_desktop/approver_keychain.py`, [APPROVAL_MODES.md](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/APPROVAL_MODES.md#the-approver-key) |
-| Review stops: every stop as one card with the evidence side by side (the item next to each possible match, field by field), answered with one key or tap on the computer or a paired phone, signed with the approver key, with batches for similar stops. The queue presents and collects; a changed or expired card changes nothing | Released ([#1519](https://github.com/OpenAdaptAI/OpenAdapt/pull/1519)) | Unit tests; a keystroke-level estimate on 20 soak stops (26.7 s to 8.2 s to decide, a model, not a person) | `packages/desktop/openadapt_desktop/stop_queue.py`, [benchmark/stop_queue](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/desktop/benchmark/stop_queue/README.md) |
+| Review stops: every stop as one card with the evidence side by side (the item next to each possible match, field by field), answered with one key or tap on the computer or a paired phone, signed with the approver key, with batches for similar stops. The queue presents and collects; a changed or expired card changes nothing | Released ([#1519](https://github.com/OpenAdaptAI/OpenAdapt/pull/1519)) | Unit tests; a keystroke-level estimate on 20 soak stops (26.7 s to 8.2 s to decide, estimated with a keystroke model) | `packages/desktop/openadapt_desktop/stop_queue.py`, [benchmark/stop_queue](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/desktop/benchmark/stop_queue/README.md) |
 
-## Branching work, not one linear path
+## Branching workflows
 
 | Capability | Status | Evidence | Where |
 | --- | --- | --- | --- |
@@ -219,7 +219,7 @@ fails when a command is added without being listed here.
   behind. A check that trusts the screen's "Saved" banner reported 54 of those
   as success; reading the record back over the app's REST API missed 9; the
   complete database read path caught all 72. This is a coverage test over a
-  small, hand-authored set of faults, not a real-world error rate:
+  small, hand-authored set of faults and does not represent a real-world error rate:
   [EFFECT_E2E.md](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/benchmark/effect_e2e/EFFECT_E2E.md).
 
 ## Where it has run

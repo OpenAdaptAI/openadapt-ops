@@ -117,7 +117,9 @@ next step is safe.
 </figcaption>
 </figure>
 
-## A program, not a model in a loop
+<span id="a-program-not-a-model-in-a-loop"></span>
+
+## Compiled replay without a model loop
 
 A computer-use agent decides each click by sending screenshots to a model.
 OpenAdapt makes those decisions once, at compile time, from the
@@ -138,8 +140,8 @@ Each step that changes a record is guarded three ways:
    same way it was found in the demonstration.
 3. **After saving**, a record check reads the saved record back through a
    different path from the screen, such as the app's API or database. The
-   success message on screen doesn't count: it shows that a save happened,
-   not what was stored.
+   success message on screen doesn't count because it only confirms the UI
+   showed a toast; it does not prove what was stored.
 
 If any check fails or can't tell, the run stops. When it stops before the
 save, nothing was written. When the save may have gone through but couldn't

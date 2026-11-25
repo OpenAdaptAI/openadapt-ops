@@ -104,7 +104,7 @@ publishes it.
 Paired phones are listed in Desktop and can be revoked. A phone session lasts
 twelve hours.
 
-Pairing identifies the phone, not the person holding it. If your policy needs
+Pairing identifies the phone itself and cannot verify who is holding it. If your policy needs
 a named approver, the deployment must supply the signed-in operator; the phone
 can't set a name.
 

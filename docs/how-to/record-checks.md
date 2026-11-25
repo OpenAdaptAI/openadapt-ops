@@ -61,10 +61,10 @@ openadapt flow run bundle --effects-kind rest --effects-base-url https://app.exa
 
 | Where the record is read | How | Strength |
 |---|---|---|
-| The system's API, database, or files: REST, GraphQL, FHIR, read-only SQL, a file or report drop, an email capture folder, a document store | `effects.kind` `rest`, `graphql`, `fhir`, `sql`, `file`, `document`, `email`, `document-hash` | Strongest. Reads the system of record, not the screen. |
-| The app's own record page, opened by id in a separate, freshly signed-in, read-only browser session | `effects.kind: ui_readback` | Independent of the session that typed, but still a screen |
+| The system's API, database, or files: REST, GraphQL, FHIR, read-only SQL, a file or report drop, an email capture folder, a document store | `effects.kind` `rest`, `graphql`, `fhir`, `sql`, `file`, `document`, `email`, `document-hash` | Strongest. Reads the system of record directly. |
+| The app's own record page, opened by id in a separate, freshly signed-in, read-only browser session | `effects.kind: ui_readback` | Independent of the session that typed, though still read from a rendered page |
 | The acting session clears what the screen remembers, opens the record again, and reads it | A check you show by demonstration | Can stop a run; never makes one `VERIFIED` on its own |
-| The screen the run worked on | `effects.kind: onscreen` | Weakest. A consistency signal, not proof of a save. |
+| The screen the run worked on | `effects.kind: onscreen` | Weakest. Provides a consistency signal and does not prove a save persisted. |
 
 [How a save is checked](../explanation/verification.md#how-strong-a-read-back-is)
 maps each one to what it can reach: `VERIFIED`, certification, and Cloud's countersignature.

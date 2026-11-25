@@ -178,7 +178,7 @@ variable without a default is an error.
 | `verifier` | The read-back, with the same fields as a deployment file's `effects:` section: `rest`, `sql`, `fhir`, `graphql`, `ui_readback`, or a plugin kind. `onscreen` is refused. |
 | `verifier.session` | For `kind: rest`, a `module:function` that returns a signed-in HTTP client, for sign-ins `auth` can't express |
 | `effects` | The save's checks as an effect contract list, as in `effect_contract.yaml` |
-| `record` | A shorter form of `effects`: `match` (the fields that find the record), `fields` (record field to input name, or `{literal: VALUE}`), `duplicate_key`, `expected_count` (default 1), and `timeout_s` (default 5). Give `effects` or `record`, not both; leave both out when the compiler already bound the checks. |
+| `record` | A shorter form of `effects`: `match` (the fields that find the record), `fields` (record field to input name, or `{literal: VALUE}`), `duplicate_key`, `expected_count` (default 1), and `timeout_s` (default 5). Supply either `effects` or `record` (never both); leave both out when the compiler already bound the checks. |
 | `save_step` | `auto` picks the one irreversible step; otherwise name the step id |
 | `inputs.source` | `recorded` reuses the demonstration's values; `file` loads `inputs.file` |
 | `inputs.params`, `inputs.unique` | Override single values; suffix these inputs per campaign so reruns don't collide |

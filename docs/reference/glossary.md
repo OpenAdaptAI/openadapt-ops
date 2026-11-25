@@ -90,8 +90,8 @@ parentheses.
 
 <span id="receipt"></span>**Receipt**
 :   A signed, itemized record of one run: what it changed, how each change
-    was checked, and who signed it. It doesn't grade the run. It holds counts
-    and digests, not record values. Check one with `openadapt verify`. See
+    was checked, and who signed it. It doesn't grade the run. It holds only
+    counts and digests (never record values). Check one with `openadapt verify`. See
     [Receipts](receipts.md).
 
 <span id="reconciliation"></span>**Reconciliation**

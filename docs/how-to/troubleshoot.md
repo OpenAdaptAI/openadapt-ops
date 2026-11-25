@@ -96,8 +96,8 @@ curl http://127.0.0.1:5001/health
 
 The desktop app shows **OFFLINE** or **SYNCING**, and pushes aren't reaching
 Cloud. The upload queue keeps items across restarts and retries when the
-connection returns. From the command line, a failed `push` exits 1 in both of
-these cases, so read the message or the `--json` status, not the exit code:
+connection returns. From the command line, a failed `push` returns exit code 1 in both of
+these cases, so inspect the printed message or the `--json` status:
 
 - `push failed: ...` (`"status": "failed"`): Cloud didn't accept the
   artifact. Fix the cause and run `push` again.

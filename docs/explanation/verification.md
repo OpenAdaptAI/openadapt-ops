@@ -9,9 +9,8 @@ description: >-
 A record check is how OpenAdapt checks its own work. After a save, it reads
 the record back and compares the fields it typed. That catches a value in
 the wrong field, an entry on the wrong record, a missed keystroke, a
-duplicate submit, or a step that ran before the page was ready. The
-confirmation on screen shows that a save happened, not what was stored, so
-it isn't used as proof. A record check returns `confirmed`, `refuted`, or
+duplicate submit, or a step that ran before the page was ready. The confirmation on screen only indicates the UI reported a save and does not
+prove what was stored, so it isn't used as proof. A record check returns `confirmed`, `refuted`, or
 `indeterminate`. Only `confirmed` lets a run continue.
 
 <figure class="oa-diagram-frame">
@@ -205,9 +204,8 @@ with an extra write to another table. Three checks judged the same runs:
 
 Each check also stopped 9 of the 18 runs that saved correctly, because the
 reply to the save never reached the client. A record check catches what its
-read can see, so it should cover every table a save can change. These
-were faults we wrote and injected into our own engine: a coverage test over a
-fixed list, not a real-world error rate.
+read can see, so it should cover every table a save can change. These were faults we wrote and injected into our own engine to test coverage
+over a fixed list; they do not represent a real-world error rate.
 [Method and per-fault results](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/benchmark/effect_e2e/EFFECT_E2E.md).
 
 ## How a save is approved

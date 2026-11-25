@@ -58,8 +58,8 @@ synthetic note task: 3/3 healthy saves and 3/3 drift halts, with no model
 calls
 ([report](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/benchmark/rdp_ladder/results.json), first retained at Flow commit
 `affedc5f1f0de533a0744deaa8e30a203c91c6b3`).
-That second run is a synthetic Linux app, not Aardwolf, a Windows app, or
-Citrix ICA/HDX.
+That second run covers a synthetic Linux app (distinct from Aardwolf, a Windows
+app, or Citrix ICA/HDX).
 
 **Citrix.** The `--backend citrix` path binds the exact Workspace or Viewer
 window and requires on-screen readiness text before a governed run. On a
@@ -89,12 +89,12 @@ testing. None is a customer workflow.
 
 ## The managed runner
 
-The managed browser runner installs a pinned engine release, not the newest
-one. As of 2026-10-17, the managed runner's runtime manifest pins Flow 1.34.0
+The managed browser runner installs a pinned engine release.
+As of 2026-10-17, the managed runner's runtime manifest pins Flow 1.34.0
 at release commit `30fc60e55778a0e0f92b9776117cafcfe2512249`, wheel SHA-256
 `56d32818989cb3a92830080ead39e10b08718c55e00988117f22cbfeaac98854`, and sdist
 SHA-256 `a941a70015fe91897e655bfc9bf83e6cf8fbcf8bd4e4c7206ffb133c505203f8`.
-This is the configured pin in OpenAdapt Cloud's source, not a check of the
+This value is read from OpenAdapt Cloud's source config and does not query the
 live service. Runs on your own computer use whatever version you install.
 The managed runner is only for browser workflows; desktop, RDP, and Citrix
 runs happen on a runner you control.
