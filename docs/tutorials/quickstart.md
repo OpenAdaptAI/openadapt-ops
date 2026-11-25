@@ -24,8 +24,8 @@ uvx --python 3.12 openadapt@latest quickstart
 ```
 
 `uv` downloads Python 3.12 for this command if you don't have it, and
-`openadapt@latest` runs the newest release. Without `uv`, use Python 3.10, 3.11,
-or 3.12:
+`openadapt@latest` runs the newest release. Without `uv`, use Python 3.11 or
+3.12:
 
 ```bash
 python -m pip install --upgrade openadapt

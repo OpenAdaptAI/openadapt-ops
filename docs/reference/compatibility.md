@@ -21,13 +21,13 @@ PyPI require. A daily check compares this table with that metadata.
 
 | Component | Compatible range | Role |
 |---|---|---|
-| `openadapt` 1.x | `openadapt-flow >=3.3.0,<4` | The `openadapt` command and its `openadapt flow` commands |
-| `openadapt` 1.x | `openadapt-agent >=2.1.0,<3` | The `openadapt agent` commands and the MCP server |
-| `openadapt-flow` 3.x with desktop recording | `openadapt-capture >=1.2.0,<2` | Recording on Windows, macOS, Linux, RDP, and Citrix |
-| Windows control details at recording time | `openadapt-flow >=3.3.0,<4` + `openadapt-capture >=1.2.0,<2` | Keeps the UI Automation details of each clicked control for native Windows apps |
-| `openadapt-flow` 3.x with the `privacy` extra | `openadapt-privacy[presidio] >=1.0` | Local scrubbing and redaction |
-| `openadapt-flow` 3.x, including its interop, console, execute, and reward extras | `openadapt-types >=0.24,<0.25` | Shared data models, including the Execute request, status, webhook, and receipt; installed with Flow |
-| Python | 3.10-3.12 | Supported runtime range |
+| `openadapt` 1.x | `openadapt-flow >=4.0.0,<5.0.0` | The `openadapt` command and its `openadapt flow` commands |
+| `openadapt` 1.x | `openadapt-agent >=2.2.4,<3` | The `openadapt agent` commands and the MCP server |
+| `openadapt-flow` 4.x with desktop recording | `openadapt-capture >=1.2.0,<2` | Recording on Windows, macOS, Linux, RDP, and Citrix |
+| Windows control details at recording time | `openadapt-flow >=4.0.0,<5.0.0` + `openadapt-capture >=1.2.0,<2` | Keeps the UI Automation details of each clicked control for native Windows apps |
+| `openadapt-flow` 4.x with the `privacy` extra | `openadapt-privacy[presidio] >=1.1.4` | Local scrubbing and redaction |
+| `openadapt-flow` 4.x, including its interop, console, execute, and reward extras | `openadapt-types >=0.24.2,<0.25.0` | Shared data models, including the Execute request, status, webhook, and receipt; installed with Flow |
+| Python | 3.11-3.12 | Supported runtime range |
 
 On Python 3.13 and later, `pip install openadapt` installs only the launcher,
 because the engine and the MCP server require Python 3.12 or earlier. Use a

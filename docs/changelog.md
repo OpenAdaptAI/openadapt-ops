@@ -65,21 +65,19 @@
   What's Changed
 - **[v0.96.1](https://github.com/OpenAdaptAI/openadapt-evals/releases/tag/v0.96.1)** (2026-09-02)
   What's Changed
-- **[v0.96.0](https://github.com/OpenAdaptAI/openadapt-evals/releases/tag/v0.96.0)** (2026-09-01)
-  What's Changed
 
 ## openadapt-capture
 
-- **[v1.3.0](https://github.com/OpenAdaptAI/openadapt-capture/releases/tag/v1.3.0)** (2026-10-18)
+- **[v1.4.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/capture/CHANGELOG.md#v140-2026-11-19)** (2026-11-19)
   _This release uses the MIT License._
-- **[v1.2.2](https://github.com/OpenAdaptAI/openadapt-capture/releases/tag/v1.2.2)** (2026-07-28)
-  Bug Fixes
-- **[v1.2.1](https://github.com/OpenAdaptAI/openadapt-capture/releases/tag/v1.2.1)** (2026-07-27)
-  Bug Fixes
-- **[v1.2.0](https://github.com/OpenAdaptAI/openadapt-capture/releases/tag/v1.2.0)** (2026-07-26)
-  Bug Fixes
-- **[v1.1.1](https://github.com/OpenAdaptAI/openadapt-capture/releases/tag/v1.1.1)** (2026-07-25)
-  Bug Fixes
+- **[v1.3.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/capture/CHANGELOG.md#v130-2026-10-17)** (2026-10-17)
+  _This release uses the MIT License._
+- **[v1.2.2](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/capture/CHANGELOG.md#v122-2026-07-28)** (2026-07-28)
+  Stop fabricating display metrics, window data, and UIA evidence
+- **[v1.2.1](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/capture/CHANGELOG.md#v121-2026-07-27)** (2026-07-27)
+  **audio**: Make narration capture on-device only and fail closed
+- **[v1.2.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/capture/CHANGELOG.md#v120-2026-07-26)** (2026-07-26)
+  Bound native structural evidence
 
 ## openadapt-privacy
 
