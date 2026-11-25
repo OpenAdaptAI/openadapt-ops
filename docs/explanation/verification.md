@@ -14,17 +14,10 @@ confirmation on screen shows that a save happened, not what was stored, so
 it isn't used as proof. A record check returns `confirmed`, `refuted`, or
 `indeterminate`. Only `confirmed` lets a run continue.
 
-![On the acting surface, the app screen OpenAdapt types into, a run checks that the right record is on screen, then enters and saves. It then reads the record back. A screen read-back uses the app's UI in a separate session and is not independent. An independent read uses the system of record through its API, database, or file export, never through the UI. If the read matches, the run ends VERIFIED with a run report and a receipt; OpenAdapt Cloud countersigns the receipt only after an independent read. If it doesn't match or can't tell, the run ends RECONCILIATION_REQUIRED and a person checks the record. If the right-record check fails, the run ends HALTED_BEFORE_EFFECT before saving and asks a person.](../assets/diagrams/record-check.svg)
-
-## Commit-boundary verification
-
-When an agent or compiled program crosses a commit boundary, OpenAdapt captures
-a baseline before the write and compares the post-write read-back against it:
-
 <figure class="oa-diagram-frame">
-<svg viewBox="0 0 980 270" role="img" aria-labelledby="oa-ver-title oa-ver-desc">
-  <title id="oa-ver-title">Commit-boundary verification flow</title>
-  <desc id="oa-ver-desc">Before a consequential action, OpenAdapt captures a baseline and checks that the right record is on screen. After the save, it reads the record back either independently from the system of record (Tier 1: REST, GraphQL, FHIR, SQL, or file export) or from a separate signed-in UI session (Tier 2: ui_readback). Confirmed effects end VERIFIED with a signed receipt; refuted or indeterminate checks end RECONCILIATION_REQUIRED and the ledger blocks blind retries.</desc>
+<svg viewBox="0 0 980 390" role="img" aria-labelledby="oa-ver-title oa-ver-desc">
+  <title id="oa-ver-title">How OpenAdapt checks a save at the commit boundary</title>
+  <desc id="oa-ver-desc">On the acting surface, OpenAdapt first performs a right-record check and captures a baseline. If the wrong record or an unexpected screen appears, the run stops before saving with HALTED_BEFORE_EFFECT and nothing is written. Otherwise it enters and saves, then reads the record back either independently from the system of record (Tier 1: REST, GraphQL, FHIR, SQL, or file export) or from a separate signed-in UI session (Tier 2: ui_readback). The acting screen alone never confirms a save. If the read matches, the run ends VERIFIED with a signed Ed25519 receipt (OpenAdapt Cloud countersigns only after a Tier 1 independent read). If the read disagrees or cannot tell, the run ends RECONCILIATION_REQUIRED and the ledger blocks blind retries until a person checks the record.</desc>
   <defs>
     <marker id="ver-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
       <path d="M0,1 L9,5 L0,9 z" class="oa-svg-arrow-accent"/>
@@ -37,61 +30,101 @@ a baseline before the write and compares the post-write read-back against it:
     </marker>
   </defs>
 
-  <!-- Pre-state & Action -->
-  <rect x="14" y="42" width="176" height="122" rx="12" class="oa-svg-panel-link"/>
-  <text x="28" y="66" font-size="10" class="oa-svg-accent">BEFORE WRITE</text>
-  <text x="28" y="88" font-size="14" class="oa-svg-title">Pre-state gate</text>
-  <text x="28" y="108" font-size="11.5" class="oa-svg-muted">Baseline snapshot</text>
-  <text x="28" y="125" font-size="11.5" class="oa-svg-muted">Right-record check</text>
-  <text x="28" y="146" font-size="10.5" class="oa-svg-mono">begin_write()</text>
+  <!-- Acting Surface container -->
+  <rect x="14" y="16" width="320" height="236" rx="14" class="oa-svg-panel-link"/>
+  <text x="30" y="42" font-size="10.5" class="oa-svg-accent">ACTING SURFACE · WEB, DESKTOP, RDP/CITRIX</text>
 
-  <path d="M190,103 L222,103" class="oa-svg-line-accent" marker-end="url(#ver-arr)"/>
+  <!-- Step 1: Right-record check -->
+  <g class="oa-svg-node">
+    <rect x="28" y="62" width="136" height="118" rx="10" class="oa-svg-panel"/>
+    <text x="40" y="84" font-size="10" class="oa-svg-accent">1 · PRE-CHECK</text>
+    <text x="40" y="105" font-size="13" class="oa-svg-title">Right-record</text>
+    <text x="40" y="122" font-size="13" class="oa-svg-title">check</text>
+    <text x="40" y="144" font-size="10.5" class="oa-svg-muted">Baseline + target</text>
+    <text x="40" y="162" font-size="10" class="oa-svg-mono">begin_write()</text>
+  </g>
 
-  <!-- Action / Save -->
-  <rect x="228" y="42" width="148" height="122" rx="12" class="oa-svg-panel"/>
-  <text x="242" y="66" font-size="10" class="oa-svg-accent">COMMIT BOUNDARY</text>
-  <text x="242" y="88" font-size="14" class="oa-svg-title">Action and save</text>
-  <text x="242" y="108" font-size="11.5" class="oa-svg-muted">Compiled step or</text>
-  <text x="242" y="125" font-size="11.5" class="oa-svg-muted">external agent</text>
-  <text x="242" y="146" font-size="10.5" class="oa-svg-mono">approval-gated</text>
+  <path d="M164,121 L188,121" class="oa-svg-line-accent oa-svg-flow" marker-end="url(#ver-arr)"/>
 
-  <!-- Split to read-back tiers -->
-  <path d="M376,80 L402,80 L402,68 L428,68" class="oa-svg-line-verified" marker-end="url(#ver-arr-v)"/>
-  <path d="M376,126 L402,126 L402,174 L428,174" class="oa-svg-line-accent" marker-end="url(#ver-arr)"/>
+  <!-- Step 2: Enter and save -->
+  <g class="oa-svg-node">
+    <rect x="192" y="62" width="128" height="118" rx="10" class="oa-svg-panel"/>
+    <text x="204" y="84" font-size="10" class="oa-svg-accent">2 · ACTION</text>
+    <text x="204" y="105" font-size="13" class="oa-svg-title">Enter and</text>
+    <text x="204" y="122" font-size="13" class="oa-svg-title">save</text>
+    <text x="204" y="144" font-size="10.5" class="oa-svg-muted">Compiled step or</text>
+    <text x="204" y="160" font-size="10.5" class="oa-svg-muted">wrapped agent</text>
+  </g>
 
-  <!-- Tier 1: Independent read-back -->
-  <rect x="434" y="16" width="268" height="106" rx="12" class="oa-svg-panel-verified"/>
-  <text x="450" y="39" font-size="10" class="oa-svg-verified-txt">TIER 1 · INDEPENDENT READ</text>
-  <text x="450" y="60" font-size="14" class="oa-svg-title">System-of-record read-back</text>
-  <text x="450" y="80" font-size="11.5" class="oa-svg-muted">REST, GraphQL, FHIR, SQL, or file export</text>
-  <text x="450" y="97" font-size="11.5" class="oa-svg-muted">Qualifies, certifies, and backs Cloud Seal</text>
+  <text x="30" y="216" font-size="11" class="oa-svg-muted">The acting screen alone never confirms a save.</text>
+  <text x="30" y="234" font-size="10.5" class="oa-svg-mono">approval-gated by profile</text>
 
-  <!-- Tier 2: Separate UI session -->
-  <rect x="434" y="136" width="268" height="106" rx="12" class="oa-svg-panel"/>
-  <text x="450" y="159" font-size="10" class="oa-svg-accent">TIER 2 · SEPARATE SESSION</text>
-  <text x="450" y="180" font-size="14" class="oa-svg-title">Separate UI read-back</text>
-  <text x="450" y="200" font-size="11.5" class="oa-svg-muted">Fresh read-only session (ui_readback)</text>
-  <text x="450" y="217" font-size="11.5" class="oa-svg-muted">Ends VERIFIED outside regulated policy</text>
+  <!-- Split from Action to Read-back tiers -->
+  <path d="M320,104 C354,104 352,72 384,72" class="oa-svg-line-verified oa-svg-flow" marker-end="url(#ver-arr-v)"/>
+  <path d="M320,138 C354,138 352,196 384,196" class="oa-svg-line-accent oa-svg-flow" marker-end="url(#ver-arr)"/>
 
-  <!-- Merge to outcomes -->
-  <path d="M702,68 L748,68" class="oa-svg-line-verified" marker-end="url(#ver-arr-v)"/>
-  <path d="M702,188 L748,188" class="oa-svg-line-stopped" marker-end="url(#ver-arr-s)"/>
+  <!-- Step 3: Tier 1 Independent Read-Back -->
+  <g class="oa-svg-node">
+    <rect x="390" y="16" width="276" height="114" rx="12" class="oa-svg-panel-verified"/>
+    <circle cx="648" cy="36" r="4.5" class="oa-svg-gate-dot oa-svg-gate-dot--verified"/>
+    <text x="406" y="40" font-size="10" class="oa-svg-verified-txt">3A · TIER 1 INDEPENDENT READ</text>
+    <text x="406" y="62" font-size="14" class="oa-svg-title">System-of-record read-back</text>
+    <text x="406" y="83" font-size="11.5" class="oa-svg-muted">API (REST, GraphQL, FHIR), SQL,</text>
+    <text x="406" y="100" font-size="11.5" class="oa-svg-muted">or file export; never through the UI</text>
+    <text x="406" y="118" font-size="10" class="oa-svg-mono">independent_readback</text>
+  </g>
 
-  <!-- Outcome: Commit / VERIFIED -->
-  <rect x="754" y="24" width="212" height="88" rx="12" class="oa-svg-panel-verified"/>
-  <text x="770" y="49" font-size="12" class="oa-svg-verified-txt">VERIFIED</text>
-  <text x="770" y="70" font-size="11.5" class="oa-svg-muted">All effects confirmed</text>
-  <text x="770" y="88" font-size="11.5" class="oa-svg-muted">Emit signed receipt</text>
+  <!-- Step 3: Tier 2 Separate Session UI Read-Back -->
+  <g class="oa-svg-node">
+    <rect x="390" y="144" width="276" height="108" rx="12" class="oa-svg-panel"/>
+    <text x="406" y="168" font-size="10" class="oa-svg-accent">3B · TIER 2 SEPARATE SESSION</text>
+    <text x="406" y="190" font-size="14" class="oa-svg-title">Separate UI read-back</text>
+    <text x="406" y="211" font-size="11.5" class="oa-svg-muted">Fresh read-only session (ui_readback)</text>
+    <text x="406" y="229" font-size="11" class="oa-svg-muted">Ends VERIFIED outside regulated policy</text>
+  </g>
 
-  <!-- Outcome: Pause / Reconcile -->
-  <rect x="754" y="138" width="212" height="102" rx="12" class="oa-svg-panel-reconcile"/>
-  <text x="770" y="162" font-size="10.5" class="oa-svg-reconcile-txt">RECONCILIATION_REQUIRED</text>
-  <text x="770" y="183" font-size="11.5" class="oa-svg-muted">Refuted or indeterminate:</text>
-  <text x="770" y="200" font-size="11.5" class="oa-svg-muted">stop and ask a person</text>
-  <text x="770" y="220" font-size="10.5" class="oa-svg-mono">ledger blocks blind retry</text>
+  <!-- Connectors to Outcomes -->
+  <path d="M666,68 C702,68 702,66 734,66" class="oa-svg-line-verified oa-svg-flow" marker-end="url(#ver-arr-v)"/>
+  <path d="M666,196 C702,196 702,204 734,204" class="oa-svg-line-stopped oa-svg-flow-slow" marker-end="url(#ver-arr-s)"/>
+  <text x="674" y="54" font-size="10.5" class="oa-svg-muted">matches</text>
+  <text x="670" y="224" font-size="10.5" class="oa-svg-muted">mismatch /</text>
+  <text x="670" y="238" font-size="10.5" class="oa-svg-muted">uncertain</text>
+
+  <!-- Outcome 1: VERIFIED -->
+  <g class="oa-svg-node">
+    <rect x="740" y="16" width="226" height="114" rx="12" class="oa-svg-panel-verified"/>
+    <circle cx="948" cy="36" r="4.5" class="oa-svg-gate-dot oa-svg-gate-dot--verified"/>
+    <text x="756" y="42" font-size="12" class="oa-svg-verified-txt">VERIFIED</text>
+    <text x="756" y="64" font-size="12" class="oa-svg-title">Signed Ed25519 receipt</text>
+    <text x="756" y="85" font-size="11" class="oa-svg-muted">All declared effects confirmed</text>
+    <text x="756" y="102" font-size="11" class="oa-svg-muted">Cloud countersigns Tier 1 only</text>
+    <text x="756" y="119" font-size="10" class="oa-svg-mono">receipt.json · /r/&lt;id&gt;</text>
+  </g>
+
+  <!-- Outcome 2: RECONCILIATION_REQUIRED -->
+  <g class="oa-svg-node">
+    <rect x="740" y="146" width="226" height="106" rx="12" class="oa-svg-panel-reconcile"/>
+    <circle cx="948" cy="166" r="4" class="oa-svg-gate-dot oa-svg-gate-dot--stopped"/>
+    <text x="756" y="170" font-size="10.5" class="oa-svg-reconcile-txt">RECONCILIATION_REQUIRED</text>
+    <text x="756" y="191" font-size="11.5" class="oa-svg-muted">Refuted or indeterminate:</text>
+    <text x="756" y="208" font-size="11.5" class="oa-svg-muted">stop and ask a person</text>
+    <text x="756" y="230" font-size="10" class="oa-svg-mono">ledger blocks blind retry</text>
+  </g>
+
+  <!-- Pre-save halt branch -->
+  <path d="M96,180 L96,294" class="oa-svg-line-stopped oa-svg-flow-slow" marker-end="url(#ver-arr-s)"/>
+  <text x="108" y="272" font-size="10.5" class="oa-svg-muted">wrong record or unexpected screen</text>
+
+  <!-- Outcome 3: HALTED_BEFORE_EFFECT -->
+  <g class="oa-svg-node">
+    <rect x="14" y="300" width="952" height="72" rx="12" class="oa-svg-panel-stopped"/>
+    <circle cx="948" cy="322" r="4" class="oa-svg-gate-dot oa-svg-gate-dot--stopped"/>
+    <text x="32" y="328" font-size="12" class="oa-svg-stopped-txt">HALTED_BEFORE_EFFECT</text>
+    <text x="32" y="352" font-size="12" class="oa-svg-muted">Stops before saving and asks a person. Nothing was written, so the item is safe to fix and re-run.</text>
+  </g>
 </svg>
 <figcaption class="oa-diagram-caption">
-  <span><strong>Read-back tiers:</strong> Tier 1 reads the system of record directly; Tier 2 reads a separate UI session. Unconfirmed writes stop for reconciliation.</span>
+  <span><strong>Commit-boundary verification:</strong> Pre-save identity prevents wrong-record writes; independent read-back confirms persistence; uncertainty stops without blind retry.</span>
   <span><a href="../../reference/receipts/">Signed receipts &rarr;</a></span>
 </figcaption>
 </figure>

@@ -13,6 +13,78 @@ Every run gets one, including a run that stopped or couldn't tell whether a
 save landed. The receipt copies the run's outcome and never upgrades it. A
 `STOPPED` run with a valid signature is still a stopped run.
 
+<figure class="oa-diagram-frame">
+<svg viewBox="0 0 980 245" role="img" aria-labelledby="oa-rcpt-title oa-rcpt-desc">
+  <title id="oa-rcpt-title">Ed25519 receipt signing and trust boundary</title>
+  <desc id="oa-rcpt-desc">Inside the customer boundary, the runner writes salted commitments and signs receipt.json with the local computer key and optional organization key while keeping receipt.private.json local (mode 0600). Across the boundary, only digests and public fields flow to OpenAdapt Cloud for optional countersignature, Sigstore Rekor transparency logging, and online verification at app.openadapt.ai/r/id.</desc>
+  <defs>
+    <marker id="rcpt-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto">
+      <path d="M0,1 L9,5 L0,9 z" class="oa-svg-arrow-accent"/>
+    </marker>
+    <marker id="rcpt-arr-v" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto">
+      <path d="M0,1 L9,5 L0,9 z" class="oa-svg-arrow-verified"/>
+    </marker>
+  </defs>
+
+  <!-- Customer Boundary -->
+  <rect x="14" y="14" width="540" height="216" rx="12" class="oa-svg-panel-verified"/>
+  <text x="30" y="34" font-size="9.5" class="oa-svg-verified-txt">CUSTOMER BOUNDARY · RAW VALUES &amp; SALTS STAY LOCAL</text>
+
+  <g class="oa-svg-node">
+    <rect x="30" y="48" width="226" height="72" rx="8" class="oa-svg-panel"/>
+    <text x="44" y="69" font-size="12.5" class="oa-svg-title">Run &amp; record check</text>
+    <text x="44" y="86" font-size="10" class="oa-svg-muted">Outcome, agent_used, verifier</text>
+    <text x="44" y="102" font-size="9.5" class="oa-svg-mono">SHA-256 digests only</text>
+  </g>
+  <path d="M256,84 L302,84" class="oa-svg-line-accent oa-svg-flow" marker-end="url(#rcpt-arr)"/>
+
+  <g class="oa-svg-node">
+    <rect x="308" y="48" width="230" height="72" rx="8" class="oa-svg-panel"/>
+    <circle cx="522" cy="62" r="3.5" class="oa-svg-gate-dot oa-svg-dot-verified"/>
+    <text x="322" y="69" font-size="12.5" class="oa-svg-title">Ed25519 signing</text>
+    <text x="322" y="86" font-size="10" class="oa-svg-muted">Computer key + optional org key</text>
+    <text x="322" y="102" font-size="9.5" class="oa-svg-mono">receipt.json · receipt.card.json</text>
+  </g>
+
+  <g class="oa-svg-node">
+    <rect x="30" y="138" width="508" height="76" rx="8" class="oa-svg-panel-warn"/>
+    <text x="44" y="159" font-size="10" class="oa-svg-warn-txt">NEVER UPLOADED (MODE 0600)</text>
+    <text x="44" y="178" font-size="12.5" class="oa-svg-title">receipt.private.json</text>
+    <text x="44" y="196" font-size="10.5" class="oa-svg-muted">Salts and clear field values for selective disclosure; screenshots stay in the local run folder.</text>
+  </g>
+
+  <!-- Boundary crossing arrow -->
+  <path d="M554,84 L622,84" class="oa-svg-line-verified oa-svg-flow" marker-end="url(#rcpt-arr-v)"/>
+  <text x="588" y="74" text-anchor="middle" font-size="9" class="oa-svg-verified-txt">digests</text>
+
+  <!-- External Verification & Countersigning -->
+  <rect x="628" y="14" width="338" height="216" rx="12" class="oa-svg-panel-link"/>
+  <text x="644" y="34" font-size="9.5" class="oa-svg-accent">OPTIONAL COUNTERSIGNING &amp; VERIFICATION</text>
+
+  <g class="oa-svg-node">
+    <rect x="644" y="48" width="306" height="50" rx="8" class="oa-svg-panel"/>
+    <text x="658" y="69" font-size="12" class="oa-svg-title">OpenAdapt Cloud countersignature</text>
+    <text x="658" y="85" font-size="10" class="oa-svg-muted">Checks runner signature &amp; system-of-record read</text>
+  </g>
+
+  <g class="oa-svg-node">
+    <rect x="644" y="108" width="306" height="50" rx="8" class="oa-svg-panel"/>
+    <text x="658" y="129" font-size="12" class="oa-svg-title">Sigstore Rekor &amp; RFC 3161 TSA</text>
+    <text x="658" y="145" font-size="10" class="oa-svg-muted">Public transparency log over 32-byte digest</text>
+  </g>
+
+  <g class="oa-svg-node">
+    <rect x="644" y="168" width="306" height="46" rx="8" class="oa-svg-panel-verified"/>
+    <text x="658" y="188" font-size="12" class="oa-svg-title">Offline CLI or app.openadapt.ai/r/&lt;id&gt;</text>
+    <text x="658" y="204" font-size="10" class="oa-svg-mono">openadapt verify · pinned key registry</text>
+  </g>
+</svg>
+<figcaption class="oa-diagram-caption">
+  <span><strong>Cryptographic proof without data leakage:</strong> Receipts carry SHA-256 commitments, never screenshots or clear values.</span>
+  <span><a href="../../cloud/verify-a-receipt/">Verify a receipt online &rarr;</a></span>
+</figcaption>
+</figure>
+
 ## Who signed it
 
 A receipt can carry several signatures over the same record. Each signature
@@ -28,7 +100,7 @@ line per role, in this order:
 | Logged publicly | The receipt's digest is in a public transparency log (Sigstore Rekor), so it existed at that time and hasn't changed since. |
 | Demo key: checks only in this demo | An example signed with a demo key. It is never evidence. |
 
-**An unknown signer fails closed.** A signature from a key that isn't in the
+**An unknown signer stops and refuses.** A signature from a key that isn't in the
 registry makes the result "Not verified: unknown signer", even when the other
 signatures are genuine. The verifier doesn't skip that signature and report
 the rest. The other refusals work the same way:
@@ -53,12 +125,14 @@ A run folder holds three receipt files:
 The receipt holds:
 
 - The program and the digest of the exact version that ran.
+- Provenance metadata identifying `agent_used` (the calling agent or replay runtime) and `verifier_adapter` (which verifier checked the write).
 - The hour the run started.
 - The outcome and a reason code.
 - One line per write: what kind of record it targeted, the operation, the
   result of the record check, how strong that check was, and what it didn't
   check.
 - Check counts, and digests of the run report and the evidence bundle.
+- A shareable verification link (`https://app.openadapt.ai/r/<id>`) when published to OpenAdapt Cloud.
 
 A receipt never holds screenshots, typed values, URLs, or page text. Evidence
 files appear only as SHA-256 digests, and a receipt that embeds an image, a

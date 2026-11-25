@@ -72,8 +72,9 @@ in the [OpenAdapt monorepo](https://github.com/OpenAdaptAI/OpenAdapt).
 ## The full map
 
 Every released capability, with its evidence and where it lives. Released
-means in the current releases: `openadapt` 1.19.0 and openadapt-flow 2.5.0 on
-PyPI, and Desktop 0.25.0 for Desktop rows. [CAPABILITIES.md](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/CAPABILITIES.md)
+means in the current releases: `openadapt` 1.24.0, `openadapt-flow` 4.0.0,
+`openadapt-verify` 0.2.1, `openadapt-agent` 2.2.4 on PyPI, and OpenAdapt
+Desktop 0.35.0 for Desktop rows. [CAPABILITIES.md](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/CAPABILITIES.md)
 also lists what has merged since, which installs from source.
 
 Evidence:

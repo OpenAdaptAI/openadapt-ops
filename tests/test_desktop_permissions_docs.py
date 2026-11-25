@@ -56,11 +56,13 @@ def test_install_page_explains_the_input_monitoring_error() -> None:
 
 
 def test_install_page_calls_the_release_a_pre_release() -> None:
-    # GitHub marks desktop-v0.15.0 as a pre-release. The page may not carry a
+    # GitHub marks openadapt-desktop-v0.35.0 as a pre-release. The page may not carry a
     # static maturity word such as "Beta" (scripts/validate_docs.py derives
     # product-target state at read time), so it states the release type.
     text = _flat(INSTALL)
-    sentence = next(s for s in re.split(r"(?<=\.)\s", text) if "`desktop-v0.15.0`" in s)
+    sentence = next(
+        s for s in re.split(r"(?<=\.)\s", text) if "`openadapt-desktop-v0.35.0`" in s
+    )
     assert "pre-release" in sentence, sentence
     assert "complete" not in text.split("## 2.")[0]
 

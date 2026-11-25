@@ -6,15 +6,15 @@ description: >-
 
 # Deploy
 
-The engine always runs where the application is: on a computer that can open
-the app. What changes between deployments is what that computer may talk to.
+OpenAdapt runs as one Verified Execution Plane across three execution modes.
+The engine runs where the application is, and every mode enforces the same
+commit-boundary checks and signed Ed25519 receipts.
 
-| Deployment | What talks to what | Use it when |
+| Execution mode | Where the runner lives | Use it when |
 |---|---|---|
-| Local | Nothing leaves the computer | Building and testing workflows |
-| On-premises, offline | Nothing leaves your network; a firewall denies outbound traffic | Patient data or other regulated data |
-| On-premises with a model server | Runners call a GPU server on your own network | You need model help for hard screens and can't send screens outside |
-| Connected to OpenAdapt Cloud | The computer calls `app.openadapt.ai` over outgoing HTTPS | Shared workspaces, managed browser runs, fleet reports |
+| **Local + 4B sidecar** | Your laptop, workstation, or offline VPC (`openadapt wrap` + optional `Veto-4B-r5` ~3.13 GB VRAM sidecar) | Building workflows, local agent wrapping, or regulated / air-gapped data |
+| **OpenAdapt Hosted & BYOC Connector** | Managed web runner (`$0.05/verified run` PAYG, `$79/mo` Builder, `$499/mo` Team) or `openadapt connect` / `openadapt-flow connector` on your own machine | Shared workspaces, fleet receipts, phone approvals, and managed public web runs |
+| **Bring Your Own Sandbox** | Browserbase, E2B, Daytona, or Browser Use connected via `--cdp-url` + `OPENADAPT_CLOUD_KEY` | You already run cloud browser sandboxes and want commit-boundary verification + receipts |
 
 A run makes no outbound calls by default. Model grounding is off unless the
 deployment file sets `runtime.allow_model_grounding: true` or you pass
@@ -112,5 +112,29 @@ bundle, policy, run report, and target to a one-time Cloud challenge before
 and that report has no screens, text, or field values.
 
 Stop alerts, the online receipt check, repair review, and the hosted run queue
-are described in [OpenAdapt Cloud](../cloud/index.md). For prices, see
+are described in [OpenAdapt Cloud](../cloud/index.md). Plans start at
+`$0.05/verified run` PAYG, `$79/mo` Builder, and `$499/mo` Team; see
 [openadapt.ai/pricing](https://openadapt.ai/pricing).
+
+## Bring your own sandbox
+
+If your agents already run inside **Browserbase**, **E2B**, **Daytona**, or
+**Browser Use**, you don't need to migrate infrastructure. Attach OpenAdapt's
+verification layer over Chrome DevTools Protocol (`--cdp-url`) and set
+`OPENADAPT_CLOUD_KEY` so every run streams signed Ed25519 receipts and human
+approval gates to `app.openadapt.ai`:
+
+```bash
+export OPENADAPT_CLOUD_KEY="oa_live_..."
+openadapt wrap --cdp-url "wss://connect.browserbase.com?apiKey=..." -- <your-agent-command>
+```
+
+- **Zero agent rewrite:** Your agent keeps driving its existing Browserbase,
+  E2B, Daytona, or Browser Use session.
+- **Same commit boundary:** Before a state-changing click or submit, OpenAdapt
+  checks target identity, enforces approval gates, and signs the resulting
+  receipt (`agent_used`, `verifier_adapter`, SHA-256 digests).
+- **Shareable verification:** Each completed run publishes its public receipt
+  link to `https://app.openadapt.ai/r/<id>` without uploading screenshots or
+  clear field values. For provider-specific examples, see
+  [Verify agents in cloud sandboxes and private VPCs](verify-cloud-sandboxes.md).
