@@ -272,6 +272,7 @@ nav:
           - Handle a halt: how-to/handle-a-halt.md
           - Answer a halt from a phone: how-to/answer-from-a-phone.md
           - Connect an agent: how-to/connect-an-agent.md
+          - Verify cloud sandboxes and VPCs: how-to/verify-cloud-sandboxes.md
           - Install the desktop app: how-to/desktop.md
           - Deploy: how-to/deploy.md
           - Troubleshoot: how-to/troubleshoot.md
