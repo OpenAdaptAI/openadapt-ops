@@ -1,7 +1,7 @@
 # What's New
 
 > *Pull requests merged in the last 7 days across the OpenAdapt repositories, grouped by the release that contains them.*
-> *Last updated: 2026-11-25 14:33 UTC*
+> *Last updated: 2026-11-25 18:32 UTC*
 
 Items under **Merged, not released yet** are on a repository's `main` branch only. They are not in any published package or installer yet.
 
@@ -9,6 +9,10 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 
 ### Merged, not released yet
 
+- [docs(readme): overhaul README with agent quickstarts, clean-room benchmarks, and openadapt-kernel](https://github.com/OpenAdaptAI/OpenAdapt/pull/2695) (#2695), merged 2026-11-25
+- [fix(kernel): eliminate ReDoS backtracking in PDF token regex (CodeQL #116)](https://github.com/OpenAdaptAI/OpenAdapt/pull/2694) (#2694), merged 2026-11-25
+- [fix(flow,ci): fix cli_hints, Playwright loop guard timeout, and release-health issue-edit race](https://github.com/OpenAdaptAI/OpenAdapt/pull/2693) (#2693), merged 2026-11-25, openadapt-flow
+- [feat(kernel): minimal commit-boundary verification and shadow-to-autopilot kernel](https://github.com/OpenAdaptAI/OpenAdapt/pull/2691) (#2691), merged 2026-11-25
 - [docs: refresh CAPABILITIES.md and llms-full.txt](https://github.com/OpenAdaptAI/OpenAdapt/pull/2689) (#2689), merged 2026-11-25
 - [ci(packages): give merge-queue flow-unit the 60-minute limit (follow-up #2674)](https://github.com/OpenAdaptAI/OpenAdapt/pull/2687) (#2687), merged 2026-11-25
 - [docs: refresh CAPABILITIES.md and llms-full.txt](https://github.com/OpenAdaptAI/OpenAdapt/pull/2686) (#2686), merged 2026-11-25
@@ -25,8 +29,4 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 - [fix(tx): support HAL mirrors, verb-suffixed RPC read routes, and /{id}/<verb> item routes](https://github.com/OpenAdaptAI/OpenAdapt/pull/2672) (#2672), merged 2026-11-25, openadapt-flow
 - [test(desktop): add non-elevated Administrators-owner test and clarify Windows elevation docs (#2539)](https://github.com/OpenAdaptAI/OpenAdapt/pull/2670) (#2670), merged 2026-11-25
 - [fix(flow): open tutorial bundles at #tasks with fault_server backend on replay --demo-app](https://github.com/OpenAdaptAI/OpenAdapt/pull/2669) (#2669), merged 2026-11-25, openadapt-flow
-- [fix(handoffs): track last signed observation count and sign every intermediate transition in order](https://github.com/OpenAdaptAI/OpenAdapt/pull/2668) (#2668), merged 2026-11-25, openadapt-flow
-- [fix(flight): seed known record values, add UI word allowlist, and avoid false backstop refusals](https://github.com/OpenAdaptAI/OpenAdapt/pull/2667) (#2667), merged 2026-11-25, openadapt-flow
-- [fix(flow): add explicit operator surface binding and opt-in out-of-window trim policy in convert_capture](https://github.com/OpenAdaptAI/OpenAdapt/pull/2666) (#2666), merged 2026-11-25, openadapt-flow
-- [fix(flow): detect nested/HAL/header paging signs and verify *.localhost loopback](https://github.com/OpenAdaptAI/OpenAdapt/pull/2664) (#2664), merged 2026-11-25, openadapt-flow
 
