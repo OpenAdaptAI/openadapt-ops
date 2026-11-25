@@ -99,6 +99,77 @@ LoRA adapters ([`Veto-4B-r6`](https://huggingface.co/OpenAdapt/openadapt-veto-4b
    ([`Veto-4B-r6`](https://huggingface.co/OpenAdapt/openadapt-veto-4b-r6) for state verification, `taint-guard` for prompt-injection
    detection) without reloading the base model or touching the calling agent.
 
+## Quickstart: download and run `OpenAdapt/openadapt-veto-4b-r6`
+
+The `OpenAdapt/openadapt-veto-4b-r6` LoRA adapter (81 MB, Apache-2.0) pairs
+with `Qwen/Qwen3.5-4B` in 4-bit NF4 quantization (~3.15 GB VRAM) and outputs a
+single verdict token (`PASS`, `VETO`, or `ABSTAIN`).
+
+### 1. Download from Hugging Face or run via `openadapt wrap`
+
+Download the adapter weights locally:
+
+```bash
+pip install openadapt huggingface_hub
+huggingface-cli download OpenAdapt/openadapt-veto-4b-r6 --local-dir ./veto-4b-r6
+```
+
+Or let `openadapt wrap` pull the adapter directly from Hugging Face and run it
+around any agent command:
+
+```bash
+openadapt wrap --veto-model OpenAdapt/openadapt-veto-4b-r6 -- <your-agent-command>
+```
+
+### 2. Serve the shared BYOC sidecar (`byoc_veto_server.py`)
+
+When workstations have no local GPU, run `openadapt_flow.byoc_veto_server` on a
+host or VPC GPU to expose `POST /v1/verify` and `GET /healthz`. The server
+requires per-tenant API keys, an app allow-list, and server-issued single-use
+run bindings, and returns `HALT_ESCALATE` whenever the verifier abstains or
+cannot confirm a save:
+
+```python
+from openadapt_flow.byoc_veto_server import create_byoc_veto_server
+from openadapt_flow.multi_lora_veto import (
+    AdapterSpec,
+    AppAdapterRegistry,
+    MultiLoraVetoRouter,
+    TenantScope,
+)
+
+# Register OpenAdapt/openadapt-veto-4b-r6 with your local LoRA backend.
+base_adapter = AdapterSpec(
+    adapter_id="veto-4b-r6",
+    base_model="Qwen/Qwen3.5-4B",
+    adapter_uri="./veto-4b-r6",
+    sha256="<adapter-sha256>",
+    calibrated_threshold=0.5,
+    tenant_scope=TenantScope.PUBLIC,
+)
+registry = AppAdapterRegistry(default_base_adapter=base_adapter)
+router = MultiLoraVetoRouter(
+    base_model="Qwen/Qwen3.5-4B",
+    registry=registry,
+    backend=local_lora_backend,
+)
+
+server = create_byoc_veto_server(
+    router=router,
+    tenant_api_keys={"clinic-a": "<tenant-api-key>"},
+    tenant_allowed_apps={"clinic-a": {"portal-ehr"}},
+    host="127.0.0.1",
+    port=8443,
+)
+server.start()
+```
+
+Verify the sidecar is ready:
+
+```bash
+curl -s http://127.0.0.1:8443/healthz
+```
+
 ## Related guides
 
 - [Connect an agent](../how-to/connect-an-agent.md): expose compiled workflows
