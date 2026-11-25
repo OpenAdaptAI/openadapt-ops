@@ -1,35 +1,44 @@
 # What's New
 
 > *Pull requests merged in the last 7 days across the OpenAdapt repositories, grouped by the release that contains them.*
-> *Last updated: 2026-11-22 06:20 UTC*
+> *Last updated: 2026-11-25 02:21 UTC*
 
 Items under **Merged, not released yet** are on a repository's `main` branch only. They are not in any published package or installer yet.
 
 ## OpenAdapt
 
-### Released in openadapt-flow 3.4.0
+### Released in openadapt-types 0.24.2
 
-- [release(flow): 3.4.0 requires openadapt-privacy 1.1.4](https://github.com/OpenAdaptAI/OpenAdapt/pull/2470) (#2470), merged 2026-11-21
-- [fix(flow): keep ir within its import-time budget (main is red)](https://github.com/OpenAdaptAI/OpenAdapt/pull/2466) (#2466), merged 2026-11-21
-- [refactor(flow): move the replayer's asset, healing and step-evidence helpers to a mixin, unchanged](https://github.com/OpenAdaptAI/OpenAdapt/pull/2459) (#2459), merged 2026-11-21
-- [refactor(flow): move the replayer's qualification fault injection to a mixin, unchanged](https://github.com/OpenAdaptAI/OpenAdapt/pull/2456) (#2456), merged 2026-11-21
-- [refactor(flow): move the replayer's module-level helpers to runtime/replay/_shared.py, re-exported unchanged](https://github.com/OpenAdaptAI/OpenAdapt/pull/2455) (#2455), merged 2026-11-21
-- [refactor(flow): move the qualification data model to qualification/models.py, re-exported unchanged](https://github.com/OpenAdaptAI/OpenAdapt/pull/2454) (#2454), merged 2026-11-21
-- [refactor(flow): the package loads its ir re-exports on first use](https://github.com/OpenAdaptAI/OpenAdapt/pull/2451) (#2451), merged 2026-11-21
-- [refactor(flow): qualification imports execution_profiles where it uses it, breaking the ir import cycle](https://github.com/OpenAdaptAI/OpenAdapt/pull/2439) (#2439), merged 2026-11-21
-- [ci(ratchet): size budgets never rise; dropping the row of an existing file fails](https://github.com/OpenAdaptAI/OpenAdapt/pull/2430) (#2430), merged 2026-11-21
+- [docs(types): list #2495's additions in v0.24.2 and restart its publish](https://github.com/OpenAdaptAI/OpenAdapt/pull/2640) (#2640), merged 2026-11-24
+
+### Released in openadapt-flow 4.0.0
+
+- [fix(flow): guard __main__.py entrypoints with if __name__ == '__main__'](https://github.com/OpenAdaptAI/OpenAdapt/pull/2639) (#2639), merged 2026-11-24
+- [fix(flow): require openadapt-types>=0.24.2 for Flow 4.0.0](https://github.com/OpenAdaptAI/OpenAdapt/pull/2637) (#2637), merged 2026-11-24
+- [fix(flow): fail closed on crashed rechecks, shared secret-field names, refuse forged --check (fix-forward #2438)](https://github.com/OpenAdaptAI/OpenAdapt/pull/2635) (#2635), merged 2026-11-24
+- [fix(extension): camelCase-aware secret field names in every redaction layer (fix-forward for #2575)](https://github.com/OpenAdaptAI/OpenAdapt/pull/2621) (#2621), merged 2026-11-24
+- [fix(flow): green main after #2594 and re-trigger the types and verify publish](https://github.com/OpenAdaptAI/OpenAdapt/pull/2616) (#2616), merged 2026-11-24
+- [fix(tests): join _person helper threads in test_second_factor_terminal.py](https://github.com/OpenAdaptAI/OpenAdapt/pull/2614) (#2614), merged 2026-11-24
+- [feat(flow): add blinded commit prosecutor and online adaptive conformal triage](https://github.com/OpenAdaptAI/OpenAdapt/pull/2613) (#2613), merged 2026-11-24
+- [feat(wrap): add LTL_f DirtyBufferMonitor and SSA SsaIdentifierGuard](https://github.com/OpenAdaptAI/OpenAdapt/pull/2612) (#2612), merged 2026-11-24
+- [feat(wrap): add origin capability firewall and physical hit-test delta oracle](https://github.com/OpenAdaptAI/OpenAdapt/pull/2611) (#2611), merged 2026-11-24
+- [release(flow,agent)!: cut openadapt-flow 4.0.0 and openadapt-agent 2.2.4 (<5)](https://github.com/OpenAdaptAI/OpenAdapt/pull/2609) (#2609), merged 2026-11-24
+
+### Released in openadapt-agent 2.2.4
+
+- [docs(agent): note openadapt-flow 4.0.0 on PyPI and restart v2.2.4 publish](https://github.com/OpenAdaptAI/OpenAdapt/pull/2649) (#2649), merged 2026-11-25
+
+### Released in OpenAdapt 1.24.0
+
+- [test(desktop): distinguish bundled Flow pin vs in-tree Flow in dependency compat test](https://github.com/OpenAdaptAI/OpenAdapt/pull/2648) (#2648), merged 2026-11-25
+- [fix(seal-view): validate predicate.evidence_scope in JS receipt verifier](https://github.com/OpenAdaptAI/OpenAdapt/pull/2643) (#2643), merged 2026-11-24
+- [ci(packages): raise flow core unit timeout to 60m on main pushes](https://github.com/OpenAdaptAI/OpenAdapt/pull/2642) (#2642), merged 2026-11-24
+- [fix(desktop): open() lands on the requested URL; skip real-Chrome test without Chrome (fix-forward #2358)](https://github.com/OpenAdaptAI/OpenAdapt/pull/2636) (#2636), merged 2026-11-24
+- [feat(verify): add local JIT compiler (openadapt_verify.jit) and mcpify --from-compiled](https://github.com/OpenAdaptAI/OpenAdapt/pull/2633) (#2633), merged 2026-11-25
+- [chore(security): allowlist two synthetic esp-scripted record ids in gitleaks](https://github.com/OpenAdaptAI/OpenAdapt/pull/2628) (#2628), merged 2026-11-24
+- [fix(verify): bind reload read-back to visible field values and cap declared producers](https://github.com/OpenAdaptAI/OpenAdapt/pull/2623) (#2623), merged 2026-11-24
 
 ### Merged, not released yet
 
-- [fix(hooks): emit #2410-compliant StepResult fields in hooks receipt reports](https://github.com/OpenAdaptAI/OpenAdapt/pull/2496) (#2496), merged 2026-11-22, openadapt-flow
-- [feat(flow): compose novel field-set contracts with planted-fault admission (P6)](https://github.com/OpenAdaptAI/OpenAdapt/pull/2490) (#2490), merged 2026-11-21, openadapt-flow
-- [fix(flow): bind null SQL verification read params as IS NULL (fail closed)](https://github.com/OpenAdaptAI/OpenAdapt/pull/2489) (#2489), merged 2026-11-21, openadapt-flow
-- [refactor(flow): extract Stedi 270/271 eligibility client into optional connector package](https://github.com/OpenAdaptAI/OpenAdapt/pull/2488) (#2488), merged 2026-11-21, openadapt-flow
-- [refactor(flow): generalize Execute seeding, reward bundles, and identity chrome](https://github.com/OpenAdaptAI/OpenAdapt/pull/2486) (#2486), merged 2026-11-22, openadapt-flow
-- [feat(flow): Global-to-Local (GOLD) ROI cropping and unified VetoOnlyVLMGuard](https://github.com/OpenAdaptAI/OpenAdapt/pull/2485) (#2485), merged 2026-11-22, openadapt-flow
-- [build(deps): bump the github-actions group across 1 directory with 2 updates](https://github.com/OpenAdaptAI/OpenAdapt/pull/2436) (#2436), merged 2026-11-21
-- [build(deps): bump zip from 9.5.1 to 9.7.0 in /packages/desktop/src-tauri in the cargo-desktop group](https://github.com/OpenAdaptAI/OpenAdapt/pull/2435) (#2435), merged 2026-11-21
-- [build(deps): bump boto3 from 1.44.4 to 1.44.5 in /packages/desktop in the uv-desktop group](https://github.com/OpenAdaptAI/OpenAdapt/pull/2434) (#2434), merged 2026-11-21
-- [build(deps-dev): bump the npm-desktop group in /packages/desktop with 2 updates](https://github.com/OpenAdaptAI/OpenAdapt/pull/2433) (#2433), merged 2026-11-21
-- [fix(scripts): verify_moved_code sees a module that became a package](https://github.com/OpenAdaptAI/OpenAdapt/pull/2431) (#2431), merged 2026-11-21
+- [fix(seal-view): reject null and missing evidence_scope fields that Python rejects (follow-up #2643)](https://github.com/OpenAdaptAI/OpenAdapt/pull/2644) (#2644), merged 2026-11-24, openadapt-types
 
