@@ -84,9 +84,11 @@ repos:
     changelog: true
 
   - name: openadapt-capture
-    github: OpenAdaptAI/openadapt-capture
+    github: OpenAdaptAI/OpenAdapt
     category: core
     changelog: true
+    changelog_file: packages/capture/CHANGELOG.md
+    public_updates: false
 
   - name: openadapt-privacy
     github: OpenAdaptAI/openadapt-privacy

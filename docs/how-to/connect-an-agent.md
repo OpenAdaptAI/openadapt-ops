@@ -14,6 +14,10 @@ values or screens.
 
 The server runs over local stdio on the computer that can open the app. It
 needs Python 3.11 or 3.12 (`uvx --python 3.12` handles this automatically).
+OpenAdapt treats your agent as a black box with zero access to its weights; see
+[Black-box agent wrapping and the local 4B verifier sidecar](../explanation/local-verifier-sidecar.md)
+for how the optional local 4B verifier sidecar (`Veto-4B-r6`, `taint-guard`)
+stays completely separate from your calling agent.
 
 ## Developer and integration map
 

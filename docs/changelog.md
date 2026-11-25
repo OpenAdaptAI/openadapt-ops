@@ -5,19 +5,21 @@
 
 ## OpenAdapt
 
-- **[openadapt-privacy-v1.1.4](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-privacy-v1.1.4)** (2026-11-21)
-  Features
-- **[openadapt-flow-v3.4.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-flow-v3.4.0)** (2026-11-21)
-  Features
-- **[openadapt-desktop-v0.30.6](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-desktop-v0.30.6)** (2026-11-20)
-  OpenAdapt Desktop 0.30.6: the PyPI package and the native installers.
-- **[openadapt-capture-v1.4.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-capture-v1.4.0)** (2026-11-20)
-  _This release uses the MIT License._
-- **[v1.23.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.23.0)** (2026-11-19)
-  Fixes
+- **[v1.24.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.24.0)** (2026-11-25)
+  Requirements
+- **[openadapt-flow-v4.0.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-flow-v4.0.0)** (2026-11-25)
+  Breaking Changes
+- **[openadapt-desktop-v0.33.1](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-desktop-v0.33.1)** (2026-11-25)
+  OpenAdapt Desktop 0.33.1: the PyPI package and the native installers.
+- **[openadapt-agent-v2.2.4](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-agent-v2.2.4)** (2026-11-25)
+  - Accept `openadapt-flow` 4.x (`openadapt-flow[vision]>=2.2.0,<5` and
+- **[openadapt-verify-v0.2.1](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-verify-v0.2.1)** (2026-11-24)
+  Published after [#2589](https://github.com/OpenAdaptAI/OpenAdapt/pull/2589),
 
 ## openadapt-flow
 
+- **[v4.0.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v400-2026-11-24)** (2026-11-24)
+  **Encryption at rest is now enabled by default** (`#2423`): recordings,
 - **[v3.4.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v340-2026-11-21)** (2026-11-21)
   Agent-to-agent handoffs. `openadapt-flow handoff send` attaches a run's
 - **[v3.3.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v330-2026-11-19)** (2026-11-19)
@@ -26,8 +28,6 @@
   A checkpoint store derives its at-rest key once, under one salt, instead
 - **[v3.1.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v310-2026-11-14)** (2026-11-14)
   The outbound scrubber no longer rewrites the generated files of a wrap
-- **[v3.0.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v300-2026-11-13)** (2026-11-13)
-  `pip install openadapt-flow` no longer installs NumPy, OpenCV, Pillow or
 
 ## openadapt-desktop
 
@@ -65,21 +65,19 @@
   What's Changed
 - **[v0.96.1](https://github.com/OpenAdaptAI/openadapt-evals/releases/tag/v0.96.1)** (2026-09-02)
   What's Changed
-- **[v0.96.0](https://github.com/OpenAdaptAI/openadapt-evals/releases/tag/v0.96.0)** (2026-09-01)
-  What's Changed
 
 ## openadapt-capture
 
-- **[v1.3.0](https://github.com/OpenAdaptAI/openadapt-capture/releases/tag/v1.3.0)** (2026-10-18)
+- **[v1.4.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/capture/CHANGELOG.md#v140-2026-11-19)** (2026-11-19)
   _This release uses the MIT License._
-- **[v1.2.2](https://github.com/OpenAdaptAI/openadapt-capture/releases/tag/v1.2.2)** (2026-07-28)
-  Bug Fixes
-- **[v1.2.1](https://github.com/OpenAdaptAI/openadapt-capture/releases/tag/v1.2.1)** (2026-07-27)
-  Bug Fixes
-- **[v1.2.0](https://github.com/OpenAdaptAI/openadapt-capture/releases/tag/v1.2.0)** (2026-07-26)
-  Bug Fixes
-- **[v1.1.1](https://github.com/OpenAdaptAI/openadapt-capture/releases/tag/v1.1.1)** (2026-07-25)
-  Bug Fixes
+- **[v1.3.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/capture/CHANGELOG.md#v130-2026-10-17)** (2026-10-17)
+  _This release uses the MIT License._
+- **[v1.2.2](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/capture/CHANGELOG.md#v122-2026-07-28)** (2026-07-28)
+  Stop fabricating display metrics, window data, and UIA evidence
+- **[v1.2.1](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/capture/CHANGELOG.md#v121-2026-07-27)** (2026-07-27)
+  **audio**: Make narration capture on-device only and fail closed
+- **[v1.2.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/capture/CHANGELOG.md#v120-2026-07-26)** (2026-07-26)
+  Bound native structural evidence
 
 ## openadapt-privacy
 
@@ -96,6 +94,8 @@
 
 ## openadapt-types
 
+- **[v0.24.2](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/types/CHANGELOG.md#v0242-2026-11-23)** (2026-11-23)
+  0.24.1 was stamped on main but never published. 0.24.2 is the first
 - **[v0.24.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/types/CHANGELOG.md#v0240-2026-10-20)** (2026-10-20)
   The models live in this package again, and it depends only on `pydantic>=2.5`; the Python 3.13 cap is gone. `openadapt-flow` 2.3.0 and later depend on it, and `openadapt_flow.contracts` returns the same modules as `openadapt_types` ([#1270](https://github.com/OpenAdaptAI/OpenAdapt/pull/1270)). Upgrade `openadapt-flow` to 2.3.0 together with this package: openadapt-flow 2.2.0 carries its own copy o
 - **[v0.23.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/types/CHANGELOG.md#v0230-2026-10-18)** (2026-10-18)
@@ -104,8 +104,6 @@
   **readme**: A person or an agent shows the task; drop 'once'
 - **[v0.21.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/types/CHANGELOG.md#v0210-2026-10-15)** (2026-10-15)
   **execute**: Opt-in execution.halted webhook
-- **[v0.20.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/types/CHANGELOG.md#v0200-2026-10-15)** (2026-10-15)
-  Sync the published source policy ([#42](https://github.com/OpenAdaptAI/openadapt-types/pull/42),
 
 ## openadapt-grounding
 

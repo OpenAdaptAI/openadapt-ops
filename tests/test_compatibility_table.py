@@ -43,11 +43,11 @@ def _table(*rows: str) -> str:
 
 
 CURRENT_ROWS = (
-    "| `openadapt` 1.x | `openadapt-flow >=3.3.0,<4` | Installer |",
+    "| `openadapt` 1.x | `openadapt-flow >=4.0.0,<5.0.0` | Installer |",
     "| Native capture | `openadapt-capture >=1.2.0,<2` | Recording |",
-    "| Privacy extra | `openadapt-privacy[presidio] >=1.0` | Redaction |",
-    "| Flow base install and extras | `openadapt-types >=0.24,<0.25` | Contracts |",
-    "| Python | 3.10-3.12 | Runtime |",
+    "| Privacy extra | `openadapt-privacy[presidio] >=1.1.4` | Redaction |",
+    "| Flow base install and extras | `openadapt-types >=0.24.2,<0.25.0` | Contracts |",
+    "| Python | 3.11-3.12 | Runtime |",
 )
 
 
@@ -68,7 +68,7 @@ def test_a_current_table_passes():
 
 def test_ranges_compare_by_meaning_not_spelling():
     rows = list(CURRENT_ROWS)
-    rows[0] = "| `openadapt` 1.x | `openadapt-flow <4.0.0,>=3.3.0` | Installer |"
+    rows[0] = "| `openadapt` 1.x | `openadapt-flow <5.0.0,>=4.0.0` | Installer |"
     assert _errors(_table(*rows)) == []
 
 
@@ -79,7 +79,7 @@ def test_the_stale_ranges_that_shipped_fail():
     rows[3] = "| Execute clients | `openadapt-types >=0.9,<0.10` | Contracts |"
     errors = _errors(_table(*rows))
     assert len(errors) == 3, errors
-    assert any("openadapt-flow >=1.7,<2" in error and ">=3.3.0" in error for error in errors)
+    assert any("openadapt-flow >=1.7,<2" in error and ">=4.0.0" in error for error in errors)
     assert any("openadapt-capture >=1.1.0" in error for error in errors)
     assert any("openadapt-types >=0.9,<0.10" in error for error in errors)
 
@@ -94,7 +94,7 @@ def test_a_wrong_python_range_fails():
     rows = list(CURRENT_ROWS)
     rows[4] = "| Python | 3.10-3.13 | Runtime |"
     errors = _errors(_table(*rows))
-    assert len(errors) == 1 and "3.10-3.12" in errors[0], errors
+    assert len(errors) == 1 and "3.11-3.12" in errors[0], errors
 
 
 def test_one_types_row_fails_when_flow_pins_different_ranges_per_extra():
@@ -189,4 +189,4 @@ def test_an_unconditional_base_range_that_differs_from_the_table_fails():
     ]
     metadata["openadapt-flow"] = flow
     errors = _errors(_table(*CURRENT_ROWS), metadata)
-    assert len(errors) == 1 and "openadapt-types >=0.24,<0.25" in errors[0], errors
+    assert len(errors) == 1 and "openadapt-types >=0.24.2,<0.25.0" in errors[0], errors
