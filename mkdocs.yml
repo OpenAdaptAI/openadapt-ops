@@ -275,10 +275,12 @@ nav:
           - Verify cloud sandboxes and VPCs: how-to/verify-cloud-sandboxes.md
           - Install the desktop app: how-to/desktop.md
           - Chrome Co-Pilot extension: guides/chrome-copilot.md
+          - openadapt-kernel: guides/openadapt-kernel.md
           - Deploy: how-to/deploy.md
           - Troubleshoot: how-to/troubleshoot.md
   - Cloud:
       - cloud/index.md
+      - PREPARE Sign-Off Queue: cloud/prepare-queue.md
       - Get told when a run stops: cloud/stop-alerts.md
       - Check a receipt online: cloud/verify-a-receipt.md
       - Review a repair: cloud/review-a-repair.md

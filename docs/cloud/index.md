@@ -11,6 +11,8 @@ connect a computer and send it work, see
 [Deploy](../how-to/deploy.md#openadapt-cloud). These pages cover what Cloud
 does once it is connected:
 
+- [PREPARE Sign-Off Queue](prepare-queue.md): review and sign off staged
+  drafts across offices with zero-PHI previews.
 - [Get told when a run stops](stop-alerts.md): email, a phone notification,
   and the `execution.halted` webhook.
 - [Check a receipt online](verify-a-receipt.md): the public verification
