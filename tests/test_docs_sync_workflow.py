@@ -15,7 +15,9 @@ import yaml
 
 ROOT = Path(__file__).resolve().parent.parent
 WORKFLOW = (ROOT / ".github/workflows/sync.yml").read_text(encoding="utf-8")
-STEPS = yaml.safe_load(WORKFLOW)["jobs"]["sync-and-deploy"]["steps"]
+JOBS = yaml.safe_load(WORKFLOW)["jobs"]
+STEPS = JOBS["sync-and-deploy"]["steps"]
+DEPLOY_STEPS = JOBS["deploy"]["steps"]
 
 
 def step_running(command: str) -> dict:
@@ -57,9 +59,9 @@ def test_sync_publishes_recorded_source_then_fails_on_a_missing_pull_request() -
     gate = WORKFLOW.index("Confirm the generated source is queued for main")
     assert push < deploy < gate
     assert (
-        "if: ${{ steps.docs_pr.outputs.changed == 'true'"
-        " && steps.docs_pr.outputs.app_missing != 'true'"
-        " && steps.docs_pr.outputs.pr_url == '' }}"
+        "if: ${{ needs.sync-and-deploy.outputs.docs_pr_changed == 'true'"
+        " && needs.sync-and-deploy.outputs.docs_pr_app_missing != 'true'"
+        " && needs.sync-and-deploy.outputs.docs_pr_url == '' }}"
     ) in WORKFLOW
 
 
@@ -107,13 +109,37 @@ def test_a_stuck_auto_sync_pull_request_fails_the_run() -> None:
     assert "app_missing=true" in record["run"]
     gate = next(
         step
-        for step in STEPS
-        if "steps.docs_pr.outputs.stuck" in step.get("if", "")
+        for step in DEPLOY_STEPS
+        if "needs.sync-and-deploy.outputs.docs_pr_stuck" in step.get("if", "")
     )
-    assert "steps.docs_pr.outputs.app_missing" in gate["if"]
+    assert "needs.sync-and-deploy.outputs.docs_pr_app_missing" in gate["if"]
     assert "exit 1" in gate["run"]
-    deploy = next(step for step in STEPS if step.get("id") == "deploy")
-    assert STEPS.index(record) < STEPS.index(deploy) < STEPS.index(gate)
+    deploy = next(step for step in DEPLOY_STEPS if step.get("id") == "deploy")
+    assert JOBS["deploy"]["needs"] == "sync-and-deploy"
+    assert DEPLOY_STEPS.index(deploy) < DEPLOY_STEPS.index(gate)
+
+
+def test_deploy_job_requires_uploaded_pages_artifact() -> None:
+    upload = next(
+        step
+        for step in STEPS
+        if step.get("uses", "").startswith("actions/upload-pages-artifact@")
+    )
+    assert upload["id"] == "upload_pages"
+    assert (
+        JOBS["sync-and-deploy"]["outputs"]["uploaded"]
+        == "${{ steps.upload_pages.outcome == 'success' && 'true' || 'false' }}"
+    )
+    deploy_job = JOBS["deploy"]
+    assert deploy_job["needs"] == "sync-and-deploy"
+    assert deploy_job["if"] == "${{ needs.sync-and-deploy.outputs.uploaded == 'true' }}"
+    assert any(
+        step.get("uses", "").startswith("actions/deploy-pages@")
+        for step in DEPLOY_STEPS
+    )
+    assert not any(
+        step.get("uses", "").startswith("actions/deploy-pages@") for step in STEPS
+    )
 
 
 def test_the_pull_request_body_does_not_ask_for_a_manual_reopen() -> None:

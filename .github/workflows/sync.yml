@@ -36,9 +36,12 @@ jobs:
   sync-and-deploy:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
+    outputs:
+      uploaded: ${{ steps.upload_pages.outcome == 'success' && 'true' || 'false' }}
+      docs_pr_changed: ${{ steps.docs_pr.outputs.changed }}
+      docs_pr_app_missing: ${{ steps.docs_pr.outputs.app_missing }}
+      docs_pr_stuck: ${{ steps.docs_pr.outputs.stuck }}
+      docs_pr_url: ${{ steps.docs_pr.outputs.pr_url }}
     steps:
       # GitHub starts no workflow for an event raised with this workflow's own
       # GITHUB_TOKEN. The auto-sync pull request's required checks then sit in
@@ -243,10 +246,22 @@ jobs:
           fi
 
       - name: Upload Pages artifact
+        id: upload_pages
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
           path: site/
 
+  # Deploy runs in its own job gated on the upload output so the Pages
+  # artifact finishes indexing before deploy-pages queries it, and deploy
+  # skips cleanly whenever no github-pages artifact was uploaded.
+  deploy:
+    needs: sync-and-deploy
+    if: ${{ needs.sync-and-deploy.outputs.uploaded == 'true' }}
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
       - name: Deploy to GitHub Pages
         id: deploy
         uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
@@ -255,7 +270,7 @@ jobs:
       # published site ahead of its own source, and the next same-repo docs
       # push would rebuild without it. Fail the run so the gap is visible.
       - name: Confirm the auto-sync pull request can merge
-        if: ${{ steps.docs_pr.outputs.app_missing == 'true' || steps.docs_pr.outputs.stuck == 'true' }}
+        if: ${{ needs.sync-and-deploy.outputs.docs_pr_app_missing == 'true' || needs.sync-and-deploy.outputs.docs_pr_stuck == 'true' }}
         env:
           BRANCH: docs/auto-sync
         run: |
@@ -267,7 +282,7 @@ jobs:
           exit 1
 
       - name: Confirm the generated source is queued for main
-        if: ${{ steps.docs_pr.outputs.changed == 'true' && steps.docs_pr.outputs.app_missing != 'true' && steps.docs_pr.outputs.pr_url == '' }}
+        if: ${{ needs.sync-and-deploy.outputs.docs_pr_changed == 'true' && needs.sync-and-deploy.outputs.docs_pr_app_missing != 'true' && needs.sync-and-deploy.outputs.docs_pr_url == '' }}
         env:
           BRANCH: docs/auto-sync
         run: |
