@@ -99,15 +99,15 @@
       "dominant_colors": [
         {
           "hex": "#ffffff",
-          "share_percent": 21.37
+          "share_percent": 21.22
         },
         {
           "hex": "#f5f7fa",
-          "share_percent": 9.64
+          "share_percent": 9.66
         },
         {
           "hex": "#0b1220",
-          "share_percent": 2.33
+          "share_percent": 2.34
         }
       ]
     },
@@ -163,15 +163,15 @@
       "dominant_colors": [
         {
           "hex": "#ffffff",
-          "share_percent": 26.33
+          "share_percent": 26.27
         },
         {
           "hex": "#fdfcf8",
-          "share_percent": 16.52
+          "share_percent": 16.55
         },
         {
           "hex": "#edf0f5",
-          "share_percent": 14.03
+          "share_percent": 14.01
         }
       ]
     },
@@ -184,15 +184,15 @@
       "dominant_colors": [
         {
           "hex": "#ffffff",
-          "share_percent": 24.65
+          "share_percent": 24.64
         },
         {
           "hex": "#edf0f5",
-          "share_percent": 7.81
+          "share_percent": 7.75
         },
         {
           "hex": "#fbfdfc",
-          "share_percent": 2.91
+          "share_percent": 2.88
         }
       ]
     },
@@ -205,15 +205,15 @@
       "dominant_colors": [
         {
           "hex": "#ffffff",
-          "share_percent": 21.85
+          "share_percent": 21.77
         },
         {
           "hex": "#fbfdfc",
-          "share_percent": 12.27
+          "share_percent": 12.3
         },
         {
           "hex": "#edf0f5",
-          "share_percent": 11.5
+          "share_percent": 11.51
         }
       ]
     },
@@ -381,11 +381,11 @@
       "dominant_colors": [
         {
           "hex": "#0b1220",
-          "share_percent": 74.16
+          "share_percent": 74.15
         },
         {
           "hex": "#0a111f",
-          "share_percent": 1.68
+          "share_percent": 1.71
         },
         {
           "hex": "#151e2e",
@@ -412,6 +412,50 @@
         {
           "hex": "#0f1115",
           "share_percent": 0.7
+        }
+      ]
+    },
+    "screenshots/receipt-viewer-dark.webp": {
+      "source_repository": "OpenAdaptAI/openadapt-web",
+      "source_path": null,
+      "note": "2x Retina dark-mode capture of the live 3-pane Receipt Viewer at openadapt.ai/receipts/3fb27257dbc65e58, encoded as WebP for docs/reference/receipts.md.",
+      "sha256": "4eae79f6abfffa6c196d2a569a997eec3008bb1423fe04b5f81b3a627184a760",
+      "width": 2880,
+      "height": 1800,
+      "dominant_colors": [
+        {
+          "hex": "#05090e",
+          "share_percent": 19.11
+        },
+        {
+          "hex": "#090f16",
+          "share_percent": 11.87
+        },
+        {
+          "hex": "#0c141f",
+          "share_percent": 11.52
+        }
+      ]
+    },
+    "screenshots/receipt-viewer-light.webp": {
+      "source_repository": "OpenAdaptAI/openadapt-web",
+      "source_path": null,
+      "note": "2x Retina light-mode capture of the live 3-pane Receipt Viewer at openadapt.ai/receipts/3fb27257dbc65e58, encoded as WebP for docs/reference/receipts.md.",
+      "sha256": "0f5c39f819acaff17921b0bf7e52ef36d1d7ac3c7b947eefa944888702351999",
+      "width": 2880,
+      "height": 1800,
+      "dominant_colors": [
+        {
+          "hex": "#ffffff",
+          "share_percent": 31.92
+        },
+        {
+          "hex": "#f5f7fb",
+          "share_percent": 12.27
+        },
+        {
+          "hex": "#fefefe",
+          "share_percent": 9.88
         }
       ]
     }

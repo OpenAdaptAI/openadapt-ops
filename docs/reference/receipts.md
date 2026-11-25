@@ -174,6 +174,15 @@ browser instead, see [Check a receipt online](../cloud/verify-a-receipt.md).
 
 ## View, publish, and claim a receipt
 
+<figure class="oa-diagram-frame" markdown="span">
+  ![OpenAdapt 3-pane interactive Receipt Viewer in dark mode](../assets/screenshots/receipt-viewer-dark.webp#only-dark){ loading=lazy }
+  ![OpenAdapt 3-pane interactive Receipt Viewer in light mode](../assets/screenshots/receipt-viewer-light.webp#only-light){ loading=lazy }
+  <figcaption class="oa-diagram-caption">
+    <span><strong>Interactive 3-pane Receipt Viewer:</strong> Inspect step-by-step actions, read-back verification evidence, and Ed25519 signatures in one view.</span>
+    <span><a href="https://openadapt.ai/receipts/3fb27257dbc65e58"><strong>Open live interactive receipt &rarr;</strong></a></span>
+  </figcaption>
+</figure>
+
 | Command | What it does |
 |---|---|
 | `openadapt receipt view RUN_DIR` | Writes the run's receipt as one offline page in the run folder and opens it. The page checks the signatures in the browser and makes no network requests. |
