@@ -18,6 +18,8 @@
 
 ## openadapt-flow
 
+- **[v4.0.1](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v401-2026-11-25)** (2026-11-25)
+  Native Windows qualification campaigns use the observed Windows environment
 - **[v4.0.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v400-2026-11-24)** (2026-11-24)
   **Encryption at rest is now enabled by default** (`#2423`): recordings,
 - **[v3.4.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v340-2026-11-21)** (2026-11-21)
@@ -26,8 +28,6 @@
   Screen text read from the clock is checked against the run's clock. A
 - **[v3.2.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v320-2026-11-19)** (2026-11-19)
   A checkpoint store derives its at-rest key once, under one salt, instead
-- **[v3.1.0](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/CHANGELOG.md#v310-2026-11-14)** (2026-11-14)
-  The outbound scrubber no longer rewrites the generated files of a wrap
 
 ## openadapt-desktop
 
