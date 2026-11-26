@@ -1,7 +1,7 @@
 # What's New
 
 > *Pull requests merged in the last 7 days across the OpenAdapt repositories, grouped by the release that contains them.*
-> *Last updated: 2026-11-26 01:33 UTC*
+> *Last updated: 2026-11-26 02:07 UTC*
 
 Items under **Merged, not released yet** are on a repository's `main` branch only. They are not in any published package or installer yet.
 
@@ -9,6 +9,8 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 
 ### Merged, not released yet
 
+- [build(kernel): wire openadapt-kernel 0.1.0 for PyPI publishing](https://github.com/OpenAdaptAI/OpenAdapt/pull/2717) (#2717), merged 2026-11-26
+- [fix(kernel): harden read-back, commit gating, settle, filters, probe/ACI, qualify, and receipts](https://github.com/OpenAdaptAI/OpenAdapt/pull/2713) (#2713), merged 2026-11-26
 - [docs(benchmarks): publish sanitized per-run JSON ledgers and clarify lifecycle snapshot](https://github.com/OpenAdaptAI/OpenAdapt/pull/2712) (#2712), merged 2026-11-26
 - [release(flow): openadapt-flow 4.0.1](https://github.com/OpenAdaptAI/OpenAdapt/pull/2708) (#2708), merged 2026-11-26, openadapt-flow
 - [feat(cli): wire openadapt mcpify to openadapt_verify.mcpify](https://github.com/OpenAdaptAI/OpenAdapt/pull/2707) (#2707), merged 2026-11-26
@@ -27,6 +29,4 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 - [docs: refresh CAPABILITIES.md and llms-full.txt](https://github.com/OpenAdaptAI/OpenAdapt/pull/2689) (#2689), merged 2026-11-25
 - [ci(packages): give merge-queue flow-unit the 60-minute limit (follow-up #2674)](https://github.com/OpenAdaptAI/OpenAdapt/pull/2687) (#2687), merged 2026-11-25
 - [docs: refresh CAPABILITIES.md and llms-full.txt](https://github.com/OpenAdaptAI/OpenAdapt/pull/2686) (#2686), merged 2026-11-25
-- [docs(readme): remove synthetic fault proof and frame quickstart as local smoke test](https://github.com/OpenAdaptAI/OpenAdapt/pull/2684) (#2684), merged 2026-11-25
-- [fix(flow): quickstart writes its run summary through the sealed set (fixes #2682)](https://github.com/OpenAdaptAI/OpenAdapt/pull/2683) (#2683), merged 2026-11-25, openadapt-flow
 
