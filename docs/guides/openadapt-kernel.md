@@ -11,18 +11,30 @@ description: >-
 commit-boundary detection, obligation tracking, cross-rail read-back checks,
 zero-PII `PortalPack` induction, and Stage-Only form preparation.
 
-## Install from source
+## Install
 
-`openadapt-kernel` does not have a standalone PyPI release yet. Until that
-release lands, install it directly from the `OpenAdapt` repository:
+Install `openadapt-kernel` from PyPI:
+
+```bash
+pip install openadapt-kernel
+```
+
+If you also want Playwright browser automation bundled with the standalone
+package, install the `browser` extra:
+
+```bash
+pip install "openadapt-kernel[browser]"
+```
+
+Once installed, invoke it directly as `openadapt-kernel`, or as
+`openadapt kernel` when installed alongside the main `openadapt` CLI.
+
+To develop against a local checkout of the `OpenAdapt` repository instead:
 
 ```bash
 git clone https://github.com/OpenAdaptAI/OpenAdapt.git
 pip install -e OpenAdapt/packages/kernel
 ```
-
-Once installed, invoke it either as `openadapt kernel` (through the main
-`openadapt` CLI) or directly as `openadapt-kernel`.
 
 ## Core components
 
