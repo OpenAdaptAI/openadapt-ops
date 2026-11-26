@@ -1,7 +1,7 @@
 # What's New
 
 > *Pull requests merged in the last 7 days across the OpenAdapt repositories, grouped by the release that contains them.*
-> *Last updated: 2026-11-26 03:12 UTC*
+> *Last updated: 2026-11-26 03:42 UTC*
 
 Items under **Merged, not released yet** are on a repository's `main` branch only. They are not in any published package or installer yet.
 
@@ -30,9 +30,9 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 - [docs(readme): overhaul README with agent quickstarts, clean-room benchmarks, and openadapt-kernel](https://github.com/OpenAdaptAI/OpenAdapt/pull/2695) (#2695), merged 2026-11-25
 - [fix(kernel): eliminate ReDoS backtracking in PDF token regex (CodeQL #116)](https://github.com/OpenAdaptAI/OpenAdapt/pull/2694) (#2694), merged 2026-11-25
 - [feat(kernel): minimal commit-boundary verification and shadow-to-autopilot kernel](https://github.com/OpenAdaptAI/OpenAdapt/pull/2691) (#2691), merged 2026-11-25
-- [docs: refresh CAPABILITIES.md and llms-full.txt](https://github.com/OpenAdaptAI/OpenAdapt/pull/2689) (#2689), merged 2026-11-25
 
 ### Merged, not released yet
 
 - [docs(benchmarks): report full openIMIS 200-claim split, demote MockMed fixture, add repro.sh](https://github.com/OpenAdaptAI/OpenAdapt/pull/2718) (#2718), merged 2026-11-26, openadapt-flow
+- [docs(readme): streamline quickstart, capabilities, and links to docs and proof](https://github.com/OpenAdaptAI/OpenAdapt/pull/2709) (#2709), merged 2026-11-26
 
