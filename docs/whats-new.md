@@ -1,7 +1,7 @@
 # What's New
 
 > *Pull requests merged in the last 7 days across the OpenAdapt repositories, grouped by the release that contains them.*
-> *Last updated: 2026-11-25 20:33 UTC*
+> *Last updated: 2026-11-26 00:28 UTC*
 
 Items under **Merged, not released yet** are on a repository's `main` branch only. They are not in any published package or installer yet.
 
@@ -9,6 +9,12 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 
 ### Merged, not released yet
 
+- [feat(cli): wire openadapt mcpify to openadapt_verify.mcpify](https://github.com/OpenAdaptAI/OpenAdapt/pull/2707) (#2707), merged 2026-11-26
+- [feat(chrome-extension): wire up published CWS ID, release workflow, and README link](https://github.com/OpenAdaptAI/OpenAdapt/pull/2706) (#2706), merged 2026-11-26, openadapt-flow
+- [fix(scripts): set allow_abbrev=False in check_legacy_flow_freeze.py](https://github.com/OpenAdaptAI/OpenAdapt/pull/2705) (#2705), merged 2026-11-25
+- [fix(quickstart): write receipts for encrypted runs and add --yes / CI non-interactive mode](https://github.com/OpenAdaptAI/OpenAdapt/pull/2703) (#2703), merged 2026-11-25, openadapt-flow
+- [feat(kernel): wire openadapt kernel CLI/exports and freeze legacy flow stacks](https://github.com/OpenAdaptAI/OpenAdapt/pull/2702) (#2702), merged 2026-11-25
+- [docs: refresh CAPABILITIES.md and llms-full.txt](https://github.com/OpenAdaptAI/OpenAdapt/pull/2701) (#2701), merged 2026-11-25
 - [docs(readme): embed dark and light 3-pane receipt viewer screenshots](https://github.com/OpenAdaptAI/OpenAdapt/pull/2700) (#2700), merged 2026-11-25
 - [docs: refresh CAPABILITIES.md and llms-full.txt](https://github.com/OpenAdaptAI/OpenAdapt/pull/2697) (#2697), merged 2026-11-25
 - [docs(readme): overhaul README with agent quickstarts, clean-room benchmarks, and openadapt-kernel](https://github.com/OpenAdaptAI/OpenAdapt/pull/2695) (#2695), merged 2026-11-25
@@ -23,10 +29,4 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 - [fix(seal-view): verify receipt anchors, render receipt-only runs, show receipt fields in Raw tab](https://github.com/OpenAdaptAI/OpenAdapt/pull/2681) (#2681), merged 2026-11-25
 - [fix(txplan): merge create marker lists and record audit_checked with require_audit option (#2474)](https://github.com/OpenAdaptAI/OpenAdapt/pull/2679) (#2679), merged 2026-11-25, openadapt-flow
 - [ci: disable automatic protected-safety-review PR gate (manual workflow_dispatch only)](https://github.com/OpenAdaptAI/OpenAdapt/pull/2678) (#2678), merged 2026-11-25
-- [docs(readme): add clean-room UI-drift and HealthAdminBench benchmark summary](https://github.com/OpenAdaptAI/OpenAdapt/pull/2677) (#2677), merged 2026-11-25
-- [fix(flow): scope manifest open questions per kind, scope reward oracle reads, and name static dynamic-import targets](https://github.com/OpenAdaptAI/OpenAdapt/pull/2676) (#2676), merged 2026-11-25, openadapt-flow
-- [feat(wrap): add --fallback-script and --fallback-command zero-model CLI fallback path](https://github.com/OpenAdaptAI/OpenAdapt/pull/2675) (#2675), merged 2026-11-25, openadapt-flow
-- [ci(packages,desktop): run flow-unit in merge_group, scope native installers, retry Tauri bundle](https://github.com/OpenAdaptAI/OpenAdapt/pull/2674) (#2674), merged 2026-11-25
-- [fix(tests): guard everyday quickstart VerifyConfig checks on everyday probe models](https://github.com/OpenAdaptAI/OpenAdapt/pull/2673) (#2673), merged 2026-11-25
-- [fix(tx): support HAL mirrors, verb-suffixed RPC read routes, and /{id}/<verb> item routes](https://github.com/OpenAdaptAI/OpenAdapt/pull/2672) (#2672), merged 2026-11-25, openadapt-flow
 
