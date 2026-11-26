@@ -7,14 +7,14 @@
 
 - **[openadapt-kernel-v0.1.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-kernel-v0.1.0)** (2026-11-26)
   - Initial release of `openadapt-kernel` with zero `openadapt-flow` dependencies and zero per-app engine code.
+- **[openadapt-flow-v4.0.1](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-flow-v4.0.1)** (2026-11-26)
+  Native Windows qualification
 - **[v1.24.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/v1.24.0)** (2026-11-25)
   Requirements
 - **[openadapt-flow-v4.0.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-flow-v4.0.0)** (2026-11-25)
   Breaking Changes
 - **[openadapt-desktop-v0.35.0](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-desktop-v0.35.0)** (2026-11-25)
   OpenAdapt Desktop 0.35.0: the PyPI package and the native installers.
-- **[openadapt-desktop-v0.33.1](https://github.com/OpenAdaptAI/OpenAdapt/releases/tag/openadapt-desktop-v0.33.1)** (2026-11-25)
-  OpenAdapt Desktop 0.33.1: the PyPI package and the native installers.
 
 ## openadapt-flow
 
