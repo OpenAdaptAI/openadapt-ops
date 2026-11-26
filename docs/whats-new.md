@@ -1,7 +1,7 @@
 # What's New
 
 > *Pull requests merged in the last 7 days across the OpenAdapt repositories, grouped by the release that contains them.*
-> *Last updated: 2026-11-26 02:38 UTC*
+> *Last updated: 2026-11-26 02:59 UTC*
 
 Items under **Merged, not released yet** are on a repository's `main` branch only. They are not in any published package or installer yet.
 
@@ -17,6 +17,8 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 
 ### Merged, not released yet
 
+- [release(launcher): openadapt 1.24.1 requires Flow 4.0.1](https://github.com/OpenAdaptAI/OpenAdapt/pull/2719) (#2719), merged 2026-11-26
+- [docs(benchmarks): report full openIMIS 200-claim split, demote MockMed fixture, add repro.sh](https://github.com/OpenAdaptAI/OpenAdapt/pull/2718) (#2718), merged 2026-11-26, openadapt-flow
 - [build(kernel): wire openadapt-kernel 0.1.0 for PyPI publishing](https://github.com/OpenAdaptAI/OpenAdapt/pull/2717) (#2717), merged 2026-11-26
 - [fix(kernel): harden read-back, commit gating, settle, filters, probe/ACI, qualify, and receipts](https://github.com/OpenAdaptAI/OpenAdapt/pull/2713) (#2713), merged 2026-11-26
 - [docs(benchmarks): publish sanitized per-run JSON ledgers and clarify lifecycle snapshot](https://github.com/OpenAdaptAI/OpenAdapt/pull/2712) (#2712), merged 2026-11-26
@@ -30,6 +32,4 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 - [fix(kernel): eliminate ReDoS backtracking in PDF token regex (CodeQL #116)](https://github.com/OpenAdaptAI/OpenAdapt/pull/2694) (#2694), merged 2026-11-25
 - [feat(kernel): minimal commit-boundary verification and shadow-to-autopilot kernel](https://github.com/OpenAdaptAI/OpenAdapt/pull/2691) (#2691), merged 2026-11-25
 - [docs: refresh CAPABILITIES.md and llms-full.txt](https://github.com/OpenAdaptAI/OpenAdapt/pull/2689) (#2689), merged 2026-11-25
-- [ci(packages): give merge-queue flow-unit the 60-minute limit (follow-up #2674)](https://github.com/OpenAdaptAI/OpenAdapt/pull/2687) (#2687), merged 2026-11-25
-- [docs: refresh CAPABILITIES.md and llms-full.txt](https://github.com/OpenAdaptAI/OpenAdapt/pull/2686) (#2686), merged 2026-11-25
 
