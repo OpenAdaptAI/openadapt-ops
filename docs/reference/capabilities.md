@@ -31,13 +31,14 @@ in the [OpenAdapt monorepo](https://github.com/OpenAdaptAI/OpenAdapt).
 4. **Works across surfaces in one workflow.** Backends for web, native Windows
    and macOS, Linux, RDP and Citrix. Programs chain across surfaces passing confirmed values
    (`compose`, `process`).
-5. **Confirms the right record before every write and reads it back after.**
-   The record check reads the saved record from the system of record (API,
-   database, FHIR with SMART Backend Services, or file export) when available,
-   or by clearing the stale screen and re-reading the persisted record via a
-   fresh page reload, separate signed-in session, or reopened record view for
-   UI-only apps. An ephemeral "Saved!" toast never counts as proof.
-   `record --verify` proposes those checks from what the demonstration changed.
+5. **Confirms the right record before every write and checks the result after.**
+   Checks sit on a four-level ladder: a system-of-record read (`system_of_record`,
+   via API, database, FHIR with SMART Backend Services, or file export), a
+   separate signed-in session (`separate_session`), an idempotent reload or
+   reopen (`reopened`), or a bounded check on the settled screen (`same_screen`,
+   for in-place edits and non-idempotent flows under `Standard`). Every report
+   and receipt stamps `checked_how`. `record --verify` proposes those checks
+   from what the demonstration changed.
 6. **Stops instead of improvising, and never retries an uncertain save.** A run
    that can't prove a save ends `HALTED_BEFORE_EFFECT` or
    `RECONCILIATION_REQUIRED`, never "success".
@@ -92,16 +93,17 @@ All patient and claim data in every test and benchmark is synthetic.
 
 A person, or a computer-use agent once, shows a task. OpenAdapt compiles it
 into a program that makes the same entry every time with no model calls. It
-confirms the right record before acting, independently reads the saved record
-back (through an API, database, or file export when available, or a fresh
-reload or reopened UI view in UI-only apps) instead of trusting a screen
-toast, and stops instead of improvising or retrying when something is off.
+confirms the right record before acting, checks the result on a graded
+four-level ladder (API, database, FHIR, or file export; a separate read-only
+session; an idempotent reload or reopen; or a bounded check on the settled
+screen under `Standard`), stamps `checked_how` on the report and receipt, and
+stops instead of improvising or retrying when something is off.
 
 | Capability | Status | Evidence | Where |
 | --- | --- | --- | --- |
 | Compile one or more demonstrations into a deterministic program | Released | Real app (OpenEMR referral, 62 timed runs) | `openadapt-flow record`, `compile`; [packages/flow](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/README.md) |
 | Right-record check before any write (structure, then OCR, then pixels) | Released | Real app and synthetic | [RESOLUTION_LADDER.md](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/RESOLUTION_LADDER.md), `runtime/identity.py` |
-| Independently read the saved record back (API, database, FHIR, file export, separate session, or fresh UI reload/reopen) | Released | Real app (OpenEMR 12 of 12 fields) | [VERIFICATION.md](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/VERIFICATION.md), `runtime/effects/` |
+| Graded outcome check after each write (`system_of_record` API/DB/FHIR/file, `separate_session`, `reopened`, or bounded `same_screen`) | Released | Real app (OpenEMR 12 of 12 fields) | [VERIFICATION.md](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/VERIFICATION.md), `runtime/effects/` |
 | Stop before the effect instead of improvising (`HALTED_BEFORE_EFFECT`) | Released | Real app and synthetic | `runtime/replayer.py` |
 | Never retry an uncertain save (`RECONCILIATION_REQUIRED`) | Released | Synthetic (fault server) | [VERIFICATION.md](https://github.com/OpenAdaptAI/OpenAdapt/blob/main/packages/flow/docs/VERIFICATION.md) |
 | One check-level scale, 0 to 5, from "unchecked" to "counterparty confirmed" | Released | Unit tests | `openadapt_flow/check_level.py` |

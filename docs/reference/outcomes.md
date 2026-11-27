@@ -23,7 +23,7 @@ fields in `report.json` say how it ended:
 | `REJECTED_POLICY` | A gate refused the run before any save: certification, admission, identity coverage, or environment. | Fix the gate, for example certify the bundle or supply the admission. |
 | `CANCELED` | The run was canceled before any save. | Run again when ready. |
 | `FAILED_PLATFORM` | OpenAdapt or the computer failed before any save could happen. | Fix the environment and run again. |
-| `COMPLETED_UNVERIFIED` | A Demo run finished, but nothing confirmed the save. | Fine for testing. Not a production success. |
+| `COMPLETED_UNVERIFIED` | A Demo run finished without a record check, or a check confirmed the change below the profile's or workflow's `minimum_readback` (for example `same_screen` under Regulated). | Fine for local testing, or inspect `checked_how` and configure a stronger check when `VERIFIED` is required. |
 | `ROLLED_BACK` | A duplicate or extra write was undone, and the undo was confirmed. | Check the record, then fix the cause. |
 
 ## Execution outcomes

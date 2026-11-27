@@ -99,11 +99,11 @@ parentheses.
     `RECONCILIATION_REQUIRED`, because a save may or may not have landed.
 
 **Record check** (effect check)
-:   An independent read of the saved record after a save: through the app's
-    API, database, or file export when available, or by evicting the stale
-    screen and re-reading the persisted record via a fresh page reload, a
-    separate signed-in session, or closing and reopening the record
-    (`effects`).
+:   A post-action check of the target record or screen state (`effects`),
+    graded on a four-level ladder: `system_of_record` (API, database, FHIR, or
+    file store), `separate_session`, `reopened` (idempotent reload or reopen),
+    or `same_screen` (bounded check on the settled screen). Every run report
+    and receipt records the weakest level reached as `checked_how`.
 
 <span id="recording"></span>**Recording**
 :   The folder `record` writes: the steps, screenshots, and what each step

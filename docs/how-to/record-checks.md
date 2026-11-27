@@ -1,29 +1,36 @@
 ---
 description: >-
-  Tell OpenAdapt where the saved record lives so a run can read it back after
-  each save, and choose how strong that check is.
+  Configure how OpenAdapt checks the target state after each change on the
+  four-level verification ladder, and set the minimum check level a workflow
+  needs.
 ---
 
 # Add record checks
 
-A record check independently reads the saved record back after a save: through
-the app's API, database, or file export when available, or by evicting the
-stale screen and re-reading the persisted record (via a fresh page reload, a
-separate read-only session, or closing and reopening the record) when the app
-is UI-only. Without a record check, a run can't end
-`VERIFIED`. Under the Standard and Regulated profiles, a run refuses to
-perform a save that has no record check. Under the Demo profile, it needs
-`--approve-unverified-writes` and ends `COMPLETED_UNVERIFIED` at best.
+A record check reads the target state after an action that changes a record and
+compares the expected values. Not every UI has a Save button, a separate
+post-save screen, or a safe page reload, so OpenAdapt supports four confirmed
+check levels: a direct read of the system of record (`system_of_record`), a
+separate read-only session (`separate_session`), an idempotent same-session
+reload or reopen (`reopened`), or a bounded check on the settled current screen
+(`same_screen`). Without a record check (`unchecked`), a run never ends
+`VERIFIED`. Under the Standard and Regulated profiles, a run refuses an
+unchecked write. Under the Demo profile, it needs `--approve-unverified-writes`
+and ends `COMPLETED_UNVERIFIED` at best.
 
 There are two halves:
 
-- The **program** says what must be true after each save, for example
-  "one new triage note for this patient".
-- The **deployment** says where to read it: a fresh page reload in the same UI
-  session (`fresh_reload`), an optional separate signed-in browser session
-  (`ui_readback`), or a direct system-of-record read (REST, FHIR, read-only
-  SQL, or a file drop). This lives in the `effects:` section of a deployment
-  file and never in the program.
+- The **program** declares what must be true after each change, for example
+  "one new triage note for this patient", and can set an optional
+  `minimum_readback` floor (`same_screen`, `reopened`, `separate_session`, or
+  `system_of_record`).
+- The **deployment** configures where to read it: a bounded check on the
+  settled screen (`same_screen` / `effects.kind: onscreen`), a same-session
+  reload or reopen when re-reading is idempotent (`reopened` / `fresh_reload`),
+  a separate signed-in browser session (`separate_session` / `ui_readback`), or
+  a direct system-of-record read (REST, GraphQL, FHIR, read-only SQL, file,
+  email, or document store). This lives in the `effects:` section of a
+  deployment file and never in the program.
 
 ## 1. Draft the check from the recording
 
@@ -64,38 +71,70 @@ openadapt flow run bundle --effects-kind rest --effects-base-url https://app.exa
 
 ## 3. Pick the strongest check you can reach
 
-| Where the record is read | How | Strength |
-|---|---|---|
-| The system's API, database, or files: REST, GraphQL, FHIR, read-only SQL, a file or report drop, an email capture folder, a document store | `effects.kind` `rest`, `graphql`, `fhir`, `sql`, `file`, `document`, `email`, `document-hash` | Strongest. Reads the system of record directly. |
-| The app's own record page, opened by id in an optional separate, freshly signed-in, read-only browser session | `effects.kind: ui_readback` | Independent of the session that typed, though still read from a rendered page |
-| Fresh page reload in the same UI session (reloads the record from the server after saving) | `fresh_reload` (same-session reload or demonstrated reopen check) | Default when no API or separate login is needed; reaches Level 3 `VERIFIED` outside regulated policy |
-| The screen the run worked on (no reload) | `effects.kind: onscreen` | Weakest. Provides a consistency signal and does not prove a save persisted. |
+| `checked_how` | Where the target state is read | How | What it reaches |
+|---|---|---|---|
+| `system_of_record` (Tier 1) | The system's API, database, or files: REST, GraphQL, FHIR, read-only SQL, a file or report drop, an email capture folder, or a document store | `effects.kind` `rest`, `graphql`, `fhir`, `sql`, `file`, `document`, `email`, `document-hash` | `VERIFIED` under `Standard` and `Regulated`, `qualify` certification, and Cloud countersignature |
+| `separate_session` (Tier 2) | The app's view opened in a separate, freshly signed-in, read-only browser or app session | `effects.kind: ui_readback` or `fresh_session` | `VERIFIED` under `Standard` and `Regulated` (minimum floor for `Regulated`, unless policy requires Tier 1) |
+| `reopened` (Tier 3) | Same-session reload, state reset, or reopened record view when re-reading is idempotent | `fresh_reload` or a demonstrated reopen check | `VERIFIED` under `Standard`; `COMPLETED_UNVERIFIED` under `Regulated` |
+| `same_screen` (Tier 4) | A bounded region or element on the current screen after the action settles | `effects.kind: onscreen` or auto-derived `same_screen` | Default baseline for in-place UIs and non-idempotent flows; reaches `VERIFIED` under `Standard` (`checked_how: "same_screen"`) and `COMPLETED_UNVERIFIED` under `Regulated` |
 
 [How a save is checked](../explanation/verification.md#how-strong-a-read-back-is)
-maps each one to what it can reach: `VERIFIED`, certification, and Cloud's countersignature.
-When the deployment can read more than one way, list them under
-`effects.candidates` instead of `effects.kind`; Flow uses the strongest one
-for each save.
+maps each level to `VERIFIED`, `qualify` certification, and Cloud's
+countersignature. A workflow can set `minimum_readback` to `"same_screen"`,
+`"reopened"`, `"separate_session"`, or `"system_of_record"` when a task must
+enforce a stricter floor than the profile's default. When the deployment can
+read more than one way, list them under `effects.candidates` instead of
+`effects.kind`; Flow uses the strongest one for each write.
 
-### Reload the record page in the same session
+### Check a bounded region on the current screen
 
-Most web workflows verify right inside the same UI session without a separate
-login or API integration. After the save completes, OpenAdapt performs a
-**fresh page reload** (`fresh_reload`), discarding client-side form memory and
-reading the record back from the server's rendered response.
+Many UIs change state in place without opening a post-save page or exposing an
+idempotent reload: spreadsheet and grid cell edits, auto-saving fields,
+toggles, `Apply` or `Ctrl+S` dialogs that stay on the same view, queue items
+that leave a list, and non-idempotent `POST` or multi-step wizard flows where
+reloading would re-submit or break session state.
+
+Bounded same-screen verification (`same_screen`, Tier 4, labeled `"Checked on
+the screen"`) checks that a bounded region or element on the current screen
+stabilizes with the expected state after the action settles:
+
+- Auto-derived out of the box when a bounded region settles on the expected
+  value, or configured explicitly with `effects.kind: onscreen`
+  (`readback_region` and `readback_min_ratio` set the region and match
+  threshold).
+- Reaches `VERIFIED` under the `Standard` profile (unless the workflow sets a
+  stricter `minimum_readback`), stamping `checked_how: "same_screen"` and
+  `effect_assurance: "screen_readback"` on the run report and receipt.
+- Under the `Regulated` profile, ends `COMPLETED_UNVERIFIED` with
+  `below_minimum: true` in `report.json` so regulated workloads require at
+  least `separate_session` (Tier 2) or `system_of_record` (Tier 1).
+
+<span id="reload-the-record-page-in-the-same-session"></span>
+
+### Reload or reopen in the same session
+
+When a web page supports safe, idempotent `GET` reloads, OpenAdapt can perform
+a **fresh page reload** (`fresh_reload`, `checked_how: "reopened"`), discarding
+client-side form memory and reading the record back from the server's rendered
+response:
 
 - No second account, API token, or database credential is required.
-- A confirmed `fresh_reload` read-back reaches Level 3 `VERIFIED` outside the
-  `regulated` policy and writes a signed receipt recording the `fresh_reload`
-  read-back basis.
-- If the reloaded page omits the saved field or shows a different record, the
-  run stops with `RECONCILIATION_REQUIRED` and refuses a blind retry.
+- A confirmed `fresh_reload` check reaches `VERIFIED` under `Standard` (unless
+  `minimum_readback` requires `separate_session` or `system_of_record`) and
+  records `checked_how: "reopened"` on the report and receipt.
+- Skip `fresh_reload` on non-idempotent `POST` pages or multi-step wizards
+  where a reload would re-submit or lose wizard progress; use `same_screen`,
+  `ui_readback`, or a backend verifier instead.
+- If the reloaded page omits the expected field or shows a different record,
+  the run stops with `RECONCILIATION_REQUIRED` and refuses a blind retry.
 
 ### Read the record page in a separate session
 
-Use `ui_readback` for a web app with no API or database to read. Configure
-it with a separate read-only account, so the check never uses the session
-that did the typing:
+Use `ui_readback` (`checked_how: "separate_session"`, Tier 2) when you want a
+check outside the acting session without an API or database connection,
+including as the minimum floor under the `Regulated` profile. Configure it with
+a separate read-only account, so the check never uses the session that
+performed the action:
 
 ```yaml
 effects:
@@ -135,18 +174,17 @@ A confirmed `ui_readback` counts as the record check while each save is
 approved (`each_item`, the default). Under `problems_only`, a save checked
 only this way still goes to a person.
 
-### Show how you'd check the save
+### Show how you'd reopen and check the record
 
-For an app with no API, database, export, or web record page, such as a
-desktop app or one reached over RDP or Citrix, show OpenAdapt how you'd
-check a save yourself. Record the task, save, then clear what the screen
-remembers, open the saved record again, and look at the fields:
+When a desktop, RDP, or Citrix app supports closing and reopening a record by
+its identifier, you can demonstrate a Tier 3 (`reopened`) or Tier 2
+(`fresh_session`) check directly:
 
 ```bash
 openadapt flow record --with-check --out rec ...
 ```
 
-After the save, Flow prompts "Now show how you'd check it saved." When you
+After the action, Flow prompts "Now show how you'd check it saved." When you
 stop, it lists the recorded events and asks where the check starts and which
 regions show the values you typed. It writes them to `check.json` beside the
 recording. For a recording made without `--with-check`, write the same file
@@ -156,14 +194,15 @@ with `check mark`:
 openadapt flow check mark rec --start-event 14 --field patient_id=410,212,180,24
 ```
 
-The check must contain a step that clears what the screen remembers: a
-reload, a new search, or a window closed and reopened. Flow recognizes those
-from the recording. Name one it can't recognize, such as a click on the
-browser's reload button or a fresh sign-in, with
-`--reset KIND@EVENT`, where `KIND` is `reload`, `new_search`,
-`reopen_window`, or `fresh_session`. `compile` refuses a check with no
-reset, a marked region that doesn't show the typed value, or a check that
-types a secret.
+This demonstrated reopen path expects a state-reset step: a reload, a new
+search, or a window closed and reopened. Flow recognizes those from the
+recording. Name one it can't recognize, such as a click on the browser's reload
+button or a fresh sign-in, with `--reset KIND@EVENT`, where `KIND` is `reload`,
+`new_search`, `reopen_window`, or `fresh_session`. `compile` refuses a
+demonstrated reopen check with no reset, a marked region that doesn't show the
+typed value, or a check that types a secret. When reopening is not possible or
+not idempotent, use a bounded `same_screen` check (`effects.kind: onscreen`)
+instead.
 
 A compiled check confirms nothing until a person admits it, at a terminal:
 
@@ -194,14 +233,6 @@ sets `dmy` or `mdy`. An OCR read that differs only in characters OCR can't
 tell apart, such as `O` and `0` or `l` and `1`, is uncertain, never a match.
 A blank or unreadable field is uncertain too, and an uncertain check stops
 the run.
-
-### Re-read the acting screen
-
-`onscreen` re-reads the value on the screen the run worked on. It's a
-consistency signal: an app can show a value it never stored. Set it with
-`effects.kind: onscreen`; `readback_region` and `readback_min_ratio` set the
-region to read and the match threshold. Prefer a check you show by
-demonstration, which reopens the record first.
 
 ### Write your own verifier
 
@@ -252,8 +283,9 @@ longer applies to the new bundle.
 openadapt flow lint bundle-checked
 ```
 
-`lint` reports, for every step that saves, whether it declares a record
-check, and warns when a check reads the same screen that did the work.
+`lint` reports, for every step that changes a record, whether it declares a
+record check and which check level it reaches (surfacing same-screen checks so
+you can raise `minimum_readback` where needed).
 
 ## Next
 

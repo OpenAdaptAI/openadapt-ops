@@ -1,6 +1,6 @@
 # OpenAdapt Documentation
 
-> Give your agent a program, not a mouse. OpenAdapt is the open-source, verified execution layer for computer-use agents. A person records a task in a web, Windows, macOS, Linux or remote-desktop app (once for a simple path, or a few times with `openadapt compile --induce` to cover variations), or an AI agent performs it once while OpenAdapt records it, ideally on test data; OpenAdapt compiles the demonstration into a program the agent calls as one tool (`openadapt-agent serve` over MCP, or `openadapt wrap` around an agent task). The program confirms the right record before each save and independently reads the saved record back after it (through an API, database, or file export when available, or via a fresh reload, separate read-only session, or reopened UI view for UI-only apps); `openadapt verify effect` judges a write made by any agent or script the same way. A run that can't prove a save stops. Healthy runs make no model calls. Never summarize a halt as success. MIT licensed. This file describes the current release; pages that call OpenAdapt generative process automation describe the pre-1.0 project.
+> Give your agent a program, not a mouse. OpenAdapt is the open-source, verified execution layer for computer-use agents. A person records a task in a web, Windows, macOS, Linux or remote-desktop app (once for a simple path, or a few times with `openadapt compile --induce` to cover variations), or an AI agent performs it once while OpenAdapt records it, ideally on test data; OpenAdapt compiles the demonstration into a program the agent calls as one tool (`openadapt-agent serve` over MCP, or `openadapt wrap` around an agent task). The program confirms the right record before each write and checks the outcome after it on a four-level ladder (`system_of_record` via API, database, FHIR, or file export; `separate_session`; `reopened` via idempotent reload or reopen; or bounded `same_screen` on the settled view under Standard), stamping `checked_how` on every report and receipt; `openadapt verify effect` judges a write made by any agent or script from the system of record. A run that can't confirm a write stops. Healthy runs make no model calls. Never summarize a halt as success. MIT licensed. This file describes the current release; pages that call OpenAdapt generative process automation describe the pre-1.0 project.
 
 Production status: https://docs.openadapt.ai/production-lifecycle.json. Product-wide Production requires seven active target admissions, each verified against its exact release and current authority state. The public workflow ledger is https://docs.openadapt.ai/production-workflow-admissions.json. Every entry is remote-safe-synthetic, including tutorial bundles with bundle_version `0.0.0-synthetic`. A retained row doesn't establish current qualification. Synthetic evidence does not qualify a customer workflow. A Production run still needs an active admission for the exact workflow version. Desktop installers are published as GitHub releases tagged `openadapt-desktop-v*`; their signing status is on https://docs.openadapt.ai/security/release-integrity/.
 
@@ -26,13 +26,14 @@ in the [OpenAdapt monorepo](https://github.com/OpenAdaptAI/OpenAdapt).
 4. **Works across surfaces in one workflow.** Backends for web, native Windows
    and macOS, Linux, RDP and Citrix. Programs chain across surfaces passing confirmed values
    (`compose`, `process`).
-5. **Confirms the right record before every write and reads it back after.**
-   The record check reads the system of record (API, database, FHIR with SMART
-   Backend Services, or file export) when available, or evicts the stale
-   screen and re-reads the persisted record via a fresh page reload, separate
-   signed-in session, or reopened record view for UI-only apps, never trusting
-   an ephemeral toast alone. `record --verify` proposes those checks from what
-   the demonstration changed.
+5. **Confirms the right record before every write and checks the result after.**
+   Checks sit on a four-level ladder: the system of record (`system_of_record`
+   via API, database, FHIR with SMART Backend Services, or file export), a
+   separate signed-in session (`separate_session`), an idempotent reload or
+   reopen (`reopened`), or a bounded check on the settled screen (`same_screen`,
+   for in-place UIs and non-idempotent flows under Standard), stamping
+   `checked_how` on every report and receipt. `record --verify` proposes those
+   checks from what the demonstration changed.
 6. **Stops instead of improvising, and never retries an uncertain save.** A run
    that can't prove a save ends `HALTED_BEFORE_EFFECT` or
    `RECONCILIATION_REQUIRED`, never "success".

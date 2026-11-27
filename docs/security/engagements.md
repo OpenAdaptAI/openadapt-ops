@@ -43,16 +43,17 @@ the written proposal sets the scope, timeline, and payment terms. Start at
   [Deployment boundaries](deployment-boundaries.md).
 - A way to reset test records between trials.
 
-**A way to read the record back**, strongest available:
+**A way to check the outcome**, strongest available:
 
-- **Direct backend read (preferred when available):** a read-only API (such as
-  REST or FHIR), read-only database view, scheduled export, or report/file
-  produced after the save.
-- **Independent UI read-back (default for UI-only portals and closed desktop
-  apps):** clearing the stale screen and re-reading the persisted record via a
-  fresh cache-busted reload, a read-only second session, or closing and
-  reopening the record from the app's list or index. Regulated or high-risk
-  workflows may still require a direct backend read.
+- **Direct backend read (`system_of_record`, required for `qualify` certification and Cloud countersigning):**
+  a read-only API (such as REST, GraphQL, or FHIR), read-only database view,
+  scheduled export, or report or file produced after the change.
+- **UI or screen check (`separate_session`, `reopened`, or `same_screen`):** a
+  read-only second session (`separate_session`, minimum floor for `Regulated`),
+  an idempotent reload or reopened record view (`reopened`), or a bounded check
+  on the settled screen (`same_screen`, for in-place UIs, non-idempotent
+  portals, and closed apps under `Standard`). Every report and receipt states
+  `checked_how`.
 
 **People**
 
@@ -103,9 +104,9 @@ report.
 The report recommends against automating a workflow, and says why, when for
 example:
 
-- No independent read-back is possible (not even a fresh reload or reopened
-  record view), or the workflow's risk requires a direct backend read-back
-  that the application doesn't expose.
+- No check can confirm the target state at the level the workflow's risk or
+  profile requires (for example, a regulated workflow where neither a backend
+  read nor a separate read-only session is available).
 - The work needs judgment that can't be turned into checkable rules, record
   identities, and expected results.
 - The application changes too often, with no test environment, for a

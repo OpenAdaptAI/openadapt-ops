@@ -13,7 +13,7 @@ to OpenAdapt.
 <figure class="oa-diagram-frame">
 <svg viewBox="0 0 980 404" role="img" aria-labelledby="oa-db-title oa-db-desc">
   <title id="oa-db-title">OpenAdapt deployment boundaries and data flow</title>
-  <desc id="oa-db-desc">Three deployment lanes: Managed browser inside OpenAdapt Cloud for public non-regulated web apps; Customer-controlled runner inside customer infrastructure driving browsers, native apps, or internal systems with an independent read-back (API, database, file export, or fresh UI reload/reopen); and Remote session driving RDP or Citrix client windows from pixels. An optional OpenAdapt Cloud control plane receives only approved sanitized copies, counts, and digests across the boundary.</desc>
+  <desc id="oa-db-desc">Three deployment lanes: Managed browser inside OpenAdapt Cloud for public non-regulated web apps; Customer-controlled runner inside customer infrastructure driving browsers, native apps, or internal systems with graded outcome checks (system_of_record API/DB/file, separate_session, reopened, or bounded same_screen); and Remote session driving RDP or Citrix client windows from pixels. An optional OpenAdapt Cloud control plane receives only approved sanitized copies, counts, and digests across the boundary.</desc>
   <defs>
     <marker id="db-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto">
       <path d="M0,1 L9,5 L0,9 z" class="oa-svg-arrow-accent"/>
@@ -72,7 +72,7 @@ to OpenAdapt.
   <g class="oa-svg-node">
     <rect x="720" y="144" width="230" height="58" rx="8" class="oa-svg-panel-verified"/>
     <text x="734" y="165" font-size="12.5" class="oa-svg-title">System of record</text>
-    <text x="734" y="182" font-size="10" class="oa-svg-muted">API, DB, file, or fresh UI read-back</text>
+    <text x="734" y="182" font-size="10" class="oa-svg-muted">API, DB, file, or graded UI check</text>
     <text x="734" y="195" font-size="9.5" class="oa-svg-verified-txt">VERIFIED outcome</text>
   </g>
 
@@ -95,7 +95,7 @@ to OpenAdapt.
   <g class="oa-svg-node">
     <rect x="690" y="274" width="260" height="42" rx="8" class="oa-svg-panel"/>
     <text x="704" y="293" font-size="12" class="oa-svg-title">Remote session</text>
-    <text x="704" y="308" font-size="10" class="oa-svg-muted">API/DB/file or reopen read-back</text>
+    <text x="704" y="308" font-size="10" class="oa-svg-muted">Graded check; Regulated needs T1/T2</text>
   </g>
 
   <!-- Optional Cloud control plane bar -->
@@ -130,12 +130,13 @@ sends nothing.
 The runner is yours, but the application is in an RDP, Citrix, or other
 virtual desktop session. OpenAdapt drives the client window from pixels,
 keyboard, and mouse, and installs nothing in the remote session. The rendered
-frames are handled under the runner's local data policy. `VERIFIED` still needs
-an independent record check: an API, database, or file export when available, or
-a demonstrated reopen check that clears the stale screen, reopens the saved
-record from the app's list or index, and reads the persisted fields back. Where
-only an un-reloaded screen or toast is checked, the run can't end `VERIFIED`,
-and regulated or high-risk workflows may require a backend read-back to qualify.
+frames are handled under the runner's local data policy. Under `Standard`, a
+remote run can reach `VERIFIED` through a backend read (`system_of_record`), a
+separate read-only session (`separate_session`), a demonstrated reopen
+(`reopened`), or a bounded check on the settled screen (`same_screen`), and
+every report and receipt records `checked_how`. Under `Regulated`, `VERIFIED`
+requires `separate_session` or `system_of_record`, and formal `qualify`
+certification requires `system_of_record`.
 
 ## In every deployment
 

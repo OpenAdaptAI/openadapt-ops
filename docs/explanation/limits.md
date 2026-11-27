@@ -27,11 +27,13 @@ description: >-
   check on a subset of its clicks; one OpenEMR program armed 4 to 7 of 12.
   A click that isn't armed has no right-record check. `lint` and every run
   report list which steps are armed.
-- **Saves without a record check.** Without one, a run can't end
-  `VERIFIED`, and Standard and Regulated refuse the save. Record checks are
-  configured per deployment: against the app's API, database, or file export
-  when available, or through a fresh reload, separate read-only session, or
-  demonstrated reopen check for UI-only apps.
+- **Saves without a record check.** Without one (`unchecked`), a run never ends
+  `VERIFIED`, and Standard and Regulated refuse the write. Checks sit on a
+  four-level ladder (`system_of_record`, `separate_session`, `reopened`, and
+  bounded `same_screen`), and every report and receipt records `checked_how`.
+  Under `Standard`, any confirmed level at or above `minimum_readback` reaches
+  `VERIFIED`; under `Regulated`, `VERIFIED` requires `separate_session` or
+  `system_of_record`.
 - **Redesigned workflows.** Re-finding a moved or restyled control is in
   scope. A changed sequence of screens or changed business rules needs a new
   demonstration or a taught fix.

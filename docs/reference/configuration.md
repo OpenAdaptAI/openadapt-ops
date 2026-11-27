@@ -136,8 +136,8 @@ Where record checks read the saved record. `kind` is one of:
 | `email` | A maildir or SMTP capture folder | `root`, `mail_pattern`, `file_mtime_window_s`, `file_content_probe` |
 | `document` | A report file whose contents are parsed | `root`, `file_pattern`, `document_format`, `document_field_paths` |
 | `document-hash` | A document store, by exact SHA-256 | `root`, `glob` |
-| `ui_readback` | The app's record page in a separate, signed-in, read-only browser session | `ui_readback.record_url`, `sign_in`, `row_selector`, `fields`, `identity` |
-| `onscreen` | The saved value on the acting screen, read with OCR | `readback_region`, `readback_min_ratio` (default `0.9`) |
+| `ui_readback` | The app's record page in a separate, signed-in, read-only browser session (`separate_session`, Tier 2) | `ui_readback.record_url`, `sign_in`, `row_selector`, `fields`, `identity` |
+| `onscreen` | A bounded region or element on the current screen after the action settles (`same_screen`, Tier 4) | `readback_region`, `readback_min_ratio` (default `0.9`) |
 | a plugin kind | Whatever the installed verifier reads | `options`, `option_params`, `secret_env` |
 
 `auth` takes exactly one of `bearer_env`, `header` with `value_env`, or

@@ -138,14 +138,17 @@ Each step that changes a record is guarded three ways:
    record the inputs name, for example the right patient.
 2. **The action** itself: the click or the typing, on a target found the
    same way it was found in the demonstration.
-3. **After saving**, a record check independently reads the saved record back.
-   When the app exposes an API, database view, or file export, OpenAdapt reads
-   the record there. When the app is UI-only, OpenAdapt evicts the stale
-   screen and re-reads the persisted record through a fresh cache-busted
-   reload, a separate read-only session, or by closing and reopening the
-   record from the list. An ephemeral success banner on screen never counts
-   because it only confirms the UI showed a toast; it does not prove what was
-   stored.
+3. **After acting**, a record check confirms the target state on a graded
+   four-level ladder. When the app exposes an API, database view, FHIR
+   endpoint, or file export, OpenAdapt reads the system of record directly
+   (`system_of_record`). Otherwise it checks through a separate read-only
+   session (`separate_session`), an idempotent same-session reload or reopen
+   (`reopened`), or a bounded check on the settled screen (`same_screen`, for
+   in-place edits, non-idempotent flows, and closed apps without reload). Every
+   report and receipt stamps `checked_how` so you see how the change was
+   checked; `Standard` accepts any confirmed level at or above
+   `minimum_readback`, while `Regulated` requires at least `separate_session`
+   or `system_of_record`.
 
 If any check fails or can't tell, the run stops. When it stops before the
 save, nothing was written. When the save may have gone through but couldn't
