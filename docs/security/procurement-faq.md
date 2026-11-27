@@ -88,9 +88,10 @@ signature by a person, and it doesn't make OpenAdapt the legal actor. See
 
 **What if it gets something wrong without noticing?**
 The acceptance target is zero runs that report success while the record
-disagrees. Each save is independently read back (through an API, database, or
-file export when available, or by clearing the stale screen and reloading or
-reopening the persisted record in UI-only apps), and anything other than a
+disagrees. Each consequential change is checked on a four-level ladder
+(`system_of_record`, `separate_session`, `reopened`, or bounded `same_screen`
+under `Standard`; `separate_session` or `system_of_record` under `Regulated`),
+every report and receipt records `checked_how`, and anything other than a
 confirmation stops the run. Your numbers come from
 your own qualification.
 

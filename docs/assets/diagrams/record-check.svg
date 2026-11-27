@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 490" width="1100" height="490" role="img" aria-labelledby="title desc">
-  <title id="title">How OpenAdapt checks a save</title>
-  <desc id="desc">On the acting surface, the app screen OpenAdapt types into, a run checks that the right record is on screen and then enters and saves. It then reads the record back. A UI read-back clears the stale screen and re-reads the persisted record via a fresh reload, reopened record view, or separate read-only session for UI-only apps. A system-of-record read uses the app's API, database, or file export when available. An un-reloaded acting screen toast alone never confirms a save. If the read matches, the run ends VERIFIED with a run report and a receipt, and OpenAdapt Cloud countersigns the receipt only after a system-of-record read. If it doesn't match or can't tell, the run ends RECONCILIATION_REQUIRED and a person checks the record before any retry. If the right-record check fails, the run ends HALTED_BEFORE_EFFECT before saving and asks a person.</desc>
+  <title id="title">How OpenAdapt checks a change</title>
+  <desc id="desc">On the acting surface, the app screen OpenAdapt interacts with, a run checks that the right record is open and then performs the action. It then checks the target state on a four-level ladder. UI and screen checks cover a separate read-only session (separate_session), an idempotent same-session reload or reopen (reopened), or a bounded check on the settled screen (same_screen, eligible for VERIFIED under Standard). A system-of-record read uses the app's API, database, FHIR, or file export (system_of_record). Every report and receipt records checked_how and effect_assurance. If the check matches at or above the required floor, the run ends VERIFIED with a run report and a receipt, and OpenAdapt Cloud countersigns the receipt only after a system-of-record read. If it doesn't match or can't tell, the run ends RECONCILIATION_REQUIRED and a person checks the record before any retry. If the right-record check fails, the run ends HALTED_BEFORE_EFFECT before acting and asks a person.</desc>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
       <path d="M0,1 L9,5 L0,9 z" class="arrow-fill"/>
@@ -57,25 +57,25 @@
   <text x="44" y="216" class="head">1. Right-record</text>
   <text x="44" y="238" class="head">check</text>
   <rect x="186" y="180" width="112" height="90" rx="10" class="box-raised"/>
-  <text x="198" y="216" class="head">2. Enter and</text>
-  <text x="198" y="238" class="head">save</text>
+  <text x="198" y="216" class="head">2. Enter or</text>
+  <text x="198" y="238" class="head">apply</text>
   <path d="M166,225 L182,225" class="line" marker-end="url(#arrow)"/>
 
   <!-- Read-back -->
-  <text x="350" y="50" class="title">3. Read the record back</text>
+  <text x="350" y="50" class="title">3. Check the target state</text>
   <text x="350" y="72" class="sub">and compare it with the input</text>
   <rect x="350" y="90" width="300" height="105" rx="12" class="box-muted" stroke-dasharray="6 4"/>
-  <text x="366" y="116" class="head">UI read-back</text>
-  <text x="366" y="138" class="sub">Fresh reload, reopened record,</text>
-  <text x="366" y="158" class="sub">or separate read-only session</text>
-  <text x="366" y="181" class="mono">fresh_reload / ui_readback</text>
+  <text x="366" y="116" class="head">UI or screen check (Tiers 2 to 4)</text>
+  <text x="366" y="138" class="sub">Separate session, idempotent reopen,</text>
+  <text x="366" y="158" class="sub">or bounded settled-screen check</text>
+  <text x="366" y="181" class="mono">separate_session / reopened / same_screen</text>
   <rect x="350" y="215" width="300" height="125" rx="12" class="box-ok"/>
-  <text x="366" y="241" class="head">System-of-record read</text>
+  <text x="366" y="241" class="head">System-of-record read (Tier 1)</text>
   <text x="366" y="263">The system of record: its API,</text>
-  <text x="366" y="283">database, or file export when</text>
-  <text x="366" y="303">available</text>
-  <text x="366" y="326" class="mono">independent_readback</text>
-  <text x="350" y="368" class="note">An un-reloaded acting screen toast alone never confirms a save.</text>
+  <text x="366" y="283">database, FHIR, or file export</text>
+  <text x="366" y="303">when available</text>
+  <text x="366" y="326" class="mono">system_of_record · independent_readback</text>
+  <text x="350" y="368" class="note">Every report and receipt stamps checked_how and effect_assurance.</text>
   <path d="M298,225 L322,225 L322,142 L346,142" class="line" marker-end="url(#arrow)"/>
   <path d="M322,225 L322,277 L346,277" class="line" marker-end="url(#arrow)"/>
 

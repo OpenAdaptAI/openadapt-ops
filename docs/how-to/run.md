@@ -29,9 +29,9 @@ secret values in the file; it takes environment variable names.
 
 | Profile | Use it for | What it requires | Best result |
 |---|---|---|---|
-| `demo` | Trying things out | A bundle. Screen evidence is allowed. | `COMPLETED_UNVERIFIED` |
-| `standard` | Production inside a qualified, encrypted storage boundary | Certification, a sealed program, durable checkpoints, a right-record check on every save, a record check that doesn't go through the acting session, and a production admission | `VERIFIED` |
-| `regulated` | Production with regulated data, such as patient records | Everything in Standard, plus an encrypted program (`OPENADAPT_BUNDLE_KEY`), sealed evidence files, and encrypted checkpoints, in a deployment you control | `VERIFIED` |
+| `demo` | Trying things out | A bundle. Unchecked writes require `--approve-unverified-writes`. | `COMPLETED_UNVERIFIED` |
+| `standard` | Production inside a qualified, encrypted storage boundary | Certification, a sealed program, durable checkpoints, a right-record check on every write, a confirmed record check on the ladder (`same_screen` through `system_of_record`, at or above `minimum_readback`), and a production admission | `VERIFIED` |
+| `regulated` | Production with regulated data, such as patient records | Everything in Standard, plus a check at `separate_session` or `system_of_record` (`regulated` policy requires `system_of_record`), an encrypted program (`OPENADAPT_BUNDLE_KEY`), sealed evidence files, and encrypted checkpoints, in a deployment you control | `VERIFIED` |
 
 Flags can make a profile stricter but never weaker. Select the profile with
 `--profile` or `runtime.profile` in the deployment file.

@@ -1,22 +1,28 @@
 ---
 description: >-
-  How OpenAdapt decides that a save happened, which kinds of read-back count
-  for which result, and what the main branch enforces today.
+  How OpenAdapt checks that an action took effect, how the four-level check
+  ladder works across Standard and Regulated runs, and what the main branch
+  enforces today.
 ---
 
 # How a save is checked
 
-A record check is how OpenAdapt checks its own work. After a save, it reads
-the record back and compares the fields it typed. That catches a value in
-the wrong field, an entry on the wrong record, a missed keystroke, a
-duplicate submit, or a step that ran before the page was ready. The confirmation on screen only indicates the UI reported a save and does not
-prove what was stored, so it isn't used as proof. A record check returns `confirmed`, `refuted`, or
-`indeterminate`. Only `confirmed` lets a run continue.
+A record check is how OpenAdapt checks its own work. After an action that
+changes state (clicking a Save button, editing a grid cell in place, toggling a
+setting, or submitting a step in a wizard), it reads the target state back and
+compares the expected values. That catches a value in the wrong field, an entry
+on the wrong record, a missed keystroke, a duplicate submit, or a step that ran
+before the view settled. Not every UI has a Save button, a separate post-save
+screen, or a safe page reload, so OpenAdapt grades checks on a four-level
+ladder from a bounded check on the settled screen up to a direct read of the
+system of record. Each check returns `confirmed`, `refuted`, or
+`indeterminate`. Only `confirmed` at or above the run's required level ends
+`VERIFIED`, and every report and receipt records `checked_how`.
 
 <figure class="oa-diagram-frame">
 <svg viewBox="0 0 980 390" role="img" aria-labelledby="oa-ver-title oa-ver-desc">
-  <title id="oa-ver-title">How OpenAdapt checks a save at the commit boundary</title>
-  <desc id="oa-ver-desc">On the acting surface, OpenAdapt first performs a right-record check and captures a baseline. If the wrong record or an unexpected screen appears, the run stops before saving with HALTED_BEFORE_EFFECT and nothing is written. Otherwise it enters and saves, then reads the record back via a fresh page reload in the same UI session (fresh_reload), an optional separate signed-in UI session (ui_readback), or directly from the system of record (Tier 1: REST, GraphQL, FHIR, SQL, or file export). An un-reloaded acting screen toast alone never confirms a save. If the read matches, the run ends VERIFIED with a signed Ed25519 receipt (OpenAdapt Cloud countersigns only after a Tier 1 independent read). If the read disagrees or cannot tell, the run ends RECONCILIATION_REQUIRED and the ledger blocks blind retries until a person checks the record.</desc>
+  <title id="oa-ver-title">How OpenAdapt checks an action at the commit boundary</title>
+  <desc id="oa-ver-desc">On the acting surface, OpenAdapt first performs a right-record check and captures a baseline. If the wrong record or an unexpected screen appears, the run stops before acting with HALTED_BEFORE_EFFECT and nothing is written. Otherwise it performs the action, then checks the target state on a four-level ladder: Tier 1 system_of_record (REST, GraphQL, FHIR, SQL, file, email, or document store), Tier 2 separate_session (ui_readback or fresh_session, minimum floor for Regulated), Tier 3 reopened (idempotent fresh_reload or demonstrated reopen), or Tier 4 same_screen (bounded check on the settled screen, eligible for VERIFIED under Standard). Every report and receipt records checked_how and effect_assurance. If the check matches at or above the required floor, the run ends VERIFIED with a signed Ed25519 receipt (OpenAdapt Cloud countersigns only after a Tier 1 system_of_record read). If the check disagrees or cannot tell, the run ends RECONCILIATION_REQUIRED and the ledger blocks blind retries until a person checks the record.</desc>
   <defs>
     <marker id="ver-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
       <path d="M0,1 L9,5 L0,9 z" class="oa-svg-arrow-accent"/>
@@ -45,41 +51,41 @@ prove what was stored, so it isn't used as proof. A record check returns `confir
 
   <path d="M164,121 L188,121" class="oa-svg-line-accent oa-svg-flow" marker-end="url(#ver-arr)"/>
 
-  <!-- Step 2: Enter and save -->
+  <!-- Step 2: Apply change -->
   <g class="oa-svg-node">
     <rect x="192" y="62" width="128" height="118" rx="10" class="oa-svg-panel"/>
     <text x="204" y="84" font-size="10" class="oa-svg-accent">2 · ACTION</text>
-    <text x="204" y="105" font-size="13" class="oa-svg-title">Enter and</text>
-    <text x="204" y="122" font-size="13" class="oa-svg-title">save</text>
-    <text x="204" y="144" font-size="10.5" class="oa-svg-muted">Compiled step or</text>
-    <text x="204" y="160" font-size="10.5" class="oa-svg-muted">wrapped agent</text>
+    <text x="204" y="105" font-size="13" class="oa-svg-title">Enter or</text>
+    <text x="204" y="122" font-size="13" class="oa-svg-title">apply</text>
+    <text x="204" y="144" font-size="10.5" class="oa-svg-muted">Form, in-place edit,</text>
+    <text x="204" y="160" font-size="10.5" class="oa-svg-muted">or wrapped agent</text>
   </g>
 
-  <text x="30" y="216" font-size="11" class="oa-svg-muted">The acting screen alone never confirms a save.</text>
+  <text x="30" y="216" font-size="11" class="oa-svg-muted">Every report and receipt stamps checked_how.</text>
   <text x="30" y="234" font-size="10.5" class="oa-svg-mono">approval-gated by profile</text>
 
   <!-- Split from Action to Read-back tiers -->
   <path d="M320,104 C354,104 352,72 384,72" class="oa-svg-line-verified oa-svg-flow" marker-end="url(#ver-arr-v)"/>
   <path d="M320,138 C354,138 352,196 384,196" class="oa-svg-line-accent oa-svg-flow" marker-end="url(#ver-arr)"/>
 
-  <!-- Step 3: Tier 1 Independent Read-Back -->
+  <!-- Step 3: Tier 1 System-of-Record Read-Back -->
   <g class="oa-svg-node">
     <rect x="390" y="16" width="276" height="114" rx="12" class="oa-svg-panel-verified"/>
     <circle cx="648" cy="36" r="4.5" class="oa-svg-gate-dot oa-svg-gate-dot--verified"/>
-    <text x="406" y="40" font-size="10" class="oa-svg-verified-txt">3A · TIER 1 INDEPENDENT READ</text>
+    <text x="406" y="40" font-size="10" class="oa-svg-verified-txt">3A · TIER 1 SYSTEM OF RECORD</text>
     <text x="406" y="62" font-size="14" class="oa-svg-title">System-of-record read-back</text>
     <text x="406" y="83" font-size="11.5" class="oa-svg-muted">API (REST, GraphQL, FHIR), SQL,</text>
-    <text x="406" y="100" font-size="11.5" class="oa-svg-muted">or file export; never through the UI</text>
-    <text x="406" y="118" font-size="10" class="oa-svg-mono">independent_readback</text>
+    <text x="406" y="100" font-size="11.5" class="oa-svg-muted">file, email, or document store</text>
+    <text x="406" y="118" font-size="10" class="oa-svg-mono">system_of_record · independent_readback</text>
   </g>
 
-  <!-- Step 3: UI Read-Back (Fresh Reload or Separate Session) -->
+  <!-- Step 3: Tiers 2-4 UI & On-Screen Ladder -->
   <g class="oa-svg-node">
     <rect x="390" y="144" width="276" height="108" rx="12" class="oa-svg-panel"/>
-    <text x="406" y="168" font-size="10" class="oa-svg-accent">3B · UI READ-BACK</text>
-    <text x="406" y="190" font-size="14" class="oa-svg-title">Fresh reload or separate UI</text>
-    <text x="406" y="211" font-size="11.5" class="oa-svg-muted">Same-session fresh reload (fresh_reload)</text>
-    <text x="406" y="229" font-size="11" class="oa-svg-muted">or optional separate session (ui_readback)</text>
+    <text x="406" y="168" font-size="10" class="oa-svg-accent">3B · TIERS 2 TO 4 UI &amp; SCREEN</text>
+    <text x="406" y="190" font-size="14" class="oa-svg-title">Session, reopen, or settled view</text>
+    <text x="406" y="211" font-size="11" class="oa-svg-muted">separate_session (T2) · reopened (T3)</text>
+    <text x="406" y="229" font-size="11" class="oa-svg-muted">same_screen bounded check (T4)</text>
   </g>
 
   <!-- Connectors to Outcomes -->
@@ -95,9 +101,9 @@ prove what was stored, so it isn't used as proof. A record check returns `confir
     <circle cx="948" cy="36" r="4.5" class="oa-svg-gate-dot oa-svg-gate-dot--verified"/>
     <text x="756" y="42" font-size="12" class="oa-svg-verified-txt">VERIFIED</text>
     <text x="756" y="64" font-size="12" class="oa-svg-title">Signed Ed25519 receipt</text>
-    <text x="756" y="85" font-size="11" class="oa-svg-muted">All declared effects confirmed</text>
+    <text x="756" y="85" font-size="11" class="oa-svg-muted">Meets profile + minimum_readback</text>
     <text x="756" y="102" font-size="11" class="oa-svg-muted">Cloud countersigns Tier 1 only</text>
-    <text x="756" y="119" font-size="10" class="oa-svg-mono">receipt.json · /r/&lt;id&gt;</text>
+    <text x="756" y="119" font-size="10" class="oa-svg-mono">receipt.json · checked_how</text>
   </g>
 
   <!-- Outcome 2: RECONCILIATION_REQUIRED -->
@@ -119,11 +125,11 @@ prove what was stored, so it isn't used as proof. A record check returns `confir
     <rect x="14" y="300" width="952" height="72" rx="12" class="oa-svg-panel-stopped"/>
     <circle cx="948" cy="322" r="4" class="oa-svg-gate-dot oa-svg-gate-dot--stopped"/>
     <text x="32" y="328" font-size="12" class="oa-svg-stopped-txt">HALTED_BEFORE_EFFECT</text>
-    <text x="32" y="352" font-size="12" class="oa-svg-muted">Stops before saving and asks a person. Nothing was written, so the item is safe to fix and re-run.</text>
+    <text x="32" y="352" font-size="12" class="oa-svg-muted">Stops before acting and asks a person. Nothing was written, so the item is safe to fix and re-run.</text>
   </g>
 </svg>
 <figcaption class="oa-diagram-caption">
-  <span><strong>Commit-boundary verification:</strong> Pre-save identity prevents wrong-record writes; independent read-back confirms persistence; uncertainty stops without blind retry.</span>
+  <span><strong>Commit-boundary verification:</strong> Pre-action identity prevents wrong-record writes; graded outcome checks confirm the target state and record <code>checked_how</code>; uncertainty stops without blind retry.</span>
   <span><a href="../../reference/receipts/">Signed receipts &rarr;</a></span>
 </figcaption>
 </figure>
@@ -144,54 +150,74 @@ silently duplicate a write.
 
 ## How strong a read-back is
 
-OpenAdapt ranks every read-back by how independent it is of the screen that
-did the work. The rank is the Flow tier, 1 the strongest. The run report and
-the receipt also give each read a grade, and Cloud's countersignature names a check level.
-This table maps the three:
+OpenAdapt ranks every check on one ladder by how independent it is of the
+surface that performed the action. The Flow tier numbers run 1 (strongest) to
+4; the run report and MCP result carry the `checked_how` code and its label;
+the receipt records `effect_tier_reached` and `effect_assurance`; and Cloud's
+countersignature uses its own check level:
 
-<!-- The R0–R3 read-back ladder from the reopen read-back work goes here when
-it ships: one more column naming each row's rung, and minimum_readback and
-checked_how in "What each result needs". Until then, these are the tiers
-Flow uses. -->
+| `checked_how` (label) | What it checks | How you set it up | Flow tier | Grade (`effect_assurance`) | Ends `VERIFIED` | Certifies through `qualify` | Cloud check level |
+|---|---|---|---|---|---|---|---|
+| `system_of_record` ("Checked in your system's records") | The system of record, through its API, database, FHIR, GraphQL, file, email, or document store | `effects.kind` `rest`, `graphql`, `fhir`, `sql`, `file`, `document`, `email`, or `document-hash` | 1, `independent_system` | `independent_readback` | Yes (`Standard` and `Regulated`) | Yes | 2 |
+| `separate_session` ("Checked in a separate session") | The app's view in a separate, freshly signed-in, read-only browser or app session | `effects.kind: ui_readback` or `fresh_session` | 2, `independent_session` | `screen_readback` | Yes (`Standard`, and `Regulated` unless policy requires Tier 1) | No | 1 |
+| `reopened` ("Reopened in the same session") | Same-session state reset, refresh, or reopen when the UI supports idempotent re-reading | `fresh_reload` or demonstrated reopen; see [Reload or reopen in the same session](../how-to/record-checks.md#reload-the-record-page-in-the-same-session) | 3, `persisted_state_reacquisition` | `fresh_reload` or `screen_readback` | Yes under `Standard`; `COMPLETED_UNVERIFIED` under `Regulated` | No | 0 |
+| `same_screen` ("Checked on the screen") | A bounded region or element on the current screen after the action settles | `effects.kind: onscreen` or auto-derived `same_screen` | 4, `immediate_screen` | `screen_readback` | Yes under `Standard`; `COMPLETED_UNVERIFIED` under `Regulated` | No | 0 |
+| `unchecked` ("Not checked") | No check confirmed the action | | | `unchecked` | No | No | |
 
-| Read-back | How you set it up | Flow tier | Grade | Ends `VERIFIED` | Certifies through qualification | Cloud check level |
-|---|---|---|---|---|---|---|
-| The system of record, through its API, database, or files | `effects.kind` `rest`, `graphql`, `fhir`, `sql`, `file`, `document`, `email`, or `document-hash` | 1, `independent_system` | `independent_readback` | Yes | Yes | 2 |
-| The app's record page, in an optional separate, read-only, freshly signed-in session | `effects.kind: ui_readback` | 2, `independent_session` | `screen_readback` | Yes, except under the `regulated` policy | No | 1 |
-| Fresh page reload in the same UI session (clears client state, reloads the record from the server, and reads it back) | `fresh_reload` (default for web workflows without an API); see [Reload the record page in the same session](../how-to/record-checks.md#reload-the-record-page-in-the-same-session) | 3, `persisted_state_reacquisition` | `fresh_reload` | Yes (Level 3 `VERIFIED` outside the `regulated` policy) | No | 0 |
-| The screen that did the work still shows the value (no reload) | `effects.kind: onscreen` | 4, `immediate_screen` | `screen_readback` | No | No | 0 |
-| No read-back | | | `unchecked` | No | No | |
+Different UIs call for different rungs on this ladder:
 
-Most web and closed desktop workflows verify without an API by evicting the
-stale screen and re-reading the persisted record: via `fresh_reload` in a
-browser (a fresh page reload that discards client-side form state and reads
-the persisted record back from the server) or a demonstrated close-and-reopen
-check in desktop apps, reaching Level 3 `VERIFIED` without requiring a second
-login or API credentials. When an application exposes an API, database, or
-file export (Tier 1), or when you want an isolated read-only browser session
-(Tier 2 `ui_readback`), configure that path for stronger independence. An un-reloaded `onscreen` check (Tier 4) can stop a run, though
-it never makes one `VERIFIED`. Cloud check level 3 is a counterparty artifact,
-such as a payer status, which Flow doesn't read.
+- **In-place edits, non-idempotent flows, and closed apps (`same_screen`, Tier 4).**
+  Many applications have no separate post-save page or Save button (spreadsheet
+  and grid cell edits, auto-saving fields, toggles, `Apply` or `Ctrl+S` dialogs
+  that stay on the same view, or queue items that leave a list), and many web
+  portals use non-idempotent `POST` flows or multi-step wizards where reloading
+  would re-submit or break session state. Bounded `same_screen` verification is
+  default-eligible out of the box when a target region stabilizes with the
+  expected state after the action, reaches `VERIFIED` under `Standard`, and
+  stamps `checked_how: "same_screen"` and `effect_assurance: "screen_readback"`
+  on the report and receipt.
+- **Idempotent web pages and reopenable views (`reopened`, Tier 3).** When
+  reloading a URL or closing and reopening a record is safe and idempotent,
+  `fresh_reload` or a demonstrated reopen check resets client-side form state
+  and re-reads the record in the same session without a second account or API
+  token.
+- **Separate sessions and direct backend reads (`separate_session` Tier 2, `system_of_record` Tier 1).**
+  Configure `ui_readback` when you want an isolated read-only session, or an
+  API, database, FHIR, or file verifier when the system exposes one. Cloud check
+  level 3 (`counterparty_confirmed`) is a counterparty artifact, such as a
+  payer status, which Flow doesn't read directly.
 
-A run's receipt records the weakest read among its saves as
-`effect_tier_reached` and its grade as `effect_assurance`. See
+A workflow can set `minimum_readback` to `"same_screen"`, `"reopened"`,
+`"separate_session"`, or `"system_of_record"` to enforce a stricter floor than
+the profile's default. When a run has multiple writes, its report and receipt
+record the weakest level reached across all of them (`checked_how`,
+`effect_tier_reached`, and `effect_assurance`). See
 [Receipts](../reference/receipts.md).
 
 ## What each result needs
 
-**`VERIFIED` under Standard or Regulated.** Every save must be confirmed at
-tier 2 or stronger: the system of record, or a separate-session
-`ui_readback`. The `regulated` policy pack raises that to tier 1. A
-pixel-only Citrix save with no tier-1 or tier-2 read ends in a halt or
-`RECONCILIATION_REQUIRED`, whatever an operator or the screen says.
+**`VERIFIED` under Standard.** Every declared change must be confirmed on the
+ladder (Tier 4 `same_screen` through Tier 1 `system_of_record`), at or above
+any `minimum_readback` the workflow sets. Every report and receipt states
+`checked_how` (`same_screen`, `reopened`, `separate_session`, or
+`system_of_record`) so reviewers and calling agents see the exact check level.
 
-**Certification through qualification.** To certify, the normal case must be
-confirmed and every fault case must show nothing landed, all at
-`independent_readback`. A workflow whose only read-back is `ui_readback` can
-run the cases but can't be certified this way.
+**`VERIFIED` under Regulated.** Every declared change must be confirmed at
+Tier 2 (`separate_session`) or Tier 1 (`system_of_record`), outside the session
+that performed the action. The `regulated` policy pack raises that floor to
+Tier 1 (`system_of_record`). A run whose saves were confirmed only at
+`reopened` or `same_screen` (or below the workflow's `minimum_readback`) ends
+`COMPLETED_UNVERIFIED` with `below_minimum: true` in `report.json`, never
+`VERIFIED`.
+
+**Certification through qualification.** To certify through `qualify`, the
+normal case must be confirmed and every fault case must show nothing landed,
+all at Tier 1 (`system_of_record` / `independent_readback`). A workflow
+checked only through UI or screen levels can run cases where supported, though
+it cannot be certified through `qualify`.
 
 **Cloud's countersignature.** OpenAdapt Cloud countersigns a receipt only
-when the run was confirmed by a system-of-record read.
+when the run was confirmed by a Tier 1 `system_of_record` read.
 
 ## What a record check catches
 

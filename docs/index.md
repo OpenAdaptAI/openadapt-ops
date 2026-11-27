@@ -2,8 +2,8 @@
 title: OpenAdapt documentation
 description: >-
   OpenAdapt compiles one or more demonstrations into a repeatable GUI workflow,
-  checks each save via a fresh page reload, a separate UI session, or the
-  system of record, and writes signed Ed25519 receipts.
+  checks each change on a graded four-level ladder (from a bounded screen check
+  to the system of record), and writes signed Ed25519 receipts.
 hide:
   - toc
   - navigation
@@ -23,7 +23,7 @@ hide:
 
 # Compile GUI workflows.<br>Verify every save.
 
-<p class="oa-docs-lede">OpenAdapt is a compiler and verification runtime for GUI workflows. Build a deterministic program from one or more demonstrations, check each save via a fresh page reload in the same UI session, a separate UI session, or the system of record, and stop whenever proof is missing.</p>
+<p class="oa-docs-lede">OpenAdapt is a compiler and verification runtime for GUI workflows. Build a deterministic program from one or more demonstrations, check each change on a graded ladder (bounded settled screen, idempotent reload or reopen, separate UI session, or the system of record), and stop whenever proof is missing.</p>
 
 <p class="oa-docs-intro">Built for browser, Windows, macOS, Linux, RDP, and Citrix applications. A healthy compiled run makes zero AI model calls and keeps data inside your network boundary.</p>
 
@@ -105,7 +105,7 @@ Attach to Browserbase, E2B, Daytona, or Browser Use over `--cdp-url` and stream 
 <figure class="oa-diagram-frame">
 <svg viewBox="0 0 980 245" role="img" aria-labelledby="oa-pipe-title oa-pipe-desc">
   <title id="oa-pipe-title">OpenAdapt core execution pipeline</title>
-  <desc id="oa-pipe-desc">One or more demonstrations are recorded, compiled into a deterministic workflow program, replayed with zero model calls, checked at the commit boundary via a fresh page reload in the same UI session, a separate UI session, or the system of record, and attested with a signed Ed25519 receipt. Any failed or uncertain check stops the run and routes to human review or guarded teach repair.</desc>
+  <desc id="oa-pipe-desc">One or more demonstrations are recorded, compiled into a deterministic workflow program, replayed with zero model calls, checked at the commit boundary on a four-level ladder (bounded settled screen, idempotent reload or reopen, separate UI session, or the system of record), and attested with a signed Ed25519 receipt. Any failed or uncertain check stops the run and routes to human review or guarded teach repair.</desc>
   <defs>
     <marker id="oa-arr-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
       <path d="M0,1 L9,5 L0,9 z" class="oa-svg-arrow-accent"/>
@@ -153,7 +153,7 @@ Attach to Browserbase, E2B, Daytona, or Browser Use over `--cdp-url` and stream 
     <rect x="598" y="24" width="172" height="108" rx="12" class="oa-svg-panel"/>
     <text x="614" y="48" font-size="10.5" class="oa-svg-accent">04 · COMMIT GATE</text>
     <text x="614" y="70" font-size="14" class="oa-svg-title">Verify effect</text>
-    <text x="614" y="91" font-size="11.5" class="oa-svg-muted">Fresh reload, separate UI,</text>
+    <text x="614" y="91" font-size="11.5" class="oa-svg-muted">Screen, reopen, session,</text>
     <text x="614" y="109" font-size="11.5" class="oa-svg-muted">or API / SQL / FHIR read</text>
   </g>
 
@@ -235,9 +235,9 @@ A computer-use agent sends screenshots to a model on every click. OpenAdapt comp
 
 ### Commit-boundary verification
 
-Every consequential save is guarded before and after the write. Before acting, a right-record check confirms the intended entity is open. After saving, OpenAdapt confirms what persisted via a fresh page reload in the same UI session, an optional separate UI session, or a direct system-of-record read (REST, GraphQL, FHIR, SQL, or file export).
+Every consequential change is guarded before and after the action. Before acting, a right-record check confirms the intended entity is open. After acting, OpenAdapt checks the target state on a four-level ladder (bounded settled screen, idempotent reload or reopen, separate UI session, or a direct REST, GraphQL, FHIR, SQL, or file read) and stamps `checked_how` on the report and receipt.
 
-<span class="oa-bento-meta">3-valued verdicts · never trusts a banner</span>
+<span class="oa-bento-meta">3-valued verdicts · graded `checked_how` ladder</span>
 
 </div>
 

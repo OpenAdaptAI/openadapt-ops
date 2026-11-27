@@ -15,10 +15,13 @@ questionnaire must cite, ask for the current signed artifact.
 OpenAdapt runs on a computer inside your network that can already open the
 application. It replays a compiled program with no model calls on a healthy
 run. Before each consequential action it checks that the right record is
-open, and after each save it independently reads the saved record back:
-through the application's API, database, or file export when available, or by
-clearing the stale screen and reloading or reopening the persisted record when
-the app is UI-only. Any check that fails
+open, and after each consequential change it checks the target state on a
+four-level ladder: through the application's API, database, or file export
+(`system_of_record`), a separate read-only session (`separate_session`), an
+idempotent reload or reopen (`reopened`), or a bounded check on the settled
+screen (`same_screen` under `Standard`; `Regulated` requires at least
+`separate_session` or `system_of_record`). Every report and receipt records
+`checked_how`, and any check that fails
 or can't tell stops the run. Every run writes a report; on-premises
 deployments add an append-only, hash-chained audit log. The engine is
 open source under the MIT license, so these controls can be read in the
@@ -30,7 +33,7 @@ source.
 |---|---|
 | Local execution | A local or on-premises run sends nothing outside your network by default. `verify-airgap.sh` checks the software side and probes that a public address can't be reached. |
 | Right-record check | Before an armed action, the screen must show the record the inputs name. |
-| Record check | After a save, an independent read confirms it. `refuted` and `indeterminate` both stop the run. |
+| Record check | After a consequential change, a graded check confirms the target state and stamps `checked_how`. `refuted` and `indeterminate` both stop the run. |
 | Governed run gate | Under Standard and Regulated, `run` refuses to start without certification, identity coverage, record checks, and a production admission. Regulated also refuses unencrypted bundles. |
 | Encryption at rest | Optional AES-256-GCM for bundles, crops, and checkpoints with `OPENADAPT_BUNDLE_KEY`, on top of your disk encryption. Key management stays yours. |
 | Single-use authorization | Each governed run's authorization is bound to the bundle digest, input digest, policy, and record-check digests. |
