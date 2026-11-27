@@ -162,13 +162,14 @@ Flow uses. -->
 | The screen that did the work still shows the value (no reload) | `effects.kind: onscreen` | 4, `immediate_screen` | `screen_readback` | No | No | 0 |
 | No read-back | | | `unchecked` | No | No | |
 
-Most web workflows verify right inside the same UI session via `fresh_reload`
-(a fresh page reload that discards client-side form state and reads the
-persisted record back from the server), reaching Level 3 `VERIFIED` without
-requiring a second login or API credentials. When an application exposes an
-API, database, or file export (Tier 1), or when you want an isolated read-only
-browser session (Tier 2 `ui_readback`), configure that path for stronger
-independence. An un-reloaded `onscreen` check (Tier 4) can stop a run, though
+Most web and closed desktop workflows verify without an API by evicting the
+stale screen and re-reading the persisted record: via `fresh_reload` in a
+browser (a fresh page reload that discards client-side form state and reads
+the persisted record back from the server) or a demonstrated close-and-reopen
+check in desktop apps, reaching Level 3 `VERIFIED` without requiring a second
+login or API credentials. When an application exposes an API, database, or
+file export (Tier 1), or when you want an isolated read-only browser session
+(Tier 2 `ui_readback`), configure that path for stronger independence. An un-reloaded `onscreen` check (Tier 4) can stop a run, though
 it never makes one `VERIFIED`. Cloud check level 3 is a counterparty artifact,
 such as a payer status, which Flow doesn't read.
 

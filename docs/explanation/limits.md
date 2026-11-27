@@ -28,8 +28,10 @@ description: >-
   A click that isn't armed has no right-record check. `lint` and every run
   report list which steps are armed.
 - **Saves without a record check.** Without one, a run can't end
-  `VERIFIED`, and Standard and Regulated refuse the save. Record checks are usually
-  written per deployment, against the app's system of record.
+  `VERIFIED`, and Standard and Regulated refuse the save. Record checks are
+  configured per deployment: against the app's API, database, or file export
+  when available, or through a fresh reload, separate read-only session, or
+  demonstrated reopen check for UI-only apps.
 - **Redesigned workflows.** Re-finding a moved or restyled control is in
   scope. A changed sequence of screens or changed business rules needs a new
   demonstration or a taught fix.

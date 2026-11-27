@@ -15,8 +15,10 @@ questionnaire must cite, ask for the current signed artifact.
 OpenAdapt runs on a computer inside your network that can already open the
 application. It replays a compiled program with no model calls on a healthy
 run. Before each consequential action it checks that the right record is
-open, and after each save it reads the record back through a path other than
-the screen, such as the application's API or database. Any check that fails
+open, and after each save it independently reads the saved record back:
+through the application's API, database, or file export when available, or by
+clearing the stale screen and reloading or reopening the persisted record when
+the app is UI-only. Any check that fails
 or can't tell stops the run. Every run writes a report; on-premises
 deployments add an append-only, hash-chained audit log. The engine is
 open source under the MIT license, so these controls can be read in the

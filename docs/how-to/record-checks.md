@@ -6,8 +6,11 @@ description: >-
 
 # Add record checks
 
-A record check reads the saved record back after a save, through a different
-path from the screen that did the work. Without one, a run can't end
+A record check independently reads the saved record back after a save: through
+the app's API, database, or file export when available, or by evicting the
+stale screen and re-reading the persisted record (via a fresh page reload, a
+separate read-only session, or closing and reopening the record) when the app
+is UI-only. Without a record check, a run can't end
 `VERIFIED`. Under the Standard and Regulated profiles, a run refuses to
 perform a save that has no record check. Under the Demo profile, it needs
 `--approve-unverified-writes` and ends `COMPLETED_UNVERIFIED` at best.

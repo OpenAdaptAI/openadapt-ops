@@ -43,13 +43,16 @@ the written proposal sets the scope, timeline, and payment terms. Start at
   [Deployment boundaries](deployment-boundaries.md).
 - A way to reset test records between trials.
 
-**A way to read the record back**, at least one of:
+**A way to read the record back**, strongest available:
 
-- an API, such as REST or FHIR, that reads what the workflow saves;
-- read-only database access or a scheduled export;
-- a report or file the system produces after the save;
-- if none exist, a read-only second session. This is a weaker check, and a
-  high-risk workflow may be a no-go without one of the others.
+- **Direct backend read (preferred when available):** a read-only API (such as
+  REST or FHIR), read-only database view, scheduled export, or report/file
+  produced after the save.
+- **Independent UI read-back (default for UI-only portals and closed desktop
+  apps):** clearing the stale screen and re-reading the persisted record via a
+  fresh cache-busted reload, a read-only second session, or closing and
+  reopening the record from the app's list or index. Regulated or high-risk
+  workflows may still require a direct backend read.
 
 **People**
 
@@ -100,8 +103,9 @@ report.
 The report recommends against automating a workflow, and says why, when for
 example:
 
-- Nothing outside the screen can confirm the save, and the workflow's risk
-  doesn't allow a screen-only check.
+- No independent read-back is possible (not even a fresh reload or reopened
+  record view), or the workflow's risk requires a direct backend read-back
+  that the application doesn't expose.
 - The work needs judgment that can't be turned into checkable rules, record
   identities, and expected results.
 - The application changes too often, with no test environment, for a

@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 490" width="1100" height="490" role="img" aria-labelledby="title desc">
   <title id="title">How OpenAdapt checks a save</title>
-  <desc id="desc">On the acting surface, the app screen OpenAdapt types into, a run checks that the right record is on screen and then enters and saves. It then reads the record back. A screen read-back uses the app's UI in a separate session and is not independent. An independent read uses the system of record through its API, database, or file export, never through the UI. The acting screen alone never confirms a save. If the read matches, the run ends VERIFIED with a run report and a receipt, and OpenAdapt Cloud countersigns the receipt only after an independent read. If it doesn't match or can't tell, the run ends RECONCILIATION_REQUIRED and a person checks the record before any retry. If the right-record check fails, the run ends HALTED_BEFORE_EFFECT before saving and asks a person.</desc>
+  <desc id="desc">On the acting surface, the app screen OpenAdapt types into, a run checks that the right record is on screen and then enters and saves. It then reads the record back. A UI read-back clears the stale screen and re-reads the persisted record via a fresh reload, reopened record view, or separate read-only session for UI-only apps. A system-of-record read uses the app's API, database, or file export when available. An un-reloaded acting screen toast alone never confirms a save. If the read matches, the run ends VERIFIED with a run report and a receipt, and OpenAdapt Cloud countersigns the receipt only after a system-of-record read. If it doesn't match or can't tell, the run ends RECONCILIATION_REQUIRED and a person checks the record before any retry. If the right-record check fails, the run ends HALTED_BEFORE_EFFECT before saving and asks a person.</desc>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
       <path d="M0,1 L9,5 L0,9 z" class="arrow-fill"/>
@@ -65,17 +65,17 @@
   <text x="350" y="50" class="title">3. Read the record back</text>
   <text x="350" y="72" class="sub">and compare it with the input</text>
   <rect x="350" y="90" width="300" height="105" rx="12" class="box-muted" stroke-dasharray="6 4"/>
-  <text x="366" y="116" class="head">Screen read-back</text>
-  <text x="366" y="138" class="sub">The app's UI in a separate session</text>
-  <text x="366" y="158" class="sub">Reads a screen, so not independent</text>
-  <text x="366" y="181" class="mono">screen_readback</text>
+  <text x="366" y="116" class="head">UI read-back</text>
+  <text x="366" y="138" class="sub">Fresh reload, reopened record,</text>
+  <text x="366" y="158" class="sub">or separate read-only session</text>
+  <text x="366" y="181" class="mono">fresh_reload / ui_readback</text>
   <rect x="350" y="215" width="300" height="125" rx="12" class="box-ok"/>
-  <text x="366" y="241" class="head">Independent read</text>
+  <text x="366" y="241" class="head">System-of-record read</text>
   <text x="366" y="263">The system of record: its API,</text>
-  <text x="366" y="283">database, or file export, never</text>
-  <text x="366" y="303">through the UI</text>
+  <text x="366" y="283">database, or file export when</text>
+  <text x="366" y="303">available</text>
   <text x="366" y="326" class="mono">independent_readback</text>
-  <text x="350" y="368" class="note">The acting screen alone never confirms a save.</text>
+  <text x="350" y="368" class="note">An un-reloaded acting screen toast alone never confirms a save.</text>
   <path d="M298,225 L322,225 L322,142 L346,142" class="line" marker-end="url(#arrow)"/>
   <path d="M322,225 L322,277 L346,277" class="line" marker-end="url(#arrow)"/>
 
