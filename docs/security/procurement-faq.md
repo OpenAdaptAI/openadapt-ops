@@ -88,8 +88,10 @@ signature by a person, and it doesn't make OpenAdapt the legal actor. See
 
 **What if it gets something wrong without noticing?**
 The acceptance target is zero runs that report success while the record
-disagrees. Each save is read back through a path other than the screen, and
-anything other than a confirmation stops the run. Your numbers come from
+disagrees. Each save is independently read back (through an API, database, or
+file export when available, or by clearing the stale screen and reloading or
+reopening the persisted record in UI-only apps), and anything other than a
+confirmation stops the run. Your numbers come from
 your own qualification.
 
 **What are the known limits?**

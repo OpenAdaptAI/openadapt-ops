@@ -30,7 +30,7 @@ MCP `outcome`: `done` | `needs_review` | `not_sure_if_saved` | `did_not_run`, an
 
 Engine `transaction_outcome`: `VERIFIED` | `HALTED_BEFORE_EFFECT` | `RECONCILIATION_REQUIRED` | `REJECTED_POLICY` | `CANCELED` | `FAILED_PLATFORM` | `COMPLETED_UNVERIFIED` | `ROLLED_BACK`.
 
-`done` means the record checks passed through a read that doesn't go through the screen doing the work. A halt is not success. `not_sure_if_saved` (`RECONCILIATION_REQUIRED`) means a save may have happened: don't retry; a person checks the record.
+`done` means the record checks passed through an independent read-back (an API, database, or file export when available, or a fresh reload, separate read-only session, or reopened record view in UI-only apps, never an ephemeral toast alone). A halt is not success. `not_sure_if_saved` (`RECONCILIATION_REQUIRED`) means a save may have happened: don't retry; a person checks the record.
 
 ## What you may resolve
 

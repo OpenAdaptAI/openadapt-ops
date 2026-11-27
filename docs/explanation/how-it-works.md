@@ -138,10 +138,14 @@ Each step that changes a record is guarded three ways:
    record the inputs name, for example the right patient.
 2. **The action** itself: the click or the typing, on a target found the
    same way it was found in the demonstration.
-3. **After saving**, a record check reads the saved record back through a
-   different path from the screen, such as the app's API or database. The
-   success message on screen doesn't count because it only confirms the UI
-   showed a toast; it does not prove what was stored.
+3. **After saving**, a record check independently reads the saved record back.
+   When the app exposes an API, database view, or file export, OpenAdapt reads
+   the record there. When the app is UI-only, OpenAdapt evicts the stale
+   screen and re-reads the persisted record through a fresh cache-busted
+   reload, a separate read-only session, or by closing and reopening the
+   record from the list. An ephemeral success banner on screen never counts
+   because it only confirms the UI showed a toast; it does not prove what was
+   stored.
 
 If any check fails or can't tell, the run stops. When it stops before the
 save, nothing was written. When the save may have gone through but couldn't
