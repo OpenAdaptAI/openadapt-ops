@@ -1,7 +1,7 @@
 # What's New
 
 > *Pull requests merged in the last 7 days across the OpenAdapt repositories, grouped by the release that contains them.*
-> *Last updated: 2026-11-28 00:48 UTC*
+> *Last updated: 2026-11-28 01:03 UTC*
 
 Items under **Merged, not released yet** are on a repository's `main` branch only. They are not in any published package or installer yet.
 
@@ -12,7 +12,6 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 - [release(flow): openadapt-flow 4.0.1](https://github.com/OpenAdaptAI/OpenAdapt/pull/2708) (#2708), merged 2026-11-26
 - [feat(chrome-extension): wire up published CWS ID, release workflow, and README link](https://github.com/OpenAdaptAI/OpenAdapt/pull/2706) (#2706), merged 2026-11-26
 - [security: fix open CodeQL, Dependabot, advisory, and CodeQL merge_group issues](https://github.com/OpenAdaptAI/OpenAdapt/pull/2704) (#2704), merged 2026-11-26
-- [fix(quickstart): write receipts for encrypted runs and add --yes / CI non-interactive mode](https://github.com/OpenAdaptAI/OpenAdapt/pull/2703) (#2703), merged 2026-11-25
 
 ### Released in OpenAdapt 1.24.1
 
@@ -25,6 +24,7 @@ Items under **Merged, not released yet** are on a repository's `main` branch onl
 
 ### Merged, not released yet
 
+- [feat(sdk): add 2-line openadapt.wrap Python SDK](https://github.com/OpenAdaptAI/OpenAdapt/pull/2732) (#2732), merged 2026-11-28
 - [docs(architecture): mark KERNEL_CONSOLIDATION.md stale and revoke Wave 2 deletions](https://github.com/OpenAdaptAI/OpenAdapt/pull/2731) (#2731), merged 2026-11-27
 - [feat(flow): support general on-screen read-back and graded VERIFIED floors](https://github.com/OpenAdaptAI/OpenAdapt/pull/2730) (#2730), merged 2026-11-28, openadapt-flow
 - [ci(flow): include root uv.lock when installing editable launcher](https://github.com/OpenAdaptAI/OpenAdapt/pull/2729) (#2729), merged 2026-11-27, openadapt-flow
