@@ -6,10 +6,12 @@ description: >-
 
 # How hosted runs queue
 
-A hosted run is one that Cloud runs on its managed runner, such as a browser
-workflow. On the Team plan, an organization has at most one hosted run in
-progress at a time. A custom or Enterprise plan can allow more. For prices,
-see [openadapt.ai/pricing](https://openadapt.ai/pricing).
+A hosted run is one that Cloud runs on its hosted browser runner (non-regulated
+web workflows only, no PHI). On the self-serve Team plan (`$499/mo` dedicated
+runner), an organization has at most one hosted run in progress at a time per
+runner. Managed Production plans (from `$2,000/mo`, with zero-egress local or
+VPC deployment) can allow custom concurrency. For prices, see
+[openadapt.ai/pricing](https://openadapt.ai/pricing).
 
 ## What happens when you start a run
 
